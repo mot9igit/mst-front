@@ -1,7 +1,6 @@
 <template>
-  
   {{ console.log(this.active) }}
-  <aside class="sidebar" id="sidebar" :class="{ 'sidebar--full': active }">
+  <aside class="sidebar" id="sidebar" :class="{ 'sidebar--full': !active }">
     <div class="sidebar__inner sidebar__inner--desktop">
       <div class="sidebar__content-wrapper">
         <div class="sidebar__logo-wrapper">
@@ -223,11 +222,11 @@ export default {
     activeSidebar: {
       type: Boolean,
       default: true,
-    }
+    },
   },
   data() {
     return {
-      active: true,
+      active: false,
       showChangeOrgModal: false,
     }
   },
@@ -246,15 +245,13 @@ export default {
     }),
     sidebarToggle() {
       this.active = !this.active
-      localStorage.setItem('storedsidebarToggle', Number(this.active))
-      
+      localStorage.setItem('sidebar.position', Number(this.active))
     },
     async logOut() {
       if (this.getUser) {
         await this.$api.auth.logout()
         localStorage.removeItem('user')
         this.deleteUser()
-        // console.log(this.$router)
         this.$router.push({ name: 'home' })
       } else {
         this.$router.push({ name: 'home' })
@@ -264,22 +261,12 @@ export default {
       close()
     },
   },
-  mounted() { 
-    setTimeout(() => {
-      const storedsidebarToggle = localStorage.getItem('storedsidebarToggle');
-      console.log(storedsidebarToggle)
-     if(Boolean(storedsidebarToggle)){
-      this.active = storedsidebarToggle
-      console.log(this.active)
-     }else{
-      this.active = storedsidebarToggle
-     }
-        console.log(this.active)
-      
-    }, 800);
-  //  {{ console.log(localStorage.getItem('storedsidebarToggle')) }}
-	//	this.active = localStorage.getItem('storedsidebarToggle');
-	},
+  mounted() {
+    const sidebarPosition = localStorage.getItem('sidebar.position')
+    if (sidebarPosition) {
+      this.active = sidebarPosition
+    }
+  },
 }
 </script>
 <style>
