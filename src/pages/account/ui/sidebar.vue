@@ -218,12 +218,6 @@ import ChangeOrgWindow from '@/pages/org/ui/ChangeOrgWindow.vue'
 
 export default {
   name: 'ProfileSidebar',
-  props: {
-    activeSidebar: {
-      type: Boolean,
-      default: true,
-    },
-  },
   data() {
     return {
       active: false,

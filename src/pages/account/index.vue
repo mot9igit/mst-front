@@ -1,6 +1,5 @@
 <template>
-  <ProfileSidebar
-  :active-sidebar="getactive"></ProfileSidebar>
+  <ProfileSidebar></ProfileSidebar>
   <div class="content">
     <ProfileHeader></ProfileHeader>
     <main class="main">
@@ -33,11 +32,6 @@ export default {
     }),
   },
   components: { ProfileSidebar, ProfileHeader },
-  computed: {
-    getactive(){
-      return localStorage.getItem('storedsidebarToggle')
-    }
-  },
 }
 </script>
 <style>
