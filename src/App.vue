@@ -1,11 +1,5 @@
 <template>
-  <div id="analytics_app">
-    <router-view v-slot="{ Component }">
-      <transition name="scale" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </router-view>
-  </div>
+  <router-view></router-view>
 </template>
 
 <script>

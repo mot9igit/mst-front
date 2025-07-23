@@ -1,6 +1,7 @@
 <template>
   <section class="dart_wrapper auth">
     <Toast />
+    <PreLoader v-if="loading"></PreLoader>
     <form class="auth__form" @submit.prevent="formSubmit">
       <a href="/" class="auth__logo">
         <picture>
@@ -177,6 +178,7 @@
 <script>
 import { mapActions } from 'vuex'
 import customModal from '@/shared/ui/Modal.vue'
+import PreLoader from '@/shared/ui/Loader.vue'
 import formForgot from './forgot.vue'
 import Toast from 'primevue/toast'
 import { sendMetrik } from '@/shared/model/metrika'
@@ -194,9 +196,10 @@ export default {
       errors: [],
       showForgotModal: false,
       showPassword: false,
+      loading: false,
     }
   },
-  components: { Toast, formForgot, customModal },
+  components: { Toast, formForgot, customModal, PreLoader },
   computed: {
     getYear() {
       return new Date().getFullYear()
@@ -205,6 +208,7 @@ export default {
   methods: {
     sendMetrik: sendMetrik,
     ...mapActions({
+      setUser: 'user/setUser',
       getSessionUser: 'user/getSessionUser',
     }),
     togglePasswordVisibility() {
@@ -229,37 +233,48 @@ export default {
         return
       }
       this.loading = true
-      this.$load(async () => {
-        const data = await this.$api.auth.signIn(this.form)
-        if (data) {
-          if (data === 'technical error') {
-            this.$toast.add({
-              severity: 'error',
-              summary: 'Техническая ошибка',
-              detail: 'Попробуйте позже.',
-              life: 3000,
-            })
+      this.$load(
+        async () => {
+          const data = await this.$api.auth.signIn(this.form)
+          if (data) {
+            if (data === 'technical error') {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Техническая ошибка',
+                detail: 'Попробуйте позже.',
+                life: 3000,
+              })
+              this.loading = false
+              return
+            }
+            if (!data.data.success) {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Вход запрещен',
+                detail: data.data.message,
+                life: 3000,
+              })
+              this.loading = false
+            } else {
+              this.getSessionUser()
+              localStorage.setItem('user', JSON.stringify(data.data.data))
+              this.$store.dispatch('user/setUser', data.data)
+              this.sendMetrik('auth')
+              this.$router.push({ name: 'account' })
+            }
             this.loading = false
-            return
           }
-          if (!data.data.success) {
-            this.$toast.add({
-              severity: 'error',
-              summary: 'Вход запрещен',
-              detail: data.data.message,
-              life: 3000,
-            })
-            this.loading = false
-          } else {
-            this.getSessionUser()
-            localStorage.setItem('user', JSON.stringify(data.data.data))
-            this.$store.dispatch('user/setUser', data.data)
-            this.sendMetrik('auth')
-            this.$router.push({ name: 'account' })
-          }
-          this.loading = false
-        }
-      })
+        },
+        (error) => {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Произошла ошибка!',
+            detail: 'Не волнуйтесь, скоро мы это поправим!',
+            life: 3000,
+          })
+          console.log(error)
+        },
+      )
     },
   },
   setup() {
@@ -279,3 +294,16 @@ export default {
   },
 }
 </script>
+<style>
+.dart_wrapper {
+  width: 100%;
+  position: relative;
+}
+.d-input .d-input__button {
+  color: #fff;
+}
+
+.d-show__icon::before {
+  color: #fff;
+}
+</style>

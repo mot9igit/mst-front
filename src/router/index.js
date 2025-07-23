@@ -12,9 +12,23 @@ const router = createRouter({
       component: SignIn,
     },
     {
-      path: '/',
-      name: 'account',
-      component: Account,
+      path: '',
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem('user')) {
+          next()
+        } else {
+          next({ name: 'home' })
+        }
+      },
+      children: [
+        {
+          path: '/account',
+          name: 'account',
+          props: true,
+          label: 'Профиль',
+          component: Account,
+        },
+      ],
     },
     {
       path: '/:pathMatch(.*)*',
