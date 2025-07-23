@@ -1,20 +1,23 @@
 <template>
+
   <form class="form-signin" @submit.prevent="formSubmit" v-if="!message">
+
     <input
       type="text"
       name="username"
-      class="dart-form-control"
+      class="modal__input"
       placeholder="Логин или email"
       required=""
       v-model="form.email"
     />
-    <button class="dart-btn dart-btn-primary dart-btn-block dart-mt-1" type="submit">
+    <button class="d-button d-button-primary" type="submit">
       Восстановить
     </button>
   </form>
   <div class="message" v-else>
     <p>{{ message }}</p>
   </div>
+
 </template>
 
 <script>
@@ -50,5 +53,9 @@ export default {
 .message {
   font-size: 16px;
   color: #282828;
+}
+.d-button{
+  width:50%;
+  margin:30px auto 0px;
 }
 </style>

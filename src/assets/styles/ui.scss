@@ -178,8 +178,8 @@
 
   background-color: transparent;
   border: 1px solid transparent;
-  border-radius: 28px; // 30px
-  box-shadow: 0px 32px 64px 0px #0000008f;
+  box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
+  border-radius: 35px;
 
   color: #fbfbfb;
   font-size: 16px;
@@ -3112,6 +3112,7 @@
 
     background-color: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(22.8px);
+    -webkit-backdrop-filter: blur(22.8px);
     will-change: transform;
 
     position: absolute;
@@ -3123,6 +3124,7 @@
 
     height: 100%;
     width: 100%;
+    
 
     &:has(.d-modal2--active) {
       visibility: visible;
