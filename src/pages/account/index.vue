@@ -1,5 +1,6 @@
 <template>
-  <ProfileSidebar></ProfileSidebar>
+  <ProfileSidebar
+  :active-sidebar="getactive"></ProfileSidebar>
   <div class="content">
     <ProfileHeader></ProfileHeader>
     <main class="main">
@@ -15,6 +16,11 @@ import router from '@/router'
 export default {
   name: 'UserAccount',
   components: { ProfileSidebar, ProfileHeader },
+  computed: {
+    getactive(){
+      return localStorage.getItem('storedsidebarToggle')
+    }
+  },
 }
 </script>
 <style>

@@ -156,4 +156,7 @@ export default {
     will-change: transform;
     transition-duration: .3s;
 }
+.d-input--error .modal__input{
+  border-color: #f92c0d;
+}
 </style>

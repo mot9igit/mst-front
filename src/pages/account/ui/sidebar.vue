@@ -1,4 +1,6 @@
 <template>
+  
+  {{ console.log(this.active) }}
   <aside class="sidebar" id="sidebar" :class="{ 'sidebar--full': active }">
     <div class="sidebar__inner sidebar__inner--desktop">
       <div class="sidebar__content-wrapper">
@@ -208,6 +210,12 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'ProfileSidebar',
+  props: {
+    activeSidebar: {
+      type: Boolean,
+      default: true,
+    }
+  },
   data() {
     return {
       active: true,
@@ -227,6 +235,8 @@ export default {
     }),
     sidebarToggle() {
       this.active = !this.active
+      localStorage.setItem('storedsidebarToggle', Number(this.active))
+      
     },
     async logOut() {
       if (this.getUser) {
@@ -240,6 +250,22 @@ export default {
       }
     },
   },
+  mounted() { 
+    setTimeout(() => {
+      const storedsidebarToggle = localStorage.getItem('storedsidebarToggle');
+      console.log(storedsidebarToggle)
+     if(Boolean(storedsidebarToggle)){
+      this.active = storedsidebarToggle
+      console.log(this.active)
+     }else{
+      this.active = storedsidebarToggle
+     }
+        console.log(this.active)
+      
+    }, 800);
+  //  {{ console.log(localStorage.getItem('storedsidebarToggle')) }}
+	//	this.active = localStorage.getItem('storedsidebarToggle');
+	},
 }
 </script>
 <style>
