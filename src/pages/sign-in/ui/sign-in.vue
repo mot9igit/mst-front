@@ -276,6 +276,9 @@ export default {
         },
       )
     },
+    cancel(close) {
+      close()
+    },
   },
   setup() {
     return { v$: useVuelidate() }

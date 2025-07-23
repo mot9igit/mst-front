@@ -71,6 +71,7 @@
                 >
                 <button
                   class="d-button d-button-tertiary d-button-tertiary-small sidebar__organization-button"
+                  @click.prevent="showChangeOrgModal = true"
                 >
                   <i class="d-icon-refresh sidebar__organization-button-icon"></i>
                   <span class="sidebar__organization-button-text">Сменить компанию</span>
@@ -202,17 +203,27 @@
       </nav>
     </div>
   </aside>
+  <teleport to="body">
+    <customModal v-model="showChangeOrgModal" @cancel="cancel">
+      <template v-slot:title>Смена организации</template>
+      <ChangeOrgWindow />
+    </customModal>
+  </teleport>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import customModal from '@/shared/ui/Modal.vue'
+import ChangeOrgWindow from '@/pages/org/ui/ChangeOrgWindow.vue'
 
 export default {
   name: 'ProfileSidebar',
   data() {
     return {
       active: true,
+      showChangeOrgModal: false,
     }
   },
+  components: { customModal, ChangeOrgWindow },
   computed: {
     ...mapGetters({
       getUser: 'user/getUser',
@@ -238,6 +249,9 @@ export default {
       } else {
         this.$router.push({ name: 'home' })
       }
+    },
+    cancel(close) {
+      close()
     },
   },
 }
