@@ -203,9 +203,30 @@
   </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
   name: 'OrgChangeWindow',
+  data() {},
   methods: {},
+  computed: {
+    ...mapGetters({
+      orgs: 'orgs',
+    }),
+  },
+  watch: {
+    orgs: function (newVal, oldVal) {
+      this.organizations = newVal
+      if (newVal) {
+        const org = newVal.find((el) => el.id === this.$route.params.id)
+        if (org) {
+          this.organization = org
+        }
+      }
+
+      this.activeOrganization = this.organizations?.find((org) => org.id === this.$route.params.id)
+    },
+  },
 }
 </script>
 <style lang="scss">
