@@ -15,6 +15,7 @@ import ProfileHeader from './ui/header.vue'
 export default {
   name: 'UserAccount',
   mounted() {
+    this.getSessionUser()
     const data = {
       action: 'get/orgs',
     }
