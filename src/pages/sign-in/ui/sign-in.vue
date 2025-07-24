@@ -301,6 +301,7 @@ export default {
 .dart_wrapper {
   width: 100%;
   position: relative;
+  background-color:#282828;
 }
 .d-input .d-input__button {
   color: #fff;
