@@ -102,10 +102,11 @@
               Зарегистрировать компанию
             </div>
 
-            <button class="sidebar__user sidebar__hidden">
+            <router-link :to="{ name: 'profile' }" class="sidebar__user sidebar__hidden">
               <i class="d-icon-profile sidebar__user-icon"></i>
-              <span class="sidebar__user-text">Игорь Игореведовичив</span>
-            </button>
+              {{ console.log(this.getUser) }}
+              <span class="sidebar__user-text">{{ this.getUser?.profile?.fullname }}</span>
+            </router-link>
 
             <div
               class="sidebar__divider sidebar__divider--light sidebar__user-divider--bottom"
@@ -457,10 +458,8 @@ export default {
       close()
     },
     setOrgs() {
+      console.log(this.getUser)
       const newVal = this.organizations
-      console.log('Run setOrg')
-      console.log(newVal)
-      console.log(this.$route.params.id)
       if (newVal && this.$route.params.id) {
         const org = newVal.find((el) => el.id === this.$route.params.id)
         if (org) {

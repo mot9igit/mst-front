@@ -4,6 +4,7 @@ import SignIn from '../pages/sign-in/index.vue'
 import Account from '../pages/account/index.vue'
 import Purchases from '../pages/purchases/index.vue'
 import Organization from '../pages/org/index.vue'
+import userProfile from '../pages/profile/index.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +31,13 @@ const router = createRouter({
           label: 'Профиль',
           component: Account,
           children: [
+            {
+              path: '/profile',
+              name: 'profile',
+              props: true,
+              label: 'Профиль пользователя',
+              component: userProfile,
+            },
             {
               path: '/:id',
               children: [
