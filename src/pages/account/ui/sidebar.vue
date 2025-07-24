@@ -65,11 +65,7 @@
 									<button
 										class="sidebar__organization sidebar__organization--mini"
 									>
-										<img
-											src="/icons/spo-logo.svg"
-											alt="SPO"
-											class="sidebar__organization-logo"
-										/>
+										<img src="/icons/spo-logo.svg" alt="SPO" class="sidebar__organization-logo" />
 									</button>
 									<div
 										class="sidebar__organization sidebar__organization--full sidebar__hidden"
@@ -123,268 +119,7 @@
 
 							<!-- <div class="sidebar__divider sidebar__nav-divider--top"></div> -->
 
-							<nav class="sidebar__nav">
-								<ul class="sidebar__list">
-									<li
-										class="sidebar__block sidebar__item sidebar__item--expanded"
-										data-accordion="sidebar__item"
-									>
-										<button class="sidebar__item-button">
-											<div class="sidebar__item-button-content">
-												<i class="d-icon-cube sidebar__item-icon"></i>
-												<span class="sidebar__item-text">Закупки</span>
-											</div>
-											<i
-												class="d-icon-angle-rounded-bottom sidebar__item-dropdown"
-											></i>
-										</button>
-
-										<ul class="sidebar__item-list">
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-doc sidebar__item-list-item-icon"
-                          ></i>
-                          Оптовый каталог
-                        </a>
-											</li>
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-cart sidebar__item-list-item-icon"
-                          ></i>
-                          Мои заказы
-                        </a>
-											</li>
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-cube sidebar__item-list-item-icon"
-                          ></i>
-                          Мои поставщики
-                        </a>
-											</li>
-										</ul>
-									</li>
-
-									<li class="sidebar__block sidebar__item" data-accordion="sidebar__item">
-										<button class="sidebar__item-button">
-											<div class="sidebar__item-button-content">
-												<i class="d-icon-bag sidebar__item-icon"></i>
-												<span class="sidebar__item-text"
-													>Оптовые продажи</span
-												>
-											</div>
-											<i
-												class="d-icon-angle-rounded-bottom sidebar__item-dropdown"
-											></i>
-										</button>
-
-										<ul class="sidebar__item-list">
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-doc sidebar__item-list-item-icon"
-                          ></i>
-                          Заказы
-                        </a>
-											</li>
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-cart sidebar__item-list-item-icon"
-                          ></i>
-                          Оптовые цены
-                        </a>
-											</li>
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-people sidebar__item-list-item-icon"
-                          ></i>
-                          Клиенты
-                        </a>
-											</li>
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-truck sidebar__item-list-item-icon"
-                          ></i>
-                          Отгрузки
-                        </a>
-											</li>
-										</ul>
-									</li>
-
-									<li class="sidebar__block sidebar__item"
-                    data-accordion="sidebar__item"
-                  >
-										<button class="sidebar__item-button">
-											<div class="sidebar__item-button-content">
-												<i class="d-icon-sales sidebar__item-icon"></i>
-												<span class="sidebar__item-text"
-													>Розничные продажи</span
-												>
-											</div>
-											<i
-												class="d-icon-angle-rounded-bottom sidebar__item-dropdown"
-											></i>
-										</button>
-
-										<ul class="sidebar__item-list">
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-doc sidebar__item-list-item-icon"
-                          ></i>
-                          Заказы
-                        </a>
-											</li>
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-percent-rounded sidebar__item-list-item-icon"
-                          ></i>
-                          Акции
-                        </a>
-											</li>
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-wallet sidebar__item-list-item-icon"
-                          ></i>
-                          Баланс
-                        </a>
-											</li>
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-shuffle sidebar__item-list-item-icon"
-                          ></i>
-                          Сопоставление товаров
-                        </a>
-											</li>
-										</ul>
-									</li>
-
-									<li class="sidebar__block sidebar__item"
-                    data-accordion="sidebar__item"
-                  >
-										<button class="sidebar__item-button">
-											<div class="sidebar__item-button-content">
-												<i class="d-icon-boxes-2 sidebar__item-icon"></i>
-												<span class="sidebar__item-text">Мой склад</span>
-											</div>
-											<i
-												class="d-icon-angle-rounded-bottom sidebar__item-dropdown"
-											></i>
-										</button>
-
-										<ul class="sidebar__item-list">
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-line-chart sidebar__item-list-item-icon"
-                          ></i>
-                          Анализ склада
-                        </a>
-											</li>
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-layers sidebar__item-list-item-icon"
-                          ></i>
-                          Коллекции товара
-                        </a>
-											</li>
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-conveyor sidebar__item-list-item-icon"
-                          ></i>
-                          Настройки склада
-                        </a>
-											</li>
-										</ul>
-									</li>
-									<li class="sidebar__block sidebar__item"
-                    data-accordion="sidebar__item"
-                  >
-										<button class="sidebar__item-button">
-											<div class="sidebar__item-button-content">
-												<i class="d-icon-company sidebar__item-icon"></i>
-												<span class="sidebar__item-text">Моя компания</span>
-											</div>
-											<i
-												class="d-icon-angle-rounded-bottom sidebar__item-dropdown"
-											></i>
-										</button>
-
-										<ul class="sidebar__item-list">
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-focus sidebar__item-list-item-icon"
-                          ></i>
-                          Карточка компании
-                        </a>
-											</li>
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-user sidebar__item-list-item-icon"
-                          ></i>
-                          Сотрудники
-                        </a>
-											</li>
-											<li class="sidebar__item-list-item">
-												<a href="/" class="sidebar__item-list-item-content">
-                          <i
-                            class="d-icon-lock-open sidebar__item-list-item-icon"
-                          ></i>
-                          Политики доступа
-                        </a>
-											</li>
-										</ul>
-									</li>
-
-									<!-- <li class="sidebar__block sidebar__item">
-										<button class="sidebar__item-button">
-											<i class="d-icon-list sidebar__item-icon"></i>
-											<span class="sidebar__item-text sidebar__hidden"
-												>Закупки</span
-											>
-										</button>
-									</li>
-									<li class="sidebar__block sidebar__item">
-										<button class="sidebar__item-button sidebar__visible">
-											<i class="d-icon-cart-solid sidebar__item-icon"></i>
-											<span class="sidebar__item-text">Заказы</span>
-										</button>
-										<button class="sidebar__item-button sidebar__hidden">
-											<i class="d-icon-bag sidebar__item-icon"></i>
-											<span class="sidebar__item-text">Мои заказы</span>
-										</button>
-									</li>
-									<li class="sidebar__block sidebar__item">
-										<button class="sidebar__item-button">
-											<i class="d-icon-star sidebar__item-icon"></i>
-											<span class="sidebar__item-text sidebar__visible"
-												>Поставщики</span
-											>
-											<span class="sidebar__item-text sidebar__hidden"
-												>Мои поставщики</span
-											>
-										</button>
-									</li>
-									<li class="sidebar__block sidebar__item">
-										<button class="sidebar__item-button">
-											<i class="d-icon-box sidebar__item-icon"></i>
-											<span class="sidebar__item-text">Товары</span>
-										</button>
-									</li> -->
-								</ul>
-							</nav>
+							<sidebarMenu/>
 							<div
 								class="sidebar__divider sidebar__bottom-divider sidebar__visible"
 							></div>
@@ -403,10 +138,8 @@
 								<span class="sidebar__item-text">Вопросы</span>
 							</button>
 						</div>
-						<div
-							class="sidebar__block sidebar__item sidebar__exit-block sidebar__exit-block--mini"
-						>
-							<button class="sidebar__item-button sidebar__exit">
+						<div class="sidebar__block sidebar__item sidebar__exit-block sidebar__exit-block--mini">
+							<button class="sidebar__item-button sidebar__exit" @click.prevent="logOut()">
 								<i class="d-icon-exit sidebar__item-icon sidebar__exit-logo"></i>
 								<span class="sidebar__item-text">Выйти</span>
 							</button>
@@ -419,7 +152,7 @@
 							<span class="sidebar__bottom-block-text">Работа в Закупках</span>
 						</button>
 
-						<button class="sidebar__bottom-block sidebar__exit-block sidebar__hidden">
+						<button class="sidebar__bottom-block sidebar__exit-block sidebar__hidden" @click.prevent="logOut()">
 							<i class="d-icon-exit sidebar__bottom-block-icon"></i>
 							<span class="sidebar__bottom-block-text">Выйти из ЛК</span>
 						</button>
@@ -454,7 +187,7 @@
 								</button>
 							</li>
 							<li class="sidebar__block sidebar__item">
-								<button class="sidebar__item-button">
+								<button class="sidebar__item-button" @click.prevent="logOut()">
 									<img src="/icons/spo-logo.svg" class="sidebar__item-img" />
 								</button>
 							</li>
@@ -471,6 +204,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import sidebarMenu from './sidebarMenu.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import ChangeOrgWindow from '@/pages/org/ui/ChangeOrgWindow.vue'
 
@@ -482,7 +216,7 @@ export default {
       showChangeOrgModal: false,
     }
   },
-  components: { customModal, ChangeOrgWindow },
+  components: { customModal, ChangeOrgWindow, sidebarMenu },
   computed: {
     ...mapGetters({
       getUser: 'user/getUser',
@@ -525,4 +259,5 @@ export default {
 aside {
   background-color: #ededed;
 }
+
 </style>
