@@ -152,8 +152,36 @@
   </div>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
   name: 'ProfileHeader',
+  data() {
+    return {
+      catalogWarehouseParent: 1,
+      catalog: [],
+      namePathIsNav: null,
+    }
+  },
+  methods: {
+    ...mapActions(['get_opt_catalog_from_api', 'get_opt_warehouse_catalog_from_api']),
+  },
+  mounted() {
+    this.get_opt_warehouse_catalog_from_api()
+    this.get_opt_catalog_from_api()
+  },
+  computed: {
+    ...mapGetters(['optcatalog', 'optcatalogwarehouse']),
+  },
+  watch: {
+    optcatalog: function (newVal) {
+      this.catalog = newVal
+    },
+    optcatalogwarehouse: function (newVal) {
+      this.catalog_warehouse = newVal
+      this.actualCatalog = {}
+    },
+  },
 }
 </script>
 <style></style>
