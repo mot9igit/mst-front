@@ -48,20 +48,6 @@ export default{
           name: "Мои заказы", icon: "d-icon-cart",
         },{
           name: "Мои поставщики", icon: "d-icon-cube",
-        },{
-          name: "test", icon: "d-icon-cube",
-        },{
-          name: "test", icon: "d-icon-cube",
-        },{
-          name: "test", icon: "d-icon-cube",
-        },{
-          name: "test", icon: "d-icon-cube",
-        },{
-          name: "test", icon: "d-icon-cube",
-        },{
-          name: "test", icon: "d-icon-cube",
-        },{
-          name: "test", icon: "d-icon-cube",
         }]
 
       },{

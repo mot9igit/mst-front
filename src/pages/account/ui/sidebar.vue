@@ -98,8 +98,8 @@
               class="d-button d-button-secondary d-button--sm-shadow sidebar__new-organization"
               v-else
             >
-              <i class="d-icon-card-plus sidebar__new-organization-icon"></i>
-              Зарегистрировать компанию
+              <span><i class="d-icon-card-plus sidebar__new-organization-icon"></i>
+              Зарегистрировать компанию</span>
             </div>
 
             <router-link :to="{ name: 'profile' }" class="sidebar__user sidebar__hidden">
@@ -302,4 +302,5 @@ aside {
   align-items: center;
   justify-content: center;
 }
+
 </style>
