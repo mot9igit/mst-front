@@ -14,30 +14,25 @@ import ProfileHeader from './ui/header.vue'
 
 export default {
   name: 'UserAccount',
-  async mounted() {
-    if (localStorage.getItem('user') !== null && localStorage.getItem('user') != 0) {
-      this.setUser(JSON.parse(localStorage.getItem('user')))
+  mounted() {
+    const data = {
+      action: 'get/orgs',
     }
-    if (this.getUser) {
-      const data = {
-        action: 'get/orgs',
-      }
-      this.org_get_from_api(data).then((response) => {
-        if (response != undefined) {
-          const org = localStorage.getItem('global.organization')
-          let i = 0
-          if (org) {
-            const orgs = response.data.data
-            orgs.forEach((element, index) => {
-              if (element.id == org) {
-                i = index
-              }
-            })
-          }
-          this.$router.push({ name: 'purchases', params: { id: response.data.data[i].id } })
+    this.org_get_from_api(data).then((response) => {
+      if (response != undefined) {
+        const org = localStorage.getItem('global.organization')
+        let i = 0
+        if (org) {
+          const orgs = response.data.data
+          orgs.forEach((element, index) => {
+            if (element.id == org) {
+              i = index
+            }
+          })
         }
-      })
-    }
+        this.$router.push({ name: 'purchases', params: { id: response.data.data[i].id } })
+      }
+    })
   },
   computed: {
     ...mapGetters({
