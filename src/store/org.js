@@ -10,6 +10,7 @@ export default {
       if (response) {
         commit('SET_ORG_TO_VUEX', response.data)
       }
+      return response
     },
   },
   mutations: {

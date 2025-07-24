@@ -19,7 +19,9 @@ export default {
     const data = {
       action: 'get/orgs',
     }
-    this.org_get_from_api(data)
+    this.org_get_from_api(data).then((response) => {
+      console.log(response)
+    })
   },
   computed: {
     ...mapGetters({
