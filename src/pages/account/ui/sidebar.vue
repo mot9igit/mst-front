@@ -329,6 +329,24 @@
       <div class="sidebar__bottom">
         <div class="sidebar__divider sidebar__bottom-divider sidebar__hidden"></div>
 
+<<<<<<< HEAD
+						<div
+							class="sidebar__block sidebar__item sidebar__question-block sidebar__question-block--mini"
+						>
+							<button class="sidebar__item-button sidebar__question">
+								<i
+									class="d-icon-question sidebar__item-icon sidebar__question-logo"
+								></i>
+								<span class="sidebar__item-text">Вопросы</span>
+							</button>
+						</div>
+						<div class="sidebar__block sidebar__item sidebar__exit-block sidebar__exit-block--mini">
+							<button class="sidebar__item-button sidebar__exit" @click.prevent="logOut()">
+								<i class="d-icon-exit sidebar__item-icon sidebar__exit-logo"></i>
+								<span class="sidebar__item-text">Выйти</span>
+							</button>
+						</div>
+=======
         <div
           class="sidebar__block sidebar__item sidebar__question-block sidebar__question-block--mini"
         >
@@ -343,12 +361,57 @@
             <span class="sidebar__item-text">Выйти</span>
           </button>
         </div>
+>>>>>>> da993e810ceab1f96eeb780699d073163a8deb49
 
         <button class="sidebar__bottom-block sidebar__question-block sidebar__hidden">
           <i class="d-icon-faq sidebar__bottom-block-icon"></i>
           <span class="sidebar__bottom-block-text">Работа в Закупках</span>
         </button>
 
+<<<<<<< HEAD
+						<button class="sidebar__bottom-block sidebar__exit-block sidebar__hidden" @click.prevent="logOut()">
+							<i class="d-icon-exit sidebar__bottom-block-icon"></i>
+							<span class="sidebar__bottom-block-text">Выйти из ЛК</span>
+						</button>
+					</div>
+    </div>
+    <div class="sidebar__inner sidebar__inner--mobile">
+					<nav class="sidebar__nav">
+						<ul class="sidebar__list">
+							<li class="sidebar__block sidebar__item">
+								<button class="sidebar__item-button" @click.prevent="sidebarToggle()">
+									<i class="d-icon-burger sidebar__item-icon"></i>
+								</button>
+							</li>
+							<li class="sidebar__block sidebar__item">
+								<button class="sidebar__item-button">
+									<i class="d-icon-bell-solid sidebar__item-icon"></i>
+								</button>
+							</li>
+							<li class="sidebar__block sidebar__item">
+								<button class="sidebar__item-button">
+									<i class="d-icon-upload-solid sidebar__item-icon"></i>
+								</button>
+							</li>
+							<li class="sidebar__block sidebar__item sidebar__item--active">
+								<button class="sidebar__item-button">
+									<i class="d-icon-catalog-solid sidebar__item-icon"></i>
+								</button>
+							</li>
+							<li class="sidebar__block sidebar__item">
+								<button class="sidebar__item-button">
+									<i class="d-icon-cart-solid sidebar__item-icon"></i>
+								</button>
+							</li>
+							<li class="sidebar__block sidebar__item">
+								<button class="sidebar__item-button" @click.prevent="logOut()">
+									<img src="/icons/spo-logo.svg" class="sidebar__item-img" />
+								</button>
+							</li>
+						</ul>
+					</nav>
+				</div>
+=======
         <button
           class="sidebar__bottom-block sidebar__exit-block sidebar__hidden"
           @click.prevent="logOut()"
@@ -394,6 +457,7 @@
         </ul>
       </nav>
     </div>
+>>>>>>> da993e810ceab1f96eeb780699d073163a8deb49
   </aside>
   <teleport to="body">
     <customModal v-model="showChangeOrgModal" @cancel="cancel">
@@ -408,6 +472,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import sidebarMenu from './sidebarMenu.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import ChangeOrgWindow from '@/pages/org/ui/ChangeOrgWindow.vue'
 
@@ -421,7 +486,7 @@ export default {
       activeOrganization: {},
     }
   },
-  components: { customModal, ChangeOrgWindow },
+  components: { customModal, ChangeOrgWindow, sidebarMenu },
   computed: {
     ...mapGetters({
       getUser: 'user/getUser',
@@ -495,6 +560,9 @@ export default {
 aside {
   background-color: #ededed;
 }
+<<<<<<< HEAD
+
+=======
 .sidebar__organization .sitebar-avatar-none-char {
   display: inline-block;
   margin: 0 auto;
@@ -508,4 +576,5 @@ aside {
   align-items: center;
   justify-content: center;
 }
+>>>>>>> da993e810ceab1f96eeb780699d073163a8deb49
 </style>

@@ -124,7 +124,8 @@
       padding-inline: var(--sidebar-full-padding-inline);
       width: var(--sidebar-full-width);
 
-      overflow: hidden;
+      /*overflow: hidden;*/
+      overflow-y: scroll;
 
       @media (width <=600px) {
         background-color: #ededed;
