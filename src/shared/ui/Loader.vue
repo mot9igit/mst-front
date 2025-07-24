@@ -43,6 +43,10 @@ export default {
   align-items: center;
   justify-content: center;
   z-index: 100;
+  -webkit-backdrop-filter: blur(22.8px);
+  backdrop-filter: blur(22.8px);
+  will-change: transform;
+  transition-duration: .3s;
   &__content {
     align-items: center;
     display: flex;
