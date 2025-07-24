@@ -31,7 +31,9 @@ export default {
             }
           })
         }
-        this.$router.push({ name: 'purchases', params: { id: response.data.data[i].id } })
+        if (this.$route.name == 'account') {
+          this.$router.push({ name: 'purchases', params: { id: response.data.data[i].id } })
+        }
       }
     })
   },

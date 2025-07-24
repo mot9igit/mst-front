@@ -27,7 +27,10 @@
             <div
               class="sidebar__divider sidebar__divider--light sidebar__user-divider--top sidebar__hidden"
             ></div>
-            <div class="sidebar__block sidebar__organization-block" v-if="this.$route.params.id">
+            <div
+              class="sidebar__block sidebar__organization-block"
+              v-if="this.organizations.length"
+            >
               <button
                 class="sidebar__organization sidebar__organization--mini"
                 v-if="this.activeOrganization"
@@ -35,7 +38,7 @@
                 <img
                   v-if="activeOrganization.image"
                   :src="activeOrganization.image"
-                  alt="SPO"
+                  :alt="activeOrganization.name"
                   class="sidebar__organization-logo"
                 />
                 <div v-else class="sitebar-avatar-none-char">
@@ -85,26 +88,18 @@
                     <span class="sidebar__organization-button-text">Сменить компанию</span>
                   </button>
                 </div>
-                <button
-                  class="d-icon-wrapper sidebar__organization-info-button"
-                  @click.prevent="showChangeOrgModal = true"
-                >
-                  <i class="d-icon-info sidebar__organization-info-button-icon"></i>
-                </button>
               </div>
             </div>
-
-            <div
+            <button
               class="d-button d-button-secondary d-button--sm-shadow sidebar__new-organization"
               v-else
             >
-              <span><i class="d-icon-card-plus sidebar__new-organization-icon"></i>
-              Зарегистрировать компанию</span>
-            </div>
+              <i class="d-icon-card-plus sidebar__new-organization-icon"></i>
+              Зарегистрировать компанию
+            </button>
 
             <router-link :to="{ name: 'profile' }" class="sidebar__user sidebar__hidden">
               <i class="d-icon-profile sidebar__user-icon"></i>
-              {{ console.log(this.getUser) }}
               <span class="sidebar__user-text">{{ this.getUser?.profile?.fullname }}</span>
             </router-link>
 
@@ -232,7 +227,9 @@ export default {
     orgChange(id) {
       localStorage.setItem('global.organization', Number(id))
       this.showChangeOrgModal = false
-      location.reload()
+      if (this.$route.params.id && this.$route.params.id != id) {
+        this.$router.push({ name: 'purchases', params: { id: id } })
+      }
     },
     sidebarToggle() {
       this.active = !this.active
@@ -252,8 +249,8 @@ export default {
       close()
     },
     setOrgs() {
-      console.log(this.getUser)
-      const newVal = this.organizations
+      const newVal = this.orgs
+      this.activeOrganization = null
       if (newVal && this.$route.params.id) {
         const org = newVal.find((el) => el.id === this.$route.params.id)
         if (org) {
@@ -278,9 +275,9 @@ export default {
       this.setOrgs()
     },
     $route() {
-      if (this.$route.params.id) {
-        this.setOrgs()
-      }
+      // if (this.$route.params.id) {
+      this.setOrgs()
+      // }
     },
   },
 }
