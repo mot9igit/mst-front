@@ -144,7 +144,9 @@ export default {
       }
     }
   }
-
+  .d-modal2__header {
+    padding-top: 0;
+  }
   .d-modal2__header,
   .change-organization__modal-content {
     padding-left: 0;
