@@ -1,7 +1,7 @@
 <template>
   <ProfileSidebar></ProfileSidebar>
   <div class="content">
-    <ProfileHeader></ProfileHeader>
+    <ProfileHeader v-if="this.$route.params.id"></ProfileHeader>
     <main class="main">
       <router-view> </router-view>
     </main>
@@ -11,7 +11,6 @@
 import { mapActions, mapGetters } from 'vuex'
 import ProfileSidebar from './ui/sidebar.vue'
 import ProfileHeader from './ui/header.vue'
-import router from '@/router'
 
 export default {
   name: 'UserAccount',
@@ -20,7 +19,19 @@ export default {
       action: 'get/orgs',
     }
     this.org_get_from_api(data).then((response) => {
-      console.log(response)
+      if (response != undefined) {
+        const org = localStorage.getItem('global.organization')
+        let i = 0
+        if (org) {
+          const orgs = response.data.data
+          orgs.forEach((element, index) => {
+            if (element.id == org) {
+              i = index
+            }
+          })
+        }
+        this.$router.push({ name: 'purchases', params: { id: response.data.data[i].id } })
+      }
     })
   },
   computed: {
