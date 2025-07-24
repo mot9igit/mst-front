@@ -51,10 +51,10 @@
       <!-- Список организаций -->
       <div class="change-organization__item-list" v-if="this.organizations">
         <!-- Карточка организации -->
-        <router-link
+        <a
+          href="#"
           v-for="item in this.organizations?.filter((org) => org.id !== this.activeOrganization.id)"
-          :to="{ name: 'account', params: { id: item.id } }"
-          @click="changeOrg"
+          @click.prevent="this.orgChange(item.id)"
           class="change-organization__item"
           v-bind:key="item.id"
         >
@@ -89,9 +89,10 @@
               </p>
             </div>
           </div>
-        </router-link>
+        </a>
       </div>
     </div>
+    <!--
     <div class="d-modal2__actions change-organization__modal-actions">
       <button
         class="d-button d-button-primary d-button-primary-small box-shadow-none d-modal2__action-button"
@@ -99,46 +100,33 @@
         Ок
       </button>
     </div>
+    -->
   </div>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex'
-
 export default {
   name: 'OrgChangeWindow',
+  emits: ['orgChange'],
+  props: {
+    activeOrganization: {
+      type: Object,
+      default() {
+        return {}
+      },
+    },
+    organizations: {
+      type: Array,
+      default() {
+        return []
+      },
+    },
+  },
   data() {
-    return {
-      activeOrganization: {},
-      organization: {},
-      organizations: [],
-    }
+    return {}
   },
-  methods: {},
-  computed: {
-    ...mapGetters({
-      orgs: 'orgs',
-    }),
-  },
-  mounted() {
-    if (this.orgs) {
-      this.organizations = this.orgs
-      const org = this.organizations.find((el) => el.id === this.$route.params.id)
-      if (org) {
-        this.organization = org
-      }
-      this.activeOrganization = this.organizations?.find((org) => org.id === this.$route.params.id)
-    }
-  },
-  watch: {
-    orgs: function (newVal, oldVal) {
-      this.organizations = newVal
-      if (newVal) {
-        const org = newVal.find((el) => el.id === this.$route.params.id)
-        if (org) {
-          this.organization = org
-        }
-      }
-      this.activeOrganization = this.organizations?.find((org) => org.id === this.$route.params.id)
+  methods: {
+    orgChange(id) {
+      this.$emit('orgChange', id)
     },
   },
 }
@@ -147,6 +135,18 @@ export default {
 .change-organization__modal {
   max-width: 100%;
   padding: 0;
+  .change-organization__item-list {
+    gap: 0;
+    .change-organization__item {
+      padding-top: 8px;
+      &:hover {
+        background: #f0f0f0;
+      }
+    }
+  }
+  .d-modal2__header {
+    padding-top: 0;
+  }
   .d-modal2__header,
   .change-organization__modal-content {
     padding-left: 0;
@@ -155,5 +155,36 @@ export default {
   .d-modal2__actions {
     padding-top: 15px;
   }
+  .d-modal2__content {
+    z-index: 9;
+    background: #fff;
+  }
+  .change-organization__item-image-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .change-organization__item-list .sitebar-avatar-none-char {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+}
+.change-organization__item--big .sitebar-avatar-none-char {
+  display: inline-block;
+  margin: 0 auto;
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+  text-transform: uppercase;
+  background: #f0f0f0;
+  color: #343434;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

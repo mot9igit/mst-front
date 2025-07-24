@@ -1,3 +1,5 @@
+import router from '@/router'
+
 export default function (instance) {
   return {
     getOrg(payload) {
@@ -10,7 +12,10 @@ export default function (instance) {
           // TODO: подключить компонент обработки ошибок
           // console.log(err)
           if (err.response) {
-            return false
+            if (err.status == 403) {
+              localStorage.removeItem('user')
+              router.push({ name: 'home' })
+            }
           } else {
             return 'technical error'
           }
