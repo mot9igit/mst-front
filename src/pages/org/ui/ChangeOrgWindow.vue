@@ -15,14 +15,16 @@
             <div v-else class="sitebar-avatar-none-char">
               {{
                 this.activeOrganization?.name
-                  ? this.activeOrganization?.name.startsWith('ИП')
-                    ? this.activeOrganization?.name
-                        .replace(/^ИП\s*/, '')
-                        .split(' ')[0]
-                        .slice(0, 2)
-                        .toUpperCase()
-                    : this.activeOrganization?.name.slice(0, 2).toUpperCase()
-                  : ''
+                      ? this.activeOrganization?.name.startsWith('ИП') || this.activeOrganization?.name.startsWith('ООО')
+                        ? this.activeOrganization?.name
+                            .replace(/^ИП\s*/, '')
+                            .replace(/^ООО\s*/, '')
+                            .replace(/^"\s*/, '')
+                            .split(' ')[0]
+                            .slice(0, 2)
+                            .toUpperCase()
+                        : this.activeOrganization?.name.slice(0, 2).toUpperCase()
+                      :  ''
               }}
             </div>
           </div>

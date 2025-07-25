@@ -44,9 +44,11 @@
                 <div v-else class="sitebar-avatar-none-char">
                   {{
                     this.activeOrganization?.name
-                      ? this.activeOrganization?.name.startsWith('ИП')
+                      ? this.activeOrganization?.name.startsWith('ИП') || this.activeOrganization?.name.startsWith('ООО')
                         ? this.activeOrganization?.name
                             .replace(/^ИП\s*/, '')
+                            .replace(/^ООО\s*/, '')
+                            .replace(/^"\s*/, '')
                             .split(' ')[0]
                             .slice(0, 2)
                             .toUpperCase()
@@ -68,9 +70,11 @@
                 <div v-else class="sitebar-avatar-none-char">
                   {{
                     this.activeOrganization?.name
-                      ? this.activeOrganization?.name.startsWith('ИП')
+                      ? this.activeOrganization?.name.startsWith('ИП') || this.activeOrganization?.name.startsWith('ООО')
                         ? this.activeOrganization?.name
                             .replace(/^ИП\s*/, '')
+                            .replace(/^ООО\s*/, '')
+                            .replace(/^"\s*/, '')
                             .split(' ')[0]
                             .slice(0, 2)
                             .toUpperCase()
@@ -90,12 +94,9 @@
                 </div>
               </div>
             </div>
-            <button
-              class="d-button d-button-secondary d-button--sm-shadow sidebar__new-organization"
-              v-else
-            >
-              <i class="d-icon-card-plus sidebar__new-organization-icon"></i>
-              Зарегистрировать компанию
+            <button class="d-button d-button-secondary d-button--sm-shadow sidebar__new-organization" v-else>
+              <span v-if="active === false"><i class="d-icon-card-plus sidebar__new-organization-icon"></i>Зарегистрировать компанию</span>
+              <span v-else><a href="#" title="Зарегистрировать компанию"><i class="d-icon-plus sidebar__new-organization-icon"></i></a></span>
             </button>
 
             <router-link :to="{ name: 'profile' }" class="sidebar__user sidebar__hidden">
@@ -299,5 +300,39 @@ aside {
   align-items: center;
   justify-content: center;
 }
-
+.sidebar--full .sidebar__organization .sitebar-avatar-none-char {
+  margin: 0 12px 0 0;
+}
+.sidebar--full .sidebar__new-organization:hover {
+    background-color: #f92c0d;
+    color: #fbfbfb;
+    box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.2588235294);
+}
+.sidebar--full .sidebar__new-organization:active {
+    background-color: #fbfbfb;
+    color: #282828;
+    font-weight: 600;
+    box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.2588235294);
+}
+.sidebar--full .sidebar__new-organization{
+  background-color: #fbfbfb;
+    color: #282828;
+    box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.2588235294);
+}
+.sidebar__new-organization:hover {
+    background-color: transparent;
+    color: #f92c0d;
+    box-shadow: none;
+}
+.sidebar__new-organization:active {
+    background-color: transparent;
+    color: #282828;
+    font-weight: 600;
+    box-shadow: none;
+}
+.sidebar__new-organization{
+  background-color: transparent;
+    color: #282828;
+    box-shadow: none;
+}
 </style>
