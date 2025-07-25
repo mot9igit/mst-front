@@ -8,29 +8,44 @@
         </a>
         <div class="sidebar__divider sidebar__divider--light header__logo-divider"></div>
         <div class="header__top">
-          <button class="header__address">
+          <button
+            class="header__address"
+            v-if="orgBasketWarehouse"
+            @click.prevent="showChangeAddressModal = true"
+          >
             <i class="d-icon-location header__address-icon"></i>
             <p class="header__address-title">Склад:</p>
             <div class="header__address-value">
               <p class="header__address-text">
-                Ростов на Дону, ул. Микухина Каланахлоя, 11 / 7 к 32 ЛИТ 898
+                {{
+                  orgBasketWarehouse?.name_short
+                    ? orgBasketWarehouse?.name_short
+                    : orgBasketWarehouse?.name
+                }},
+                {{
+                  orgBasketWarehouse?.address_short
+                    ? orgBasketWarehouse?.address_short
+                    : orgBasketWarehouse?.address
+                }}
               </p>
               <div class="header__address-divider"></div>
               <i class="d-icon-pen header__address-edit-icon"></i>
             </div>
           </button>
-          <div class="header__vendor">
+          <div class="header__vendor" v-if="this.optVendors">
             <span class="header__vendor-title">выбрано поставщиков:</span>
-            <button class="header__vendor-button">
+            <button class="header__vendor-button" @click.prevent="toggleVendor">
               <i class="d-icon-trolley header__vendor-icon"></i>
-              <span class="header__vendor-value">6 из 45</span>
+              <span class="header__vendor-value"
+                >{{ this.optVendors.selected_count }} из {{ this.optVendors.available_count }}</span
+              >
               <i class="d-icon-angle header__vendor-arrow"></i>
             </button>
           </div>
         </div>
         <div class="header__content">
           <div class="header__left">
-            <div class="header__design" :class="{ 'header__design--active': designactive }">
+            <div class="header__design" :class="{ 'header__design--active': designMenuActive }">
               <div class="header__design-block header__design-block--left"></div>
               <div class="header__design-block header__design-block--right"></div>
 
@@ -86,15 +101,17 @@
         </div>
       </div>
       <div class="header__profile-content">
-        <div class="header__vendor">
+        <div class="header__vendor" v-if="this.optVendors">
           <div class="header__vendor-content">
             <span class="header__vendor-title">выбрано поставщиков:</span>
-            <div class="header__vendor-button">
+            <button class="header__vendor-button" @click.prevent="toggleVendor">
               <i class="d-icon-trolley header__vendor-icon"></i>
-              <span class="header__vendor-value">6 из 45</span>
-            </div>
+              <span class="header__vendor-value"
+                >{{ this.optVendors.selected_count }} из {{ this.optVendors.available_count }}</span
+              >
+            </button>
           </div>
-          <button>
+          <button @click.prevent="toggleVendor">
             <i class="d-icon-angle-rounded header__vendor-arrow"></i>
           </button>
         </div>
@@ -150,21 +167,64 @@
       </div>
     </header>
   </div>
+  <teleport to="body">
+    <customModal v-model="showChangeAddressModal" @cancel="cancel">
+      <template v-slot:title>Выбрать склад доставки</template>
+      <Loader v-if="loading.changeBasketStore"></Loader>
+      <changeAddressWindow @setWarehouse="setWarehouse" />
+    </customModal>
+  </teleport>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import Loader from '@/shared/ui/Loader.vue'
+import customModal from '@/shared/ui/Modal.vue'
+import changeAddressWindow from './changeAddressWindow.vue'
+
 export default {
   name: 'ProfileHeader',
   data() {
     return {
-      designactive: false
+      loading: {
+        changeBasketStore: false,
+      },
+      showChangeAddressModal: false,
+      designMenuActive: false,
     }
   },
+  components: { Loader, customModal, changeAddressWindow },
+  mounted() {
+    this.getOrgStores().then(() => {
+      this.getOrgBasketStore()
+      this.getBasket()
+    })
+  },
+  computed: {
+    ...mapGetters(['orgStores', 'basket', 'basketWarehouse', 'optVendors']),
+    orgBasketWarehouse() {
+      return this.orgStores?.items?.find((el) => el.id == this.basketWarehouse)
+    },
+  },
   methods: {
-    toggleMenu(){
-      this.designactive = !this.designactive
-      console.log(this.designactive)
-      this.$emit("toggleCatalog")
-    }
+    ...mapActions(['getOrgStores', 'getOrgBasketStore', 'setOrgBasketStore', 'getBasket']),
+    toggleMenu() {
+      this.designMenuActive = !this.designMenuActive
+      this.$emit('toggleCatalog')
+    },
+    toggleVendor() {
+      this.$emit('toggleVendor')
+    },
+    cancel(close) {
+      close()
+    },
+    setWarehouse(id) {
+      this.loading.changeBasketStore = true
+      this.setOrgBasketStore(id).then(() => {
+        this.getBasket()
+        this.loading.changeBasketStore = false
+        this.showChangeAddressModal = false
+      })
+    },
   },
 }
 </script>

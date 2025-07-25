@@ -2,9 +2,9 @@ import router from '@/router'
 
 export default function (instance) {
   return {
-    getOrg(payload) {
+    getBasket(payload) {
       const data = instance
-        .post('front_org/', payload)
+        .post('front_opt/', payload)
         .then(function (res) {
           return res
         })
@@ -22,7 +22,7 @@ export default function (instance) {
         })
       return data
     },
-    getOptVendors(payload) {
+    setOrgBasketStore(payload) {
       const data = instance
         .post('front_opt/', payload)
         .then(function (res) {
