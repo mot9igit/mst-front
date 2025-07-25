@@ -40,6 +40,7 @@ export default {
 .modal-content {
   position: relative;
   display: flex;
+  overflow: hidden;
   flex-direction: column;
   width: 100%;
   max-width: 700px;
@@ -53,7 +54,6 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
- 
 }
 
 ::v-deep(.modal-container) {
@@ -73,7 +73,6 @@ export default {
   border: 1px solid #e2e8f0;
   border-radius: 0.25rem;
   background: #ffffff;
-  
 }
 .modal__title {
   margin: 0 2rem 0 0;
@@ -115,14 +114,21 @@ export default {
   height: 16px;
 }
 
-
 .dark-mode div ::v-deep(.modal-content) {
   border-color: #2d3748;
   background-color: #1a202c;
 }
-.modal__input{
-  background: -webkit-linear-gradient(270deg, rgb(255,255,255,0.55) 37px,rgb(117,117,117,0.13) 3px);
-  background: -webkit-linear-gradient(270deg, rgba(255, 255, 255, 0.55) 37px, rgba(117, 117, 117, 0.13) 3px);                                     
+.modal__input {
+  background: -webkit-linear-gradient(
+    270deg,
+    rgb(255, 255, 255, 0.55) 37px,
+    rgb(117, 117, 117, 0.13) 3px
+  );
+  background: -webkit-linear-gradient(
+    270deg,
+    rgba(255, 255, 255, 0.55) 37px,
+    rgba(117, 117, 117, 0.13) 3px
+  );
   display: block;
   width: 100%;
   border: 0.2px solid #757575;
@@ -136,27 +142,30 @@ export default {
   color: #282828;
   padding: 11px 15px 9px 15px;
 }
-.modal__input::-webkit-input-placeholder, .modal__input:-moz-placeholder, .modal__input:-ms-input-placeholder,.modal__input::placeholder {
-  color:rgba(117, 117, 117, 1);
+.modal__input::-webkit-input-placeholder,
+.modal__input:-moz-placeholder,
+.modal__input:-ms-input-placeholder,
+.modal__input::placeholder {
+  color: rgba(117, 117, 117, 1);
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
   line-height: 18px;
 }
-.vfm__overlay{
+.vfm__overlay {
   background-color: #ffffff80;
   -webkit-backdrop-filter: blur(22.8px);
   backdrop-filter: blur(22.8px);
   will-change: transform;
-  transition-duration: .3s;
+  transition-duration: 0.3s;
 }
-.vfm__content{
-    -webkit-backdrop-filter: blur(22.8px);
-    backdrop-filter: blur(22.8px);
-    will-change: transform;
-    transition-duration: .3s;
+.vfm__content {
+  -webkit-backdrop-filter: blur(22.8px);
+  backdrop-filter: blur(22.8px);
+  will-change: transform;
+  transition-duration: 0.3s;
 }
-.d-input--error .modal__input{
+.d-input--error .modal__input {
   border-color: #f92c0d;
 }
 </style>
