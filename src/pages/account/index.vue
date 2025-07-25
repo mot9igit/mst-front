@@ -1,19 +1,26 @@
 <template>
   <ProfileSidebar></ProfileSidebar>
   <div class="content">
-    <ProfileHeader v-if="this.$route.params.id"></ProfileHeader>
+    <ProfileHeader v-if="this.$route.params.id" @toggleCatalog="toggleCatalog"></ProfileHeader>
     <main class="main">
       <router-view> </router-view>
     </main>
   </div>
+  <ProfileCatalogMenu :active="toggleMenu"/>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import ProfileSidebar from './ui/sidebar.vue'
 import ProfileHeader from './ui/header.vue'
+import ProfileCatalogMenu from './ui/catalogMenu.vue'
 
 export default {
   name: 'UserAccount',
+  data () {
+    return{
+      toggleMenu: false
+    }
+  },
   mounted() {
     this.getSessionUser()
     const data = {
@@ -49,8 +56,14 @@ export default {
       getSessionUser: 'user/getSessionUser',
       org_get_from_api: 'org_get_from_api',
     }),
+    toggleCatalog(){
+      console.log(this.toggleMenu)
+      this.toggleMenu = !this.toggleMenu
+      console.log(this.toggleMenu)
+    }
+
   },
-  components: { ProfileSidebar, ProfileHeader },
+  components: { ProfileSidebar, ProfileHeader, ProfileCatalogMenu },
 }
 </script>
 <style>

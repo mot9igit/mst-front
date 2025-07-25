@@ -30,11 +30,11 @@
         </div>
         <div class="header__content">
           <div class="header__left">
-            <div class="header__design" data-catalog-design>
+            <div class="header__design" :class="{ 'header__design--active': designactive }">
               <div class="header__design-block header__design-block--left"></div>
               <div class="header__design-block header__design-block--right"></div>
 
-              <button class="d-button d-button-primary header__catalog" data-catalog-toggle>
+              <button class="d-button d-button-primary header__catalog" @click.prevent="toggleMenu">
                 <i class="d-icon-catalog header__catalog-icon"></i>
                 <span class="header__catalog-text">Каталог</span>
               </button>
@@ -152,35 +152,19 @@
   </div>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex'
-
 export default {
   name: 'ProfileHeader',
   data() {
     return {
-      catalogWarehouseParent: 1,
-      catalog: [],
-      namePathIsNav: null,
+      designactive: false
     }
   },
   methods: {
-    ...mapActions(['get_opt_catalog_from_api', 'get_opt_warehouse_catalog_from_api']),
-  },
-  mounted() {
-    this.get_opt_warehouse_catalog_from_api()
-    this.get_opt_catalog_from_api()
-  },
-  computed: {
-    ...mapGetters(['optcatalog', 'optcatalogwarehouse']),
-  },
-  watch: {
-    optcatalog: function (newVal) {
-      this.catalog = newVal
-    },
-    optcatalogwarehouse: function (newVal) {
-      this.catalog_warehouse = newVal
-      this.actualCatalog = {}
-    },
+    toggleMenu(){
+      this.designactive = !this.designactive
+      console.log(this.designactive)
+      this.$emit("toggleCatalog")
+    }
   },
 }
 </script>
