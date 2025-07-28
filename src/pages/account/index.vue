@@ -22,6 +22,12 @@ import changeVendorsWindow from './ui/changeVendorsWindow.vue'
 
 export default {
   name: 'UserAccount',
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       toggleMenu: false,
@@ -80,6 +86,10 @@ export default {
 }
 </script>
 <style>
+header button,
+aside button{
+  color: #282828;
+}
 .content {
   background-color: #ededed;
 }

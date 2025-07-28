@@ -53,36 +53,7 @@
                 <i class="d-icon-catalog header__catalog-icon"></i>
                 <span class="header__catalog-text">Каталог</span>
               </button>
-              <form class="d-search header__search">
-                <input
-                  type="text"
-                  placeholder="Найти у поставщиков"
-                  class="d-search__field header__search-field"
-                />
-                <button
-                  type="submit"
-                  class="d-button d-button-primary d-button-primary-small box-shadow-none d-search__button header__search-button"
-                >
-                  Найти
-                </button>
-                <button type="submit" class="d-search__icon-button header__search-icon-button">
-                  <i class="d-icon-search-big header__icon-button-icon"></i>
-                </button>
-                <ul class="d-search__suggestions">
-                  <!-- <li class="d-search__suggestion">
-													Россия, Москва, Большой Предтеченский переулок, 13с4
-												</li>
-												<li class="d-search__suggestion">
-													Россия, Москва, Большой Предтеченский переулок, 13с4
-												</li>
-												<li class="d-search__suggestion">
-													Россия, Москва, Большой Предтеченский переулок, 13с4
-												</li>
-												<li class="d-search__suggestion">
-													Россия, Москва, Большой Предтеченский переулок, 13с4
-												</li> -->
-                </ul>
-              </form>
+              <SearchField></SearchField>
             </div>
             <button class="d-button d-button-tertiary shadow header__upload">
               <i class="d-icon-upload header__upload-icon"></i>
@@ -179,6 +150,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
+import SearchField from './search.vue'
 import changeAddressWindow from './changeAddressWindow.vue'
 
 export default {
@@ -192,7 +164,8 @@ export default {
       designMenuActive: false,
     }
   },
-  components: { Loader, customModal, changeAddressWindow },
+  emits: ["toggleCatalog", "toggleVendor"],
+  components: { Loader, customModal, changeAddressWindow, SearchField },
   mounted() {
     this.getOrgStores().then(() => {
       this.getOrgBasketStore()

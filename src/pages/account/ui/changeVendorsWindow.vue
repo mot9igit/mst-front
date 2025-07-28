@@ -5,11 +5,11 @@
         <div class="d-sheet__content vendor-change">
           <!-- Яндекс карта -->
           <div class="vendor-change__map">
-            <div class="yandex-map vendor-change__map-image">
+            <div class="yandex-map vendor-change__map-image" v-if="optVendors">
               <yandex-map v-model="map" :settings="mapSettings" height="100%">
                 <yandex-map-default-features-layer />
                 <yandex-map-default-scheme-layer />
-                <yandex-map-clusterer grid-size="64" zoom-on-cluster-click>
+                <yandex-map-clusterer :grid-size="64" zoom-on-cluster-click>
                   <yandex-map-marker
                     v-for="item in optVendors.available"
                     :key="item.id"
@@ -850,6 +850,9 @@ export default {
 }
 </script>
 <style lang="scss">
+.vendor-change__close-button{
+  color: #282828;
+}
 .d-sheet__overlay {
   transition: all 0.2s ease;
   left: auto;
