@@ -112,6 +112,7 @@ export default {
   font-size: 11px;
   width: 16px;
   height: 16px;
+  color: #282828;
 }
 
 .dark-mode div ::v-deep(.modal-content) {

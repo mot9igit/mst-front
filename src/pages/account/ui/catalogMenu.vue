@@ -108,6 +108,7 @@ export default{
 
     }
   },
+  emits: ["toggleCatalog"],
   props: {
     active: {
       type: Boolean,

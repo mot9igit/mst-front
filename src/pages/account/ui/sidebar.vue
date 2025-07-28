@@ -220,7 +220,6 @@ export default {
   },
   methods: {
     ...mapActions({
-      getUser: 'user/getUser',
       setUser: 'user/setUser',
       deleteUser: 'user/deleteUser',
       getSessionUser: 'user/getSessionUser',

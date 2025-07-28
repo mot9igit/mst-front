@@ -1,15 +1,15 @@
 <template>
   <div class="d-sheet__overlay vendor-change__sheet-overlay" :class="{ active: active }">
-    <div class="d-sheet__wrapper vendor-change__sheet-wrapper">
+    <div class="d-sheet__wrapper vendor-change__sheet-wrapper" v-if="optVendors">
       <div class="d-sheet d-sheet--active vendor-change__sheet" data-sheet="vendor-change">
         <div class="d-sheet__content vendor-change">
           <!-- Яндекс карта -->
           <div class="vendor-change__map">
-            <div class="yandex-map vendor-change__map-image">
+            <div class="yandex-map vendor-change__map-image" v-if="optVendors.available">
               <yandex-map v-model="map" :settings="mapSettings" height="100%">
                 <yandex-map-default-features-layer />
                 <yandex-map-default-scheme-layer />
-                <yandex-map-clusterer grid-size="64" zoom-on-cluster-click>
+                <yandex-map-clusterer :grid-size="64" zoom-on-cluster-click>
                   <yandex-map-marker
                     v-for="item in optVendors.available"
                     :key="item.id"
@@ -31,7 +31,7 @@
           <div class="vendor-change__content">
             <!-- Заголовок модалки -->
             <div class="vendor-change__title-container">
-              <h3 class="vendor-change__title">Выбора поставщиков</h3>
+              <h3 class="vendor-change__title">Выбор поставщиков</h3>
               <button class="vendor-change__close-button" @click.prevent="close()">
                 <i class="d-icon-times vendor-change__close-button-icon"></i>
                 <i class="d-icon-angle-rounded-left vendor-change__title-back"></i>
@@ -46,18 +46,22 @@
 
               <div class="vendor-change__selected-list">
                 <!-- Карточка выбранного поставщика -->
-                <div class="vendor-change__selected-item">
+                <div class="vendor-change__selected-item" v-for="(item) in optVendors.selected" :key="item.warehouse_id">
                   <!-- Верхушка -->
                   <div class="vendor-change__selected-item-header">
                     <div class="vendor-change__selected-item-title-container">
                       <div class="vendor-change__selected-item-image-container">
                         <img
-                          src="/icons/spo-logo.svg"
+                          v-if="item.image"
+                          :src="item.image"
                           alt=""
                           class="vendor-change__selected-item-image"
                         />
+                        <span v-else>
+                          {{ item.name.slice(0, 2).toUpperCase() }}
+                        </span>
                       </div>
-                      <p class="vendor-change__selected-item-title">Спец Проф Оборудование</p>
+                      <p class="vendor-change__selected-item-title">{{ item.name }}</p>
                     </div>
 
                     <button class="vendor-change__selected-item-delete-button">
@@ -70,14 +74,14 @@
                     <div class="vendor-change__selected-item-data">
                       <i class="d-icon-location vendor-change__selected-item-data-icon"></i>
                       <p class="vendor-change__selected-item-data-text">
-                        г. Екатеринбург, ул. Предельная, 57/3
+                        {{ item.address }}
                       </p>
                     </div>
 
                     <div class="vendor-change__selected-item-data-container">
                       <div class="vendor-change__selected-item-data">
                         <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
+                        <p class="vendor-change__selected-item-data-text">{{ item.phone }}</p>
                       </div>
 
                       <div
@@ -86,337 +90,7 @@
 
                       <div class="vendor-change__selected-item-data">
                         <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Данные склада -->
-                  <div class="vendor-change__selected-item-footer">
-                    <div class="d-radio__wrapper vendor-change__selected-item-radio-wrapper">
-                      <label for="warehouse1" class="d-radio vendor-change__selected-item-radio">
-                        <input
-                          type="checkbox"
-                          name="warehouse1"
-                          id="warehouse1"
-                          class="d-radio__input"
-                        />
-                      </label>
-                      <label
-                        for="warehouse1"
-                        class="d-radio__label vendor-change__selected-item-radio-label"
-                        >Склад #48, г. Екатеринбург, ул. Предельная, 57/3
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Карточка выбранного поставщика -->
-                <div class="vendor-change__selected-item">
-                  <!-- Верхушка -->
-                  <div class="vendor-change__selected-item-header">
-                    <div class="vendor-change__selected-item-title-container">
-                      <div class="vendor-change__selected-item-image-container">
-                        <img
-                          src="/icons/spo-logo.svg"
-                          alt=""
-                          class="vendor-change__selected-item-image"
-                        />
-                      </div>
-                      <p class="vendor-change__selected-item-title">Спец Проф Оборудование</p>
-                    </div>
-
-                    <button class="vendor-change__selected-item-delete-button">
-                      <i class="d-icon-trash vendor-change__selected-item-delete-icon"></i>
-                    </button>
-                  </div>
-
-                  <!-- Контент с данными -->
-                  <div class="vendor-change__selected-item-content">
-                    <div class="vendor-change__selected-item-data">
-                      <i class="d-icon-location vendor-change__selected-item-data-icon"></i>
-                      <p class="vendor-change__selected-item-data-text">
-                        г. Екатеринбург, ул. Предельная, 57/3
-                      </p>
-                    </div>
-
-                    <div class="vendor-change__selected-item-data-container">
-                      <div class="vendor-change__selected-item-data">
-                        <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                      </div>
-
-                      <div
-                        class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
-                      ></div>
-
-                      <div class="vendor-change__selected-item-data">
-                        <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Данные склада -->
-                  <div class="vendor-change__selected-item-footer">
-                    <div class="d-radio__wrapper vendor-change__selected-item-radio-wrapper">
-                      <label for="warehouse1" class="d-radio vendor-change__selected-item-radio">
-                        <input
-                          type="checkbox"
-                          name="warehouse1"
-                          id="warehouse1"
-                          class="d-radio__input"
-                        />
-                      </label>
-                      <label
-                        for="warehouse1"
-                        class="d-radio__label vendor-change__selected-item-radio-label"
-                        >Склад #48, г. Екатеринбург, ул. Предельная, 57/3
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Карточка выбранного поставщика -->
-                <div class="vendor-change__selected-item">
-                  <!-- Верхушка -->
-                  <div class="vendor-change__selected-item-header">
-                    <div class="vendor-change__selected-item-title-container">
-                      <div class="vendor-change__selected-item-image-container">
-                        <img
-                          src="/icons/spo-logo.svg"
-                          alt=""
-                          class="vendor-change__selected-item-image"
-                        />
-                      </div>
-                      <p class="vendor-change__selected-item-title">Спец Проф Оборудование</p>
-                    </div>
-
-                    <button class="vendor-change__selected-item-delete-button">
-                      <i class="d-icon-trash vendor-change__selected-item-delete-icon"></i>
-                    </button>
-                  </div>
-
-                  <!-- Контент с данными -->
-                  <div class="vendor-change__selected-item-content">
-                    <div class="vendor-change__selected-item-data">
-                      <i class="d-icon-location vendor-change__selected-item-data-icon"></i>
-                      <p class="vendor-change__selected-item-data-text">
-                        г. Екатеринбург, ул. Предельная, 57/3
-                      </p>
-                    </div>
-
-                    <div class="vendor-change__selected-item-data-container">
-                      <div class="vendor-change__selected-item-data">
-                        <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                      </div>
-
-                      <div
-                        class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
-                      ></div>
-
-                      <div class="vendor-change__selected-item-data">
-                        <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Данные склада -->
-                  <div class="vendor-change__selected-item-footer">
-                    <div class="d-radio__wrapper vendor-change__selected-item-radio-wrapper">
-                      <label for="warehouse1" class="d-radio vendor-change__selected-item-radio">
-                        <input
-                          type="checkbox"
-                          name="warehouse1"
-                          id="warehouse1"
-                          class="d-radio__input"
-                        />
-                      </label>
-                      <label
-                        for="warehouse1"
-                        class="d-radio__label vendor-change__selected-item-radio-label"
-                        >Склад #48, г. Екатеринбург, ул. Предельная, 57/3
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Карточка выбранного поставщика -->
-                <div class="vendor-change__selected-item">
-                  <!-- Верхушка -->
-                  <div class="vendor-change__selected-item-header">
-                    <div class="vendor-change__selected-item-title-container">
-                      <div class="vendor-change__selected-item-image-container">
-                        <img
-                          src="/icons/spo-logo.svg"
-                          alt=""
-                          class="vendor-change__selected-item-image"
-                        />
-                      </div>
-                      <p class="vendor-change__selected-item-title">Спец Проф Оборудование</p>
-                    </div>
-
-                    <button class="vendor-change__selected-item-delete-button">
-                      <i class="d-icon-trash vendor-change__selected-item-delete-icon"></i>
-                    </button>
-                  </div>
-
-                  <!-- Контент с данными -->
-                  <div class="vendor-change__selected-item-content">
-                    <div class="vendor-change__selected-item-data">
-                      <i class="d-icon-location vendor-change__selected-item-data-icon"></i>
-                      <p class="vendor-change__selected-item-data-text">
-                        г. Екатеринбург, ул. Предельная, 57/3
-                      </p>
-                    </div>
-
-                    <div class="vendor-change__selected-item-data-container">
-                      <div class="vendor-change__selected-item-data">
-                        <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                      </div>
-
-                      <div
-                        class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
-                      ></div>
-
-                      <div class="vendor-change__selected-item-data">
-                        <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Данные склада -->
-                  <div class="vendor-change__selected-item-footer">
-                    <div class="d-radio__wrapper vendor-change__selected-item-radio-wrapper">
-                      <label for="warehouse1" class="d-radio vendor-change__selected-item-radio">
-                        <input
-                          type="checkbox"
-                          name="warehouse1"
-                          id="warehouse1"
-                          class="d-radio__input"
-                        />
-                      </label>
-                      <label
-                        for="warehouse1"
-                        class="d-radio__label vendor-change__selected-item-radio-label"
-                        >Склад #48, г. Екатеринбург, ул. Предельная, 57/3
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Карточка выбранного поставщика -->
-                <div class="vendor-change__selected-item">
-                  <!-- Верхушка -->
-                  <div class="vendor-change__selected-item-header">
-                    <div class="vendor-change__selected-item-title-container">
-                      <div class="vendor-change__selected-item-image-container">
-                        <img
-                          src="/icons/spo-logo.svg"
-                          alt=""
-                          class="vendor-change__selected-item-image"
-                        />
-                      </div>
-                      <p class="vendor-change__selected-item-title">Спец Проф Оборудование</p>
-                    </div>
-
-                    <button class="vendor-change__selected-item-delete-button">
-                      <i class="d-icon-trash vendor-change__selected-item-delete-icon"></i>
-                    </button>
-                  </div>
-
-                  <!-- Контент с данными -->
-                  <div class="vendor-change__selected-item-content">
-                    <div class="vendor-change__selected-item-data">
-                      <i class="d-icon-location vendor-change__selected-item-data-icon"></i>
-                      <p class="vendor-change__selected-item-data-text">
-                        г. Екатеринбург, ул. Предельная, 57/3
-                      </p>
-                    </div>
-
-                    <div class="vendor-change__selected-item-data-container">
-                      <div class="vendor-change__selected-item-data">
-                        <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                      </div>
-
-                      <div
-                        class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
-                      ></div>
-
-                      <div class="vendor-change__selected-item-data">
-                        <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Данные склада -->
-                  <div class="vendor-change__selected-item-footer">
-                    <div class="d-radio__wrapper vendor-change__selected-item-radio-wrapper">
-                      <label for="warehouse1" class="d-radio vendor-change__selected-item-radio">
-                        <input
-                          type="checkbox"
-                          name="warehouse1"
-                          id="warehouse1"
-                          class="d-radio__input"
-                        />
-                      </label>
-                      <label
-                        for="warehouse1"
-                        class="d-radio__label vendor-change__selected-item-radio-label"
-                        >Склад #48, г. Екатеринбург, ул. Предельная, 57/3
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Карточка выбранного поставщика -->
-                <div class="vendor-change__selected-item">
-                  <!-- Верхушка -->
-                  <div class="vendor-change__selected-item-header">
-                    <div class="vendor-change__selected-item-title-container">
-                      <div class="vendor-change__selected-item-image-container">
-                        <img
-                          src="/icons/spo-logo.svg"
-                          alt=""
-                          class="vendor-change__selected-item-image"
-                        />
-                      </div>
-                      <p class="vendor-change__selected-item-title">Спец Проф Оборудование</p>
-                    </div>
-
-                    <button class="vendor-change__selected-item-delete-button">
-                      <i class="d-icon-trash vendor-change__selected-item-delete-icon"></i>
-                    </button>
-                  </div>
-
-                  <!-- Контент с данными -->
-                  <div class="vendor-change__selected-item-content">
-                    <div class="vendor-change__selected-item-data">
-                      <i class="d-icon-location vendor-change__selected-item-data-icon"></i>
-                      <p class="vendor-change__selected-item-data-text">
-                        г. Екатеринбург, ул. Предельная, 57/3
-                      </p>
-                    </div>
-
-                    <div class="vendor-change__selected-item-data-container">
-                      <div class="vendor-change__selected-item-data">
-                        <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                      </div>
-
-                      <div
-                        class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
-                      ></div>
-
-                      <div class="vendor-change__selected-item-data">
-                        <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
+                        <p class="vendor-change__selected-item-data-text">{{ item.email }}</p>
                       </div>
                     </div>
                   </div>
@@ -492,7 +166,7 @@
               <!-- Список -->
               <div class="vendor-change__selected-list">
                 <!-- Карточка подключенного поставщика -->
-                <div class="vendor-change__connected-item">
+                <div class="vendor-change__connected-item" v-for="(item) in optVendors.available" :key="item.warehouse_id">
                   <!-- Выбор -->
                   <label for="warehouse1" class="d-radio vendor-change__connected-item-radio">
                     <input
@@ -511,15 +185,19 @@
                       >
                         <div class="vendor-change__selected-item-image-container">
                           <img
-                            src="/icons/spo-logo.svg"
+                            v-if="item.image"
+                            :src="item.image"
                             alt=""
                             class="vendor-change__selected-item-image"
                           />
+                          <span v-else>
+                            {{ item.name.slice(0, 2).toUpperCase() }}
+                          </span>
                         </div>
                         <p
                           class="vendor-change__selected-item-title vendor-change__connected-item-title"
                         >
-                          Спец Проф Оборудование
+                          {{ item.name }}
                         </p>
                       </div>
                     </div>
@@ -529,13 +207,13 @@
                       <div class="vendor-change__selected-item-data">
                         <i class="d-icon-location vendor-change__selected-item-data-icon"></i>
                         <p class="vendor-change__selected-item-data-text">
-                          г. Екатеринбург, ул. Предельная, 57/3
+                          {{ item.address }}
                         </p>
                       </div>
                       <div class="vendor-change__selected-item-data-container">
                         <div class="vendor-change__selected-item-data">
                           <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
-                          <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
+                          <p class="vendor-change__selected-item-data-text">{{ item.phone }}</p>
                         </div>
                         <div
                           class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
@@ -543,243 +221,7 @@
 
                         <div class="vendor-change__selected-item-data">
                           <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
-                          <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Карточка подключенного поставщика -->
-                <div class="vendor-change__connected-item">
-                  <!-- Выбор -->
-                  <label for="warehouse1" class="d-radio vendor-change__connected-item-radio">
-                    <input
-                      type="checkbox"
-                      name="warehouse1"
-                      id="warehouse1"
-                      class="d-radio__input"
-                    />
-                  </label>
-
-                  <div class="vendor-change__connected-item-content">
-                    <!-- Верхушка -->
-                    <div class="vendor-change__selected-item-header">
-                      <div
-                        class="vendor-change__selected-item-title-container vendor-change__connected-item-title-container"
-                      >
-                        <div class="vendor-change__selected-item-image-container">
-                          <img
-                            src="/icons/spo-logo.svg"
-                            alt=""
-                            class="vendor-change__selected-item-image"
-                          />
-                        </div>
-                        <p
-                          class="vendor-change__selected-item-title vendor-change__connected-item-title"
-                        >
-                          Спец Проф Оборудование
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Контент с данными -->
-                    <div class="vendor-change__selected-item-content">
-                      <div class="vendor-change__selected-item-data">
-                        <i class="d-icon-location vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">
-                          г. Екатеринбург, ул. Предельная, 57/3
-                        </p>
-                      </div>
-                      <div class="vendor-change__selected-item-data-container">
-                        <div class="vendor-change__selected-item-data">
-                          <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
-                          <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                        </div>
-                        <div
-                          class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
-                        ></div>
-
-                        <div class="vendor-change__selected-item-data">
-                          <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
-                          <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Карточка подключенного поставщика -->
-                <div class="vendor-change__connected-item">
-                  <!-- Выбор -->
-                  <label for="warehouse1" class="d-radio vendor-change__connected-item-radio">
-                    <input
-                      type="checkbox"
-                      name="warehouse1"
-                      id="warehouse1"
-                      class="d-radio__input"
-                    />
-                  </label>
-
-                  <div class="vendor-change__connected-item-content">
-                    <!-- Верхушка -->
-                    <div class="vendor-change__selected-item-header">
-                      <div
-                        class="vendor-change__selected-item-title-container vendor-change__connected-item-title-container"
-                      >
-                        <div class="vendor-change__selected-item-image-container">
-                          <img
-                            src="/icons/spo-logo.svg"
-                            alt=""
-                            class="vendor-change__selected-item-image"
-                          />
-                        </div>
-                        <p
-                          class="vendor-change__selected-item-title vendor-change__connected-item-title"
-                        >
-                          Спец Проф Оборудование
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Контент с данными -->
-                    <div class="vendor-change__selected-item-content">
-                      <div class="vendor-change__selected-item-data">
-                        <i class="d-icon-location vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">
-                          г. Екатеринбург, ул. Предельная, 57/3
-                        </p>
-                      </div>
-                      <div class="vendor-change__selected-item-data-container">
-                        <div class="vendor-change__selected-item-data">
-                          <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
-                          <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                        </div>
-                        <div
-                          class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
-                        ></div>
-
-                        <div class="vendor-change__selected-item-data">
-                          <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
-                          <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Карточка подключенного поставщика -->
-                <div class="vendor-change__connected-item">
-                  <!-- Выбор -->
-                  <label for="warehouse1" class="d-radio vendor-change__connected-item-radio">
-                    <input
-                      type="checkbox"
-                      name="warehouse1"
-                      id="warehouse1"
-                      class="d-radio__input"
-                    />
-                  </label>
-
-                  <div class="vendor-change__connected-item-content">
-                    <!-- Верхушка -->
-                    <div class="vendor-change__selected-item-header">
-                      <div
-                        class="vendor-change__selected-item-title-container vendor-change__connected-item-title-container"
-                      >
-                        <div class="vendor-change__selected-item-image-container">
-                          <img
-                            src="/icons/spo-logo.svg"
-                            alt=""
-                            class="vendor-change__selected-item-image"
-                          />
-                        </div>
-                        <p
-                          class="vendor-change__selected-item-title vendor-change__connected-item-title"
-                        >
-                          Спец Проф Оборудование
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Контент с данными -->
-                    <div class="vendor-change__selected-item-content">
-                      <div class="vendor-change__selected-item-data">
-                        <i class="d-icon-location vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">
-                          г. Екатеринбург, ул. Предельная, 57/3
-                        </p>
-                      </div>
-                      <div class="vendor-change__selected-item-data-container">
-                        <div class="vendor-change__selected-item-data">
-                          <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
-                          <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                        </div>
-                        <div
-                          class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
-                        ></div>
-
-                        <div class="vendor-change__selected-item-data">
-                          <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
-                          <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Карточка подключенного поставщика -->
-                <div class="vendor-change__connected-item">
-                  <!-- Выбор -->
-                  <label for="warehouse1" class="d-radio vendor-change__connected-item-radio">
-                    <input
-                      type="checkbox"
-                      name="warehouse1"
-                      id="warehouse1"
-                      class="d-radio__input"
-                    />
-                  </label>
-
-                  <div class="vendor-change__connected-item-content">
-                    <!-- Верхушка -->
-                    <div class="vendor-change__selected-item-header">
-                      <div
-                        class="vendor-change__selected-item-title-container vendor-change__connected-item-title-container"
-                      >
-                        <div class="vendor-change__selected-item-image-container">
-                          <img
-                            src="/icons/spo-logo.svg"
-                            alt=""
-                            class="vendor-change__selected-item-image"
-                          />
-                        </div>
-                        <p
-                          class="vendor-change__selected-item-title vendor-change__connected-item-title"
-                        >
-                          Спец Проф Оборудование
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Контент с данными -->
-                    <div class="vendor-change__selected-item-content">
-                      <div class="vendor-change__selected-item-data">
-                        <i class="d-icon-location vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">
-                          г. Екатеринбург, ул. Предельная, 57/3
-                        </p>
-                      </div>
-                      <div class="vendor-change__selected-item-data-container">
-                        <div class="vendor-change__selected-item-data">
-                          <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
-                          <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
-                        </div>
-                        <div
-                          class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
-                        ></div>
-
-                        <div class="vendor-change__selected-item-data">
-                          <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
-                          <p class="vendor-change__selected-item-data-text">+ 7 (000) 000-00-00</p>
+                          <p class="vendor-change__selected-item-data-text">{{ item.email }}</p>
                         </div>
                       </div>
                     </div>
@@ -849,7 +291,13 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style lang="scss" scope>
+.d-search__field{
+  background: transparent;
+}
+.vendor-change__close-button{
+  color: #282828;
+}
 .d-sheet__overlay {
   transition: all 0.2s ease;
   left: auto;
