@@ -6,9 +6,11 @@
       @toggleCatalog="toggleCatalog"
       @toggleVendor="toggleVendor"
     ></ProfileHeader>
+    
     <main class="main">
       <router-view> </router-view>
       <changeVendorsWindow :active="this.toggleVendors" @close="changeVendorsWindowClose" />
+
     </main>
   </div>
   <ProfileCatalogMenu :active="toggleMenu" />

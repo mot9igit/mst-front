@@ -227,4 +227,5 @@ export default{
 .catalog__head-item-text{
   text-align: left;
 }
+
 </style>

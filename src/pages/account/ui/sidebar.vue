@@ -86,7 +86,7 @@
                   <span class="sidebar__organization-title">{{ activeOrganization.name }}</span>
                   <button
                     class="d-button d-button-tertiary d-button-tertiary-small sidebar__organization-button"
-                    @click.prevent="showChangeOrgModal = true"
+                    @click.prevent="showChangeOrgModal = true, sidebarToggle()"
                   >
                     <i class="d-icon-refresh sidebar__organization-button-icon"></i>
                     <span class="sidebar__organization-button-text">Сменить компанию</span>
@@ -184,16 +184,17 @@
       </nav>
     </div>
   </aside>
-  <teleport to="body">
+<!-- <teleport to="body">
+  <teleport to="main">--> 
     <customModal v-model="showChangeOrgModal" @cancel="cancel">
-      <template v-slot:title>Смена организации</template>
+      <template v-slot:title></template>
       <ChangeOrgWindow
         :organizations="this.organizations"
         :activeOrganization="this.activeOrganization"
         @orgChange="this.orgChange"
       />
     </customModal>
-  </teleport>
+<!--  </teleport> -->
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -334,4 +335,5 @@ aside {
     color: #282828;
     box-shadow: none;
 }
+
 </style>

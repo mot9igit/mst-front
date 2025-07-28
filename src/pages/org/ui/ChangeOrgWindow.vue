@@ -136,6 +136,7 @@ export default {
 <style lang="scss">
 .change-organization__modal {
   max-width: 100%;
+  width: auto;
   padding: 0;
   .change-organization__item-list {
     gap: 0;
@@ -159,7 +160,8 @@ export default {
   }
   .d-modal2__content {
     z-index: 9;
-    background: #fff;
+    justify-items: flex-start;
+   
   }
   .change-organization__item-image-fallback {
     display: flex;
@@ -188,5 +190,71 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.modal-content {
+    max-width: 1134px;
+    padding:4px 32px 32px 32px;
+}
+.change-organization__item-image-container {
+  margin-right: 16px;
+}
+.change-organization__item-image {
+    object-fit: cover;
+    width: 48px;
+    height: 48px;
+}
+.change-organization__item-title {
+    font-size: 32px;
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 42px;
+    letter-spacing: -0.01em;
+}
+.d-divider--vertical {
+  opacity: 0.5;
+}
+@media (width <= 1920px) {
+    .change-organization__item-active {
+        font-size: 14px;
+        height: 30px;
+    }
+}
+.change-organization__item-active {
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 12px;
+    height: 30px;
+}
+.change-organization__item-data-icon {
+    font-size: 24px;
+}
+.change-organization__item-data-text {
+    font-size: 20px;
+    font-weight: 400;
+}
+.change-organization__item-list .change-organization__item-title {
+    font-size: 24px;
+}
+.change-organization__item-list .change-organization__item-data-text {
+    font-size: 16px;
+    font-weight: 400;
+    
+}
+.change-organization__modal .change-organization__item-list .change-organization__item {
+    padding-top: 16px;
+}
+.change-organization__item-list .change-organization__item-data{
+  padding-bottom: 16px;
+}
+.change-organization__modal .change-organization__item-list {
+    border-bottom: 1px solid #7575757d;
+}
+.vfm__content {
+    -webkit-backdrop-filter: blur(13.4px);
+    backdrop-filter: blur(13.4px);
+}
+.vfm__overlay {
+    -webkit-backdrop-filter: blur(35px);
+    backdrop-filter: blur(35px);
 }
 </style>
