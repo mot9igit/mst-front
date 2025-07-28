@@ -46,7 +46,7 @@
 
               <div class="vendor-change__selected-list">
                 <!-- Карточка выбранного поставщика -->
-                <div class="vendor-change__selected-item" v-for="(item) in optVendors.selected" :key="item.warehouse_id">
+                <div class="vendor-change__selected-item" v-for="(item) in optVendors.selected" :key="item.id">
                   <!-- Верхушка -->
                   <div class="vendor-change__selected-item-header">
                     <div class="vendor-change__selected-item-title-container">
@@ -64,7 +64,7 @@
                       <p class="vendor-change__selected-item-title">{{ item.name }}</p>
                     </div>
 
-                    <button class="vendor-change__selected-item-delete-button">
+                    <button class="vendor-change__selected-item-delete-button" @click.prevent="changeOpts(item.id, 0)">
                       <i class="d-icon-trash vendor-change__selected-item-delete-icon"></i>
                     </button>
                   </div>
@@ -96,20 +96,14 @@
                   </div>
 
                   <!-- Данные склада -->
-                  <div class="vendor-change__selected-item-footer">
-                    <div class="d-radio__wrapper vendor-change__selected-item-radio-wrapper">
-                      <label for="warehouse1" class="d-radio vendor-change__selected-item-radio">
-                        <input
-                          type="checkbox"
-                          name="warehouse1"
-                          id="warehouse1"
-                          class="d-radio__input"
-                        />
-                      </label>
+                  <div class="vendor-change__selected-item-footer" v-if="item.stores">
+                    <div class="d-radio__wrapper vendor-change__selected-item-radio-wrapper" v-for="(store) in item.stores" :key="store.id">
+                      <Checkbox @change="changeStores(item.id, store.id, store.active)" v-model="store.active" :binary="true" :inputId="'store-'+ store.id" :name="'store-'+ store.id"
+                            value="true" />
                       <label
                         for="warehouse1"
                         class="d-radio__label vendor-change__selected-item-radio-label"
-                        >Склад #48, г. Екатеринбург, ул. Предельная, 57/3
+                        >Склад #{{ store.id }}, {{ store.address_short ? store.address_short : store.address }}
                       </label>
                     </div>
                   </div>
@@ -138,6 +132,8 @@
               <form class="d-search d-search--alt vendor-change__connected-search">
                 <input
                   type="text"
+                  v-model="this.filter"
+                  @input="setFilter('filter')"
                   placeholder="Найти по адресу или наименованию склада / поставщика"
                   class="d-search__field vendor-change__connected-search-field"
                 />
@@ -166,16 +162,9 @@
               <!-- Список -->
               <div class="vendor-change__selected-list">
                 <!-- Карточка подключенного поставщика -->
-                <div class="vendor-change__connected-item" v-for="(item) in optVendors.available" :key="item.warehouse_id">
+                <div class="vendor-change__connected-item" v-for="(item) in optVendors.available" :key="item.id">
                   <!-- Выбор -->
-                  <label for="warehouse1" class="d-radio vendor-change__connected-item-radio">
-                    <input
-                      type="checkbox"
-                      name="warehouse1"
-                      id="warehouse1"
-                      class="d-radio__input"
-                    />
-                  </label>
+                  <Checkbox @change="changeSelectCheckbox(item.id)" v-model="vendorForm.selected[item.id]" name="0" :binary="true"/>
 
                   <div class="vendor-change__connected-item-content">
                     <!-- Верхушка -->
@@ -249,7 +238,8 @@ import {
   YandexMapMarker,
   YandexMapClusterer,
 } from 'vue-yandex-maps'
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
+import { Checkbox } from 'primevue'
 
 export default {
   name: 'changeVendorsWindow',
@@ -259,21 +249,28 @@ export default {
       default: false,
     },
   },
+  emits: ['vendorCheck'],
   components: {
     YandexMap,
     YandexMapDefaultSchemeLayer,
     YandexMapDefaultFeaturesLayer,
     YandexMapMarker,
     YandexMapClusterer,
+    Checkbox
   },
   data() {
     return {
+      loading: false,
       map: shallowRef(null),
       mapSettings: {
         location: {
           center: [37.420365, 55.903302],
           zoom: 9,
         },
+      },
+      filter: '',
+      vendorForm: {
+        selected: []
       },
       multisupplier: true,
     }
@@ -285,9 +282,127 @@ export default {
     },
   },
   methods: {
+    ...mapActions({
+      toggleOptsVisible: 'toggleOptsVisible',
+      getOptVendors: 'getOptVendors'
+    }),
     close() {
       this.$emit('close')
     },
+    checkVendor (id) {
+      if (!this.multisupplier) {
+        for (let i = 0; i < this.vendorForm.selected.length; i++) {
+          // if (i !== id) {
+          this.vendorForm.selected[i] = false
+          // }
+        }
+        this.vendorForm.selected[id] = true
+      }
+      if(this.multisupplier) {
+        this.vendorForm.selected[id] = !this.vendorForm.selected[id]
+      }
+    },
+    // Установка чекбокса поставщика
+    changeSelectCheckbox (id) {
+      if (!this.multisupplier) {
+        for (let i = 0; i < this.vendorForm.selected.length; i++) {
+          this.vendorForm.selected[i] = false
+        }
+        this.vendorForm.selected[id] = true
+      }
+    },
+    changeOpts (id, action) {
+      this.loading = true
+      const data = {
+        id: id,
+        action: action,
+      }
+      this.toggleOptsVisible(data).then(() => {
+        this.$emit('vendorCheck')
+        this.loading = false
+      })
+    },
+    setFilter (type) {
+      if (type === 'filter') {
+        if (this.filter.length >= 3 || this.filter.length === 0) {
+          setTimeout(() => {
+            this.loading = true
+            this.getOptVendors({
+              filter: this.filter
+            }).then(() => {
+              this.loading = false
+            })
+          }, 400)
+        }
+      }
+    },
+    changeStores(org_id, store_id, active){
+      console.log(org_id, store_id, active)
+      this.opt_api({
+        action: 'toggle/vendors/stores',
+        active: active,
+        extended_name: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        id: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? router.currentRoute._value.params.id_org_from : router.currentRoute._value.params.id,
+        org_id: org_id,
+        store_id: store_id,
+      }).then((result) => {
+              this.loading = false
+              this.get_opt_vendors_from_api()
+              this.vendorForm.selected = []
+              this.$emit('vendorCheck')
+              this.get_opt_products_from_api({
+                page: 1,
+                perpage: 25
+              });
+            })
+    },
+    checkVendors () {
+      let error = true
+      this.vendorForm.selected.forEach((element) => {
+        if (element) {
+          error = false
+        }
+      })
+      if (!error) {
+        if (!this.multisupplier) {
+          for (let i = 0; i < this.items.selected.length; i++) {
+            const data = {
+              id: this.items.selected[i].id,
+              action: 0,
+              extended_name: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+              store: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? router.currentRoute._value.params.id_org_from : router.currentRoute._value.params.id,
+            }
+            this.toggle_opts_visible(data)
+          }
+        }
+        this.loading = true
+        this.$load(async () => {
+          await this.toggle_opts_visible({
+            action: 1,
+            store: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? router.currentRoute._value.params.id_org_from : router.currentRoute._value.params.id,
+            extended_name: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+            id: this.vendorForm.selected
+          })
+            .then((result) => {
+              this.loading = false
+              this.get_opt_vendors_from_api()
+              this.vendorForm.selected = []
+              this.$emit('vendorCheck')
+              this.get_opt_products_from_api({
+                page: 1,
+                perpage: 25
+              });
+            })
+            .catch((result) => {
+              console.log(result)
+            })
+
+          this.get_opt_warehouse_catalog_from_api();
+        })
+      } else {
+        this.$toast.add({ severity: 'error', summary: 'Укажите поставщиков', detail: 'Для того, чтобы выбрать поставщиков, отметьте флажки рядом с ними', life: 3000 })
+      }
+    }
   },
 }
 </script>
@@ -295,7 +410,8 @@ export default {
 .d-search__field{
   background: transparent;
 }
-.vendor-change__close-button{
+.vendor-change__close-button,
+.vendor-change__selected-item-delete-button{
   color: #282828;
 }
 .d-sheet__overlay {

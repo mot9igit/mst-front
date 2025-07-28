@@ -51,6 +51,23 @@ export default {
       }
       return response
     },
+    async toggleOptsVisible({ commit }, sendData){
+      const data = {
+        action: 'get/vendors',
+        extended_name: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        store: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? router.currentRoute._value.params.id_org_from : router.currentRoute._value.params.id,
+      }
+      if(Object.prototype.hasOwnProperty.call(sendData, 'id')){
+        data.id = sendData.id
+      }
+      if(Object.prototype.hasOwnProperty.call(sendData, 'action')){
+        data.action = sendData.action
+      }
+      if(Object.prototype.hasOwnProperty.call(sendData, 'filter')){
+        data.filter = sendData.filter
+      }
+      await api.org.toggleOptsVisible(data)
+    }
   },
   mutations: {
     SET_ORG: (state, data) => {
