@@ -86,7 +86,7 @@
                   <span class="sidebar__organization-title">{{ activeOrganization.name }}</span>
                   <button
                     class="d-button d-button-tertiary d-button-tertiary-small sidebar__organization-button"
-                    @click.prevent="showChangeOrgModal = true, sidebarToggle()"
+                    @click.prevent="showChangeOrgModal = true"
                   >
                     <i class="d-icon-refresh sidebar__organization-button-icon"></i>
                     <span class="sidebar__organization-button-text">Сменить компанию</span>
@@ -111,7 +111,7 @@
 
           <!-- <div class="sidebar__divider sidebar__nav-divider--top"></div> -->
 
-          <sidebarMenu />
+          <sidebarMenu :toggle="Boolean(active)" @sidebarToggle()="sidebarToggle()"/>
           <div class="sidebar__divider sidebar__bottom-divider sidebar__visible"></div>
         </div>
       </div>
@@ -236,6 +236,7 @@ export default {
       this.active = !this.active
       localStorage.setItem('sidebar.position', Number(this.active))
     },
+
     async logOut() {
       if (this.getUser) {
         await this.$api.auth.logout()
