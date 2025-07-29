@@ -1,4 +1,4 @@
-import api from '@/shared/api'
+import api from '@/shared/api/api'
 import router from '../router'
 
 export default {
@@ -17,7 +17,6 @@ export default {
           data.search = sendData.search
         }
       }
-      console.log(api.addition)
       const response = await api.addition.getVendors(data)
       if (response) {
         commit('SET_VENDORS', response.data)

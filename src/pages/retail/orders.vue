@@ -1,7 +1,15 @@
 <template>
   <div>
-    <h2>Заказы</h2>
+    <div class="d-top">
+      <a class="d-back d-top-back">
+        <i class="d-icon-arrow d-back__icon d-top-back-icon"></i>
+        <span class="d-back__text">Назад</span>
+      </a>
+      <Breadcrumbs />
+    </div>
+    <Loader v-if="loading" />
     <BaseTable
+      v-else
       :items_data="orders.orders"
       :total="orders.total"
       :pagination_items_per_page="this.pagination_items_per_page"
@@ -17,13 +25,26 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
+import Loader from '@/shared/ui/Loader.vue'
 
 export default {
   name: 'RetailOrders',
-  components: { BaseTable },
+  components: { Breadcrumbs, BaseTable, Loader },
+  props: {
+    pagination_items_per_page: {
+      type: Number,
+      default: 5,
+    },
+    pagination_offset: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
     return {
+      loading: true,
       page: 1,
       filters: {
         name: {
@@ -109,19 +130,32 @@ export default {
   methods: {
     ...mapActions({
       getOrders: 'retail/getOrders',
+      unsetOrders: 'retail/unsetOrders',
     }),
     filter(data) {
-      this.getOrders(data)
+      console.log(data)
+      this.loading = true
+      this.unsetOrders()
+      this.page = 1
+      this.getOrders(data).then(() => {
+        this.loading = false
+      })
     },
     paginate(data) {
-      console.log(data)
-      this.getOrders(data)
+      this.loading = true
+      this.unsetOrders()
+      this.page = data.page
+      this.getOrders(data).then(() => {
+        this.loading = false
+      })
     },
   },
   mounted() {
     this.getOrders({
       page: this.page,
       perpage: this.pagination_items_per_page,
+    }).then(() => {
+      this.loading = false
     })
   },
   computed: {

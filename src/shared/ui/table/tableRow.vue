@@ -1,5 +1,5 @@
 <template>
-  <tr v-if="Object.keys(link_row).length === 0">
+  <tr v-if="Object.keys(link_row).length === 0" class="d-table__row">
     <v-table-cell
       v-for="(row, index) in keys"
       :key="index"
@@ -19,7 +19,7 @@
       @editNumber="editNumber"
     />
   </tr>
-  <tr v-else>
+  <tr v-else class="d-table__row">
     <v-table-cell
       v-for="(row, index) in keys"
       :key="index"

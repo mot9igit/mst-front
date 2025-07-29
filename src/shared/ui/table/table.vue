@@ -10,25 +10,18 @@
       </div>
       <slot name="button"></slot>
     </div>
-    <div class="dart-row dart-align-items-center" v-if="show_filter">
-      <div class="d-col-xl-3 d-col-md-4" v-for="(ffilter, i) in filters" :key="i">
+    <div class="dart-row dart-align-items-center dart-mb-1" v-if="show_filter">
+      <div class="d-col-xl-6 d-col-md-4" v-for="(ffilter, i) in filters" :key="i">
         <div class="form_input_group input_pl input-parent required" v-if="ffilter.type == 'text'">
-          <input
-            type="text"
-            id="filter_name"
-            :placeholder="ffilter.placeholder"
-            :name="i"
-            class="dart-form-control"
-            v-model="filter"
-            @input="setFilter('filter')"
-          />
-          <label for="product_filter_name" class="s-complex-input__label">{{
-            ffilter.placeholder
-          }}</label>
-          <div class="form_input_group__icon">
-            <!-- <i class="d_icon d_icon-search"></i> -->
-            <img src="../../assets/images/icons/input-search.svg" alt="" />
-          </div>
+          <FloatLabel>
+            <InputText
+              :id="i"
+              :name="i"
+              v-model="filter"
+              @update:modelValue="setFilter('filter')"
+            />
+            <label for="username">{{ ffilter.placeholder }}</label>
+          </FloatLabel>
         </div>
         <div class="dart-form-group" v-if="ffilter.type == 'select'">
           <!-- <label>{{ ffilter.name }}</label> -->
@@ -145,11 +138,11 @@
     <div class="v-table__widgets">
       <slot name="widgets"></slot>
     </div>
-    <div class="profile-products__products" v-if="total != 0">
-      <table class="profile-table">
-        <thead class="text-center">
-          <tr>
-            <th v-for="(row, index) in table_data" :key="index">
+    <div class="d-table__wrapper" v-if="total != 0">
+      <table class="d-table">
+        <thead class="d-table__head">
+          <tr class="d-table__row">
+            <th v-for="(row, index) in table_data" :key="index" class="d-table__head-col">
               <div v-if="row.type == 'editmode' && this.editMode">
                 <!-- <Checkbox :modelValue="all_check" @update:modelValue="val => all_check = val" :binary="true" /> -->
                 <!-- Удалить этот дублирующий Checkbox -->
@@ -160,8 +153,15 @@
                 />
               </div>
               <div v-else>
-                <a class="sort" :class="sort[index]" v-if="row.sort" @click="sorting(index)">
+                <a class="sort" href="#" v-if="row.sort" @click.prevent="sorting(index)">
                   {{ row.label }}
+                  <span v-if="this.sort[index]">
+                    <mdicon name="sort-ascending" size="18" v-if="this.sort[index].dir == ASC" />
+                    <mdicon name="sort-descending" size="18" v-else />
+                  </span>
+                  <span v-else>
+                    <mdicon name="sort" size="18" />
+                  </span>
                 </a>
                 <span v-else>
                   {{ row.label }}
@@ -171,7 +171,7 @@
           </tr>
         </thead>
 
-        <tbody v-if="total != -1">
+        <tbody v-if="total != -1" class="d-table__body">
           <!-- v-for="row in items_data" -->
           <v-table-row
             v-for="row in localItems"
@@ -200,13 +200,15 @@
           </tr>
         </tbody>
       </table>
-      <div v-if="pagesCount > 1">
+      <div class="d-pagination-wrap" v-if="pagesCount > 1">
         <paginate
           :page-count="pagesCount"
           :click-handler="pagClickCallback"
           :prev-text="'Пред'"
           :next-text="'След'"
-          :container-class="'pagination justify-content-center'"
+          :container-class="'d-pagination d-table__footer-right-pagination'"
+          :page-class="'d-pagination__item'"
+          :active-class="'d-pagination__item--active'"
           :initialPage="this.page"
           :forcePage="this.page"
         >
@@ -226,6 +228,8 @@ import vTableRow from './tableRow.vue'
 // import vTableFilter from './v-table-filter'
 import Paginate from 'vuejs-paginate-next'
 import Calendar from 'primevue/calendar'
+import InputText from 'primevue/inputtext'
+import FloatLabel from 'primevue/floatlabel'
 import TreeSelect from 'primevue/treeselect'
 import Dropdown from 'primevue/dropdown'
 import AutoComplete from 'primevue/autocomplete'
@@ -261,6 +265,8 @@ export default {
     InputNumber,
     Skeleton,
     Checkbox,
+    InputText,
+    FloatLabel,
   },
   props: {
     editMode: {
@@ -523,6 +529,7 @@ export default {
           active: true,
         }
       }
+      console.log(toRaw(this.sort))
       this.$emit('sort', {
         filter: this.filter,
         filtersdata: toRaw(this.filtersdata),
@@ -647,99 +654,58 @@ export default {
 </script>
 
 <style lang="scss">
-.profile-table {
-  thead {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    background: #282828;
-    th {
-      a,
-      span {
-        color: #fff;
+.d-pagination-wrap {
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .d-pagination {
+    gap: 0 5px;
+    .page-item.disabled {
+      opacity: 0.5;
+      a {
+        cursor: not-allowed;
+      }
+    }
+    .d-pagination__item {
+      a {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        line-height: 100%;
+        text-align: center;
       }
     }
   }
 }
-.p-inputnumber-buttons-horizontal {
-  .p-inputtext {
-    border-radius: 0;
-  }
-  .p-inputnumber-button-up {
-    border-radius: 0 6px 6px 0;
-  }
-  .p-inputnumber-button-down {
-    border-radius: 6px 0 0 6px;
-  }
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
-.v-table .profile-content__title {
-  display: flex;
-  width: 100%;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-}
-.v-table .profile-content__title .desc {
-  color: #adadad;
-  display: block;
-  width: 100%;
-  margin-top: 5px;
-  display: block;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1.3;
-  letter-spacing: 0.25px;
-  flex: 0 0 100%;
-  .dart-alert {
-    width: 100%;
-  }
-}
-.p-inputtext,
-.p-treeselect {
-  width: 100%;
-}
-.page-item .page-link {
-  cursor: pointer;
-}
-.sort {
-  cursor: pointer;
-  position: relative;
-  display: inline-block !important;
-  padding-right: 15px;
-  &.active {
-    color: #ff0000;
-  }
-  &::after {
-    content: '\e923';
-    display: inline-block;
-    font-family: 'icomoon' !important;
-    font-size: 14px;
-    color: #fff !important;
+tbody {
+  .d-table__row:first-child::after {
+    content: '';
+    background-color: #757575;
     position: absolute;
-    right: 0;
+    bottom: 0;
+    left: 50%;
+    translate: -50% 0;
+    width: calc(100% - var(--d-table-first-col-padding) * 2);
+    height: 1px;
+  }
+  .d-table__row:first-child .d-table__head-col::before,
+  .d-table__row:first-child .d-table__col::before {
+    content: '';
+    position: absolute;
     top: 50%;
-    width: 11px;
-    text-align: center;
-    transform: translate(0, -50%);
-  }
-  &_asc {
-    position: relative;
-    &::after {
-      content: '🠕';
-      display: inline-block;
-      font-family: sans-serif;
-      color: #fff !important;
-    }
-  }
-  &_desc {
-    position: relative;
-    &::after {
-      content: '🠗';
-      display: inline-block;
-      font-family: sans-serif;
-      color: #282828;
-    }
+    left: 0;
+    translate: 0 -50%;
+    width: 0.5px;
+    height: var(--d-table-col-divider-height);
   }
 }
 </style>

@@ -8,7 +8,11 @@
     ></ProfileHeader>
 
     <main class="main">
-      <router-view> </router-view>
+      <div class="content-wrapper main__content-wrapper">
+        <section class="shipments" id="shipments">
+          <router-view> </router-view>
+        </section>
+      </div>
       <changeVendorsWindow :active="this.toggleVendors" @close="changeVendorsWindowClose" />
     </main>
   </div>
@@ -102,5 +106,7 @@ aside button {
 .content {
   background-color: #ededed;
 }
-
+.text-center {
+  text-align: center;
+}
 </style>

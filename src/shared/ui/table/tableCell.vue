@@ -1,5 +1,5 @@
 <template>
-  <td>
+  <td class="d-table__col">
     <div class="cell_value" v-if="cell_data.type == 'image'">
       <div class="img_abs" v-if="value[cell_key]">
         <img v-if="cell_data.baseurl" :src="value[cell_key]" alt="" />
@@ -78,8 +78,8 @@
       <span v-else>-</span>
     </div>
     <div
-      class="cell_value"
-      :class="cell_key == 'status' ? 'status' : ''"
+      class="cell_value text-center"
+      :class="cell_key == 'cell_status' ? 'cell_status' : ''"
       v-else-if="cell_data.type == 'status'"
     >
       <span

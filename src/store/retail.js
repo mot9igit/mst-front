@@ -6,6 +6,7 @@ export default {
   state: {
     orders: {
       orders: [],
+      total: -1,
     },
   },
   actions: {
@@ -24,10 +25,19 @@ export default {
       }
       return response
     },
+    unsetOrders({ commit }) {
+      commit('UNSET_ORDERS')
+    },
   },
   mutations: {
     SET_ORDERS: (state, data) => {
       state.orders = data.data
+    },
+    UNSET_ORDERS: (state) => {
+      state.orders = {
+        orders: [],
+        total: -1,
+      }
     },
   },
   getters: {
