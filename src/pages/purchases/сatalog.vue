@@ -1,11 +1,9 @@
 <template>
-  <div>
-    <h2>Оптовые продажи</h2>
-  </div>
+  <div>Оптовый каталог</div>
 </template>
 <script>
 export default {
-  name: 'WholesaleMain',
+  name: 'purchasesCatalog',
 }
 </script>
 <style lang="scss"></style>

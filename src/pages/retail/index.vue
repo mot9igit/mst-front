@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Розница</h2>
+    <h2>Розничные продажи</h2>
   </div>
 </template>
 <script>
