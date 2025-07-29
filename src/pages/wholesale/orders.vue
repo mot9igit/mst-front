@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h2>Оптовые продажи</h2>
+    <h2>Отптовые заказы</h2>
   </div>
 </template>
 <script>
 export default {
-  name: 'WholesaleMain',
+  name: 'WholesaleOrders',
 }
 </script>
 <style lang="scss"></style>

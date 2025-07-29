@@ -14,19 +14,21 @@
 
                         <ul class="sidebar__item-list" v-if="item.children">
                           <li class="sidebar__item-list-item" v-for="(subitem, index) in item.children" :key="index">
-                            <a href="/" class="sidebar__item-list-item-content">
+                            <router-link class="sidebar__item-list-item-content" :to="subitem.to">
                               <i class="sidebar__item-list-item-icon d-icon-doc" v-if="subitem.icon == '' || subitem.icon == undefined"></i>
                               <i class="sidebar__item-list-item-icon" v-else :class="subitem.icon"></i>
                               {{ subitem.name }}
-                            </a>
+                            </router-link>
                           </li>
                         </ul>
                       </li>
 
 								</ul>
-							</nav>
+	</nav>
 </template>
 <script>
+import { mapGetters } from 'vuex'
+
 export default{
   name: "sidebarMenu",
   data (){
@@ -38,59 +40,65 @@ export default{
   mounted(){
     this.menu = this.getMenu()
   },
+    computed: {
+    ...mapGetters({
+      getUser: 'user/getUser',
+      orgs: 'orgs',
+    }),
+  },
   methods: {
     getMenu(){
       return [{
         name: "Закупки", icon: "d-icon-cube", collapse: true,
         children: [{
-          name: "Оптовый каталог", icon: "d-icon-doc",
+          name: "Оптовый каталог", icon: "d-icon-doc", to: { name: "purchasesCatalog", params: { id: this.$route.params.id } },
         },{
-          name: "Мои заказы", icon: "d-icon-cart",
+          name: "Мои заказы", icon: "d-icon-cart", to: { name: "purchasesOrders", params: { id: this.$route.params.id } },
         },{
-          name: "Мои поставщики", icon: "d-icon-cube",
+          name: "Мои поставщики", icon: "d-icon-cube", to: { name: "purchasesVendors", params: { id: this.$route.params.id } },
         }]
 
       },{
         name: "Оптовые продажи", icon: "d-icon-bag", collapse: false,
         children: [{
-          name: "Заказы", icon: "d-icon-doc",
+          name: "Заказы", icon: "d-icon-doc", to: { name: "WholesaleMain", params: { id: this.$route.params.id } },
         },{
-          name: "Оптовые цены", icon: "d-icon-cart",
+          name: "Оптовые цены", icon: "d-icon-cart", to: { name: "WholesalePrices", params: { id: this.$route.params.id } },
         },{
-          name: "Клиенты", icon: "d-icon-people",
+          name: "Клиенты", icon: "d-icon-people", to: { name: "WholesaleClients", params: { id: this.$route.params.id } },
         },{
-          name: "Отгрузки", icon: "d-icon-truck",
+          name: "Отгрузки", icon: "d-icon-truck", to: { name: "WholesaleShipments", params: { id: this.$route.params.id } },
         }]
       },{
         name: "Розничные продажи", icon: "d-icon-sales", collapse: false,
 
         children: [{
-          name: "Заказы", icon: "d-icon-doc",
+          name: "Заказы", icon: "d-icon-doc", to: { name: "RetailOrders", params: { id: this.$route.params.id } },
         },{
-          name: "Акции", icon: "d-icon-percent-rounded",
+          name: "Акции", icon: "d-icon-percent-rounded", to: { name: "RetailActions", params: { id: this.$route.params.id } },
         },{
-          name: "Баланс", icon: "d-icon-wallet",
+          name: "Баланс", icon: "d-icon-wallet", to: { name: "RetailBalance", params: { id: this.$route.params.id } },
         },{
-          name: "Сопоставление товаров", icon: "d-icon-shuffle",
+          name: "Сопоставление товаров", icon: "d-icon-shuffle", to: { name: "RetailCompareproducts", params: { id: this.$route.params.id } },
         }]
       },{
         name: "Мой склад", icon: "d-icon-boxes-2", collapse: false,
 
         children: [{
-          name: "Анализ склада", icon: "d-icon-line-chart",
+          name: "Анализ склада", icon: "d-icon-line-chart", to: { name: "WarehouseReview", params: { id: this.$route.params.id } },
         },{
-          name: "Коллекции товара", icon: "d-icon-layers",
+          name: "Коллекции товара", icon: "d-icon-layers", to: { name: "WarehouseProducts", params: { id: this.$route.params.id } },
         },{
-          name: "Настройки склада", icon: "d-icon-conveyor",
+          name: "Настройки склада", icon: "d-icon-conveyor", to: { name: "WarehouseCustomization", params: { id: this.$route.params.id } },
         }]
       },{
         name: "Моя компания", icon: "d-icon-company", collapse: false,
         children: [{
-          name: "Карточка компании", icon: "d-icon-focus",
+          name: "Карточка компании", icon: "d-icon-focus", to: { name: "ProfileCard", params: { id: this.$route.params.id } },
         },{
-          name: "Сотрудники", icon: "d-icon-user",
+          name: "Сотрудники", icon: "d-icon-user", to: { name: "ProfileStuff", params: { id: this.$route.params.id } },
         },{
-          name: "Политики доступа", icon: "d-icon-lock-open",
+          name: "Политики доступа", icon: "d-icon-lock-open", to: { name: "ProfileAccess", params: { id: this.$route.params.id } },
         }]
       }
     ]
