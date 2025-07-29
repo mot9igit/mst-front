@@ -67,14 +67,16 @@
                 <img v-if="item.image" :src="item.image" alt="" />
                 <div v-else class="sitebar-avatar-none-char">
                   {{
-                    item?.name
-                      ? item?.name.startsWith('ИП')
-                        ? item?.name
+                    this.activeOrganization?.name
+                      ? this.activeOrganization?.name.startsWith('ИП') || this.activeOrganization?.name.startsWith('ООО')
+                        ? this.activeOrganization?.name
                             .replace(/^ИП\s*/, '')
+                            .replace(/^ООО\s*/, '')
+                            .replace(/^"\s*/, '')
                             .split(' ')[0]
                             .slice(0, 2)
                             .toUpperCase()
-                        : item?.name.slice(0, 2).toUpperCase()
+                        : this.activeOrganization?.name.slice(0, 2).toUpperCase()
                       : ''
                   }}
                 </div>
@@ -161,7 +163,7 @@ export default {
   .d-modal2__content {
     z-index: 9;
     justify-items: flex-start;
-   
+
   }
   .change-organization__item-image-fallback {
     display: flex;
@@ -238,7 +240,7 @@ export default {
 .change-organization__item-list .change-organization__item-data-text {
     font-size: 16px;
     font-weight: 400;
-    
+
 }
 .change-organization__modal .change-organization__item-list .change-organization__item {
     padding-top: 16px;

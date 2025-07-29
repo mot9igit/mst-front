@@ -423,4 +423,22 @@ export default {
     transition: all 0.2s ease;
   }
 }
+@media (width <= 1920px) {
+    .vendor-change__sheet {
+        padding: 20px;
+        width: 940px;
+    }
+}
+.d-sheet {
+    backdrop-filter: blur(17.5px);
+}
+.d-sheet__wrapper {
+    position: fixed;
+    top: var(--header-height);
+    height: calc(100vh - var(--header-height));
+}
+.vendor-change__content .p-checkbox-checked .p-checkbox-box,.vendor-change__content .p-checkbox-checked:not(.p-disabled):has(.p-checkbox-input:hover) .p-checkbox-box{
+    border-color: rgba(249, 44, 13, 1);
+    background: rgba(249, 44, 13, 1);
+}
 </style>
