@@ -5,6 +5,8 @@ import Account from '../pages/account/index.vue'
 import Purchases from '../pages/purchases/index.vue'
 import Organization from '../pages/org/index.vue'
 import userProfile from '../pages/profile/index.vue'
+import Retail from '../pages/retail/index.vue'
+import RetailOrders from '../pages/retail/orders.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -59,6 +61,26 @@ const router = createRouter({
                   props: true,
                   label: 'Закупки',
                   component: Purchases,
+                },
+                {
+                  path: 'retail',
+                  name: '',
+                  children: [
+                    {
+                      path: '',
+                      name: 'retail',
+                      props: true,
+                      label: 'Розничные продажи',
+                      component: Retail,
+                    },
+                    {
+                      path: 'orders',
+                      name: 'orders',
+                      props: true,
+                      label: 'Заказы',
+                      component: RetailOrders,
+                    },
+                  ],
                 },
               ],
             },

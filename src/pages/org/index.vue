@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'ProfileOrganization',
+  name: 'ProfileMain',
 }
 </script>
 
