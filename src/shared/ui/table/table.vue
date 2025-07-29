@@ -336,7 +336,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getvendors']),
+    ...mapGetters({
+      vendors: 'addition/vendors',
+    }),
     pagesCount() {
       let pages = Math.ceil(this.total / this.per_page)
       if (pages === 0) {
@@ -370,7 +372,9 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['get_vendors_from_api', 'org_get_stores_from_api']),
+    ...mapActions({
+      getVendors: 'addition/getVendors',
+    }),
     checkElem(data) {
       this.$emit('checkElem', data)
     },
@@ -543,12 +547,12 @@ export default {
     },
     searchVendor(event) {
       if (!event.query.trim().length > 2) {
-        this.filteredVendors = [...this.getvendors]
+        this.filteredVendors = [...this.vendors]
       } else {
         const data = {
           search: event.query.trim(),
         }
-        this.filteredVendors = this.get_vendors_from_api(data)
+        this.filteredVendors = this.getVendors(data)
       }
     },
   },
@@ -556,7 +560,7 @@ export default {
     const data = {
       search: '',
     }
-    this.get_vendors_from_api(data).then((this.filteredVendor = this.getvendors))
+    this.getVendors(data).then((this.filteredVendor = this.vendors))
     if (Array.isArray(this.items_data)) {
       this.items_data.forEach((item) => {
         if (typeof item.checked === 'undefined') {
@@ -577,7 +581,7 @@ export default {
     }
   },
   watch: {
-    getvendors: function (newVal) {
+    vendors: function (newVal) {
       // console.log(newVal)
       this.filteredVendor = toRaw(newVal)
       // console.log(this.filteredVendor)

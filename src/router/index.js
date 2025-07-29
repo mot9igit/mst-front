@@ -7,6 +7,7 @@ import Organization from '../pages/org/index.vue'
 import userProfile from '../pages/profile/index.vue'
 import Retail from '../pages/retail/index.vue'
 import RetailOrders from '../pages/retail/orders.vue'
+import RetailOrder from '../pages/retail/order.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -75,10 +76,22 @@ const router = createRouter({
                     },
                     {
                       path: 'orders',
-                      name: 'orders',
-                      props: true,
-                      label: 'Заказы',
-                      component: RetailOrders,
+                      children: [
+                        {
+                          path: '',
+                          name: 'retailOrders',
+                          props: true,
+                          label: 'Заказы',
+                          component: RetailOrders,
+                        },
+                        {
+                          path: ':order_id',
+                          name: 'retailOrder',
+                          props: true,
+                          label: 'Заказы',
+                          component: RetailOrder,
+                        },
+                      ],
                     },
                   ],
                 },
