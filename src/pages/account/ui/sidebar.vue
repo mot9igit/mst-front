@@ -185,7 +185,7 @@
     </div>
   </aside>
 <!-- <teleport to="body">
-  <teleport to="main">--> 
+  <teleport to="main">-->
     <customModal v-model="showChangeOrgModal" @cancel="cancel">
       <template v-slot:title></template>
       <ChangeOrgWindow
@@ -335,5 +335,24 @@ aside {
     color: #282828;
     box-shadow: none;
 }
+.sidebar-container {
+    margin-block: 35px 32px;
+}
+.sidebar__inner {
 
+      z-index: 75;
+}
+.sidebar__user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+
+    background-color: #FFFFFF8C;
+    border-radius: 30px;
+
+    padding: 4px 12px;
+    height: 32px;
+    width: 100%;
+}
 </style>
