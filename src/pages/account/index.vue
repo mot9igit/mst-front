@@ -14,7 +14,6 @@
         </section>
       </div>
       <changeVendorsWindow :active="this.toggleVendors" @close="changeVendorsWindowClose" />
-
     </main>
   </div>
   <ProfileCatalogMenu :active="toggleMenu" />
@@ -31,8 +30,8 @@ export default {
   props: {
     id: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data() {
     return {
@@ -57,7 +56,9 @@ export default {
             }
           })
         }
-        this.getOptVendors().then(() => {})
+        if (this.$route.params.id) {
+          this.getOptVendors().then(() => {})
+        }
         if (this.$route.name == 'account') {
           this.$router.push({ name: 'purchases', params: { id: response.data.data[i].id } })
         }
@@ -89,11 +90,20 @@ export default {
     },
   },
   components: { ProfileSidebar, ProfileHeader, ProfileCatalogMenu, changeVendorsWindow },
+  watch: {
+    '$route.params.id': {
+      handler: function () {
+        if (this.$route.params.id) {
+          this.getOptVendors().then(() => {})
+        }
+      },
+    },
+  },
 }
 </script>
 <style>
 header button,
-aside button{
+aside button {
   color: #282828;
 }
 .content {
