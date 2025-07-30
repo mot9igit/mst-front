@@ -29,8 +29,6 @@ import ProfileCard from '../pages/org/card.vue'
 import ProfileStuff from '../pages/org/staff.vue'
 import ProfileAccess from '../pages/org/access.vue'
 
-
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -89,11 +87,39 @@ const router = createRouter({
                       component: Purchases,
                     },
                     {
-                      path: 'catalog',
+                      path: ':category_id',
                       name: 'purchasesCatalog',
                       props: true,
                       label: 'Оптовый каталог',
                       component: PurchasesCatalog,
+                    },
+                    {
+                      path: 'warehouses/:org_w_id/:warehouse_id',
+                      children: [
+                        {
+                          path: '',
+                          name: 'purchasesCatalogWarehouse',
+                          component: PurchasesCatalog,
+                          label: 'Каталог оптовика',
+                          meta: {
+                            breadcrumb: {
+                              label: 'Каталог оптовика',
+                              link: 'warehouse_id',
+                            },
+                          },
+                        },
+                        {
+                          path: ':warehouse_cat_id',
+                          children: [
+                            {
+                              path: '',
+                              name: 'purchasesCatalogWarehouseCategory',
+                              label: 'Мой оптовик',
+                              component: PurchasesCatalog,
+                            },
+                          ],
+                        },
+                      ],
                     },
                     {
                       path: 'orders',
@@ -151,7 +177,6 @@ const router = createRouter({
                           component: WholesaleOrder,
                         },
                       ],
-
                     },
                     {
                       path: 'prices',
