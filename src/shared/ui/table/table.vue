@@ -689,7 +689,7 @@ thead {
 tbody {
   .d-table__row:first-child::after {
     content: '';
-    background-color: #757575;
+    background-color: #75757575;
     position: absolute;
     bottom: 0;
     left: 50%;
@@ -706,6 +706,10 @@ tbody {
     translate: 0 -50%;
     width: 0.5px;
     height: var(--d-table-col-divider-height);
+  }
+  .d-table__row:first-child .d-table__head-col:not(:first-child)::before,
+  .d-table__row:first-child .d-table__col:not(:first-child)::before {
+    background-color: #75757575;
   }
 }
 </style>
