@@ -2451,7 +2451,7 @@
     &:not(:last-child, :first-child) {
       &::after {
         content: "";
-        background-color: #757575;
+        background-color: #75757575;
         position: absolute;
         bottom: 0;
         left: 50%;
@@ -2468,7 +2468,7 @@
         &:not(:first-child) {
           &::before {
             content: "";
-
+            background-color: #75757575;
             position: absolute;
             top: 50%;
             left: 0;
@@ -2758,7 +2758,7 @@
       &:not(:not(:last-child, :first-child)) {
         &::after {
           content: "";
-          background-color: #757575;
+          background-color: #75757575;
           position: absolute;
           bottom: 0;
           left: 50%;
@@ -3124,7 +3124,7 @@
 
     height: 100%;
     width: 100%;
-    
+
 
     &:has(.d-modal2--active) {
       visibility: visible;

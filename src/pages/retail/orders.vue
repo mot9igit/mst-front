@@ -35,7 +35,7 @@ export default {
   props: {
     pagination_items_per_page: {
       type: Number,
-      default: 5,
+      default: 25,
     },
     pagination_offset: {
       type: Number,
