@@ -40,7 +40,6 @@ export default {
         extended_name:
           router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
       }
-      console.log(data)
       if (sendData) {
         if (Object.prototype.hasOwnProperty.call(sendData, 'filter')) {
           data.filter = sendData.filter

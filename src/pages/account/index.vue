@@ -98,6 +98,11 @@ export default {
         }
       },
     },
+    $route: {
+      handler: function () {
+        this.toggleMenu = false
+      },
+    },
   },
 }
 </script>

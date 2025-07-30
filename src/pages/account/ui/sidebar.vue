@@ -124,7 +124,7 @@
 
           <sidebarMenu
             :toggle="Boolean(active)"
-            @sidebarToggle()="sidebarToggle()"
+            @sidebarToggle="sidebarToggle()"
             v-if="this.$route.params.id"
           />
           <div class="sidebar__divider sidebar__bottom-divider sidebar__visible"></div>
