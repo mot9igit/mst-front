@@ -70,14 +70,14 @@
                       <img src="" class="catalog__item-img" />
                       <p class="catalog__item-title">{{subitem.pagetitle}}</p>
                     </div>
-                    
+
                   </button>
                 </li>
               </ul>
             </div>
 
 				</div>
-        
+
 			</div>
 
 
@@ -142,7 +142,7 @@ export default{
             this.breadcrumbs.push({ id: 1, name: '', child: 0});
             this.activeShowCatalog = i
           }
-          this.stepmenu = 1 
+          this.stepmenu = 1
        }
     },
     ShowPodcatalog(index, pagetitle){
@@ -153,15 +153,15 @@ export default{
           this.catalogListPrevios = this.breadcrumbs[0].name
           this.stepmenu = 2
           this.breadcrumbs.splice(1)
-          this.breadcrumbs.push({ id: 1, name: pagetitle, child: index }); 
+          this.breadcrumbs.push({ id: 1, name: pagetitle, child: index });
       if(this.activeShowCatalog === 1){
         this.childrens = this.catalog[index].children
       }else{
-        this.childrens = this.catalog_warehouse[index].children 
-      }  
+        this.childrens = this.catalog_warehouse[index].children
+      }
     },
     ShowPodcatalogList(index, pagetitle){
-      let parentnumber = this.breadcrumbs.length - 1 
+      let parentnumber = this.breadcrumbs.length - 1
       let thisnumber = this.breadcrumbs.length
       this.catalogListPreviosIndex = this.breadcrumbs.push({id_parent: this.breadcrumbs[parentnumber].child})
       this.catalogListPrevios = this.breadcrumbs[parentnumber].name
@@ -170,9 +170,9 @@ export default{
       this.breadcrumbs.splice(thisnumber)
       this.breadcrumbs.push({ id: thisnumber, name: pagetitle, child: index });
       this.stepmenu++
-          
+
     },
-    catalogNavigation(){
+   catalogNavigation(){
       if(this.breadcrumbs.length < 3){
         this.childrens = []
         this.stepmenu = 1
@@ -187,15 +187,14 @@ export default{
         if(this.activeShowCatalog === 1){
             this.childrens = this.catalog[firstchildrenid].children
           }else{
-            this.childrens = this.catalog_warehouse[firstchildrenid].children 
+            this.childrens = this.catalog_warehouse[firstchildrenid].children
           }
-          console.log(this.breadcrumbs.length)
-        for(let i=1; i<this.breadcrumbs.length; i++){
-          this.catalogListPrevios = this.breadcrumbs[i-1].name
-          this.catalogListName = this.breadcrumbs[i].name
+        //  console.log(this.breadcrumbs.length)
+          this.catalogListPrevios = this.breadcrumbs[parentid-2].name
+          this.catalogListName = this.breadcrumbs[parentid-1].name
+        for(let i=1; i<this.breadcrumbs.length-1; i++){
           let id = this.breadcrumbs[i+1].child
           this.childrens = this.childrens[id].children
-          this.cataloglistShow = true
         }
       }
     }
