@@ -1,35 +1,39 @@
-@use "variables" as *;
-@use "fonts";
-@use "mixins";
-@use "grid";
-@use "ui";
-@use "temp";
+@use 'variables' as *;
+@use 'fonts';
+@use 'mixins';
+@use 'grid';
+@use 'ui';
+@use 'temp';
 
 // pages
-@use "pages/auth";
-@use "pages/registration";
-@use "pages/login";
-@use "pages/base";
-@use "pages/index";
-@use "pages/products";
-@use "pages/vendor-change";
-@use "pages/help";
-@use "pages/change-organization";
-@use "pages/need";
-@use "pages/order";
-@use "pages/basket";
-@use "pages/change-address";
-@use "pages/aviasales";
-@use "pages/shipments";
-@use "pages/clients";
+@use 'pages/auth';
+@use 'pages/registration';
+@use 'pages/login';
+@use 'pages/base';
+@use 'pages/index';
+@use 'pages/products';
+@use 'pages/vendor-change';
+@use 'pages/help';
+@use 'pages/change-organization';
+@use 'pages/need';
+@use 'pages/order';
+@use 'pages/basket';
+@use 'pages/change-address';
+@use 'pages/aviasales';
+@use 'pages/shipments';
+@use 'pages/clients';
+@use 'pages/lk/about';
+@use 'pages/lk/access';
+@use 'pages/lk/staff';
+@use 'pages/profile';
 
-@use "utils";
+@use 'utils';
 
-span[class="d-icon"],
-span[class^="d-icon-"],
-span[class*=" d-icon-"] {
+span[class='d-icon'],
+span[class^='d-icon-'],
+span[class*=' d-icon-'] {
   display: inline-block;
-  font-family: "Iconly" !important;
+  font-family: 'Iconly' !important;
   font-weight: 400;
   font-style: normal;
   font-variant: normal;
@@ -181,7 +185,7 @@ button {
     height: fit-content;
 
     &::before {
-      content: "";
+      content: '';
 
       background-color: #282828;
       border: 1px solid #75757566;

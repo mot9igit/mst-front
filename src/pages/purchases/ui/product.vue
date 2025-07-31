@@ -36,7 +36,13 @@
     </div>
     <div class="products__list-wrapper">
       <div class="products__list" v-if="product.stores">
-        <offer v-for="item in product.stores" :key="item.id" :offer="item" :offerData="product" />
+        <offer
+          v-for="item in product.stores"
+          :key="item.id"
+          :offer="item"
+          :offerData="product"
+          @updateBasket="updateBasket()"
+        />
       </div>
     </div>
   </div>
@@ -46,6 +52,7 @@ import offer from './offer.vue'
 
 export default {
   name: 'productComponent',
+  emits: ['updateBasket'],
   props: {
     product: {
       type: Object,
@@ -55,6 +62,11 @@ export default {
     },
   },
   components: { offer },
+  methods: {
+    updateBasket() {
+      this.$emit('updateBasket')
+    },
+  },
 }
 </script>
 <style lang="scss"></style>

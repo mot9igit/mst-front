@@ -198,12 +198,12 @@ export default {
           name: 'Моя компания',
           icon: 'd-icon-company',
           collapse: false,
-          to: { name: 'profileCard', params: { id: this.$route.params.id } },
+          to: { name: 'organization', params: { id: this.$route.params.id } },
           children: [
             {
               name: 'Карточка компании',
               icon: 'd-icon-focus',
-              to: { name: 'profileCard', params: { id: this.$route.params.id } },
+              to: { name: 'organization', params: { id: this.$route.params.id } },
             },
             {
               name: 'Сотрудники',
