@@ -217,6 +217,15 @@ export default {
 }
 </script>
 <style lang="scss">
+.product-card {
+  width: auto;
+  .product-card__promo {
+    min-width: auto;
+  }
+  .d-badge2 {
+    min-width: auto;
+  }
+}
 .product-card__stat-content--horizontal {
   flex-direction: column;
 }
