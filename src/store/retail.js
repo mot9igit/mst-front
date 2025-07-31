@@ -8,6 +8,7 @@ export default {
       orders: [],
       total: -1,
     },
+    order: {}
   },
   actions: {
     async getOrders({ commit }, { filter, sort, page, perpage }) {
@@ -25,10 +26,25 @@ export default {
       }
       return response
     },
+    async getOrder({ commit }, { order_id }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        order_id: order_id,
+      }
+      const response = await api.retail.getOrders(data)
+      if (response) {
+        commit('SET_ORDER', response.data)
+      }
+      return response
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },
+    unsetOrder({ commit }) {
+      commit('UNSET_ORDER')
+    },
   },
+
   mutations: {
     SET_ORDERS: (state, data) => {
       state.orders = data.data
@@ -39,10 +55,19 @@ export default {
         total: -1,
       }
     },
+    SET_ORDER: (state, data) => {
+      state.order = data.data
+    },
+    UNSET_ORDER: (state) => {
+      state.order = {}
+    },
   },
   getters: {
     orders(state) {
       return state.orders
+    },
+    order(state) {
+      return state.order
     },
   },
 }

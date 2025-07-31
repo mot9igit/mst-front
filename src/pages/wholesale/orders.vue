@@ -53,11 +53,6 @@ export default {
           type: 'text',
         },
       },
-
-
-//Инициатор
-//Покупатель
-
       table_data: {
         id: {
           label: 'Номер',
