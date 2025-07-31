@@ -112,6 +112,28 @@
         </Button>
       </span>
     </div>
+    <div
+      class="cell_value"
+      :class="cell_key == 'actions_order' ? 'actions_order' : ''"
+      v-else-if="cell_data.type == 'actions_order'"
+    >
+
+      <span class="p-buttonset">
+        <Button
+          class="kenostButton std-icon__wrapper"
+          :title="row.label"
+          :label="row.label"
+          :icon="row.icon"
+          v-for="(row, index) in blank.available"
+          :key="index"
+          severity="secondary"
+          text
+          @click="actionElem(index)"
+        >
+          <i :class="row.icon"></i>
+        </Button>
+      </span>
+    </div>
     <div class="cell_value" v-else-if="cell_data.type == 'number'">
       <InputNumber
         v-model="numbers[cell_key]"

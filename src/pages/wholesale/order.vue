@@ -6,55 +6,65 @@
       <span class="d-back__text">Назад</span>
     </a>
       <Breadcrumbs />
-      {{ this.orderId }}
   </div>
   <div class="d-top-order-container">
   <div class="d-top-order-container-left">
     <div>
-      <h2>Заказ номер</h2>
-      <div class="d-top-order-container-date-created">Дата заказа</div>
+      <h2>Заказ № {{ this.$route.params.order_id }}</h2>
+
+      <div class="d-top-order-container-date-created">от {{ order.date }}</div>
     </div>
-    <div class="d-badge2 d-badge2--fit d-button--sm-shadow order-card__status">Cтатус заказа</div>
+    <!--<div class="d-badge2 d-badge2--fit d-button--sm-shadow order-card__status" :style="
+          'background-color: #' +
+          order.status_color
+        "
+      >
+        {{ order.status_name }}</div>-->
+
   </div>
   <div class="d-top-order-container-right">
-    <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>
+   <!-- <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>
     <div class="d-top-order-container-buttons">
     <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs">
       <i class="item-list-item-icon d-icon-doc"></i>
-      <span class="catalog__head-item-text">Место под кнопку или статус</span>
+      <span class="catalog__head-item-text">Место под кнопку Документы или статус</span>
 		</button>
     <button  class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action">
       <span class="catalog__head-item-text">Подтвердить заказ</span>
 		</button>
-    </div>
+    </div>-->
   </div>
   </div>
   <div class="d-top-order-container-info">
       <h3>Информация о заказе</h3>
       <div class="order-card__orderinfo">
         <div class="order-card__orderinfo-grid">
-          <div class="order-card__orderinfo-grid-lable">ФИО покупателя</div>
-          <div class="order-card__orderinfo-grid-text">Данные</div>
+          <div class="order-card__orderinfo-grid-lable">Покупатель</div>
+          <div class="order-card__orderinfo-grid-text">{{
+                                                      this.order?.ur_persone?.name != ''
+                                                        ? this.order?.ur_persone?.name  : '-'}}
+                                                      </div>
         </div>
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Адрес доставки</div>
-          <div class="order-card__orderinfo-grid-text">Данные</div>
+          <div class="order-card__orderinfo-grid-text">{{this.order?.buyer_address != ''
+                                                        ? this.order?.buyer_address  : '-' }}</div>
         </div>
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Номер телефона</div>
-          <div class="order-card__orderinfo-grid-text">Данные</div>
+          <div class="order-card__orderinfo-grid-text">-</div>
         </div>
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Email</div>
-          <div class="order-card__orderinfo-grid-text">Данные</div>
+          <div class="order-card__orderinfo-grid-text">-</div>
         </div>
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Транспортная компания</div>
-          <div class="order-card__orderinfo-grid-text">Данные</div>
+          <div class="order-card__orderinfo-grid-text">-</div>
         </div>
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Тип доставки</div>
-          <div class="order-card__orderinfo-grid-text">Данные</div>
+          <div class="order-card__orderinfo-grid-text">-</div>
         </div>
       </div>
 
@@ -63,7 +73,13 @@
     <h3>Состав заказа</h3>
   <Loader v-if="loading" />
   <BaseTable v-else
-
+      :items_data="order.products"
+      :total="order.cost"
+      :pagination_items_per_page="this.pagination_items_per_page"
+      :pagination_offset="this.pagination_offset"
+      :page="this.page"
+      :table_data="this.table_data"
+      @paginate="paginate"
   />
   </div>
   </div>
@@ -75,146 +91,72 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
 
+
 export default {
   name: 'WholesaleOrder',
   components: { Breadcrumbs, BaseTable, Loader },
-  props: {
-    pagination_items_per_page: {
-      type: Number,
-      default: 25,
-    },
-    pagination_offset: {
-      type: Number,
-      default: 0,
-    },
-  },
   data() {
     return {
       loading: true,
       page: 1,
-      orderId: 0,
-      order: [],
-      filters: {
-        name: {
-          name: 'Наименование, артикул',
-          placeholder: 'Наименование, артикул',
-          type: 'text',
-        },
-      },
       table_data: {
-        id: {
-          label: 'Номер',
-          type: 'link',
-          link_to: 'wholesaleOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
-          sort: true,
+        image: {
+          label: 'Фото',
+          type: 'image',
         },
-        buyer: {
-          label: 'Покупатель',
-          type: 'link',
-          link_to: 'wholesaleOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
+        name: {
+          label: 'Название',
+          type: 'text',
+
         },
-        date: {
-          label: 'Дата',
-          type: 'link',
-          link_to: 'wholesaleOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
-          sort: true,
+        article: {
+          label: 'Артикул',
+          type: 'text',
+
         },
-        cost: {
+        price: {
+          label: 'Стоимость за единицу',
+          type: 'text',
+
+        },
+        count: {
+          label: 'Количество',
+          type: 'text',
+
+        },
+        summ: {
           label: 'Сумма',
-          type: 'link',
-          link_to: 'wholesaleOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
-          sort: true,
-        },
-        initiator: {
-          label: 'Инициатор',
-          type: 'link',
-          link_to: 'wholesaleOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
-          sort: true,
-        },
-        ur_persone_name: {
-          label: 'Покупатель',
-          type: 'link',
-          link_to: 'wholesaleOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
-          sort: true,
-        },
-        seller_w_name: {
-          label: 'Магазин/Склад',
-          type: 'link',
-          link_to: 'wholesaleOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
+          type: 'text',
         },
       },
     }
   },
+
   methods: {
     ...mapActions({
-      getOrders: 'wholesale/getOrders',
-      unsetOrders: 'wholesale/unsetOrders',
+      getOrder: 'wholesale/getOrder',
+      unsetOrder: 'wholesale/unsetOrder',
     }),
-    filter(data) {
-      console.log(data)
-      this.loading = true
-      this.unsetOrders()
-      this.page = 1
-      this.getOrders(data).then(() => {
-        this.loading = false
-      })
-    },
-    paginate(data) {
-      this.loading = true
-      this.unsetOrders()
-      this.page = data.page
-      this.getOrders(data).then(() => {
-        this.loading = false
-      })
-    },
   },
   mounted() {
-    this.getOrders({
-      page: this.page,
-      perpage: this.pagination_items_per_page,
-    }).then(() => {
-      this.loading = false
-    })
+    this.getOrder({
+			order_id: this.$route.params.order_id
+		}).then(() => this.loading = false)
   },
   computed: {
     ...mapGetters({
-      orders: 'wholesale/orders',
-
+      order: 'wholesale/order',
     }),
   },
   watch: {
-
+    order: function(newVal){
+      console.log(newVal)
+    }
   },
 }
 </script>
+
+
 
 <style lang="scss">
 .d-badge2{
@@ -317,7 +259,8 @@ export default {
 }
 .order-card__orderinfo{
   display: flex;
-  align-items: center;
+  position: relative;
+  align-items: start;
   justify-content: space-between;
   margin: 0px;
   gap: 8px;
@@ -327,9 +270,19 @@ export default {
 .order-card__orderinfo-grid{
   margin-bottom: 26px;
   width:100%;
+  height:100%;
+  position: relative;
 }
-.order-card__orderinfo-grid:not(:last-child){
-  border-right: 0.5px solid #75757575;
+.order-card__orderinfo-grid:not(:last-child):before{
+
+    content: '';
+    background-color: rgba(117, 117, 117, 0.4588235294);
+    position: absolute;
+    display: flex;
+    top: 0;
+    right: 0;
+    width: 0.5px;
+    height: 56px;
 }
 .order-card__orderinfo-grid-lable{
   font-style: normal;
