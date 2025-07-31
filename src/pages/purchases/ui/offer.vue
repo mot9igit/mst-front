@@ -90,9 +90,11 @@
       <div class="product-card__content-right">
         <!-- Цена -->
         <div class="product-card__price">
-          <p class="product-card__price-value-discounted">{{ offer.price }} ₽</p>
+          <p class="product-card__price-value-discounted">
+            {{ offer.price.toLocaleString('ru') }} ₽
+          </p>
           <p class="product-card__price-value" v-if="offer.price > offer.min_price.price">
-            {{ offer.min_price.price }}
+            {{ offer.min_price.price.toLocaleString('ru') }}
             <span class="product-card__price-value-suffix">₽</span>
             <span class="product-card__price-label">мин. цена</span>
           </p>
@@ -101,6 +103,7 @@
         <!-- Купить -->
         <button
           class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card__buy"
+          @click="addBasket(offer)"
         >
           <i class="d-icon-cart product-card__buy-icon"></i>
           Купить
@@ -153,8 +156,11 @@
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'productOffer',
+  emits: ['updateBasket'],
   props: {
     offer: {
       type: Object,
@@ -167,6 +173,45 @@ export default {
       default: () => {
         return {}
       },
+    },
+  },
+  computed: {},
+  methods: {
+    ...mapActions({
+      basketProductAdd: 'basket/basketProductAdd',
+    }),
+    addBasket(item) {
+      console.log(item)
+      const data = {
+        org_id: item.org_id,
+        store_id: item.store_id,
+        id_remain: item.id,
+        count: item.basket.count,
+        actions: item.actions,
+      }
+      this.basketProductAdd(data).then(() => {})
+
+      // Убедитесь, что dataLayer существует
+      window.dataLayer = window.dataLayer || []
+
+      // Отправка данных в dataLayer
+      window.dataLayer.push({
+        ecommerce: {
+          currencyCode: 'RUB', // Валюта
+          add: {
+            products: [
+              {
+                id: item.id, // ID товара
+                name: item.name, // Название товара
+                price: item.price, // Цена товара
+                category: item.catalog, // Категория товара
+                quantity: item.basket.count, // Количество товара
+              },
+            ],
+          },
+        },
+      })
+      this.$emit('updateBasket')
     },
   },
 }

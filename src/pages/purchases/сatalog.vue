@@ -129,7 +129,12 @@
       </div>
     </div>
   </div>
-  <product v-for="item in opt_products.items" :key="item.id" :product="item" />
+  <product
+    v-for="item in opt_products.items"
+    :key="item.id"
+    :product="item"
+    @updateBasket="updateBasket()"
+  />
   <div class="d-pagination-wrap" v-if="pagesCount > 1">
     <paginate
       :page-count="pagesCount"
@@ -207,7 +212,11 @@ export default {
   methods: {
     ...mapActions({
       getOptProducts: 'catalog/getOptProducts',
+      getBasket: 'basket/getBasket',
     }),
+    updateBasket() {
+      this.getBasket()
+    },
     updatePage(order_id) {
       this.order_id = order_id
       this.page = 1

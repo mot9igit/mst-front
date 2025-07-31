@@ -164,7 +164,7 @@ export default {
       designMenuActive: false,
     }
   },
-  emits: ["toggleCatalog", "toggleVendor"],
+  emits: ['toggleCatalog', 'toggleVendor'],
   components: { Loader, customModal, changeAddressWindow, SearchField },
   mounted() {
     this.getOrgStores().then(() => {
@@ -173,13 +173,23 @@ export default {
     })
   },
   computed: {
-    ...mapGetters(['orgStores', 'basket', 'basketWarehouse', 'optVendors']),
+    ...mapGetters({
+      orgStores: 'orgStores',
+      basket: 'basket/basket',
+      basketWarehouse: 'basket/basketWarehouse',
+      optVendors: 'optVendors',
+    }),
     orgBasketWarehouse() {
       return this.orgStores?.items?.find((el) => el.id == this.basketWarehouse)
     },
   },
   methods: {
-    ...mapActions(['getOrgStores', 'getOrgBasketStore', 'setOrgBasketStore', 'getBasket']),
+    ...mapActions({
+      getOrgStores: 'getOrgStores',
+      getOrgBasketStore: 'basket/getOrgBasketStore',
+      setOrgBasketStore: 'basket/setOrgBasketStore',
+      getBasket: 'basket/getBasket',
+    }),
     toggleMenu() {
       this.designMenuActive = !this.designMenuActive
       this.$emit('toggleCatalog')

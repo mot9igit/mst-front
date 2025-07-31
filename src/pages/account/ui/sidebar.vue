@@ -132,7 +132,7 @@
       </div>
       <div class="sidebar__bottom">
         <div class="sidebar__divider sidebar__bottom-divider sidebar__hidden"></div>
-
+        <!--
         <div
           class="sidebar__block sidebar__item sidebar__question-block sidebar__question-block--mini"
         >
@@ -141,18 +141,19 @@
             <span class="sidebar__item-text">Вопросы</span>
           </button>
         </div>
+        -->
         <div class="sidebar__block sidebar__item sidebar__exit-block sidebar__exit-block--mini">
           <button class="sidebar__item-button sidebar__exit" @click.prevent="logOut()">
             <i class="d-icon-exit sidebar__item-icon sidebar__exit-logo"></i>
             <span class="sidebar__item-text">Выйти</span>
           </button>
         </div>
-
+        <!--
         <button class="sidebar__bottom-block sidebar__question-block sidebar__hidden">
           <i class="d-icon-faq sidebar__bottom-block-icon"></i>
           <span class="sidebar__bottom-block-text">Работа в Закупках</span>
         </button>
-
+        -->
         <button
           class="sidebar__bottom-block sidebar__exit-block sidebar__hidden"
           @click.prevent="logOut()"
@@ -197,6 +198,9 @@
           </li>
         </ul>
       </nav>
+    </div>
+    <div class="version-bar">
+      <span @click="copyVersion()" id="#version">v. {{ version }}</span>
     </div>
   </aside>
   <!-- <teleport to="body">
@@ -299,9 +303,30 @@ export default {
   },
 }
 </script>
-<style>
+<style lang="scss">
 aside {
+  position: relative;
   background-color: #ededed;
+  padding-bottom: 20px;
+  &.sidebar--full .version-bar {
+    display: block;
+  }
+  .version-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 5px 20px;
+    text-align: center;
+    z-index: 75;
+    display: none;
+    span {
+      display: block;
+      font-size: 12px;
+      color: #bbb;
+    }
+  }
 }
 .sidebar__organization .sitebar-avatar-none-char {
   display: inline-block;

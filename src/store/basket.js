@@ -2,6 +2,7 @@ import api from '@/shared/api/api'
 import router from '@/router'
 
 export default {
+  namespaced: true,
   state: {
     basket: {},
     orgBasketStore: 0,
@@ -21,6 +22,61 @@ export default {
       if (response) {
         commit('SET_BASKET', response.data)
       }
+      return response
+    },
+    async basketProductRemove({ commit }, { org_id, store_id, key, product }) {
+      const data = {
+        action: 'basket/remove',
+        extended_name:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        id:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+            ? router.currentRoute._value.params.id_org_from
+            : router.currentRoute._value.params.id,
+        org_id: org_id,
+        store_id: store_id,
+        key: key,
+        product: product,
+      }
+      const response = await api.basket.basketProductRemove(data)
+      return response
+    },
+    async basketProductAdd({ commit }, { org_id, store_id, id_remain, count, actions }) {
+      const data = {
+        action: 'basket/add',
+        extended_name:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        id:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+            ? router.currentRoute._value.params.id_org_from
+            : router.currentRoute._value.params.id,
+
+        org_id: org_id,
+        store_id: store_id,
+        id_remain: id_remain,
+        count: count,
+        actions: actions,
+      }
+      const response = await api.basket.basketProductAdd(data)
+      return response
+    },
+    async basketProductUpdate({ commit }, { org_id, store_id, key, id_remain, count, actions }) {
+      const data = {
+        action: 'basket/update',
+        extended_name:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        id:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+            ? router.currentRoute._value.params.id_org_from
+            : router.currentRoute._value.params.id,
+        org_id: org_id,
+        store_id: store_id,
+        id_remain: id_remain,
+        count: count,
+        key: key,
+        actions: actions,
+      }
+      const response = await api.basket.basketProductUpdate(data)
       return response
     },
     async setOrgBasketStore({ commit }, id) {
@@ -52,7 +108,7 @@ export default {
   },
   mutations: {
     SET_BASKET: (state, data) => {
-      state.orgs = data.data
+      state.basket = data.data.data
     },
     SET_ORG_BASKET_STORE: (state, data) => {
       state.orgBasketStore = data.data

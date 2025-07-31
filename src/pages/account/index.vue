@@ -13,6 +13,7 @@
           <router-view> </router-view>
         </section>
       </div>
+      <ProfileCart @cartUpdate="cartUpdate()" />
       <changeVendorsWindow :active="this.toggleVendors" @close="changeVendorsWindowClose" />
     </main>
   </div>
@@ -23,6 +24,7 @@ import { mapActions, mapGetters } from 'vuex'
 import ProfileSidebar from './ui/sidebar.vue'
 import ProfileHeader from './ui/header.vue'
 import ProfileCatalogMenu from './ui/catalogMenu.vue'
+import ProfileCart from './ui/cart.vue'
 import changeVendorsWindow from './ui/changeVendorsWindow.vue'
 
 export default {
@@ -69,6 +71,8 @@ export default {
     ...mapGetters({
       orgs: 'orgs',
       optVendors: 'optVendors',
+      basket: 'basket/basket',
+      basketWarehouse: 'basket/basketWarehouse',
     }),
   },
   methods: {
@@ -76,6 +80,8 @@ export default {
       setUser: 'user/setUser',
       deleteUser: 'user/deleteUser',
       getSessionUser: 'user/getSessionUser',
+      getOrgBasketStore: 'basket/getOrgBasketStore',
+      getBasket: 'basket/getBasket',
       getOrg: 'getOrg',
       getOptVendors: 'getOptVendors',
     }),
@@ -88,8 +94,25 @@ export default {
     changeVendorsWindowClose() {
       this.toggleVendors = false
     },
+    cartUpdate() {
+      this.getBasket()
+    },
+    copyVersion() {
+      var range = document.createRange()
+      range.selectNode(document.getElementById('version'))
+      window.getSelection().removeAllRanges() // clear current selection
+      window.getSelection().addRange(range) // to select text
+      document.execCommand('copy')
+      window.getSelection().removeAllRanges() // to deselect
+    },
   },
-  components: { ProfileSidebar, ProfileHeader, ProfileCatalogMenu, changeVendorsWindow },
+  components: {
+    ProfileSidebar,
+    ProfileHeader,
+    ProfileCatalogMenu,
+    ProfileCart,
+    changeVendorsWindow,
+  },
   watch: {
     '$route.params.id': {
       handler: function () {
@@ -106,7 +129,7 @@ export default {
   },
 }
 </script>
-<style>
+<style lang="scss">
 header button,
 aside button {
   color: #282828;
