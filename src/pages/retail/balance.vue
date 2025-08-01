@@ -86,21 +86,31 @@
 				<div class="balance-info__label">Доступная сумма для вывода:</div>
 				<div class="balance-info__value">{{ orgActive.balance != '' ? orgActive.balance : '0'}} ₽</div>
         <div class="balance-info__label">Сумма для вывода:</div>
+        <form class="balance-form__modal"  @submit.prevent="formSubmit()">
         <input
-          type="text"
+          type="number"
+          min = "0"
+          :max = "orgActive.balance"
           name="summEntered"
           class="modal__input balance-form__input"
+          :class="{ 'd-input--error': v$.form.summEntered.$error }"
           placeholder="0"
-          v-model="summEntered"
+          v-model="form.summEntered"
         />
+        <div v-if="v$.form.summEntered.$error" class="d-input-error">
+            {{ console.log(v$.form.summEntered) }}
+            <i class="d-icon-warning d-input-error__icon"></i>
+            <span v-if="v$.form.summEntered.required" class="d-input-error__text"
+              >Пожалуйста, введите корректную сумму для вывода</span>
+          </div>
         <button
 						type="submit"
 						href="#"
 						class="d-button d-button-primary d-button-primary-small d-button--sm-shadow balance-info__button"
-						@click.prevent=""
 				>
           Ok
         </button>
+      </form>
 			</div>
     </customModal>
   </teleport>
@@ -112,6 +122,8 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
+import { required } from '@vuelidate/validators'
+import useVuelidate from '@vuelidate/core'
 
 export default {
   name: 'RetailBalance',
@@ -122,6 +134,10 @@ export default {
       page_balance: 1,
       page_balance_request: 1,
       nowDate: '',
+      form: {
+        summEntered: '',
+      },
+      errors: [],
       table_data_balance: {
 				date: {
 					label: "Дата",
@@ -200,6 +216,38 @@ export default {
       let nowYear = date.getFullYear()
       this.nowDate = nowDay + '.' + nowMonth + '.' + nowYear;
     },
+    clearField() {
+      this.form.summEntered = ''
+    },
+    formSubmit(event) {
+      this.v$.$touch() // Отмечаем все поля как проверенные
+      if (this.v$.$invalid) {
+        const errorMessage = this.getErrorMessages()
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: errorMessage,
+          life: 3000,
+        })
+        return
+      }
+
+			//const result = !isNaN(this.costEntered) && this.costEntered > 0;
+
+			//console.log('this.costEntered > orgActive.balance', Number(this.costEntered) > Number(this.orgActive.balance))
+			//console.log(Number(this.costEntered), Number(this.orgActive.balance))
+
+			//if(Number(this.costEntered) > Number(this.orgActive.balance)){
+			//	this.$v.add({ severity: 'error', summary: 'Ошибка', detail: "Вы ввели не корректную сумму для вывода!", life: 3000 });
+			//	return;
+			//}
+
+			//if (!result) {
+			//	console.log(result);
+			//	return;
+			//}
+		},
+
   },
   mounted() {
     this.getBalance({
@@ -224,8 +272,18 @@ export default {
     }),
   },
   watch: {
-    orgActive: function(newVal){
-      this.orgActive = newVal
+
+  },
+  setup() {
+    return { v$: useVuelidate() }
+  },
+  validations() {
+    return {
+      form: {
+        summEntered: {
+          required,
+        },
+      },
     }
   },
 }
@@ -409,6 +467,11 @@ export default {
 .balance-form__modal .modal-content .d-button{
   max-width: 112px;
   margin: 40px auto 0
+}
+.balance-form__modal .modal-content input::-webkit-outer-spin-button,
+.balance-form__modal .modal-content input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 @media (width <= 1920px) {
 .balance-info__container{
