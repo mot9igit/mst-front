@@ -189,7 +189,9 @@ export default {
         count: item.basket.count,
         actions: item.actions,
       }
-      this.basketProductAdd(data).then(() => {})
+      this.basketProductAdd(data).then(() => {
+        this.$emit('updateBasket')
+      })
 
       // Убедитесь, что dataLayer существует
       window.dataLayer = window.dataLayer || []
@@ -211,7 +213,6 @@ export default {
           },
         },
       })
-      this.$emit('updateBasket')
     },
   },
 }

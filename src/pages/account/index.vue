@@ -16,10 +16,12 @@
       </div>
       <ProfileCart
         @cartUpdate="cartUpdate()"
-        @toggleCart="toggleCart"
+        @toggleCart="toggleCart()"
+        @toggleOrder="toggleOrder()"
         :active="toggleShoppingCart"
       />
-      <changeVendorsWindow :active="this.toggleVendors" @close="changeVendorsWindowClose" />
+      <changeVendorsWindow :active="this.toggleVendors" @close="changeVendorsWindowClose()" />
+      <OrderWindow :active="this.toggleOrderWindow" @close="changeOrderWindowClose()" />
     </main>
   </div>
   <ProfileCatalogMenu :active="toggleMenu" />
@@ -31,6 +33,7 @@ import ProfileHeader from './ui/header.vue'
 import ProfileCatalogMenu from './ui/catalogMenu.vue'
 import ProfileCart from './ui/cart.vue'
 import changeVendorsWindow from './ui/changeVendorsWindow.vue'
+import OrderWindow from './ui/orderWindow.vue'
 
 export default {
   name: 'UserAccount',
@@ -53,6 +56,7 @@ export default {
       toggleMenu: false,
       toggleVendors: false,
       toggleShoppingCart: false,
+      toggleOrderWindow: false,
     }
   },
   mounted() {
@@ -108,8 +112,15 @@ export default {
     toggleCart() {
       this.toggleShoppingCart = !this.toggleShoppingCart
     },
+    toggleOrder() {
+      this.toggleShoppingCart = false
+      this.toggleOrderWindow = !this.toggleOrderWindow
+    },
     changeVendorsWindowClose() {
       this.toggleVendors = false
+    },
+    changeOrderWindowClose() {
+      this.toggleOrderWindow = false
     },
     cartUpdate() {
       this.getBasket()
@@ -117,10 +128,10 @@ export default {
     copyVersion() {
       var range = document.createRange()
       range.selectNode(document.getElementById('version'))
-      window.getSelection().removeAllRanges() // clear current selection
-      window.getSelection().addRange(range) // to select text
+      window.getSelection().removeAllRanges()
+      window.getSelection().addRange(range)
       document.execCommand('copy')
-      window.getSelection().removeAllRanges() // to deselect
+      window.getSelection().removeAllRanges()
     },
   },
   components: {
@@ -128,6 +139,7 @@ export default {
     ProfileHeader,
     ProfileCatalogMenu,
     ProfileCart,
+    OrderWindow,
     changeVendorsWindow,
   },
   watch: {

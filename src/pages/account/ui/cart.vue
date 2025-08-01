@@ -149,7 +149,6 @@ export default {
       this.$emit('toggleCart')
     },
     toggleOrder() {
-      this.$emit('toggleCart')
       this.$emit('toggleOrder')
     },
     clearBasketProduct(org_id, store_id, key, product) {
