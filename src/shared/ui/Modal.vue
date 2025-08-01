@@ -132,7 +132,7 @@ export default {
   );
   display: block;
   width: 100%;
-  border: 0.2px solid #757575;
+  border: 0.2px solid #75757575;
   border-radius: 6px;
   height: 40px;
   font-style: normal;

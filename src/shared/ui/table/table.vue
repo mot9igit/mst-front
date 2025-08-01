@@ -711,5 +711,19 @@ tbody {
   .d-table__row:first-child .d-table__col:not(:first-child)::before {
     background-color: #75757575;
   }
+  .d-table__row:not(:last-child, :first-child)::after {
+    content: "";
+    background-color: #75757575;
+  }
+  &:not(:first-child) {
+      .d-table__head-col,
+      .d-table__col {
+        &:not(:first-child) {
+          &::before {
+            background-color: #75757575;
+          }
+        }
+      }
+    }
 }
 </style>

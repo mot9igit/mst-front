@@ -8,7 +8,9 @@ export default {
       orders: [],
       total: -1,
     },
-    order: {}
+    order: {},
+    balance: {},
+    balance_request: {},
   },
   actions: {
     async getOrders({ commit }, { filter, sort, page, perpage }) {
@@ -37,6 +39,35 @@ export default {
       }
       return response
     },
+    async getBalance({ commit }, { page, perpage }) {
+      const data = {
+
+        id: router.currentRoute._value.params.id,
+        type: 'balance',
+        page: page,
+        perpage: perpage,
+      }
+      const response = await api.retail.getBalance(data)
+      if (response) {
+        commit('SET_BALANCE', response.data)
+      }
+      return response
+    },
+    async getBalanceRequest({ commit }, { page, perpage }) {
+      const data = {
+
+        id: router.currentRoute._value.params.id,
+        type: 'balance_requests',
+        page: page,
+        perpage: perpage,
+      }
+      const response = await api.retail.getBalanceRequest(data)
+      if (response) {
+        commit('SET_BALANCE_REQUEST', response.data)
+      }
+      return response
+    },
+
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },
@@ -61,6 +92,12 @@ export default {
     UNSET_ORDER: (state) => {
       state.order = {}
     },
+    SET_BALANCE: (state, data) => {
+      state.balance = data.data
+    },
+    SET_BALANCE_REQUEST: (state, data) => {
+      state.balance_request = data.data
+    },
   },
   getters: {
     orders(state) {
@@ -68,6 +105,12 @@ export default {
     },
     order(state) {
       return state.order
+    },
+    balance(state) {
+      return state.balance
+    },
+    balance_request(state) {
+      return state.balance_request
     },
   },
 }

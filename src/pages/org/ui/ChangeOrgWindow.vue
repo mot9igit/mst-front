@@ -252,11 +252,11 @@ export default {
     border-bottom: 1px solid #7575757d;
 }
 .vfm__content {
-    -webkit-backdrop-filter: blur(13.4px);
-    backdrop-filter: blur(13.4px);
+    -webkit-backdrop-filter: blur(11.4px);
+    backdrop-filter: blur(11.4px);
 }
 .vfm__overlay {
-    -webkit-backdrop-filter: blur(35px);
-    backdrop-filter: blur(35px);
+    -webkit-backdrop-filter: blur(17.5px);
+    backdrop-filter: blur(17.5px);
 }
 </style>
