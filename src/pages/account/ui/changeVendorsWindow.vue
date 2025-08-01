@@ -46,7 +46,11 @@
 
               <div class="vendor-change__selected-list">
                 <!-- Карточка выбранного поставщика -->
-                <div class="vendor-change__selected-item" v-for="(item) in optVendors.selected" :key="item.id">
+                <div
+                  class="vendor-change__selected-item"
+                  v-for="item in optVendors.selected"
+                  :key="item.id"
+                >
                   <!-- Верхушка -->
                   <div class="vendor-change__selected-item-header">
                     <div class="vendor-change__selected-item-title-container">
@@ -64,7 +68,10 @@
                       <p class="vendor-change__selected-item-title">{{ item.name }}</p>
                     </div>
 
-                    <button class="vendor-change__selected-item-delete-button" @click.prevent="changeOpts(item.id, 0)">
+                    <button
+                      class="vendor-change__selected-item-delete-button"
+                      @click.prevent="changeOpts(item.id, 0)"
+                    >
                       <i class="d-icon-trash vendor-change__selected-item-delete-icon"></i>
                     </button>
                   </div>
@@ -97,13 +104,24 @@
 
                   <!-- Данные склада -->
                   <div class="vendor-change__selected-item-footer" v-if="item.stores">
-                    <div class="d-radio__wrapper vendor-change__selected-item-radio-wrapper" v-for="(store) in item.stores" :key="store.id">
-                      <Checkbox @change="changeStores(item.id, store.id, store.active)" v-model="store.active" :binary="true" :inputId="'store-'+ store.id" :name="'store-'+ store.id"
-                            value="true" />
+                    <div
+                      class="d-radio__wrapper vendor-change__selected-item-radio-wrapper"
+                      v-for="store in item.stores"
+                      :key="store.id"
+                    >
+                      <Checkbox
+                        @change="changeStores(item.id, store.id, store.active)"
+                        v-model="store.active"
+                        :binary="true"
+                        :inputId="'store-' + store.id"
+                        :name="'store-' + store.id"
+                        value="true"
+                      />
                       <label
                         for="warehouse1"
                         class="d-radio__label vendor-change__selected-item-radio-label"
-                        >Склад #{{ store.id }}, {{ store.address_short ? store.address_short : store.address }}
+                        >Склад #{{ store.id }},
+                        {{ store.address_short ? store.address_short : store.address }}
                       </label>
                     </div>
                   </div>
@@ -162,9 +180,18 @@
               <!-- Список -->
               <div class="vendor-change__selected-list">
                 <!-- Карточка подключенного поставщика -->
-                <div class="vendor-change__connected-item" v-for="(item) in optVendors.available" :key="item.id">
+                <div
+                  class="vendor-change__connected-item"
+                  v-for="item in optVendors.available"
+                  :key="item.id"
+                >
                   <!-- Выбор -->
-                  <Checkbox @change="changeSelectCheckbox(item.id)" v-model="vendorForm.selected[item.id]" name="0" :binary="true"/>
+                  <Checkbox
+                    @change="changeSelectCheckbox(item.id)"
+                    v-model="vendorForm.selected[item.id]"
+                    name="0"
+                    :binary="true"
+                  />
 
                   <div class="vendor-change__connected-item-content">
                     <!-- Верхушка -->
@@ -256,7 +283,7 @@ export default {
     YandexMapDefaultFeaturesLayer,
     YandexMapMarker,
     YandexMapClusterer,
-    Checkbox
+    Checkbox,
   },
   data() {
     return {
@@ -270,7 +297,7 @@ export default {
       },
       filter: '',
       vendorForm: {
-        selected: []
+        selected: [],
       },
       multisupplier: true,
     }
@@ -284,12 +311,12 @@ export default {
   methods: {
     ...mapActions({
       toggleOptsVisible: 'toggleOptsVisible',
-      getOptVendors: 'getOptVendors'
+      getOptVendors: 'getOptVendors',
     }),
     close() {
       this.$emit('close')
     },
-    checkVendor (id) {
+    checkVendor(id) {
       if (!this.multisupplier) {
         for (let i = 0; i < this.vendorForm.selected.length; i++) {
           // if (i !== id) {
@@ -298,12 +325,12 @@ export default {
         }
         this.vendorForm.selected[id] = true
       }
-      if(this.multisupplier) {
+      if (this.multisupplier) {
         this.vendorForm.selected[id] = !this.vendorForm.selected[id]
       }
     },
     // Установка чекбокса поставщика
-    changeSelectCheckbox (id) {
+    changeSelectCheckbox(id) {
       if (!this.multisupplier) {
         for (let i = 0; i < this.vendorForm.selected.length; i++) {
           this.vendorForm.selected[i] = false
@@ -311,7 +338,7 @@ export default {
         this.vendorForm.selected[id] = true
       }
     },
-    changeOpts (id, action) {
+    changeOpts(id, action) {
       this.loading = true
       const data = {
         id: id,
@@ -322,13 +349,13 @@ export default {
         this.loading = false
       })
     },
-    setFilter (type) {
+    setFilter(type) {
       if (type === 'filter') {
         if (this.filter.length >= 3 || this.filter.length === 0) {
           setTimeout(() => {
             this.loading = true
             this.getOptVendors({
-              filter: this.filter
+              filter: this.filter,
             }).then(() => {
               this.loading = false
             })
@@ -336,27 +363,31 @@ export default {
         }
       }
     },
-    changeStores(org_id, store_id, active){
+    changeStores(org_id, store_id, active) {
       console.log(org_id, store_id, active)
       this.opt_api({
         action: 'toggle/vendors/stores',
         active: active,
-        extended_name: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
-        id: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? router.currentRoute._value.params.id_org_from : router.currentRoute._value.params.id,
+        extended_name:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        id:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+            ? router.currentRoute._value.params.id_org_from
+            : router.currentRoute._value.params.id,
         org_id: org_id,
         store_id: store_id,
       }).then((result) => {
-              this.loading = false
-              this.get_opt_vendors_from_api()
-              this.vendorForm.selected = []
-              this.$emit('vendorCheck')
-              this.get_opt_products_from_api({
-                page: 1,
-                perpage: 25
-              });
-            })
+        this.loading = false
+        this.get_opt_vendors_from_api()
+        this.vendorForm.selected = []
+        this.$emit('vendorCheck')
+        this.get_opt_products_from_api({
+          page: 1,
+          perpage: 25,
+        })
+      })
     },
-    checkVendors () {
+    checkVendors() {
       let error = true
       this.vendorForm.selected.forEach((element) => {
         if (element) {
@@ -369,8 +400,14 @@ export default {
             const data = {
               id: this.items.selected[i].id,
               action: 0,
-              extended_name: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
-              store: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? router.currentRoute._value.params.id_org_from : router.currentRoute._value.params.id,
+              extended_name:
+                router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+                  ? 'offer'
+                  : 'cart',
+              store:
+                router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+                  ? router.currentRoute._value.params.id_org_from
+                  : router.currentRoute._value.params.id,
             }
             this.toggle_opts_visible(data)
           }
@@ -379,9 +416,13 @@ export default {
         this.$load(async () => {
           await this.toggle_opts_visible({
             action: 1,
-            store: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? router.currentRoute._value.params.id_org_from : router.currentRoute._value.params.id,
-            extended_name: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
-            id: this.vendorForm.selected
+            store:
+              router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+                ? router.currentRoute._value.params.id_org_from
+                : router.currentRoute._value.params.id,
+            extended_name:
+              router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+            id: this.vendorForm.selected,
           })
             .then((result) => {
               this.loading = false
@@ -390,28 +431,33 @@ export default {
               this.$emit('vendorCheck')
               this.get_opt_products_from_api({
                 page: 1,
-                perpage: 25
-              });
+                perpage: 25,
+              })
             })
             .catch((result) => {
               console.log(result)
             })
 
-          this.get_opt_warehouse_catalog_from_api();
+          this.get_opt_warehouse_catalog_from_api()
         })
       } else {
-        this.$toast.add({ severity: 'error', summary: 'Укажите поставщиков', detail: 'Для того, чтобы выбрать поставщиков, отметьте флажки рядом с ними', life: 3000 })
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Укажите поставщиков',
+          detail: 'Для того, чтобы выбрать поставщиков, отметьте флажки рядом с ними',
+          life: 3000,
+        })
       }
-    }
+    },
   },
 }
 </script>
-<style lang="scss" scope>
-.d-search__field{
+<style lang="scss">
+.d-search__field {
   background: transparent;
 }
 .vendor-change__close-button,
-.vendor-change__selected-item-delete-button{
+.vendor-change__selected-item-delete-button {
   color: #282828;
 }
 .d-sheet__overlay {
@@ -424,21 +470,24 @@ export default {
   }
 }
 @media (width <= 1920px) {
-    .vendor-change__sheet {
-        padding: 20px;
-        width: 940px;
-    }
+  .vendor-change__sheet {
+    padding: 20px;
+    width: 940px;
+  }
 }
 .d-sheet {
-    backdrop-filter: blur(17.5px);
+  backdrop-filter: blur(17.5px);
 }
 .d-sheet__wrapper {
-    position: fixed;
-    top: var(--header-height);
-    height: calc(100vh - var(--header-height));
+  position: fixed;
+  top: var(--header-height);
+  height: calc(100vh - var(--header-height));
 }
-.vendor-change__content .p-checkbox-checked .p-checkbox-box,.vendor-change__content .p-checkbox-checked:not(.p-disabled):has(.p-checkbox-input:hover) .p-checkbox-box{
-    border-color: rgba(249, 44, 13, 1);
-    background: rgba(249, 44, 13, 1);
+.vendor-change__content .p-checkbox-checked .p-checkbox-box,
+.vendor-change__content
+  .p-checkbox-checked:not(.p-disabled):has(.p-checkbox-input:hover)
+  .p-checkbox-box {
+  border-color: rgba(249, 44, 13, 1);
+  background: rgba(249, 44, 13, 1);
 }
 </style>

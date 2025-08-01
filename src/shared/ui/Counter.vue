@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="submit">
     <div :class="'d-counter ' + classPrefix + '-counter'">
-      <button :class="'d-counter__button' + classPrefix + '-counter__button'" @click="onMinus">
+      <button :class="'d-counter__button ' + classPrefix + '-counter__button'" @click="onMinus">
         <i class="d-icon-minus d-counter__button-icon"></i>
       </button>
       <input
@@ -15,7 +15,7 @@
         :step="d_step"
         :max="this.max"
       />
-      <button :class="'d-counter__button' + classPrefix + '-counter__button'" @click="onPlus">
+      <button :class="'d-counter__button ' + classPrefix + '-counter__button'" @click="onPlus">
         <i class="d-icon-plus d-counter__button-icon"></i>
       </button>
     </div>
