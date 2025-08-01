@@ -24,6 +24,20 @@ export default {
       }
       return response
     },
+    async basketClear({ commit }, { org_id }) {
+      const data = {
+        action: 'basket/clear',
+        extended_name:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        id:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+            ? router.currentRoute._value.params.id_org_from
+            : router.currentRoute._value.params.id,
+        org_id: org_id,
+      }
+      const response = await api.basket.basketClear(data)
+      return response
+    },
     async basketProductRemove({ commit }, { org_id, store_id, key, product }) {
       const data = {
         action: 'basket/remove',

@@ -74,7 +74,15 @@
                         </div>
                       </div>
                       <div class="order__item-header-right">
-                        <button class="order__item-header-delete">
+                        <button
+                          class="order__item-header-delete"
+                          @click.prevent="
+                            () => {
+                              this.showClearBasketModal = true
+                              this.id_clear_org = org.org_data.id
+                            }
+                          "
+                        >
                           <i class="d-icon-trash"></i>
                         </button>
                       </div>
@@ -257,16 +265,26 @@
       </div>
     </div>
   </div>
+  <teleport to="body">
+    <customModal v-model="this.showClearBasketModal" class="clear_cart">
+      <b>Вы уверены, что хотите очистить корзину?</b>
+      <p>Это действие невозможно будет отменить</p>
+      <button class="d-button d-button-primary d-button-primary-small" @click="this.clearCart()">
+        Да, очистить!
+      </button>
+    </customModal>
+  </teleport>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
+import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
 
 export default {
   name: 'orderWindow',
   emits: ['close', 'catalogUpdate'],
-  components: { Loader, Counter },
+  components: { Loader, customModal, Counter },
   props: {
     active: {
       type: Boolean,
@@ -276,7 +294,9 @@ export default {
   data() {
     return {
       loading: false,
+      showClearBasketModal: false,
       fetchIds: [],
+      id_clear_org: 0,
     }
   },
   computed: {
@@ -287,11 +307,21 @@ export default {
   methods: {
     ...mapActions({
       getBasket: 'basket/getBasket',
+      basketClear: 'basket/basketClear',
       basketProductRemove: 'basket/basketProductRemove',
       basketProductUpdate: 'basket/basketProductUpdate',
     }),
     close() {
       this.$emit('close')
+    },
+    clearCart() {
+      this.loading = true
+      this.showClearBasketModal = false
+      this.basketClear({ org_id: this.id_clear_org }).then(() => {
+        this.id_clear_org = 0
+        this.$emit('catalogUpdate')
+        this.updateBasket()
+      })
     },
     ElemCount(object) {
       if (!this.fetchIds.includes(object.item.product.key)) {
@@ -365,6 +395,27 @@ export default {
 }
 </script>
 <style lang="scss">
+.clear_cart {
+  .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    text-align: center;
+  }
+  .d-button {
+    box-shadow: none;
+    display: inline-block;
+  }
+  b {
+    margin: 15px 0;
+    display: block;
+  }
+  p {
+    margin-bottom: 10px;
+  }
+}
 .order__item {
   .d-badge2 {
     background: #ededed;
