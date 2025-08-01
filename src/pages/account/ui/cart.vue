@@ -20,7 +20,14 @@
             Показать в каталоге
           </button>
           -->
-          <button class="cart__clear-button">
+          <button
+            class="cart__clear-button"
+            @click.prevent="
+              () => {
+                this.showClearBasketModal = true
+              }
+            "
+          >
             <span>Очистить все</span>
             <div class="d-divider d-divider--vertical cart__clear-divider"></div>
             <i class="d-icon-trash cart__clear-button-icon"></i>
@@ -40,7 +47,14 @@
           <div class="cart__tools-bottom">
             <p class="cart__tools-products">34 товара</p>
 
-            <button class="cart__clear-button">
+            <button
+              class="cart__clear-button"
+              @click.prevent="
+                () => {
+                  this.showClearBasketModal = true
+                }
+              "
+            >
               <span>Очистить все</span>
               <div class="d-divider d-divider--vertical cart__clear-divider"></div>
               <i class="d-icon-trash cart__clear-button-icon"></i>
@@ -116,16 +130,26 @@
       </div>
     </div>
   </div>
+  <teleport to="body">
+    <customModal v-model="this.showClearBasketModal" class="clear_cart">
+      <b>Вы уверены, что хотите очистить корзину?</b>
+      <p>Это действие невозможно будет отменить</p>
+      <button class="d-button d-button-primary d-button-primary-small" @click="this.clearCart()">
+        Да, очистить!
+      </button>
+    </customModal>
+  </teleport>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
+import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
 
 export default {
   name: 'ProfileCart',
   emits: ['toggleCart', 'toggleOrder', 'basketUpdate', 'catalogUpdate'],
-  components: { Loader, Counter },
+  components: { Loader, customModal, Counter },
   props: {
     active: {
       type: Boolean,
@@ -135,6 +159,7 @@ export default {
   data() {
     return {
       loading: true,
+      showClearBasketModal: false,
       basketStore: {},
       fetchIds: [],
     }
@@ -142,6 +167,7 @@ export default {
   methods: {
     ...mapActions({
       getBasket: 'basket/getBasket',
+      basketClear: 'basket/basketClear',
       basketProductRemove: 'basket/basketProductRemove',
       basketProductUpdate: 'basket/basketProductUpdate',
     }),
@@ -150,6 +176,15 @@ export default {
     },
     toggleOrder() {
       this.$emit('toggleOrder')
+    },
+    clearCart() {
+      this.loading = true
+      this.showClearBasketModal = false
+      this.basketClear({ org_id: this.id_clear_org }).then(() => {
+        this.id_clear_org = 0
+        this.$emit('catalogUpdate')
+        this.updateBasket()
+      })
     },
     clearBasketProduct(org_id, store_id, key, product) {
       this.loading = true
