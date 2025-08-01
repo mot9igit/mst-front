@@ -128,7 +128,7 @@
     </div>
 
     <!-- Нижняя часть карточки с информацией об акциях -->
-    <div class="product-card__footer">
+    <div class="product-card__footer" v-if="offer.actions">
       <!-- Список акций -->
       <div class="product-card__promo-list">
         <div class="product-card__promo">
@@ -219,6 +219,7 @@ export default {
 <style lang="scss">
 .product-card {
   width: auto;
+  padding-bottom: 6px;
   .product-card__promo {
     min-width: auto;
   }

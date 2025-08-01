@@ -10,8 +10,8 @@
     </button>
     <div class="cart__content">
       <Loader v-if="loading" />
-      <div v-else>
-        <div class="cart__tools cart__tools--desktop">
+      <div>
+        <div class="cart__tools cart__tools--desktop" v-if="Object.keys(basketStore).length > 1">
           <!--
           <button
             class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small cart__tools-button"
@@ -27,7 +27,7 @@
           </button>
         </div>
 
-        <div class="cart__tools cart__tools--mobile">
+        <div class="cart__tools cart__tools--mobile" v-if="Object.keys(basketStore).length > 1">
           <div class="cart__tools-button-wrapper">
             <button
               class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small cart__tools-button"
@@ -47,8 +47,7 @@
             </button>
           </div>
         </div>
-        <div class="cart__list" v-if="Object.keys(basketStore).length">
-          {{ console.log(basketStore) }}
+        <div class="cart__list" v-if="Object.keys(basketStore).length > 1">
           <div class="dart-mb-1" v-for="(org, index) in basketStore.data" :key="index">
             <div v-for="(store, store_index) in org.data" :key="store_index">
               <div
@@ -101,7 +100,7 @@
             </div>
           </div>
         </div>
-        <div class="cart__list" v-else>
+        <div class="cart__list text-center" v-else>
           <span>Корзина пуста</span>
         </div>
         <div class="cart__list">
@@ -135,13 +134,14 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      loading: true,
       basketStore: {},
       fetchIds: [],
     }
   },
   methods: {
     ...mapActions({
+      getBasket: 'basket/getBasket',
       basketProductRemove: 'basket/basketProductRemove',
       basketProductUpdate: 'basket/basketProductUpdate',
     }),
@@ -162,7 +162,8 @@ export default {
       }
       this.basketProductRemove(data).then((response) => {
         this.$emit('catalogUpdate')
-        this.$emit('basketUpdate')
+        this.loading = true
+        this.updateBasket()
         if (!response?.data?.data?.success && response?.data?.data?.message) {
           this.$toast.add({
             severity: 'error',
@@ -214,6 +215,7 @@ export default {
           this.fetchIds.splice(index, 1) // Удаляем один элемент по индексу
         }
       } else {
+        this.loading = true
         const data = {
           org_id: object.item.product.org_id,
           store_id: object.item.product.store_id,
@@ -233,7 +235,7 @@ export default {
             })
           }
           this.$emit('catalogUpdate')
-          this.$emit('cartUpdate')
+          this.updateBasket()
         })
         if (Number(object.value) != object.old_value) {
           window.dataLayer = window.dataLayer || []
@@ -255,6 +257,12 @@ export default {
         }
       }
     },
+    updateBasket() {
+      this.loading = true
+      this.getBasket().then(() => {
+        this.loading = false
+      })
+    },
   },
   computed: {
     ...mapGetters({
@@ -263,6 +271,9 @@ export default {
     }),
   },
   mounted() {
+    this.getBasket().then(() => {
+      this.loading = false
+    })
     if (Object.keys(this.basket).length > 1) {
       if (
         Object.prototype.hasOwnProperty.call(this.basket.data, this.basketWarehouse) &&
@@ -272,6 +283,8 @@ export default {
       } else {
         this.basketStore = {}
       }
+    } else {
+      this.basketStore = {}
     }
   },
   watch: {
@@ -292,6 +305,8 @@ export default {
         } else {
           this.basketStore = {}
         }
+      } else {
+        this.basketStore = {}
       }
     },
     basketWarehouse(newVal) {
@@ -301,6 +316,8 @@ export default {
         } else {
           this.basketStore = {}
         }
+      } else {
+        this.basketStore = {}
       }
     },
   },

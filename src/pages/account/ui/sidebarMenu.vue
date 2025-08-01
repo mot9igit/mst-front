@@ -86,6 +86,9 @@ export default {
     toogle: function (Newval) {
       this.sidebarToggle = Newval
     },
+    '$route.params.id'() {
+      this.menu = this.getMenu()
+    },
   },
   methods: {
     getMenu() {
