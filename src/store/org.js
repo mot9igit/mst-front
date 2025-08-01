@@ -3,6 +3,7 @@ import router from '@/router'
 
 export default {
   state: {
+    orgActive: {},
     orgs: [],
     orgStores: [],
   },
@@ -11,6 +12,13 @@ export default {
       const response = await api.org.getOrg(data)
       if (response) {
         commit('SET_ORG', response.data)
+        if (response.data && router.currentRoute._value.params.id) {
+          const resp = response.data.data
+          let activeOrganization = resp.find(
+            (org) => org.id === router.currentRoute._value.params.id,
+          )
+          commit('SET_ACTIVE_ORG', activeOrganization)
+        }
       }
       return response
     },
@@ -77,6 +85,9 @@ export default {
     SET_ORG: (state, data) => {
       state.orgs = data.data
     },
+    SET_ACTIVE_ORG: (state, data) => {
+      state.orgActive = data
+    },
     SET_ORG_STORES: (state, data) => {
       state.orgStores = data.data
     },
@@ -85,6 +96,9 @@ export default {
     },
   },
   getters: {
+    orgActive(state) {
+      return state.orgActive
+    },
     orgs(state) {
       return state.orgs
     },
