@@ -81,15 +81,15 @@ export default {
 
       this.showSearchSuggestions = false
       if (this.$router?.currentRoute?._value.matched[4]?.name == 'purchases_offer') {
-        this.$router.push({
-          name: 'opt_search_offer',
-          params: {
-            search: this.search,
-            id_org_from: this.$router.currentRoute._value.params.id_org_from,
-          },
-        })
+        // this.$router.push({
+        //   name: 'opt_search_offer',
+        //   params: {
+        //     search: this.search,
+        //     id_org_from: this.$router.currentRoute._value.params.id_org_from,
+        //   },
+        // })
       } else {
-        this.$router.push({ name: 'opt_search', params: { search: this.search } })
+        this.$router.push({ name: 'purchasesCatalogSearch', params: { search: this.search } })
       }
     },
     async searchProducts() {
@@ -108,9 +108,14 @@ export default {
       this.searchTimer = setTimeout(func, delay)
     },
   },
+  mounted() {
+    if (this.$route.params.search) {
+      this.search = this.$route.params.search
+    }
+  },
   watch: {
     search(newVal) {
-      if (newVal.length < 3) {
+      if (newVal.length < 3 || newVal == this.$route.params.search) {
         this.showSearchSuggestions = false
         return
       }
@@ -121,6 +126,12 @@ export default {
         // console.log(await this.searchProducts());
         this.searchSuggestions = await this.searchProducts()
       }, 300)
+    },
+    $route() {
+      if (this.$route.params.search) {
+        this.showSearchSuggestions = false
+        this.search = this.$route.params.search
+      }
     },
   },
 }

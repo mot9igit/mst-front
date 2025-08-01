@@ -43,6 +43,10 @@ export default {
       type: String,
       default: '',
     },
+    search: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {

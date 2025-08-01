@@ -87,6 +87,13 @@ const router = createRouter({
                       component: Purchases,
                     },
                     {
+                      path: 'search/:search',
+                      name: 'purchasesCatalogSearch',
+                      props: true,
+                      label: 'Оптовый каталог',
+                      component: PurchasesCatalog,
+                    },
+                    {
                       path: ':category_id',
                       name: 'purchasesCatalog',
                       props: true,

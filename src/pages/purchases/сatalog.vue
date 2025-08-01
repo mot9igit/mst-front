@@ -168,6 +168,10 @@ export default {
       type: String,
       default: '',
     },
+    search: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -231,12 +235,16 @@ export default {
       this.order_id = order_id
       this.page = 1
       this.loading = true
-      this.getOptProducts({
+      const data = {
         page: this.page,
         perpage: this.per_page,
         filters: this.filters,
         basket: this.basket,
-      }).then(() => {
+      }
+      if (this.$route.name == 'purchasesCatalogSearch') {
+        data.search = this.$route.params.search
+      }
+      this.getOptProducts(data).then(() => {
         this.opt_products = this.optProducts
         this.loading = false
       })
@@ -244,12 +252,16 @@ export default {
     pagClickCallback(pageNum) {
       this.page = pageNum
       this.loading = true
-      this.getOptProducts({
+      const data = {
         page: this.page,
         perpage: this.per_page,
         filters: this.filters,
         basket: this.basket,
-      }).then(() => {
+      }
+      if (this.$route.name == 'purchasesCatalogSearch') {
+        data.search = this.$route.params.search
+      }
+      this.getOptProducts(data).then(() => {
         this.opt_products = this.optProducts
         this.loading = false
       })
@@ -261,10 +273,14 @@ export default {
     },
   },
   mounted() {
-    this.getOptProducts({
+    const data = {
       page: this.page,
       perpage: this.per_page,
-    }).then(() => {
+    }
+    if (this.$route.name == 'purchasesCatalogSearch') {
+      data.search = this.$route.params.search
+    }
+    this.getOptProducts(data).then(() => {
       this.opt_products = this.optProducts
       this.loading = false
     })
