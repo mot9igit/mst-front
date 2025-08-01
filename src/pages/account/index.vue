@@ -5,6 +5,7 @@
       v-if="this.$route.params.id"
       @toggleCatalog="toggleCatalog"
       @toggleVendor="toggleVendor"
+      @toggleCart="toggleCart"
     ></ProfileHeader>
 
     <main class="main">
@@ -13,7 +14,11 @@
           <router-view> </router-view>
         </section>
       </div>
-      <ProfileCart @cartUpdate="cartUpdate()" />
+      <ProfileCart
+        @cartUpdate="cartUpdate()"
+        @toggleCart="toggleCart"
+        :active="toggleShoppingCart"
+      />
       <changeVendorsWindow :active="this.toggleVendors" @close="changeVendorsWindowClose" />
     </main>
   </div>
@@ -34,11 +39,16 @@ export default {
       type: String,
       default: '',
     },
+    category_id: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
       toggleMenu: false,
       toggleVendors: false,
+      toggleShoppingCart: false,
     }
   },
   mounted() {
@@ -90,6 +100,9 @@ export default {
     },
     toggleVendor() {
       this.toggleVendors = !this.toggleVendors
+    },
+    toggleCart() {
+      this.toggleShoppingCart = !this.toggleShoppingCart
     },
     changeVendorsWindowClose() {
       this.toggleVendors = false

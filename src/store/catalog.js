@@ -45,7 +45,33 @@ export default {
         commit('SET_OPT_WAREHOUSE_CATALOG', response.data)
       }
     },
-    async getOptProducts({ commit }, { filters, page, perpage, basket }) {
+    async getOptProductsSearch({}, { page, perpage, search }) {
+      let req = null
+      if (router.currentRoute._value.params.req) {
+        req = router.currentRoute._value.params.req
+      }
+      const data = {
+        id:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+            ? router.currentRoute._value.params.id_org_from
+            : router.currentRoute._value.params.id,
+        id_org_from:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+            ? router.currentRoute._value.params.id
+            : null,
+        type: router.currentRoute._value.params.type,
+        search: search,
+        extended_name:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        page: page,
+        req: req,
+        perpage: perpage,
+        action: 'get/products',
+      }
+      const response = await api.catalog.getOptProducts(data)
+      return response
+    },
+    async getOptProducts({ commit }, { filters, page, perpage, basket, search }) {
       let cat = 0
       if (
         router.currentRoute._value.params.warehouse_id &&
@@ -79,7 +105,7 @@ export default {
         org_w_id: router.currentRoute._value.params.org_w_id,
         warehouse_id: router.currentRoute._value.params.warehouse_id,
         warehouse_cat_id: router.currentRoute._value.params.warehouse_cat_id,
-        search: router.currentRoute._value.params.search,
+        search: search,
         extended_name:
           router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
         page: page,

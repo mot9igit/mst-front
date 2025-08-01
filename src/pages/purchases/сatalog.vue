@@ -159,6 +159,16 @@ import product from './ui/product.vue'
 export default {
   name: 'purchasesCatalog',
   components: { Loader, Paginate, product },
+  props: {
+    id: {
+      type: String,
+      default: '',
+    },
+    category_id: {
+      type: String,
+      default: '',
+    },
+  },
   data() {
     return {
       filters: {},

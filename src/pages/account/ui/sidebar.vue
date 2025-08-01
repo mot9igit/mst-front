@@ -162,6 +162,9 @@
           <span class="sidebar__bottom-block-text">Выйти из ЛК</span>
         </button>
       </div>
+      <div class="version-bar">
+        <span @click="copyVersion()" id="#version">v. {{ version }}</span>
+      </div>
     </div>
     <div class="sidebar__inner sidebar__inner--mobile">
       <nav class="sidebar__nav">
@@ -198,9 +201,6 @@
           </li>
         </ul>
       </nav>
-    </div>
-    <div class="version-bar">
-      <span @click="copyVersion()" id="#version">v. {{ version }}</span>
     </div>
   </aside>
   <!-- <teleport to="body">

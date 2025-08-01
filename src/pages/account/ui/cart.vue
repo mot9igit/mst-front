@@ -12,13 +12,14 @@
       <Loader v-if="loading" />
       <div v-else>
         <div class="cart__tools cart__tools--desktop">
+          <!--
           <button
             class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small cart__tools-button"
           >
             <i class="d-icon-catalog cart__tools-button-icon"></i>
             Показать в каталоге
           </button>
-
+          -->
           <button class="cart__clear-button">
             <span>Очистить все</span>
             <div class="d-divider d-divider--vertical cart__clear-divider"></div>
@@ -85,10 +86,10 @@
                     :item="{ basket, product }"
                     :mini="true"
                     :min="0"
-                    :max="product?.available"
-                    :value="product?.count"
-                    :step="product?.multiplicity ? product?.multiplicity : 1"
-                    :id="product?.remain_id"
+                    :max="Number(product?.available)"
+                    :value="Number(product?.count)"
+                    :step="Number(product?.multiplicity ? product?.multiplicity : 1)"
+                    :id="Number(product?.remain_id)"
                     :key="product?.key"
                   />
 
@@ -124,12 +125,17 @@ import Counter from '@/shared/ui/Counter.vue'
 
 export default {
   name: 'ProfileCart',
-  emits: ['toggleOrder', 'basketUpdate', 'catalogUpdate'],
+  emits: ['toggleCart', 'toggleOrder', 'basketUpdate', 'catalogUpdate'],
   components: { Loader, Counter },
+  props: {
+    active: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       loading: false,
-      active: false,
       basketStore: {},
       fetchIds: [],
     }
@@ -140,10 +146,10 @@ export default {
       basketProductUpdate: 'basket/basketProductUpdate',
     }),
     toggleCart() {
-      this.active = !this.active
+      this.$emit('toggleCart')
     },
     toggleOrder() {
-      this.active = false
+      this.$emit('toggleCart')
       this.$emit('toggleOrder')
     },
     clearBasketProduct(org_id, store_id, key, product) {

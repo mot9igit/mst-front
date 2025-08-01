@@ -49,7 +49,10 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'changeAddressWindow',
   computed: {
-    ...mapGetters(['orgStores', 'basketWarehouse']),
+    ...mapGetters({
+      orgStores: 'orgStores',
+      basketWarehouse: 'basket/basketWarehouse',
+    }),
     orgBasketWarehouse() {
       return this.orgStores?.items?.find((el) => el.id == this.basketWarehouse)
     },

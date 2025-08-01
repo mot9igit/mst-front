@@ -21,7 +21,7 @@
     </div>
   </form>
   <teleport to="body">
-    <customModal v-model="this.modal_remain" @cancel="cancel" class="product-not-available">
+    <customModal v-model="this.modal_remain" class="product-not-available">
       <img src="/images/icons_milen/outOfStock2.png" alt="" />
       <b>У нас нет столько товаров :(</b>
       <p>Извините, но количество данного товара ограничено</p>
@@ -64,11 +64,11 @@ export default {
       default: 0,
     },
     field: {
-      type: Text,
+      type: String,
       default: '',
     },
     classPrefix: {
-      type: Text,
+      type: String,
       default: 'd',
     },
     index: {

@@ -55,19 +55,26 @@
               </button>
               <SearchField></SearchField>
             </div>
+            <!--
             <button class="d-button d-button-tertiary shadow header__upload">
               <i class="d-icon-upload header__upload-icon"></i>
               <span class="header__upload-text">Потребность</span>
             </button>
+            -->
           </div>
           <div class="header__right">
-            <button class="d-button d-button-secondary d-button-rounded header__cart">
+            <button
+              class="d-button d-button-secondary d-button-rounded header__cart"
+              @click.prevent="toggleCart()"
+            >
               <i class="d-icon-cart header__cart-icon"></i>
             </button>
+            <!--
             <button class="d-button d-button-secondary d-button-rounded header__notification">
               <i class="d-icon-bell header__notification-icon"></i>
               <div class="status">+100</div>
             </button>
+            -->
           </div>
         </div>
       </div>
@@ -89,52 +96,40 @@
 
         <div class="sidebar__divider sidebar__divider--light header__vendor-divider"></div>
 
-        <div class="header__organization">
-          <div class="header__organization-info">
-            <img src="/icons/spo-logo.svg" alt="SPO" class="header__organization-logo" />
-            <span class="header__organization-title"
-              >Специальное Профессиональное Оборудование</span
-            >
-          </div>
-          <button class="d-icon-wrapper header__organization-info-button">
-            <i class="d-icon-info header__organization-info-button-icon"></i>
-          </button>
-        </div>
-
         <div
           class="sidebar__divider sidebar__divider--light header__user-divider header__user-divider--top"
         ></div>
 
-        <button class="header__user">
-          <i class="d-icon-profile header__user-icon"></i>
-          <span class="header__user-text">Игорь Игореведовичив</span>
-        </button>
+        <router-link :to="{ name: 'profile' }" class="header__user">
+          <i class="d-icon-profile sidebar__user-icon"></i>
+          <span class="header__user-text">{{ this.getUser?.profile?.fullname }}</span>
+        </router-link>
 
-        <div
-          class="sidebar__divider sidebar__divider--light header__user-divider header__user-divider--bottom"
-        ></div>
-
-        <div class="header__organization-button-wrapper">
-          <button
-            class="d-button d-button-tertiary d-button-tertiary-small sidebar__organization-button"
-          >
-            <i class="d-icon-refresh sidebar__organization-button-icon"></i>
-            <span class="sidebar__organization-button-text">Сменить компанию</span>
-          </button>
-        </div>
-
-        <div class="header__address header__address--alt">
+        <button
+          class="header__address header__address--alt"
+          v-if="orgBasketWarehouse"
+          @click.prevent="showChangeAddressModal = true"
+        >
           <i class="d-icon-location header__address-icon"></i>
           <div class="header__address-content">
             <p class="header__address-title">Склад:</p>
             <p class="header__address-text">
-              Ростов на Дону, ул. Микухина Каланахлоя, 11 / 7 к 32 ЛИТ 898
+              {{
+                orgBasketWarehouse?.name_short
+                  ? orgBasketWarehouse?.name_short
+                  : orgBasketWarehouse?.name
+              }},
+              {{
+                orgBasketWarehouse?.address_short
+                  ? orgBasketWarehouse?.address_short
+                  : orgBasketWarehouse?.address
+              }}
             </p>
           </div>
-          <button class="header__address-edit">
+          <span class="header__address-edit">
             <i class="d-icon-pen header__address-edit-icon"></i>
-          </button>
-        </div>
+          </span>
+        </button>
       </div>
     </header>
   </div>
@@ -164,7 +159,7 @@ export default {
       designMenuActive: false,
     }
   },
-  emits: ['toggleCatalog', 'toggleVendor'],
+  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart'],
   components: { Loader, customModal, changeAddressWindow, SearchField },
   mounted() {
     this.getOrgStores().then(() => {
@@ -174,6 +169,7 @@ export default {
   },
   computed: {
     ...mapGetters({
+      getUser: 'user/getUser',
       orgStores: 'orgStores',
       basket: 'basket/basket',
       basketWarehouse: 'basket/basketWarehouse',
@@ -196,6 +192,9 @@ export default {
     },
     toggleVendor() {
       this.$emit('toggleVendor')
+    },
+    toggleCart() {
+      this.$emit('toggleCart')
     },
     cancel(close) {
       close()
