@@ -171,10 +171,10 @@ export default {
   computed: {
     ...mapGetters({
       getUser: 'user/getUser',
-      orgStores: 'orgStores',
+      orgStores: 'org/orgStores',
       basket: 'basket/basket',
       basketWarehouse: 'basket/basketWarehouse',
-      optVendors: 'optVendors',
+      optVendors: 'org/optVendors',
     }),
     orgBasketWarehouse() {
       return this.orgStores?.items?.find((el) => el.id == this.basketWarehouse)
@@ -182,7 +182,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      getOrgStores: 'getOrgStores',
+      getOrgStores: 'org/getOrgStores',
       getOrgBasketStore: 'basket/getOrgBasketStore',
       setOrgBasketStore: 'basket/setOrgBasketStore',
       getBasket: 'basket/getBasket',

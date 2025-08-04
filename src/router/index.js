@@ -13,6 +13,8 @@ import Wholesale from '../pages/wholesale/index.vue'
 import WholesaleOrders from '../pages/wholesale/orders.vue'
 import WholesaleOrder from '../pages/wholesale/order.vue'
 import WholesalePrices from '../pages/wholesale/prices.vue'
+import WholesaleSale from '../pages/wholesale/sale.vue'
+import WholesaleSaleNew from '../pages/wholesale/saleNew.vue'
 import WholesaleClients from '../pages/wholesale/clients.vue'
 import WholesaleShipments from '../pages/wholesale/shipments.vue'
 import Retail from '../pages/retail/index.vue'
@@ -36,6 +38,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: SignIn,
+      meta: {
+        breadcrumb: {
+          label: 'Авторизация'
+        }
+      },
     },
     {
       path: '',
@@ -53,6 +60,11 @@ const router = createRouter({
           props: true,
           label: 'Профиль',
           component: Account,
+          meta: {
+            breadcrumb: {
+              label: 'Аккаунт'
+            }
+          },
           children: [
             {
               path: '/profile',
@@ -60,24 +72,34 @@ const router = createRouter({
               props: true,
               label: 'Профиль пользователя',
               component: userProfile,
+              meta: {
+                breadcrumb: {
+                  label: 'Профиль'
+                }
+              },
             },
             {
               path: '/:id',
+              meta: {
+                breadcrumb: {
+                  label: 'Организация'
+                }
+              },
               children: [
                 {
                   path: '',
                   name: 'org',
                   props: true,
-                  meta: {
-                    breadcrumb: {
-                      label: 'Организация',
-                    },
-                  },
                   label: 'Организация',
                   component: Organization,
                 },
                 {
                   path: 'purchases',
+                  meta: {
+                    breadcrumb: {
+                      label: 'Закупки'
+                    }
+                  },
                   children: [
                     {
                       path: '',
@@ -92,6 +114,11 @@ const router = createRouter({
                       props: true,
                       label: 'Оптовый каталог',
                       component: PurchasesCatalog,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Поиск'
+                        }
+                      },
                     },
                     {
                       path: ':category_id',
@@ -99,24 +126,33 @@ const router = createRouter({
                       props: true,
                       label: 'Оптовый каталог',
                       component: PurchasesCatalog,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Каталог'
+                        }
+                      },
                     },
                     {
                       path: 'warehouses/:org_w_id/:warehouse_id',
+                      meta: {
+                        breadcrumb: {
+                          label: 'Каталог поставщика'
+                        }
+                      },
                       children: [
                         {
                           path: '',
                           name: 'purchasesCatalogWarehouse',
                           component: PurchasesCatalog,
-                          label: 'Каталог оптовика',
-                          meta: {
-                            breadcrumb: {
-                              label: 'Каталог оптовика',
-                              link: 'warehouse_id',
-                            },
-                          },
+                          label: 'Каталог поставщика',
                         },
                         {
                           path: ':warehouse_cat_id',
+                          meta: {
+                            breadcrumb: {
+                              label: 'Каталог поставщика'
+                            }
+                          },
                           children: [
                             {
                               path: '',
@@ -130,6 +166,11 @@ const router = createRouter({
                     },
                     {
                       path: 'orders',
+                      meta: {
+                        breadcrumb: {
+                          label: 'Мои заказы'
+                        }
+                      },
                       children: [
                         {
                           path: '',
@@ -144,6 +185,11 @@ const router = createRouter({
                           props: true,
                           label: 'Заказы',
                           component: PurchasesOrder,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Мой заказ'
+                            }
+                          },
                         },
                       ],
                     },
@@ -153,11 +199,21 @@ const router = createRouter({
                       props: true,
                       label: 'Мои поставщики',
                       component: PurchasesVendors,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Мои поставщики'
+                        }
+                      },
                     },
                   ],
                 },
                 {
                   path: 'wholesale',
+                  meta: {
+                    breadcrumb: {
+                      label: 'Оптовые продажи'
+                    }
+                  },
                   children: [
                     {
                       path: '',
@@ -168,6 +224,11 @@ const router = createRouter({
                     },
                     {
                       path: 'orders',
+                      meta: {
+                        breadcrumb: {
+                          label: 'Оптовые заказы'
+                        }
+                      },
                       children: [
                         {
                           path: '',
@@ -182,15 +243,50 @@ const router = createRouter({
                           props: true,
                           label: 'Заказы',
                           component: WholesaleOrder,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Оптовый заказ'
+                            }
+                          },
                         },
                       ],
                     },
                     {
                       path: 'prices',
-                      name: 'wholesalePrices',
-                      props: true,
-                      label: 'Оптовые цены',
-                      component: WholesalePrices,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Оптовые цены'
+                        }
+                      },
+                      children: [{
+                        path: '',
+                        name: 'wholesalePrices',
+                        props: true,
+                        label: 'Оптовые цены',
+                        component: WholesalePrices,
+                      },{
+                        path: 'new',
+                        name: 'wholesaleSaleNew',
+                        props: true,
+                        label: 'Акция',
+                        component: WholesaleSaleNew,
+                        meta: {
+                          breadcrumb: {
+                            label: 'Создание акции'
+                          }
+                        },
+                      },{
+                        path: ':action',
+                        name: 'wholesaleSale',
+                        props: true,
+                        label: 'Акция',
+                        component: WholesaleSale,
+                        meta: {
+                          breadcrumb: {
+                            label: 'Редактирование акции'
+                          }
+                        },
+                      }]
                     },
                     {
                       path: 'clients',
@@ -198,6 +294,11 @@ const router = createRouter({
                       props: true,
                       label: 'Клиенты',
                       component: WholesaleClients,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Мои клиенты'
+                        }
+                      },
                     },
                     {
                       path: 'shipments',
@@ -205,11 +306,21 @@ const router = createRouter({
                       props: true,
                       label: 'Отгрузки',
                       component: WholesaleShipments,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Отгрузки'
+                        }
+                      },
                     },
                   ],
                 },
                 {
                   path: 'retail',
+                  meta: {
+                    breadcrumb: {
+                      label: 'Розничные продажи'
+                    }
+                  },
                   children: [
                     {
                       path: '',
@@ -220,6 +331,11 @@ const router = createRouter({
                     },
                     {
                       path: 'orders',
+                      meta: {
+                        breadcrumb: {
+                          label: 'Розничные заказы'
+                        }
+                      },
                       children: [
                         {
                           path: '',
@@ -234,6 +350,11 @@ const router = createRouter({
                           props: true,
                           label: 'Заказы',
                           component: RetailOrder,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Розничные заказ'
+                            }
+                          },
                         },
                       ],
                     },
@@ -243,6 +364,11 @@ const router = createRouter({
                       props: true,
                       label: 'Акции',
                       component: RetailActions,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Розничные акции'
+                        }
+                      },
                     },
                     {
                       path: 'balance',
@@ -250,6 +376,11 @@ const router = createRouter({
                       props: true,
                       label: 'Баланс',
                       component: RetailBalance,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Баланс'
+                        }
+                      },
                     },
                     {
                       path: 'compareProducts',
@@ -257,11 +388,21 @@ const router = createRouter({
                       props: true,
                       label: 'Сопоставление товаров',
                       component: RetailCompareProducts,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Сопоставление товаров'
+                        }
+                      },
                     },
                   ],
                 },
                 {
                   path: 'warehouse',
+                  meta: {
+                    breadcrumb: {
+                      label: 'Мой склад'
+                    }
+                  },
                   children: [
                     {
                       path: '',
@@ -276,6 +417,11 @@ const router = createRouter({
                       props: true,
                       label: 'Анализ склада',
                       component: WarehouseReview,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Анализ склада'
+                        }
+                      },
                     },
                     {
                       path: 'products',
@@ -283,6 +429,11 @@ const router = createRouter({
                       props: true,
                       label: 'Коллекции товара',
                       component: WarehouseProducts,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Коллекции товаров'
+                        }
+                      },
                     },
                     {
                       path: 'customization',
@@ -290,11 +441,21 @@ const router = createRouter({
                       props: true,
                       label: 'Настройки склада',
                       component: WarehouseCustomization,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Настройки склада'
+                        }
+                      },
                     },
                   ],
                 },
                 {
                   path: 'org',
+                  meta: {
+                    breadcrumb: {
+                      label: 'Моя компания'
+                    }
+                  },
                   children: [
                     {
                       path: '',
@@ -309,6 +470,11 @@ const router = createRouter({
                       props: true,
                       label: 'Карточка компании',
                       component: ProfileCard,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Карточка компании'
+                        }
+                      },
                     },
                     {
                       path: 'stuff',
@@ -316,6 +482,11 @@ const router = createRouter({
                       props: true,
                       label: 'Сотрудники',
                       component: ProfileStuff,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Сотрудники'
+                        }
+                      },
                     },
                     {
                       path: 'access',
@@ -323,6 +494,11 @@ const router = createRouter({
                       props: true,
                       label: 'Политики доступа',
                       component: ProfileAccess,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Политики доступа'
+                        }
+                      },
                     },
                   ],
                 },
@@ -336,6 +512,11 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       name: '404',
       component: notFound,
+      meta: {
+        breadcrumb: {
+          label: 'Не найдено'
+        }
+      },
     },
   ],
 })

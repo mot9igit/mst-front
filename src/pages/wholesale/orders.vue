@@ -7,6 +7,7 @@
       </a>
       <Breadcrumbs />
     </div>
+    <h1 class="dart_mb-2">Оптовые заказы</h1>
     <Loader v-if="loading" />
     <BaseTable
       v-else

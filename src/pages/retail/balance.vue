@@ -289,7 +289,7 @@ export default {
     ...mapGetters({
       balance: 'retail/balance',
       balance_request: 'retail/balance_request',
-      orgActive: 'orgActive'
+      orgActive: 'org/orgActive'
     }),
   },
   watch: {

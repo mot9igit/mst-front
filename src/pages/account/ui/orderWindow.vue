@@ -38,7 +38,6 @@
           -->
           <!-- Список товаров -->
           <div class="order__item-list" v-if="Object.keys(this.basket).length > 1">
-            {{ console.log(this.basket) }}
             <div v-for="(store, store_id) in this.basket.data" :key="store_id">
               <div v-for="(org, org_id) in store.data" :key="org_id">
                 <div
@@ -362,7 +361,6 @@ export default {
               life: 3000,
             })
           }
-          this.$emit('catalogUpdate')
           this.updateBasket()
         })
         if (Number(object.value) != object.old_value) {

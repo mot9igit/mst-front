@@ -7,6 +7,7 @@ import basket from './basket'
 import catalog from './catalog'
 import retail from './retail'
 import wholesale from './wholesale'
+import sales from './sales'
 
 export default new Vuex.Store({
   modules: {
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     basket,
     retail,
     wholesale,
+    sales,
     addition,
   },
 })

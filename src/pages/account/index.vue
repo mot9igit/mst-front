@@ -16,7 +16,6 @@
         </section>
       </div>
       <ProfileCart
-        @cartUpdate="cartUpdate()"
         @toggleCart="toggleCart()"
         @toggleOrder="toggleOrder()"
         :active="toggleShoppingCart"
@@ -90,7 +89,7 @@ export default {
   computed: {
     ...mapGetters({
       orgs: 'orgs',
-      optVendors: 'optVendors',
+      optVendors: 'org/optVendors',
       basket: 'basket/basket',
       basketWarehouse: 'basket/basketWarehouse',
     }),
@@ -102,8 +101,8 @@ export default {
       getSessionUser: 'user/getSessionUser',
       getOrgBasketStore: 'basket/getOrgBasketStore',
       getBasket: 'basket/getBasket',
-      getOrg: 'getOrg',
-      getOptVendors: 'getOptVendors',
+      getOrg: 'org/getOrg',
+      getOptVendors: 'org/getOptVendors',
     }),
     toggleCatalog() {
       this.toggleMenu = !this.toggleMenu
@@ -125,9 +124,6 @@ export default {
     },
     changeOrderWindowClose() {
       this.toggleOrderWindow = false
-    },
-    cartUpdate() {
-      this.getBasket()
     },
     copyVersion() {
       var range = document.createRange()

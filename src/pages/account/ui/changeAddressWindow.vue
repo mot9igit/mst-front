@@ -50,7 +50,7 @@ export default {
   name: 'changeAddressWindow',
   computed: {
     ...mapGetters({
-      orgStores: 'orgStores',
+      orgStores: 'org/orgStores',
       basketWarehouse: 'basket/basketWarehouse',
     }),
     orgBasketWarehouse() {

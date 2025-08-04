@@ -8,20 +8,11 @@
           <i class="d-icon-arrow d-back__icon"></i>
           <span class="d-back__text hidden-640">Назад</span>
         </a>
-        <ul class="d-breadcrumbs products__breadcrumbs">
-          <li class="d-breadcrumbs__item">
-            <button class="d-breadcrumbs__button">Оптовые цены</button>
-          </li>
-          <li class="d-breadcrumbs__item">
-            <button class="d-breadcrumbs__button">Акции</button>
-          </li>
-          <li class="d-breadcrumbs__item d-breadcrumbs__item--active">
-            <button class="d-breadcrumbs__button">Насторойка акции</button>
-          </li>
-        </ul>
+        <breadcrumbs/>
       </div>
       <!-- Правая часть верхушки страницы -->
       <div class="products__top-right">
+        <!--
         <button
           class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small products__top-button"
           data-show-hide="balanceForecast"
@@ -36,6 +27,7 @@
           Фильтр
           <i class="d-icon-angle-rounded-bottom products__top-button-icon"></i>
         </button>
+        -->
       </div>
     </div>
 
@@ -152,13 +144,14 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Paginate from 'vuejs-paginate-next'
 import Loader from '@/shared/ui/Loader.vue'
 import product from './ui/product.vue'
 
 export default {
   name: 'purchasesCatalog',
-  components: { Loader, Paginate, product },
+  components: { breadcrumbs, Loader, Paginate, product },
   props: {
     id: {
       type: String,

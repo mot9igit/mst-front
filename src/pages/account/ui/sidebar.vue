@@ -235,8 +235,8 @@ export default {
   computed: {
     ...mapGetters({
       getUser: 'user/getUser',
-      orgs: 'orgs',
-      orgActive: 'orgActive',
+      orgs: 'org/orgs',
+      orgActive: 'org/orgActive',
     }),
   },
   methods: {
@@ -282,7 +282,6 @@ export default {
           (org) => org.id === this.$route.params.id,
         )
       }
-      console.log(this.orgActive)
     },
   },
   mounted() {
