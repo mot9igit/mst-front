@@ -6,6 +6,7 @@
       @toggleCatalog="toggleCatalog"
       @toggleVendor="toggleVendor"
       @toggleCart="toggleCart"
+      :active="toggleMenu"
 
     ></ProfileHeader>
 
@@ -24,7 +25,7 @@
       <OrderWindow :active="this.toggleOrderWindow" @close="changeOrderWindowClose()" />
     </main>
   </div>
-  <ProfileCatalogMenu :active="toggleMenu"  />
+  <ProfileCatalogMenu :active="toggleMenu" @headerDesignOff="headerDesignOff" />
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -57,7 +58,7 @@ export default {
       toggleVendors: false,
       toggleShoppingCart: false,
       toggleOrderWindow: false,
-
+      headerDesignChange: false,
     }
   },
   mounted() {
@@ -106,8 +107,11 @@ export default {
     }),
     toggleCatalog() {
       this.toggleMenu = !this.toggleMenu
+    //  this.headerDesignChange = !this.toggleMenu
     },
-
+    headerDesignOff(){
+      this.toggleMenu = !this.toggleMenu
+    },
 
     toggleVendor() {
       this.toggleVendors = !this.toggleVendors

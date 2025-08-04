@@ -41,6 +41,7 @@
               }"
               class="catalog__item-button"
               v-else
+              @click.prevent="headerDesignOff"
             >
               <div class="catalog__item-content">
                 <img
@@ -78,6 +79,7 @@
                 },
               }"
               v-else
+              @click.prevent="headerDesignOff"
             >
               <div class="catalog__item-content">
                 <img :src="item.image" class="catalog__item-img" v-if="item.image != ''" />
@@ -105,7 +107,8 @@
                   category_id: catalogListIndex,
                 },
               }"
-              v-if="activeShowCatalog === 1 && stepmenu > 2">
+              v-if="activeShowCatalog === 1 && stepmenu > 2"
+              @click.prevent="headerDesignOff">
               <div class="catalog__head-item catalog__head-item--sub">
                 <span class="catalog__head-item-text">{{ catalogListName }}</span>
               </div>
@@ -121,7 +124,8 @@
                   warehouse_cat_id: catalogListIndex,
                 },
               }"
-              v-else-if="stepmenu > 3">
+              v-else-if="stepmenu > 3"
+              @click.prevent="headerDesignOff">
               <div class="catalog__head-item catalog__head-item--sub">
                 <span class="catalog__head-item-text">{{ catalogListName }}</span>
               </div>
@@ -129,9 +133,6 @@
         <div class="catalog__head-item catalog__head-item--sub" v-else>
           <span class="catalog__head-item-text">{{ catalogListName }}</span>
         </div>
-      <!--   <div class="catalog__head-item catalog__head-item--sub" >
-          <span class="catalog__head-item-text">{{ catalogListName }}</span>
-        </div>-->
       </div>
 
       <div class="catalog__content">
@@ -164,8 +165,8 @@
                   },
                 }"
                 class="catalog__item-button"
-
                 v-if="subitem.org_w_id"
+                @click.prevent="headerDesignOff"
               >
                 <div class="catalog__item-content">
                   <img src="" class="catalog__item-img" />
@@ -181,8 +182,8 @@
                   },
                 }"
                 class="catalog__item-button"
-
                 v-else
+                @click.prevent="headerDesignOff"
               >
                 <div class="catalog__item-content">
                   <img src="" class="catalog__item-img" />
@@ -220,16 +221,17 @@ export default {
       catalogListName: '',
       catalogListIndex: 0,
       catalogListPrevios: '',
-     // headerDesign: this.active,
+      headerDesign: true,
     }
   },
-  emits: ['toggleCatalog', 'headerDesign'],
+  emits: ['toggleCatalog', 'headerDesignOff'],
   props: {
     active: {
       type: Boolean,
       default: false,
     },
   },
+  
   mounted() {
     this.getOptWarehouseCatalog()
     this.getOptCatalog()
@@ -243,7 +245,12 @@ export default {
     toggleMenu() {
       this.$emit('toggleCatalog')
     },
-
+    headerDesignOff(){
+      
+      this.headerDesign = !this.headerDesign
+      
+      this.$emit('headerDesignOff')
+    },
     getMenu() {
       return [
         {
