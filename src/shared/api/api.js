@@ -6,6 +6,7 @@ import basketModule from '@/pages/org/api/basket'
 import catalogModule from '@/pages/account/api/catalog'
 import retailModule from '@/pages/retail/api'
 import wholesaleModule from '@/pages/wholesale/api'
+import salesModule from '@/pages/wholesale/api/sales'
 
 export default {
   auth: authModule(instance),
@@ -15,4 +16,5 @@ export default {
   basket: basketModule(instance),
   retail: retailModule(instance),
   wholesale: wholesaleModule(instance),
+  sales: salesModule(instance),
 }

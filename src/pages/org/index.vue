@@ -6,14 +6,7 @@
         <i class="d-icon-arrow d-back__icon d-top-back-icon"></i>
         <span class="d-back__text">Назад</span>
       </a>
-      <ul class="d-breadcrumbs d-top-breadcrumbs">
-        <li class="d-breadcrumbs__item d-top-breadcrumbs-item">
-          <button class="d-breadcrumbs__button">МСТ</button>
-        </li>
-        <li class="d-breadcrumbs__item d-top-breadcrumbs-item d-breadcrumbs__item--active">
-          <button class="d-breadcrumbs__button">О компании</button>
-        </li>
-      </ul>
+      <breadcrumbs/>
     </div>
 
     <ul class="d-tab2__container lk-about__tabs">
@@ -238,8 +231,10 @@
 </template>
 
 <script>
+import breadcrumbs from '@/shared/ui/breadcrumbs.vue';
 export default {
   name: 'ProfileMain',
+  components: { breadcrumbs }
 }
 </script>
 

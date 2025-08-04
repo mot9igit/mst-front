@@ -317,4 +317,12 @@ export default {
 .catalog__head-item-text {
   text-align: left;
 }
+.catalog__item-title,
+.catalog__head-item,
+.catalog__head-item--back{
+  color: #282828;
+}
+.catalog__head-item--active{
+  color: #fff;
+}
 </style>

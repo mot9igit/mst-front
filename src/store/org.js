@@ -2,6 +2,7 @@ import api from '@/shared/api/api'
 import router from '@/router'
 
 export default {
+  namespaced: true,
   state: {
     orgActive: {},
     orgs: [],

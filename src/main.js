@@ -1,4 +1,5 @@
 import 'vue-final-modal/style.css'
+import 'primeicons/primeicons.css'
 import './assets/styles/style.scss'
 
 import { createApp } from 'vue'

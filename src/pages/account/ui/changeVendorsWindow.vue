@@ -303,15 +303,17 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['optVendors']),
+    ...mapGetters({
+      optVendors: 'org/optVendors'
+    }),
     avLength() {
       return Object.keys(this.items.available).length
     },
   },
   methods: {
     ...mapActions({
-      toggleOptsVisible: 'toggleOptsVisible',
-      getOptVendors: 'getOptVendors',
+      toggleOptsVisible: 'org/toggleOptsVisible',
+      getOptVendors: 'org/getOptVendors',
     }),
     close() {
       this.$emit('close')
