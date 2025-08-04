@@ -97,7 +97,7 @@
           <i class="d-icon-angle-rounded catalog__head-item-icon"></i
           ><span class="catalog__head-item-text">{{ catalogListPrevios }}</span>
         </button>
-<!--      <router-link
+     <router-link
               :to="{
                 name: 'purchasesCatalog',
                 params: {
@@ -105,7 +105,7 @@
                   category_id: catalogListIndex,
                 },
               }"
-              v-if="activeShowCatalog === 1">
+              v-if="activeShowCatalog === 1 && stepmenu > 2">
               <div class="catalog__head-item catalog__head-item--sub">
                 <span class="catalog__head-item-text">{{ catalogListName }}</span>
               </div>
@@ -128,10 +128,10 @@
         </router-link>
         <div class="catalog__head-item catalog__head-item--sub" v-else>
           <span class="catalog__head-item-text">{{ catalogListName }}</span>
-        </div>-->
-        <div class="catalog__head-item catalog__head-item--sub" >
-          <span class="catalog__head-item-text">{{ catalogListName }}</span>
         </div>
+      <!--   <div class="catalog__head-item catalog__head-item--sub" >
+          <span class="catalog__head-item-text">{{ catalogListName }}</span>
+        </div>-->
       </div>
 
       <div class="catalog__content">
