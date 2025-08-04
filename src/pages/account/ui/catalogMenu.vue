@@ -18,7 +18,7 @@
           <li class="catalog__item" v-for="(item, index) in catalog" :key="index">
             <button
               class="catalog__item-button"
-              @click.prevent="ShowPodcatalog(index, item.pagetitle)"
+              @click.prevent="ShowPodcatalog(index, item.pagetitle, item.id)"
               v-if="item.children != undefined"
             >
               <div class="catalog__item-content">
@@ -57,7 +57,7 @@
           <li class="catalog__item" v-for="(item, index) in catalog_warehouse" :key="index">
             <button
               class="catalog__item-button"
-              @click.prevent="ShowPodcatalog(index, item.pagetitle)"
+              @click.prevent="ShowPodcatalog(index, item.pagetitle, item.id)"
               v-if="item.children != undefined"
             >
               <div class="catalog__item-content">
@@ -97,7 +97,39 @@
           <i class="d-icon-angle-rounded catalog__head-item-icon"></i
           ><span class="catalog__head-item-text">{{ catalogListPrevios }}</span>
         </button>
-        <div class="catalog__head-item catalog__head-item--sub">
+<!--      <router-link
+              :to="{
+                name: 'purchasesCatalog',
+                params: {
+                  id: this.$route.params.id,
+                  category_id: catalogListIndex,
+                },
+              }"
+              v-if="activeShowCatalog === 1">
+              <div class="catalog__head-item catalog__head-item--sub">
+                <span class="catalog__head-item-text">{{ catalogListName }}</span>
+              </div>
+      </router-link>
+
+      <router-link
+              :to="{
+                name: 'purchasesCatalogWarehouseCategory',
+                params: {
+                  id: this.$route.params.id,
+                  org_w_id: breadcrumbs[1].child,
+                  warehouse_id: breadcrumbs[2].child,
+                  warehouse_cat_id: catalogListIndex,
+                },
+              }"
+              v-else-if="stepmenu > 3">
+              <div class="catalog__head-item catalog__head-item--sub">
+                <span class="catalog__head-item-text">{{ catalogListName }}</span>
+              </div>
+        </router-link>
+        <div class="catalog__head-item catalog__head-item--sub" v-else>
+          <span class="catalog__head-item-text">{{ catalogListName }}</span>
+        </div>-->
+        <div class="catalog__head-item catalog__head-item--sub" >
           <span class="catalog__head-item-text">{{ catalogListName }}</span>
         </div>
       </div>
@@ -111,7 +143,7 @@
           >
             <button
               class="catalog__item-button"
-              @click.prevent="ShowPodcatalogList(subindex, subitem.pagetitle)"
+              @click.prevent="ShowPodcatalogList(subindex, subitem.pagetitle, subitem.id)"
               v-if="subitem.children != undefined"
             >
               <div class="catalog__item-content">
@@ -132,6 +164,7 @@
                   },
                 }"
                 class="catalog__item-button"
+
                 v-if="subitem.org_w_id"
               >
                 <div class="catalog__item-content">
@@ -148,6 +181,7 @@
                   },
                 }"
                 class="catalog__item-button"
+
                 v-else
               >
                 <div class="catalog__item-content">
@@ -177,17 +211,19 @@ export default {
       activeShowCatalog: 1,
       cataloglistShow: false,
       breadcrumbs: [
-        { id: 0, name: 'Единый каталог', child: 1 },
-        { id: 1, name: '', child: 0 },
+        { id: 0, name: 'Единый каталог', child: 1,  category_id: 0},
+        { id: 1, name: '', child: 0, category_id: 0 },
       ],
       stepmenu: 1,
       childrens: [],
       catalogListPreviosIndex: [],
       catalogListName: '',
+      catalogListIndex: 0,
       catalogListPrevios: '',
+     // headerDesign: this.active,
     }
   },
-  emits: ['toggleCatalog'],
+  emits: ['toggleCatalog', 'headerDesign'],
   props: {
     active: {
       type: Boolean,
@@ -207,6 +243,7 @@ export default {
     toggleMenu() {
       this.$emit('toggleCatalog')
     },
+
     getMenu() {
       return [
         {
@@ -227,29 +264,30 @@ export default {
         this.cataloglistShow = false
         if (this.menu[i].activeCatalog === true) {
           this.breadcrumbs = []
-          this.breadcrumbs.push({ id: 0, name: this.menu[i].name, child: i })
-          this.breadcrumbs.push({ id: 1, name: '', child: 0 })
+          this.breadcrumbs.push({ id: 0, name: this.menu[i].name, child: i, category_id: 0 })
+          this.breadcrumbs.push({ id: 1, name: '', child: 0, category_id: 0 })
           this.activeShowCatalog = i
         }
         this.stepmenu = 1
       }
     },
-    ShowPodcatalog(index, pagetitle) {
+    ShowPodcatalog(index, pagetitle, categoryId) {
       if (this.cataloglistShow === false) {
         this.cataloglistShow = true
       }
       this.catalogListName = pagetitle
+      this.catalogListIndex = categoryId
       this.catalogListPrevios = this.breadcrumbs[0].name
       this.stepmenu = 2
       this.breadcrumbs.splice(1)
-      this.breadcrumbs.push({ id: 1, name: pagetitle, child: index })
+      this.breadcrumbs.push({ id: 1, name: pagetitle, child: index, category_id: categoryId })
       if (this.activeShowCatalog === 1) {
         this.childrens = this.catalog[index].children
       } else {
         this.childrens = this.catalog_warehouse[index].children
       }
     },
-    ShowPodcatalogList(index, pagetitle) {
+    ShowPodcatalogList(index, pagetitle, categoryId) {
       let parentnumber = this.breadcrumbs.length - 1
       let thisnumber = this.breadcrumbs.length
       this.catalogListPreviosIndex = this.breadcrumbs.push({
@@ -257,9 +295,10 @@ export default {
       })
       this.catalogListPrevios = this.breadcrumbs[parentnumber].name
       this.catalogListName = pagetitle
+      this.catalogListIndex = categoryId
       this.childrens = this.childrens[index].children
       this.breadcrumbs.splice(thisnumber)
-      this.breadcrumbs.push({ id: thisnumber, name: pagetitle, child: index })
+      this.breadcrumbs.push({ id: thisnumber, name: pagetitle, child: index, category_id: categoryId })
       this.stepmenu++
     },
     catalogNavigation() {
@@ -267,7 +306,9 @@ export default {
         this.childrens = []
         this.stepmenu = 1
         this.breadcrumbs.splice(1)
-        this.breadcrumbs.push({ id: 1, name: '', child: 0 })
+        this.breadcrumbs.push({ id: 1, name: '', child: 0, category_id: 0 })
+        this.catalogListName = ''
+        this.catalogListIndex = ''
         this.cataloglistShow = false
       } else {
         let parentid = this.breadcrumbs.length - 1
@@ -282,6 +323,7 @@ export default {
         //  console.log(this.breadcrumbs.length)
         this.catalogListPrevios = this.breadcrumbs[parentid - 2].name
         this.catalogListName = this.breadcrumbs[parentid - 1].name
+        this.catalogListIndex = this.breadcrumbs[parentid - 1].category_id
         for (let i = 1; i < this.breadcrumbs.length - 1; i++) {
           let id = this.breadcrumbs[i + 1].child
           this.childrens = this.childrens[id].children

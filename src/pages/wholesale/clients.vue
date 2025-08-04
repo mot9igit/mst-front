@@ -6,17 +6,7 @@
         <i class="d-icon-arrow d-back__icon d-top-back-icon"></i>
         <span class="d-back__text">Назад</span>
       </a>
-      <ul class="d-breadcrumbs d-top-breadcrumbs">
-        <li class="d-breadcrumbs__item d-top-breadcrumbs-item">
-          <button class="d-breadcrumbs__button">Оптовые цены</button>
-        </li>
-        <li class="d-breadcrumbs__item d-top-breadcrumbs-item">
-          <button class="d-breadcrumbs__button">Акции</button>
-        </li>
-        <li class="d-breadcrumbs__item d-breadcrumbs__item--active d-top-breadcrumbs-item">
-          <button class="d-breadcrumbs__button">Насторойка акции</button>
-        </li>
-      </ul>
+      <Breadcrumbs />
     </div>
 
     <div class="clients__header">
@@ -659,8 +649,58 @@
   </section>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
+import BaseTable from '@/shared/ui/table/table.vue'
+import Loader from '@/shared/ui/Loader.vue'
+
 export default {
   name: 'WholesaleClients',
+  components: { Breadcrumbs, BaseTable, Loader },
+  props: {
+    pagination_items_per_page: {
+      type: Number,
+      default: 5,
+    },
+    pagination_offset: {
+      type: Number,
+      default: 0,
+    },
+  },
+  data() {
+    return {
+      loading: true,
+      page: 1,
+      filters: {
+        name: {
+          name: 'Название организации',
+          placeholder: 'Введите название организации',
+          type: 'text',
+        },
+        manager: {
+          name: 'Менеджер',
+          placeholder: 'Найдите менеджера',
+          type: 'text',
+        },
+        our: {
+					name: 'Созданные поставщиком',
+					placeholder: 'Созданные поставщиком',
+					type: 'checkbox',
+					values: 1
+				},
+      },
+    }
+  },
+  methods: {
+
+  },
+  mounted() {
+
+  },
+  computed: {
+
+  },
+  watch: {},
 }
 </script>
 <style lang="scss"></style>

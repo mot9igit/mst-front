@@ -31,7 +31,7 @@ import Loader from '@/shared/ui/Loader.vue'
 
 export default {
   name: 'wholesaleOrders',
-   components: { Breadcrumbs, BaseTable, Loader },
+  components: { Breadcrumbs, BaseTable, Loader },
   props: {
     pagination_items_per_page: {
       type: Number,

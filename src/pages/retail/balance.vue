@@ -1,7 +1,13 @@
 <template>
   <section class="balance">
   <div class="balance__header">
+      <div class="d-top">
+      <a class="d-back d-top-back">
+        <i class="d-icon-arrow d-back__icon d-top-back-icon"></i>
+        <span class="d-back__text">Назад</span>
+      </a>
       <Breadcrumbs />
+    </div>
 
 			<div class="balance-info__container">
 				<div class="balance-info__button-wrapper">
@@ -80,29 +86,29 @@
   </section>
 
    <teleport to="body">
-    <customModal v-model="this.modal_balance" @cancel="cancel" class="balance-form__modal">
+    <customModal v-model="this.modal_balance" class="balance-form__modal">
       <div class="balance-info__value-container">
         <h2>Создание заявки</h2>
 				<div class="balance-info__label">Доступная сумма для вывода:</div>
 				<div class="balance-info__value">{{ orgActive.balance != '' ? orgActive.balance : '0'}} ₽</div>
         <div class="balance-info__label">Сумма для вывода:</div>
-        <form class="balance-form__modal"  @submit.prevent="formSubmit()">
+        <form class="balance-form__modal"  @submit.prevent="formSubmit()" :class="{ 'd-input--error': v$.form.summEntered.$error }">
         <input
           type="number"
           min = "0"
-          :max = "orgActive.balance"
-          name="summEntered"
           class="modal__input balance-form__input"
-          :class="{ 'd-input--error': v$.form.summEntered.$error }"
           placeholder="0"
           v-model="form.summEntered"
         />
         <div v-if="v$.form.summEntered.$error" class="d-input-error">
-            {{ console.log(v$.form.summEntered) }}
             <i class="d-icon-warning d-input-error__icon"></i>
-            <span v-if="v$.form.summEntered.required" class="d-input-error__text"
-              >Пожалуйста, введите корректную сумму для вывода</span>
-          </div>
+            <span class="d-input-error__text"
+              >Введите корректную сумму для вывода!</span>
+        </div>
+        <div class="message d-input-error" v-if="errorMessage">
+          <i class="d-icon-warning d-input-error__icon"></i><span class="d-input-error__text">Вы ввели не корректную сумму для вывода!</span>
+        </div>
+
         <button
 						type="submit"
 						href="#"
@@ -134,6 +140,9 @@ export default {
       page_balance: 1,
       page_balance_request: 1,
       nowDate: '',
+      summEntered: null,
+      loading: false,
+      errorMessage: false,
       form: {
         summEntered: '',
       },
@@ -198,6 +207,7 @@ export default {
     ...mapActions({
       getBalance: 'retail/getBalance',
       getBalanceRequest: 'retail/getBalanceRequest',
+      setBalanceRequest: 'retail/setBalanceRequest',
     }),
     paginate_balance(data) {
 			this.page_balance = data.page;
@@ -216,36 +226,47 @@ export default {
       let nowYear = date.getFullYear()
       this.nowDate = nowDay + '.' + nowMonth + '.' + nowYear;
     },
-    clearField() {
-      this.form.summEntered = ''
-    },
-    formSubmit(event) {
-      this.v$.$touch() // Отмечаем все поля как проверенные
-      if (this.v$.$invalid) {
-        const errorMessage = this.getErrorMessages()
-        this.$toast.add({
+    async formSubmit(event) {
+      this.v$.$touch()
+      this.summEntered = Number(this.form.summEntered)
+			const result = !isNaN(this.summEntered) && this.summEntered > 0;
+			if(Number(this.summEntered) > Number(this.orgActive.balance)){
+				this.$toast.add({
           severity: 'error',
           summary: 'Ошибка',
-          detail: errorMessage,
-          life: 3000,
-        })
-        return
-      }
+          detail: "Вы ввели не корректную сумму для вывода!",
+          life: 3000
+        });
+        this.errorMessage = true
+				return;
+			}
 
-			//const result = !isNaN(this.costEntered) && this.costEntered > 0;
+			if (!result) {
+				console.log(result);
+				return;
+			}
 
-			//console.log('this.costEntered > orgActive.balance', Number(this.costEntered) > Number(this.orgActive.balance))
-			//console.log(Number(this.costEntered), Number(this.orgActive.balance))
+			this.$load(async () => {
+				this.loading = true;
+				await this.setBalanceRequest({
 
-			//if(Number(this.costEntered) > Number(this.orgActive.balance)){
-			//	this.$v.add({ severity: 'error', summary: 'Ошибка', detail: "Вы ввели не корректную сумму для вывода!", life: 3000 });
-			//	return;
-			//}
-
-			//if (!result) {
-			//	console.log(result);
-			//	return;
-			//}
+          value: this.summEntered,
+				}).then((data) => {
+					console.log(data);
+					this.modal_balance = false;
+					this.loading = false;
+					this.getBalanceRequest({
+						page: 1,
+						perpage: this.pagination_items_per_page_balance_request,
+					});
+					this.formReset();
+				});
+			});
+		},
+		formReset() {
+      this.form.summEntered = ''
+			this.summEntered = null;
+      this.errorMessage = false
 		},
 
   },
@@ -272,7 +293,9 @@ export default {
     }),
   },
   watch: {
-
+    'form.summEntered'(newVal, oldVal) {
+      this.errorMessage = false
+    },
   },
   setup() {
     return { v$: useVuelidate() }

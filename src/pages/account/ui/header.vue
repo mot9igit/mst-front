@@ -161,6 +161,7 @@ export default {
   },
   emits: ['toggleCatalog', 'toggleVendor', 'toggleCart'],
   components: { Loader, customModal, changeAddressWindow, SearchField },
+
   mounted() {
     this.getOrgStores().then(() => {
       this.getOrgBasketStore()
