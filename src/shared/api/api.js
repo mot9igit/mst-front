@@ -8,6 +8,7 @@ import retailModule from '@/pages/retail/api'
 import wholesaleModule from '@/pages/wholesale/api'
 import salesModule from '@/pages/wholesale/api/sales'
 import actionModule from '@/shared/api/action'
+import purchasesModule from '@/pages/purchases/api'
 
 export default {
   auth: authModule(instance),
@@ -19,4 +20,5 @@ export default {
   wholesale: wholesaleModule(instance),
   sales: salesModule(instance),
   action: actionModule(instance),
+  purchases: purchasesModule(instance),
 }

@@ -9,6 +9,7 @@ import retail from './retail'
 import wholesale from './wholesale'
 import sales from './sales'
 import action from './action'
+import purchases from './purchases'
 
 export default new Vuex.Store({
   modules: {
@@ -21,5 +22,6 @@ export default new Vuex.Store({
     sales,
     addition,
     action
+    purchases,
   },
 })

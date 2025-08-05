@@ -8,7 +8,8 @@ export default {
       orders: [],
       total: -1,
     },
-    order: {}
+    order: {},
+    vendors: {},
   },
   actions: {
     async getOrders({ commit }, { filter, sort, page, perpage }) {
@@ -39,11 +40,28 @@ export default {
       }
       return response
     },
+    async getVendors({ commit }, { filter, filtersdata }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        type: router.currentRoute._value.params.type,
+        get_type: 'vendors',
+        filter: filter,
+        filtersdata: filtersdata,
+      }
+      const response = await api.wholesale.getVendors(data)
+      if (response) {
+        commit('SET_VENDORS', response.data)
+      }
+      return response
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },
     unsetOrder({ commit }) {
       commit('UNSET_ORDER')
+    },
+    unsetVendors({ commit }) {
+      commit('UNSET_VENDORS')
     },
   },
   mutations: {
@@ -62,6 +80,12 @@ export default {
     UNSET_ORDER: (state) => {
       state.order = {}
     },
+    SET_VENDORS: (state, data) => {
+      state.vendors = data.data
+    },
+    UNSET_VENDORS: (state) => {
+      state.vendors = {}
+    },
   },
   getters: {
     orders(state) {
@@ -69,6 +93,9 @@ export default {
     },
     order(state) {
       return state.order
+    },
+    vendors(state) {
+      return state.vendors
     },
   },
 }
