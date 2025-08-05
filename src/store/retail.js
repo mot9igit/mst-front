@@ -41,7 +41,6 @@ export default {
     },
     async getBalance({ commit }, { page, perpage }) {
       const data = {
-
         id: router.currentRoute._value.params.id,
         type: 'balance',
         page: page,
@@ -67,7 +66,18 @@ export default {
       }
       return response
     },
+    async setBalanceRequest({ commit }, {value}) {
+      const data = {
 
+        id: router.currentRoute._value.params.id,
+        action: "set",
+        type: "balance_request",
+        value: value,
+      }
+      const response = await api.retail.setBalanceRequest(data)
+
+      return response
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },
@@ -112,5 +122,6 @@ export default {
     balance_request(state) {
       return state.balance_request
     },
+
   },
 }

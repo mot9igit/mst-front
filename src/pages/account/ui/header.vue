@@ -45,7 +45,7 @@
         </div>
         <div class="header__content">
           <div class="header__left">
-            <div class="header__design" :class="{ 'header__design--active': designMenuActive }">
+            <div class="header__design" :class="{ 'header__design--active': designMenuActive && active}">
               <div class="header__design-block header__design-block--left"></div>
               <div class="header__design-block header__design-block--right"></div>
 
@@ -161,6 +161,12 @@ export default {
   },
   emits: ['toggleCatalog', 'toggleVendor', 'toggleCart'],
   components: { Loader, customModal, changeAddressWindow, SearchField },
+  props: {
+    active: {
+      type: Boolean,
+      default: false,
+    },
+  },
   mounted() {
     this.getOrgStores().then(() => {
       this.getOrgBasketStore()
@@ -187,7 +193,12 @@ export default {
       getBasket: 'basket/getBasket',
     }),
     toggleMenu() {
-      this.designMenuActive = !this.designMenuActive
+      if(this.active === true){
+        this.designMenuActive = false
+      }else{
+        this.designMenuActive = true
+      }
+
       this.$emit('toggleCatalog')
     },
     toggleVendor() {
@@ -210,4 +221,8 @@ export default {
   },
 }
 </script>
-<style></style>
+<style>
+.header {
+    padding-block: 11px 20px;
+}
+</style>
