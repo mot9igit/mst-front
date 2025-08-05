@@ -1,5 +1,6 @@
 <template>
   <div class="catalog catalog--desktop" :class="{ 'catalog--active': active }" >
+  <!-- v-on="clickAroundActive ? { click: clickAround } : {}" id="catalog"> -->
     <div class="catalog__list" :class="{ 'catalog__list-nonactive': !cataloglistShow }">
       <div class="catalog__top">
         <button
@@ -210,7 +211,7 @@
     </div>
   </div>
 </template>
-
+ 
 <script>
 import { mapActions, mapGetters } from 'vuex'
 
@@ -225,7 +226,7 @@ export default {
       menu: [],
       activeShowCatalog: 1,
       cataloglistShow: false,
-
+  //    clickAroundActive: false,
       breadcrumbs: [
         { id: 0, name: 'Единый каталог', child: 1,  category_id: 0},
         { id: 1, name: '', child: 0, category_id: 0 },
@@ -251,13 +252,7 @@ export default {
     this.getOptWarehouseCatalog()
     this.getOptCatalog()
     this.menu = this.getMenu()
-
-  },
-  created(){
-    document.addEventListener('click', this.clickAround)
-  },
-  unmounted () {
-    document.removeEventListener('click', this.clickAround)
+    
   },
   methods: {
     ...mapActions({
@@ -271,7 +266,18 @@ export default {
       this.headerDesign = !this.headerDesign
       this.$emit('headerDesignOff')
     },
-
+//    clickAround(){
+//      if(this.clickAroundActive === true){
+//      document.addEventListener('click', event => {  
+//          
+//            let sidebarElement = document.getElementById('catalog')
+//            if (!sidebarElement.contains(event.target)) {   
+//              this.headerDesignOff()  
+//              this.clickAroundActive = false      
+//            }
+//             
+//      })}  
+//    },
     getMenu() {
       return [
         {
@@ -374,7 +380,12 @@ export default {
       this.catalog_warehouse = newVal
       this.actualCatalog = {}
     },
-
+    active: function (newVal) {
+      this.headerDesign = newVal
+    //  if(newVal === true){
+    //    this.clickAroundActive = newVal
+    //  }
+    },
   },
 }
 </script>

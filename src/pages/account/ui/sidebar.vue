@@ -1,6 +1,6 @@
 <template>
   <aside class="sidebar" id="sidebar" :class="{ 'sidebar--full': !active }">
-    <div class="sidebar__inner sidebar__inner--desktop">
+    <div class="sidebar__inner sidebar__inner--desktop" @click.prevent="clickAround()" id="sidebar__inner--desktop">
       <div class="sidebar__content-wrapper">
         <div class="sidebar__logo-wrapper">
           <a href="/" class="sidebar__logo-container">
@@ -256,7 +256,17 @@ export default {
       this.active = !this.active
       localStorage.setItem('sidebar.position', Number(this.active))
     },
-
+    clickAround(){
+      document.addEventListener('click', event => {  
+        let sidebarElement = document.getElementById('sidebar__inner--desktop') 
+        if (!sidebarElement.contains(event.target)) {  
+          if(this.active === false){
+            this.active = !this.active
+            localStorage.setItem('sidebar.position', Number(this.active))
+          }          
+        }  
+      });  
+    },
     async logOut() {
       if (this.getUser) {
         await this.$api.auth.logout()
