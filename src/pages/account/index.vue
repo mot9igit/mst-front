@@ -163,6 +163,9 @@ export default {
 }
 </script>
 <style lang="scss">
+body{
+  overflow: hidden;
+}
 header button,
 aside button {
   color: #282828;

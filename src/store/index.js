@@ -21,7 +21,7 @@ export default new Vuex.Store({
     wholesale,
     sales,
     addition,
-    action
+    action,
     purchases,
   },
 })
