@@ -5,6 +5,8 @@ export default {
   namespaced: true,
   state: {
     vendors: [],
+    catalogs: [],
+    regions: []
   },
   actions: {
     async getVendors({ commit }, sendData) {
@@ -23,15 +25,49 @@ export default {
       }
       return response
     },
+    async getCatalogs({ commit }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        get_type: 'catalog'
+      }
+      const response = await api.addition.getCatalogs(data)
+      if (response) {
+        commit('SET_CATALOGS', response.data)
+      }
+      return response
+    },
+    async getRegions({ commit }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        get_type: 'regions'
+      }
+      const response = await api.addition.getRegions(data)
+      if (response) {
+        commit('SET_REGIONS', response.data)
+      }
+      return response
+    },
   },
   mutations: {
     SET_VENDORS: (state, data) => {
       state.vendors = data.data
     },
+    SET_CATALOGS: (state, data) => {
+      state.catalogs = data.data
+    },
+    SET_REGIONS: (state, data) => {
+      state.regions = data.data
+    },
   },
   getters: {
     vendors(state) {
       return state.vendors
+    },
+    catalogs(state) {
+      return state.catalogs
+    },
+    regions(state) {
+      return state.regions
     },
   },
 }

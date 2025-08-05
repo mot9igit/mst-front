@@ -7,6 +7,7 @@ import catalogModule from '@/pages/account/api/catalog'
 import retailModule from '@/pages/retail/api'
 import wholesaleModule from '@/pages/wholesale/api'
 import salesModule from '@/pages/wholesale/api/sales'
+import actionModule from '@/shared/api/action'
 
 export default {
   auth: authModule(instance),
@@ -17,4 +18,5 @@ export default {
   retail: retailModule(instance),
   wholesale: wholesaleModule(instance),
   sales: salesModule(instance),
+  action: actionModule(instance),
 }
