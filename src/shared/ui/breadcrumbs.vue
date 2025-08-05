@@ -1,6 +1,6 @@
 <template>
   <ul class="d-breadcrumbs d-top-breadcrumbs">
-    <template v-for="(crumb, index) in breadcrumbs">
+    <template v-for="(crumb, index) in breadcrumbs" :key="index">
       <li
       class="d-breadcrumbs__item d-top-breadcrumbs-item"
       v-if="crumb"
@@ -29,8 +29,8 @@ export default {
       const routeMatched = this.$route.matched
 
       const breadcrumbs = pathRoutes.map((route, index) => {
-        console.log(route, index);
-        console.log(route)
+        // console.log(route, index);
+        // console.log(route)
         if (
           route == '/' ||
           route == '' ||
@@ -60,8 +60,8 @@ export default {
   },
   methods: {
     getRouteName(currentRoute, param) {
-      console.log("Current route: ", currentRoute);
-      console.log("Current route param: ", param);
+      // console.log("Current route: ", currentRoute);
+      // console.log("Current route param: ", param);
       switch (param) {
         case ':id': {
           return this.orgActive.name_short ? this.orgActive.name_short : this.orgActive.name
