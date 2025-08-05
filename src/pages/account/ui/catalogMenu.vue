@@ -231,7 +231,7 @@ export default {
       default: false,
     },
   },
-  
+
   mounted() {
     this.getOptWarehouseCatalog()
     this.getOptCatalog()
@@ -246,9 +246,9 @@ export default {
       this.$emit('toggleCatalog')
     },
     headerDesignOff(){
-      
+
       this.headerDesign = !this.headerDesign
-      
+
       this.$emit('headerDesignOff')
     },
     getMenu() {
@@ -373,5 +373,8 @@ export default {
 }
 .catalog__head-item--active{
   color: #fff;
+}
+.catalog {
+    margin-top: 3px;
 }
 </style>

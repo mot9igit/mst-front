@@ -198,7 +198,7 @@ export default {
       }else{
         this.designMenuActive = true
       }
-      
+
       this.$emit('toggleCatalog')
     },
     toggleVendor() {
@@ -221,4 +221,8 @@ export default {
   },
 }
 </script>
-<style></style>
+<style>
+.header {
+    padding-block: 11px 20px;
+}
+</style>
