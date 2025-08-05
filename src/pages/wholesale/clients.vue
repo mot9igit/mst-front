@@ -70,7 +70,7 @@
         </div>
       </div>
 
-      <button class="d-button d-button-primary clients__filters-create">
+      <button class="d-button d-button-primary d-button--sm-shadow clients__filters-create">
         <i class="d-icon-plus-flat clients__filters-create-icon"></i>
         Новый клиент
       </button>
@@ -132,7 +132,7 @@
           </div>
           <div class="clients__card-right-right">
             <div class="d-divider d-divider--vertical clients__card-divider"></div>
-            <button class="d-button d-button-primary clients__card-offer">
+            <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
               <i class="d-icon-plus-flat clients__card-offer-icon"></i>
               Предложение
             </button>
@@ -167,7 +167,7 @@
 
           <div class="clients__card-top-right">
             <div class="clients__card-top-right-top">
-              <button class="d-button d-button-primary clients__card-offer">
+              <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
@@ -274,7 +274,7 @@
           </div>
           <div class="clients__card-right-right">
             <div class="d-divider d-divider--vertical clients__card-divider"></div>
-            <button class="d-button d-button-primary clients__card-offer">
+            <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
               <i class="d-icon-plus-flat clients__card-offer-icon"></i>
               Предложение
             </button>
@@ -309,7 +309,7 @@
 
           <div class="clients__card-top-right">
             <div class="clients__card-top-right-top">
-              <button class="d-button d-button-primary clients__card-offer">
+              <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
@@ -416,7 +416,7 @@
           </div>
           <div class="clients__card-right-right">
             <div class="d-divider d-divider--vertical clients__card-divider"></div>
-            <button class="d-button d-button-primary clients__card-offer">
+            <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
               <i class="d-icon-plus-flat clients__card-offer-icon"></i>
               Предложение
             </button>
@@ -451,7 +451,7 @@
 
           <div class="clients__card-top-right">
             <div class="clients__card-top-right-top">
-              <button class="d-button d-button-primary clients__card-offer">
+              <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
@@ -558,7 +558,7 @@
           </div>
           <div class="clients__card-right-right">
             <div class="d-divider d-divider--vertical clients__card-divider"></div>
-            <button class="d-button d-button-primary clients__card-offer">
+            <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
               <i class="d-icon-plus-flat clients__card-offer-icon"></i>
               Предложение
             </button>
@@ -593,7 +593,7 @@
 
           <div class="clients__card-top-right">
             <div class="clients__card-top-right-top">
-              <button class="d-button d-button-primary clients__card-offer">
+              <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
@@ -657,16 +657,7 @@ import Loader from '@/shared/ui/Loader.vue'
 export default {
   name: 'WholesaleClients',
   components: { Breadcrumbs, BaseTable, Loader },
-  props: {
-    pagination_items_per_page: {
-      type: Number,
-      default: 5,
-    },
-    pagination_offset: {
-      type: Number,
-      default: 0,
-    },
-  },
+
   data() {
     return {
       loading: true,
@@ -692,15 +683,28 @@ export default {
     }
   },
   methods: {
-
+    ...mapActions({
+      getVendors: 'wholesale/getVendors',
+      unsetVendors: 'wholesale/unsetVendors',
+    }),
+    filter(data) {
+      console.log(data)
+      this.loading = true
+      this.unsetVendors()
+      this.page = 1
+      this.getVendors(data).then(() => {
+      this.loading = false
+      })
+    },
   },
   mounted() {
 
   },
   computed: {
-
+    ...mapGetters({
+      vendors: 'wholesale/Vendors',
+    }),
   },
-  watch: {},
 }
 </script>
 <style lang="scss"></style>

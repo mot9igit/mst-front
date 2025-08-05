@@ -2,26 +2,18 @@
   <section class="clients" id="clients">
     <!-- Верхушка страницы -->
     <div class="d-top">
+      <div class="d-top">
       <a class="d-back d-top-back">
         <i class="d-icon-arrow d-back__icon d-top-back-icon"></i>
         <span class="d-back__text">Назад</span>
       </a>
-      <ul class="d-breadcrumbs d-top-breadcrumbs">
-        <li class="d-breadcrumbs__item d-top-breadcrumbs-item">
-          <button class="d-breadcrumbs__button">Оптовые цены</button>
-        </li>
-        <li class="d-breadcrumbs__item d-top-breadcrumbs-item">
-          <button class="d-breadcrumbs__button">Акции</button>
-        </li>
-        <li class="d-breadcrumbs__item d-breadcrumbs__item--active d-top-breadcrumbs-item">
-          <button class="d-breadcrumbs__button">Насторойка акции</button>
-        </li>
-      </ul>
+      <Breadcrumbs />
+    </div>
     </div>
 
     <div class="clients__header">
       <div class="clients__header-title-wrapper">
-        <h1 class="clients__header-title">Мои поставщики (28)</h1>
+        <h1 class="clients__header-title">Мои поставщики ({{ dilers.total }})</h1>
       </div>
       <p class="clients__header-description">
         Доступные организации, которые являются вашими поставщиками
@@ -47,7 +39,7 @@
         </div>
       </div>
 
-      <button class="d-button d-button-primary clients__filters-create">
+      <button class="d-button d-button-primary d-button--sm-shadow d-button--sm-shadow clients__filters-create">
         <i class="d-icon-plus-flat clients__filters-create-icon"></i>
         Новый Поставщик
       </button>
@@ -109,7 +101,7 @@
           </div>
           <div class="clients__card-right-right">
             <div class="d-divider d-divider--vertical clients__card-divider"></div>
-            <button class="d-button d-button-primary clients__card-offer">
+            <button class="d-button d-button-primary d-button--sm-shadow d-button--sm-shadow clients__card-offer">
               <i class="d-icon-plus-flat clients__card-offer-icon"></i>
               Предложение
             </button>
@@ -144,7 +136,7 @@
 
           <div class="clients__card-top-right">
             <div class="clients__card-top-right-top">
-              <button class="d-button d-button-primary clients__card-offer">
+              <button class="d-button d-button-primary d-button--sm-shadow d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
@@ -251,7 +243,7 @@
           </div>
           <div class="clients__card-right-right">
             <div class="d-divider d-divider--vertical clients__card-divider"></div>
-            <button class="d-button d-button-primary clients__card-offer">
+            <button class="d-button d-button-primary d-button--sm-shadow d-button--sm-shadow clients__card-offer">
               <i class="d-icon-plus-flat clients__card-offer-icon"></i>
               Предложение
             </button>
@@ -286,7 +278,7 @@
 
           <div class="clients__card-top-right">
             <div class="clients__card-top-right-top">
-              <button class="d-button d-button-primary clients__card-offer">
+              <button class="d-button d-button-primary d-button--sm-shadow d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
@@ -393,7 +385,7 @@
           </div>
           <div class="clients__card-right-right">
             <div class="d-divider d-divider--vertical clients__card-divider"></div>
-            <button class="d-button d-button-primary clients__card-offer">
+            <button class="d-button d-button-primary d-button--sm-shadow d-button--sm-shadow clients__card-offer">
               <i class="d-icon-plus-flat clients__card-offer-icon"></i>
               Предложение
             </button>
@@ -428,7 +420,7 @@
 
           <div class="clients__card-top-right">
             <div class="clients__card-top-right-top">
-              <button class="d-button d-button-primary clients__card-offer">
+              <button class="d-button d-button-primary d-button--sm-shadow d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
@@ -535,7 +527,7 @@
           </div>
           <div class="clients__card-right-right">
             <div class="d-divider d-divider--vertical clients__card-divider"></div>
-            <button class="d-button d-button-primary clients__card-offer">
+            <button class="d-button d-button-primary d-button--sm-shadow d-button--sm-shadow clients__card-offer">
               <i class="d-icon-plus-flat clients__card-offer-icon"></i>
               Предложение
             </button>
@@ -570,7 +562,7 @@
 
           <div class="clients__card-top-right">
             <div class="clients__card-top-right-top">
-              <button class="d-button d-button-primary clients__card-offer">
+              <button class="d-button d-button-primary d-button--sm-shadow d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
@@ -626,8 +618,64 @@
   </section>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
+import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
+import BaseTable from '@/shared/ui/table/table.vue'
+import Loader from '@/shared/ui/Loader.vue'
+
 export default {
   name: 'purchasesVendors',
+    components: { Breadcrumbs, BaseTable, Loader },
+  props: {
+
+  },
+  data() {
+    return {
+      loading: true,
+      page: 1,
+      filters: {
+        name: {
+          name: 'Название организации',
+          placeholder: 'Введите название организации',
+          type: 'text',
+        },
+        manager: {
+          name: 'Менеджер',
+          placeholder: 'Найдите менеджера',
+          type: 'text',
+        },
+        our: {
+					name: 'Созданные поставщиком',
+					placeholder: 'Созданные поставщиком',
+					type: 'checkbox',
+					values: 1
+				},
+      },
+    }
+  },
+  methods: {
+    ...mapActions({
+      getDilers: 'purchases/getDilers',
+      unsetDilers: 'purchases/unsetDilers',
+    }),
+    filter(data) {
+      console.log(data)
+      this.loading = true
+      this.unsetDilers()
+      this.page = 1
+      this.getDilers(data).then(() => {
+      this.loading = false
+      })
+    },
+  },
+  mounted() {
+
+  },
+  computed: {
+    ...mapGetters({
+      dilers: 'purchases/dilers',
+    }),
+  },
 }
 </script>
 <style lang="scss"></style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="catalog catalog--desktop" :class="{ 'catalog--active': active }">
+  <div class="catalog catalog--desktop" :class="{ 'catalog--active': active }" >
     <div class="catalog__list" :class="{ 'catalog__list-nonactive': !cataloglistShow }">
       <div class="catalog__top">
         <button
@@ -67,15 +67,26 @@
               </div>
               <i class="d-icon-angle-rounded catalog__item-arrow"></i>
             </button>
-            <router-link
+            <button
+              class="catalog__item-button"
+              @click.prevent="ShowPodcatalog(index, item.pagetitle, item.id)"
+              v-else
+            >
+              <div class="catalog__item-content">
+                <img :src="item.image" class="catalog__item-img" v-if="item.image != ''" />
+                <p class="catalog__item-title">{{ item.pagetitle }}</p>
+              </div>
+
+            </button>
+<!--           <router-link
               class="catalog__item-button"
               :to="{
                 name: 'purchasesCatalogWarehouseCategory',
                 params: {
                   id: this.$route.params.id,
                   org_w_id: item.org_w_id,
-                  warehouse_id: item.warehouse_id,
-                  warehouse_cat_id: item.id,
+                //  warehouse_id: item.warehouse_id,
+                //  warehouse_cat_id: item.id,
                 },
               }"
               v-else
@@ -85,7 +96,7 @@
                 <img :src="item.image" class="catalog__item-img" v-if="item.image != ''" />
                 <p class="catalog__item-title">{{ item.pagetitle }}</p>
               </div>
-            </router-link>
+            </router-link>-->
           </li>
         </ul>
       </div>
@@ -119,17 +130,18 @@
                 name: 'purchasesCatalogWarehouseCategory',
                 params: {
                   id: this.$route.params.id,
-                  org_w_id: breadcrumbs[1].child,
-                  warehouse_id: breadcrumbs[2].child,
+                  org_w_id: breadcrumbs[1].category_id,
+                  warehouse_id: breadcrumbs[2].category_id,
                   warehouse_cat_id: catalogListIndex,
                 },
               }"
-              v-else-if="stepmenu > 3"
+              v-else-if="activeShowCatalog === 0 && stepmenu > 3"
               @click.prevent="headerDesignOff">
               <div class="catalog__head-item catalog__head-item--sub">
                 <span class="catalog__head-item-text">{{ catalogListName }}</span>
               </div>
-        </router-link>
+      </router-link>
+
         <div class="catalog__head-item catalog__head-item--sub" v-else>
           <span class="catalog__head-item-text">{{ catalogListName }}</span>
         </div>
@@ -144,7 +156,7 @@
           >
             <button
               class="catalog__item-button"
-              @click.prevent="ShowPodcatalogList(subindex, subitem.pagetitle, subitem.id)"
+              @click.prevent="activeShowCatalog === 0 && stepmenu === 2 ? ShowPodcatalogList(subindex, subitem.pagetitle, subitem.warehouse_id) : ShowPodcatalogList(subindex, subitem.pagetitle, subitem.id)"
               v-if="subitem.children != undefined"
             >
               <div class="catalog__item-content">
@@ -153,6 +165,7 @@
               </div>
               <i class="d-icon-angle-rounded catalog__item-arrow"></i>
             </button>
+
             <div v-else>
               <router-link
                 :to="{
@@ -201,6 +214,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 
+
 export default {
   name: 'catalogMenu',
   data() {
@@ -211,6 +225,7 @@ export default {
       menu: [],
       activeShowCatalog: 1,
       cataloglistShow: false,
+
       breadcrumbs: [
         { id: 0, name: 'Единый каталог', child: 1,  category_id: 0},
         { id: 1, name: '', child: 0, category_id: 0 },
@@ -236,6 +251,13 @@ export default {
     this.getOptWarehouseCatalog()
     this.getOptCatalog()
     this.menu = this.getMenu()
+
+  },
+  created(){
+    document.addEventListener('click', this.clickAround)
+  },
+  unmounted () {
+    document.removeEventListener('click', this.clickAround)
   },
   methods: {
     ...mapActions({
@@ -246,11 +268,10 @@ export default {
       this.$emit('toggleCatalog')
     },
     headerDesignOff(){
-
       this.headerDesign = !this.headerDesign
-
       this.$emit('headerDesignOff')
     },
+
     getMenu() {
       return [
         {
@@ -343,6 +364,7 @@ export default {
       optCatalog: 'catalog/optCatalog',
       optCatalogWarehouse: 'catalog/optCatalogWarehouse',
     }),
+
   },
   watch: {
     optCatalog: function (newVal) {
@@ -352,6 +374,7 @@ export default {
       this.catalog_warehouse = newVal
       this.actualCatalog = {}
     },
+
   },
 }
 </script>
