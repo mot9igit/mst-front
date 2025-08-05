@@ -107,7 +107,7 @@
                   category_id: catalogListIndex,
                 },
               }"
-              v-if="activeShowCatalog === 1 && stepmenu > 2"
+              v-if="activeShowCatalog === 1 && stepmenu > 1"
               @click.prevent="headerDesignOff">
               <div class="catalog__head-item catalog__head-item--sub">
                 <span class="catalog__head-item-text">{{ catalogListName }}</span>
