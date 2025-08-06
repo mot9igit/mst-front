@@ -20,27 +20,52 @@
 
     <div class="clients__filters">
       <div class="clients__filters-left">
-        <div class="clients__filters-input-container">
-          <div class="d-input d-input--light clients__filters-input">
+        <div class="clients__filters-input-container"  v-for="(ffilter, i) in filters" :key="i">
+          <div class="d-input d-input--light clients__filters-input" v-if="ffilter.type == 'text'">
             <input
               type="text"
-              placeholder="Введите название организации"
-              name="orgName"
+              :id="ffilter.name"
+              :placeholder="ffilter.placeholder"
+              :name="i"
               class="d-input__field clients__filters-input-field"
+              v-model="filterText"
+              @input="setFilter('filter')"
             />
+            <!---->
             <div class="d-input__actions clients__filters-input-actions">
-              <button class="d-icon-wrapper clients__filters-input-button">
+              <button class="d-icon-wrapper clients__filters-input-button" >
                 <i class="d-icon-search-big"></i>
               </button>
             </div>
           </div>
-          <div class="d-input d-input--light clients__filters-input">
-            <input
-              type="text"
-              placeholder="Найдите менеджера"
-              name="date"
-              class="d-input__field clients__filters-input-field"
-            />
+          <div class="d-input d-input--light clients__filters-input"  v-if="ffilter.type == 'dropdown'">
+            <div class="dart-form-group" v-if="ffilter.type == 'select'">
+              <Dropdown
+                v-model="filterValues[i]"
+                :options="ffilter.values"
+                filter
+                showClear
+                :optionLabel="ffilter.optionLabel ? ffilter.optionLabel : 'name'"
+                :optionValue="ffilter.optionValue ? ffilter.optionValue : 'id'"
+                :placeholder="ffilter.placeholder"
+                @change="setFilter('filter')"
+              ></Dropdown>
+
+            <!--  <select
+                :name="i"
+                :id="'filter_' + i"
+                :placeholder="ffilter.placeholder"
+                class="d-input__field clients__filters-input-field"
+
+					  >
+            v-model="filters[i]"
+                @change="setFilter"
+                <option v-for="(item, index) in managers" :key="index" :value="item">
+                  {{ item.name }}
+                </option>
+					    </select>-->
+            </div>
+
             <div class="d-input__actions clients__filters-input-actions">
               <button class="d-icon-wrapper clients__filters-input-button">
                 <i class="d-icon-search-big"></i>
@@ -54,17 +79,20 @@
             </div>
           </div>
         </div>
-        <div class="d-radio__wrapper clients__filters-radio-wrapper">
-          <label for="vendorCreated" class="d-radio clients__filters-radio">
-            <input
-              type="checkbox"
-              name="test-radios"
-              id="vendorCreated"
+        <div class="d-radio__wrapper clients__filters-radio-wrapper"   v-for="(ffilter, i) in filters" :key="i"  >
+          <label for="vendorCreated" class="d-radio clients__filters-radio" v-if="ffilter.type == 'checkbox'">
+
+            <Checkbox
+              :inputId="'input' + i"
+              :name="i"
+              value="1"
+              v-model="filterValues[i]"
+              @change="setFilter"
               class="d-radio__input clients__filters-radio-input"
             />
-          </label>
 
-          <label for="vendorCreated" class="d-radio__label clients__filters-radio-label"
+          </label>
+          <label for="vendorCreated" class="d-radio__label clients__filters-radio-label"  v-if="ffilter.type == 'checkbox'"
             >Созданные поставщиком
           </label>
         </div>
@@ -99,7 +127,7 @@
               <p class="clients__card-inn-value">{{ item.req?.inn }}</p>
             </div>
 
-            <div class="clients__card-contact-container d-col-15" :class="item.credit.deb_summ > 0 || item.credit.deb_summ_expired > 0 ? 'clients__devider' : ''">
+            <div class="clients__card-contact-container d-col-15" :class="item.owner_id > 0 && item.owner_id == this.$route.params.id ? 'clients__devider' : ''">
               <a :href="'tel:' + item.phone.replace(/[^+\d]/g, '')" class="clients__card-contact">
                 <i class="d-icon-telephone clients__card-contact-icon"></i>
                 <span>{{ item.phone }}</span>
@@ -113,7 +141,7 @@
         </div>
 
         <div class="clients__card-right d-col-8">
-          <div class="clients__card-right-left d-col-3" :class="item.credit.deb_summ > 0 || item.credit.deb_summ_expired > 0 ? 'clients__devider' : ''">
+          <div class="clients__card-right-left d-col-3" :class="item.owner_id > 0 && item.owner_id == this.$route.params.id ? 'clients__devider' : ''">
              <!--<div class="d-divider d-divider--vertical clients__card-divider"></div>
            <div class="clients__card-price-container">
               <div class="clients__card-price">
@@ -126,7 +154,7 @@
               </div>
             </div>-->
 
-            <div class="clients__card-vendor" v-if="item.credit.deb_summ > 0 || item.credit.deb_summ_expired > 0">Создан поставщиком</div>
+            <div class="clients__card-vendor" v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id">Создан поставщиком</div>
           </div>
           <div class="clients__card-right-right d-col-7">
             <div class="d-col-18 clients__devider">
@@ -182,7 +210,7 @@
               </div>
             </div>
             <div class="clients__card-vendor-wrapper">
-              <div class="clients__card-vendor" v-if="item.credit.deb_summ > 0 || item.credit.deb_summ_expired > 0">Создан поставщиком</div>
+              <div class="clients__card-vendor" v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id">Создан поставщиком</div>
             </div>
           </div>
         </div>
@@ -238,14 +266,17 @@ import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Paginate from 'vuejs-paginate-next'
 import Loader from '@/shared/ui/Loader.vue'
+import Dropdown from 'primevue/dropdown'
+import Checkbox from 'primevue/checkbox'
+import { toRaw } from 'vue'
 
 export default {
   name: 'WholesaleClients',
-  components: { Breadcrumbs, Loader, Paginate },
+  components: { Breadcrumbs, Loader, Paginate, Dropdown, Checkbox },
 props: {
     pagination_items_per_page: {
       type: Number,
-      default: 5,
+      default: 25,
     },
     pagination_offset: {
       type: Number,
@@ -256,6 +287,8 @@ props: {
     return {
       loading: true,
       page: 1,
+      filterText: '',
+      filterValues: {},
       filters: {
         name: {
           name: 'Название организации',
@@ -264,8 +297,9 @@ props: {
         },
         manager: {
           name: 'Менеджер',
-          placeholder: 'Найдите менеджера',
-          type: 'text',
+          placeholder: 'Выберите менеджера',
+          type: 'dropdown',
+          values: []
         },
         our: {
 					name: 'Созданные поставщиком',
@@ -283,6 +317,27 @@ props: {
       getManagers: 'wholesale/getManagers',
       getStores: 'wholesale/getStores',
     }),
+    setFilter(type = '0') {
+      if (type === 'filter') {
+        if (this.filterText.length >= 3 || this.filterText.length === 0) {
+          setTimeout(() => {
+            this.filter({
+              filter: this.filterText,
+              filtersdata: toRaw(this.filterValues),
+              page: 1,
+              perpage: this.pagination_items_per_page,
+            })
+          })
+        }
+      } else {
+        this.filter({
+          filter: this.filterText,
+          filtersdata: toRaw(this.filterValues),
+          page: 1,
+          perpage: this.pagination_items_per_page,
+        })
+      }
+    },
     filter(data) {
       console.log(data)
       this.loading = true
@@ -291,6 +346,22 @@ props: {
       this.getDilers(data).then(() => {
       this.loading = false
       })
+    },
+    pagClickCallback(pageNum) {
+      console.log(pageNum)
+      this.paginate({
+
+        filter: this.filterText,
+        filtersdata: toRaw(this.filterValue),
+        page: pageNum,
+        perpage: this.pagination_items_per_page,
+
+      })
+
+      const el = document.querySelector('.clients__card-container')
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' })
+      }
     },
     paginate(data) {
       this.loading = true
@@ -303,12 +374,31 @@ props: {
 
   },
   mounted() {
+  //  this.getDilers({
+  //    page: this.page,
+  //    perpage: this.pagination_items_per_page,
+  //  }).then(() => {
+  //    this.loading = false
+  //  })
     this.getDilers({
-      page: this.page,
-      perpage: this.pagination_items_per_page,
-    }).then(() => {
-      this.loading = false
-    })
+			type: 1,
+			page: this.page,
+			perpage: this.pagination_items_per_page
+		}).then(() => {
+			if (this.dilers) {
+				if (Object.prototype.hasOwnProperty.call(this.dilers, 'items')) {
+				this.stores.items = this.dilers.items
+				} else {
+				this.stores.items = []
+				}
+				if (Object.prototype.hasOwnProperty.call(this.dilers, 'total')) {
+					this.stores.total = this.dilers.total
+				} else {
+					this.stores.total = 0
+				}
+        this.loading = false
+			}
+		})
     this.getManagers({
 			id: this.$route.params.id,
 		});
@@ -330,7 +420,12 @@ props: {
       return pages
     },
   },
-  watch: {},
+  watch: {
+
+    managers: function (newVal, oldVal) {
+			this.filters.manager.values = newVal
+		}
+  },
 }
 </script>
 <style lang="scss">
@@ -357,6 +452,10 @@ props: {
     width: 0.5px;
     height: 20px;
     background-color: #75757575;
+}
+.clients__filters-input select{
+  width: 100%;
+
 }
 @media (width <= 1280px) {
 .clients__devider:before{
