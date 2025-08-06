@@ -462,6 +462,9 @@ export default {
 .clients__filters-input .dart-form-group{
   width:100%;
 }
+.page-item .page-link{
+  cursor:pointer;
+}
 @media (width <= 1280px) {
 .clients__devider:before{
   display:none;
