@@ -112,7 +112,7 @@
         <!-- Количество -->
         <div class="product-card__count">
           <p class="product-card__count-value">
-            <span class="product-card__count-label">В наличии:</span>
+            <span class="product-card__count-label">В наличии: </span>
             <span v-if="offer.remains_abstract != offer.available">{{
               offer.remains_abstract
             }}</span>
@@ -120,8 +120,8 @@
           </p>
           <div class="d-divider d-divider--vertical product-card__count-divider"></div>
           <p class="product-card__count-value">
-            <span class="product-card__count-label">Ваша потребность:</span>
-            -4 шт
+            <span class="product-card__count-label">Ваша потребность: </span>
+            {{ offer.our_forecast ? offer.our_forecast : 0 }} шт
           </p>
         </div>
       </div>

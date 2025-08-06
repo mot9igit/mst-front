@@ -1,4 +1,5 @@
 <template>
+  <Toast/>
   <section class="promotions" id="promotions">
     <div class="promotions__top">
       <router-link :to="{ name: 'wholesalePrices', params: { id: $route.params.id } }" class="d-back promotions__top-back">
@@ -3809,7 +3810,7 @@
           </div>
         </div>
         <div class="d-modal2__content promo-modal__content">
-          <section class="promo-master">
+          <div class="promo-master">
             <div class="promo-master__content">
               <div class="promo-master__content-left">
                 <!-- 1 ЭТАП - Контент акции -->
@@ -3818,76 +3819,48 @@
                     Контент акции
                   </p>
                   <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical promo-master__settings promo-master__settings--sm-margin">
-                    <label for="dateStart" class="d-dropdown__label">Название акции
+                    <label for="actionName" class="d-dropdown__label">Название акции
                     </label>
                     <div class="d-input d-input--light d-input--width-640 d-textarea promo-master__textarea">
-                      <textarea rows="2" placeholder="Например: “4+1 на дрели” “4+1 на дрели” “4+1 на дрели” “4+1 на дрели” Например: “4+1 на дрели” “4+1 на дрели” “4+1 на дрели” “4+1 на дрели” " name="dateStart" class="d-input__field d-textarea__field"></textarea>
+                      <input v-model="this.form.name" placeholder="Например: '4+1 на дрели'" name="actionName" class="d-input__field">
                     </div>
                   </div>
                   <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
                     <label for="dateStart" class="d-dropdown__label">Описание акции
                     </label>
-                    <div class="d-editor promo-master__editor">
-                      <div class="d-editor__header">
-                        <div class="d-input d-input--light d-editor__search">
-                          <input type="text" class="d-input__field d-editor__search-field" placeholder="Placeholder text">
-                          <div class="d-editor__text-tools">
-                            <p class="d-editor__font-size">
-                              00
-                            </p>
-                            <div class="d-editor__tool-container">
-                              <button class="d-editor__tool">
-                                <i class="d-icon-b d-editor__tool-icon"></i>
-                              </button>
-                              <button class="d-editor__tool">
-                                <i class="d-icon-i d-editor__tool-icon"></i>
-                              </button>
-                              <button class="d-editor__tool">
-                                <i class="d-icon-u d-editor__tool-icon"></i>
-                              </button>
-                            </div>
-                            <div class="d-divider d-divider--vertical d-divider--gray d-divider--big d-divider--semibold d-divider--semi-full"></div>
-                            <div class="d-editor__tool-container">
-                              <button class="d-editor__tool">
-                                <i class="d-icon-marker d-editor__tool-icon"></i>
-                              </button>
-                              <button class="d-editor__tool">
-                                <i class="d-icon-a d-editor__tool-icon"></i>
-                              </button>
-                              <button class="d-editor__tool">
-                                <i class="d-icon-upper-case d-editor__tool-icon"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="d-editor__tools">
-                          <div class="d-editor__tool-container">
-                            <button class="d-editor__tool">
-                              <i class="d-icon-list2 d-editor__tool-icon"></i>
-                            </button>
-                            <button class="d-editor__tool">
-                              <i class="d-icon-number-list d-editor__tool-icon"></i>
-                            </button>
-                          </div>
-                          <div class="d-divider d-divider--vertical d-divider--gray d-divider--big d-divider--semibold d-divider--semi-full"></div>
-                          <div class="d-editor__tool-container">
-                            <button class="d-editor__tool">
-                              <i class="d-icon-link d-editor__tool-icon"></i>
-                            </button>
-                            <button class="d-editor__tool">
-                              <i class="d-icon-calendar2 d-editor__tool-icon"></i>
-                            </button>
-                            <button class="d-editor__tool">
-                              <i class="d-icon-quote d-editor__tool-icon"></i>
-                            </button>
-                            <button class="d-editor__tool">
-                              <i class="d-icon-grid d-editor__tool-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <textarea class="d-editor__field" rows="5" placeholder="Например: “Известный европейский бренд 25 лет в России! Высокая маржинальность до 45%! Широкий ассортимент для любого сегмента рынка. Цены крупного опта при любом заказе! 100% контроль цен. Возврат денег за непроданный товар.&nbsp;Широкая рекламная поддержка.”"></textarea>
-                    </div>
+                    <Editor
+                      api-key="ctqgmxpl4dimvsnrt6lnhbyk2xb7eyrhvbbh9lch2kltngkh"
+                      language_url='../../../src/locales/tiny/ru.js'
+                      :language_load=true
+                      v-model="this.form.description"
+                      initial-value="<b>Подзаголовок акции</b>
+                      <br>
+                      <p><span style='text-decoration: underline'>Перечислить все выгодные условия:</span> скидки, подарки, бонусы, возможность выиграть приз и т.д.</p>
+                      <p><span style='text-decoration: underline'>Выделить ключевые преимущества:</span> чем ваша акция лучше, чем у конкурентов?</p>
+                      <p><span style='text-decoration: underline'>Указать, для кого она предназначена:</span> для всех, для определенной возрастной группы, для постоянных клиентов и т.д.</p>"
+                      :init="{
+                        plugins: [
+                          'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                          'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                          'insertdatetime', 'media', 'table', 'help', 'wordcount'
+                        ],
+                        toolbar: 'undo redo | ' +
+                        'bold italic underline backcolor | alignleft aligncenter ' +
+                        'alignright alignjustify | bullist numlist outdent indent | ' +
+                        'removeformat | help',
+                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }',
+                        menu: {
+                          file: { title: 'Файл', items: 'newdocument restoredraft | preview | importword exportpdf exportword | deleteallconversations' },
+                          edit: { title: 'Редактировать', items: 'undo redo | cut copy paste pastetext | selectall | searchreplace' },
+                          view: { title: 'View', items: '' },
+                          insert: { title: 'Вставить', items: 'image link media addcomment pageembed codesample inserttable | math | charmap emoticons hr | pagebreak nonbreaking anchor tableofcontents | insertdatetime' },
+                          format: { title: 'Форматирование', items: 'bold italic underline strikethrough superscript subscript | align lineheight | forecolor | language | removeformat' },
+                          tools: { title: 'Tools', items: '' },
+                          table: { title: 'Таблица', items: 'inserttable | cell row column | advtablesort | tableprops deletetable' },
+                          help: { title: 'Help', items: '' }
+                        }
+                      }"
+                    />
                   </div>
                 </div>
                 <!-- 2 ЭТАП Даты проведения акции -->
@@ -3897,25 +3870,14 @@
                   </p>
                   <div class="d-field-container d-field-container--long">
                     <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <!-- TODO Вместо этого нужно будет переписать эти стили в компонент какой-нибудь либы, где есть инпут даты -->
-                      <label for="dateStart" class="d-dropdown__label">Дата начала акции
-                      </label>
-                      <div class="d-input d-input--light">
-                        <input type="text" placeholder="__ __" name="dateStart" class="d-input__field">
-                        <button class="d-icon-wrapper d-input__calendar-button">
-                          <i class="d-icon-calendar3"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <label for="dateStart" class="d-dropdown__label">Дата окончания акции
-                      </label>
-                      <div class="d-input d-input--light">
-                        <input type="text" placeholder="__ __" name="dateStart" class="d-input__field">
-                        <button class="d-icon-wrapper d-input__calendar-button">
-                          <i class="d-icon-calendar3"></i>
-                        </button>
-                      </div>
+                      <DatePicker
+                        v-model="this.form.dates"
+                        dateFormat="dd.mm.yy"
+                        selectionMode="range"
+                        placeholder="Выберите даты"
+                        :manualInput="false"
+                        showIcon
+                      />
                     </div>
                   </div>
                 </div>
@@ -3932,19 +3894,34 @@
                       изображения не должен превышать 5 Мбайт&nbsp;.
                     </p>
                   </div>
-                  <label class="d-upload promo-master__upload" for="promo-upload">
-                    <input type="file" name="promo-upload" id="promo-upload" class="d-upload__input">
-                    <img src="/icons/upload-cloud.svg" alt="Upload icon" class="d-upload__icon" width="80" height="50">
-                    <p class="d-upload__title">
-                      Перетащите файл в эту область
-                    </p>
-                    <p class="d-upload__description">
-                      Вы также можете загрузить файлы png, jpeg,
-                      svg,
-                      <a href="/" class="d-link d-upload__link">нажав сюда
-                      </a>
-                    </p>
-                  </label>
+                  <DropZone  v-if="!this.upload_product" class=""
+                    :maxFiles="Number(1)"
+                    url="/rest/file_upload.php?banner=max"
+                    :uploadOnDrop="true"
+                    :multipleUpload="true"
+                    :acceptedFiles="['png', 'jpeg', 'jpg', 'svg']"
+                    :parallelUpload="1"
+                    @sending="parseFileBanner"
+                    @removedFile="deselectFileBannerAll"
+                    v-bind="args"
+                  >
+                    <template v-slot:message>
+                        <div class="d-upload promo-master__upload">
+                          <img src="/icons/upload-cloud.svg" alt="Upload icon" class="d-upload__icon" width="80" height="50">
+                          <p class="d-upload__title">
+                            Перетащите файл в эту область
+                          </p>
+                          <p class="d-upload__description">
+                            Вы также можете загрузить файлы png, jpeg,
+                            svg,
+                            <span class="d-link d-upload__link">нажав сюда</span>
+                          </p>
+                        </div>
+                    </template>
+                  </DropZone>
+                  <div class="upload-banner__image">
+                    <img :src="this.files?.max?.original_href" v-if="this.files?.max?.original_href" />
+                  </div>
                   <div class="d-field-container d-field-container--vertical promo-master__settings">
                     <p class="promo-master__subtitle">
                       Места размещения
@@ -3987,14 +3964,14 @@
                     <div class="d-radio__container d-radio__container--small">
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
                         <label for="deferred-payment1" class="d-radio">
-                          <input type="radio" name="deferred-payment" id="deferred-payment1" class="d-radio__input">
+                          <input type="radio" name="deferred-payment" v-model="this.form.typeDelay" value="1" class="d-radio__input">
                         </label>
                         <label for="deferred-payment1" class="d-radio__label promo-master__radio-label">Отсрочка (по умолчанию)
                         </label>
                       </div>
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
                         <label for="deferred-payment2" class="d-radio">
-                          <input type="radio" name="deferred-payment" id="deferred-payment2" class="d-radio__input">
+                          <input type="radio" name="deferred-payment" v-model="this.form.typeDelay" value="2" class="d-radio__input">
                         </label>
                         <label for="deferred-payment2" class="d-radio__label promo-master__radio-label">Под реализацию
                         </label>
@@ -4006,12 +3983,12 @@
                       <div class="promotions__card-header-left">
                         <p class="promotions__card-title">
                           Срок отсрочки платежа:
-                          <span class="promotions__card-title-span">19 дней</span>
+                          <span class="promotions__card-title-span">{{ this.form.postponementPeriod }} дн.</span>
                         </p>
                       </div>
-                      <button class="promotions__card-button" data-modal2-trigger="deferredPayment">
+                      <a href="#" @click.prevent="this.modals.delay = true" class="promotions__card-button">
                         <i class="d-icon-pen2 promotions__card-button-icon"></i>
-                      </button>
+                      </a>
                     </div>
                     <div class="promotions__card-content promo-master__card-content">
                       <div class="promotions__card-values promo-master__card-values">
@@ -4019,12 +3996,8 @@
                           Срок отсрочки платежа:
                         </p>
                         <div class="d-field-container d-field-container--vertical">
-                          <p class="promotions__card-text promotions__card-text--dark-gray promo-master__card-text">
-                            — 90% через 10 дней после
-                            отгрузки
-                          </p>
-                          <p class="promotions__card-text promotions__card-text--dark-gray promo-master__card-text">
-                            — 10% через 100 дней после
+                          <p class="promotions__card-text promotions__card-text--dark-gray promo-master__card-text" v-for="(item, index) in this.form.delay" :key="index">
+                            — {{ item.percent }}% через {{ item.day }} дн. после
                             отгрузки
                           </p>
                         </div>
@@ -4363,59 +4336,58 @@
               </div>
               <div class="promo-master__content-right">
                 <div class="promo-master__setting-container">
-                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--used">
+                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting" :class="{'promo-master__setting--used': this.isUsed(1), 'promo-master__setting--disabled': this.isEDisabled(1)}">
                     <i class="d-icon-lines"></i>
                     Контент акции
                   </button>
-                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--used">
+                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting" :class="{'promo-master__setting--used': this.isUsed(2), 'promo-master__setting--disabled': this.isEDisabled(2)}">
                     <i class="d-icon-calendar"></i>
                     Даты проведения акции
                   </button>
-                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--used">
+                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting" :class="{'promo-master__setting--used': this.isUsed(3), 'promo-master__setting--disabled': this.isEDisabled(3)}">
                     <i class="d-icon-picture"></i>
                     Баннер акции
                   </button>
-                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting">
+                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting" :class="{'promo-master__setting--used': this.isUsed(4), 'promo-master__setting--disabled': this.isEDisabled(4)}">
                     <i class="d-icon-wallet"></i>
                     Условия оплаты
                   </button>
-                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--disabled" disabled="">
+                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting" :class="{'promo-master__setting--used': this.isUsed(5), 'promo-master__setting--disabled': this.isEDisabled(5)}">
                     <i class="d-icon-truck"></i>
                     Условия доставки
                   </button>
-                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--disabled" disabled="">
+                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting" :class="{'promo-master__setting--used': this.isUsed(6), 'promo-master__setting--disabled': this.isEDisabled(6)}">
                     <i class="d-icon-percent"></i>
                     Условия участия в акции: Требования к заказу
                   </button>
-                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--disabled" disabled="">
+                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting" :class="{'promo-master__setting--used': this.isUsed(7), 'promo-master__setting--disabled': this.isEDisabled(7)}">
                     <i class="d-icon-percent"></i>
                     Условия участия в акции: Совместимость
                   </button>
-                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--disabled" disabled="">
+                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting" :class="{'promo-master__setting--used': this.isUsed(8), 'promo-master__setting--disabled': this.isEDisabled(8)}">
                     <i class="d-icon-user-star"></i>
                     Аудитория акции
                   </button>
-                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--disabled" disabled="">
+                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting" :class="{'promo-master__setting--used': this.isUsed(9), 'promo-master__setting--disabled': this.isEDisabled(9)}">
                     <i class="d-icon-cube"></i>
                     Товары и скидки: Склады
                   </button>
-                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--disabled" disabled="">
+                  <button class="d-button d-button-tertiary box-shadow-none promo-master__setting" :class="{'promo-master__setting--used': this.isUsed(10), 'promo-master__setting--disabled': this.isEDisabled(10)}">
                     <i class="d-icon-cube"></i>
                     Товары и скидки: Товары
                   </button>
                 </div>
               </div>
             </div>
-
-          </section>
+          </div>
         </div>
         <div class="promo-master__footer">
               <div class="promo-master__footer-actions">
-                <button class="d-button d-button-secondary d-button-secondary-small box-shadow-none promo-master__action-button promo-master__action-button--back" v-if="masterStep > 1">
+                <button class="d-button d-button-secondary d-button-secondary-small box-shadow-none promo-master__action-button promo-master__action-button--back" v-if="masterStep > 1" @click.prevent="masterStepDec()">
                   <i class="d-icon-arrow-left promo-master__action-button-icon"></i>
                   <span class="promo-master__action-button-text">Назад</span>
                 </button>
-                <button class="d-button d-button-secondary d-button-secondary-small box-shadow-none promo-master__action-button promo-master__action-button--next" v-if="masterStep < 9">
+                <button class="d-button d-button-secondary d-button-secondary-small box-shadow-none promo-master__action-button promo-master__action-button--next" v-if="masterStep < 10" @click.prevent="masterStepInc()">
                   <span class="promo-master__action-button-text">Далее</span>
                   <i class="d-icon-arrow-right promo-master__action-button-icon"></i>
                 </button>
@@ -4475,6 +4447,45 @@
               </div>
             </div>
       </customModal>
+      <customModal v-model="this.modals.delay" class="delay-window">
+        <template v-slot:title>Настройка отсрочки платежа</template>
+        <div>
+          <div class="deferred-payment" v-for="(item, index) in this.form.delay" :key="index">
+            <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
+              <label for="test-dropdown" class="d-dropdown__label">Процент от суммы заказа
+              </label>
+              <div class="d-input d-input--light">
+                <InputNumber v-model="this.form.delay[index].percent" inputId="horizontal-buttons" :step="0.1"
+                  min="0" max="100" suffix=" %" @update:modelValue="delayUpdate" incrementButtonIcon="pi pi-plus"
+                  decrementButtonIcon="pi pi-minus" />
+              </div>
+            </div>
+            <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
+              <label for="test-dropdown" class="d-dropdown__label">Срок отсрочки платежа в календ. днях
+              </label>
+              <div class="d-input d-input--light">
+                <InputNumber v-model="this.form.delay[index].day" inputId="horizontal-buttons" :step="0.1" min="0"
+                  @update:modelValue="delayUpdate" incrementButtonIcon="pi pi-plus"
+                  decrementButtonIcon="pi pi-minus" />
+              </div>
+            </div>
+          </div>
+          <div class="d-modal2__actions d-modal2__actions-start">
+            <div class="d-button d-button-tertiary d-button-rounded d-button--sm-shadow" @click="this.form.delay.push({ percent: 0, day: 0 });this.delayUpdate();">
+              <div class="d-icon-plus"></div>
+            </div>
+            <div class="d-button d-button-tertiary d-button-rounded d-button--sm-shadow" @click="this.form.delay.pop();this.delayUpdate();" v-if="this.form.delay.length > 1">
+              <div class="d-icon-minus"></div>
+            </div>
+          </div>
+          <div class="d-modal2__actions">
+						<button class="d-button d-button-primary d-button-primary-small box-shadow-none d-modal2__action-button" :class="{ 'kenots-button-stop': delayData.delayPercentSum > 100 || delayData.delayPercentSum < 100 }"
+                  @click="delaySubmit">
+							Ок
+						</button>
+					</div>
+        </div>
+      </customModal>
     </teleport>
   </section>
 </template>
@@ -4482,13 +4493,18 @@
 import breadcrumbs from '../breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
+import DropZone from 'dropzone-vue'
+import Editor from '@tinymce/tinymce-vue'
+import Toast from 'primevue/toast'
+import InputNumber from 'primevue/inputnumber'
+import DatePicker from 'primevue/datepicker'
 import { useVuelidate } from '@vuelidate/core'
 import { mapActions, mapGetters } from 'vuex'
 import { helpers, required } from '@vuelidate/validators'
 
 export default {
   name: 'actionForm',
-  components: { breadcrumbs, Loader, customModal },
+  components: { breadcrumbs,Toast, Editor, InputNumber, DropZone, DatePicker, Loader, customModal },
   data() {
     return {
       loading: true,
@@ -4504,6 +4520,7 @@ export default {
       total_products: 0,
       per_page: 24,
       masterStep: 1,
+      visibleMasterSteps: [],
       // Флаги окон
       modals: {
         master: false,
@@ -4688,6 +4705,39 @@ export default {
       getProductsPrices: 'action/getProductsPrices',
       getGroupProducts: 'action/getGroupProducts',
     }),
+    parseFileBanner(files, xhr, formData){
+      console.log(files)
+      console.log(xhr)
+      console.log(formData)
+    },
+    deselectFileBannerAll(){
+      console.log('deselect')
+    },
+    delayUpdate() {
+      this.delayData.delayPercentSum = 0;
+      this.delayData.postponementPeriod = 0;
+      for (let i = 0; i < this.form.delay.length; i++) {
+          if(this.form.delay[i].percent > 0){
+            this.delayData.delayPercentSum += this.form.delay[i].percent;
+          }else{
+            this.delayData.delayPercentSum += 100;
+          }
+          this.delayData.postponementPeriod = this.delayData.postponementPeriod + this.form.delay[i].day * (this.form.delay[i].percent / 100);
+          this.form.postponementPeriod = this.delayData.postponementPeriod;
+      }
+    },
+    delaySubmit(){
+      if(this.delayData.delayPercentSum == 100) {
+        this.modals.delay = false
+      }else{
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: "Сумма процентов должна составлять 100%",
+          life: 3000,
+        })
+      }
+    },
     updateStoreData() {
       if(this.form.store_id){
         this.product_loading = true
@@ -4762,6 +4812,40 @@ export default {
           .filter(([key]) => key !== id.toString())
       );
     },
+    isUsed(number){
+      const data = this.visibleMasterSteps.find((element) => element === number)
+      if(typeof(data) != "undefined" && number != this.masterStep){
+        return true
+      }else{
+        return false
+      }
+    },
+    isEDisabled(number){
+      const data = this.visibleMasterSteps.find((element) => element === number)
+      if(typeof(data) == "undefined" && number != this.masterStep){
+        return true
+      }else{
+        return false
+      }
+    },
+    masterStepInc(){
+      const data = this.visibleMasterSteps.find((element) => element === this.masterStep)
+      if(typeof(data) == "undefined"){
+        this.visibleMasterSteps.push(this.masterStep)
+      }
+      if(this.masterStep <= 10){
+        this.masterStep++
+      }
+    },
+    masterStepDec(){
+      const data = this.visibleMasterSteps.find((element) => element === this.masterStep)
+      if(typeof(data) == "undefined"){
+        this.visibleMasterSteps.push(this.masterStep)
+      }
+      if(this.masterStep > 1){
+        this.masterStep--
+      }
+    }
   },
   computed: {
     ...mapGetters({
@@ -4777,7 +4861,7 @@ export default {
       productGroups: 'action/productGroups',
       activeActions: 'action/activeActions',
       groupProducts: 'action/groupProducts',
-    }),
+    })
   },
   setup() {
     return { v$: useVuelidate() }
@@ -4887,6 +4971,32 @@ export default {
 }
 </script>
 <style lang="scss">
+body {
+  .p-inputtext{
+    background: #fff;
+    border: none;
+    color: #282828;
+  }
+}
+.d-modal2__actions-start{
+  justify-content: flex-start;
+  margin-bottom: 15px;
+}
+.delay-window{
+  .vfm__content{
+    backdrop-filter: none;
+  }
+  .modal__close{
+    top: 10px;
+  }
+  .modal-content{
+    background: transparent;
+    box-shadow: none;
+    border: none;
+    width: 100%;
+    max-width: 600px;
+  }
+}
 .promo-master-modal{
   .modal__content{
     padding: 0;
@@ -4906,6 +5016,13 @@ export default {
   .promo-master__footer-actions{
     padding: 16px 40px;
   }
+}
+.tox-tinymce{
+  width: 100%;
+  border: 0.2px solid #757575;
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  box-shadow: 0px 32px 64px 0px none;
 }
 .dropzone__box {
   z-index: 1;

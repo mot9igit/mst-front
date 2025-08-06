@@ -181,4 +181,12 @@ aside button {
 .text-center {
   text-align: center;
 }
+#app {
+  .p-inputtext{
+    background: #fff;
+  }
+  .d-modal2__actions-start{
+    justify-content: flex-start;
+  }
+}
 </style>
