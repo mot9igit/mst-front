@@ -4,38 +4,39 @@ import router from '../router'
 export default {
     namespaced: true,
     state: {
-        dilers: {},
+        opts: {},
     },
     actions: {
-        async getDilers({ commit }, { filter, filtersdata, page, perpage }) {
+        async getOpts({ commit }, { filter, filtersdata, page, perpage }) {
             const data = {
                 id: router.currentRoute._value.params.id,
+                type: 'opts',
                 filter: filter,
                 filtersdata: filtersdata,
                 page: page,
                 perpage: perpage
             }
-            const response = await api.purchases.getDilers(data)
+            const response = await api.purchases.getOpts(data)
             if (response) {
-                commit('SET_DILERS', response.data)
+                commit('SET_OPTS', response.data)
             }
             return response
         },
-        unsetDilers({ commit }) {
-            commit('UNSET_DILERS')
+        unsetOpts({ commit }) {
+            commit('UNSET_OPTS')
         },
     },
     mutations: {
-        SET_DILERS: (state, data) => {
-            state.dilers = data.data
+        SET_OPTS: (state, data) => {
+            state.opts = data.data
         },
-        UNSET_DILERS: (state) => {
-            state.dilers = {}
+        UNSET_OPTS: (state) => {
+            state.opts = {}
         },
     },
     getters: {
-        dilers(state) {
-            return state.dilers
+        opts(state) {
+            return state.opts
         },
     },
 }

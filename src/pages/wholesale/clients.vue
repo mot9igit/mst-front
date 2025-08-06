@@ -11,7 +11,8 @@
 
     <div class="clients__header">
       <div class="clients__header-title-wrapper">
-        <h1 class="clients__header-title">Мои клиенты ({{ dilers.total }})</h1>
+        <h1 class="clients__header-title">Мои клиенты (<span v-if="dilers.total > -1">{{ dilers.total }}</span
+					><span v-else>0</span>)</h1>
       </div>
       <p class="clients__header-description">
         Доступные организации, которые являются вашими клиентами
@@ -38,34 +39,10 @@
               </button>
             </div>
           </div>
-          <div class="d-input d-input--light clients__filters-input"  v-if="ffilter.type == 'dropdown'">
+          <div class="d-input d-input--light clients__filters-input clients__filters-input-multiselect"  v-if="ffilter.type == 'dropdown'">
             <div class="dart-form-group" v-if="ffilter.type == 'dropdown'">
               <MultiSelect v-model="filterValues[i]" :options="ffilter.values" optionLabel="name" filter :placeholder="ffilter.placeholder"
-    :maxSelectedLabels="ffilter.values.length" class="d-input__field clients__filters-multiselect-field" />
-            <!--  <Dropdown
-                v-model="filterValues[i]"
-                :options="ffilter.values"
-                filter
-                showClear
-                :optionLabel="ffilter.optionLabel ? ffilter.optionLabel : 'name'"
-                :optionValue="ffilter.optionValue ? ffilter.optionValue : 'id'"
-                :placeholder="ffilter.placeholder"
-                @change="setFilter('filter')"
-              ></Dropdown>
-
-              <select
-                :name="i"
-                :id="'filter_' + i"
-                :placeholder="ffilter.placeholder"
-                class="d-input__field clients__filters-input-field"
-
-					  >
-            v-model="filters[i]"
-                @change="setFilter"
-                <option v-for="(item, index) in managers" :key="index" :value="item">
-                  {{ item.name }}
-                </option>
-					    </select>-->
+    :maxSelectedLabels="ffilter.values.length" class="d-input__field clients__filters-multiselect-field" @change="setFilter"/>
             </div>
 
             <div class="d-input__actions clients__filters-input-actions">
@@ -247,9 +224,9 @@
           </div>-->
         </div>
       </div>
-      <div class="clients__paginate" v-if="pagesCount > 1"></div>
+      <div class="clients__paginate" v-if="countPages > 1">
       <paginate
-          :page-count="pagesCount"
+          :page-count="countPages"
           :click-handler="pagClickCallback"
           :prev-text="'Пред'"
           :next-text="'След'"
@@ -261,6 +238,7 @@
         >
       </paginate>
     </div>
+    </div>
   </section>
 </template>
 <script>
@@ -268,15 +246,14 @@ import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Paginate from 'vuejs-paginate-next'
 import Loader from '@/shared/ui/Loader.vue'
-import Dropdown from 'primevue/dropdown'
 import Checkbox from 'primevue/checkbox'
 import { toRaw } from 'vue'
 import  { MultiSelect } from 'primevue'
 
 export default {
   name: 'WholesaleClients',
-  components: { Breadcrumbs, Loader, Paginate, Dropdown, Checkbox, MultiSelect },
-props: {
+  components: { Breadcrumbs, Loader, Paginate, Checkbox, MultiSelect },
+  props: {
     pagination_items_per_page: {
       type: Number,
       default: 25,
@@ -292,6 +269,8 @@ props: {
       page: 1,
       filterText: '',
       filterValues: {},
+      countPages: 0,
+      localItems: [],
       filters: {
         name: {
           name: 'Название организации',
@@ -342,7 +321,6 @@ props: {
       }
     },
     filter(data) {
-      console.log(data)
       this.loading = true
       this.unsetDilers()
       this.page = 1
@@ -374,15 +352,10 @@ props: {
       this.loading = false
       })
     },
+    
 
   },
   mounted() {
-  //  this.getDilers({
-  //    page: this.page,
-  //    perpage: this.pagination_items_per_page,
-  //  }).then(() => {
-  //    this.loading = false
-  //  })
     this.getDilers({
 			type: 1,
 			page: this.page,
@@ -415,18 +388,19 @@ props: {
       managers: 'wholesale/managers',
       stores: 'wholesale/stores',
     }),
-    pagesCount() {
-      let pages = Math.ceil(this.dilers.total / this.pagination_items_per_page)
-      if (pages === 0) {
-        pages = 1
-      }
-      return pages
-    },
+    
+    
   },
   watch: {
-
     managers: function (newVal, oldVal) {
 			this.filters.manager.values = newVal
+		},
+    dilers: function (newVal, oldVal) {
+			this.countPages = Math.ceil(this.dilers.total / this.pagination_items_per_page)
+      if (this.countPages === 0) {
+        this.countPages = 1
+      }
+      
 		}
   },
 }
@@ -461,7 +435,8 @@ props: {
 
 }
 .clients__filters-radio-wrapper .p-checkbox-checked:not(.p-disabled):has(.p-checkbox-input:hover) .p-checkbox-box,
-.clients__filters-radio-wrapper .p-checkbox-checked .p-checkbox-box  {
+.clients__filters-radio-wrapper .p-checkbox-checked .p-checkbox-box, .p-multiselect-overlay .p-checkbox-checked:not(.p-disabled):has(.p-checkbox-input:hover) .p-checkbox-box,
+.p-multiselect-overlay .p-checkbox-checked .p-checkbox-box {
   border-color: rgba(249, 44, 13, 1);
   background: rgba(249, 44, 13, 1);
 }
@@ -473,8 +448,19 @@ props: {
 .clients__filters-input-actions button:first-child{
   cursor:default;
 }
-.clients__filters-multiselect-field{
-
+.clients__filters-input .p-multiselect {
+    background: transparent;
+    border: none;
+}
+.clients__filters-input-multiselect .clients__filters-input-actions{
+    position: absolute;
+    right: 20px;
+}
+.clients__filters-input-multiselect .p-multiselect-label {
+    padding-right: 35px;
+}
+.clients__filters-input .dart-form-group{
+  width:100%;
 }
 @media (width <= 1280px) {
 .clients__devider:before{
