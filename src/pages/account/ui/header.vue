@@ -49,7 +49,7 @@
               <div class="header__design-block header__design-block--left"></div>
               <div class="header__design-block header__design-block--right"></div>
 
-              <button class="d-button d-button-primary header__catalog" @click.prevent="toggleMenu">
+              <button class="d-button d-button-primary header__catalog" @click.prevent="toggleMenu" id="catalogBtn">
                 <i class="d-icon-catalog header__catalog-icon"></i>
                 <span class="header__catalog-text">Каталог</span>
               </button>

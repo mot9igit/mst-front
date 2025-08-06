@@ -1,6 +1,5 @@
 <template>
-  <div class="catalog catalog--desktop" :class="{ 'catalog--active': active }" >
-  <!-- v-on="clickAroundActive ? { click: clickAround } : {}" id="catalog"> -->
+  <div class="catalog catalog--desktop" :class="{ 'catalog--active': active }" id="catalogMenu">
     <div class="catalog__list" :class="{ 'catalog__list-nonactive': !cataloglistShow }">
       <div class="catalog__top">
         <button
@@ -211,7 +210,7 @@
     </div>
   </div>
 </template>
- 
+
 <script>
 import { mapActions, mapGetters } from 'vuex'
 
@@ -226,7 +225,6 @@ export default {
       menu: [],
       activeShowCatalog: 1,
       cataloglistShow: false,
-  //    clickAroundActive: false,
       breadcrumbs: [
         { id: 0, name: 'Единый каталог', child: 1,  category_id: 0},
         { id: 1, name: '', child: 0, category_id: 0 },
@@ -240,7 +238,7 @@ export default {
       headerDesign: true,
     }
   },
-  emits: ['toggleCatalog', 'headerDesignOff'],
+  emits: ['toggleCatalog', 'headerDesignOff', 'menuClose'],
   props: {
     active: {
       type: Boolean,
@@ -252,7 +250,19 @@ export default {
     this.getOptWarehouseCatalog()
     this.getOptCatalog()
     this.menu = this.getMenu()
-    
+    document.addEventListener('click', event => {
+      console.log(event)
+      // let catalog = document.getElementById('catalogMenu')
+      // let catalogBtn = document.getElementById('catalogBtn')
+      console.log(event.target.closest('#catalogMenu'))
+      console.log(event.target.closest('#catalogBtn'))
+      //
+      if (!event.target.closest('#catalogMenu')
+          && !event.target.closest('#catalogBtn')
+          && !event.target.closest('.catalog__item-button')) {
+        this.$emit("menuClose")
+      }
+     })
   },
   methods: {
     ...mapActions({
@@ -266,18 +276,6 @@ export default {
       this.headerDesign = !this.headerDesign
       this.$emit('headerDesignOff')
     },
-//    clickAround(){
-//      if(this.clickAroundActive === true){
-//      document.addEventListener('click', event => {  
-//          
-//            let sidebarElement = document.getElementById('catalog')
-//            if (!sidebarElement.contains(event.target)) {   
-//              this.headerDesignOff()  
-//              this.clickAroundActive = false      
-//            }
-//             
-//      })}  
-//    },
     getMenu() {
       return [
         {

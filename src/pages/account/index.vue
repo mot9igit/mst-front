@@ -25,7 +25,7 @@
       <OrderWindow :active="this.toggleOrderWindow" @close="changeOrderWindowClose()" />
     </main>
   </div>
-  <ProfileCatalogMenu :active="toggleMenu" @headerDesignOff="headerDesignOff" />
+  <ProfileCatalogMenu :active="toggleMenu" @headerDesignOff="headerDesignOff" @menuClose="menuClose" />
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -112,7 +112,12 @@ export default {
     headerDesignOff(){
       this.toggleMenu = !this.toggleMenu
     },
-
+    menuClose(){
+      console.log('close menu')
+      if(this.toggleMenu){
+        this.toggleMenu = false
+      }
+    },
     toggleVendor() {
       this.toggleVendors = !this.toggleVendors
     },
