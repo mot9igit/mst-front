@@ -39,8 +39,10 @@
             </div>
           </div>
           <div class="d-input d-input--light clients__filters-input"  v-if="ffilter.type == 'dropdown'">
-            <div class="dart-form-group" v-if="ffilter.type == 'select'">
-              <Dropdown
+            <div class="dart-form-group" v-if="ffilter.type == 'dropdown'">
+              <MultiSelect v-model="filterValues[i]" :options="ffilter.values" optionLabel="name" filter :placeholder="ffilter.placeholder"
+    :maxSelectedLabels="ffilter.values.length" class="d-input__field clients__filters-multiselect-field" />
+            <!--  <Dropdown
                 v-model="filterValues[i]"
                 :options="ffilter.values"
                 filter
@@ -51,7 +53,7 @@
                 @change="setFilter('filter')"
               ></Dropdown>
 
-            <!--  <select
+              <select
                 :name="i"
                 :id="'filter_' + i"
                 :placeholder="ffilter.placeholder"
@@ -73,14 +75,14 @@
               <div
                 class="d-divider d-divider--vertical d-input__actions-divider clients__filters-input-actions-divider"
               ></div>
-              <button class="d-icon-wrapper clients__filters-input-button">
+              <!--<button class="d-icon-wrapper clients__filters-input-button">
                 <i class="d-icon-angle-rounded-bottom-bold"></i>
-              </button>
+              </button>-->
             </div>
           </div>
         </div>
         <div class="d-radio__wrapper clients__filters-radio-wrapper"   v-for="(ffilter, i) in filters" :key="i"  >
-          <label for="vendorCreated" class="d-radio clients__filters-radio" v-if="ffilter.type == 'checkbox'">
+          <label for="vendorCreated" class="p-checkbox p-component" v-if="ffilter.type == 'checkbox'">
 
             <Checkbox
               :inputId="'input' + i"
@@ -88,7 +90,7 @@
               value="1"
               v-model="filterValues[i]"
               @change="setFilter"
-              class="d-radio__input clients__filters-radio-input"
+              class="p-radio-input clients__filters-radio-input"
             />
 
           </label>
@@ -269,10 +271,11 @@ import Loader from '@/shared/ui/Loader.vue'
 import Dropdown from 'primevue/dropdown'
 import Checkbox from 'primevue/checkbox'
 import { toRaw } from 'vue'
+import  { MultiSelect } from 'primevue'
 
 export default {
   name: 'WholesaleClients',
-  components: { Breadcrumbs, Loader, Paginate, Dropdown, Checkbox },
+  components: { Breadcrumbs, Loader, Paginate, Dropdown, Checkbox, MultiSelect },
 props: {
     pagination_items_per_page: {
       type: Number,
@@ -455,6 +458,22 @@ props: {
 }
 .clients__filters-input select{
   width: 100%;
+
+}
+.clients__filters-radio-wrapper .p-checkbox-checked:not(.p-disabled):has(.p-checkbox-input:hover) .p-checkbox-box,
+.clients__filters-radio-wrapper .p-checkbox-checked .p-checkbox-box  {
+  border-color: rgba(249, 44, 13, 1);
+  background: rgba(249, 44, 13, 1);
+}
+.clients__filters-input-actions .d-icon-wrapper:hover, .clients__filters-input-actions .d-icon-wrapper--active {
+    background-color: transparent;
+    box-shadow: none;
+    color: var(--d-icon-wrapper-color-hover);
+}
+.clients__filters-input-actions button:first-child{
+  cursor:default;
+}
+.clients__filters-multiselect-field{
 
 }
 @media (width <= 1280px) {
