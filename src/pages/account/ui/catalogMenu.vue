@@ -251,11 +251,11 @@ export default {
     this.getOptCatalog()
     this.menu = this.getMenu()
     document.addEventListener('click', event => {
-      console.log(event)
+      //console.log(event)
       // let catalog = document.getElementById('catalogMenu')
       // let catalogBtn = document.getElementById('catalogBtn')
-      console.log(event.target.closest('#catalogMenu'))
-      console.log(event.target.closest('#catalogBtn'))
+      //console.log(event.target.closest('#catalogMenu'))
+      //console.log(event.target.closest('#catalogBtn'))
       //
       if (!event.target.closest('#catalogMenu')
           && !event.target.closest('#catalogBtn')

@@ -107,13 +107,12 @@ export default {
     }),
     toggleCatalog() {
       this.toggleMenu = !this.toggleMenu
-    //  this.headerDesignChange = !this.toggleMenu
     },
     headerDesignOff(){
       this.toggleMenu = !this.toggleMenu
     },
     menuClose(){
-      console.log('close menu')
+      //console.log('close menu')
       if(this.toggleMenu){
         this.toggleMenu = false
       }
