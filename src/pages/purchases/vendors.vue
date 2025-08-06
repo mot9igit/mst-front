@@ -627,7 +627,14 @@ export default {
   name: 'purchasesVendors',
     components: { Breadcrumbs, BaseTable, Loader },
   props: {
-
+    pagination_items_per_page: {
+      type: Number,
+      default: 25,
+    },
+    pagination_offset: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -639,17 +646,9 @@ export default {
           placeholder: 'Введите название организации',
           type: 'text',
         },
-        manager: {
-          name: 'Менеджер',
-          placeholder: 'Найдите менеджера',
-          type: 'text',
-        },
-        our: {
-					name: 'Созданные поставщиком',
-					placeholder: 'Созданные поставщиком',
-					type: 'checkbox',
-					values: 1
-				},
+      },
+      table_data: {
+        
       },
     }
   },
@@ -664,18 +663,33 @@ export default {
       this.unsetDilers()
       this.page = 1
       this.getDilers(data).then(() => {
-      this.loading = false
+        this.loading = false
+      })
+    },
+    paginate(data) {
+      this.loading = true
+      this.unsetDilers()
+      this.page = data.page
+      this.getDilers(data).then(() => {
+        this.loading = false
       })
     },
   },
   mounted() {
-
+    this.getDilers({
+      page: this.page,
+      perpage: this.pagination_items_per_page,
+    }).then(() => {
+      this.loading = false
+    })
   },
   computed: {
     ...mapGetters({
       dilers: 'purchases/dilers',
     }),
   },
+  watch: {},
 }
+
 </script>
 <style lang="scss"></style>

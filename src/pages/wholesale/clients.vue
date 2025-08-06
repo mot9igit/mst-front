@@ -657,7 +657,16 @@ import Loader from '@/shared/ui/Loader.vue'
 export default {
   name: 'WholesaleClients',
   components: { Breadcrumbs, BaseTable, Loader },
-
+props: {
+    pagination_items_per_page: {
+      type: Number,
+      default: 25,
+    },
+    pagination_offset: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
     return {
       loading: true,
@@ -680,31 +689,58 @@ export default {
 					values: 1
 				},
       },
+      table_data: {
+      
+      },
     }
   },
   methods: {
     ...mapActions({
-      getVendors: 'wholesale/getVendors',
-      unsetVendors: 'wholesale/unsetVendors',
+      getDilers: 'wholesale/getDilers',
+      unsetDilers: 'wholesale/unsetDilers',
+      getManagers: 'wholesale/getManagers',
+      getStores: 'wholesale/getStores',
     }),
     filter(data) {
       console.log(data)
       this.loading = true
-      this.unsetVendors()
+      this.unsetDilers()
       this.page = 1
-      this.getVendors(data).then(() => {
-      this.loading = false
+      this.getDilers(data).then(() => {
+        this.loading = false
+      })
+    },
+    paginate(data) {
+      this.loading = true
+      this.unsetDilers()
+      this.page = data.page
+      this.getDilers(data).then(() => {
+        this.loading = false
       })
     },
   },
   mounted() {
-
+    this.getDilers({
+      page: this.page,
+      perpage: this.pagination_items_per_page,
+    }).then(() => {
+      this.loading = false
+    })
+    this.getManagers({
+			id: this.$route.params.id,
+		});
+    this.getStores({
+			id: this.$route.params.id,
+		});
   },
   computed: {
     ...mapGetters({
-      vendors: 'wholesale/Vendors',
+      dilers: 'wholesale/dilers',
+      managers: 'wholesale/managers',
+      stores: 'wholesale/stores',
     }),
   },
+  watch: {},
 }
 </script>
 <style lang="scss"></style>
