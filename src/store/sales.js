@@ -8,13 +8,13 @@ export default {
       items: [],
       total: -1,
     },
-    sale: {}
+    sale: {},
+    salesBanners: {}
   },
   actions: {
     async getSales({ commit }, { filter, filtersdata, page, sort, perpage, actionId, type, isAction }) {
       const data = {
         id: router.currentRoute._value.params.id,
-        type: router.currentRoute._value.params.type,
         filter: filter,
         filtersdata: filtersdata,
         sort: sort,
@@ -28,9 +28,28 @@ export default {
       }
       const response = await api.sales.getSales(data)
       if (response) {
-        commit('SET_SALES', response.data)
+        if(actionId){
+          commit('SET_SALE', response.data)
+        }else{
+          commit('SET_SALES', response.data)
+        }
+
       }
       return response
+    },
+    async getSalesBanners({ commit }) {
+      const data = {
+        action: "get/banners",
+			  id: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? router.currentRoute._value.params.id_org_from : router.currentRoute._value.params.id
+      }
+      const response = await api.sales.getSales(data)
+      if (response) {
+        commit('SET_SALES_BANNERS', response.data)
+      }
+      return response
+    },
+    unsetSalesBanners({ commit }) {
+      commit('UNSET_SALES_BANNERS')
     },
     unsetSales({ commit }) {
       commit('UNSET_SALES')
@@ -55,6 +74,12 @@ export default {
     },
     UNSET_SALE: (state) => {
       state.sale = {}
+    },
+    SET_SALES_BANNERS: (state, data) => {
+      state.salesBanners = data.data
+    },
+    UNSET_SALES_BANNERS: (state) => {
+      state.salesBanners = {}
     }
   },
   getters: {
@@ -63,6 +88,9 @@ export default {
     },
     sale(state) {
       return state.sale
+    },
+    salesBanners(state) {
+      return state.salesBanners
     }
   },
 }

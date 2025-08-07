@@ -9,6 +9,7 @@ import PurchasesOrders from '../pages/purchases/orders.vue'
 import PurchasesOrder from '../pages/purchases/order.vue'
 import PurchasesCatalog from '../pages/purchases/сatalog.vue'
 import PurchasesVendors from '../pages/purchases/vendors.vue'
+import PurchasesAction from '../pages/purchases/action.vue'
 import Wholesale from '../pages/wholesale/index.vue'
 import WholesaleOrders from '../pages/wholesale/orders.vue'
 import WholesaleOrder from '../pages/wholesale/order.vue'
@@ -107,6 +108,18 @@ const router = createRouter({
                       props: true,
                       label: 'Закупки',
                       component: Purchases,
+                    },
+                    {
+                      path: 'actions/:action_id',
+                      name: 'purchasesAction',
+                      props: true,
+                      label: 'Акция',
+                      component: PurchasesAction,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Акция'
+                        }
+                      },
                     },
                     {
                       path: 'search/:search',

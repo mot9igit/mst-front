@@ -12,9 +12,7 @@
 
     <main class="main">
       <div class="content-wrapper main__content-wrapper">
-        <section class="shipments" id="shipments">
-          <router-view> </router-view>
-        </section>
+        <router-view> </router-view>
       </div>
       <ProfileCart
         @toggleCart="toggleCart()"
@@ -176,6 +174,7 @@ aside button {
 }
 .content {
   background-color: #ededed;
+  max-width: calc(100% - 84px);
 }
 .text-center {
   text-align: center;

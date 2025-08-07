@@ -74,7 +74,8 @@
                     <img :src="org.org_data.image" alt="" class="cart__item-badge-image" />
                     {{ org.org_data.name }}, {{ store.warehouse_data.address_short }}
                   </div>
-                  <button
+                  <a
+                    href="#"
                     class="cart__item-header-button"
                     @click="
                       clearBasketProduct(
@@ -86,7 +87,7 @@
                     "
                   >
                     <i class="d-icon-trash"></i>
-                  </button>
+                </a>
                 </div>
 
                 <p class="cart__item-title">{{ product.name }}</p>
@@ -358,6 +359,9 @@ export default {
 }
 </script>
 <style lang="scss">
+.cart__item-header-button{
+  display: inline-block;
+}
 .cart__content {
   position: relative;
 }

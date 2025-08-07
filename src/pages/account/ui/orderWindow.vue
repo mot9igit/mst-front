@@ -73,7 +73,8 @@
                         </div>
                       </div>
                       <div class="order__item-header-right">
-                        <button
+                        <a
+                          href="#"
                           class="order__item-header-delete"
                           @click.prevent="
                             () => {
@@ -83,7 +84,7 @@
                           "
                         >
                           <i class="d-icon-trash"></i>
-                        </button>
+                        </a>
                       </div>
                     </div>
                     <div class="order__item-header-bottom">
@@ -147,6 +148,20 @@
                           :key="product?.key"
                         />
                       </div>
+                      <a
+                        href="#"
+                        class="cart__item-header-button"
+                        @click="
+                          clearBasketProduct(
+                            org.org_data.id,
+                            store.warehouse_data.id,
+                            product_key,
+                            product,
+                          )
+                        "
+                      >
+                        <i class="d-icon-trash"></i>
+                      </a>
                     </div>
                     <div class="order__item-content-bottom">
                       <div class="order__item-content-bottom-left">
@@ -166,12 +181,14 @@
                         >
                           Отправить заказ
                         </button>
+                        <!--
                         <div
                           class="d-divider d-divider--vertical order__item-content-bottom-right-divider"
                         ></div>
                         <button class="order__item-upload">
                           <i class="d-icon-upload2"></i>
                         </button>
+                        -->
                       </div>
                     </div>
                     <div class="order__item-price">
@@ -202,12 +219,14 @@
                         >{{ org.cart_data.cost.toLocaleString('ru') }} ₽</span
                       >
                     </button>
+                    <!--
                     <div
                       class="d-divider d-divider--vertical order__item-content-bottom-right-divider"
                     ></div>
                     <button class="order__item-upload">
                       <i class="d-icon-upload2"></i>
                     </button>
+                    -->
                   </div>
                 </div>
               </div>
@@ -232,10 +251,12 @@
                   >
                     Оформить все заказы
                   </button>
-                  <div class="d-divider d-divider--vertical order__footer-actions-divider"></div>
-                  <button class="order__footer-actions-upload">
-                    <i class="d-icon-upload2"></i>
-                  </button>
+                  <!--
+                    <div class="d-divider d-divider--vertical order__footer-actions-divider"></div>
+                    <button class="order__footer-actions-upload">
+                      <i class="d-icon-upload2"></i>
+                    </button>
+                  -->
                 </div>
               </div>
 
@@ -252,10 +273,12 @@
                   >
                     Оформить все заказы
                   </button>
+                  <!--
                   <div class="d-divider d-divider--vertical order__footer-actions-divider"></div>
                   <button class="order__footer-actions-upload">
                     <i class="d-icon-upload2"></i>
                   </button>
+                  -->
                 </div>
               </div>
             </div>
@@ -320,6 +343,49 @@ export default {
         this.id_clear_org = 0
         this.$emit('catalogUpdate')
         this.updateBasket()
+      })
+    },
+    clearBasketProduct(org_id, store_id, key, product) {
+      this.loading = true
+      const data = {
+        org_id: org_id,
+        store_id: store_id,
+        key: key,
+        product: product,
+      }
+      this.basketProductRemove(data).then((response) => {
+        this.$emit('catalogUpdate')
+        this.loading = true
+        this.updateBasket()
+        if (!response?.data?.data?.success && response?.data?.data?.message) {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: response?.data?.data?.message,
+            life: 3000,
+          })
+        }
+        this.loading = false
+      })
+
+      // Убедитесь, что dataLayer существует
+      window.dataLayer = window.dataLayer || []
+
+      // Отправка данных в dataLayer
+      window.dataLayer.push({
+        ecommerce: {
+          currencyCode: 'RUB', // Валюта
+          remove: {
+            products: [
+              {
+                id: product.remain_id, // ID товара
+                name: product.name, // Название товара
+                price: product.price, // Цена товара
+                quantity: product.count, // Количество товара
+              },
+            ],
+          },
+        },
       })
     },
     ElemCount(object) {
@@ -393,6 +459,9 @@ export default {
 }
 </script>
 <style lang="scss">
+.order__item-header-delete{
+  display: inline-block;
+}
 .clear_cart {
   .modal-content {
     display: flex;
