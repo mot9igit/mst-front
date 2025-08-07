@@ -22,6 +22,16 @@ export default {
             }
             return response
         },
+        async setNewOrgProfile({ commit }, { code }) {
+            const data = {
+              action: 'add/code/warehouse',
+              id: router.currentRoute._value.params.id,
+              code: code,
+            }
+            const response = await api.purchases.setNewOrgProfile(data)
+
+            return response
+        },
         unsetOpts({ commit }) {
             commit('UNSET_OPTS')
         },

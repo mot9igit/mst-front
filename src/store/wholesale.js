@@ -80,6 +80,16 @@ export default {
             }
             return response
         },
+        async setOrgProfile({ commit }, { client_id }) {
+            const data = {
+              action: 'delete/org/virtual_profile',
+              id: router.currentRoute._value.params.id,
+              client_id: client_id,
+            }
+            const response = await api.wholesale.setOrgProfile(data)
+
+            return response
+        },
         unsetOrders({ commit }) {
             commit('UNSET_ORDERS')
         },
