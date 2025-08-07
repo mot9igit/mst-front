@@ -32,17 +32,17 @@
               v-model="filterText"
               @input="setFilter('filter')"
             />
-            <!---->
+            
             <div class="d-input__actions clients__filters-input-actions">
               <button class="d-icon-wrapper clients__filters-input-button" >
                 <i class="d-icon-search-big"></i>
               </button>
             </div>
           </div>
-          <div class="d-input d-input--light clients__filters-input clients__filters-input-multiselect"  v-if="ffilter.type == 'dropdown'">
-            <div class="dart-form-group" v-if="ffilter.type == 'dropdown'">
-              <MultiSelect v-model="filterValues[i]" :options="ffilter.values" optionLabel="name" filter :placeholder="ffilter.placeholder"
-    :maxSelectedLabels="ffilter.values.length" class="d-input__field clients__filters-multiselect-field" @change="setFilter"/>
+          <div class="d-input d-input--light clients__filters-input clients__filters-input-multiselect"  v-if="ffilter.type == 'multiselect'">
+            <div class="dart-form-group">
+              <MultiSelect v-model="filterValues[i]" :options="ffilter.values" :optionLabel="(ffilter.optionLabel) ? ffilter.optionLabel : 'name'" :optionValue="(ffilter.optionValue) ? ffilter.optionValue : 'id'" :placeholder="ffilter.placeholder" filter 
+                :maxSelectedLabels="ffilter.values.length" class="d-input__field clients__filters-multiselect-field" @change="setFilter"/>
             </div>
 
             <div class="d-input__actions clients__filters-input-actions">
@@ -94,7 +94,7 @@
               <p class="clients__card-info-title">{{ item.name }}</p>
               <div class="clients__card-info-address">
                 <i class="d-icon-location clients__card-info-address-icon"></i>
-                <span>{{ item.req?.fact_address}}</span>
+                <span>{{ item.req?.fact_address != '' ? item.req?.fact_address : 'адрес не указан' }}</span>
               </div>
             </div>
           </div>
@@ -103,7 +103,7 @@
 
             <div class="clients__card-inn d-col-9 clients__devider">
               <p class="clients__card-inn-label">ИНН:</p>
-              <p class="clients__card-inn-value">{{ item.req?.inn }}</p>
+              <p class="clients__card-inn-value">{{ item.req?.inn != '' ? item.req?.inn : 'не указан' }}</p>
             </div>
 
             <div class="clients__card-contact-container d-col-15" :class="item.owner_id > 0 && item.owner_id == this.$route.params.id ? 'clients__devider' : ''">
@@ -165,7 +165,7 @@
               <p class="clients__card-info-title">{{ item.name }}</p>
               <div class="clients__card-info-address">
                 <i class="d-icon-location clients__card-info-address-icon"></i>
-                <span>{{ item.req?.fact_address}}</span>
+                <span>{{ item.req?.fact_address != '' ? item.req?.fact_address : 'адрес не указан'}}</span>
               </div>
             </div>
           </div>
@@ -208,7 +208,7 @@
             </div>
             <div class="clients__card-inn">
               <p class="clients__card-inn-label">ИНН:</p>
-              <p class="clients__card-inn-value">{{ item.req?.inn }}</p>
+              <p class="clients__card-inn-value">{{ item.req?.inn != '' ? item.req?.inn : 'не указан' }}</p>
             </div>
           </div>
 
@@ -280,7 +280,7 @@ export default {
         manager: {
           name: 'Менеджер',
           placeholder: 'Выберите менеджера',
-          type: 'dropdown',
+          type: 'multiselect',
           values: []
         },
         our: {

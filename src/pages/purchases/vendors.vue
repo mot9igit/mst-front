@@ -59,7 +59,7 @@
               <p class="clients__card-info-title">{{ item.name }}</p>
               <div class="clients__card-info-address">
                 <i class="d-icon-location clients__card-info-address-icon"></i>
-                <span>{{ item.req?.fact_address}}</span>
+                <span>{{ item.req?.fact_address != '' ? item.req?.fact_address : 'адрес не указан'}}</span>
               </div>
             </div>
           </div>
@@ -68,7 +68,7 @@
 
             <div class="clients__card-inn d-col-8 clients__devider">
               <p class="clients__card-inn-label">ИНН:</p>
-              <p class="clients__card-inn-value">{{ item.req?.inn }}</p>
+              <p class="clients__card-inn-value">{{ item.req?.inn != '' ? item.req?.inn : 'не указан' }}</p>
             </div>
 
             <div class="clients__card-contact-container d-col-16 clients__devider">
@@ -130,7 +130,7 @@
               <p class="clients__card-info-title">{{ item.name }}</p>
               <div class="clients__card-info-address">
                 <i class="d-icon-location clients__card-info-address-icon"></i>
-                <span>{{ item.req?.fact_address}}</span>
+                <span>{{ item.req?.fact_address != '' ? item.req?.fact_address : 'адрес не указан'}}</span>
               </div>
             </div>
           </div>
@@ -173,7 +173,7 @@
             </div>
             <div class="clients__card-inn">
               <p class="clients__card-inn-label">ИНН:</p>
-              <p class="clients__card-inn-value">{{ item.req?.inn }}</p>
+              <p class="clients__card-inn-value">{{ item.req?.inn != '' ? item.req?.inn : 'не указан' }}</p>
             </div>
           </div>
 
