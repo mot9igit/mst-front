@@ -195,7 +195,7 @@ export default {
 .myorders__content  .p-floatlabel:has(textarea:focus) label,.myorders__content  .p-floatlabel:has(.p-inputwrapper-focus) label {
     color: #f92c0d;
 }
-.myorders__content  .d-table__col {
+.myorders__content  .d-table__col, .myorders__content  .d-table__row:first-child > .d-table__col {
     padding: 16px;
 }
 
