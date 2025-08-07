@@ -1,5 +1,6 @@
 <template>
   <section class="clients" id="clients">
+    <Toast />
     <!-- Верхушка страницы -->
     <div class="d-top">
       <a class="d-back d-top-back">
@@ -42,7 +43,7 @@
         </div>
       </div>
 
-      <button class="d-button d-button-primary d-button--sm-shadow clients__filters-create">
+      <button class="d-button d-button-primary d-button--sm-shadow clients__filters-create" @click.prevent="this.modalAdd = true">
         <i class="d-icon-plus-flat clients__filters-create-icon"></i>
         Добавить поставщика
       </button>
@@ -50,7 +51,7 @@
     <Loader v-if="loading" />
     <div class="clients__card-container" v-else>
       <div class="clients__card dart-row" v-for="(item, index) in opts.items" :key="index">
-        <div class="clients__card-left d-col-16">
+        <div class="clients__card-left d-col-21">
           <div class="clients__card-info  d-col-7 clients__devider">
             <div class="clients__card-info-image-container">
               <img :src="item.image" alt="" class="clients__card-info-image" />
@@ -64,14 +65,14 @@
             </div>
           </div>
 
-          <div class="clients__card-data  d-col-9">
+          <div class="clients__card-data  d-col-14">
 
-            <div class="clients__card-inn d-col-8 clients__devider">
+            <div class="clients__card-inn d-col-12 clients__devider">
               <p class="clients__card-inn-label">ИНН:</p>
               <p class="clients__card-inn-value">{{ item.req?.inn != '' ? item.req?.inn : 'не указан' }}</p>
             </div>
 
-            <div class="clients__card-contact-container d-col-16 clients__devider">
+            <div class="clients__card-contact-container d-col-12 clients__devider">
               <a :href="'tel:' + item.phone.replace(/[^+\d]/g, '')" class="clients__card-contact">
                 <i class="d-icon-telephone clients__card-contact-icon"></i>
                 <span>{{ item.phone }}</span>
@@ -84,7 +85,7 @@
           </div>
         </div>
 
-        <div class="clients__card-right d-col-8">
+        <div class="clients__card-right d-col-3">
         <!--  <div class="clients__card-right-left d-col-3">
              <div class="d-divider d-divider--vertical clients__card-divider"></div>
            <div class="clients__card-price-container">
@@ -100,20 +101,9 @@
 
             <div class="clients__card-vendor" v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id">Создан поставщиком</div>
           </div>-->
-          <div class="clients__card-right-right d-col-7">
-            <div class="d-col-18 clients__devider">
-            <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
-              <i class="d-icon-plus-flat clients__card-offer-icon"></i>
-              Предложение
-            </button>
-            </div>
+          <div class="clients__card-right-right d-col-24">
+
             <div class="clients__card-action-container d-col-6">
-              <button class="clients__card-action">
-                <i class="d-icon-pen2"></i>
-              </button>
-              <div
-                class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
-              ></div>
               <button class="clients__card-action">
                 <i class="d-icon-trash"></i>
               </button>
@@ -204,6 +194,36 @@
       </paginate>
     </div>
     </div>
+    <teleport to="body" v-if="this.modalAdd === true">
+          <customModal v-model="this.modalAdd" class="clients-form__modal">
+            <div class="clients-info__value-container">
+              <h2>Добавление поставщика</h2>
+              <div class="clients-info__label">Введите ИНН или код поставщика</div>
+              <form class="clients-form__modal"  @submit.prevent="formAddVendor()" :class="{ 'd-input--error': v$.form.inn.$error }">
+              <input
+                type="text"
+                class="modal__input clients-form__input"
+                :class="{ 'd-input--error': v$.form.inn.$error }"
+                placeholder="Введите ИНН или код поставщика"
+                v-model="form.inn"
+              />
+              <div v-if="v$.form.inn.$error" class="d-input-error">
+                <i class="d-icon-warning d-input-error__icon"></i>
+                <span v-if="v$.form.inn.required" class="d-input-error__text"
+                  >Пожалуйста, введите ИНН или код поставщика</span
+                >
+              </div>
+                <button
+                    type="submit"
+                    href="#"
+                    class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
+                >
+                  <i class="d-icon-plus-flat clients__filters-create-icon"></i>Добавить поставщика
+                </button>
+              </form>
+            </div>
+          </customModal>
+      </teleport>
   </section>
 </template>
 <script>
@@ -212,11 +232,15 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Paginate from 'vuejs-paginate-next'
 import Loader from '@/shared/ui/Loader.vue'
 import { toRaw } from 'vue'
+import customModal from '@/shared/ui/Modal.vue'
+import { required } from '@vuelidate/validators'
+import useVuelidate from '@vuelidate/core'
+import Toast from 'primevue/toast';
 
 
 export default {
   name: 'purchasesVendors',
-  components: { Breadcrumbs, Loader, Paginate },
+  components: { Breadcrumbs, Loader, Paginate, customModal, Toast },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -230,6 +254,7 @@ export default {
   data() {
     return {
       loading: true,
+      modalAdd: false,
       page: 1,
       filterText: '',
       countPages: 0,
@@ -240,12 +265,17 @@ export default {
           type: 'text',
         },
       },
+      form: {
+        inn: '',
+      },
     }
   },
   methods: {
     ...mapActions({
       getOpts: 'purchases/getOpts',
       unsetOpts: 'purchases/unsetOpts',
+      setNewOrgProfile: 'purchases/setNewOrgProfile',
+
     }),
     setFilter(type = '0') {
       if (type === 'filter') {
@@ -268,7 +298,7 @@ export default {
         })
       }
     },
-    
+
     filter(data) {
       console.log(data)
       this.loading = true
@@ -281,7 +311,7 @@ export default {
     pagClickCallback(pageNum) {
       this.paginate({
         filter: this.filterText,
-        filtersdata: toRaw(this.filterValue),
+        filtersdata: toRaw(this.filterValues),
         page: pageNum,
         perpage: this.pagination_items_per_page,
       })
@@ -298,6 +328,41 @@ export default {
       this.loading = false
       })
     },
+    formAddVendor(){
+      this.v$.$touch()
+
+			this.$load(async () => {
+				this.loading = true;
+				await this.setNewOrgProfile({
+          code: this.form.inn,
+        }).then((res) => {
+          if(res.data.success){
+            this.$toast.add({
+            severity: 'success',
+            summary: 'Успех!',
+            detail: res.data.message,
+            life: 3000
+        });
+        this.getOpts({
+          page: this.page,
+          perpage: this.pagination_items_per_page
+        })
+        this.modalAdd = false;
+        } else{
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: res.data.message,
+            life: 3000
+          });
+        }
+        this.loading = false
+        })
+			});
+
+
+
+    },
   },
   mounted() {
     this.getOpts({
@@ -311,7 +376,7 @@ export default {
     ...mapGetters({
       opts: 'purchases/opts',
     }),
-   
+
   },
   watch: {
      opts: function (newVal, oldVal) {
@@ -321,7 +386,29 @@ export default {
       }
 		},
   },
+  setup() {
+    return { v$: useVuelidate() }
+  },
+  validations() {
+    return {
+      form: {
+        inn: {
+          required,
+        },
+      },
+    }
+  },
 }
 
 </script>
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.clients__card-right-right  {
+  justify-content: end;
+}
+.modal__content .clients-info__label{
+  margin: 40px 0 20px;
+}
+.modal__content .d-button{
+  margin-top: 40px;
+}
+</style>

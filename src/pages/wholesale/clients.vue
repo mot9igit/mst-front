@@ -1,5 +1,6 @@
 <template>
   <section class="clients" id="clients">
+    <Toast />
     <!-- Верхушка страницы -->
     <div class="d-top">
       <a class="d-back d-top-back">
@@ -32,7 +33,7 @@
               v-model="filterText"
               @input="setFilter('filter')"
             />
-            
+
             <div class="d-input__actions clients__filters-input-actions">
               <button class="d-icon-wrapper clients__filters-input-button" >
                 <i class="d-icon-search-big"></i>
@@ -41,7 +42,7 @@
           </div>
           <div class="d-input d-input--light clients__filters-input clients__filters-input-multiselect"  v-if="ffilter.type == 'multiselect'">
             <div class="dart-form-group">
-              <MultiSelect v-model="filterValues[i]" :options="ffilter.values" :optionLabel="(ffilter.optionLabel) ? ffilter.optionLabel : 'name'" :optionValue="(ffilter.optionValue) ? ffilter.optionValue : 'id'" :placeholder="ffilter.placeholder" filter 
+              <MultiSelect v-model="filterValues[i]" :options="ffilter.values" :optionLabel="(ffilter.optionLabel) ? ffilter.optionLabel : 'name'" :optionValue="(ffilter.optionValue) ? ffilter.optionValue : 'id'" :placeholder="ffilter.placeholder" filter
                 :maxSelectedLabels="ffilter.values.length" class="d-input__field clients__filters-multiselect-field" @change="setFilter"/>
             </div>
 
@@ -77,15 +78,15 @@
         </div>
       </div>
 
-      <button class="d-button d-button-primary d-button--sm-shadow clients__filters-create">
+      <!--<button class="d-button d-button-primary d-button--sm-shadow clients__filters-create">
         <i class="d-icon-plus-flat clients__filters-create-icon"></i>
         Новый клиент
-      </button>
+      </button>-->
     </div>
     <Loader v-if="loading" />
     <div class="clients__card-container" v-else>
       <div class="clients__card dart-row" v-for="(item, index) in dilers.items" :key="index">
-        <div class="clients__card-left d-col-16">
+        <div class="clients__card-left d-col-15">
           <div class="clients__card-info  d-col-7 clients__devider">
             <div class="clients__card-info-image-container">
               <img :src="item.image" alt="" class="clients__card-info-image" />
@@ -99,7 +100,7 @@
             </div>
           </div>
 
-          <div class="clients__card-data  d-col-7">
+          <div class="clients__card-data  d-col-8">
 
             <div class="clients__card-inn d-col-9 clients__devider">
               <p class="clients__card-inn-label">ИНН:</p>
@@ -119,7 +120,7 @@
           </div>
         </div>
 
-        <div class="clients__card-right d-col-8">
+        <div class="clients__card-right d-col-9">
           <div class="clients__card-right-left d-col-3" :class="item.owner_id > 0 && item.owner_id == this.$route.params.id ? 'clients__devider' : ''">
              <!--<div class="d-divider d-divider--vertical clients__card-divider"></div>
            <div class="clients__card-price-container">
@@ -136,20 +137,20 @@
             <div class="clients__card-vendor" v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id">Создан поставщиком</div>
           </div>
           <div class="clients__card-right-right d-col-7">
-            <div class="d-col-18 clients__devider">
+            <div class="d-col-18" :class="item.owner_id > 0 && item.owner_id == this.$route.params.id ? 'clients__devider' : ''">
             <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
               <i class="d-icon-plus-flat clients__card-offer-icon"></i>
               Предложение
             </button>
             </div>
             <div class="clients__card-action-container d-col-6">
-              <button class="clients__card-action">
+              <!--<button class="clients__card-action" v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id">
                 <i class="d-icon-pen2"></i>
               </button>
               <div
-                class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
-              ></div>
-              <button class="clients__card-action">
+                class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"  v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
+              ></div>-->
+              <button class="clients__card-action"  v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id" @click.prevent="modalDeleteShow( item )">
                 <i class="d-icon-trash"></i>
               </button>
             </div>
@@ -177,13 +178,13 @@
                 Предложение
               </button>
               <div class="clients__card-action-container">
-                <button class="clients__card-action">
+                <!--<button class="clients__card-action"   v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id">
                   <i class="d-icon-pen2"></i>
                 </button>
                 <div
-                  class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
-                ></div>
-                <button class="clients__card-action">
+                  class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider" v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
+                ></div>-->
+                <button class="clients__card-action"   v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id" @click.prevent="modalDeleteShow( item )">
                   <i class="d-icon-trash"></i>
                 </button>
               </div>
@@ -223,6 +224,9 @@
             </div>
           </div>-->
         </div>
+
+
+
       </div>
       <div class="clients__paginate" v-if="countPages > 1">
       <paginate
@@ -237,6 +241,32 @@
           :forcePage="this.page"
         >
       </paginate>
+      <teleport to="body" v-if="this.modalDelete === true">
+          <customModal v-model="this.modalDelete" class="clients-form__modal">
+            <div class="clients-info__value-container">
+              <h2>Подтверждение удаления клиента</h2>
+              <div class="clients-info__label"><i class="d-icon-warning"></i>Вы уверены, что хотите удалить клиента {{ modalDeleteObj.name }} с ID {{ modalDeleteObj.id }}?</div>
+              <div class="clients-button__container">
+                <button
+                    type="button"
+                    href="#"
+                    class="d-button d-button d-button-primary d-button-primary-small d-button--sm-shadow clients-info__button"
+                    @click.prevent="deleteClient(modalDeleteObj)"
+                >
+                  Да
+                </button>
+                <button
+                  type="button"
+                  href="#"
+                  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs clients-info__button"
+                  @click.prevent="this.modalDelete = false"
+              >
+                Нет
+              </button>
+            </div>
+            </div>
+          </customModal>
+      </teleport>
     </div>
     </div>
   </section>
@@ -249,10 +279,12 @@ import Loader from '@/shared/ui/Loader.vue'
 import Checkbox from 'primevue/checkbox'
 import { toRaw } from 'vue'
 import  { MultiSelect } from 'primevue'
+import customModal from '@/shared/ui/Modal.vue'
+import Toast from 'primevue/toast';
 
 export default {
   name: 'WholesaleClients',
-  components: { Breadcrumbs, Loader, Paginate, Checkbox, MultiSelect },
+  components: { Breadcrumbs, Loader, Paginate, Checkbox, MultiSelect, customModal, Toast },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -267,6 +299,8 @@ export default {
     return {
       loading: true,
       page: 1,
+      modalDelete: false,
+      modalDeleteObj: {},
       filterText: '',
       filterValues: {},
       countPages: 0,
@@ -298,6 +332,7 @@ export default {
       unsetDilers: 'wholesale/unsetDilers',
       getManagers: 'wholesale/getManagers',
       getStores: 'wholesale/getStores',
+      setOrgProfile: 'wholesale/setOrgProfile',
     }),
     setFilter(type = '0') {
       if (type === 'filter') {
@@ -329,14 +364,11 @@ export default {
       })
     },
     pagClickCallback(pageNum) {
-      console.log(pageNum)
       this.paginate({
-
         filter: this.filterText,
-        filtersdata: toRaw(this.filterValue),
+        filtersdata: toRaw(this.filterValues),
         page: pageNum,
         perpage: this.pagination_items_per_page,
-
       })
 
       const el = document.querySelector('.clients__card-container')
@@ -352,7 +384,42 @@ export default {
       this.loading = false
       })
     },
-    
+    modalDeleteShow(obj){
+      this.modalDeleteObj = obj
+      this.modalDelete = true
+    },
+    deleteClient(data) {
+					this.loading = true
+					this.unsetDilers()
+					this.$load(async () => {
+            const requestdata = {
+              client_id: data.id,
+            }
+            console.log(requestdata)
+						await this.setOrgProfile(requestdata)
+							.then((result) => {
+                console.log(result)
+                if(result.data.success === false){
+                  this.$toast.add({ severity: 'error', summary: 'Ошибка!', detail: result.data.message, life: 3000 });
+									this.getDilers(data)
+                }else{
+                  this.$toast.add({
+                    severity: "success",
+                    summary: "Организация удалена",
+                    detail:
+                      "Удаление организации клиента с ID " + data.id + " произошло успешно!",
+                    life: 3000,
+                  });
+									this.getDilers(data)
+                  this.modalDelete = false
+                }
+							})
+							.catch((result) => {
+								console.log(result);
+							});
+					});
+					this.loading = false;
+    },
 
   },
   mounted() {
@@ -388,8 +455,6 @@ export default {
       managers: 'wholesale/managers',
       stores: 'wholesale/stores',
     }),
-    
-    
   },
   watch: {
     managers: function (newVal, oldVal) {
@@ -400,8 +465,12 @@ export default {
       if (this.countPages === 0) {
         this.countPages = 1
       }
-      
-		}
+		},
+    modalDelete: function (newVal) {
+      if(newVal === false){
+        this.modalDeleteObj = {}
+      }
+    }
   },
 }
 </script>
@@ -458,16 +527,49 @@ export default {
 }
 .clients__filters-input-multiselect .p-multiselect-label {
     padding-right: 35px;
+    padding-left: 0;
+}
+.clients__filters-input-multiselect .p-multiselect-dropdown {
+    color: #757575;
 }
 .clients__filters-input .dart-form-group{
   width:100%;
 }
+.clients__filters-input {
+    max-width: 350px;
+}
 .page-item .page-link{
   cursor:pointer;
+}
+.clients__card-right-right .clients__card-action-container{
+  justify-content: end;
+}
+.clients-form__modal .modal-content{
+  max-width: 700px;
+}
+.clients-info__label{
+  display: flex;
+  align-items: center;
+  margin: 40px 0;
+  gap:12px;
+}
+.clients-button__container{
+  display: flex;
+  align-items: center;
+  gap:20px;
+}
+.clients-button__container .clients-info__button{
+  min-width: 150px;
+}
+@media (width <= 1536px) {
+    .clients__card .clients__card-inn:first-child::before{
+      display:none;
+    }
 }
 @media (width <= 1280px) {
 .clients__devider:before{
   display:none;
 }
 }
+
 </style>
