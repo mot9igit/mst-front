@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="myorders__content">
     <div class="d-top">
       <a class="d-back d-top-back">
         <i class="d-icon-arrow d-back__icon d-top-back-icon"></i>
@@ -7,6 +7,7 @@
       </a>
       <Breadcrumbs />
     </div>
+    <h1>Мои заказы</h1>
     <Loader v-if="loading" />
     <BaseTable
       v-else
@@ -48,8 +49,8 @@ export default {
       page: 1,
       filters: {
         name: {
-          name: 'Наименование, артикул',
-          placeholder: 'Наименование, артикул',
+          name: 'Искать в заказах',
+          placeholder: 'Искать в заказах',
           type: 'text',
         },
       },
@@ -74,6 +75,36 @@ export default {
 					},
 					sort: true,
 				},
+        seller_address: {
+					label: "Склад Поставщика",
+					type: "link",
+          link_to: "purchasesOrder",
+					link_params: {
+						id: this.$route.params.id,
+						order_id: "id",
+					},
+					sort: true,
+				},
+        ur_persone_name: {
+					label: "Покупатель",
+					type: "link",
+          link_to: "purchasesOrder",
+					link_params: {
+						id: this.$route.params.id,
+						order_id: "id",
+					},
+					sort: true,
+				},
+        initiator: {
+					label: "Инициатор",
+					type: "link",
+          link_to: "purchasesOrder",
+					link_params: {
+						id: this.$route.params.id,
+						order_id: "id",
+					},
+					sort: true,
+				},
 				cost: {
 					label: "Сумма",
 					type: "link",
@@ -84,64 +115,9 @@ export default {
 					},
 					sort: true,
 				},
-				payer: {
+				status: {
 					label: "Оплата доставки",
-					type: "link",
-          link_to: "purchasesOrder",
-					link_params: {
-						id: this.$route.params.id,
-						order_id: "id",
-					},
-					sort: true,
-				},
-				seller_name: {
-					label: "Поставщик",
-					type: "link",
-          link_to: "purchasesOrder",
-					link_params: {
-						id: this.$route.params.id,
-						order_id: "id",
-					},
-					sort: true,
-				},
-				seller_address: {
-					label: "Склад Поставщика",
-					type: "link",
-          link_to: "purchasesOrder",
-					link_params: {
-						id: this.$route.params.id,
-						order_id: "id",
-					},
-					sort: true,
-				},
-				ur_persone_name: {
-					label: "Покупатель",
-					type: "link",
-          link_to: "purchasesOrder",
-					link_params: {
-						id: this.$route.params.id,
-						order_id: "id",
-					},
-					sort: true,
-				},
-				initiator: {
-					label: "Инициатор",
-					type: "link",
-          link_to: "purchasesOrder",
-					link_params: {
-						id: this.$route.params.id,
-						order_id: "id",
-					},
-					sort: true,
-				},
-				delay: {
-					label: "Отсрочка",
-					type: "link",
-          link_to: "purchasesOrder",
-					link_params: {
-						id: this.$route.params.id,
-						order_id: "id",
-					},
+					type: "status",
 					sort: true,
 				}
 			},
@@ -187,4 +163,40 @@ export default {
   watch: {},
 }
 </script>
-<style lang="scss"></style>
+
+<style lang="scss">
+.myorders__content .dart-row{
+  justify-content: end;
+  margin-top: -39px;
+}
+.myorders__content .dart-mb-1 {
+    margin-bottom: 40px;
+}
+.myorders__content .p-inputtext{
+  width:100%;
+}
+.myorders__content .form_input_group:after{
+  content: "\e003";
+  font-family: "Iconly" !important;
+  position: absolute;
+  font-size:16.8px;
+  top: calc(50% - 8.4px);
+  right: 20px;
+}
+.myorders__content .p-inputtext {
+  padding-right: 40px;
+  box-shadow: none;
+  border: 0.2px solid #75757575;
+}
+.myorders__content .p-inputtext:enabled:focus {
+    border-color: #f92c0d;
+}
+.myorders__content .p-floatlabel:has(input:focus) label, .myorders__content .p-floatlabel:has(input:-webkit-autofill) label,
+.myorders__content  .p-floatlabel:has(textarea:focus) label,.myorders__content  .p-floatlabel:has(.p-inputwrapper-focus) label {
+    color: #f92c0d;
+}
+.myorders__content  .d-table__col {
+    padding: 16px;
+}
+
+</style>
