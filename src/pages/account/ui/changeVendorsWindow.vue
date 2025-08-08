@@ -2,6 +2,7 @@
   <div class="d-sheet__overlay vendor-change__sheet-overlay" :class="{ active: active }">
     <div class="d-sheet__wrapper vendor-change__sheet-wrapper" v-if="optVendors">
       <div class="d-sheet d-sheet--active vendor-change__sheet" data-sheet="vendor-change">
+        <Loader v-if="this.loading"/>
         <div class="d-sheet__content vendor-change">
           <!-- Яндекс карта -->
           <div class="vendor-change__map">
@@ -163,18 +164,6 @@
                     class="d-icon-search-big header__icon-button-icon vendor-change__connected-search-button-icon"
                   ></i>
                 </button>
-
-                <ul class="d-search__suggestions">
-                  <!-- <li class="d-search__suggestion">
-														Россия, Москва, Большой Предтеченский переулок, 13с4
-													</li>
-													<li class="d-search__suggestion">
-														Россия, Москва, Большой Предтеченский переулок, 13с4
-													</li>
-													<li class="d-search__suggestion">
-														Россия, Москва, Большой Предтеченский переулок, 13с4
-													</li> -->
-                </ul>
               </form>
 
               <!-- Список -->
@@ -267,6 +256,7 @@ import {
 } from 'vue-yandex-maps'
 import { mapActions, mapGetters } from 'vuex'
 import { Checkbox } from 'primevue'
+import Loader from '@/shared/ui/Loader.vue'
 
 export default {
   name: 'changeVendorsWindow',
@@ -276,7 +266,7 @@ export default {
       default: false,
     },
   },
-  emits: ['vendorCheck'],
+  emits: ['vendorCheck', 'catalogUpdate'],
   components: {
     YandexMap,
     YandexMapDefaultSchemeLayer,
@@ -284,6 +274,7 @@ export default {
     YandexMapMarker,
     YandexMapClusterer,
     Checkbox,
+    Loader
   },
   data() {
     return {
@@ -304,7 +295,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      optVendors: 'org/optVendors'
+      optVendors: 'org/optVendors',
+      toggleVendorStores: 'org/toggleVendorStores'
     }),
     avLength() {
       return Object.keys(this.items.available).length
@@ -314,6 +306,7 @@ export default {
     ...mapActions({
       toggleOptsVisible: 'org/toggleOptsVisible',
       getOptVendors: 'org/getOptVendors',
+      toggleOpts: 'org/toggleOpts',
     }),
     close() {
       this.$emit('close')
@@ -333,12 +326,8 @@ export default {
     },
     // Установка чекбокса поставщика
     changeSelectCheckbox(id) {
-      if (!this.multisupplier) {
-        for (let i = 0; i < this.vendorForm.selected.length; i++) {
-          this.vendorForm.selected[i] = false
-        }
-        this.vendorForm.selected[id] = true
-      }
+      this.vendorForm.selected[id] = true
+      this.checkVendors()
     },
     changeOpts(id, action) {
       this.loading = true
@@ -346,8 +335,9 @@ export default {
         id: id,
         action: action,
       }
-      this.toggleOptsVisible(data).then(() => {
-        this.$emit('vendorCheck')
+      this.toggleOpts(data).then(() => {
+        this.$emit('updateCatalog')
+        this.getOptVendors()
         this.loading = false
       })
     },
@@ -366,27 +356,15 @@ export default {
       }
     },
     changeStores(org_id, store_id, active) {
-      console.log(org_id, store_id, active)
-      this.opt_api({
-        action: 'toggle/vendors/stores',
+      this.toggleVendorStores({
         active: active,
-        extended_name:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
-        id:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id_org_from
-            : router.currentRoute._value.params.id,
         org_id: org_id,
         store_id: store_id,
-      }).then((result) => {
+      }).then(() => {
         this.loading = false
-        this.get_opt_vendors_from_api()
+        this.getOptVendors()
         this.vendorForm.selected = []
-        this.$emit('vendorCheck')
-        this.get_opt_products_from_api({
-          page: 1,
-          perpage: 25,
-        })
+        this.$emit('catalogUpdate')
       })
     },
     checkVendors() {
@@ -397,51 +375,20 @@ export default {
         }
       })
       if (!error) {
-        if (!this.multisupplier) {
-          for (let i = 0; i < this.items.selected.length; i++) {
-            const data = {
-              id: this.items.selected[i].id,
-              action: 0,
-              extended_name:
-                router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-                  ? 'offer'
-                  : 'cart',
-              store:
-                router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-                  ? router.currentRoute._value.params.id_org_from
-                  : router.currentRoute._value.params.id,
-            }
-            this.toggle_opts_visible(data)
-          }
-        }
         this.loading = true
-        this.$load(async () => {
-          await this.toggle_opts_visible({
-            action: 1,
-            store:
-              router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-                ? router.currentRoute._value.params.id_org_from
-                : router.currentRoute._value.params.id,
-            extended_name:
-              router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
-            id: this.vendorForm.selected,
-          })
-            .then((result) => {
-              this.loading = false
-              this.get_opt_vendors_from_api()
-              this.vendorForm.selected = []
-              this.$emit('vendorCheck')
-              this.get_opt_products_from_api({
-                page: 1,
-                perpage: 25,
-              })
-            })
-            .catch((result) => {
-              console.log(result)
-            })
-
-          this.get_opt_warehouse_catalog_from_api()
+        this.toggleOpts({
+          action: 1,
+          id: this.vendorForm.selected,
         })
+          .then(() => {
+            this.loading = false
+            this.getOptVendors()
+            this.vendorForm.selected = []
+            this.$emit('catalogUpdate')
+          })
+          .catch((result) => {
+            console.log(result)
+          })
       } else {
         this.$toast.add({
           severity: 'error',
