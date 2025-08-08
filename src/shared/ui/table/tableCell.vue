@@ -84,7 +84,7 @@
     >
       <span
         :style="
-          'font-size: 12px;padding: 3px 5px;border-radius: 3px;white-space: nowrap;color: #fff;background-color: #' +
+          'font-size: 12px;padding: 3px 9px;border-radius: 15px;white-space: nowrap;color: #fff;background-color: #' +
           value.status_color
         "
       >

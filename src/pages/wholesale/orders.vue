@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wholesaleorders__content">
     <div class="d-top">
       <a class="d-back d-top-back">
         <i class="d-icon-arrow d-back__icon d-top-back-icon"></i>
@@ -165,4 +165,38 @@ export default {
   watch: {},
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.wholesaleorders__content .dart-row{
+  justify-content: end;
+  margin-top: -39px;
+}
+.wholesaleorders__content .dart-mb-1 {
+    margin-bottom: 40px;
+}
+.wholesaleorders__content .p-inputtext{
+  width:100%;
+}
+.wholesaleorders__content .form_input_group:after{
+  content: "\e003";
+  font-family: "Iconly" !important;
+  position: absolute;
+  font-size:16.8px;
+  top: calc(50% - 8.4px);
+  right: 20px;
+}
+.wholesaleorders__content .p-inputtext {
+  padding-right: 40px;
+  box-shadow: none;
+  border: 0.2px solid #75757575;
+}
+.wholesaleorders__content .p-inputtext:enabled:focus {
+    border-color: #f92c0d;
+}
+.wholesaleorders__content .p-floatlabel:has(input:focus) label, .wholesaleorders__content .p-floatlabel:has(input:-webkit-autofill) label,
+.wholesaleorders__content  .p-floatlabel:has(textarea:focus) label,.wholesaleorders__content  .p-floatlabel:has(.p-inputwrapper-focus) label {
+    color: #f92c0d;
+}
+.wholesaleorders__content .d-table__col,.wholesaleorders__content  .d-table__row:first-child > .d-table__col {
+    padding: 16px;
+}
+</style>
