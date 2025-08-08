@@ -78,11 +78,34 @@ export default {
 
       return response
     },
+    async getSales({ commit }, { filter, filtersdata, page, sort, perpage, actionid, type, isAction }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        filter: filter,
+        filtersdata: filtersdata,
+        sort: sort,
+        page: page,
+        perpage: perpage,
+        action: 'get',
+        action_id: actionid,
+        type: 2,
+        is_action: isAction ? true : false,
+        extended_name: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart'
+      }
+      const response = await api.retail.getSales(data)
+      if (response) {
+        commit('SET_SALES', response.data)
+      }
+      return response
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },
     unsetOrder({ commit }) {
       commit('UNSET_ORDER')
+    },
+    unsetSales({ commit }) {
+      commit('UNSET_SALES')
     },
   },
 
@@ -108,6 +131,13 @@ export default {
     SET_BALANCE_REQUEST: (state, data) => {
       state.balance_request = data.data
     },
+    SET_SALES: (state, data) => {
+      state.sales = data.data
+    },
+    UNSET_SALES: (state) => {
+      state.sales = {}
+    },
+
   },
   getters: {
     orders(state) {
@@ -121,6 +151,9 @@ export default {
     },
     balance_request(state) {
       return state.balance_request
+    },
+    sales(state) {
+      return state.sales
     },
 
   },
