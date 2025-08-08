@@ -38,7 +38,9 @@
     <div class="v-table__widgets">
       <slot name="widgets"></slot>
     </div>
-    <div class="d-table__wrapper" v-if="this.retailSales.length > 0">
+    <Loader v-if="loading" />
+    <div v-else>
+      <div class="d-table__wrapper" v-if="this.retailSales.length > 0">
       <table class="d-table">
         <thead class="d-table__head">
           <tr class="d-table__row">
@@ -147,6 +149,8 @@
     <div class="profile-products__products" v-else>
       <div class="dart-alert dart-alert-info">Ничего не найдено</div>
     </div>
+    </div>
+
   </div>
 
 
@@ -157,15 +161,15 @@
 import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
-import FloatLabel from 'primevue/floatlabel'
+
 import InputText from 'primevue/inputtext'
 import { toRaw } from 'vue'
 import Paginate from 'vuejs-paginate-next'
-import retail from '@/store/retail'
+
 
 export default {
   name: 'RetailActions',
-components: { Breadcrumbs, Loader, FloatLabel, InputText, Paginate },
+components: { Breadcrumbs, Loader, InputText, Paginate },
   props: {
     pagination_items_per_page: {
       type: Number,

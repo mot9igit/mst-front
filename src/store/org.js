@@ -7,6 +7,7 @@ export default {
     orgActive: {},
     orgs: [],
     orgStores: [],
+    orgprofile: [],
   },
   actions: {
     async getOrg({ commit }, data) {
@@ -81,6 +82,14 @@ export default {
       }
       await api.org.toggleOptsVisible(data)
     },
+    async getOrgProfile({ commit }, data) {
+
+      const response = await api.org.getOrgProfile(data)
+      if (response) {
+        commit('SET_ORG_PROFILE', response.data)
+      }
+      return response
+    },
   },
   mutations: {
     SET_ORG: (state, data) => {
@@ -95,6 +104,9 @@ export default {
     SET_OPT_VENDORS: (state, data) => {
       state.optVendors = data.data
     },
+    SET_ORG_PROFILE: (state, data) => {
+      state.orgprofile = data.data
+    },
   },
   getters: {
     orgActive(state) {
@@ -108,6 +120,9 @@ export default {
     },
     optVendors(state) {
       return state.optVendors
+    },
+    orgprofile(state) {
+      return state.orgprofile
     },
   },
 }

@@ -9,7 +9,7 @@
       <breadcrumbs/>
     </div>
 
-    <ul class="d-tab2__container lk-about__tabs">
+  <!--  <ul class="d-tab2__container lk-about__tabs">
       <li class="d-tab2 d-tab2--active">
         <a href="/views/lk/about/index.html">О компании</a>
       </li>
@@ -19,9 +19,13 @@
       <li class="d-tab2">
         <a href="/views/lk/access/index.html">Права доступа</a>
       </li>
-    </ul>
+    </ul>-->
 
-    <div class="lk-about__info-container">
+     <h1>О компании</h1>
+
+     <Loader v-if="loading" />
+     <div v-else>
+      <div class="lk-about__info-container">
       <div class="lk-about__info">
         <div class="lk-about__info-title-wrapper">
           <p class="lk-about__info-title-label">Название компании</p>
@@ -227,15 +231,46 @@
         </div>
       </div>
     </div>
+    </div>
+
+
   </section>
 </template>
 
 <script>
-import breadcrumbs from '@/shared/ui/breadcrumbs.vue';
+import { mapActions, mapGetters } from 'vuex'
+import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
+import Loader from '@/shared/ui/Loader.vue'
+
+import InputText from 'primevue/inputtext'
+import { toRaw } from 'vue'
+
+
+
 export default {
   name: 'ProfileMain',
-  components: { breadcrumbs }
+  components: { Breadcrumbs, Loader, InputText },
+  mounted(){
+    this.getOrgProfile({
+      action: "get/org/profile",
+      id: this.$route.params.id,
+    });
+  },
+   methods: {
+    ...mapActions({
+      getOrgProfile: 'org/getOrgProfile',
+    }),
+  },
+  computed: {
+    ...mapGetters({
+      orgprofile: 'org/orgprofile'
+    }),
+  },
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  h1 {
+    margin-bottom: 40px;
+  }
+</style>
