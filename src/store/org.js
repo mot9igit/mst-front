@@ -60,6 +60,33 @@ export default {
       }
       return response
     },
+    async toggleVendorStores({ commit }, { active, org_id, store_id }){
+      const data = {
+        action: 'toggle/vendors/stores',
+        active: active,
+        extended_name:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        id:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+            ? router.currentRoute._value.params.id_org_from
+            : router.currentRoute._value.params.id,
+        org_id: org_id,
+        store_id: store_id,
+      }
+      const response = await api.org.toggleVendorStores(data)
+      return response
+    },
+    async toggleOpts({ commit }, { action, id }) {
+      const data = {
+        type: 'toggleOptsVisible',
+        id: id,
+        action: action,
+        extended_name: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        store: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? router.currentRoute._value.params.id_org_from : router.currentRoute._value.params.id
+      }
+      const response = await api.org.toggleOpts(data)
+      return response
+    },
     async toggleOptsVisible({ commit }, sendData) {
       const data = {
         action: 'get/vendors',
