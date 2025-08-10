@@ -18,7 +18,7 @@
             <span v-if="v$.form.email.required" class="d-input-error__text"
               >Пожалуйста, введите Email или Логин.</span
             >
-          </div>
+    </div>
     <button class="d-button d-button-primary" type="submit">
       Восстановить
     </button>
