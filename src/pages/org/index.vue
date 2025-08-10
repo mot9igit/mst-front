@@ -424,17 +424,21 @@ export default {
     orgprofile: function (newVal) {
       this.showSaveButton=false
       this.orgReqValues = newVal.requisites[0]
-      this.orgBankValues = this.orgReqValues.banks[0]
-      this.orgRequisites.name.value = this.orgReqValues.name
-      this.orgRequisites.inn.value = this.orgReqValues.inn
-      this.orgRequisites.ogrn.value = this.orgReqValues.ogrn
-      this.orgRequisites.kpp.value = this.orgReqValues.kpp
-      this.orgRequisites.ur_address.value = this.orgReqValues.ur_address
-      this.orgRequisites.fact_address.value = this.orgReqValues.fact_address
-      this.orgBankRequisites.bank_bik.value = this.orgBankValues.bank_bik
-      this.orgBankRequisites.bank_name.value = this.orgBankValues.bank_name
-      this.orgBankRequisites.bank_number.value = this.orgBankValues.bank_number
-      this.orgBankRequisites.bank_knumber.value = this.orgBankValues.bank_knumber
+      this.orgBankValues = this.orgReqValues.banks[0] != undefined ? this.orgReqValues.banks[0] : this.orgBankValues
+      if(this.orgReqValues.length > 0){
+        this.orgRequisites.name.value = this.orgReqValues.name
+        this.orgRequisites.inn.value = this.orgReqValues.inn
+        this.orgRequisites.ogrn.value = this.orgReqValues.ogrn
+        this.orgRequisites.kpp.value = this.orgReqValues.kpp
+        this.orgRequisites.ur_address.value = this.orgReqValues.ur_address
+        this.orgRequisites.fact_address.value = this.orgReqValues.fact_address
+      }
+      if(this.orgBankValues.length > 0){
+        this.orgBankRequisites.bank_bik.value = this.orgBankValues.bank_bik
+        this.orgBankRequisites.bank_name.value = this.orgBankValues.bank_name
+        this.orgBankRequisites.bank_number.value = this.orgBankValues.bank_number
+        this.orgBankRequisites.bank_knumber.value = this.orgBankValues.bank_knumber
+      }      
     },
   },
   setup() {
