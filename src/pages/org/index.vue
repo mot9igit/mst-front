@@ -211,7 +211,7 @@
         <div class="lk-about__block-table-row">
           <div class="lk-about__block-table-col" v-for="(bank, index) in orgBankRequisites" :key="index">
             <p class="lk-about__block-table-label">{{ bank.name }}</p>
-            <p class="lk-about__block-table-value">{{ bank.value != '' ? bank.value : '-' }}</p>
+            <p class="lk-about__block-table-value">{{ bank.value != '' && bank.value != undefined ? bank.value : '-' }}</p>
           </div>
         </div>
       </div>
@@ -425,20 +425,19 @@ export default {
       this.showSaveButton=false
       this.orgReqValues = newVal.requisites[0]
       this.orgBankValues = this.orgReqValues.banks[0] != undefined ? this.orgReqValues.banks[0] : this.orgBankValues
-      if(this.orgReqValues.length > 0){
+      
         this.orgRequisites.name.value = this.orgReqValues.name
         this.orgRequisites.inn.value = this.orgReqValues.inn
         this.orgRequisites.ogrn.value = this.orgReqValues.ogrn
         this.orgRequisites.kpp.value = this.orgReqValues.kpp
         this.orgRequisites.ur_address.value = this.orgReqValues.ur_address
         this.orgRequisites.fact_address.value = this.orgReqValues.fact_address
-      }
-      if(this.orgBankValues.length > 0){
+      
         this.orgBankRequisites.bank_bik.value = this.orgBankValues.bank_bik
         this.orgBankRequisites.bank_name.value = this.orgBankValues.bank_name
         this.orgBankRequisites.bank_number.value = this.orgBankValues.bank_number
         this.orgBankRequisites.bank_knumber.value = this.orgBankValues.bank_knumber
-      }      
+            
     },
   },
   setup() {
