@@ -51,7 +51,7 @@
               >
             </div>
           </div>
-          <button  
+          <button
             type="button"
             class="d-button d-button-quaternary d-button--no-shadow lk-about__info-button"
             @click.prevent="this.modalAddCompany = true"
@@ -69,7 +69,7 @@
           <div class="lk-about__info-image-wrapper" v-if="orgprofile.image != ''">
             <img :src="orgprofile.image" alt="" class="lk-about__info-image" />
         </div>
-          
+
         </div>
         <div class="lk-about__info">
           <div class="lk-about__info-title-wrapper">
@@ -80,7 +80,7 @@
           <div class="lk-about__info-text-wrapper">
             <p class="lk-about__info-text">{{ orgprofile.id }}</p>
           </div>
-          
+
         </div>
         <div class="lk-about__info">
           <div class="lk-about__info-title-wrapper">
@@ -129,7 +129,7 @@
               >
             </div>
           </div>
-        </div> 
+        </div>
       </div>
       <div class="lk-about__submit-container">
         <button
@@ -226,7 +226,7 @@
       <div class="lk-about-info__value-container">
         <h2>Запрос на добавление/изменение реквизитов</h2>
         <form class="lk-about-form__modal"  @submit.prevent="">
-          
+
 
         <div class="lk-about__block-table" >
           <div class="lk-about__block-table-row" >
@@ -235,7 +235,7 @@
               <input
               type="text"
               :v-model="index"
-              class="d-input__field lk-about__info-input-field"
+              class="d-input d-input--light lk-about__info-input lk-about__info-input-field"
               >
             </div>
           </div>
@@ -397,7 +397,7 @@ export default {
           value: '',
         },
       },
-      
+
     }
   },
   mounted(){
@@ -412,7 +412,7 @@ export default {
     }),
     changeOrgProfile(){
       this.v$.$touch()
-     
+
     }
   },
   computed: {
@@ -425,19 +425,19 @@ export default {
       this.showSaveButton=false
       this.orgReqValues = newVal.requisites[0]
       this.orgBankValues = this.orgReqValues.banks[0] != undefined ? this.orgReqValues.banks[0] : this.orgBankValues
-      
+
         this.orgRequisites.name.value = this.orgReqValues.name
         this.orgRequisites.inn.value = this.orgReqValues.inn
         this.orgRequisites.ogrn.value = this.orgReqValues.ogrn
         this.orgRequisites.kpp.value = this.orgReqValues.kpp
         this.orgRequisites.ur_address.value = this.orgReqValues.ur_address
         this.orgRequisites.fact_address.value = this.orgReqValues.fact_address
-      
+
         this.orgBankRequisites.bank_bik.value = this.orgBankValues.bank_bik
         this.orgBankRequisites.bank_name.value = this.orgBankValues.bank_name
         this.orgBankRequisites.bank_number.value = this.orgBankValues.bank_number
         this.orgBankRequisites.bank_knumber.value = this.orgBankValues.bank_knumber
-            
+
     },
   },
   setup() {
@@ -506,5 +506,13 @@ export default {
   float: left;
   border-bottom: 0.5px solid #75757575;
   padding:24px 0;
+}
+.lk-about__info-input-field{
+  background-color: transparent;
+  color: var(--d-input-color);
+  padding: var(--d-input-padding);
+  padding-right: 0;
+  width: 90%;
+  height: 100%;
 }
 </style>
