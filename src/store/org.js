@@ -8,6 +8,16 @@ export default {
     orgs: [],
     orgStores: [],
     orgprofile: [],
+    optVendorsAvailable: {
+      items: [],
+      total: -1,
+      totalAll: 0,
+    },
+    optVendorsSelected: {
+      items: [],
+      total: -1,
+      totalAll: 0,
+    },
   },
   actions: {
     async getOrg({ commit }, data) {
@@ -35,13 +45,16 @@ export default {
       }
       return response
     },
-    async getOptVendors({ commit }, sendData) {
+    async getOptVendorsAvailable({ commit }, { filter, page, perpage }) {
       const data = {
         id:
           router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
             ? router.currentRoute._value.params.id_org_from
             : router.currentRoute._value.params.id,
-        type: router.currentRoute._value.params.type,
+        type: 0,
+        filter: filter,
+        page: page,
+        perpage: perpage,
         action: 'get/vendors',
         id_org_from:
           router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
@@ -50,18 +63,36 @@ export default {
         extended_name:
           router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
       }
-      if (sendData) {
-        if (Object.prototype.hasOwnProperty.call(sendData, 'filter')) {
-          data.filter = sendData.filter
-        }
-      }
       const response = await api.org.getOptVendors(data)
       if (response) {
-        commit('SET_OPT_VENDORS', response.data)
+        commit('SET_OPT_VENDORS_AVAILABLE', response.data)
       }
       return response
     },
-    async toggleVendorStores({ commit }, { active, org_id, store_id }){
+    async getOptVendorsSelected({ commit }, { page, perpage }) {
+      const data = {
+        id:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+            ? router.currentRoute._value.params.id_org_from
+            : router.currentRoute._value.params.id,
+        type: 1,
+        page: page,
+        perpage: perpage,
+        action: 'get/vendors',
+        id_org_from:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+            ? router.currentRoute._value.params.id
+            : null,
+        extended_name:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+      }
+      const response = await api.org.getOptVendors(data)
+      if (response) {
+        commit('SET_OPT_VENDORS_SELECTED', response.data)
+      }
+      return response
+    },
+    async toggleVendorStores({ commit }, { active, org_id, store_id }) {
       const data = {
         action: 'toggle/vendors/stores',
         active: active,
@@ -82,8 +113,12 @@ export default {
         type: 'toggleOptsVisible',
         id: id,
         action: action,
-        extended_name: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
-        store: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? router.currentRoute._value.params.id_org_from : router.currentRoute._value.params.id
+        extended_name:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        store:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+            ? router.currentRoute._value.params.id_org_from
+            : router.currentRoute._value.params.id,
       }
       const response = await api.org.toggleOpts(data)
       return response
@@ -110,7 +145,6 @@ export default {
       await api.org.toggleOptsVisible(data)
     },
     async getOrgProfile({ commit }, data) {
-
       const response = await api.org.getOrgProfile(data)
       if (response) {
         commit('SET_ORG_PROFILE', response.data)
@@ -128,8 +162,11 @@ export default {
     SET_ORG_STORES: (state, data) => {
       state.orgStores = data.data
     },
-    SET_OPT_VENDORS: (state, data) => {
-      state.optVendors = data.data
+    SET_OPT_VENDORS_AVAILABLE: (state, data) => {
+      state.optVendorsAvailable = data.data
+    },
+    SET_OPT_VENDORS_SELECTED: (state, data) => {
+      state.optVendorsSelected = data.data
     },
     SET_ORG_PROFILE: (state, data) => {
       state.orgprofile = data.data
@@ -145,8 +182,11 @@ export default {
     orgStores(state) {
       return state.orgStores
     },
-    optVendors(state) {
-      return state.optVendors
+    optVendorsAvailable(state) {
+      return state.optVendorsAvailable
+    },
+    optVendorsSelected(state) {
+      return state.optVendorsSelected
     },
     orgprofile(state) {
       return state.orgprofile

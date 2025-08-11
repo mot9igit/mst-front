@@ -1,20 +1,24 @@
 <template>
   <div class="d-sheet__overlay vendor-change__sheet-overlay" :class="{ active: active }">
-    <div class="d-sheet__wrapper vendor-change__sheet-wrapper" v-if="optVendors">
+    <div class="d-sheet__wrapper vendor-change__sheet-wrapper" v-if="optVendorsAvailable.items">
       <div class="d-sheet d-sheet--active vendor-change__sheet" data-sheet="vendor-change">
-        <Loader v-if="this.loading"/>
+        <Loader v-if="this.loading" />
         <div class="d-sheet__content vendor-change">
           <!-- Яндекс карта -->
           <div class="vendor-change__map">
-            <div class="yandex-map vendor-change__map-image" v-if="optVendors.available">
+            <div class="yandex-map vendor-change__map-image" v-if="optVendorsAvailable.items">
               <yandex-map v-model="map" :settings="mapSettings" height="100%">
                 <yandex-map-default-features-layer />
                 <yandex-map-default-scheme-layer />
-                <yandex-map-clusterer :grid-size="64" zoom-on-cluster-click>
+                <yandex-map-clusterer
+                  :grid-size="128"
+                  v-model="clusterer"
+                  zoom-on-cluster-click
+                  @trueBounds="trueBounds = $event"
+                >
                   <yandex-map-marker
-                    v-for="item in optVendors.available"
-                    :key="item.id"
-                    position="top left-center"
+                    v-for="item in optVendorsAvailable.items"
+                    :key="item.mapcoordinates"
                     :settings="{
                       coordinates: item.mapcoordinates,
                     }"
@@ -25,6 +29,16 @@
                     </div>
                   </yandex-map-marker>
                 </yandex-map-clusterer>
+                <template #cluster="{ length }">
+                  <div
+                    class="cluster fade-in"
+                    :style="{
+                      background: background,
+                    }"
+                  >
+                    {{ length }}
+                  </div>
+                </template>
               </yandex-map>
             </div>
           </div>
@@ -49,7 +63,7 @@
                 <!-- Карточка выбранного поставщика -->
                 <div
                   class="vendor-change__selected-item"
-                  v-for="item in optVendors.selected"
+                  v-for="item in optVendorsSelected.items"
                   :key="item.id"
                 >
                   <!-- Верхушка -->
@@ -130,10 +144,20 @@
               </div>
             </div>
 
-            <button class="d-button d-button-primary vendor-change__more">
-              <span>Еще +8</span>
-              <i class="d-icon-angle-rounded-right vendor-change__more-icon"></i>
-            </button>
+            <div class="d-pagination-wrap" v-if="pagesCountSelected > 1">
+              <Paginate
+                :page-count="pagesCountSelected"
+                :click-handler="pagClickCallbackSelected"
+                :prev-text="'Пред'"
+                :next-text="'След'"
+                :container-class="'d-pagination d-table__footer-right-pagination'"
+                :page-class="'d-pagination__item'"
+                :active-class="'d-pagination__item--active'"
+                :initialPage="this.pageSelected"
+                :forcePage="this.pageSelected"
+              >
+              </Paginate>
+            </div>
 
             <!-- Список подключенных поставщиков -->
             <p
@@ -171,7 +195,7 @@
                 <!-- Карточка подключенного поставщика -->
                 <div
                   class="vendor-change__connected-item"
-                  v-for="item in optVendors.available"
+                  v-for="item in optVendorsAvailable.items"
                   :key="item.id"
                 >
                   <!-- Выбор -->
@@ -235,10 +259,20 @@
               </div>
             </div>
 
-            <button class="d-button d-button-primary vendor-change__more">
-              <span>Еще +8</span>
-              <i class="d-icon-angle-rounded-right vendor-change__more-icon"></i>
-            </button>
+            <div class="d-pagination-wrap" v-if="pagesCountAvailable > 1">
+              <Paginate
+                :page-count="pagesCountAvailable"
+                :click-handler="pagClickCallbackAvailable"
+                :prev-text="'Пред'"
+                :next-text="'След'"
+                :container-class="'d-pagination d-table__footer-right-pagination'"
+                :page-class="'d-pagination__item'"
+                :active-class="'d-pagination__item--active'"
+                :initialPage="this.pageAvailable"
+                :forcePage="this.pageAvailable"
+              >
+              </Paginate>
+            </div>
           </div>
         </div>
       </div>
@@ -246,7 +280,7 @@
   </div>
 </template>
 <script>
-import { shallowRef } from 'vue'
+import { ref, shallowRef } from 'vue'
 import {
   YandexMap,
   YandexMapDefaultSchemeLayer,
@@ -256,6 +290,7 @@ import {
 } from 'vue-yandex-maps'
 import { mapActions, mapGetters } from 'vuex'
 import { Checkbox } from 'primevue'
+import Paginate from 'vuejs-paginate-next'
 import Loader from '@/shared/ui/Loader.vue'
 
 export default {
@@ -274,12 +309,25 @@ export default {
     YandexMapMarker,
     YandexMapClusterer,
     Checkbox,
-    Loader
+    Loader,
+    Paginate,
   },
   data() {
     return {
       loading: false,
+      pageSelected: 1,
+      pageAvailable: 1,
       map: shallowRef(null),
+      gridSize: ref(128),
+      bounds: ref([
+        [0, 0],
+        [0, 0],
+      ]),
+      trueBounds: ref([
+        [0, 0],
+        [0, 0],
+      ]),
+      clusterer: shallowRef(null),
       mapSettings: {
         location: {
           center: [37.420365, 55.903302],
@@ -295,18 +343,34 @@ export default {
   },
   computed: {
     ...mapGetters({
-      optVendors: 'org/optVendors',
-      toggleVendorStores: 'org/toggleVendorStores'
+      optVendorsAvailable: 'org/optVendorsAvailable',
+      optVendorsSelected: 'org/optVendorsSelected',
     }),
     avLength() {
-      return Object.keys(this.items.available).length
+      return this.optVendorsAvailable.total
+    },
+    pagesCountAvailable() {
+      let pages = Math.ceil(this.optVendorsAvailable.total / this.cfg.vendors.perpage)
+      if (pages === 0) {
+        pages = 1
+      }
+      return pages
+    },
+    pagesCountSelected() {
+      let pages = Math.ceil(this.optVendorsSelected.total / this.cfg.vendors.perpage)
+      if (pages === 0) {
+        pages = 1
+      }
+      return pages
     },
   },
   methods: {
     ...mapActions({
       toggleOptsVisible: 'org/toggleOptsVisible',
-      getOptVendors: 'org/getOptVendors',
+      getOptVendorsAvailable: 'org/getOptVendorsAvailable',
+      getOptVendorsSelected: 'org/getOptVendorsSelected',
       toggleOpts: 'org/toggleOpts',
+      toggleVendorStores: 'org/toggleVendorStores',
     }),
     close() {
       this.$emit('close')
@@ -323,6 +387,7 @@ export default {
       if (this.multisupplier) {
         this.vendorForm.selected[id] = !this.vendorForm.selected[id]
       }
+      this.checkVendors()
     },
     // Установка чекбокса поставщика
     changeSelectCheckbox(id) {
@@ -337,17 +402,52 @@ export default {
       }
       this.toggleOpts(data).then(() => {
         this.$emit('updateCatalog')
-        this.getOptVendors()
+        this.getOptVendorsAvailable({
+          filter: '',
+          page: this.pageAvailable,
+          perpage: this.cfg.vendors.perpage,
+        }).then(() => {
+          this.getOptVendorsSelected({
+            filter: '',
+            page: this.pageSelected,
+            perpage: this.cfg.vendors.perpage,
+          }).then(() => {
+            this.loading = false
+          })
+        })
+      })
+    },
+    pagClickCallbackSelected(pageNum) {
+      this.pageSelected = pageNum
+      this.loading = true
+      this.getOptVendorsSelected({
+        filter: this.filter,
+        page: this.pageSelected,
+        perpage: this.cfg.vendors.perpage,
+      }).then(() => {
+        this.loading = false
+      })
+    },
+    pagClickCallbackAvailable(pageNum) {
+      this.pageAvailable = pageNum
+      this.getOptVendorsAvailable({
+        filter: this.filter,
+        page: this.pageAvailable,
+        perpage: this.cfg.vendors.perpage,
+      }).then(() => {
         this.loading = false
       })
     },
     setFilter(type) {
+      this.pageAvailable = 1
       if (type === 'filter') {
         if (this.filter.length >= 3 || this.filter.length === 0) {
           setTimeout(() => {
             this.loading = true
-            this.getOptVendors({
+            this.getOptVendorsAvailable({
               filter: this.filter,
+              page: this.pageAvailable,
+              perpage: this.cfg.vendors.perpage,
             }).then(() => {
               this.loading = false
             })
@@ -362,7 +462,19 @@ export default {
         store_id: store_id,
       }).then(() => {
         this.loading = false
-        this.getOptVendors()
+        this.getOptVendorsAvailable({
+          filter: '',
+          page: this.pageAvailable,
+          perpage: this.cfg.vendors.perpage,
+        }).then(() => {
+          this.getOptVendorsSelected({
+            filter: '',
+            page: this.pageSelected,
+            perpage: this.cfg.vendors.perpage,
+          }).then(() => {
+            this.loading = false
+          })
+        })
         this.vendorForm.selected = []
         this.$emit('catalogUpdate')
       })
@@ -382,7 +494,19 @@ export default {
         })
           .then(() => {
             this.loading = false
-            this.getOptVendors()
+            this.getOptVendorsAvailable({
+              filter: '',
+              page: this.pageAvailable,
+              perpage: this.cfg.vendors.perpage,
+            }).then(() => {
+              this.getOptVendorsSelected({
+                filter: '',
+                page: this.pageSelected,
+                perpage: this.cfg.vendors.perpage,
+              }).then(() => {
+                this.loading = false
+              })
+            })
             this.vendorForm.selected = []
             this.$emit('catalogUpdate')
           })
@@ -402,6 +526,13 @@ export default {
 }
 </script>
 <style lang="scss">
+.marker {
+  width: 30px;
+  height: 30px;
+  display: block;
+  border-radius: 50%;
+  overflow: hidden;
+}
 .d-search__field {
   background: transparent;
 }
