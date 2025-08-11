@@ -328,10 +328,6 @@ export default {
   border-right: 0.5px solid #75757575;
   height: 100%;
 }
-.dart-row {
-  margin-right:0px; 
-  margin-left: 0px; 
-}
 .balance-info__value-container{
   display:flex;
   flex-direction: column;
@@ -403,6 +399,8 @@ export default {
   position:relative;
   gap:100px;
   margin-top:64px;
+  margin-right:0px;
+  margin-left: 0px;
 }
 .balance__main:before{
   content: '';
