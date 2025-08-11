@@ -12,25 +12,31 @@
     <div class="promos__banners" v-if="salesBanners">
       <div class="dart-row promos__banners-row">
         <div class="d-col-24">
-          <Swiper
-            :slides-per-view="1"
-            :space-between="10"
-            :pagination="{ clickable: true }"
-          >
+          <Swiper :slides-per-view="1" :space-between="10" :pagination="{ clickable: true }">
             <template v-for="n in getCount" :key="n">
               <SwiperSlide v-if="n < 4">
                 <router-link
-                :to="{ name: 'purchasesAction', params: { action_id: salesBanners.items[n - 1].action_id } }"
-                v-if="n < 5"
-                class="promos__banners-item promos__banners-item--primary promos__banners-item--big"
+                  :to="{
+                    name: 'purchasesAction',
+                    params: { action_id: salesBanners.items[n - 1].action_id },
+                  }"
+                  v-if="n < 5"
+                  class="promos__banners-item promos__banners-item--primary promos__banners-item--big"
                 >
-                  <img class="promos__banners-item-image" :src="salesBanners.items[n - 1].image.image"
-                  :srcset="salesBanners.items[n - 1].image.image +' 2x, ' + salesBanners.items[n - 1].image.image + ' 1x'" alt=""
-                  loading="lazy">
+                  <img
+                    class="promos__banners-item-image"
+                    :src="salesBanners.items[n - 1].image.image"
+                    :srcset="
+                      salesBanners.items[n - 1].image.image +
+                      ' 2x, ' +
+                      salesBanners.items[n - 1].image.image +
+                      ' 1x'
+                    "
+                    alt=""
+                    loading="lazy"
+                  />
                   <div class="promos__banners-item-badges">
-                    <div class="promos__banners-item-badges-item">
-                      Реклама
-                    </div>
+                    <div class="promos__banners-item-badges-item">Реклама</div>
                     <span class="promos__banners-item-badges-text">0+</span>
                   </div>
                 </router-link>
@@ -43,10 +49,24 @@
         <template v-for="n in getCount" :key="n">
           <div class="d-col-24 d-col-sm-12" v-if="n > 4 && n < 7">
             <div class="promos__banners-item promos__banners-item--primary">
-              <router-link :to="{ name: 'purchasesAction', params: { action_id: salesBanners.items[n - 1].action_id } }">
-                <img class="promos__banners-item-image" :src="salesBanners.items[n - 1].image.thumb_medium"
-                :srcset="salesBanners.items[n - 1].image.image +' 2x, ' + salesBanners.items[n - 1].image.thumb_medium + ' 1x'" alt=""
-                loading="lazy">
+              <router-link
+                :to="{
+                  name: 'purchasesAction',
+                  params: { action_id: salesBanners.items[n - 1].action_id },
+                }"
+              >
+                <img
+                  class="promos__banners-item-image"
+                  :src="salesBanners.items[n - 1].image.thumb_medium"
+                  :srcset="
+                    salesBanners.items[n - 1].image.image +
+                    ' 2x, ' +
+                    salesBanners.items[n - 1].image.thumb_medium +
+                    ' 1x'
+                  "
+                  alt=""
+                  loading="lazy"
+                />
                 <!--
                 <div class="promos__banners-item-badges">
                   <div class="promos__banners-item-badges-item">
@@ -63,11 +83,27 @@
       <div class="dart-row promos__banners-row promos__banners-row--small" v-if="getCount > 6">
         <template v-for="n in getCount" :key="n">
           <div class="d-col-8">
-            <div class="promos__banners-item promos__banners-item--primary promos__banners-item--small">
-              <router-link :to="{ name: 'purchasesAction', params: { action_id: salesBanners.items[n - 1].action_id } }">
-                <img class="promos__banners-item-image" :src="salesBanners.items[n - 1].image.thumb_medium"
-                :srcset="salesBanners.items[n - 1].image.image +' 2x, ' + salesBanners.items[n - 1].image.thumb_medium + ' 1x'" alt=""
-                loading="lazy">
+            <div
+              class="promos__banners-item promos__banners-item--primary promos__banners-item--small"
+            >
+              <router-link
+                :to="{
+                  name: 'purchasesAction',
+                  params: { action_id: salesBanners.items[n - 1].action_id },
+                }"
+              >
+                <img
+                  class="promos__banners-item-image"
+                  :src="salesBanners.items[n - 1].image.thumb_medium"
+                  :srcset="
+                    salesBanners.items[n - 1].image.image +
+                    ' 2x, ' +
+                    salesBanners.items[n - 1].image.thumb_medium +
+                    ' 1x'
+                  "
+                  alt=""
+                  loading="lazy"
+                />
                 <!--
                 <div class="promos__banners-item-badges">
                   <div class="promos__banners-item-badges-item">
@@ -90,83 +126,82 @@ import SwiperCore, { Pagination } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/swiper.scss'
 
-SwiperCore.use([Pagination]);
+SwiperCore.use([Pagination])
 
 export default {
   name: 'purchasesMain',
   components: { Swiper, SwiperSlide },
-  mounted(){
+  mounted() {
     this.getSalesBanners()
   },
   methods: {
     ...mapActions({
-      getSalesBanners: 'sales/getSalesBanners'
-    })
+      getSalesBanners: 'sales/getSalesBanners',
+    }),
   },
   computed: {
     ...mapGetters({
-      salesBanners: 'sales/salesBanners'
+      salesBanners: 'sales/salesBanners',
     }),
-    getCount () {
+    getCount() {
       return this.salesBanners.count
     },
   },
   watch: {
-    salesBanners: function (newVal) {
-      console.log(newVal)
-      setTimeout(function(){
-        window.dispatchEvent(new Event('resize'));
+    salesBanners: function () {
+      // console.log(newVal)
+      setTimeout(function () {
+        window.dispatchEvent(new Event('resize'))
       }, 500)
-    }
-  }
+    },
+  },
 }
 </script>
 <style lang="scss">
-.content-wrapper{
+.content-wrapper {
   width: 100%;
   overflow: hidden;
 }
-.swiper-wrapper{
+.swiper-wrapper {
   box-sizing: border-box;
 }
 .swiper-pagination {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    position: absolute;
-    bottom: 16px;
-    left: 50%;
-    translate: -50% 0;
-    z-index: 2;
-    .swiper-pagination-bullet {
-      cursor: pointer;
-      background-color: #282828;
-      border-radius: 26px;
-      opacity: 0.5;
-      width: 40px;
-      height: 4px;
-      &.swiper-pagination-bullet-active{
-        opacity: 1;
-      }
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 2;
+  .swiper-pagination-bullet {
+    cursor: pointer;
+    background-color: #282828;
+    border-radius: 26px;
+    opacity: 0.5;
+    width: 40px;
+    height: 4px;
+    &.swiper-pagination-bullet-active {
+      opacity: 1;
     }
+  }
 }
 
-.promos__banners-row--small > div{
+.promos__banners-row--small > div {
   margin-bottom: 16px;
 }
-.promos__banners-item{
+.promos__banners-item {
   display: block;
   width: 100%;
   height: 100% !important;
-  &.promos__banners-item--primary{
+  &.promos__banners-item--primary {
     background: transparent;
   }
-  .promos__banners-item-image{
+  .promos__banners-item-image {
     width: 100%;
     display: block;
     border-radius: 13px;
     overflow: hidden;
   }
 }
-
 </style>

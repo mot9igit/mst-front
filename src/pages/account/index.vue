@@ -7,7 +7,6 @@
       @toggleVendor="toggleVendor"
       @toggleCart="toggleCart"
       :active="toggleMenu"
-
     ></ProfileHeader>
 
     <main class="main">
@@ -23,7 +22,11 @@
       <OrderWindow :active="this.toggleOrderWindow" @close="changeOrderWindowClose()" />
     </main>
   </div>
-  <ProfileCatalogMenu :active="toggleMenu" @headerDesignOff="headerDesignOff" @menuClose="menuClose" />
+  <ProfileCatalogMenu
+    :active="toggleMenu"
+    @headerDesignOff="headerDesignOff"
+    @menuClose="menuClose"
+  />
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -77,7 +80,17 @@ export default {
           })
         }
         if (this.$route.params.id) {
-          this.getOptVendors().then(() => {})
+          this.getOptVendorsAvailable({
+            filter: '',
+            page: 1,
+            perpage: this.cfg.vendors.perpage,
+          }).then(() => {
+            this.getOptVendorsSelected({
+              filter: '',
+              page: 1,
+              perpage: this.cfg.vendors.perpage,
+            }).then(() => {})
+          })
         }
         if (this.$route.name == 'account') {
           this.$router.push({ name: 'purchases', params: { id: response.data.data[i].id } })
@@ -88,7 +101,8 @@ export default {
   computed: {
     ...mapGetters({
       orgs: 'orgs',
-      optVendors: 'org/optVendors',
+      optVendorsAvailable: 'org/optVendorsAvailable',
+      optVendorsSelected: 'org/optVendorsSelected',
       basket: 'basket/basket',
       basketWarehouse: 'basket/basketWarehouse',
     }),
@@ -101,17 +115,18 @@ export default {
       getOrgBasketStore: 'basket/getOrgBasketStore',
       getBasket: 'basket/getBasket',
       getOrg: 'org/getOrg',
-      getOptVendors: 'org/getOptVendors',
+      getOptVendorsAvailable: 'org/getOptVendorsAvailable',
+      getOptVendorsSelected: 'org/getOptVendorsSelected',
     }),
     toggleCatalog() {
       this.toggleMenu = !this.toggleMenu
     },
-    headerDesignOff(){
+    headerDesignOff() {
       this.toggleMenu = !this.toggleMenu
     },
-    menuClose(){
+    menuClose() {
       //console.log('close menu')
-      if(this.toggleMenu){
+      if (this.toggleMenu) {
         this.toggleMenu = false
       }
     },
@@ -152,7 +167,17 @@ export default {
     '$route.params.id': {
       handler: function () {
         if (this.$route.params.id) {
-          this.getOptVendors().then(() => {})
+          this.getOptVendorsAvailable({
+            filter: '',
+            page: 1,
+            perpage: this.cfg.vendors.perpage,
+          }).then(() => {
+            this.getOptVendorsSelected({
+              filter: '',
+              page: 1,
+              perpage: this.cfg.vendors.perpage,
+            }).then(() => {})
+          })
         }
       },
     },
@@ -165,7 +190,7 @@ export default {
 }
 </script>
 <style lang="scss">
-body{
+body {
   overflow: hidden;
 }
 header button,
@@ -180,10 +205,10 @@ aside button {
   text-align: center;
 }
 #app {
-  .p-inputtext{
+  .p-inputtext {
     background: #fff;
   }
-  .d-modal2__actions-start{
+  .d-modal2__actions-start {
     justify-content: flex-start;
   }
 }

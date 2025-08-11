@@ -32,12 +32,12 @@
               <i class="d-icon-pen header__address-edit-icon"></i>
             </div>
           </button>
-          <div class="header__vendor" v-if="this.optVendors">
+          <div class="header__vendor" v-if="this.optVendorsAvailable">
             <span class="header__vendor-title">выбрано поставщиков:</span>
             <button class="header__vendor-button" @click.prevent="toggleVendor">
               <i class="d-icon-trolley header__vendor-icon"></i>
               <span class="header__vendor-value"
-                >{{ this.optVendors.selected_count }} из {{ this.optVendors.available_count }}</span
+                >{{ this.optVendorsSelected.total }} из {{ this.optVendorsSelected.totalAll }}</span
               >
               <i class="d-icon-angle header__vendor-arrow"></i>
             </button>
@@ -45,11 +45,18 @@
         </div>
         <div class="header__content">
           <div class="header__left">
-            <div class="header__design" :class="{ 'header__design--active': designMenuActive && active}">
+            <div
+              class="header__design"
+              :class="{ 'header__design--active': designMenuActive && active }"
+            >
               <div class="header__design-block header__design-block--left"></div>
               <div class="header__design-block header__design-block--right"></div>
 
-              <button class="d-button d-button-primary header__catalog" @click.prevent="toggleMenu" id="catalogBtn">
+              <button
+                class="d-button d-button-primary header__catalog"
+                @click.prevent="toggleMenu"
+                id="catalogBtn"
+              >
                 <i class="d-icon-catalog header__catalog-icon"></i>
                 <span class="header__catalog-text">Каталог</span>
               </button>
@@ -79,13 +86,13 @@
         </div>
       </div>
       <div class="header__profile-content">
-        <div class="header__vendor" v-if="this.optVendors">
+        <div class="header__vendor" v-if="this.optVendorsAvailable">
           <div class="header__vendor-content">
             <span class="header__vendor-title">выбрано поставщиков:</span>
             <button class="header__vendor-button" @click.prevent="toggleVendor">
               <i class="d-icon-trolley header__vendor-icon"></i>
               <span class="header__vendor-value"
-                >{{ this.optVendors.selected_count }} из {{ this.optVendors.available_count }}</span
+                >{{ this.optVendorsSelected.total }} из {{ this.optVendorsSelected.totalAll }}</span
               >
             </button>
           </div>
@@ -179,7 +186,8 @@ export default {
       orgStores: 'org/orgStores',
       basket: 'basket/basket',
       basketWarehouse: 'basket/basketWarehouse',
-      optVendors: 'org/optVendors',
+      optVendorsAvailable: 'org/optVendorsAvailable',
+      optVendorsSelected: 'org/optVendorsSelected',
     }),
     orgBasketWarehouse() {
       return this.orgStores?.items?.find((el) => el.id == this.basketWarehouse)
@@ -193,9 +201,9 @@ export default {
       getBasket: 'basket/getBasket',
     }),
     toggleMenu() {
-      if(this.active === true){
+      if (this.active === true) {
         this.designMenuActive = false
-      }else{
+      } else {
         this.designMenuActive = true
       }
 
@@ -223,6 +231,6 @@ export default {
 </script>
 <style>
 .header {
-    padding-block: 11px 20px;
+  padding-block: 11px 20px;
 }
 </style>
