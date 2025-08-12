@@ -144,11 +144,25 @@ export default {
       }
       await api.org.toggleOptsVisible(data)
     },
-    async getOrgProfile({ commit }, data) {
+    async getOrgProfile({ commit }) {
+      const data = {
+        action: "get/org/profile",
+        id: router.currentRoute._value.params.id,
+      }
       const response = await api.org.getOrgProfile(data)
       if (response) {
         commit('SET_ORG_PROFILE', response.data)
       }
+      return response
+    },
+    async editOrgProfile({ commit }, { value }) {
+      const data = {
+        action: "set/request/profile",
+        id: router.currentRoute._value.params.id,
+        value: value
+      }
+      const response = await api.org.editOrgProfile(data)
+
       return response
     },
   },

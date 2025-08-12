@@ -158,7 +158,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.content-wrapper {
+.promos {
   width: 100%;
   overflow: hidden;
 }
