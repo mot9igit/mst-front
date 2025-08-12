@@ -117,7 +117,6 @@
       :class="cell_key == 'actions_order' ? 'actions_order' : ''"
       v-else-if="cell_data.type == 'actions_order'"
     >
-
       <span class="p-buttonset">
         <Button
           class="kenostButton std-icon__wrapper"
@@ -234,7 +233,8 @@ export default {
           if (
             this.cell_data.link_params[key] !== 'id' &&
             this.cell_data.link_params[key] !== 'store_id' &&
-            this.cell_data.link_params[key] !== 'vendor_id'
+            this.cell_data.link_params[key] !== 'vendor_id' &&
+            this.cell_data.link_params[key] !== 'pagetitle'
           ) {
             linkparams[key] = this.cell_data.link_params[key]
           } else {

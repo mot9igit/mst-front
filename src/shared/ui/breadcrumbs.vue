@@ -2,9 +2,10 @@
   <ul class="d-breadcrumbs d-top-breadcrumbs">
     <template v-for="(crumb, index) in breadcrumbs" :key="index">
       <li
-      class="d-breadcrumbs__item d-top-breadcrumbs-item"
-      v-if="crumb"
-      :class="{ active: index === breadcrumbs.length - 1 }">
+        class="d-breadcrumbs__item d-top-breadcrumbs-item"
+        v-if="crumb"
+        :class="{ active: index === breadcrumbs.length - 1 }"
+      >
         <router-link :to="crumb.path" class="d-breadcrumbs__button">{{ crumb.name }}</router-link>
       </li>
     </template>
@@ -18,7 +19,8 @@ export default {
   name: 'BreadcrumbsComponent',
   computed: {
     ...mapGetters({
-      orgActive: 'org/orgActive'
+      orgActive: 'org/orgActive',
+      sale: 'sales/sale',
     }),
     breadcrumbs() {
       const currentRoute = router.currentRoute.value
@@ -69,9 +71,16 @@ export default {
         case ':order_id': {
           return `Заказ № ${currentRoute.params?.order_id || '-'}`
         }
+        case ':action_id': {
+          return this.sale.name
+        }
+        case ':search': {
+          return `Поиск: ${this.$route.params.search}`
+        }
       }
     },
   },
+  watch: {},
 }
 </script>
 <style lang="scss"></style>

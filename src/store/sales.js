@@ -9,10 +9,17 @@ export default {
       total: -1,
     },
     sale: {},
-    salesBanners: {}
+    salesBanners: {},
+    salesProducts: {
+      items: [],
+      total: -1,
+    },
   },
   actions: {
-    async getSales({ commit }, { filter, filtersdata, page, sort, perpage, actionId, type, isAction }) {
+    async getSales(
+      { commit },
+      { filter, filtersdata, page, sort, perpage, actionId, type, isAction },
+    ) {
       const data = {
         id: router.currentRoute._value.params.id,
         filter: filter,
@@ -24,23 +31,26 @@ export default {
         action_id: actionId,
         type: type,
         is_action: isAction ? true : false,
-        extended_name: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart'
+        extended_name:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
       }
       const response = await api.sales.getSales(data)
       if (response) {
-        if(actionId){
+        if (actionId) {
           commit('SET_SALE', response.data)
-        }else{
+        } else {
           commit('SET_SALES', response.data)
         }
-
       }
       return response
     },
     async getSalesBanners({ commit }) {
       const data = {
-        action: "get/banners",
-			  id: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? router.currentRoute._value.params.id_org_from : router.currentRoute._value.params.id
+        action: 'get/banners',
+        id:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
+            ? router.currentRoute._value.params.id_org_from
+            : router.currentRoute._value.params.id,
       }
       const response = await api.sales.getSales(data)
       if (response) {
@@ -48,8 +58,25 @@ export default {
       }
       return response
     },
+    async getSalesProducts({ commit }, { actionId, page, perpage }) {
+      const data = {
+        action: 'get/products',
+        action_id: actionId,
+        page: page,
+        perpage: perpage,
+        id: router.currentRoute._value.params.id,
+      }
+      const response = await api.sales.getSalesProducts(data)
+      if (response) {
+        commit('SET_SALES_PRODUCTS', response.data)
+      }
+      return response
+    },
     unsetSalesBanners({ commit }) {
       commit('UNSET_SALES_BANNERS')
+    },
+    unsetSalesProducts({ commit }) {
+      commit('UNSET_SALES_PRODUCTS')
     },
     unsetSales({ commit }) {
       commit('UNSET_SALES')
@@ -80,7 +107,16 @@ export default {
     },
     UNSET_SALES_BANNERS: (state) => {
       state.salesBanners = {}
-    }
+    },
+    SET_SALES_PRODUCTS: (state, data) => {
+      state.salesProducts = data.data
+    },
+    UNSET_SALES_PRODUCTS: (state) => {
+      state.salesProducts = {
+        items: [],
+        total: -1,
+      }
+    },
   },
   getters: {
     sales(state) {
@@ -91,6 +127,9 @@ export default {
     },
     salesBanners(state) {
       return state.salesBanners
-    }
+    },
+    salesProducts(state) {
+      return state.salesProducts
+    },
   },
 }

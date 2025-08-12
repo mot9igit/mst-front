@@ -119,6 +119,15 @@ export default {
       }
       return response
     },
+    async orderSubmit({ commit }, { orgId }) {
+      const data = {
+        action: 'order/opt/submit',
+        id: router.currentRoute._value.params.id,
+        org_id: orgId,
+      }
+      const response = await api.basket.orderSubmit(data)
+      return response
+    },
   },
   mutations: {
     SET_BASKET: (state, data) => {

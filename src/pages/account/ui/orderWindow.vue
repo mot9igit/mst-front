@@ -1,9 +1,13 @@
 <template>
   <div class="d-sheet__overlay order__sheet-overlay" :class="{ active: active }">
     <div class="d-sheet__wrapper order__sheet-wrapper">
-      <div class="d-sheet d-sheet--active order__sheet" data-sheet="order">
+      <div
+        class="d-sheet d-sheet--active order__sheet"
+        :class="{ order: order }"
+        data-sheet="order"
+      >
         <Loader v-if="this.loading"></Loader>
-        <div class="d-sheet__content order">
+        <div class="d-sheet__content order" v-if="!order">
           <!-- Шапка -->
           <div class="order__header">
             <h3 class="order__header-title">Оформление заказа</h3>
@@ -163,34 +167,6 @@
                         <i class="d-icon-trash"></i>
                       </a>
                     </div>
-                    <div class="order__item-content-bottom">
-                      <div class="order__item-content-bottom-left">
-                        <div class="order__item-prop">
-                          <p class="order__item-prop-label">Отсрочка:&nbsp;</p>
-                          <p class="order__item-prop-value">Предоплата</p>
-                        </div>
-                        <div class="d-divider d-divider--vertical order__item-prop-divider"></div>
-                        <div class="order__item-prop">
-                          <p class="order__item-prop-label">Оплата доставки:&nbsp;</p>
-                          <p class="order__item-prop-value">Покупатель</p>
-                        </div>
-                      </div>
-                      <div class="order__item-content-bottom-right">
-                        <button
-                          class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy"
-                        >
-                          Отправить заказ
-                        </button>
-                        <!--
-                        <div
-                          class="d-divider d-divider--vertical order__item-content-bottom-right-divider"
-                        ></div>
-                        <button class="order__item-upload">
-                          <i class="d-icon-upload2"></i>
-                        </button>
-                        -->
-                      </div>
-                    </div>
                     <div class="order__item-price">
                       <Counter
                         :classPrefix="'order__item-product'"
@@ -209,9 +185,57 @@
                       >
                     </div>
                   </div>
+                  <div class="order__item-content-bottom">
+                    <div class="order__item-content-bottom-left">
+                      <div class="order__item-prop">
+                        <p class="order__item-prop-label">Отсрочка:&nbsp;</p>
+                        <p class="order__item-prop-value">Предоплата</p>
+                      </div>
+                      <div class="d-divider d-divider--vertical order__item-prop-divider"></div>
+                      <div class="order__item-prop">
+                        <p class="order__item-prop-label">Оплата доставки:&nbsp;</p>
+                        <p class="order__item-prop-value">Покупатель</p>
+                      </div>
+                    </div>
+                    <div class="order__item-content-bottom-right">
+                      <button
+                        class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy"
+                        @click.prevent="
+                          () => {
+                            if (org?.cart_data?.not_available) {
+                              this.showChangedCount = true
+                              this.showChangedId = org.org_data.id
+                            } else {
+                              orderSubmit(org.org_data.id)
+                            }
+                          }
+                        "
+                      >
+                        Отправить заказ
+                      </button>
+                      <!--
+                      <div
+                        class="d-divider d-divider--vertical order__item-content-bottom-right-divider"
+                      ></div>
+                      <button class="order__item-upload">
+                        <i class="d-icon-upload2"></i>
+                      </button>
+                      -->
+                    </div>
+                  </div>
                   <div class="order__item-footer">
                     <button
                       class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy"
+                      @click.prevent="
+                        () => {
+                          if (org?.cart_data?.not_available) {
+                            this.showChangedCount = true
+                            this.showChangedId = org.org_data.id
+                          } else {
+                            orderSubmit(org.org_data.id)
+                          }
+                        }
+                      "
                     >
                       Отправить заказ
 
@@ -248,6 +272,16 @@
                 <div class="order__footer-actions">
                   <button
                     class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy"
+                    @click.prevent="
+                      () => {
+                        if (this.basket?.cart_data?.not_available) {
+                          this.showChangedCount = true
+                          this.showChangedId = 'all'
+                        } else {
+                          orderSubmit('all')
+                        }
+                      }
+                    "
                   >
                     Оформить все заказы
                   </button>
@@ -270,6 +304,16 @@
                 <div class="order__footer-actions">
                   <button
                     class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy"
+                    @click.prevent="
+                      () => {
+                        if (this.basket?.cart_data?.not_available) {
+                          this.showChangedCount = true
+                          this.showChangedId = 'all'
+                        } else {
+                          orderSubmit('all')
+                        }
+                      }
+                    "
                   >
                     Оформить все заказы
                   </button>
@@ -284,6 +328,18 @@
             </div>
           </div>
         </div>
+        <div class="order" v-else>
+          <div class="order__header">
+            <h3 class="order__header-title">Заказ #{{ order }} оформлен!</h3>
+            <button class="order__header-close" @click.prevent="close()">
+              <i class="d-icon-times-flat"></i>
+            </button>
+          </div>
+          <div class="order__orders">
+            <p>В ближайшее время с Вами свяжутся наши менеджеры.</p>
+            <img class="k-order-img" src="/images/order.png" alt="" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -295,6 +351,62 @@
         Да, очистить!
       </button>
     </customModal>
+    <customModal v-model="this.showChangedCount" class="clear_cart">
+      <b>На складе не хватает товара</b>
+      <p>
+        Пока вы формировали, заказ у Поставщиков изменилось количество товаров на складе. Мы внесли
+        изменения в ваш заказ в соответствии с остатками продукции на складах. Вам необходимо
+        проверить заказ и отправить его снова.
+      </p>
+      <div class="kenost-basket-change__info">
+        <div class="kenost-basket-change__h2">Нет на складе:</div>
+        <div class="kenost-basket-change__products">
+          <div v-for="warehouse in this.basket.data" v-bind:key="warehouse.store_data.id">
+            <div v-for="org in warehouse.data" v-bind:key="org.org_data.id">
+              <div v-for="store in org.data" v-bind:key="store.warehouse_data.id">
+                <div v-for="(item, p_key) in store.data" v-bind:key="p_key">
+                  <div
+                    class="kenost-basket-change__product"
+                    v-if="Number(item.available) - item.count < 0"
+                  >
+                    <div class="kenost-basket-change__product-left">
+                      <img :src="item.image" alt="" />
+                      <div class="kenost-basket-change__product-info">
+                        <div class="kenost-basket-change__product-name">{{ item.name }}</div>
+                        <div class="kenost-basket-change__product-article">{{ item.article }}</div>
+                      </div>
+                    </div>
+                    <div class="kenost-basket-change__product-right">
+                      Нет в наличии: <br />
+                      {{ item.available }} шт. <span>из {{ item.count }} шт</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="kenost-basket-change__buttons">
+        <div
+          class="d-button d-button-primary d-button-primary-small"
+          @click="this.showChangedCount = false"
+        >
+          Проверить заказ
+        </div>
+        <div
+          class="d-button d-button-primary d-button-primary-small"
+          @click.prevent="
+            () => {
+              orderSubmit(this.showChangedId)
+              this.showChangedCount = false
+            }
+          "
+        >
+          Оформить с изменениями
+        </div>
+      </div>
+    </customModal>
   </teleport>
 </template>
 <script>
@@ -305,7 +417,7 @@ import Counter from '@/shared/ui/Counter.vue'
 
 export default {
   name: 'orderWindow',
-  emits: ['close', 'catalogUpdate'],
+  emits: ['close', 'catalogUpdate', 'orderSubmit'],
   components: { Loader, customModal, Counter },
   props: {
     active: {
@@ -317,8 +429,11 @@ export default {
     return {
       loading: false,
       showClearBasketModal: false,
+      showChangedCount: false,
+      showChangedId: '',
       fetchIds: [],
       id_clear_org: 0,
+      order: '',
     }
   },
   computed: {
@@ -332,6 +447,7 @@ export default {
       basketClear: 'basket/basketClear',
       basketProductRemove: 'basket/basketProductRemove',
       basketProductUpdate: 'basket/basketProductUpdate',
+      orderSubmitApi: 'basket/orderSubmit',
     }),
     close() {
       this.$emit('close')
@@ -455,11 +571,59 @@ export default {
         this.loading = false
       })
     },
+    async orderSubmit(orgId) {
+      this.loading = true
+      this.getBasket().then((response) => {
+        console.log(response.data?.data?.data)
+        if (response.data?.data?.data?.cart_data?.not_available) {
+          this.loading = false
+          this.showChangedCount = true
+          this.showChangedId = orgId
+        } else {
+          // orderSubmitApi
+          this.orderSubmitApi({ orgId: orgId }).then((response) => {
+            let arr = []
+            console.log(response)
+            let res = response.data?.data
+            let products = res.products
+            let nums = res.nums
+            console.log(res)
+            for (var key in products) {
+              const product = products[key]
+              arr.push({
+                id: product.id_remain,
+                name: product.name,
+                price: product.price,
+                quantity: product.count,
+              })
+            }
+
+            window.dataLayer = window.dataLayer || []
+
+            window.dataLayer.push({
+              ecommerce: {
+                currencyCode: 'RUB',
+                purchase: {
+                  actionField: {
+                    id: 'TRX987',
+                  },
+                  products: arr,
+                },
+              },
+            })
+            this.$emit('orderSubmit', nums.join(', '))
+            this.order = nums.join(', ')
+            this.getBasket()
+            this.loading = false
+          })
+        }
+      })
+    },
   },
 }
 </script>
 <style lang="scss">
-.order__item-header-delete{
+.order__item-header-delete {
   display: inline-block;
 }
 .clear_cart {
@@ -486,6 +650,14 @@ export default {
 .order__item {
   .d-badge2 {
     background: #ededed;
+  }
+  .order__item-content {
+    & + .order__item-content {
+      margin-top: 24px;
+    }
+  }
+  .order__item-content-bottom {
+    margin-top: 24px;
   }
   .order__item-header-badge-image {
     border-radius: 50%;

@@ -87,7 +87,7 @@
                     "
                   >
                     <i class="d-icon-trash"></i>
-                </a>
+                  </a>
                 </div>
 
                 <p class="cart__item-title">{{ product.name }}</p>
@@ -359,13 +359,16 @@ export default {
 }
 </script>
 <style lang="scss">
-.cart__item-header-button{
-  display: inline-block;
-}
-.cart__content {
-  position: relative;
-}
-.cart__buy {
-  width: 100%;
+.cart {
+  z-index: 2;
+  .cart__item-header-button {
+    display: inline-block;
+  }
+  .cart__content {
+    position: relative;
+  }
+  .cart__buy {
+    width: 100%;
+  }
 }
 </style>
