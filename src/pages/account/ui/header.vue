@@ -75,6 +75,9 @@
               @click.prevent="toggleCart()"
             >
               <i class="d-icon-cart header__cart-icon"></i>
+              <span class="cart-badge">{{
+                basketStore.cart_data?.sku_count ? basketStore.cart_data?.sku_count : 0
+              }}</span>
             </button>
             <!--
             <button class="d-button d-button-secondary d-button-rounded header__notification">
@@ -164,6 +167,7 @@ export default {
       },
       showChangeAddressModal: false,
       designMenuActive: false,
+      basketStore: {},
     }
   },
   emits: ['toggleCatalog', 'toggleVendor', 'toggleCart'],
@@ -227,10 +231,43 @@ export default {
       })
     },
   },
+  watch: {
+    basket(newVal) {
+      if (Object.keys(this.basket).length > 1) {
+        if (
+          Object.prototype.hasOwnProperty.call(newVal.data, this.basketWarehouse) &&
+          this.basketWarehouse
+        ) {
+          this.basketStore = newVal.data[this.basketWarehouse]
+        } else {
+          this.basketStore = {}
+        }
+      } else {
+        this.basketStore = {}
+      }
+    },
+  },
 }
 </script>
-<style>
+<style lang="scss">
 .header {
   padding-block: 11px 20px;
+  .header__cart {
+    position: relative;
+    .cart-badge {
+      position: absolute;
+      top: -3px;
+      right: -10px;
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      font-size: 10px;
+      line-height: 20px;
+      text-align: center;
+      background: #f92c0d;
+      color: #fff;
+      border-radius: 50%;
+    }
+  }
 }
 </style>
