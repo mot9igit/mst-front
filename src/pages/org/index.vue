@@ -26,52 +26,59 @@
 
      <Loader v-if="loading" />
      <div v-else>
-      <form @submit.prevent="">
+      <form @submit.prevent="editOrgProfData()">
       <div class="lk-about__info-container" >
-        <div class="lk-about__info" v-for="(field, index_field) in this.form.orgData" :key="orgprofile.id + '_' + index_field">
+        <div class="lk-about__info" v-for="(field, index) in this.form.orgData" :key="index">
           <div class="lk-about__info-title-wrapper">
             <p class="lk-about__info-title-label">{{ field.label }}</p>
             <p class="lk-about__info-title-description">{{ field.placeholder }}</p>
 
 
           </div>
+            <!--:class="{ error: vEditOrgData.editOrgValues[field.name].$errors.length }"
+            :v-model="this.editOrgValues[field.name]"
+          <div v-if="field.type === 'input'">-->
+            <div class="d-input d-input--light lk-about__info-input"
+            v-if="field.type === 'input'"
 
-            <div class="d-input d-input--light lk-about__info-input" v-if="field.type === 'input'">
+            >
               <input
                 type="text"
-                :v-model="orgprofile[field.name]"
                 :value="this.orgprofile[field.name]"
                 :name="field.name"
                 class="d-input__field lk-about__info-input-field"
               />
+
             </div>
+          <!--  <div class="d-input-error"
+                    v-for="error of vEditOrgData.editOrgValues[field.name].$errors"
+                    >
+                <i class="d-icon-warning d-input-error__icon"></i>
+                <span class="d-input-error__text">
+                        {{ error.$message }}
+                </span>
+						</div>
+          </div>-->
             <div class="lk-about__info-image-wrapper" v-if="field.type === 'image'">
               <img :src="this.orgprofile[field.name]" alt="" class="lk-about__info-image"  v-if="this.orgprofile[field.name] != ''"/>
             </div>
             <div class="lk-about__info-text-wrapper"  v-if="field.type === 'text'">
               <p class="lk-about__info-text">{{ this.orgprofile[field.name] }}</p>
             </div>
-
-
-
           <button v-if="field.name == 'name'"
             type="button"
             class="d-button d-button-quaternary d-button--no-shadow lk-about__info-button"
-
           >
             <i class="d-icon-plus-flat lk-about__info-button-icon"></i>
             <span>Добавить компанию</span>
           </button>
-
         </div>
-
       </div>
       <div class="lk-about__submit-container">
         <button
 						type="submit"
 						href="#"
 						class="d-button d-button-primary d-button-primary-small d-button--sm-shadow lk-about__submit-button"
-
 				>
           Сохранить изменения
         </button>
@@ -662,30 +669,20 @@ export default {
 			}
 		}
 
-    //const editOrgRules = {
-		//	newOrgData: {
+    const editOrgRules = {
+			editOrgValues: {
+						name: {
+							required: helpers.withMessage("Заполните наименование организации", required),
+						},
+            phone: {
+							pattern: helpers.withMessage("Введите корректный номер телефона", (value) => /^\+\d{1}\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$/.test(value)),
+						},
+            email: {
+							pattern: helpers.withMessage("Введите корректный номер телефона", (value) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)),
+						},
 
-		//			$each: helpers.forEach({
-		//				name: {
-		//					required: helpers.withMessage("Заполните наименование организации", required),
-		//				},
-     //       phone: {
-		//					required: helpers.withMessage("Укажите телефон организации", required),
-		//				},
-     //       email: {
-		//					required: helpers.withMessage("Укажите email организации", required),
-		//				},
-		//			})
-		//		}
-
-		//}
-
-    //const newOrgInfo = ref({
-		//	name: "",
-		//	phone: "",
-		//	email: "",
-		//	image: "",
-		//})
+				}
+		}
 
 		const newRequisit = ref({
 			name: "",
@@ -702,24 +699,29 @@ export default {
 			newRequisit: newRequisit
 		});
 
-    //const addOrgData = ref({
-		//	newOrgData: newOrgData
-		//});
-
 		const orgProfValues = shallowRef([]);
 
 		const editRequisitesData = ref({
 			orgProfValues: orgProfValues
 		});
 
+    const editOrgValues = shallowRef([]);
+
+		const editOrgData = ref({
+			editOrgValues: editOrgValues
+		});
+
 		const vAddRequisites = useVuelidate(addRequisitesRules, addRequisitesData);
 		const vEditRequisites = useVuelidate(editRequisitesRules, editRequisitesData);
+    const vEditOrgData = useVuelidate(editOrgRules, editOrgData);
 
 		return {
 			vAddRequisites,
 			vEditRequisites,
+      vEditOrgData,
 			newRequisit,
-			orgProfValues
+			orgProfValues,
+      editOrgValues
 		}
 	},
   methods: {
@@ -789,6 +791,7 @@ export default {
 				bank_knumber: "",
 			});
 		},
+
 		deleteBankRequisit(index) {
 			const array = Array.from(this.newRequisit.banks);
 			delete array[index];
@@ -800,7 +803,6 @@ export default {
 			}
 			this.newRequisit.banks = newArray;
 		},
-
 		deleteBankRequisitEdit(index) {
 			const array = Array.from(
 				this.orgProfValues.requisites[this.requisitEditIndex].banks
@@ -814,7 +816,6 @@ export default {
 			}
 			this.orgProfValues.requisites[this.requisitEditIndex].banks = newArray;
 		},
-
 		async editRequisit() {
 			const validationResult = await this.vEditRequisites.$validate();
 			console.log("Validation result", validationResult);
@@ -846,6 +847,35 @@ export default {
 				});
 			});
 		},
+
+    async editOrgProfData() {
+			const validationResult = await this.vEditOrgData.$validate();
+			console.log("Validation result", validationResult);
+			if (!validationResult) {
+				return;
+			}
+
+			const data = this.editOrgValues;
+			data.org_name = this.orgprofile.name;
+//			await this.editOrgProfile({
+//				data: data,
+//			}).then((res) => {
+//				if (res.data.data.status) {
+//         this.modalRequisites = true
+//					this.editReqModalForm = false
+//					this.successMessage = true
+//          this.successMessageText = 'Заявка на изменение данных организации успешно отправлена! Менеджер свяжется с вами в ближайшее время!'
+//					this.getOrgProfile();
+//				}
+//				this.$toast.add({
+//					severity: "info",
+//					summary: "Заявка успешно отправлена!",
+//					detail: res.data.message,
+//					life: 3000,
+//				});
+//			});
+		},
+
 		async addRequisit() {
 			const validationResult = await this.vAddRequisites.$validate();
 			console.log("Validation result", validationResult);
@@ -914,6 +944,7 @@ export default {
     orgprofile: function (newVal) {
       this.orgProfTmp = newVal
       this.orgProfValues = this.orgProfTmp
+      this.editOrgValues = this.orgProfTmp
     },
 
   },
