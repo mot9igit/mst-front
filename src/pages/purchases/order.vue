@@ -45,7 +45,7 @@
         </div>
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Инициатор</div>
-          <div class="order-card__orderinfo-grid-text">{{ this.order?.initiator_user_name }}</div>
+          <div class="order-card__orderinfo-grid-text">{{ this.order?.initiator_org_name }}</div>
         </div>
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
