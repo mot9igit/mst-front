@@ -3,16 +3,20 @@
     <button class="cart__header" @click.prevent="toggleCart()">
       <div class="cart__header-left">
         <i class="d-icon-cart cart__header-icon"></i>
-        <p class="cart__header-title">Корзина</p>
+        <p class="cart__header-title">
+          Корзина
+          <span class="cart-badge">{{
+            basketStore.cart_data?.sku_count ? basketStore.cart_data.sku_count : 0
+          }}</span>
+        </p>
       </div>
       <i class="d-icon-angle-rounded-sm-top cart__header-toggle cart__header-toggle--arrow"></i>
       <i class="d-icon-times cart__header-toggle cart__header-toggle--close"></i>
     </button>
     <div class="cart__content">
       <Loader v-if="loading" />
-      <div>
-        <div class="cart__tools cart__tools--desktop" v-if="Object.keys(basketStore).length > 1">
-          <!--
+      <div class="cart__tools cart__tools--desktop" v-if="Object.keys(basketStore).length > 1">
+        <!--
           <button
             class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small cart__tools-button"
           >
@@ -20,6 +24,35 @@
             Показать в каталоге
           </button>
           -->
+        <button
+          class="cart__clear-button"
+          @click.prevent="
+            () => {
+              this.showClearBasketModal = true
+            }
+          "
+        >
+          <span>Очистить все</span>
+          <div class="d-divider d-divider--vertical cart__clear-divider"></div>
+          <i class="d-icon-trash cart__clear-button-icon"></i>
+        </button>
+      </div>
+
+      <div class="cart__tools cart__tools--mobile" v-if="Object.keys(basketStore).length > 1">
+        <div class="cart__tools-button-wrapper">
+          <button
+            class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small cart__tools-button"
+          >
+            <i class="d-icon-catalog cart__tools-button-icon"></i>
+            Показать в каталоге
+          </button>
+        </div>
+
+        <div class="cart__tools-bottom">
+          <p class="cart__tools-products">
+            {{ basketStore.cart_data?.sku_count ? basketStore.cart_data.sku_count : 0 }} тов.
+          </p>
+
           <button
             class="cart__clear-button"
             @click.prevent="
@@ -33,34 +66,8 @@
             <i class="d-icon-trash cart__clear-button-icon"></i>
           </button>
         </div>
-
-        <div class="cart__tools cart__tools--mobile" v-if="Object.keys(basketStore).length > 1">
-          <div class="cart__tools-button-wrapper">
-            <button
-              class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small cart__tools-button"
-            >
-              <i class="d-icon-catalog cart__tools-button-icon"></i>
-              Показать в каталоге
-            </button>
-          </div>
-
-          <div class="cart__tools-bottom">
-            <p class="cart__tools-products">34 товара</p>
-
-            <button
-              class="cart__clear-button"
-              @click.prevent="
-                () => {
-                  this.showClearBasketModal = true
-                }
-              "
-            >
-              <span>Очистить все</span>
-              <div class="d-divider d-divider--vertical cart__clear-divider"></div>
-              <i class="d-icon-trash cart__clear-button-icon"></i>
-            </button>
-          </div>
-        </div>
+      </div>
+      <div class="product-list">
         <div class="cart__list" v-if="Object.keys(basketStore).length > 1">
           <div class="dart-mb-1" v-for="(org, index) in basketStore.data" :key="index">
             <div v-for="(store, store_index) in org.data" :key="store_index">
@@ -118,16 +125,16 @@
         <div class="cart__list text-center" v-else>
           <span>Корзина пуста</span>
         </div>
-        <div class="cart__list">
-          <button
-            v-if="Object.keys(basketStore).length"
-            class="d-button d-button-primary d-button-primary-small cart__buy"
-            @click.prevent="toggleOrder"
-          >
-            <span> Перейти к заказу </span>
-            <span> {{ basketStore.cart_data.cost.toLocaleString('ru') }} ₽ </span>
-          </button>
-        </div>
+      </div>
+      <div class="cart__list">
+        <button
+          v-if="Object.keys(basketStore).length"
+          class="d-button d-button-primary d-button-primary-small cart__buy"
+          @click.prevent="toggleOrder"
+        >
+          <span> Перейти к заказу </span>
+          <span> {{ basketStore.cart_data.cost.toLocaleString('ru') }} ₽ </span>
+        </button>
       </div>
     </div>
   </div>
@@ -361,11 +368,35 @@ export default {
 <style lang="scss">
 .cart {
   z-index: 2;
+  .cart__header-title {
+    position: relative;
+    .cart-badge {
+      position: absolute;
+      top: -3px;
+      right: -20px;
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      font-size: 10px;
+      line-height: 20px;
+      text-align: center;
+      background: #f92c0d;
+      color: #fff;
+      border-radius: 50%;
+    }
+  }
   .cart__item-header-button {
     display: inline-block;
   }
+  .cart_wrap {
+    position: relative;
+  }
   .cart__content {
     position: relative;
+    .product-list {
+      max-height: 70%;
+      overflow-y: auto;
+    }
   }
   .cart__buy {
     width: 100%;

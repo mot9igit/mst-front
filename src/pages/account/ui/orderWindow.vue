@@ -623,6 +623,9 @@ export default {
 }
 </script>
 <style lang="scss">
+.order__item-list {
+  padding-bottom: 200px;
+}
 .order__item-header-delete {
   display: inline-block;
 }
@@ -650,6 +653,9 @@ export default {
 .order__item {
   .d-badge2 {
     background: #ededed;
+  }
+  .order__item-product {
+    width: 80%;
   }
   .order__item-content {
     & + .order__item-content {
