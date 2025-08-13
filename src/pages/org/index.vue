@@ -89,7 +89,7 @@
           </div>
           <button
             class="d-button d-button-tertiary d-button-tertiary-small d-button--no-shadow lk-about__block-header-button"
-            @click.prevent="(this.modalRequisites = true), (this.modals.requisitedit_index = index)"
+            @click.prevent="showModals(index)"
           >
             Подать запрос
           </button>
@@ -182,29 +182,36 @@
           <h3>Запрос на добавление реквизитов</h3>
           <button
                 class="d-button d-button-quaternary d-button-quaternary-small d-button--no-shadow lk-about__block-header-button lk-about__block-header-button--hide"
-                @click.prevent="newReqModalForm = false">
+                @click.prevent="newReqModalForm = false, editReqModalForm = true">
                 <i class="d-icon-pen2 lk-about__block-header-button-icon"></i>
                 Редактировать реквизиты
               </button>
           </div>
 
-          <div class="lk-about__block lk-about__block--requisites lk-about-info__value-container-modal" v-for="(requisit, index) in orgprofile.requisites" :key="requisit.id">
+          <div class="lk-about__block lk-about__block--requisites lk-about-info__value-container-modal lk-about-info__value-container-modal-grid">
             <div class="lk-about__block-table" >
               <div class="lk-about__block-table-row">
-                <div class="lk-about__block-table-col" v-for="(field, index_field) in this.form.requisit"	:key="index + '_' + index_field"
-                :class="{ error: vAddRequisites.newRequisit[field.name].$errors.length }" :name="field.name">
+                <div class="lk-about__block-table-col"
+                  v-for="(field, index_field) in this.form.requisit"	:key="index + '_' + index_field"
+                 :name="field.name"
+                 :class="{ error: vAddRequisites.newRequisit[field.name].$errors.length }"
+                 >
                   <p class="lk-about__block-table-label">{{ field.label }}</p>
                   <input
                   type="text"
 									class="dart-form-control d-input__field lk-about__info-input-field"
                   :name="field.name"
                   :placeholder="field.placeholder"
+                  v-model="this.newRequisit[field.name]"
                   />
-                  <div class="d-input-error">
-								  <span v-for="error of vAddRequisites.newRequisit[field.name].$errors">
-									  {{ error.$message }}
-								  </span>
-							</div>
+                  <div class="d-input-error"
+                  v-for="error of vAddRequisites.newRequisit[field.name].$errors"
+                  >
+                    <i class="d-icon-warning d-input-error__icon"></i>
+                    <span class="d-input-error__text">
+                      {{ error.$message }}
+                    </span>
+							    </div>
                 </div>
               </div>
             </div>
@@ -222,7 +229,7 @@
           </div>
 
 
-          <div class="lk-about__block" v-if="addRequisitShow">
+          <div class="lk-about__block  lk-about-info__value-container-modal-grid" v-if="addRequisitShow">
 
             <div  v-for="(bank, index_req) in this.newRequisit.banks" :key="index_req" class="lk-about__block-table-modal">
               <div class="lk-about__block-table lk-about__block-table-modal-bank" >
@@ -235,8 +242,10 @@
                   </div>
                   </div>
                   <div class="lk-about__block-table-row">
-                    <div class="lk-about__block-table-col" v-for="(field, index_field) in this.form.bank" :key="index_req + '_' + index_field"
-                      :class="{ error: vAddRequisites.newRequisit.banks.$each.$response.$errors?.[index_req]?.[field.name].length }">
+                    <div class="lk-about__block-table-col"
+                      v-for="(field, index_field) in this.form.bank" :key="index_req + '_' + index_field"
+                      :class="{ error: vAddRequisites.newRequisit.banks.$each.$response.$errors?.[index_req]?.[field.name].length }"
+                    >
                       <p class="lk-about__block-table-label">{{ field.label }}</p>
                       <input
                       v-model="bank[field.name]"
@@ -245,12 +254,15 @@
                       :placeholder="field.placeholder"
                       type="text"
                        />
-                      <div class="d-input-error">
+                      <div class="d-input-error"
+                      v-for="error of vAddRequisites.newRequisit.banks.$each.$response.$errors?.[index_req]?.[field.name]"
+                      >
+                        <i class="d-icon-warning d-input-error__icon"></i>
                         <span
-                          v-for="error of vAddRequisites.newRequisit.banks.$each.$response.$errors?.[index_req]?.[field.name]">
+                           class="d-input-error__text">
                           {{ error.$message }}
                         </span>
-								        </div>
+								      </div>
                     </div>
                   </div>
 
@@ -277,12 +289,12 @@
           </div>
         </form>
 
-        <form class="lk-about-info__value-container-modal"  @submit.prevent="editRequisit" v-else>
+        <form class="lk-about-info__value-container-modal"  @submit.prevent="editRequisit" v-if="editReqModalForm">
             <div class="lk-about-top-modal">
             <h3>Запрос на редактирование реквизитов</h3>
             <button
                   class="d-button d-button-quaternary d-button-quaternary-small d-button--no-shadow lk-about__block-header-button lk-about__block-header-button--hide"
-                  @click.prevent="newReqModalForm = true">
+                  @click.prevent="newReqModalForm = true, editReqModalForm = false">
                   <i class="d-icon-plus lk-about__block-header-button-icon"></i>
                   Добавить реквизиты
                 </button>
@@ -291,25 +303,31 @@
             <div class="lk-about__block lk-about__block--requisites lk-about-info__value-container-modal" >
               <div class="lk-about__block-table" >
                 <div class="lk-about__block-table-row">
-                  <div class="lk-about__block-table-col" v-for="(field, index) in form.requisit" :key="index">
+                  <div class="lk-about__block-table-col" v-for="(field, index) in form.requisit" :key="index"
+                  :class="{ error: vEditRequisites.orgProfValues.requisites.$each.$response.$errors[this.requisitEditIndex]?.[field.name]?.length }">
                     <p class="lk-about__block-table-label">{{ field.label }}</p>
                     <input
                     type="text"
                     class="dart-form-control d-input__field lk-about__info-input-field"
-                    v-model="this.orgprofile.requisites[this.modals.requisitedit_index][
-                      field.name
-                    ]
-                    "
+                    v-model="this.orgProfValues.requisites[this.requisitEditIndex][field.name]"
                     :name="field.name"
                     :placeholder="field.placeholder"
                     />
+                    <div class="d-input-error"
+                    v-for="error of vEditRequisites.orgProfValues.requisites.$each.$response.$errors[this.requisitEditIndex]?.[field.name]"
+                    >
+                      <i class="d-icon-warning d-input-error__icon"></i>
+                      <span class="d-input-error__text">
+                        {{ error.$message }}
+                      </span>
+							      </div>
                   </div>
                 </div>
               </div>
 
               <div class="d-radio__wrapper lk-about__block-radio-wrapper">
                 <label for="edit-requisit-marketplace" class="d-radio lk-about__block-radio">
-                  <Checkbox v-model="this.orgprofile.requisites[this.modals.requisitedit_index].marketplace
+                  <Checkbox v-model="this.orgProfValues.requisites[this.requisitEditIndex].marketplace
 							" inputId="edit-requisit-marketplace" name="edit-requisit-marketplace" value="1" />
 
                 </label>
@@ -322,9 +340,7 @@
 
             <div class="lk-about__block">
 
-              <div  v-for="(bank, index_req) in this.orgprofile.requisites[
-						this.modals.requisitedit_index
-					].banks" :key="index_req" class="lk-about__block-table-modal">
+              <div  v-for="(bank, index_req) in this.orgProfValues.requisites[this.requisitEditIndex].banks" :key="index_req" class="lk-about__block-table-modal">
                 <div class="lk-about__block-table lk-about__block-table-modal-bank" >
                     <div class="lk-about__block-table lk-about__block-table-modal-bank lk-about__block-table-modal-bank-del">
                       <h4>Банковские реквизиты ({{ index_req + 1 }})</h4>
@@ -335,7 +351,8 @@
                     </div>
                     </div>
                     <div class="lk-about__block-table-row">
-                      <div class="lk-about__block-table-col" v-for="(field, index_field) in this.form.bank" :key="index_req + '_' + index_field">
+                      <div class="lk-about__block-table-col" v-for="(field, index_field) in this.form.bank" :key="index_req + '_' + index_field"
+                      :class="{ error: vEditRequisites.orgProfValues.requisites.$each.$response.$errors[this.requisitEditIndex]?.banks[this.requisitEditIndex]?.$response.$errors[index_req][field.name]?.length }">
                         <p class="lk-about__block-table-label">{{ field.label }}</p>
                         <input
                         v-model="bank[field.name]"
@@ -344,13 +361,14 @@
                         :placeholder="field.placeholder"
                         type="text"
                         />
-                      <!--
-
-                      <div class="error__desc">
-                          <span v-for="error of vEditRequisites.orgProfValues.requisites.$each.$response.$errors[this.modals.requisitedit_index]?.banks[this.modals.requisitedit_index]?.$response.$errors[index_req][field.name]">
+                        <div class="d-input-error"
+                        v-for="error of vEditRequisites.orgProfValues.requisites.$each.$response.$errors[this.requisitEditIndex]?.banks[this.requisitEditIndex]?.$response.$errors[index_req][field.name]"
+                        >
+                          <i class="d-icon-warning d-input-error__icon"></i>
+                          <span class="d-input-error__text">
                             {{ error.$message }}
                           </span>
-                        </div>-->
+                        </div>
                       </div>
                     </div>
 
@@ -377,6 +395,18 @@
               </button>
             </div>
         </form>
+
+        <div class="lk-about-info__value-container-modal success-modal" v-if="successMessage">
+          <h2>{{ successMessageText }}</h2>
+          <button
+                type="button"
+                href="#"
+                class="d-button d-button-primary d-button-primary-small d-button--sm-shadow lk-about-info__button"
+                @click.prevent="this.modalRequisites = false"
+            >
+              Ок
+            </button>
+        </div>
 			</div>
     </customModal>
     </teleport>
@@ -407,10 +437,9 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import { helpers, required } from "@vuelidate/validators";
 import useVuelidate from '@vuelidate/core'
-import { toRaw } from 'vue'
 import Toast from "primevue/toast";
 import customModal from '@/shared/ui/Modal.vue'
-import { ref } from "vue";
+import { ref, shallowRef } from "vue";
 import { Checkbox } from 'primevue'
 
 
@@ -422,20 +451,15 @@ export default {
       loading: false,
       showSaveButton: false,
       requisitesShow: true,
-      orgProfValues: [],
-
-
       modalRequisites: false,
       modalAddCompany: false,
       addRequisitShow: false,
       newReqModalForm: false,
-
-      modals: {
-
-				addRequisitShow: false, //добавление(ист)/редактирование компании
-				requisitedit_index: 0,
-
-			},
+      editReqModalForm: true,
+      successMessage: false,
+      orgProfTmp: {},
+      successMessageText: '',
+			requisitEditIndex: 0,
       form: {
         orgData: [
           {
@@ -549,215 +573,11 @@ export default {
 					},
 				],
 			},
-
-
     }
   },
   mounted(){
     this.getOrgProfile();
 
-  },
-   methods: {
-    ...mapActions({
-      getOrgProfile: 'org/getOrgProfile',
-      addOrgProfile: 'org/editOrgProfile',
-    }),
-    isChecked(ind){
-      let check = this.orgprofile.requisites[ind].marketplace
-      if(check == 1){
-        return true
-      } else {
-        return false
-      }
-    },
-    onUpload(data) {
-		//	if (data.xhr.response) {
-		//		const response = JSON.parse(data.xhr.response);
-		//		if (Object.prototype.hasOwnProperty.call(response.data, "files")) {
-					// перечень загруженныйх файлов
-
-		//			if (response.data.files[0].type === "avatar") {
-		//				this.orgProfValues.image = response.data.files[0];
-		//				this.orgProfValues.upload_image = true;
-		//			}
-		//		}
-		//	}
-		//	this.$toast.add({
-		//		severity: "info",
-		//		summary: "Логотип успешно загружен!",
-		//		detail: "Не забудте сохранить изменения",
-		//		life: 3000,
-		//	});
-		},
-		parseFile(files, xhr, formData) {
-		//	const callback = (e) => {
-		//		const res = JSON.parse(e);
-		//		if (res.success) {
-		//			if (res.data.files[0].type === "avatar") {
-		//				this.orgProfValues.image = res.data.files[0];
-		//				this.orgProfValues.upload_image = true;
-		//			}
-		//		}
-		//	};
-
-		//	xhr.onreadystatechange = () => {
-		//		if (xhr.readyState === 4) {
-		//			callback(xhr.response);
-		//		}
-		//	};
-		},
-		addBankRequisit() {
-      this.addRequisitShow = true
-			this.newRequisit.banks.push({
-				bank_bik: "",
-				bank_name: "",
-				bank_number: "",
-				bank_knumber: "",
-			});
-		},
-		addBankRequisitEdit() {
-      this.addRequisitShow = true
-			this.orgprofile.requisites[this.modals.requisitedit_index].banks.push({
-				bank_bik: "",
-				bank_name: "",
-				bank_number: "",
-				bank_knumber: "",
-			});
-		},
-		deleteBankRequisit(index) {
-			const array = Array.from(this.newRequisit.banks);
-			delete array[index];
-			const newArray = [];
-			for (let i = 0; i < array.length; i++) {
-				if (array[i]) {
-					newArray.push(array[i]);
-				}
-			}
-			this.newRequisit.banks = newArray;
-		},
-
-		deleteBankRequisitEdit(index) {
-			const array = Array.from(
-				this.orgprofile.requisites[this.modals.requisitedit_index].banks
-			);
-			delete array[index];
-			const newArray = [];
-			for (let i = 0; i < array.length; i++) {
-				if (array[i]) {
-					newArray.push(array[i]);
-				}
-			}
-			this.orgprofile.requisites[this.modals.requisitedit_index].banks = newArray;
-		},
-
-		async editRequisit() {
-			const validationResult = await this.vEditRequisites.$validate();
-			console.log("Validation result", validationResult);
-			if (!validationResult) {
-				return;
-			}
-
-			const data = this.orgProfValues.requisites[this.modals.requisitedit_index];
-			data.org_name = this.orgProfValues.name;
-			if (data.marketplace.length > 0 && data.marketplace !== false) {
-				data.marketplace = true;
-			} else {
-				data.marketplace = false;
-			}
-			//this.editOrgProfile({
-			//	action: "set/request/profile",
-			//	id: router.currentRoute._value.params.id,
-			//	data: data,
-			//}).then((res) => {
-			//	if (res.data.data.status) {
-			//		this.modals.requisitedit = false;
-				//	this.org_profile_from_api({
-					//	action: "get/org/profile",
-					//	id: router.currentRoute._value.params.id,
-			//		});
-			//	}
-			//	this.$toast.add({
-			//		severity: "info",
-			//		summary: "Успех!",
-			//		detail: res.data.data.message,
-			//		life: 3000,
-			//	});
-			//});
-		},
-		async addRequisit() {
-			const validationResult = await this.vAddRequisites.$validate();
-			console.log("Validation result", validationResult);
-			if (!validationResult) {
-				return;
-			}
-
-			const data = this.newRequisit;
-			data.org_name = this.orgProfValues.name;
-			if (data.marketplace.length > 0) {
-				data.marketplace = true;
-			} else {
-				data.marketplace = false;
-			}
-		//	this.editOrgProfile({
-		//		data: data,
-		//	}).then((res) => {
-		//		if (res.data.data.status) {
-		//			this.modals.requisit = false;
-		//			this.new_requisit = {
-		//				name: "",
-		//				inn: "",
-		//				ogrn: "",
-		//				kpp: "",
-		//				ur_address: "",
-		//				fact_address: "",
-		//				marketplace: [],
-		//				banks: [],
-		//			};
-		//		}
-		//		this.$toast.add({
-		//			severity: "info",
-		//			summary: "Успех!",
-		//			detail: res.data.data.message,
-		//			life: 3000,
-		//		});
-		//	});
-		},
-		saveProfile() {
-		//	this.getOrgProfile({
-		//		action: "set/org/profile",
-		//		id: router.currentRoute._value.params.id,
-		//		data: {
-		//			managers: this.managers,
-		//			image: this.orgprofile.image,
-		//			upload_image: this.orgprofile.upload_image,
-		//		},
-		//	}).then((res) => {
-		//		this.$toast.add({
-		//			severity: "info",
-		//			summary: "Сохранено!",
-		//			detail: res.data.data.message,
-		//			life: 3000,
-		//		});
-		//	});
-		},
-  },
-  computed: {
-    ...mapGetters({
-      orgprofile: 'org/orgprofile'
-    }),
-  },
-  watch: {
-    orgprofile: function (newVal) {
-      this.showSaveButton=false
-      this.orgProfValues = newVal
-
-    },
-  },
-
-  validations() {
-    return {
-
-    }
   },
   setup() {
 		const addRequisitesRules = {
@@ -886,7 +706,7 @@ export default {
 		//	newOrgData: newOrgData
 		//});
 
-		const orgProfValues = ref([]);
+		const orgProfValues = shallowRef([]);
 
 		const editRequisitesData = ref({
 			orgProfValues: orgProfValues
@@ -898,11 +718,206 @@ export default {
 		return {
 			vAddRequisites,
 			vEditRequisites,
-
 			newRequisit,
 			orgProfValues
 		}
 	},
+  methods: {
+    ...mapActions({
+      getOrgProfile: 'org/getOrgProfile',
+      editOrgProfile: 'org/editOrgProfile',
+    }),
+    showModals(index){
+      if(this.modalRequisites === false && this.successMessage === true){
+        this.successMessage = false
+        this.editReqModalForm = true
+      }
+      this.modalRequisites = true,
+      this.requisitEditIndex = index
+    },
+    onUpload(data) {
+		//	if (data.xhr.response) {
+		//		const response = JSON.parse(data.xhr.response);
+		//		if (Object.prototype.hasOwnProperty.call(response.data, "files")) {
+					// перечень загруженныйх файлов
+
+		//			if (response.data.files[0].type === "avatar") {
+		//				this.orgProfValues.image = response.data.files[0];
+		//				this.orgProfValues.upload_image = true;
+		//			}
+		//		}
+		//	}
+		//	this.$toast.add({
+		//		severity: "info",
+		//		summary: "Логотип успешно загружен!",
+		//		detail: "Не забудте сохранить изменения",
+		//		life: 3000,
+		//	});
+		},
+		parseFile(files, xhr, formData) {
+		//	const callback = (e) => {
+		//		const res = JSON.parse(e);
+		//		if (res.success) {
+		//			if (res.data.files[0].type === "avatar") {
+		//				this.orgProfValues.image = res.data.files[0];
+		//				this.orgProfValues.upload_image = true;
+		//			}
+		//		}
+		//	};
+
+		//	xhr.onreadystatechange = () => {
+		//		if (xhr.readyState === 4) {
+		//			callback(xhr.response);
+		//		}
+		//	};
+		},
+		addBankRequisit() {
+      this.addRequisitShow = true
+			this.newRequisit.banks.push({
+				bank_bik: "",
+				bank_name: "",
+				bank_number: "",
+				bank_knumber: "",
+			});
+		},
+		addBankRequisitEdit() {
+      this.addRequisitShow = true
+			this.orgProfValues.requisites[this.requisitEditIndex].banks.push({
+				bank_bik: "",
+				bank_name: "",
+				bank_number: "",
+				bank_knumber: "",
+			});
+		},
+		deleteBankRequisit(index) {
+			const array = Array.from(this.newRequisit.banks);
+			delete array[index];
+			const newArray = [];
+			for (let i = 0; i < array.length; i++) {
+				if (array[i]) {
+					newArray.push(array[i]);
+				}
+			}
+			this.newRequisit.banks = newArray;
+		},
+
+		deleteBankRequisitEdit(index) {
+			const array = Array.from(
+				this.orgProfValues.requisites[this.requisitEditIndex].banks
+			);
+			delete array[index];
+			const newArray = [];
+			for (let i = 0; i < array.length; i++) {
+				if (array[i]) {
+					newArray.push(array[i]);
+				}
+			}
+			this.orgProfValues.requisites[this.requisitEditIndex].banks = newArray;
+		},
+
+		async editRequisit() {
+			const validationResult = await this.vEditRequisites.$validate();
+			console.log("Validation result", validationResult);
+			if (!validationResult) {
+				return;
+			}
+
+			const data = this.orgProfValues.requisites[this.requisitEditIndex];
+			data.org_name = this.orgprofile.name;
+			if (data.marketplace.length > 0 && data.marketplace !== false) {
+				data.marketplace = true;
+			} else {
+				data.marketplace = false;
+			}
+			await this.editOrgProfile({
+				data: data,
+			}).then((res) => {
+				if (res.data.data.status) {
+					this.editReqModalForm = false
+					this.successMessage = true
+          this.successMessageText = 'Заявка на изменение реквизитов успешно отправлена! Менеджер свяжется с вами в ближайшее время!'
+					this.getOrgProfile();
+				}
+				this.$toast.add({
+					severity: "info",
+					summary: "Заявка успешно отправлена!",
+					detail: res.data.message,
+					life: 3000,
+				});
+			});
+		},
+		async addRequisit() {
+			const validationResult = await this.vAddRequisites.$validate();
+			console.log("Validation result", validationResult);
+			if (!validationResult) {
+				return;
+			}
+
+			const data = this.newRequisit;
+			data.org_name = this.orgprofile.name;
+			if (data.marketplace.length > 0) {
+				data.marketplace = true;
+			} else {
+				data.marketplace = false;
+			}
+			await this.editOrgProfile({
+				data: data,
+			}).then((res) => {
+				if (res.data.data.status) {
+          this.newReqModalForm = false
+					this.successMessage = true
+          this.successMessageText = 'Заявка на добавление реквизитов успешно отправлена! Менеджер свяжется с вами в ближайшее время!'
+					this.newRequisit = {
+						name: "",
+						inn: "",
+						ogrn: "",
+						kpp: "",
+						ur_address: "",
+						fact_address: "",
+						marketplace: [],
+						banks: [],
+					};
+				}
+				this.$toast.add({
+					severity: "info",
+					summary: "Заявка успешно отправлена!",
+					detail: res.data.message,
+					life: 3000,
+				});
+			});
+		},
+		saveProfile() {
+		//	this.getOrgProfile({
+		//		action: "set/org/profile",
+		//		id: router.currentRoute._value.params.id,
+		//		data: {
+		//			managers: this.managers,
+		//			image: this.orgProfValues.image,
+		//			upload_image: this.orgProfValues.upload_image,
+		//		},
+		//	}).then((res) => {
+		//		this.$toast.add({
+		//			severity: "info",
+		//			summary: "Сохранено!",
+		//			detail: res.data.data.message,
+		//			life: 3000,
+		//		});
+		//	});
+		},
+  },
+  computed: {
+    ...mapGetters({
+      orgprofile: 'org/orgprofile'
+    }),
+  },
+  watch: {
+    orgprofile: function (newVal) {
+      this.orgProfTmp = newVal
+      this.orgProfValues = this.orgProfTmp
+    },
+
+  },
+
 }
 </script>
 
@@ -946,7 +961,8 @@ export default {
 .lk-about__flexcenter{
   display: flex;
   justify-content: center;
-  padding: 24px 24px 0 24px;
+  padding: 0px 24px 0 24px;
+  margin-top: -34px;
 }
 .lk-about__block-table-row{
   display: block;
@@ -958,13 +974,14 @@ export default {
   border-bottom: 0.5px solid #75757575;
   padding:24px 0;
 }
-.lk-about-info__value-container-modal .lk-about__info-input-field,.lk-about-info__value-container-modal .lk-about__info-input-field:focus{
+.lk-about-info__value-container-modal .lk-about__info-input-field,.lk-about-info__value-container-modal .lk-about__info-input-field:focus,
+.lk-about__block-table-modal-bank .dart-form-control, .lk-about__block-table-modal-bank .dart-form-control:focus{
   background-color: transparent;
   color: #282828;
   padding: 11px;
   padding-right: 0;
   width: 100%;
-  height: 42px;
+  height: 43px;
   border: 1px solid #757575;
   display: block;
   float: none;
@@ -1000,9 +1017,9 @@ export default {
 .lk-about-top-modal{
   display: flex;
   justify-content: space-between;
-  margin-top:16px;
+  margin:16px 16px 16px 0;
   width:100%;
-  padding-right: 16px;
+
 }
 .lk-about-top-modal .lk-about__block-header-button--hide{
   font-size: 16px;
@@ -1016,9 +1033,6 @@ export default {
 }
 .lk-about-info__value-container-modal .lk-about__flexend{
   padding: 0 24px;
-}
-.lk-about-info__value-container-modal .lk-about__block-radio-wrapper{
-  padding-top:12px;
 }
 .lk-about__block-table-modal-bank-del{
   display: flex;
@@ -1035,4 +1049,26 @@ export default {
 .lk-about__block-table-modal .lk-about__block-table {
   gap:0;
 }
-</style>
+.lk-about-info__value-container-modal-grid .lk-about__block-table-col{
+  min-height: 95px;
+  padding-top: 0;
+
+}
+.lk-about-info__value-container-modal-grid .lk-about__block-table-col .d-input-error{
+  margin-top: -5px
+}
+.success-modal{
+
+  padding: 100px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 50px;
+}
+.success-modal h2{
+  text-align: center;
+  font-size: 28px;
+}
+
+  </style>
