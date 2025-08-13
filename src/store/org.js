@@ -155,14 +155,13 @@ export default {
       }
       return response
     },
-    async editOrgProfile({ commit }, { value }) {
-      const data = {
+    async editOrgProfile({ commit }, { data }) {
+      const sendData = {
         action: "set/request/profile",
         id: router.currentRoute._value.params.id,
-        value: value
+        data: data
       }
-      const response = await api.org.editOrgProfile(data)
-
+      const response = await api.org.editOrgProfile(sendData)
       return response
     },
   },
