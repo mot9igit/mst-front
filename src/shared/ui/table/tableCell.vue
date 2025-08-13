@@ -146,7 +146,7 @@
 </template>
 
 <script>
-import Button from 'primevue/button'
+// import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
 import InputNumber from 'primevue/inputnumber'
 import Chart from 'primevue/chart'
@@ -258,7 +258,7 @@ export default {
         // this.selectedItems = this.selectedItems.filter(item => item !== id);
       } else {
         // console.log('net')
-        this.selectedItems.push(id)
+        // this.selectedItems.push(id)
       }
       // const newSelectedItems = [...this.selectedItems]
       // const itemId = this.value.id
@@ -303,7 +303,7 @@ export default {
     },
   },
   components: {
-    Button,
+    // Button,
     InputNumber,
     Checkbox,
     Chart,
