@@ -4,13 +4,6 @@
     <Loader v-if="loading" />
     <!-- Верхушка страницы -->
     <div class="d-top">
-      <router-link
-        :to="{ name: 'purchases', params: { id: this.$route.params.id } }"
-        class="d-back d-top-back"
-      >
-        <i class="d-icon-arrow d-back__icon d-top-back-icon"></i>
-        <span class="d-back__text">Назад</span>
-      </router-link>
       <breadcrumbs />
     </div>
 

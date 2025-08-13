@@ -1,10 +1,6 @@
 <template>
-  <div class="retailorders__content">
+  <section class="shipments retailorders__content" id="shipments">
     <div class="d-top">
-      <a class="d-back d-top-back">
-        <i class="d-icon-arrow d-back__icon d-top-back-icon"></i>
-        <span class="d-back__text">Назад</span>
-      </a>
       <Breadcrumbs />
     </div>
     <h1>Розничные заказы</h1>
@@ -22,7 +18,7 @@
       @sort="filter"
       @paginate="paginate"
     />
-  </div>
+  </section>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -168,21 +164,21 @@ export default {
 }
 </script>
 <style lang="scss">
-.retailorders__content .dart-row{
+.retailorders__content .dart-row {
   justify-content: end;
   margin-top: -39px;
 }
 .retailorders__content .dart-mb-1 {
-    margin-bottom: 40px;
+  margin-bottom: 40px;
 }
-.retailorders__content .p-inputtext{
-  width:100%;
+.retailorders__content .p-inputtext {
+  width: 100%;
 }
-.retailorders__content .form_input_group:after{
-  content: "\e003";
-  font-family: "Iconly" !important;
+.retailorders__content .form_input_group:after {
+  content: '\e003';
+  font-family: 'Iconly' !important;
   position: absolute;
-  font-size:16.8px;
+  font-size: 16.8px;
   top: calc(50% - 8.4px);
   right: 20px;
 }
@@ -192,13 +188,16 @@ export default {
   border: 0.2px solid #75757575;
 }
 .retailorders__content .p-inputtext:enabled:focus {
-    border-color: #f92c0d;
+  border-color: #f92c0d;
 }
-.retailorders__content .p-floatlabel:has(input:focus) label, .retailorders__content .p-floatlabel:has(input:-webkit-autofill) label,
-.retailorders__content  .p-floatlabel:has(textarea:focus) label,.retailorders__content  .p-floatlabel:has(.p-inputwrapper-focus) label {
-    color: #f92c0d;
+.retailorders__content .p-floatlabel:has(input:focus) label,
+.retailorders__content .p-floatlabel:has(input:-webkit-autofill) label,
+.retailorders__content .p-floatlabel:has(textarea:focus) label,
+.retailorders__content .p-floatlabel:has(.p-inputwrapper-focus) label {
+  color: #f92c0d;
 }
-.retailorders__content .d-table__col,.retailorders__content  .d-table__row:first-child > .d-table__col {
-    padding: 16px;
+.retailorders__content .d-table__col,
+.retailorders__content .d-table__row:first-child > .d-table__col {
+  padding: 16px;
 }
 </style>

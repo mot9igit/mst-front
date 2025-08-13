@@ -2,21 +2,7 @@
   <section class="shipments" id="shipments">
     <!-- Верхушка страницы -->
     <div class="d-top">
-      <a class="d-back d-top-back">
-        <i class="d-icon-arrow d-back__icon d-top-back-icon"></i>
-        <span class="d-back__text">Назад</span>
-      </a>
-      <ul class="d-breadcrumbs d-top-breadcrumbs">
-        <li class="d-breadcrumbs__item d-top-breadcrumbs-item">
-          <button class="d-breadcrumbs__button">Оптовые цены</button>
-        </li>
-        <li class="d-breadcrumbs__item d-top-breadcrumbs-item">
-          <button class="d-breadcrumbs__button">Акции</button>
-        </li>
-        <li class="d-breadcrumbs__item d-breadcrumbs__item--active d-top-breadcrumbs-item">
-          <button class="d-breadcrumbs__button">Насторойка акции</button>
-        </li>
-      </ul>
+      <breadcrumbs />
     </div>
 
     <!-- Шапка страницы -->
@@ -559,8 +545,11 @@
   </section>
 </template>
 <script>
+import breadcrumbs from '@/shared/ui/breadcrumbs.vue'
+
 export default {
   name: 'WholesaleShipments',
+  components: { breadcrumbs },
 }
 </script>
 <style lang="scss"></style>

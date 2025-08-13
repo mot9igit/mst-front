@@ -10,25 +10,18 @@
               <yandex-map v-model="map" :settings="mapSettings" height="100%">
                 <yandex-map-default-features-layer />
                 <yandex-map-default-scheme-layer />
-                <yandex-map-clusterer
-                  :grid-size="128"
-                  v-model="clusterer"
-                  zoom-on-cluster-click
-                  @trueBounds="trueBounds = $event"
+                <yandex-map-marker
+                  v-for="item in optVendorsAvailable.items"
+                  :key="item.mapcoordinates"
+                  :settings="{
+                    coordinates: item.mapcoordinates,
+                  }"
+                  @click="checkVendor(item.id)"
                 >
-                  <yandex-map-marker
-                    v-for="item in optVendorsAvailable.items"
-                    :key="item.mapcoordinates"
-                    :settings="{
-                      coordinates: item.mapcoordinates,
-                    }"
-                    @click="checkVendor(item.id)"
-                  >
-                    <div class="marker">
-                      <img :src="item.image" :alt="item.name" />
-                    </div>
-                  </yandex-map-marker>
-                </yandex-map-clusterer>
+                  <div class="marker">
+                    <img :src="item.image" :alt="item.name" />
+                  </div>
+                </yandex-map-marker>
                 <template #cluster="{ length }">
                   <div
                     class="cluster fade-in"
@@ -286,7 +279,6 @@ import {
   YandexMapDefaultSchemeLayer,
   YandexMapDefaultFeaturesLayer,
   YandexMapMarker,
-  YandexMapClusterer,
 } from 'vue-yandex-maps'
 import { mapActions, mapGetters } from 'vuex'
 import { Checkbox } from 'primevue'
@@ -307,7 +299,6 @@ export default {
     YandexMapDefaultSchemeLayer,
     YandexMapDefaultFeaturesLayer,
     YandexMapMarker,
-    YandexMapClusterer,
     Checkbox,
     Loader,
     Paginate,
@@ -532,6 +523,7 @@ export default {
   display: block;
   border-radius: 50%;
   overflow: hidden;
+  border: 1px solid #dedede;
 }
 .d-search__field {
   background: transparent;

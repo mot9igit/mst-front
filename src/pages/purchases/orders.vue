@@ -1,28 +1,26 @@
 <template>
-  <div class="myorders__content">
-    <div class="d-top">
-      <a class="d-back d-top-back">
-        <i class="d-icon-arrow d-back__icon d-top-back-icon"></i>
-        <span class="d-back__text">Назад</span>
-      </a>
-      <Breadcrumbs />
+  <section class="shipments" id="shipments">
+    <div class="myorders__content">
+      <div class="d-top">
+        <Breadcrumbs />
+      </div>
+      <h1>Мои заказы</h1>
+      <Loader v-if="loading" />
+      <BaseTable
+        v-else
+        :items_data="optorders.orders"
+        :total="optorders.total"
+        :pagination_items_per_page="this.pagination_items_per_page"
+        :pagination_offset="this.pagination_offset"
+        :page="this.page"
+        :table_data="this.table_data"
+        :filters="this.filters"
+        @filter="filter"
+        @sort="filter"
+        @paginate="paginate"
+      />
     </div>
-    <h1>Мои заказы</h1>
-    <Loader v-if="loading" />
-    <BaseTable
-      v-else
-      :items_data="optorders.orders"
-      :total="optorders.total"
-      :pagination_items_per_page="this.pagination_items_per_page"
-      :pagination_offset="this.pagination_offset"
-      :page="this.page"
-      :table_data="this.table_data"
-      :filters="this.filters"
-      @filter="filter"
-      @sort="filter"
-      @paginate="paginate"
-    />
-  </div>
+  </section>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -55,73 +53,72 @@ export default {
         },
       },
       table_data: {
-				id: {
-					label: "№",
-					type: "link",
-					link_to: "purchasesOrder",
-					link_params: {
-						id: this.$route.params.id,
-						order_id: "id",
-					},
-					sort: true,
-				},
-				date: {
-					label: "Дата создания",
-					type: "link",
-          link_to: "purchasesOrder",
-					link_params: {
-						id: this.$route.params.id,
-						order_id: "id",
-					},
-					sort: true,
-				},
+        id: {
+          label: '№',
+          type: 'link',
+          link_to: 'purchasesOrder',
+          link_params: {
+            id: this.$route.params.id,
+            order_id: 'id',
+          },
+          sort: true,
+        },
+        date: {
+          label: 'Дата создания',
+          type: 'link',
+          link_to: 'purchasesOrder',
+          link_params: {
+            id: this.$route.params.id,
+            order_id: 'id',
+          },
+          sort: true,
+        },
         seller_address: {
-					label: "Склад Поставщика",
-					type: "link",
-          link_to: "purchasesOrder",
-					link_params: {
-						id: this.$route.params.id,
-						order_id: "id",
-					},
-					sort: true,
-				},
+          label: 'Склад Поставщика',
+          type: 'link',
+          link_to: 'purchasesOrder',
+          link_params: {
+            id: this.$route.params.id,
+            order_id: 'id',
+          },
+          sort: true,
+        },
         ur_persone_name: {
-					label: "Покупатель",
-					type: "link",
-          link_to: "purchasesOrder",
-					link_params: {
-						id: this.$route.params.id,
-						order_id: "id",
-					},
-					sort: true,
-				},
+          label: 'Покупатель',
+          type: 'link',
+          link_to: 'purchasesOrder',
+          link_params: {
+            id: this.$route.params.id,
+            order_id: 'id',
+          },
+          sort: true,
+        },
         initiator: {
-					label: "Инициатор",
-					type: "link",
-          link_to: "purchasesOrder",
-					link_params: {
-						id: this.$route.params.id,
-						order_id: "id",
-					},
-					sort: true,
-				},
-				cost: {
-					label: "Сумма",
-					type: "link",
-          link_to: "purchasesOrder",
-					link_params: {
-						id: this.$route.params.id,
-						order_id: "id",
-					},
-					sort: true,
-				},
-				status: {
-					label: "Оплата доставки",
-					type: "status",
-					sort: true,
-				}
-			},
-      
+          label: 'Инициатор',
+          type: 'link',
+          link_to: 'purchasesOrder',
+          link_params: {
+            id: this.$route.params.id,
+            order_id: 'id',
+          },
+          sort: true,
+        },
+        cost: {
+          label: 'Сумма',
+          type: 'link',
+          link_to: 'purchasesOrder',
+          link_params: {
+            id: this.$route.params.id,
+            order_id: 'id',
+          },
+          sort: true,
+        },
+        status: {
+          label: 'Оплата доставки',
+          type: 'status',
+          sort: true,
+        },
+      },
     }
   },
   methods: {
@@ -165,21 +162,21 @@ export default {
 </script>
 
 <style lang="scss">
-.myorders__content .dart-row{
+.myorders__content .dart-row {
   justify-content: end;
   margin-top: -39px;
 }
 .myorders__content .dart-mb-1 {
-    margin-bottom: 40px;
+  margin-bottom: 40px;
 }
-.myorders__content .p-inputtext{
-  width:100%;
+.myorders__content .p-inputtext {
+  width: 100%;
 }
-.myorders__content .form_input_group:after{
-  content: "\e003";
-  font-family: "Iconly" !important;
+.myorders__content .form_input_group:after {
+  content: '\e003';
+  font-family: 'Iconly' !important;
   position: absolute;
-  font-size:16.8px;
+  font-size: 16.8px;
   top: calc(50% - 8.4px);
   right: 20px;
 }
@@ -189,14 +186,16 @@ export default {
   border: 0.2px solid #75757575;
 }
 .myorders__content .p-inputtext:enabled:focus {
-    border-color: #f92c0d;
+  border-color: #f92c0d;
 }
-.myorders__content .p-floatlabel:has(input:focus) label, .myorders__content .p-floatlabel:has(input:-webkit-autofill) label,
-.myorders__content  .p-floatlabel:has(textarea:focus) label,.myorders__content  .p-floatlabel:has(.p-inputwrapper-focus) label {
-    color: #f92c0d;
+.myorders__content .p-floatlabel:has(input:focus) label,
+.myorders__content .p-floatlabel:has(input:-webkit-autofill) label,
+.myorders__content .p-floatlabel:has(textarea:focus) label,
+.myorders__content .p-floatlabel:has(.p-inputwrapper-focus) label {
+  color: #f92c0d;
 }
-.myorders__content  .d-table__col, .myorders__content  .d-table__row:first-child > .d-table__col {
-    padding: 16px;
+.myorders__content .d-table__col,
+.myorders__content .d-table__row:first-child > .d-table__col {
+  padding: 16px;
 }
-
 </style>

@@ -1,146 +1,144 @@
 <template>
-  <Loader v-if="loading" />
-  <div class="products__top-wrapper" v-else>
-    <div class="products__top">
-      <!-- Левая часть верхушки страницы -->
-      <div class="products__top-left">
-        <a class="d-back promotions__top-back products__back">
-          <i class="d-icon-arrow d-back__icon"></i>
-          <span class="d-back__text hidden-640">Назад</span>
-        </a>
-        <breadcrumbs/>
+  <section class="products" id="products">
+    <Loader v-if="loading" />
+    <div class="products__top-wrapper" v-else>
+      <div class="products__top">
+        <!-- Левая часть верхушки страницы -->
+        <div class="products__top-left">
+          <breadcrumbs />
+        </div>
+        <!-- Правая часть верхушки страницы -->
+        <div class="products__top-right">
+          <!--
+          <button
+            class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small products__top-button"
+            data-show-hide="balanceForecast"
+          >
+            Прогноз остатков
+            <i class="d-icon-mixer products__top-button-icon"></i>
+          </button>
+          <button
+            class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small products__top-button products__top-button--filter"
+            data-show-hide="filter"
+          >
+            Фильтр
+            <i class="d-icon-angle-rounded-bottom products__top-button-icon"></i>
+          </button>
+          -->
+        </div>
       </div>
-      <!-- Правая часть верхушки страницы -->
-      <div class="products__top-right">
-        <!--
-        <button
-          class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small products__top-button"
-          data-show-hide="balanceForecast"
-        >
-          Прогноз остатков
-          <i class="d-icon-mixer products__top-button-icon"></i>
-        </button>
-        <button
-          class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small products__top-button products__top-button--filter"
-          data-show-hide="filter"
-        >
-          Фильтр
-          <i class="d-icon-angle-rounded-bottom products__top-button-icon"></i>
-        </button>
-        -->
-      </div>
-    </div>
 
-    <!-- Прогноз остатков -->
-    <!-- При натягивании верстки эту обертку удалить ↓↓↓ -->
-    <div class="hidden" id="balanceForecast">
-      <div class="products__forecast">
-        <!-- Радио: Добавлять в корзину кол-во из потребности -->
-        <div class="d-radio__wrapper d-radio__wrapper--align-start d-radio__wrapper--fit">
-          <label for="addNeed" class="d-radio">
-            <input type="radio" name="addNeed" id="addNeed" class="d-radio__input" />
-          </label>
-          <div class="d-switch__label-container">
-            <label for="addNeed" class="d-radio__label"
-              >Добавлять в корзину кол-во из потребности
+      <!-- Прогноз остатков -->
+      <!-- При натягивании верстки эту обертку удалить ↓↓↓ -->
+      <div class="hidden" id="balanceForecast">
+        <div class="products__forecast">
+          <!-- Радио: Добавлять в корзину кол-во из потребности -->
+          <div class="d-radio__wrapper d-radio__wrapper--align-start d-radio__wrapper--fit">
+            <label for="addNeed" class="d-radio">
+              <input type="radio" name="addNeed" id="addNeed" class="d-radio__input" />
             </label>
-            <p class="d-description">
-              При включенном условии, нажимая на кнопку «В корзину», вы будете добавлять в корзину
-              количество товара из расчётной потребности.
-            </p>
+            <div class="d-switch__label-container">
+              <label for="addNeed" class="d-radio__label"
+                >Добавлять в корзину кол-во из потребности
+              </label>
+              <p class="d-description">
+                При включенном условии, нажимая на кнопку «В корзину», вы будете добавлять в корзину
+                количество товара из расчётной потребности.
+              </p>
+            </div>
+          </div>
+
+          <!-- Радио: Отрицательный прогноз остатков -->
+          <div class="d-radio__wrapper d-radio__wrapper--align-start d-radio__wrapper--fit">
+            <label for="negativeForecast" class="d-radio">
+              <input
+                type="radio"
+                name="negativeForecast"
+                id="negativeForecast"
+                class="d-radio__input"
+              />
+            </label>
+            <label for="negativeForecast" class="d-radio__label"
+              >Отрицательный прогноз остатков
+            </label>
+          </div>
+
+          <!-- Поле: Кол-во дней для прогноза остатков -->
+          <div class="d-field__wrapper d-field__wrapper--align-start d-field__wrapper--fit">
+            <label for="numberForecast" class="d-field__label"
+              >Кол-во дней для прогноза остатков
+            </label>
+            <div class="d-field">
+              <input type="text" name="numberForecast" id="numberForecast" class="d-field__input" />
+
+              <span class="d-field__suffix">дней</span>
+            </div>
+          </div>
+
+          <!-- Поле: Кол-во месяцев для расчета скорости продаж -->
+          <div class="d-field__wrapper d-field__wrapper--align-start d-field__wrapper--fit">
+            <label for="numberMonths" class="d-field__label"
+              >Кол-во месяцев для расчета скорости продаж
+            </label>
+            <div class="d-field">
+              <input type="text" name="numberMonths" id="numberMonths" class="d-field__input" />
+
+              <span class="d-field__suffix">мес.</span>
+            </div>
           </div>
         </div>
+      </div>
 
-        <!-- Радио: Отрицательный прогноз остатков -->
-        <div class="d-radio__wrapper d-radio__wrapper--align-start d-radio__wrapper--fit">
-          <label for="negativeForecast" class="d-radio">
-            <input
-              type="radio"
-              name="negativeForecast"
-              id="negativeForecast"
-              class="d-radio__input"
-            />
-          </label>
-          <label for="negativeForecast" class="d-radio__label"
-            >Отрицательный прогноз остатков
-          </label>
-        </div>
-
-        <!-- Поле: Кол-во дней для прогноза остатков -->
-        <div class="d-field__wrapper d-field__wrapper--align-start d-field__wrapper--fit">
-          <label for="numberForecast" class="d-field__label"
-            >Кол-во дней для прогноза остатков
-          </label>
-          <div class="d-field">
-            <input type="text" name="numberForecast" id="numberForecast" class="d-field__input" />
-
-            <span class="d-field__suffix">дней</span>
+      <!-- Фильтры -->
+      <!-- При натягивании верстки эту обертку удалить ↓↓↓ -->
+      <div class="hidden" id="filter">
+        <div class="products__filter">
+          <!-- Радио: Только товары склада покупателя -->
+          <div class="d-radio__wrapper d-radio__wrapper--align-start d-radio__wrapper--fit">
+            <label for="onlyBuyerWarehouse" class="d-radio">
+              <input
+                type="radio"
+                name="onlyBuyerWarehouse"
+                id="onlyBuyerWarehouse"
+                class="d-radio__input"
+              />
+            </label>
+            <label for="onlyBuyerWarehouse" class="d-radio__label"
+              >Только товары склада покупателя
+            </label>
           </div>
-        </div>
 
-        <!-- Поле: Кол-во месяцев для расчета скорости продаж -->
-        <div class="d-field__wrapper d-field__wrapper--align-start d-field__wrapper--fit">
-          <label for="numberMonths" class="d-field__label"
-            >Кол-во месяцев для расчета скорости продаж
-          </label>
-          <div class="d-field">
-            <input type="text" name="numberMonths" id="numberMonths" class="d-field__input" />
-
-            <span class="d-field__suffix">мес.</span>
+          <!-- Радио: Только товары с продажами -->
+          <div class="d-radio__wrapper d-radio__wrapper--align-start d-radio__wrapper--fit">
+            <label for="onlyWithSales" class="d-radio">
+              <input type="radio" name="onlyWithSales" id="onlyWithSales" class="d-radio__input" />
+            </label>
+            <label for="onlyWithSales" class="d-radio__label">Только товары с продажами </label>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Фильтры -->
-    <!-- При натягивании верстки эту обертку удалить ↓↓↓ -->
-    <div class="hidden" id="filter">
-      <div class="products__filter">
-        <!-- Радио: Только товары склада покупателя -->
-        <div class="d-radio__wrapper d-radio__wrapper--align-start d-radio__wrapper--fit">
-          <label for="onlyBuyerWarehouse" class="d-radio">
-            <input
-              type="radio"
-              name="onlyBuyerWarehouse"
-              id="onlyBuyerWarehouse"
-              class="d-radio__input"
-            />
-          </label>
-          <label for="onlyBuyerWarehouse" class="d-radio__label"
-            >Только товары склада покупателя
-          </label>
-        </div>
-
-        <!-- Радио: Только товары с продажами -->
-        <div class="d-radio__wrapper d-radio__wrapper--align-start d-radio__wrapper--fit">
-          <label for="onlyWithSales" class="d-radio">
-            <input type="radio" name="onlyWithSales" id="onlyWithSales" class="d-radio__input" />
-          </label>
-          <label for="onlyWithSales" class="d-radio__label">Только товары с продажами </label>
-        </div>
-      </div>
+    <product
+      v-for="item in opt_products.items"
+      :key="item.id"
+      :product="item"
+      @updateBasket="updateBasket()"
+    />
+    <div class="d-pagination-wrap" v-if="pagesCount > 1">
+      <paginate
+        :page-count="pagesCount"
+        :click-handler="pagClickCallback"
+        :prev-text="'Пред'"
+        :next-text="'След'"
+        :container-class="'d-pagination d-table__footer-right-pagination'"
+        :page-class="'d-pagination__item'"
+        :active-class="'d-pagination__item--active'"
+        :initialPage="this.page"
+        :forcePage="this.page"
+      >
+      </paginate>
     </div>
-  </div>
-  <product
-    v-for="item in opt_products.items"
-    :key="item.id"
-    :product="item"
-    @updateBasket="updateBasket()"
-  />
-  <div class="d-pagination-wrap" v-if="pagesCount > 1">
-    <paginate
-      :page-count="pagesCount"
-      :click-handler="pagClickCallback"
-      :prev-text="'Пред'"
-      :next-text="'След'"
-      :container-class="'d-pagination d-table__footer-right-pagination'"
-      :page-class="'d-pagination__item'"
-      :active-class="'d-pagination__item--active'"
-      :initialPage="this.page"
-      :forcePage="this.page"
-    >
-    </paginate>
-  </div>
+  </section>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'

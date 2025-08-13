@@ -100,7 +100,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      orgs: 'orgs',
+      orgs: 'org/orgs',
       optVendorsAvailable: 'org/optVendorsAvailable',
       optVendorsSelected: 'org/optVendorsSelected',
       basket: 'basket/basket',

@@ -1,10 +1,6 @@
 <template>
-  <div>
+  <section class="shipments" id="shipments">
     <div class="d-top">
-      <a class="d-back d-top-back">
-        <i class="d-icon-arrow d-back__icon d-top-back-icon"></i>
-        <span class="d-back__text">Назад</span>
-      </a>
       <Breadcrumbs />
     </div>
     <div class="dart-row">
@@ -12,7 +8,12 @@
         <h1 class="dart-mb-2">Оптовые цены</h1>
       </div>
       <div class="d-col-md-12 d-flex d-flex-end">
-        <router-link :to="{name: 'wholesaleSaleNew', params: {id: this.$route.params.id}}"class="d-button d-button-primary box-shadow-none d-inline-block"> Создать Акцию </router-link>
+        <router-link
+          :to="{ name: 'wholesaleSaleNew', params: { id: this.$route.params.id } }"
+          class="d-button d-button-primary box-shadow-none d-inline-block"
+        >
+          Создать Акцию
+        </router-link>
       </div>
     </div>
 
@@ -33,7 +34,7 @@
       @approveElem="approveElem"
       @deleteElem="deleteElem"
     />
-  </div>
+  </section>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -49,146 +50,140 @@ export default {
       loading: false,
       windowWidth: 1920,
       page: 1,
-			filters: {
-				name: {
-					name: "Наименование",
-					placeholder: "Наименование",
-					type: "text",
-				}
-			},
+      filters: {
+        name: {
+          name: 'Наименование',
+          placeholder: 'Наименование',
+          type: 'text',
+        },
+      },
       table_data: {
         id: {
-          label: "Номер",
-          type: "text"
+          label: 'Номер',
+          type: 'text',
         },
         image: {
-          label: "Баннер",
-          type: "image",
+          label: 'Баннер',
+          type: 'image',
           baseurl: false,
         },
         name: {
-          label: "Наименование",
-          type: "link",
+          label: 'Наименование',
+          type: 'link',
           // TODO
-          link_to: "wholesaleSale",
+          link_to: 'wholesaleSale',
           link_params: {
             id: this.$route.params.id,
-            action: "id",
+            action: 'id',
           },
           sort: true,
         },
         store_name: {
-          label: "Склад",
-          type: "text",
+          label: 'Склад',
+          type: 'text',
         },
         date_from: {
-          label: "Действует с",
-          type: "text",
+          label: 'Действует с',
+          type: 'text',
           sort: true,
         },
         date_to: {
-          label: "Действует до",
-          type: "text",
+          label: 'Действует до',
+          type: 'text',
           sort: true,
         },
         active: {
-          label: "Активно",
-          type: "boolean",
+          label: 'Активно',
+          type: 'boolean',
         },
         actions: {
-          label: "Действия",
-          type: "actions",
+          label: 'Действия',
+          type: 'actions',
           sort: false,
           available: {
             edit: {
-              icon: "pi pi-pencil",
-              label: "Редактировать",
+              icon: 'pi pi-pencil',
+              label: 'Редактировать',
             },
             approve: {
-              icon: "pi pi-power-off",
-              label: "Включить",
+              icon: 'pi pi-power-off',
+              label: 'Включить',
             },
             delete: {
-              icon: "pi pi-trash",
-              label: "Удалить",
+              icon: 'pi pi-trash',
+              label: 'Удалить',
             },
           },
         },
-      }
+      },
     }
   },
   props: {
-		pagination_items_per_page: {
-			type: Number,
-			default: 25,
-		},
-		pagination_offset: {
-			type: Number,
-			default: 0,
-		},
+    pagination_items_per_page: {
+      type: Number,
+      default: 25,
+    },
+    pagination_offset: {
+      type: Number,
+      default: 0,
+    },
   },
   mounted() {
     this.getSales({
-			page: this.page,
-			perpage: this.pagination_items_per_page,
-			type: 1,
-		});
+      page: this.page,
+      perpage: this.pagination_items_per_page,
+      type: 1,
+    })
   },
   computed: {
     ...mapGetters({
-      sales: 'sales/sales'
+      sales: 'sales/sales',
     }),
     getTableData() {
-			if (this.windowWidth <= 480) {
-				return {
-					name: this.table_data.name,
-					store_name: this.table_data.store_name,
-					active: this.table_data.active,
-					actions: this.table_data.actions,
-				};
-			}
+      if (this.windowWidth <= 480) {
+        return {
+          name: this.table_data.name,
+          store_name: this.table_data.store_name,
+          active: this.table_data.active,
+          actions: this.table_data.actions,
+        }
+      }
 
-			return this.table_data;
-		},
+      return this.table_data
+    },
   },
   methods: {
     ...mapActions({
-      getSales: 'sales/getSales'
+      getSales: 'sales/getSales',
     }),
     paginate(data) {
-			this.page = data.page;
-			data.type = 1;
-			this.getSales(data);
-		},
+      this.page = data.page
+      data.type = 1
+      this.getSales(data)
+    },
     filter(data) {
-			data.type = 1;
-      this.page = 1;
-			this.getSales(data);
-		},
-    editElem(item){
-
+      data.type = 1
+      this.page = 1
+      this.getSales(data)
     },
-    approveElem(item){
-
-    },
-    deleteElem(item){
-
-    }
-  }
+    editElem(item) {},
+    approveElem(item) {},
+    deleteElem(item) {},
+  },
 }
 </script>
 <style lang="scss">
-.d-flex{
+.d-flex {
   display: flex;
 }
-.d-flex-end{
+.d-flex-end {
   justify-content: end;
 }
-.d-inline-block{
+.d-inline-block {
   display: inline-block;
   width: auto;
 }
-.promotions__card-collection-tabs-wrapper{
+.promotions__card-collection-tabs-wrapper {
   overflow: hidden;
 }
 </style>

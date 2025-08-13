@@ -78,7 +78,7 @@ export default {
   computed: {
     ...mapGetters({
       getUser: 'user/getUser',
-      orgs: 'orgs',
+      orgs: 'org/orgs',
     }),
   },
   emits: ['sidebarToggle'],
