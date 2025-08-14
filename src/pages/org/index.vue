@@ -36,21 +36,22 @@
 
           </div>
             <!--:class="{ error: vEditOrgData.editOrgValues[field.name].$errors.length }"
-            :v-model="this.editOrgValues[field.name]"
-          <div v-if="field.type === 'input'">-->
-            <div class="d-input d-input--light lk-about__info-input"
-            v-if="field.type === 'input'"
 
+            :value="this.orgprofile[field.name]"-->
+          <div v-if="field.type === 'input'" class="d-input--cont">
+
+            <div class="d-input d-input--light lk-about__info-input"
+              :class="{ error: vEditOrgData.editOrgValues[field.name].$errors.length }"
             >
               <input
                 type="text"
-                :value="this.orgprofile[field.name]"
+                v-model="this.orgProfValues[field.name]"
                 :name="field.name"
                 class="d-input__field lk-about__info-input-field"
               />
 
             </div>
-          <!--  <div class="d-input-error"
+            <div class="d-input-error"
                     v-for="error of vEditOrgData.editOrgValues[field.name].$errors"
                     >
                 <i class="d-icon-warning d-input-error__icon"></i>
@@ -58,9 +59,41 @@
                         {{ error.$message }}
                 </span>
 						</div>
-          </div>-->
-            <div class="lk-about__info-image-wrapper" v-if="field.type === 'image'">
-              <img :src="this.orgprofile[field.name]" alt="" class="lk-about__info-image"  v-if="this.orgprofile[field.name] != ''"/>
+          </div>
+           <div  v-if="field.type === 'image'">
+
+              <DropZone v-if="!this.orgprofile.image" class="lk-about__dropzone" :maxFiles="Number(1)"
+                url="/rest/file_upload.php?upload_org_avatar=avatar" :uploadOnDrop="true" :multipleUpload="true"
+                :acceptedFiles="['image/*']" :parallelUpload="1" @sending="parseFile" v-bind="args">
+                <template v-slot:message>
+                  <div class="lk-about__dropzone-custom">
+                    <i class="d-icon-upload-cloud d-input__icon"></i>
+                    <b>Перетащите файл в эту область</b>
+                    <p>Вы также можете загрузить файл, <span>нажав сюда</span></p>
+                  </div>
+                </template>
+              </DropZone>
+              <div class="lk-about__info-image-wrapper" v-else>
+                <FileUpload name="avatar[]" url="/rest/file_upload.php?upload_org_avatar=avatar" @upload="onUpload"
+                  :auto="true" :multiple="false" accept="image/*" :maxFileSize="1000000">
+                  <template #header="{
+                    chooseCallback,
+                    uploadCallback,
+                    clearCallback,
+                    files,
+                  }">
+                <img
+                  :src="orgprofile.upload_image
+								? this.orgprofile.image.original_href
+								: this.orgprofile.image"
+                  alt=""
+                  class="lk-about__info-image"
+                />
+                <i class="d-icon-pen2"
+                @click.prevent="chooseCallback()"></i>
+                  </template>
+					      </FileUpload>
+              </div>
             </div>
             <div class="lk-about__info-text-wrapper"  v-if="field.type === 'text'">
               <p class="lk-about__info-text">{{ this.orgprofile[field.name] }}</p>
@@ -448,11 +481,13 @@ import Toast from "primevue/toast";
 import customModal from '@/shared/ui/Modal.vue'
 import { ref, shallowRef } from "vue";
 import { Checkbox } from 'primevue'
+import DropZone from "dropzone-vue";
+import FileUpload from "primevue/fileupload";
 
 
 export default {
   name: 'ProfileMain',
-  components: { Breadcrumbs, Loader, Toast, customModal, Checkbox },
+  components: { Breadcrumbs, Loader, Toast, customModal, Checkbox, DropZone, FileUpload },
   data(){
     return {
       loading: false,
@@ -465,6 +500,7 @@ export default {
       editReqModalForm: true,
       successMessage: false,
       orgProfTmp: {},
+      editOrgValues: {},
       successMessageText: '',
 			requisitEditIndex: 0,
       form: {
@@ -675,10 +711,10 @@ export default {
 							required: helpers.withMessage("Заполните наименование организации", required),
 						},
             phone: {
-							pattern: helpers.withMessage("Введите корректный номер телефона", (value) => /^\+\d{1}\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$/.test(value)),
+							pattern: helpers.withMessage("Введите корректный номер телефона", (value) => /(?:\+|\d)[\d\-\(\) ]{9,}\d/g.test(value)),
 						},
             email: {
-							pattern: helpers.withMessage("Введите корректный номер телефона", (value) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)),
+							pattern: helpers.withMessage("Введите корректный email", (value) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)),
 						},
 
 				}
@@ -705,7 +741,7 @@ export default {
 			orgProfValues: orgProfValues
 		});
 
-    const editOrgValues = shallowRef([]);
+    const editOrgValues = ref({});
 
 		const editOrgData = ref({
 			editOrgValues: editOrgValues
@@ -738,40 +774,39 @@ export default {
       this.requisitEditIndex = index
     },
     onUpload(data) {
-		//	if (data.xhr.response) {
-		//		const response = JSON.parse(data.xhr.response);
-		//		if (Object.prototype.hasOwnProperty.call(response.data, "files")) {
-					// перечень загруженныйх файлов
-
-		//			if (response.data.files[0].type === "avatar") {
-		//				this.orgProfValues.image = response.data.files[0];
-		//				this.orgProfValues.upload_image = true;
-		//			}
-		//		}
-		//	}
-		//	this.$toast.add({
-		//		severity: "info",
-		//		summary: "Логотип успешно загружен!",
-		//		detail: "Не забудте сохранить изменения",
-		//		life: 3000,
-		//	});
+			if (data.xhr.response) {
+				const response = JSON.parse(data.xhr.response);
+				if (Object.prototype.hasOwnProperty.call(response.data, "files")) {
+					if (response.data.files[0].type === "avatar") {
+            console.log('avatar')
+						this.editOrgValues.image = response.data.files[0];
+						this.editOrgValues.upload_image = true;
+					}
+				}
+			}
+			this.$toast.add({
+				severity: "info",
+				summary: "Логотип успешно загружен!",
+				detail: "Не забудте сохранить изменения",
+				life: 3000,
+			});
 		},
 		parseFile(files, xhr, formData) {
-		//	const callback = (e) => {
-		//		const res = JSON.parse(e);
-		//		if (res.success) {
-		//			if (res.data.files[0].type === "avatar") {
-		//				this.orgProfValues.image = res.data.files[0];
-		//				this.orgProfValues.upload_image = true;
-		//			}
-		//		}
-		//	};
-
-		//	xhr.onreadystatechange = () => {
-		//		if (xhr.readyState === 4) {
-		//			callback(xhr.response);
-		//		}
-		//	};
+			const callback = (e) => {
+				const res = JSON.parse(e);
+				if (res.success) {
+					if (res.data.files[0].type === "avatar") {
+            console.log('avatar')
+						this.editOrgValues.image = res.data.files[0];
+						this.editOrgValues.upload_image = true;
+					}
+				}
+			};
+			xhr.onreadystatechange = () => {
+				if (xhr.readyState === 4) {
+					callback(xhr.response);
+				}
+			};
 		},
 		addBankRequisit() {
       this.addRequisitShow = true
@@ -855,25 +890,31 @@ export default {
 				return;
 			}
 
-			const data = this.editOrgValues;
+			const data = {
+        name: this.editOrgValues.name,
+        email: this.editOrgValues.email,
+        phone: this.editOrgValues.phone,
+        image: this.editOrgValues.image,
+      }
 			data.org_name = this.orgprofile.name;
-//			await this.editOrgProfile({
-//				data: data,
-//			}).then((res) => {
-//				if (res.data.data.status) {
-//         this.modalRequisites = true
-//					this.editReqModalForm = false
-//					this.successMessage = true
-//          this.successMessageText = 'Заявка на изменение данных организации успешно отправлена! Менеджер свяжется с вами в ближайшее время!'
-//					this.getOrgProfile();
-//				}
-//				this.$toast.add({
-//					severity: "info",
-//					summary: "Заявка успешно отправлена!",
-//					detail: res.data.message,
-//					life: 3000,
-//				});
-//			});
+			await this.editOrgProfile({
+				data: data,
+			}).then((res) => {
+				if (res.data.data.status) {
+          this.modalRequisites = true
+					this.editReqModalForm = false
+          this.newReqModalForm = false
+					this.successMessage = true
+          this.successMessageText = 'Заявка на изменение данных организации успешно отправлена! Менеджер свяжется с вами в ближайшее время!'
+					this.getOrgProfile();
+				}
+				this.$toast.add({
+					severity: "info",
+					summary: "Заявка успешно отправлена!",
+					detail: res.data.message,
+					life: 3000,
+				});
+			});
 		},
 
 		async addRequisit() {
@@ -981,8 +1022,66 @@ export default {
 .lk-about__info {
     border-bottom: 0.5px solid #75757575;
 }
-.lk-about__info-image-wrapper{
-  height: 45px;
+.lk-about__info-image-wrapper .p-fileupload, .lk-about__info .dropzone__item-thumbnail img{
+  width: 70px;
+  height: 70px;
+  min-width: 70px;
+  min-height: 70px;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  transition: all 0.2s ease;
+  border-radius: 35px;
+}
+.lk-about__info-image-wrapper .p-fileupload-header img{
+  height: 70px;
+  width: 70px;
+  min-width: 70px;
+  min-height: 70px;
+  object-fit: cover;
+  transition: all 0.2s ease;
+  border-radius: 35px;
+
+}
+.lk-about__info-image-wrapper .p-fileupload-file {
+  padding: 0;
+}
+.lk-about__info-image-wrapper .p-fileupload-file-info, .lk-about__info-image-wrapper .p-badge-success, .lk-about__info-image-wrapper .p-fileupload-file-actions{
+  display:none;
+}
+.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header {
+  padding: 0 0 0 0;
+}
+.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header {
+  height: 70px;
+}
+.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header img{
+  height: 70px;
+  width: 70px;
+  object-fit: cover;
+}
+.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header:hover i{
+  opacity: 1;
+}
+.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header i{
+  opacity: 0;
+  position:relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top:0px;
+  left:-85px;
+  background-color: #fafafadb;
+  min-width: 80px;
+  width: 80px;
+  height:80px;
+  font-size: 18px;
+  transition: all 0.2s ease;
+}
+.lk-about__info-image-wrapper .p-fileupload-file-list{
+  display: none;
 }
 .lk-about__flexend{
   display: flex;
@@ -1089,7 +1188,6 @@ export default {
   margin-top: -5px
 }
 .success-modal{
-
   padding: 100px 24px;
   display: flex;
   flex-direction: column;
@@ -1100,6 +1198,51 @@ export default {
 .success-modal h2{
   text-align: center;
   font-size: 28px;
+}
+.d-input--cont{
+  width:100%;
+}
+.lk-about__dropzone-custom{
+  min-width: 400px;
+  height:90px;
+  background-color: #ffffffb0;
+  border: 0.5px dashed #75757575;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  flex-direction: column;
+  gap:5px;
+}
+.lk-about__dropzone-custom .d-input__icon{
+  font-size: 22px;
+  color: #75757575;
+}
+.lk-about__dropzone-custom b{
+  font-size: 14px;
+
+}
+.lk-about__dropzone-custom p{
+  font-size: 12px;
+  color: #757575;
+}
+.lk-about__dropzone-custom p span{
+  font-size: 12px;
+  color: #f92c0d;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.lk-about__info .dropzone__item.dropzone--has-thumbnail{
+  max-height: 90px;
+  display: flex;
+  flex-direction: column;
+
+}
+.lk-about__info .dropzone__item-thumbnail{
+  max-height: 90px;
+}
+.lk-about__info .dropzone__item-controls,.lk-about__info .dropzone__progress,.lk-about__info .dropzone__success-mark,.lk-about__info .dropzone__details{
+  display:none;
 }
 
   </style>
