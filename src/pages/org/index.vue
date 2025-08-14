@@ -6,18 +6,6 @@
       <breadcrumbs />
     </div>
 
-    <!--  <ul class="d-tab2__container lk-about__tabs">
-      <li class="d-tab2 d-tab2--active">
-        <a href="/views/lk/about/index.html">О компании</a>
-      </li>
-      <li class="d-tab2">
-        <a href="/views/lk/staff/index.html">Сотрудники</a>
-      </li>
-      <li class="d-tab2">
-        <a href="/views/lk/access/index.html">Права доступа</a>
-      </li>
-    </ul>-->
-
     <h1>О компании</h1>
 
     <Loader v-if="loading" />
@@ -46,7 +34,8 @@
               </div>
               <div
                 class="d-input-error"
-                v-for="error of vEditOrgData.editOrgValues[field.name].$errors"
+                v-for="(error, index) of vEditOrgData.editOrgValues[field.name].$errors"
+                :key="index"
               >
                 <i class="d-icon-warning d-input-error__icon"></i>
                 <span class="d-input-error__text">
@@ -85,7 +74,7 @@
                   accept="image/*"
                   :maxFileSize="1000000"
                 >
-                  <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
+                  <template #header="{ chooseCallback }">
                     <img
                       :src="
                         orgprofile.upload_image
@@ -245,7 +234,7 @@
             Скрыть банковские реквизиты
           </button>
         </div>
-        <div v-for="(requisit, index) in orgprofile.requisites" :key="requisit.id">
+        <div v-for="requisit in orgprofile.requisites" :key="requisit.id">
           <div class="lk-about__block-table" v-for="(bank, index) in requisit.banks" :key="index">
             <div class="lk-about__block-table-row">
               <div
@@ -307,7 +296,8 @@
                     />
                     <div
                       class="d-input-error"
-                      v-for="error of vAddRequisites.newRequisit[field.name].$errors"
+                      v-for="(error, index) of vAddRequisites.newRequisit[field.name].$errors"
+                      :key="index"
                     >
                       <i class="d-icon-warning d-input-error__icon"></i>
                       <span class="d-input-error__text">
@@ -381,9 +371,9 @@
                       />
                       <div
                         class="d-input-error"
-                        v-for="error of vAddRequisites.newRequisit.banks.$each.$response.$errors?.[
-                          index_req
-                        ]?.[field.name]"
+                        v-for="(error, index) of vAddRequisites.newRequisit.banks.$each.$response
+                          .$errors?.[index_req]?.[field.name]"
+                        :key="index"
                       >
                         <i class="d-icon-warning d-input-error__icon"></i>
                         <span class="d-input-error__text">
@@ -457,8 +447,9 @@
                     />
                     <div
                       class="d-input-error"
-                      v-for="error of vEditRequisites.orgProfValues.requisites.$each.$response
-                        .$errors[this.requisitEditIndex]?.[field.name]"
+                      v-for="(error, index) of vEditRequisites.orgProfValues.requisites.$each
+                        .$response.$errors[this.requisitEditIndex]?.[field.name]"
+                      :key="index"
                     >
                       <i class="d-icon-warning d-input-error__icon"></i>
                       <span class="d-input-error__text">
@@ -530,9 +521,10 @@
                       />
                       <div
                         class="d-input-error"
-                        v-for="error of vEditRequisites.orgProfValues.requisites.$each.$response
-                          .$errors[this.requisitEditIndex]?.banks[this.requisitEditIndex]?.$response
-                          .$errors[index_req][field.name]"
+                        v-for="(error, index) of vEditRequisites.orgProfValues.requisites.$each
+                          .$response.$errors[this.requisitEditIndex]?.banks[this.requisitEditIndex]
+                          ?.$response.$errors[index_req][field.name]"
+                        :key="index"
                       >
                         <i class="d-icon-warning d-input-error__icon"></i>
                         <span class="d-input-error__text">
@@ -858,7 +850,7 @@ export default {
         },
         phone: {
           pattern: helpers.withMessage('Введите корректный номер телефона', (value) =>
-            /(?:\+|\d)[\d\-\(\) ]{9,}\d/g.test(value),
+            /(?:\+|\d)[\d\-() ]{9,}\d/g.test(value),
           ),
         },
         email: {
@@ -884,7 +876,7 @@ export default {
       newRequisit: newRequisit,
     })
 
-    const orgProfValues = shallowRef([])
+    const orgProfValues = ref([])
 
     const editRequisitesData = ref({
       orgProfValues: orgProfValues,
@@ -939,7 +931,7 @@ export default {
         life: 3000,
       })
     },
-    parseFile(files, xhr, formData) {
+    parseFile(files, xhr) {
       const callback = (e) => {
         const res = JSON.parse(e)
         if (res.success) {
@@ -1141,7 +1133,7 @@ export default {
 </script>
 
 <style lang="scss">
-h1 {
+.lk-about h1 {
   margin-bottom: 40px;
 }
 
@@ -1169,7 +1161,8 @@ h1 {
 .lk-about__info {
   border-bottom: 0.5px solid #75757575;
 }
-.lk-about__info-image-wrapper .p-fileupload, .lk-about__info .dropzone__item-thumbnail img{
+.lk-about__info-image-wrapper .p-fileupload,
+.lk-about__info .dropzone__item-thumbnail img {
   width: 70px;
   height: 70px;
   min-width: 70px;
@@ -1182,7 +1175,7 @@ h1 {
   transition: all 0.2s ease;
   border-radius: 35px;
 }
-.lk-about__info-image-wrapper .p-fileupload-header img{
+.lk-about__info-image-wrapper .p-fileupload-header img {
   height: 70px;
   width: 70px;
   min-width: 70px;
@@ -1190,13 +1183,14 @@ h1 {
   object-fit: cover;
   transition: all 0.2s ease;
   border-radius: 35px;
-
 }
 .lk-about__info-image-wrapper .p-fileupload-file {
   padding: 0;
 }
-.lk-about__info-image-wrapper .p-fileupload-file-info, .lk-about__info-image-wrapper .p-badge-success, .lk-about__info-image-wrapper .p-fileupload-file-actions{
-  display:none;
+.lk-about__info-image-wrapper .p-fileupload-file-info,
+.lk-about__info-image-wrapper .p-badge-success,
+.lk-about__info-image-wrapper .p-fileupload-file-actions {
+  display: none;
 }
 .lk-about__info-image-wrapper .p-fileupload .p-fileupload-header {
   padding: 0 0 0 0;
@@ -1204,33 +1198,33 @@ h1 {
 .lk-about__info-image-wrapper .p-fileupload .p-fileupload-header {
   height: 70px;
 }
-.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header img{
+.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header img {
   height: 70px;
   width: 70px;
   object-fit: cover;
 }
-.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header:hover i{
+.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header:hover i {
   opacity: 1;
 }
-.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header i{
+.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header i {
   opacity: 0;
-  position:relative;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  top:0px;
-  left:-85px;
+  top: 0px;
+  left: -85px;
   background-color: #fafafadb;
   min-width: 80px;
   width: 80px;
-  height:80px;
+  height: 80px;
   font-size: 18px;
   transition: all 0.2s ease;
 }
-.lk-about__info-image-wrapper .p-fileupload-file-list{
+.lk-about__info-image-wrapper .p-fileupload-file-list {
   display: none;
 }
-.lk-about__flexend{
+.lk-about__flexend {
   display: flex;
   justify-content: end;
   padding: 24px;
@@ -1343,7 +1337,6 @@ h1 {
   margin-top: -5px;
 }
 .success-modal {
-.success-modal{
   padding: 100px 24px;
   display: flex;
   flex-direction: column;
@@ -1355,12 +1348,12 @@ h1 {
   text-align: center;
   font-size: 28px;
 }
-.d-input--cont{
-  width:100%;
+.d-input--cont {
+  width: 100%;
 }
-.lk-about__dropzone-custom{
+.lk-about__dropzone-custom {
   min-width: 400px;
-  height:90px;
+  height: 90px;
   background-color: #ffffffb0;
   border: 0.5px dashed #75757575;
   display: flex;
@@ -1368,36 +1361,37 @@ h1 {
   align-items: center;
   border-radius: 6px;
   flex-direction: column;
-  gap:5px;
+  gap: 5px;
 }
-.lk-about__dropzone-custom .d-input__icon{
+.lk-about__dropzone-custom .d-input__icon {
   font-size: 22px;
   color: #75757575;
 }
-.lk-about__dropzone-custom b{
+.lk-about__dropzone-custom b {
   font-size: 14px;
-
 }
-.lk-about__dropzone-custom p{
+.lk-about__dropzone-custom p {
   font-size: 12px;
   color: #757575;
 }
-.lk-about__dropzone-custom p span{
+.lk-about__dropzone-custom p span {
   font-size: 12px;
   color: #f92c0d;
   cursor: pointer;
   text-decoration: underline;
 }
-.lk-about__info .dropzone__item.dropzone--has-thumbnail{
+.lk-about__info .dropzone__item.dropzone--has-thumbnail {
   max-height: 90px;
   display: flex;
   flex-direction: column;
-
 }
-.lk-about__info .dropzone__item-thumbnail{
+.lk-about__info .dropzone__item-thumbnail {
   max-height: 90px;
 }
-.lk-about__info .dropzone__item-controls,.lk-about__info .dropzone__progress,.lk-about__info .dropzone__success-mark,.lk-about__info .dropzone__details{
-  display:none;
+.lk-about__info .dropzone__item-controls,
+.lk-about__info .dropzone__progress,
+.lk-about__info .dropzone__success-mark,
+.lk-about__info .dropzone__details {
+  display: none;
 }
 </style>
