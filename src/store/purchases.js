@@ -5,6 +5,11 @@ export default {
     namespaced: true,
     state: {
         opts: {},
+        optorders: {
+          orders: {},
+          total: -1,
+        },
+        optorder: {}
     },
     actions: {
         async getOptOrders({ commit }, { sort, filter, filtersdata, page, perpage }) {

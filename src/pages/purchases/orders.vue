@@ -7,7 +7,7 @@
       <h1>Мои заказы</h1>
       <Loader v-if="loading" />
       <BaseTable
-        v-else
+
         :items_data="optorders.orders"
         :total="optorders.total"
         :pagination_items_per_page="this.pagination_items_per_page"
