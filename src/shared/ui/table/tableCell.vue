@@ -146,7 +146,7 @@
 </template>
 
 <script>
-// import Button from 'primevue/button'
+import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
 import InputNumber from 'primevue/inputnumber'
 import Chart from 'primevue/chart'
@@ -303,7 +303,7 @@ export default {
     },
   },
   components: {
-    // Button,
+    Button,
     InputNumber,
     Checkbox,
     Chart,
