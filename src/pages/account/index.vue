@@ -52,6 +52,18 @@ export default {
       type: String,
       default: '',
     },
+    requirement_id: {
+      type: String,
+      default: '',
+    },
+    action_id: {
+      type: String,
+      default: '',
+    },
+    order_id: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {

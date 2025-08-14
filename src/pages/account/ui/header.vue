@@ -62,12 +62,14 @@
               </button>
               <SearchField></SearchField>
             </div>
-            <!--
-            <button class="d-button d-button-tertiary shadow header__upload">
+            <a
+              href="#"
+              class="d-button d-button-tertiary shadow header__upload"
+              @click.prevent="this.modals.requirement = true"
+            >
               <i class="d-icon-upload header__upload-icon"></i>
               <span class="header__upload-text">Потребность</span>
-            </button>
-            -->
+            </a>
           </div>
           <div class="header__right">
             <button
@@ -143,6 +145,10 @@
       </div>
     </header>
   </div>
+  <requirement
+    :requirementsModal="this.modals.requirement"
+    @closeWindow="closeRequirementsWindow"
+  />
   <teleport to="body">
     <customModal v-model="showChangeAddressModal" @cancel="cancel">
       <template v-slot:title>Выбрать склад доставки</template>
@@ -157,6 +163,7 @@ import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import SearchField from './search.vue'
 import changeAddressWindow from './changeAddressWindow.vue'
+import requirement from './requirement.vue'
 
 export default {
   name: 'ProfileHeader',
@@ -168,10 +175,13 @@ export default {
       showChangeAddressModal: false,
       designMenuActive: false,
       basketStore: {},
+      modals: {
+        requirement: false,
+      },
     }
   },
   emits: ['toggleCatalog', 'toggleVendor', 'toggleCart'],
-  components: { Loader, customModal, changeAddressWindow, SearchField },
+  components: { Loader, customModal, changeAddressWindow, SearchField, requirement },
   props: {
     active: {
       type: Boolean,
@@ -212,6 +222,10 @@ export default {
       }
 
       this.$emit('toggleCatalog')
+    },
+    closeRequirementsWindow() {
+      console.log('closeWindow')
+      this.modals.requirement = false
     },
     toggleVendor() {
       this.$emit('toggleVendor')

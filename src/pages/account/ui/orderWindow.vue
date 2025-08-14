@@ -156,12 +156,7 @@
                         href="#"
                         class="cart__item-header-button"
                         @click="
-                          clearBasketProduct(
-                            org.org_data.id,
-                            store.warehouse_data.id,
-                            product_key,
-                            product,
-                          )
+                          clearBasketProduct(org.org_data.id, warehouse_id, product_key, product)
                         "
                       >
                         <i class="d-icon-trash"></i>
@@ -469,6 +464,7 @@ export default {
         key: key,
         product: product,
       }
+      console.log(data)
       this.basketProductRemove(data).then((response) => {
         this.$emit('catalogUpdate')
         this.loading = true

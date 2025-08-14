@@ -45,7 +45,7 @@ export default {
         commit('SET_OPT_WAREHOUSE_CATALOG', response.data)
       }
     },
-    async getOptProductsSearch({}, { page, perpage, search }) {
+    async getOptProductsSearch(store, { page, perpage, search }) {
       let req = null
       if (router.currentRoute._value.params.req) {
         req = router.currentRoute._value.params.req
@@ -86,8 +86,8 @@ export default {
         cat = router.currentRoute._value.params.category_id
       }
       let req = null
-      if (router.currentRoute._value.params.req) {
-        req = router.currentRoute._value.params.req
+      if (router.currentRoute._value.params.requirement_id) {
+        req = router.currentRoute._value.params.requirement_id
         cat = 'all'
       }
       const data = {

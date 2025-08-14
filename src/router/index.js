@@ -178,6 +178,17 @@ const router = createRouter({
                       ],
                     },
                     {
+                      path: 'req/:requirement_id',
+                      name: 'purchasesCatalogRequirement',
+                      props: true,
+                      meta: {
+                        breadcrumb: {
+                          label: 'Потребность',
+                        },
+                      },
+                      component: PurchasesCatalog,
+                    },
+                    {
                       path: 'orders',
                       meta: {
                         breadcrumb: {

@@ -4,11 +4,11 @@
     <span class="d-back__text hidden-640">Назад</span>
   </a>
   <ul class="d-breadcrumbs d-top-breadcrumbs">
-    <template v-for="(crumb, index) in breadcrumbs" :key="index">
+    <template v-for="(crumb, index) in crumbs" :key="index">
       <li
         class="d-breadcrumbs__item d-top-breadcrumbs-item"
         v-if="crumb"
-        :class="{ active: index === breadcrumbs.length - 1 }"
+        :class="{ active: index === crumbs.length - 1 }"
       >
         <router-link :to="crumb.path" class="d-breadcrumbs__button">{{ crumb.name }}</router-link>
       </li>
@@ -41,7 +41,7 @@ export default {
 
       const routeMatched = this.$route.matched
       const breadcrumbs = pathRoutes.map((route, index) => {
-        console.log(route)
+        // console.log(route)
         if (
           route == '/' ||
           route == '' ||
@@ -87,18 +87,19 @@ export default {
   },
   methods: {
     updateCrumbs() {
+      this.crumbs = []
       const currentRoute = router.currentRoute.value
       const fullPath = currentRoute.matched[currentRoute.matched.length - 1].path
       const pathRoutes = fullPath.split('/')
       const pathRoutesWithId = currentRoute.fullPath.split('/')
       const routeMatched = this.$route.matched
 
-      console.log(pathRoutes)
-      console.log(pathRoutesWithId)
-      console.log(routeMatched)
+      // console.log(pathRoutes)
+      // console.log(pathRoutesWithId)
+      // console.log(routeMatched)
 
       pathRoutes.forEach((route, index) => {
-        console.log(route)
+        // console.log(route)
         if (
           route == '/' ||
           route == '' ||
@@ -109,24 +110,95 @@ export default {
         ) {
           return
         }
-        if (route.startsWith(':') && route != ':category_id') {
-          this.crumbs.push({
-            name: this.getRouteName(currentRoute, route),
-            path: pathRoutesWithId.slice(0, index + 1).join('/'),
-          })
-        }
-        if (route == ':category_id') {
-          const parents = this.getCategoriesCatItemParents(4, currentRoute.params.category_id)
-          console.log(currentRoute.params.category_id)
-          parents?.forEach((parent) => {
-            const newPathRoutesWithId = pathRoutesWithId.map((path) => path)
-            newPathRoutesWithId[newPathRoutesWithId.length - 1] = parent.id
-
+        if (route.startsWith(':')) {
+          switch (route) {
+            case ':action_id': {
+              this.crumbs.push({
+                name: this.sale.name,
+                path: pathRoutesWithId.join('/'),
+                type: 'purchasesCatalog',
+                params: currentRoute.params,
+              })
+              break
+            }
+            case ':category_id': {
+              const parents = this.getCategoriesCatItemParents(4, currentRoute.params.category_id)
+              parents?.forEach((parent) => {
+                pathRoutesWithId[pathRoutesWithId.length - 1] = parent.id
+                this.crumbs.push({
+                  name: parent?.pagetitle,
+                  path: pathRoutesWithId.join('/'),
+                  type: 'purchasesCatalog',
+                  params: currentRoute.params,
+                })
+              })
+              break
+            }
+            case ':warehouse_cat_id': {
+              const parents = this.getWarehouseCatItemParents(
+                'warehouse_org_' + currentRoute.params.org_w_id,
+                'warehouse_org_' +
+                  currentRoute.params.org_w_id +
+                  '_' +
+                  currentRoute.params.warehouse_cat_id,
+              )
+              // console.log(parents)
+              parents?.forEach((parent, i) => {
+                const param = {
+                  id: currentRoute.params.id,
+                }
+                if (Object.prototype.hasOwnProperty.call(parent, 'org_w_id')) {
+                  param.org_w_id = parent.org_w_id
+                }
+                if (Object.prototype.hasOwnProperty.call(parent, 'warehouse_id')) {
+                  param.warehouse_id = parent.warehouse_id
+                }
+                if (Object.prototype.hasOwnProperty.call(parent, 'id')) {
+                  if (parent.id != 'all') {
+                    param.warehouse_cat_id = parent.id
+                  }
+                }
+                const len = pathRoutesWithId.length - (parents.length - i - 1)
+                if (
+                  Object.prototype.hasOwnProperty.call(param, 'warehouse_cat_id') &&
+                  i == parents.length - 1
+                ) {
+                  pathRoutesWithId[pathRoutesWithId.length - 1] = param.warehouse_cat_id
+                }
+                this.crumbs.push({
+                  name: parent?.pagetitle,
+                  path: pathRoutesWithId.slice(0, len).join('/'),
+                  type: 'purchasesCatalogWarehouse',
+                  params: param,
+                })
+              })
+              break
+            }
+            case ':requirement_id':
+            case ':order_id': {
+              this.crumbs.push({
+                name: this.getRouteName(currentRoute, route),
+                path: pathRoutesWithId.slice(0, index + 1).join('/'),
+              })
+              break
+            }
+            default:
+              // this.crumbs.push({
+              //   name: this.getRouteName(currentRoute, route),
+              //   path: pathRoutesWithId.slice(0, index + 1).join('/'),
+              // })
+              break
+          }
+        } else {
+          const label = routeMatched.find(
+            (matchedRoute) => matchedRoute.path === pathRoutes.slice(0, index + 1).join('/'),
+          )?.meta.breadcrumb?.label
+          if (label) {
             this.crumbs.push({
-              name: parent?.pagetitle,
-              path: pathRoutesWithId.join('/'),
+              name: label,
+              path: pathRoutesWithId.slice(0, index + 1).join('/'),
             })
-          })
+          }
         }
       })
     },
@@ -146,17 +218,19 @@ export default {
         case ':search': {
           return `Поиск: ${this.$route.params.search}`
         }
+        case ':requirement_id': {
+          const text = currentRoute.params?.requirement_id.split('_')
+          return `Потребность № ${text[0] || '-'}`
+        }
       }
     },
-    getCatItem(id, catalog = this.optCatalogWarehouse) {
-      // console.log(id)
-      // console.log(catalog)
+    getCatItem(id, catalog = this.optCatalogWarehouse, key = 'id') {
       for (var i in catalog) {
-        if (catalog[i].id == id) {
+        if (catalog[i][key] == id) {
           return catalog[i]
         } else {
           if (Object.prototype.hasOwnProperty.call(catalog[i], 'children')) {
-            let res = this.getCatItem(id, catalog[i].children)
+            let res = this.getCatItem(id, catalog[i].children, key)
             if (res) {
               return res
             }
@@ -164,30 +238,46 @@ export default {
         }
       }
     },
+    getWarehouseCatItemParents(stopId, catItemId) {
+      const catItem = this.getCatItem(catItemId, this.optCatalogWarehouse, 'key')
+      // console.log(catItem)
+      if (!catItem) return
+      if (catItem?.parent == 0) return
+      let parents = this.getAllParents(stopId, catItem, [], this.optCatalogWarehouse, 'key')
+      parents.push(catItem)
+      return parents
+    },
     getCategoriesCatItemParents(stopId, catItemId) {
       const catItem = this.getCatItem(catItemId, this.optCatalog)
-      console.log('Searched catItem', catItem)
+      // console.log('Searched catItem', catItem)
 
       if (!catItem) return
       if (catItem?.parent == 0) return
 
       let parents = this.getAllParents(stopId, catItem, [], this.optCatalog)
-      console.log('Searched catItem', parents)
+      // console.log('Searched catItem', parents)
+      parents.push(catItem)
       return parents
     },
-    getAllParents(stopId, catItem, parents, catalog) {
-      if (catItem.id == stopId) return parents
-      let currParent = this.getCatItem(catItem?.parent, catalog)
-      console.log(currParent)
+    getAllParents(stopId, catItem, parents, catalog, key = 'id') {
+      // console.log(catalog)
+      if (catItem[key] == stopId) return parents
+      let currParent = this.getCatItem(catItem?.parent, catalog, key)
       if (currParent) {
         parents.unshift(currParent)
-        this.getAllParents(stopId, currParent, parents, catalog)
+        this.getAllParents(stopId, currParent, parents, catalog, key)
       }
       return parents
     },
   },
   watch: {
     optCatalog: function () {
+      this.updateCrumbs()
+    },
+    sale: function () {
+      this.updateCrumbs()
+    },
+    optCatalogWarehouse: function () {
       this.updateCrumbs()
     },
     orgActive: function () {

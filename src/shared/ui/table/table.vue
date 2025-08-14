@@ -654,6 +654,15 @@ export default {
 </script>
 
 <style lang="scss">
+.profile-content__title {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  .text {
+    color: #282828;
+    font-size: 18px;
+  }
+}
 .d-pagination-wrap {
   padding: 20px 0;
   display: flex;
@@ -712,19 +721,19 @@ tbody {
     background-color: #75757575;
   }
   .d-table__row:not(:last-child, :first-child)::after {
-    content: "";
+    content: '';
     background-color: #75757575;
   }
   &:not(:first-child) {
-      .d-table__head-col,
-      .d-table__col {
-        &:not(:first-child) {
-          &::before {
-            background-color: #75757575;
-          }
+    .d-table__head-col,
+    .d-table__col {
+      &:not(:first-child) {
+        &::before {
+          background-color: #75757575;
         }
       }
     }
+  }
 }
 .d-table__head {
   .d-table__row:first-child::after {
@@ -752,18 +761,18 @@ tbody {
     background-color: #75757575;
   }
   .d-table__row:not(:last-child, :first-child)::after {
-    content: "";
+    content: '';
     background-color: #75757575;
   }
   &:not(:first-child) {
-      .d-table__head-col,
-      .d-table__col {
-        &:not(:first-child) {
-          &::before {
-            background-color: #75757575;
-          }
+    .d-table__head-col,
+    .d-table__col {
+      &:not(:first-child) {
+        &::before {
+          background-color: #75757575;
         }
       }
     }
+  }
 }
 </style>
