@@ -6,38 +6,99 @@
       <breadcrumbs />
     </div>
 
+    <!--  <ul class="d-tab2__container lk-about__tabs">
+      <li class="d-tab2 d-tab2--active">
+        <a href="/views/lk/about/index.html">О компании</a>
+      </li>
+      <li class="d-tab2">
+        <a href="/views/lk/staff/index.html">Сотрудники</a>
+      </li>
+      <li class="d-tab2">
+        <a href="/views/lk/access/index.html">Права доступа</a>
+      </li>
+    </ul>-->
+
     <h1>О компании</h1>
 
     <Loader v-if="loading" />
     <div v-else>
-      <form @submit.prevent="">
+      <form @submit.prevent="editOrgProfData()">
         <div class="lk-about__info-container">
-          <div
-            class="lk-about__info"
-            v-for="(field, index_field) in this.form.orgData"
-            :key="orgprofile.id + '_' + index_field"
-          >
+          <div class="lk-about__info" v-for="(field, index) in this.form.orgData" :key="index">
             <div class="lk-about__info-title-wrapper">
               <p class="lk-about__info-title-label">{{ field.label }}</p>
               <p class="lk-about__info-title-description">{{ field.placeholder }}</p>
             </div>
+            <!--:class="{ error: vEditOrgData.editOrgValues[field.name].$errors.length }"
 
-            <div class="d-input d-input--light lk-about__info-input" v-if="field.type === 'input'">
-              <input
-                type="text"
-                :v-model="orgprofile[field.name]"
-                :value="this.orgprofile[field.name]"
-                :name="field.name"
-                class="d-input__field lk-about__info-input-field"
-              />
+            :value="this.orgprofile[field.name]"-->
+            <div v-if="field.type === 'input'" class="d-input--cont">
+              <div
+                class="d-input d-input--light lk-about__info-input"
+                :class="{ error: vEditOrgData.editOrgValues[field.name].$errors.length }"
+              >
+                <input
+                  type="text"
+                  v-model="this.orgProfValues[field.name]"
+                  :name="field.name"
+                  class="d-input__field lk-about__info-input-field"
+                />
+              </div>
+              <div
+                class="d-input-error"
+                v-for="error of vEditOrgData.editOrgValues[field.name].$errors"
+              >
+                <i class="d-icon-warning d-input-error__icon"></i>
+                <span class="d-input-error__text">
+                  {{ error.$message }}
+                </span>
+              </div>
             </div>
-            <div class="lk-about__info-image-wrapper" v-if="field.type === 'image'">
-              <img
-                :src="this.orgprofile[field.name]"
-                alt=""
-                class="lk-about__info-image"
-                v-if="this.orgprofile[field.name] != ''"
-              />
+            <div v-if="field.type === 'image'">
+              <DropZone
+                v-if="!this.orgprofile.image"
+                class="lk-about__dropzone"
+                :maxFiles="Number(1)"
+                url="/rest/file_upload.php?upload_org_avatar=avatar"
+                :uploadOnDrop="true"
+                :multipleUpload="true"
+                :acceptedFiles="['image/*']"
+                :parallelUpload="1"
+                @sending="parseFile"
+                v-bind="args"
+              >
+                <template v-slot:message>
+                  <div class="lk-about__dropzone-custom">
+                    <i class="d-icon-upload-cloud d-input__icon"></i>
+                    <b>Перетащите файл в эту область</b>
+                    <p>Вы также можете загрузить файл, <span>нажав сюда</span></p>
+                  </div>
+                </template>
+              </DropZone>
+              <div class="lk-about__info-image-wrapper" v-else>
+                <FileUpload
+                  name="avatar[]"
+                  url="/rest/file_upload.php?upload_org_avatar=avatar"
+                  @upload="onUpload"
+                  :auto="true"
+                  :multiple="false"
+                  accept="image/*"
+                  :maxFileSize="1000000"
+                >
+                  <template #header="{ chooseCallback, uploadCallback, clearCallback, files }">
+                    <img
+                      :src="
+                        orgprofile.upload_image
+                          ? this.orgprofile.image.original_href
+                          : this.orgprofile.image
+                      "
+                      alt=""
+                      class="lk-about__info-image"
+                    />
+                    <i class="d-icon-pen2" @click.prevent="chooseCallback()"></i>
+                  </template>
+                </FileUpload>
+              </div>
             </div>
             <div class="lk-about__info-text-wrapper" v-if="field.type === 'text'">
               <p class="lk-about__info-text">{{ this.orgprofile[field.name] }}</p>
@@ -548,10 +609,12 @@ import Toast from 'primevue/toast'
 import customModal from '@/shared/ui/Modal.vue'
 import { ref } from 'vue'
 import { Checkbox } from 'primevue'
+import DropZone from 'dropzone-vue'
+import FileUpload from 'primevue/fileupload'
 
 export default {
   name: 'ProfileMain',
-  components: { Breadcrumbs, Loader, Toast, customModal, Checkbox },
+  components: { Breadcrumbs, Loader, Toast, customModal, Checkbox, DropZone, FileUpload },
   data() {
     return {
       loading: false,
@@ -564,6 +627,7 @@ export default {
       editReqModalForm: true,
       successMessage: false,
       orgProfTmp: {},
+      editOrgValues: {},
       successMessageText: '',
       requisitEditIndex: 0,
       form: {
@@ -787,30 +851,23 @@ export default {
       },
     }
 
-    //const editOrgRules = {
-    //	newOrgData: {
-
-    //			$each: helpers.forEach({
-    //				name: {
-    //					required: helpers.withMessage("Заполните наименование организации", required),
-    //				},
-    //       phone: {
-    //					required: helpers.withMessage("Укажите телефон организации", required),
-    //				},
-    //       email: {
-    //					required: helpers.withMessage("Укажите email организации", required),
-    //				},
-    //			})
-    //		}
-
-    //}
-
-    //const newOrgInfo = ref({
-    //	name: "",
-    //	phone: "",
-    //	email: "",
-    //	image: "",
-    //})
+    const editOrgRules = {
+      editOrgValues: {
+        name: {
+          required: helpers.withMessage('Заполните наименование организации', required),
+        },
+        phone: {
+          pattern: helpers.withMessage('Введите корректный номер телефона', (value) =>
+            /(?:\+|\d)[\d\-\(\) ]{9,}\d/g.test(value),
+          ),
+        },
+        email: {
+          pattern: helpers.withMessage('Введите корректный email', (value) =>
+            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value),
+          ),
+        },
+      },
+    }
 
     const newRequisit = ref({
       name: '',
@@ -827,24 +884,29 @@ export default {
       newRequisit: newRequisit,
     })
 
-    //const addOrgData = ref({
-    //	newOrgData: newOrgData
-    //});
-
-    const orgProfValues = ref({})
+    const orgProfValues = shallowRef([])
 
     const editRequisitesData = ref({
       orgProfValues: orgProfValues,
     })
 
+    const editOrgValues = ref({})
+
+    const editOrgData = ref({
+      editOrgValues: editOrgValues,
+    })
+
     const vAddRequisites = useVuelidate(addRequisitesRules, addRequisitesData)
     const vEditRequisites = useVuelidate(editRequisitesRules, editRequisitesData)
+    const vEditOrgData = useVuelidate(editOrgRules, editOrgData)
 
     return {
       vAddRequisites,
       vEditRequisites,
+      vEditOrgData,
       newRequisit,
       orgProfValues,
+      editOrgValues,
     }
   },
   methods: {
@@ -860,38 +922,39 @@ export default {
       ;(this.modalRequisites = true), (this.requisitEditIndex = index)
     },
     onUpload(data) {
-      //	if (data.xhr.response) {
-      //		const response = JSON.parse(data.xhr.response);
-      //		if (Object.prototype.hasOwnProperty.call(response.data, "files")) {
-      // перечень загруженныйх файлов
-      //			if (response.data.files[0].type === "avatar") {
-      //				this.orgProfValues.image = response.data.files[0];
-      //				this.orgProfValues.upload_image = true;
-      //			}
-      //		}
-      //	}
-      //	this.$toast.add({
-      //		severity: "info",
-      //		summary: "Логотип успешно загружен!",
-      //		detail: "Не забудте сохранить изменения",
-      //		life: 3000,
-      //	});
+      if (data.xhr.response) {
+        const response = JSON.parse(data.xhr.response)
+        if (Object.prototype.hasOwnProperty.call(response.data, 'files')) {
+          if (response.data.files[0].type === 'avatar') {
+            console.log('avatar')
+            this.editOrgValues.image = response.data.files[0]
+            this.editOrgValues.upload_image = true
+          }
+        }
+      }
+      this.$toast.add({
+        severity: 'info',
+        summary: 'Логотип успешно загружен!',
+        detail: 'Не забудте сохранить изменения',
+        life: 3000,
+      })
     },
     parseFile(files, xhr, formData) {
-      //	const callback = (e) => {
-      //		const res = JSON.parse(e);
-      //		if (res.success) {
-      //			if (res.data.files[0].type === "avatar") {
-      //				this.orgProfValues.image = res.data.files[0];
-      //				this.orgProfValues.upload_image = true;
-      //			}
-      //		}
-      //	};
-      //	xhr.onreadystatechange = () => {
-      //		if (xhr.readyState === 4) {
-      //			callback(xhr.response);
-      //		}
-      //	};
+      const callback = (e) => {
+        const res = JSON.parse(e)
+        if (res.success) {
+          if (res.data.files[0].type === 'avatar') {
+            console.log('avatar')
+            this.editOrgValues.image = res.data.files[0]
+            this.editOrgValues.upload_image = true
+          }
+        }
+      }
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          callback(xhr.response)
+        }
+      }
     },
     addBankRequisit() {
       this.addRequisitShow = true
@@ -911,6 +974,7 @@ export default {
         bank_knumber: '',
       })
     },
+
     deleteBankRequisit(index) {
       const array = Array.from(this.newRequisit.banks)
       delete array[index]
@@ -922,7 +986,6 @@ export default {
       }
       this.newRequisit.banks = newArray
     },
-
     deleteBankRequisitEdit(index) {
       const array = Array.from(this.orgProfValues.requisites[this.requisitEditIndex].banks)
       delete array[index]
@@ -934,7 +997,6 @@ export default {
       }
       this.orgProfValues.requisites[this.requisitEditIndex].banks = newArray
     },
-
     async editRequisit() {
       const validationResult = await this.vEditRequisites.$validate()
       console.log('Validation result', validationResult)
@@ -967,6 +1029,42 @@ export default {
         })
       })
     },
+
+    async editOrgProfData() {
+      const validationResult = await this.vEditOrgData.$validate()
+      console.log('Validation result', validationResult)
+      if (!validationResult) {
+        return
+      }
+
+      const data = {
+        name: this.editOrgValues.name,
+        email: this.editOrgValues.email,
+        phone: this.editOrgValues.phone,
+        image: this.editOrgValues.image,
+      }
+      data.org_name = this.orgprofile.name
+      await this.editOrgProfile({
+        data: data,
+      }).then((res) => {
+        if (res.data.data.status) {
+          this.modalRequisites = true
+          this.editReqModalForm = false
+          this.newReqModalForm = false
+          this.successMessage = true
+          this.successMessageText =
+            'Заявка на изменение данных организации успешно отправлена! Менеджер свяжется с вами в ближайшее время!'
+          this.getOrgProfile()
+        }
+        this.$toast.add({
+          severity: 'info',
+          summary: 'Заявка успешно отправлена!',
+          detail: res.data.message,
+          life: 3000,
+        })
+      })
+    },
+
     async addRequisit() {
       const validationResult = await this.vAddRequisites.$validate()
       console.log('Validation result', validationResult)
@@ -1036,6 +1134,7 @@ export default {
     orgprofile: function (newVal) {
       this.orgProfTmp = newVal
       this.orgProfValues = this.orgProfTmp
+      this.editOrgValues = this.orgProfTmp
     },
   },
 }
@@ -1070,10 +1169,68 @@ h1 {
 .lk-about__info {
   border-bottom: 0.5px solid #75757575;
 }
-.lk-about__info-image-wrapper {
-  height: 45px;
+.lk-about__info-image-wrapper .p-fileupload, .lk-about__info .dropzone__item-thumbnail img{
+  width: 70px;
+  height: 70px;
+  min-width: 70px;
+  min-height: 70px;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  transition: all 0.2s ease;
+  border-radius: 35px;
 }
-.lk-about__flexend {
+.lk-about__info-image-wrapper .p-fileupload-header img{
+  height: 70px;
+  width: 70px;
+  min-width: 70px;
+  min-height: 70px;
+  object-fit: cover;
+  transition: all 0.2s ease;
+  border-radius: 35px;
+
+}
+.lk-about__info-image-wrapper .p-fileupload-file {
+  padding: 0;
+}
+.lk-about__info-image-wrapper .p-fileupload-file-info, .lk-about__info-image-wrapper .p-badge-success, .lk-about__info-image-wrapper .p-fileupload-file-actions{
+  display:none;
+}
+.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header {
+  padding: 0 0 0 0;
+}
+.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header {
+  height: 70px;
+}
+.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header img{
+  height: 70px;
+  width: 70px;
+  object-fit: cover;
+}
+.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header:hover i{
+  opacity: 1;
+}
+.lk-about__info-image-wrapper .p-fileupload .p-fileupload-header i{
+  opacity: 0;
+  position:relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top:0px;
+  left:-85px;
+  background-color: #fafafadb;
+  min-width: 80px;
+  width: 80px;
+  height:80px;
+  font-size: 18px;
+  transition: all 0.2s ease;
+}
+.lk-about__info-image-wrapper .p-fileupload-file-list{
+  display: none;
+}
+.lk-about__flexend{
   display: flex;
   justify-content: end;
   padding: 24px;
@@ -1186,6 +1343,7 @@ h1 {
   margin-top: -5px;
 }
 .success-modal {
+.success-modal{
   padding: 100px 24px;
   display: flex;
   flex-direction: column;
@@ -1196,5 +1354,50 @@ h1 {
 .success-modal h2 {
   text-align: center;
   font-size: 28px;
+}
+.d-input--cont{
+  width:100%;
+}
+.lk-about__dropzone-custom{
+  min-width: 400px;
+  height:90px;
+  background-color: #ffffffb0;
+  border: 0.5px dashed #75757575;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  flex-direction: column;
+  gap:5px;
+}
+.lk-about__dropzone-custom .d-input__icon{
+  font-size: 22px;
+  color: #75757575;
+}
+.lk-about__dropzone-custom b{
+  font-size: 14px;
+
+}
+.lk-about__dropzone-custom p{
+  font-size: 12px;
+  color: #757575;
+}
+.lk-about__dropzone-custom p span{
+  font-size: 12px;
+  color: #f92c0d;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.lk-about__info .dropzone__item.dropzone--has-thumbnail{
+  max-height: 90px;
+  display: flex;
+  flex-direction: column;
+
+}
+.lk-about__info .dropzone__item-thumbnail{
+  max-height: 90px;
+}
+.lk-about__info .dropzone__item-controls,.lk-about__info .dropzone__progress,.lk-about__info .dropzone__success-mark,.lk-about__info .dropzone__details{
+  display:none;
 }
 </style>
