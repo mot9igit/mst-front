@@ -52,7 +52,7 @@
             <!-- v-if="sales.total != 0">-->
             <tr class="d-table__row" v-for="(item, i) in retailSales" :key="i">
               <td class="d-table__col">
-                <div class="cell_value">
+                <div class="cell_value cell_value-center">
                   {{ item.id }}
                 </div>
               </td>
@@ -65,17 +65,17 @@
                 </div>
               </td>
               <td class="d-table__col">
-                <div class="cell_value">
+                <div class="cell_value cell_value-center">
                   {{ item.name }}
                 </div>
               </td>
               <td class="d-table__col">
-                <div class="cell_value">
+                <div class="cell_value cell_value-center">
                   {{ item.date_from }}
                 </div>
               </td>
               <td class="d-table__col">
-                <div class="cell_value">
+                <div class="cell_value cell_value-center">
                   {{ item.date_to }}
                 </div>
               </td>
@@ -90,12 +90,12 @@
                 </div>
               </td>
               <td class="d-table__col">
-                <div class="cell_value">
+                <div class="cell_value cell_value-center">
                   {{ item.store_name }}
                 </div>
               </td>
               <td class="d-table__col">
-                <div class="cell_value">
+                <div class="cell_value cell_value-center">
                   {{ item.comment }}
                 </div>
               </td>
@@ -185,11 +185,13 @@ export default {
         id: {
           label: 'Номер',
           type: 'text',
+          class: 'cell_value-center',
         },
         image: {
           label: 'Баннер',
           type: 'image',
           baseurl: false,
+          class: 'cell_value-center',
         },
         name: {
           label: 'Название',
@@ -201,16 +203,19 @@ export default {
             action: 'id',
           },
           sort: true,
+          class: 'cell_value-center',
         },
         date_from: {
           label: 'Действует с',
           type: 'text',
           sort: true,
+          class: 'cell_value-center',
         },
         date_to: {
           label: 'Действует до',
           type: 'text',
           sort: true,
+          class: 'cell_value-center',
         },
         //status: {
         //  label: "Статус",
@@ -219,14 +224,16 @@ export default {
         active: {
           label: 'Активно',
           type: 'boolean',
-        },
+          class: 'cell_value-center',        },
         store_name: {
           label: 'Склад',
           type: 'text',
+          class: 'cell_value-center',
         },
         comment: {
           label: 'Комментарий',
           type: 'text',
+          class: 'cell_value-center',
         },
         edit: {
           icon: 'pi pi-pencil',

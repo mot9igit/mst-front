@@ -106,26 +106,32 @@ export default {
         image: {
           label: 'Фото',
           type: 'image',
+          class: 'cell_centeralign',
         },
         name: {
           label: 'Название',
           type: 'text',
+          class: 'cell_centeralign',
         },
         article: {
           label: 'Артикул',
           type: 'text',
+          class: 'cell_centeralign',
         },
         price: {
           label: 'Стоимость за единицу',
           type: 'text',
+          class: 'cell_centeralign',
         },
         count: {
           label: 'Количество',
           type: 'text',
+          class: 'cell_centeralign',
         },
         summ: {
           label: 'Сумма',
           type: 'text',
+          class: 'cell_centeralign',
         },
       },
     }

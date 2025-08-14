@@ -62,6 +62,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         date: {
           label: 'Дата создания',
@@ -72,6 +73,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         seller_address: {
           label: 'Склад Поставщика',
@@ -82,6 +84,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         ur_persone_name: {
           label: 'Покупатель',
@@ -92,6 +95,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         initiator: {
           label: 'Инициатор',
@@ -102,6 +106,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         cost: {
           label: 'Сумма',
@@ -112,11 +117,13 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         status: {
           label: 'Оплата доставки',
           type: 'status',
           sort: true,
+          class: 'cell_centeralign',
         },
       },
     }

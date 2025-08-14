@@ -60,6 +60,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         customer: {
           label: 'Покупатель',
@@ -69,6 +70,7 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
+          class: 'cell_centeralign',
         },
         createdon: {
           label: 'Дата',
@@ -79,10 +81,12 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         status: {
           label: 'Статус',
           type: 'status',
+          class: 'cell_centeralign',
         },
         cost: {
           label: 'Сумма',
@@ -93,6 +97,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         delivery: {
           label: 'Доставка',
@@ -102,6 +107,7 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
+          class: 'cell_centeralign',
         },
         payment: {
           label: 'Оплата',
@@ -111,6 +117,7 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
+          class: 'cell_centeralign',
         },
         store: {
           label: 'Магазин/Склад',
@@ -120,6 +127,7 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
+          class: 'cell_centeralign',
         },
       },
     }

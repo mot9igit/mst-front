@@ -1,6 +1,6 @@
 <template>
   <td class="d-table__col">
-    <div class="cell_value" v-if="cell_data.type == 'image'">
+    <div class="cell_value" v-if="cell_data.type == 'image'" :class="cell_data.class">
       <div class="img_abs" v-if="value[cell_key]">
         <img v-if="cell_data.baseurl" :src="value[cell_key]" alt="" />
         <img v-if="!cell_data.baseurl" :src="value[cell_key]" alt="" />
@@ -9,10 +9,10 @@
         <img :src="site_url_prefix + 'assets/files/img/nopic.png'" alt="" />
       </div>
     </div>
-    <div class="cell_value" v-else-if="cell_data.type == 'editmode' && editMode">
+    <div class="cell_value" v-else-if="cell_data.type == 'editmode' && editMode" :class="cell_data.class">
       <Checkbox v-model="isChecked" :binary="true" @change="toggleSelection(value.id)" />
     </div>
-    <div class="cell_value" v-else-if="cell_data.type == 'text'">
+    <div class="cell_value" v-else-if="cell_data.type == 'text'" :class="cell_data.class">
       {{ value[cell_key] }}
       <div v-if="cell_data.description" class="cell_description">
         <span v-if="cell_data.description.type == 'field'">
@@ -23,7 +23,7 @@
         </span>
       </div>
     </div>
-    <div class="cell_value" v-else-if="cell_data.type == 'gist'">
+    <div class="cell_value" v-else-if="cell_data.type == 'gist'" :class="cell_data.class">
       <Chart
         type="line"
         :data="value[cell_key]"
@@ -31,7 +31,7 @@
         class="w-full md:w-5rem"
       />
     </div>
-    <div class="cell_value" v-else-if="cell_data.type == 'boolean'">
+    <div class="cell_value" v-else-if="cell_data.type == 'boolean'" :class="cell_data.class">
       <div v-if="value[cell_key] == 0">
         <span class="cell__error" v-if="cell_data.calc == 'positive'">Нет</span>
         <span class="cell__error" v-else>Нет</span>
@@ -43,7 +43,8 @@
     </div>
     <div
       class="cell_value"
-      :class="cell_key == 'name' ? 'name' : ''"
+      :class="cell_key == 'name' ? 'name '+ cell_data.class : cell_data.class"
+
       v-else-if="cell_data.type == 'link'"
     >
       <router-link
@@ -62,7 +63,7 @@
     </div>
     <div
       class="cell_value"
-      :class="cell_key == 'name' ? 'name' : ''"
+      :class="cell_key == 'name' ? 'name '+ cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'clickevent'"
     >
       <a href="#" @click.prevent="actionElem('click')">
@@ -71,7 +72,7 @@
     </div>
     <div
       class="cell_value"
-      :class="cell_key == 'name' ? 'name' : ''"
+      :class="cell_key == 'name' ? 'name '+cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'downloadhref'"
     >
       <a :href="value[cell_key]" download target="_blank" v-if="value[cell_key]"> Скачать </a>
@@ -79,7 +80,7 @@
     </div>
     <div
       class="cell_value text-center"
-      :class="cell_key == 'cell_status' ? 'cell_status' : ''"
+      :class="cell_key == 'cell_status' ? 'cell_status'+cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'status'"
     >
       <span
@@ -93,7 +94,7 @@
     </div>
     <div
       class="cell_value"
-      :class="cell_key == 'actions' ? 'actions' : ''"
+      :class="cell_key == 'actions' ? 'actions '+cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'actions'"
     >
       <span class="p-buttonset">
@@ -114,7 +115,7 @@
     </div>
     <div
       class="cell_value"
-      :class="cell_key == 'actions_order' ? 'actions_order' : ''"
+      :class="cell_key == 'actions_order' ? 'actions_order '+cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'actions_order'"
     >
       <span class="p-buttonset">
@@ -133,7 +134,7 @@
         </Button>
       </span>
     </div>
-    <div class="cell_value" v-else-if="cell_data.type == 'number'">
+    <div class="cell_value" v-else-if="cell_data.type == 'number'" :class="cell_data.class">
       <InputNumber
         v-model="numbers[cell_key]"
         :inputId="'input_' + cell_key"
@@ -385,4 +386,7 @@ export default {
   font-weight: bold;
   color: #666666;
 }
+.cell_centeralign{
+  text-align:center;
+  }
 </style>

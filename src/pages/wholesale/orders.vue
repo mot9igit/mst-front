@@ -60,6 +60,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         buyer: {
           label: 'Покупатель',
@@ -69,6 +70,7 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
+          class: 'cell_centeralign',
         },
         date: {
           label: 'Дата',
@@ -79,6 +81,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         cost: {
           label: 'Сумма',
@@ -89,6 +92,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         initiator: {
           label: 'Инициатор',
@@ -99,6 +103,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         ur_persone_name: {
           label: 'Покупатель',
@@ -109,6 +114,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         seller_w_name: {
           label: 'Магазин/Склад',
@@ -118,6 +124,7 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
+          class: 'cell_centeralign',
         },
       },
     }
