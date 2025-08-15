@@ -7,7 +7,12 @@
         :key="index"
         :class="{ 'sidebar__item--expanded': item.collapse }"
       >
-        <router-link class="sidebar__item-button" :to="item.to" v-if="toggle">
+        <router-link
+          class="sidebar__item-button"
+          :class="{ 'sidebar__item-button--active': this.$route.name == item.to.name }"
+          :to="item.to"
+          v-if="toggle"
+        >
           <div class="sidebar__item-button-content">
             <i
               class="sidebar__item-icon d-icon-cube"
@@ -38,6 +43,7 @@
           >
             <router-link
               class="sidebar__item-list-item-content"
+              :class="{ 'sidebar__item-button--active': this.$route.name == subitem.to.name }"
               :to="subitem.to"
               @click.prevent="HideSidebar()"
             >
@@ -73,6 +79,7 @@ export default {
     },
   },
   mounted() {
+    console.log(this.$route)
     this.menu = this.getMenu()
   },
   computed: {
