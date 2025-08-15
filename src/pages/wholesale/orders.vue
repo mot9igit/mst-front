@@ -6,7 +6,7 @@
     <h1 class="dart_mb-2">Оптовые заказы</h1>
     <Loader v-if="loading" />
     <BaseTable
-      v-else
+
       :items_data="orders.orders"
       :total="orders.total"
       :pagination_items_per_page="this.pagination_items_per_page"
