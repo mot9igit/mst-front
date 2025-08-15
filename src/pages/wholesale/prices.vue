@@ -61,11 +61,13 @@ export default {
         id: {
           label: 'Номер',
           type: 'text',
+          class: 'cell_centeralign',
         },
         image: {
           label: 'Баннер',
           type: 'image',
           baseurl: false,
+          class: 'cell_centeralign',
         },
         name: {
           label: 'Наименование',
@@ -77,24 +79,29 @@ export default {
             action: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         store_name: {
           label: 'Склад',
           type: 'text',
+          class: 'cell_centeralign',
         },
         date_from: {
           label: 'Действует с',
           type: 'text',
           sort: true,
+          class: 'cell_centeralign',
         },
         date_to: {
           label: 'Действует до',
           type: 'text',
           sort: true,
+          class: 'cell_centeralign',
         },
         active: {
           label: 'Активно',
           type: 'boolean',
+          class: 'cell_centeralign',
         },
         actions: {
           label: 'Действия',
