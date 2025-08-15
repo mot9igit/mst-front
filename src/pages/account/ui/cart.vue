@@ -401,5 +401,9 @@ export default {
   .cart__buy {
     width: 100%;
   }
+  .cart__item-badge {
+    height:auto;
+    min-height: 21px;
+  }
 }
 </style>

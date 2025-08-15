@@ -134,12 +134,8 @@
                 <p class="promotions__card-title">Даты акции</p>
               </div>
             </div>
-            <div
-              class="promotions__card-content promo__cards-item-content promo__cards-item-content--small"
-            >
-              <div
-                class="promotions__card-values promotions__card-values--md-long promo__cards-item-values"
-              >
+            <div class="promotions__card-content promo__cards-item-content promo__cards-item-content--small">
+              <div class="promotions__card-values promotions__card-values--md-long promo__cards-item-values promo__cards-item-date-values">
                 <div class="promotions__card-info">
                   <div class="promotions__card-value-container">
                         <span class="promotions__card-label d-md-max-content"
@@ -169,7 +165,7 @@
                 </div>
                 <div class="d-fractions promo__cards-item-values-fractions">
                   <div class="d-fractions promo__cards-date-container">
-                      <div class="d-fractions__item d-fractions__item--center" :style="'width:'+(getDiffDaysRemain*100/getDiffDays)+'%;min-width:70px'">
+                      <div class="d-fractions__item d-fractions__item--center " :style="'width:'+(getDiffDaysRemain*100/getDiffDays)+'%'">
                         <div class="d-fractions__item-block" ></div>
                         <p class="d-fractions__item-text d-fractions__item-text--bottom">
                           Осталось {{ getDiffDaysRemain }} дн.
@@ -177,51 +173,6 @@
                       </div>
                     </div>
                 </div>
-
-
-
-              <!--  <div class="dart-row">
-                  <div class="d-col-md-19">
-                    <div class="promotions__card-info">
-                      <div class="promotions__card-value-container">
-                        <span class="promotions__card-label d-md-max-content"
-                          >Срок проведения акции:</span
-                        >
-                        <div
-                          class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value promo__cards-item-conds-value"
-                        >
-                          <div class="promo__cards-item-conds-value-content">
-                            <span
-                              >с
-                              {{
-                                new Date(sale?.date_from).toLocaleString('ru', this.options)
-                              }}</span
-                            >
-                            <div
-                              class="d-divider d-divider--vertical d-divider--no-margin promo__cards-item-conds-value-divider"
-                            ></div>
-                            <span
-                              >до
-                              {{ new Date(sale?.date_to).toLocaleString('ru', this.options) }}</span
-                            >
-                          </div>
-                          <p class="promo__cards-item-conds-value-total">{{ getDiffDays }} дн.</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="d-col-md-5">
-                    <div class="d-fractions promo__cards-date-container">
-                      <div class="d-fractions__item d-fractions__item--center">
-                        <div class="d-fractions__item-block" :style="'width:'+(getDiffDaysRemain*100/getDiffDays)+'%'"></div>
-                        <p class="d-fractions__item-text d-fractions__item-text--bottom">
-                          Осталось {{ getDiffDaysRemain }} дн.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>-->
-
               </div>
             </div>
           </div>
@@ -229,8 +180,7 @@
       </div>
     </div>
     <div class="promo__cards-wrap">
-      <div class="dart-row">
-        <div class="d-col-md-24">
+
           <div class="promotions__card promo__card">
             <div class="promotions__card-header">
               <div class="promotions__card-header-left">
@@ -238,88 +188,33 @@
                 <p class="promotions__card-title">Условия участия в акции</p>
               </div>
             </div>
-            <div class="promotions__card-content">
+            <div class="promotions__card-content promotions__card-last">
               <div class="promotions__card-block-wrapper promo__card-block-wrapper">
-                <div
-                  class="promotions__card-value-container promotions__card-block promo__card-block"
-                >
-                  <div class="promotions__card-block-inner promo__card-block-inner">
-                    <div
-                      class="promotions__card-block-title-container promo__card-block-title-container"
-                    >
-                      <span class="promotions__card-label promotions__card-label--big"
+                <div class="promotions__card-value-container promotions__card-block promo__card-block" v-for="(field, index_field) in sale_condition" :key="index_field">
+                  <div class="promotions__card-block-inner promo__card-block-inner dart-row">
+                    <div class="d-col-md-10">
+                      <span class="promotions__card-label promotions__card-label--big" v-if="field.name == 'condition_min_sum'"
                         >Требования к заказу</span>
                       <p class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-title">
-                        Минимальная общая сумма заказа товаров акции
+                        {{ field.label }}
                       </p>
                     </div>
-                    <p class="promotions__card-label promotions__card-label--big promotions__card-block-description promo__card-block-description">
-                      Общая сумма товаров акции должна быть не менее указанной суммы.
+                    <div class="d-col-md-10">
+                    <p class="promotions__card-label promotions__card-label--big promotions__card-block-description promo__card-block-description  ">
+                      {{ field.text }}
                     </p>
-                    <p
-                      class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value promo__card-block-value"
-                    >
-                      {{ sale.condition_min_sum != undefined ? sale.condition_min_sum : '0'}} ₽
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  class="promotions__card-value-container promotions__card-block promo__card-block"
-                >
-                  <div class="promotions__card-block-inner promo__card-block-inner">
-                    <div
-                      class="promotions__card-block-title-container promo__card-block-title-container"
-                    >
-                      <p
-                        class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-title"
-                      >
-                        Минимальное количество SKU акции
-                      </p>
                     </div>
-                    <p
-                      class="promotions__card-label promotions__card-label--big promotions__card-block-description promo__card-block-description"
-                    >
-                      В заказе должно быть не менее заданного количества SKU товаров акции.
+                    <div class="d-col-md-4">
+                    <p class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value promo__card-block-value">
+                      {{ sale[field.name] != undefined ? sale[field.name] + ' ' + field.units : '0 ' + field.units}}
                     </p>
-                    <p
-                      class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value promo__card-block-value"
-                    >
-                      {{ sale.condition_SKU > 0 ? sale.condition_SKU : 'Любое' }}
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  class="promotions__card-value-container promotions__card-block promo__card-block"
-                >
-                  <div class="promotions__card-block-inner promo__card-block-inner">
-                    <div
-                      class="promotions__card-block-title-container promo__card-block-title-container"
-                    >
-                      <p
-                        class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-title"
-                      >
-                        Минимально общее количество товаров
-                      </p>
                     </div>
-                    <p
-                      class="promotions__card-label promotions__card-label--big promotions__card-block-description promo__card-block-description"
-                    >
-                      В заказе должно быть не менее заданного общего количества товаров акции.
-                    </p>
-                    <p
-                      class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value promo__card-block-value"
-                    >
-                      {{ sale.condition_min_count > 0 ? sale.condition_min_count + ' шт' : 'Любое' }}
-                    </p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+
     </div>
     <BaseTable
       :items_data="salesProducts.items"
@@ -362,6 +257,7 @@ export default {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
+
       },
       filters: {},
       table_data: {
@@ -404,6 +300,26 @@ export default {
           },
         },
       },
+      sale_condition: [
+        {
+          name: 'condition_min_sum',
+          label: 'Минимальная общая сумма заказа товаров акции',
+          text: 'Общая сумма товаров акции должна быть не менее указанной суммы',
+          units: '₽',
+        },
+        {
+          name: 'condition_SKU',
+          label: 'Минимальное количество SKU акции',
+          text: 'В заказе должно быть не менее заданного количества SKU товаров акции',
+          units: '',
+        },
+        {
+          name: 'condition_min_count',
+          label: 'Минимально общее количество товаров',
+          text: 'В заказе должно быть не менее заданного общего количества товаров акции',
+          units: 'шт',
+        },
+      ]
 
     }
   },
@@ -503,11 +419,6 @@ export default {
     border-radius: 12px 12px 0 0;
     border-bottom: 0.3px solid #75757575;
 }
-@media (width <= 1200px) {
-  .promotions__card-header {
-    border-radius: 6px 6px 0 0;
-}
-}
 .promo__cards-item-values-fractions {
     width: 370px;
 }
@@ -528,5 +439,44 @@ export default {
 .promo__card-block-value {
     width: 145px;
 }
+.promotions__card-last .promotions__card-block-inner {
+  gap: 0;
+}
+.promotions__card-last .promo__card-block-title-container, .promotions__card-last .promo__card-block-description, .promotions__card-last .promo__card-block-value {
+     width: auto;
+}
+.promo__cards-date-container .d-fractions__item{
+  min-width: 70px;
+}
+@media (width <= 1200px) {
+  .promo__card-block-description, .promo__cards-item-conds-value-total {
+    font-size: 14px;
+  }
+  .promotions__card-header {
+    border-radius: 6px 6px 0 0;
+  }
+  .promo__cards-item-date-values{
+    flex-direction: column;
+    gap:12px;
+  }
+  .promo__cards-date-container .d-fractions__item{
+      min-width: 100px;
+  }
 
+}
+@media (width <= 800px) {
+    .promo__cards-item-values {
+      gap: 24px;
+    }
+    .promo__cards-date-container .d-fractions__item{
+      min-width: 70px;
+    }
+    .promo__cards-item-date-values{
+      flex-direction: row;
+      gap:12px;
+    }
+    .promo__cards-item-date-values .promo__cards-item-conds-value {
+      gap: 12px
+    }
+}
 </style>
