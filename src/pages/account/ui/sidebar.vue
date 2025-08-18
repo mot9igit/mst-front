@@ -1,6 +1,10 @@
 <template>
   <aside class="sidebar" id="sidebar" :class="{ 'sidebar--full': !active }">
-    <div class="sidebar__inner sidebar__inner--desktop" @click.prevent="clickAround()" id="sidebar__inner--desktop">
+    <div
+      class="sidebar__inner sidebar__inner--desktop"
+      @click.prevent="clickAround()"
+      id="sidebar__inner--desktop"
+    >
       <div class="sidebar__content-wrapper">
         <div class="sidebar__logo-wrapper">
           <a href="/" class="sidebar__logo-container">
@@ -88,6 +92,17 @@
                   <span class="sidebar__organization-title">{{ activeOrganization.name }}</span>
                   <button
                     class="d-button d-button-tertiary d-button-tertiary-small sidebar__organization-button"
+                    @click.prevent="showChangeOrgModal = true"
+                  >
+                    <i class="d-icon-refresh sidebar__organization-button-icon"></i>
+                    <span class="sidebar__organization-button-text">Сменить компанию</span>
+                  </button>
+                </div>
+              </div>
+              <div class="sidebar__organization sidebar__organization--full sidebar__hidden" v-else>
+                <div class="sidebar__organization-content d-fw">
+                  <button
+                    class="d-button d-button-tertiary d-button-tertiary-small sidebar__organization-button d-fw"
                     @click.prevent="showChangeOrgModal = true"
                   >
                     <i class="d-icon-refresh sidebar__organization-button-icon"></i>
@@ -250,22 +265,24 @@ export default {
       this.showChangeOrgModal = false
       if (this.$route.params.id && this.$route.params.id != id) {
         this.$router.push({ name: 'purchases', params: { id: id } })
+      } else {
+        this.$router.push({ name: 'purchases', params: { id: id } })
       }
     },
     sidebarToggle() {
       this.active = !this.active
       localStorage.setItem('sidebar.position', Number(this.active))
     },
-    clickAround(){
-      document.addEventListener('click', event => {  
-        let sidebarElement = document.getElementById('sidebar__inner--desktop') 
-        if (!sidebarElement.contains(event.target)) {  
-          if(this.active === false){
+    clickAround() {
+      document.addEventListener('click', (event) => {
+        let sidebarElement = document.getElementById('sidebar__inner--desktop')
+        if (!sidebarElement.contains(event.target)) {
+          if (this.active === false) {
             this.active = !this.active
             localStorage.setItem('sidebar.position', Number(this.active))
-          }          
-        }  
-      });  
+          }
+        }
+      })
     },
     async logOut() {
       if (this.getUser) {
@@ -315,6 +332,9 @@ export default {
 }
 </script>
 <style lang="scss">
+.d-fw {
+  width: 100%;
+}
 aside {
   position: relative;
   background-color: #ededed;
