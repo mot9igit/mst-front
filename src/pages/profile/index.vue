@@ -1,7 +1,9 @@
 <template>
   <section class="profile" id="profile">
     <!-- Верхушка страницы -->
-    <breadcrumbs />
+    <div class="d-top">
+      <breadcrumbs />
+    </div>
 
     <h1 class="profile__title">Профиль пользователя</h1>
 

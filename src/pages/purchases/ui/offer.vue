@@ -121,7 +121,7 @@
           <div class="d-divider d-divider--vertical product-card__count-divider"></div>
           <p class="product-card__count-value">
             <span class="product-card__count-label">Ваша потребность: </span>
-            {{ offer.our_forecast ? offer.our_forecast : 0 }} шт
+            {{ offerData.our_forecast < 0 ? offerData.our_forecast * -1 : 0 }} шт
           </p>
         </div>
       </div>

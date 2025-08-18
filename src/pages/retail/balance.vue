@@ -65,7 +65,7 @@
         </div>
       </div>
       <div class="balance__table-accordion">
-        <h3>История заказов</h3>
+        <h3>История изменения</h3>
         <div class="panel-widget">
           <Loader v-if="loading" />
           <BaseTable
