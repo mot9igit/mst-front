@@ -1,4 +1,5 @@
 <template>
+  <Toast />
   <aside class="sidebar" id="sidebar" :class="{ 'sidebar--full': !active }">
     <div
       class="sidebar__inner sidebar__inner--desktop"
@@ -178,7 +179,7 @@
         </button>
       </div>
       <div class="version-bar">
-        <span @click="copyVersion()" id="#version">v. {{ version }}</span>
+        <span @click="copyVersion()" id="version">v. {{ version }}</span>
       </div>
     </div>
     <div class="sidebar__inner sidebar__inner--mobile">
@@ -232,6 +233,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import Toast from 'primevue/toast'
 import sidebarMenu from './sidebarMenu.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import ChangeOrgWindow from '@/pages/org/ui/ChangeOrgWindow.vue'
@@ -246,7 +248,7 @@ export default {
       activeOrganization: {},
     }
   },
-  components: { customModal, ChangeOrgWindow, sidebarMenu },
+  components: { customModal, ChangeOrgWindow, sidebarMenu, Toast },
   computed: {
     ...mapGetters({
       getUser: 'user/getUser',
@@ -309,6 +311,21 @@ export default {
           (org) => org.id === this.$route.params.id,
         )
       }
+    },
+    copyVersion() {
+      var range = document.createRange()
+      var elem = document.getElementById('version')
+      range.selectNode(elem)
+      window.getSelection().removeAllRanges() // clear current selection
+      window.getSelection().addRange(range) // to select text
+      document.execCommand('copy')
+      window.getSelection().removeAllRanges() // to deselect
+      this.$toast.add({
+        severity: 'info',
+        summary: 'Версия скопирована',
+        detail: '',
+        life: 3000,
+      })
     },
   },
   mounted() {

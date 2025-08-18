@@ -205,6 +205,10 @@ export default {
       type: Number,
       default: 0,
     },
+    id: {
+      type: String,
+      default: '',
+    },
   },
   methods: {
     ...mapActions({
@@ -229,7 +233,7 @@ export default {
       let nowYear = date.getFullYear()
       this.nowDate = nowDay + '.' + nowMonth + '.' + nowYear
     },
-    async formSubmit(event) {
+    async formSubmit() {
       this.v$.$touch()
       this.summEntered = Number(this.form.summEntered)
       const result = !isNaN(this.summEntered) && this.summEntered > 0
@@ -294,7 +298,7 @@ export default {
     }),
   },
   watch: {
-    'form.summEntered'(newVal, oldVal) {
+    'form.summEntered'() {
       this.errorMessage = false
     },
   },
