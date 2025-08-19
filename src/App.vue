@@ -6,7 +6,7 @@
 export default {
   name: 'MST',
   created() {
-    document.title = 'MST Аналитика'
+    document.title = 'МС: Управление Продажами и ЗАкупками'
   },
 }
 </script>
