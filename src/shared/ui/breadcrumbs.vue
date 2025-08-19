@@ -174,6 +174,7 @@ export default {
               })
               break
             }
+            case ':id':
             case ':requirement_id':
             case ':order_id': {
               this.crumbs.push({
