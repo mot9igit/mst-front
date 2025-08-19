@@ -142,7 +142,6 @@ export default {
       modalEditProfile: false,
       successModalInfo: true,
       loading: false,
-      errorPhone: '',
       editFields: {},
       getUserData: {
         username: '',
@@ -203,9 +202,14 @@ export default {
       },
     }
   },
+  mounted() {
+    this.getSessionUser()
+  },
   methods: {
     ...mapActions({
       editUser: 'user/edit_profile',
+      getSessionUser: 'user/getSessionUser',
+
     }),
     formatPhone(event) {
       let value = event.target.value.replace(/\D/g, ""); // Удаляем все нецифровые символы
@@ -224,14 +228,13 @@ export default {
     },
     formatPhoneInput(value) {
       value.replace(/\D/g, ""); // Удаляем все нецифровые символы
-      // Форматируем номер по маске: +X (XXX) XXX-XX-XX
       let formatted = "";
-      if (value.length > 0) formatted += value[0];
-
-      if (value.length > 2) formatted += " (" + value.substring(1, 4);
-      if (value.length > 5) formatted += ") " + value.substring(4, 7);
-      if (value.length > 8) formatted += "-" + value.substring(7, 9);
-      if (value.length > 10) formatted += "-" + value.substring(9, 11);
+      formatted += value[0];
+      formatted += value[1];
+      formatted += " (" + value.substring(2, 5);
+      formatted += ") " + value.substring(5, 8);
+      formatted += "-" + value.substring(8, 10);
+      formatted += "-" + value.substring(10, 12);
       return formatted;
     },
     validatePhone(phone) {
@@ -245,7 +248,7 @@ export default {
       let newFIO = this.getUserInfo.fullname
       let newPhone = this.getUserInfo.phone
       let oldFIO = this.getUser.profile.fullname
-      let oldPhone = this.getUser.profile.phone
+      let oldPhone = this.formatPhoneInput(this.getUser.profile.phone)
       if (!this.validatePhone(newPhone)) {
         this.$toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Некорректный номер телефона', life: 3000 });
         this.errors.phone = 'Введите корректный номер телефона'
@@ -257,7 +260,7 @@ export default {
         if(oldFIO != newFIO){
           this.editFields.fullname = newFIO
         }
-        if(this.editFields != {}){
+        if(Object.keys(this.editFields).length != 0){
           this.editUser({
             action: 'profile/edit',
             form: this.editFields,
@@ -324,7 +327,7 @@ export default {
 
             }
       }
-      if(this.editFields != {}){
+      if(Object.keys(this.editFields).length != 0){
           this.editUser({
             action: 'profile/edit',
             form: this.editFields,
@@ -353,7 +356,7 @@ export default {
       this.getUserData.username = newVal.username
       this.getUserData.email = newVal.profile.email
       this.getUserInfo.fullname = newVal.profile.fullname
-      this.getUserInfo.phone = newVal.profile.phone
+      this.getUserInfo.phone = this.formatPhoneInput(newVal.profile.phone)
     }
   },
 
