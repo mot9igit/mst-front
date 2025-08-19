@@ -204,6 +204,12 @@ export default {
   },
   mounted() {
     this.getSessionUser()
+     if (this.$route.query.update === 'true') {
+        //Обновляем профиль
+        this.getSessionUser().then(() => {
+          this.$router.replace({ query: { ...this.$route.query, update: undefined } });
+        })
+      }
   },
   methods: {
     ...mapActions({
