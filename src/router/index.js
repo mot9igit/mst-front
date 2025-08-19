@@ -31,6 +31,7 @@ import WarehouseCustomization from '../pages/warehouse/customization.vue'
 import ProfileCard from '../pages/org/card.vue'
 import ProfileStuff from '../pages/org/staff.vue'
 import ProfileAccess from '../pages/org/access.vue'
+import ProfileHash from '../pages/profile/profileHash.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -69,15 +70,27 @@ const router = createRouter({
           children: [
             {
               path: '/profile',
-              name: 'profile',
-              props: true,
-              label: 'Профиль пользователя',
-              component: userProfile,
               meta: {
                 breadcrumb: {
                   label: 'Профиль',
                 },
               },
+              children: [
+                {
+                path: '',
+                name: 'profile',
+                props: true,
+                label: 'Профиль изменения данных',
+                component: userProfile,
+              },
+                {
+                path: ':hash',
+                name: 'profileHash',
+                props: true,
+                label: 'Профиль изменения данных',
+                component: ProfileHash,
+              },
+              ],
             },
             {
               path: '/:id',
