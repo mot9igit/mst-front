@@ -271,7 +271,7 @@ export default {
 </script>
 <style lang="scss">
 .header {
-  padding-block: 11px 20px;
+  /*padding-block: 11px 20px;*/
   .header__cart {
     position: relative;
     .cart-badge {
