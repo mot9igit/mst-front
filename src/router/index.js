@@ -77,19 +77,19 @@ const router = createRouter({
               },
               children: [
                 {
-                path: '',
-                name: 'profile',
-                props: true,
-                label: 'Профиль изменения данных',
-                component: userProfile,
-              },
+                  path: '',
+                  name: 'profile',
+                  props: true,
+                  label: 'Профиль изменения данных',
+                  component: userProfile,
+                },
                 {
-                path: ':hash',
-                name: 'profileHash',
-                props: true,
-                label: 'Профиль изменения данных',
-                component: ProfileHash,
-              },
+                  path: ':hash',
+                  name: 'profileHash',
+                  props: true,
+                  label: 'Профиль изменения данных',
+                  component: ProfileHash,
+                },
               ],
             },
             {
@@ -116,11 +116,83 @@ const router = createRouter({
                   },
                   children: [
                     {
-                      path: '',
-                      name: 'purchases',
-                      props: true,
-                      label: 'Закупки',
-                      component: Purchases,
+                      path: 'catalog',
+                      children: [
+                        {
+                          path: '',
+                          name: 'purchases',
+                          props: true,
+                          label: 'Закупки',
+                          component: Purchases,
+                        },
+                        {
+                          path: ':category_id',
+                          name: 'purchasesCatalog',
+                          props: true,
+                          label: 'Оптовый каталог',
+                          component: PurchasesCatalog,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Каталог',
+                            },
+                          },
+                        },
+                        {
+                          path: 'warehouses/:org_w_id/:warehouse_id',
+                          meta: {
+                            breadcrumb: {
+                              label: 'Каталог поставщика',
+                            },
+                          },
+                          children: [
+                            {
+                              path: '',
+                              name: 'purchasesCatalogWarehouse',
+                              component: PurchasesCatalog,
+                              label: 'Каталог поставщика',
+                            },
+                            {
+                              path: ':warehouse_cat_id',
+                              meta: {
+                                breadcrumb: {
+                                  label: 'Каталог поставщика',
+                                },
+                              },
+                              children: [
+                                {
+                                  path: '',
+                                  name: 'purchasesCatalogWarehouseCategory',
+                                  label: 'Мой оптовик',
+                                  component: PurchasesCatalog,
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                        {
+                          path: 'req/:requirement_id',
+                          name: 'purchasesCatalogRequirement',
+                          props: true,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Потребность',
+                            },
+                          },
+                          component: PurchasesCatalog,
+                        },
+                        {
+                          path: 'search/:search',
+                          name: 'purchasesCatalogSearch',
+                          props: true,
+                          label: 'Оптовый каталог',
+                          component: PurchasesCatalog,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Поиск',
+                            },
+                          },
+                        },
+                      ],
                     },
                     {
                       path: 'actions/:action_id',
@@ -133,73 +205,6 @@ const router = createRouter({
                           label: 'Акция',
                         },
                       },
-                    },
-                    {
-                      path: 'search/:search',
-                      name: 'purchasesCatalogSearch',
-                      props: true,
-                      label: 'Оптовый каталог',
-                      component: PurchasesCatalog,
-                      meta: {
-                        breadcrumb: {
-                          label: 'Поиск',
-                        },
-                      },
-                    },
-                    {
-                      path: ':category_id',
-                      name: 'purchasesCatalog',
-                      props: true,
-                      label: 'Оптовый каталог',
-                      component: PurchasesCatalog,
-                      meta: {
-                        breadcrumb: {
-                          label: 'Каталог',
-                        },
-                      },
-                    },
-                    {
-                      path: 'warehouses/:org_w_id/:warehouse_id',
-                      meta: {
-                        breadcrumb: {
-                          label: 'Каталог поставщика',
-                        },
-                      },
-                      children: [
-                        {
-                          path: '',
-                          name: 'purchasesCatalogWarehouse',
-                          component: PurchasesCatalog,
-                          label: 'Каталог поставщика',
-                        },
-                        {
-                          path: ':warehouse_cat_id',
-                          meta: {
-                            breadcrumb: {
-                              label: 'Каталог поставщика',
-                            },
-                          },
-                          children: [
-                            {
-                              path: '',
-                              name: 'purchasesCatalogWarehouseCategory',
-                              label: 'Мой оптовик',
-                              component: PurchasesCatalog,
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                    {
-                      path: 'req/:requirement_id',
-                      name: 'purchasesCatalogRequirement',
-                      props: true,
-                      meta: {
-                        breadcrumb: {
-                          label: 'Потребность',
-                        },
-                      },
-                      component: PurchasesCatalog,
                     },
                     {
                       path: 'orders',

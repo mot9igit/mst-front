@@ -9,7 +9,7 @@
       >
         <router-link
           class="sidebar__item-button"
-          :class="{ 'sidebar__item-button--active': this.$route.name == item.to.name }"
+          :class="{ 'sidebar__item-button--active': activeMenu(item, index, 1) }"
           :to="item.to"
           v-if="toggle"
         >
@@ -23,7 +23,12 @@
           </div>
           <i class="d-icon-angle-rounded-bottom sidebar__item-dropdown" v-if="item.children"></i>
         </router-link>
-        <button class="sidebar__item-button" @click.prevent="sidebarItem(index)" v-else>
+        <button
+          class="sidebar__item-button"
+          @click.prevent="sidebarItem(index)"
+          v-else
+          :class="{ 'sidebar__item-button--active': activeMenu(item, index, 1) }"
+        >
           <div class="sidebar__item-button-content">
             <i
               class="sidebar__item-icon d-icon-cube"
@@ -43,7 +48,7 @@
           >
             <router-link
               class="sidebar__item-list-item-content"
-              :class="{ 'sidebar__item-button--active': this.$route.name == subitem.to.name }"
+              :class="{ 'sidebar__item-button--active': activeMenu(subitem) }"
               :to="subitem.to"
               @click.prevent="HideSidebar()"
             >
@@ -247,11 +252,42 @@ export default {
       this.toogleSidebar = true
       this.$emit('sidebarToggle')
     },
+    activeMenu(item, index = 0, setindex = 0) {
+      console.log('-------------')
+      console.log(this.$route)
+      let active = false
+      const matched = this.$route.matched
+      matched.forEach((entry) => {
+        if (entry.name == item?.to?.name) {
+          active = true
+          console.log(entry)
+          console.log(item.to)
+        }
+      })
+      if (active) {
+        console.log(setindex)
+        console.log(index)
+      }
+      if (active && setindex) {
+        console.log('set')
+        this.sidebarItem(index)
+      }
+      return active
+    },
   },
 }
 </script>
 <style lang="scss" scoped>
 .sidebar__list a {
   text-align: center;
+}
+.sidebar:not(.sidebar--full) .sidebar__item-button.sidebar__item-button--active {
+  background-color: #ededed;
+  border-left-color: #f92c0d;
+  box-shadow: 0px 4px 13.4px 0px rgba(0, 0, 0, 0.2588235294);
+}
+
+.sidebar__item-list-item .router-link-active {
+  color: #f92c0d;
 }
 </style>
