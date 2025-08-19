@@ -2,9 +2,7 @@
   <section class="profile" id="profile">
     <Toast/>
     <!-- Верхушка страницы -->
-    <div class="d-top">
-      <breadcrumbs />
-    </div>
+
 
     <Loader v-if="loading"/>
 
@@ -111,8 +109,7 @@
           <h3>На вашу почту {{ getUser.profile.email }} отправлено письмо!</h3>
           <p>Пожалуйста, откройте его и следуйте инструкциям для подтверждения редактирования.
             Если письмо не пришло, проверьте папку «Спам» или подождите несколько минут.</p>
-
-          </div>
+        </div>
         <button
           type="button"
           href="#"
@@ -129,14 +126,13 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
-import breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Toast from 'primevue/toast'
 
 
 export default {
   name: 'userProfile',
-  components: { breadcrumbs, Loader, customModal, Toast },
+  components: { Loader, customModal, Toast },
   data() {
     return {
       modalEditProfile: false,
@@ -299,6 +295,7 @@ export default {
       let newEmail = this.getUserData.email
       let newPassword = this.getUserData.newpassw
       let newPasswordAgain = this.getUserData.newpassw_again
+      let isEditUser = ''
       if(newUsername != this.getUser.username){
         if (!this.validateLogin(newUsername)) {
           this.$toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Некорректный логин', life: 3000 });
@@ -334,19 +331,25 @@ export default {
             }
       }
       if(Object.keys(this.editFields).length != 0){
-          this.editUser({
-            action: 'profile/edit',
-            form: this.editFields,
-            }).then((res) => {
-            if(!res.data.success){
-              this.$toast.add({ severity: 'error', summary: 'Ошибка', detail: res.data.message, life: 3000 });
-            } else {
-              this.modalEditProfile = true
-              this.successModalInfo = false
-              this.editFields = {}
+          isEditUser = this.errors.newpassw + this.errors.newpassw_again + this.errors.email + this.errors.username
+          if(isEditUser === ''){
+            this.editUser({
+              action: 'profile/edit',
+              form: this.editFields,
+              }).then((res) => {
+              if(!res.data.success){
+                this.$toast.add({ severity: 'error', summary: 'Ошибка', detail: res.data.message, life: 3000 });
+              } else {
+                this.modalEditProfile = true
+                this.successModalInfo = false
+                this.editFields = {}
+                this.getSessionUser()
 
-            }
-          })
+              }
+            })
+          }else{
+            this.$toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Одно или несколько полей заполнено некорректно', life: 3000 });
+          }
         }else{
           this.$toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Вы не внесли никаких изменений', life: 3000 });
         }
