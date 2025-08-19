@@ -118,11 +118,20 @@
             }}</span>
             <span v-else>{{ offer.available }} шт</span>
           </p>
-          <div class="d-divider d-divider--vertical product-card__count-divider"></div>
-          <p class="product-card__count-value">
+          <div
+            class="d-divider d-divider--vertical product-card__count-divider"
+            v-if="offer.requirement"
+          ></div>
+          <div class="product-card__count-value" v-if="offer.requirement">
             <span class="product-card__count-label">Ваша потребность: </span>
-            {{ offerData.our_forecast < 0 ? offerData.our_forecast * -1 : 0 }} шт
-          </p>
+            {{ Number(offer.requirement.count) }} шт
+            <div v-if="offer.requirement" class="redder">
+              <span v-if="Number(offer.requirement.count) > Number(offer.available)"
+                >Не хватает
+                {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
+              >
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -226,6 +235,18 @@ export default {
   }
   .d-badge2 {
     min-width: auto;
+  }
+  .product-card__count {
+    align-items: start;
+  }
+  .redder {
+    display: block;
+    text-align: right;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 9px;
+    line-height: 12px;
+    color: #f92c0d;
   }
 }
 .product-card__stat-content--horizontal {
