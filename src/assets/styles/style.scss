@@ -30,6 +30,7 @@
 @use 'pages/promos/promo';
 
 @use 'utils';
+@use 'minwidth';
 
 span[class='d-icon'],
 span[class^='d-icon-'],
