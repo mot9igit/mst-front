@@ -190,7 +190,6 @@ export default {
               perpage: this.cfg.vendors.perpage,
             }).then(() => {})
           })
-          this.getBasket()
         }
       },
     },

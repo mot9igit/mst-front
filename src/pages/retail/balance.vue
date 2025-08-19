@@ -65,7 +65,7 @@
         </div>
       </div>
       <div class="balance__table-accordion">
-        <h3>История изменения</h3>
+        <h3>История заказов</h3>
         <div class="panel-widget">
           <Loader v-if="loading" />
           <BaseTable
@@ -205,10 +205,6 @@ export default {
       type: Number,
       default: 0,
     },
-    id: {
-      type: String,
-      default: '',
-    },
   },
   methods: {
     ...mapActions({
@@ -233,7 +229,7 @@ export default {
       let nowYear = date.getFullYear()
       this.nowDate = nowDay + '.' + nowMonth + '.' + nowYear
     },
-    async formSubmit() {
+    async formSubmit(event) {
       this.v$.$touch()
       this.summEntered = Number(this.form.summEntered)
       const result = !isNaN(this.summEntered) && this.summEntered > 0
@@ -298,7 +294,7 @@ export default {
     }),
   },
   watch: {
-    'form.summEntered'() {
+    'form.summEntered'(newVal, oldVal) {
       this.errorMessage = false
     },
   },

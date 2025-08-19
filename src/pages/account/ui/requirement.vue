@@ -144,7 +144,7 @@
           >
             <SelectInput
               v-model="this.formRequirementsView.warehouse"
-              :options="this.optVendorsSelected.items"
+              :options="this.optVendorsAvailable.items"
               optionLabel="name"
               placeholder="Выберите поставщика"
               class="w-full md:w-14rem"
@@ -289,7 +289,7 @@ export default {
   computed: {
     ...mapGetters({
       requirements: 'requirements/requirements',
-      optVendorsSelected: 'org/optVendorsSelected',
+      optVendorsAvailable: 'org/optVendorsAvailable',
     }),
   },
   mounted() {
