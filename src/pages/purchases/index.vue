@@ -154,6 +154,13 @@ export default {
         window.dispatchEvent(new Event('resize'))
       }, 500)
     },
+    '$route.params.id': {
+      handler: function () {
+        if (this.$route.params.id) {
+          this.getSalesBanners()
+        }
+      },
+    },
   },
 }
 </script>

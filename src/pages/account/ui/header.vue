@@ -244,21 +244,27 @@ export default {
         this.showChangeAddressModal = false
       })
     },
-  },
-  watch: {
-    basket(newVal) {
+    updateCart() {
       if (Object.keys(this.basket).length > 1) {
         if (
-          Object.prototype.hasOwnProperty.call(newVal.data, this.basketWarehouse) &&
+          Object.prototype.hasOwnProperty.call(this.basket.data, this.basketWarehouse) &&
           this.basketWarehouse
         ) {
-          this.basketStore = newVal.data[this.basketWarehouse]
+          this.basketStore = this.basket.data[this.basketWarehouse]
         } else {
           this.basketStore = {}
         }
       } else {
         this.basketStore = {}
       }
+    },
+  },
+  watch: {
+    basket() {
+      this.updateCart()
+    },
+    basketWarehouse() {
+      this.updateCart()
     },
   },
 }

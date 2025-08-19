@@ -1,6 +1,11 @@
 <template>
+  <Toast />
   <aside class="sidebar" id="sidebar" :class="{ 'sidebar--full': !active }">
-    <div class="sidebar__inner sidebar__inner--desktop" @click.prevent="clickAround()" id="sidebar__inner--desktop">
+    <div
+      class="sidebar__inner sidebar__inner--desktop"
+      @click.prevent="clickAround()"
+      id="sidebar__inner--desktop"
+    >
       <div class="sidebar__content-wrapper">
         <div class="sidebar__logo-wrapper">
           <a href="/" class="sidebar__logo-container">
@@ -95,6 +100,17 @@
                   </button>
                 </div>
               </div>
+              <div class="sidebar__organization sidebar__organization--full sidebar__hidden" v-else>
+                <div class="sidebar__organization-content d-fw">
+                  <button
+                    class="d-button d-button-tertiary d-button-tertiary-small sidebar__organization-button d-fw"
+                    @click.prevent="showChangeOrgModal = true"
+                  >
+                    <i class="d-icon-refresh sidebar__organization-button-icon"></i>
+                    <span class="sidebar__organization-button-text">Сменить компанию</span>
+                  </button>
+                </div>
+              </div>
             </div>
             <button
               class="d-button d-button-secondary d-button--sm-shadow sidebar__new-organization"
@@ -163,7 +179,7 @@
         </button>
       </div>
       <div class="version-bar">
-        <span @click="copyVersion()" id="#version">v. {{ version }}</span>
+        <span @click="copyVersion()" id="version">v. {{ version }}</span>
       </div>
     </div>
     <div class="sidebar__inner sidebar__inner--mobile">
@@ -217,6 +233,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import Toast from 'primevue/toast'
 import sidebarMenu from './sidebarMenu.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import ChangeOrgWindow from '@/pages/org/ui/ChangeOrgWindow.vue'
@@ -231,7 +248,7 @@ export default {
       activeOrganization: {},
     }
   },
-  components: { customModal, ChangeOrgWindow, sidebarMenu },
+  components: { customModal, ChangeOrgWindow, sidebarMenu, Toast },
   computed: {
     ...mapGetters({
       getUser: 'user/getUser',
@@ -250,22 +267,24 @@ export default {
       this.showChangeOrgModal = false
       if (this.$route.params.id && this.$route.params.id != id) {
         this.$router.push({ name: 'purchases', params: { id: id } })
+      } else {
+        this.$router.push({ name: 'purchases', params: { id: id } })
       }
     },
     sidebarToggle() {
       this.active = !this.active
       localStorage.setItem('sidebar.position', Number(this.active))
     },
-    clickAround(){
-      document.addEventListener('click', event => {  
-        let sidebarElement = document.getElementById('sidebar__inner--desktop') 
-        if (!sidebarElement.contains(event.target)) {  
-          if(this.active === false){
+    clickAround() {
+      document.addEventListener('click', (event) => {
+        let sidebarElement = document.getElementById('sidebar__inner--desktop')
+        if (!sidebarElement.contains(event.target)) {
+          if (this.active === false) {
             this.active = !this.active
             localStorage.setItem('sidebar.position', Number(this.active))
-          }          
-        }  
-      });  
+          }
+        }
+      })
     },
     async logOut() {
       if (this.getUser) {
@@ -293,6 +312,21 @@ export default {
         )
       }
     },
+    copyVersion() {
+      var range = document.createRange()
+      var elem = document.getElementById('version')
+      range.selectNode(elem)
+      window.getSelection().removeAllRanges() // clear current selection
+      window.getSelection().addRange(range) // to select text
+      document.execCommand('copy')
+      window.getSelection().removeAllRanges() // to deselect
+      this.$toast.add({
+        severity: 'info',
+        summary: 'Версия скопирована',
+        detail: '',
+        life: 3000,
+      })
+    },
   },
   mounted() {
     const sidebarPosition = localStorage.getItem('sidebar.position')
@@ -315,6 +349,9 @@ export default {
 }
 </script>
 <style lang="scss">
+.d-fw {
+  width: 100%;
+}
 aside {
   position: relative;
   background-color: #ededed;
