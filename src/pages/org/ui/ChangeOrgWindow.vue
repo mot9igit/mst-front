@@ -1,6 +1,6 @@
 <template>
   <div class="d-modal2 d-modal2--active change-organization__modal">
-    <div class="d-modal2__header change-organization__modal-header">
+    <div class="d-modal2__header change-organization__modal-header" v-if="this.activeOrganization">
       <!-- Карточка организации -->
       <div class="change-organization__item change-organization__item--big">
         <!-- Верхушка -->
@@ -52,7 +52,57 @@
     </div>
     <div class="d-modal2__content change-organization__modal-content">
       <!-- Список организаций -->
-      <div class="change-organization__item-list" v-if="this.organizations">
+      <div
+        class="change-organization__item-list"
+        v-if="this.organizations && !this.activeOrganization"
+      >
+        <!-- Карточка организации -->
+        <a
+          href="#"
+          v-for="item in this.organizations"
+          @click.prevent="this.orgChange(item.id)"
+          class="change-organization__item"
+          v-bind:key="item.id"
+        >
+          <!-- Верхушка -->
+          <div class="change-organization__item-header">
+            <div class="change-organization__item-image-container">
+              <div class="change-organization__item-image-fallback">
+                <img v-if="item.image" :src="item.image" alt="" />
+                <div v-else class="sitebar-avatar-none-char">
+                  {{
+                    item.name
+                      ? item.name.startsWith('ИП') || item.name.startsWith('ООО')
+                        ? this.activeOrganization?.name
+                            .replace(/^ИП\s*/, '')
+                            .replace(/^ООО\s*/, '')
+                            .replace(/^"\s*/, '')
+                            .split(' ')[0]
+                            .slice(0, 2)
+                            .toUpperCase()
+                        : item.name.slice(0, 2).toUpperCase()
+                      : ''
+                  }}
+                </div>
+              </div>
+            </div>
+            <p class="change-organization__item-title">{{ item.name }}</p>
+          </div>
+          <!-- Контент -->
+          <div class="change-organization__item-content">
+            <div class="change-organization__item-data">
+              <i class="d-icon-location-flat change-organization__item-data-icon"></i>
+              <p class="change-organization__item-data-text">
+                {{ item.description }}
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div
+        class="change-organization__item-list"
+        v-if="this.organizations && this.activeOrganization"
+      >
         <!-- Карточка организации -->
         <a
           href="#"
@@ -68,16 +118,16 @@
                 <img v-if="item.image" :src="item.image" alt="" />
                 <div v-else class="sitebar-avatar-none-char">
                   {{
-                    item?.name
-                      ? item?.name.startsWith('ИП') || item?.name.startsWith('ООО')
-                        ? item?.name
+                    item.name
+                      ? item.name.startsWith('ИП') || item.name.startsWith('ООО')
+                        ? this.activeOrganization?.name
                             .replace(/^ИП\s*/, '')
                             .replace(/^ООО\s*/, '')
                             .replace(/^"\s*/, '')
                             .split(' ')[0]
                             .slice(0, 2)
                             .toUpperCase()
-                        : item?.name.slice(0, 2).toUpperCase()
+                        : item.name.slice(0, 2).toUpperCase()
                       : ''
                   }}
                 </div>
