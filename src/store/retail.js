@@ -54,7 +54,6 @@ export default {
     },
     async getBalanceRequest({ commit }, { page, perpage }) {
       const data = {
-
         id: router.currentRoute._value.params.id,
         type: 'balance_requests',
         page: page,
@@ -66,19 +65,18 @@ export default {
       }
       return response
     },
-    async setBalanceRequest({ commit }, {value}) {
+    async setBalanceRequest(store, { value }) {
       const data = {
-
         id: router.currentRoute._value.params.id,
-        action: "set",
-        type: "balance_request",
+        action: 'set',
+        type: 'balance_request',
         value: value,
       }
       const response = await api.retail.setBalanceRequest(data)
 
       return response
     },
-    async getSales({ commit }, { filter, filtersdata, page, sort, perpage, actionid, type, isAction }) {
+    async getSales({ commit }, { filter, filtersdata, page, sort, perpage, actionid, isAction }) {
       const data = {
         id: router.currentRoute._value.params.id,
         filter: filter,
@@ -90,12 +88,33 @@ export default {
         action_id: actionid,
         type: 2,
         is_action: isAction ? true : false,
-        extended_name: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart'
+        extended_name:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
       }
       const response = await api.retail.getSales(data)
       if (response) {
         commit('SET_SALES', response.data)
       }
+      return response
+    },
+    async changeStatus() {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        type: router.currentRoute._value.params.type,
+        order_id: router.currentRoute._value.params.order_id,
+      }
+      const response = await api.retail.changeStatus(data)
+
+      return response
+    },
+    async checkCode(store, { code }) {
+      const data = {
+        code: code,
+        type: 'code/check',
+        id: router.currentRoute._value.params.id,
+        order_id: router.currentRoute._value.params.order_id,
+      }
+      const response = await api.retail.checkCode(data)
       return response
     },
     unsetOrders({ commit }) {
@@ -137,7 +156,6 @@ export default {
     UNSET_SALES: (state) => {
       state.sales = {}
     },
-
   },
   getters: {
     orders(state) {
@@ -155,6 +173,5 @@ export default {
     sales(state) {
       return state.sales
     },
-
   },
 }

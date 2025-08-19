@@ -30,6 +30,7 @@ export default {
     ...mapGetters({
       orgActive: 'org/orgActive',
       sale: 'sales/sale',
+      order: 'retail/order',
       optCatalog: 'catalog/optCatalog',
       optCatalogWarehouse: 'catalog/optCatalogWarehouse',
     }),
@@ -174,9 +175,17 @@ export default {
               })
               break
             }
-            case ':id':
-            case ':requirement_id':
             case ':order_id': {
+              if (Object.prototype.hasOwnProperty.call(this.order, 'order')) {
+                this.crumbs.push({
+                  name: '№ ' + this.order.order.num,
+                  path: pathRoutesWithId.slice(0, index + 1).join('/'),
+                })
+              }
+              break
+            }
+            case ':id':
+            case ':requirement_id': {
               this.crumbs.push({
                 name: this.getRouteName(currentRoute, route),
                 path: pathRoutesWithId.slice(0, index + 1).join('/'),
@@ -276,6 +285,9 @@ export default {
       this.updateCrumbs()
     },
     sale: function () {
+      this.updateCrumbs()
+    },
+    order: function () {
       this.updateCrumbs()
     },
     optCatalogWarehouse: function () {
