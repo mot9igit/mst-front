@@ -1,4 +1,8 @@
 
+.sidebar__divider {
+    background-color: #757575;
+}
+
 @media (width <= 1920px) {
  .header{
   padding-block: 11px 20px;
@@ -28,12 +32,20 @@
     padding-block: 11px 20px;
   }
   .d-search .d-search__field {
-    padding: 4px 100px 4px 15px;
+    padding: 4px 100px 4px 15px !important;
   }
   .d-search .d-search__button, .d-search .header__search-icon-button {
     right: 3px !important;
   }
-
+  .header__search {
+    max-height: 30px;
+  }
+  .sidebar--full .sidebar__list {
+    gap: 16px;
+  }
+  .sidebar--full .sidebar__item {
+    height: auto;
+  }
 }
 
 @media (width <= 800px) {
@@ -65,13 +77,13 @@
   }
   .header__search {
     height: auto;
-    max-width: 312px;
+    min-width: 312px;
   }
   .d-search .d-search__field {
     padding: 3px 100px 2px 16px;
     width: 100%;
     box-shadow: 0px 4px 13.4px 0px rgba(0, 0, 0, 0.2588235294);
-    max-width: 312px;
+    min-width: 312px;
     max-height: 24px;
   }
   .header__search-field {
@@ -95,9 +107,132 @@
   .header__upload-icon {
     font-size: 14px;
   }
+
 }
 
-@media (width <= 640px) {
+@media (width <= 600px) {
+.d-search .d-search__field {
+    max-height: 32px !important;
+  }
+  .header__address{
+    color: #EDEDED;
+    width:100%;
+  }
+  .header__address .header__address-icon, .header__address-title{
+    display: none;
+  }
+  .header__address-text {
+    font-size: 10px;
+    font-weight: 400;
+  }
+  .header__address-value{
+    width:100%;
+    min-width: 100%;
+  }
+  .header__logo-container{
+    display: flex;
+    margin-top: 3px;
+  }
+  .header__logo-text{
+    color: #EDEDED;
+  }
+  .header__logo-container:before{
+    content: '';
+    width:100%;
+    height: 1px;
+    background-color: #757575;
+    opacity: 0.2;
+    position: absolute;
+    top: 30px;
+    left: 0;
+  }
+  .header__top {
+    margin-top: 12px;
+    margin-bottom: 16px;
+  }
+  .header {
+    height: auto;
+    max-height: 166px;
+    padding-block: 5px 24px;
+  }
+  .header__address-value:after{
+  content: "\e046";
+    font-family: 'Iconly';
+    font-size: 10px;
+    background-color: #282828;
+    position:relative;
+    right:0;
+    top:-1px;
+    width:16px;
+    text-align: center;
+  }
+  .header__address-text{
+    width: 100%;
+    height: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .d-search__icon-button {
+    margin-right: 18px;
+  }
+  .modal-content {
+    max-width: 80vw !important;
+  }
+  .content-wrapper {
+    padding-inline: 28px;
+  }
+  .main {
+    padding-top: 149px;
+  }
+  .header__search {
+    min-width: auto;
+  }
+  .d-search .d-search__field {
+    min-width: auto;
+  }
+  .min-mobile-header .header__logo-container{
+    display: none;
+  }
+  .min-mobile-header .header__top {
+    margin-top: 0px;
+    margin-bottom: 8px;
+  }
+  .min-mobile-header.header{
+    padding-bottom: 8px;
+  }
+  .header{
+    transition: all 0.2s ease;
+  }
+  .sidebar__inner--mobile {
+    justify-content: center;
+  }
+  .sidebar__inner--mobile .sidebar__item:hover .sidebar__item-button, .sidebar__inner--mobile .sidebar__item--active .sidebar__item-button{
+    background-color: transparent;
+    box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
+  }
+  .sidebar__inner--mobile .sitebar-avatar-none-char{
+    font-size: 10px;
+  }
+  .sidebar__inner--mobile .sidebar__item-button-none-char{
+    background-color: #ffffffb0;
+    border-radius: 20px;
+    width: 90%;
+    height: 90%;
+  }
+  .sidebar__inner--mobile .sidebar__item-button:last-child {
+    padding: 7px;
+  }
+  .sidebar--full .sidebar--mobile{
+    display: flex;
+    position: fixed;
+    top: 0;
+    width: 100wv;
+    height: 100vh;
+  }
+
+}
+
+@media (width <= 400px) {
   .d-search .d-search__field {
     max-height: 32px;
   }
@@ -117,12 +252,23 @@
   }
 
 }
-
-@media (width <= 400px) {
-
-
-}
 @media (width <= 320px) {
-
+  .d-search .d-search__field {
+    max-height: 32px;
+  }
+  .header__address{
+    color: #EDEDED;
+    width:100%;
+  }
+  .header__address .header__address-icon, .header__address-title{
+    display: none;
+  }
+  .header__address-text {
+    font-size: 10px;
+    font-weight: 400;
+  }
+  .header__address-value{
+    width:100%;
+  }
 
 }

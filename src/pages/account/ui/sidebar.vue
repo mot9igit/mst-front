@@ -182,11 +182,11 @@
         <span @click="copyVersion()" id="version">v. {{ version }}</span>
       </div>
     </div>
-    <div class="sidebar__inner sidebar__inner--mobile">
+    <div class="sidebar__inner--mobile">
       <nav class="sidebar__nav">
         <ul class="sidebar__list">
           <li class="sidebar__block sidebar__item">
-            <button class="sidebar__item-button" @click.prevent="sidebarToggle()">
+            <button class="sidebar__item-button" @click.prevent="sidebarToggleMobile()">
               <i class="d-icon-burger sidebar__item-icon"></i>
             </button>
           </li>
@@ -210,17 +210,40 @@
               <i class="d-icon-cart-solid sidebar__item-icon"></i>
             </button>
           </li>
-          <li class="sidebar__block sidebar__item">
-            <button class="sidebar__item-button" @click.prevent="logOut()">
-              <img src="/icons/spo-logo.svg" class="sidebar__item-img" />
+          <li class="sidebar__block sidebar__item" v-if="this.activeOrganization">
+            <button class="sidebar__item-button" @click.prevent="showChangeOrgModal = true" v-if="activeOrganization.image">
+              <img
+
+                  :src="activeOrganization.image"
+                  :alt="activeOrganization.name"
+                  class="sidebar__item-img"
+                />
             </button>
+            <button class="sidebar__item-button sidebar__item-button-none-char" @click.prevent="showChangeOrgModal = true" v-else>
+                <div  class="sitebar-avatar-none-char">
+                  {{
+                    this.activeOrganization?.name
+                      ? this.activeOrganization?.name.startsWith('ИП') ||
+                        this.activeOrganization?.name.startsWith('ООО')
+                        ? this.activeOrganization?.name
+                            .replace(/^ИП\s*/, '')
+                            .replace(/^ООО\s*/, '')
+                            .replace(/^"\s*/, '')
+                            .split(' ')[0]
+                            .slice(0, 2)
+                            .toUpperCase()
+                        : this.activeOrganization?.name.slice(0, 2).toUpperCase()
+                      : ''
+                  }}
+                </div>
+            </button>
+
           </li>
         </ul>
       </nav>
     </div>
   </aside>
-  <!-- <teleport to="body">
-  <teleport to="main">-->
+
   <customModal v-model="showChangeOrgModal" @cancel="cancel">
     <template v-slot:title></template>
     <ChangeOrgWindow
@@ -229,7 +252,7 @@
       @orgChange="this.orgChange"
     />
   </customModal>
-  <!--  </teleport> -->
+
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -243,6 +266,7 @@ export default {
   data() {
     return {
       active: false,
+      activeMobile: false,
       showChangeOrgModal: false,
       organizations: [],
       activeOrganization: {},
@@ -274,6 +298,9 @@ export default {
     sidebarToggle() {
       this.active = !this.active
       localStorage.setItem('sidebar.position', Number(this.active))
+    },
+    sidebarToggleMobile() {
+      this.activeMobile = !this.activeMobile
     },
     clickAround() {
       document.addEventListener('click', (event) => {
@@ -334,6 +361,20 @@ export default {
       this.active = sidebarPosition
     }
     this.setOrgs()
+    window.onload = function() {
+      if(window.innerWidth <= 600){
+        document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
+      }else{
+        document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile')
+      }
+    }
+    window.addEventListener('resize', function(event) {
+    if(window.innerWidth <= 600){
+        document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
+      }else{
+        document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile')
+      }
+    }, true);
   },
   watch: {
     orgs: function (newVal) {

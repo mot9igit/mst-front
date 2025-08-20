@@ -1,9 +1,9 @@
 <template>
   <div class="header__wrapper">
-    <header class="content-wrapper header">
+    <header class="content-wrapper header" id="header">
       <div class="header__catalog-content">
         <a href="/" class="header__logo-container">
-          <img src="/icons/logo.svg" alt="MST" width="40" height="40" class="header__logo" />
+          <img src="/icons/logo_light.svg" alt="MST" width="40" height="40" class="header__logo" />
           <span class="header__logo-text">Управление продажами</span>
         </a>
         <div class="sidebar__divider sidebar__divider--light header__logo-divider"></div>
@@ -29,7 +29,7 @@
                 }}
               </p>
               <div class="header__address-divider"></div>
-              <i class="d-icon-pen header__address-edit-icon"></i>
+              <i class="d-icon-pen2 header__address-edit-icon"></i>
             </div>
           </button>
           <div class="header__vendor" v-if="this.optVendorsAvailable">
@@ -139,7 +139,7 @@
             </p>
           </div>
           <span class="header__address-edit">
-            <i class="d-icon-pen header__address-edit-icon"></i>
+            <i class="d-icon-pen2 header__address-edit-icon"></i>
           </span>
         </button>
       </div>
@@ -193,6 +193,19 @@ export default {
       this.getOrgBasketStore()
       this.getBasket()
     })
+    // mobile header
+    let elem = document.querySelector('.main')
+    elem.addEventListener('scroll', function(event) {
+      let scrolling = elem.scrollTop
+      if(window.innerWidth <= 600){
+        if (scrolling >= 100) {
+          document.querySelector('.header').classList.add('min-mobile-header')
+        }else{
+          document.querySelector('.header').classList.remove('min-mobile-header')
+        }
+      }
+    });
+
   },
   computed: {
     ...mapGetters({
@@ -258,6 +271,7 @@ export default {
         this.basketStore = {}
       }
     },
+
   },
   watch: {
     basket() {
