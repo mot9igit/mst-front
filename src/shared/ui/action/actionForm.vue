@@ -1,6 +1,7 @@
 <template>
   <Toast />
   <section class="promotions" id="promotions">
+    <Loader v-if="loading" />
     <div class="promotions__top">
       <breadcrumbs />
     </div>
@@ -109,7 +110,7 @@
                 <p class="promotions__card-title">Контент акции</p>
               </div>
               <div class="promotions__info-actions">
-                <button class="promotions__card-button">
+                <button class="promotions__card-button" @click.prevent="openStep(1)">
                   <i class="d-icon-pen2 promotions__card-button-icon"></i>
                 </button>
                 <div class="d-divider d-divider--vertical promotions__card-header-divider"></div>
@@ -122,18 +123,13 @@
               <div class="promotions__card-values">
                 <div class="promotions__card-value-container">
                   <span class="promotions__card-label">Название акции:</span>
-                  <p class="promotions__card-value promotions__card-value--bold">4+1 на дрели</p>
+                  <p class="promotions__card-value promotions__card-value--bold">
+                    {{ this.form.name }}
+                  </p>
                 </div>
                 <div class="promotions__card-value-container">
                   <span class="promotions__card-label">Описание акции:</span>
-                  <p class="promotions__card-value">
-                    При покупке 5-ти УШМ (с текущей скидкой клиента) вы получаете 25 дисков по
-                    металлу бесплатно (выгода достигается за счет скидки на инструмент). При покупке
-                    5-ти УШМ (с текущей скидкой клиента) вы получаете 25 дисков по металлу
-                    бесплатно. УШМ (с текущей скидкой клиента) вы получаете 25 дисков по металлу
-                    бесплатно (выгода достигается за счет скидки на инструмент). А тут я добавила
-                    текста чтобы было так по количеству символов и еще тут...
-                  </p>
+                  <p class="promotions__card-value" v-html="this.form.description"></p>
                 </div>
               </div>
             </div>
@@ -147,7 +143,7 @@
                 <p class="promotions__card-title">Баннер акции</p>
               </div>
               <div class="promotions__info-actions">
-                <button class="promotions__card-button">
+                <button class="promotions__card-button" @click.prevent="openStep(2)">
                   <i class="d-icon-pen2 promotions__card-button-icon"></i>
                 </button>
                 <div class="d-divider d-divider--vertical promotions__card-header-divider"></div>
@@ -4009,43 +4005,25 @@
                     <div
                       class="d-radio__container d-radio__container--small promo-master__radio-container"
                     >
-                      <div class="d-radio__wrapper promo-master__radio-wrapper">
-                        <label class="d-switch" for="test-switch">
+                      <div
+                        class="d-radio__wrapper promo-master__radio-wrapper"
+                        v-for="(item, key) in this.actionAdvPlaces"
+                        :key="key"
+                      >
+                        {{ console.log(item) }}
+                        <label class="d-switch" :for="'place_' + item.code">
                           <input
                             type="checkbox"
-                            name="promoHome"
-                            id="promoHome"
+                            :name="'place_' + item.code"
+                            :id="'place_' + item.code"
                             class="d-switch__input"
+                            v-model="this.form.adv.place[item.code]"
                           />
                           <div class="d-switch__circle"></div>
                         </label>
-                        <label for="promoHome" class="d-switch__label"
-                          >На главной странице закупок
+                        <label :for="'place_' + item.code" class="d-switch__label"
+                          >{{ item.name }}
                         </label>
-                      </div>
-                      <div class="d-radio__wrapper promo-master__radio-wrapper">
-                        <label class="d-switch" for="promoInCart">
-                          <input
-                            type="checkbox"
-                            name="promoInCart"
-                            id="promoInCart"
-                            class="d-switch__input"
-                          />
-                          <div class="d-switch__circle"></div>
-                        </label>
-                        <label for="promoInCart" class="d-switch__label">В корзине </label>
-                      </div>
-                      <div class="d-radio__wrapper promo-master__radio-wrapper">
-                        <label class="d-switch" for="promoInCatalog">
-                          <input
-                            type="checkbox"
-                            name="promoInCatalog"
-                            id="promoInCatalog"
-                            class="d-switch__input"
-                          />
-                          <div class="d-switch__circle"></div>
-                        </label>
-                        <label for="promoInCatalog" class="d-switch__label">В каталоге </label>
                       </div>
                     </div>
                   </div>
@@ -4057,40 +4035,45 @@
                     <p class="promo-master__subtitle">Настройка отсрочки платежа</p>
                     <div class="d-radio__container d-radio__container--small">
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
-                        <label for="deferred-payment1" class="d-radio">
+                        <label for="deferred-payment-1" class="d-radio">
                           <input
                             type="radio"
                             name="deferred-payment"
+                            id="deferred-payment-1"
                             v-model="this.form.typeDelay"
                             value="1"
                             class="d-radio__input"
                           />
                         </label>
                         <label
-                          for="deferred-payment1"
+                          for="deferred-payment-1"
                           class="d-radio__label promo-master__radio-label"
                           >Отсрочка (по умолчанию)
                         </label>
                       </div>
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
-                        <label for="deferred-payment2" class="d-radio">
+                        <label for="deferred-payment-2" class="d-radio">
                           <input
                             type="radio"
                             name="deferred-payment"
+                            id="deferred-payment-2"
                             v-model="this.form.typeDelay"
                             value="2"
                             class="d-radio__input"
                           />
                         </label>
                         <label
-                          for="deferred-payment2"
+                          for="deferred-payment-2"
                           class="d-radio__label promo-master__radio-label"
                           >Под реализацию
                         </label>
                       </div>
                     </div>
                   </div>
-                  <div class="promotions__card promotions__card--small promo-master__card">
+                  <div
+                    class="promotions__card promotions__card--small promo-master__card"
+                    v-if="this.form.typeDelay == 1"
+                  >
                     <div class="promotions__card-header promo-master__card-header">
                       <div class="promotions__card-header-left">
                         <p class="promotions__card-title">
@@ -4127,6 +4110,17 @@
                       </div>
                     </div>
                   </div>
+                  <div v-else>
+                    <div class="d-input d-input--light d-input--width-280">
+                      <input
+                        class="d-input__field"
+                        type="text"
+                        placeholder="0"
+                        name="dateStart"
+                        v-model="this.form.postponementPeriod"
+                      />
+                    </div>
+                  </div>
                 </div>
                 <!-- 5 ЭТАП - Условия доставки -->
                 <div class="contents" id="deliveryConditions" v-if="masterStep == 5">
@@ -4137,31 +4131,35 @@
                     <p class="promo-master__subtitle">Кто оплачивает доставку:</p>
                     <div class="d-radio__container d-radio__container--small">
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
-                        <label for="who-pay-delivery1" class="d-radio">
+                        <label for="who-pay-delivery-1" class="d-radio">
                           <input
                             type="radio"
                             name="who-pay-delivery"
-                            id="who-pay-delivery1"
+                            id="who-pay-delivery-1"
                             class="d-radio__input"
+                            value="1"
+                            v-model="this.form.paymentDelivery"
                           />
                         </label>
                         <label
-                          for="who-pay-delivery1"
+                          for="who-pay-delivery-1"
                           class="d-radio__label promo-master__radio-label"
                           >Поставщик
                         </label>
                       </div>
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
-                        <label for="who-pay-delivery2" class="d-radio">
+                        <label for="who-pay-delivery-2" class="d-radio">
                           <input
                             type="radio"
                             name="who-pay-delivery"
-                            id="who-pay-delivery2"
+                            id="who-pay-delivery-2"
                             class="d-radio__input"
+                            value="0"
+                            v-model="this.form.paymentDelivery"
                           />
                         </label>
                         <label
-                          for="who-pay-delivery2"
+                          for="who-pay-delivery-2"
                           class="d-radio__label promo-master__radio-label"
                           >Покупатель
                         </label>
@@ -4172,31 +4170,35 @@
                     <p class="promo-master__subtitle">Сроки отгрузки товаров</p>
                     <div class="d-radio__container d-radio__container--small">
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
-                        <label for="shipment-deadline1" class="d-radio">
+                        <label for="shipment-deadline-1" class="d-radio">
                           <input
                             type="radio"
                             name="shipment-deadline"
-                            id="shipment-deadline1"
+                            id="shipment-deadline-1"
                             class="d-radio__input"
+                            value="1"
+                            v-model="this.form.paymentTime"
                           />
                         </label>
                         <label
-                          for="shipment-deadline1"
+                          for="shipment-deadline-1"
                           class="d-radio__label promo-master__radio-label"
                           >Определяется данными из отгрузок
                         </label>
                       </div>
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
-                        <label for="shipment-deadline2" class="d-radio">
+                        <label for="shipment-deadline-2" class="d-radio">
                           <input
                             type="radio"
                             name="shipment-deadline"
-                            id="shipment-deadline2"
+                            id="shipment-deadline-2"
                             class="d-radio__input"
+                            value="0"
+                            v-model="this.form.paymentTime"
                           />
                         </label>
                         <label
-                          for="shipment-deadline2"
+                          for="shipment-deadline-2"
                           class="d-radio__label promo-master__radio-label"
                           >Определяется по расчету доставки ТК
                         </label>
@@ -4896,9 +4898,15 @@ export default {
     Loader,
     customModal,
   },
+  props: {
+    type: {
+      type: Number,
+      default: 2,
+    },
+  },
   data() {
     return {
-      loading: true,
+      loading: false,
       productLoading: false,
       complectLoading: false,
       productUploadLoading: false,
@@ -4936,7 +4944,7 @@ export default {
         { name: 'По географии акции', key: 1 },
       ],
       // Рекламные места
-      place: [],
+      places: [],
       // Режим Совместимости Скидок
       compabilityMode: [
         { name: 'Применяется бóльшая', key: 0 },
@@ -5008,7 +5016,8 @@ export default {
         actions: [],
         product_groups: {},
         compabilityMode: { name: 'Применяется бóльшая', key: 0 },
-        paymentDelivery: { name: 'Покупатель', key: 0 },
+        paymentDelivery: 0,
+        paymentTime: 0,
         typeDelay: '1',
         delay: [
           {
@@ -5036,6 +5045,7 @@ export default {
         dates: [],
         adv: {
           active: false,
+          place: {},
           place_position: '',
           geo: '',
           files: {},
@@ -5048,7 +5058,7 @@ export default {
       this.getCatalogs()
       this.getRegions()
       this.getOrgStores()
-      this.getActionAdvPlaces()
+      this.getActionAdvPlaces({ type: this.type })
       if (this.$route.params.action) {
         this.getAction().then(() => {
           this.loading = false
@@ -5246,6 +5256,14 @@ export default {
         this.masterStep--
       }
     },
+    openStep(step) {
+      this.masterStep = step
+      const data = this.visibleMasterSteps.find((element) => element === this.masterStep)
+      if (typeof data == 'undefined') {
+        this.visibleMasterSteps.push(this.masterStep)
+      }
+      this.modals.master = true
+    },
   },
   computed: {
     ...mapGetters({
@@ -5253,7 +5271,7 @@ export default {
       regions: 'addition/regions',
       orgStores: 'org/orgStores',
       action: 'action/action',
-      actionAdvPlaces: 'action/AdvPlaces',
+      actionAdvPlaces: 'action/actionAdvPlaces',
       productsAvailable: 'action/productsAvailable',
       productsSelected: 'action/productsSelected',
       complectsAvailable: 'action/complectsAvailable',
@@ -5292,6 +5310,9 @@ export default {
         this.stores.push({ label: newVal.items[i].name, value: newVal.items[i].id })
       }
     },
+    actionAdvPlaces: function (newVal) {
+      this.places = newVal
+    },
     // Акция (редактирование)
     action: function (newVal) {
       if (this.$route.params.action) {
@@ -5307,7 +5328,7 @@ export default {
         if (newVal.page_create) {
           this.form.adv.active = true
         }
-        this.getActionAdvPlaces().then(() => {
+        this.getActionAdvPlaces({ type: this.type }).then(() => {
           this.form.adv.place = []
           const places = newVal.page_places.split(',')
           Object.entries(this.place).forEach((value) => {
@@ -5398,6 +5419,9 @@ body {
   }
 }
 .promo-master-modal {
+  .modal__title {
+    display: none;
+  }
   .modal__content {
     padding: 0;
   }
@@ -5415,6 +5439,70 @@ body {
   }
   .promo-master__footer-actions {
     padding: 16px 40px;
+  }
+  .dropzone__item {
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      display: block;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    .gg-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      cursor: pointer;
+      &::before {
+        content: '';
+        width: 1px;
+        height: 15px;
+        transform: rotate(-45deg);
+        background: #fff;
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      &::after {
+        content: '';
+        width: 1px;
+        height: 15px;
+        transform: rotate(45deg);
+        background: #fff;
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    }
+    img {
+      display: block;
+      margin-bottom: 24px;
+    }
+    .dropzone__progress {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, 0);
+    }
+    .dropzone__details {
+      position: absolute;
+      left: 0;
+      right: 0;
+      width: 100%;
+      top: 50%;
+      transform: translate(0, -50%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+    }
   }
 }
 .tox-tinymce {
