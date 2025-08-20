@@ -33,14 +33,14 @@
     </div>
     <div class="d-top-order-container-info">
       <h3>Информация о заказе</h3>
-      <div class="order-card__orderinfo">
-        <div class="order-card__orderinfo-grid">
+      <div class="order-card__orderinfo dart-row">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
             {{ order.order?.customer != '' ? order.order?.customer : '-' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Адрес доставки</div>
           <div class="order-card__orderinfo-grid-text">
             {{
@@ -52,25 +52,25 @@
             }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Номер телефона</div>
           <div class="order-card__orderinfo-grid-text">
             {{ order.order?.customer_phone != '' ? order.order?.customer_phone : '-' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Email</div>
           <div class="order-card__orderinfo-grid-text">
             {{ order.order?.customer_email != '' ? order.order?.customer_email : '-' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Транспортная компания</div>
           <div class="order-card__orderinfo-grid-text">
             {{ order.order?.tk != '' ? order.order?.tk : '-' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Тип доставки</div>
           <div class="order-card__orderinfo-grid-text">
             {{ order.order?.delivery != '' ? order.order?.delivery : '-' }}

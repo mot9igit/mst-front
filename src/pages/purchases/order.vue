@@ -32,30 +32,30 @@
     </div>
     <div class="d-top-order-container-info">
       <h3>Информация о заказе</h3>
-      <div class="order-card__orderinfo">
-        <div class="order-card__orderinfo-grid">
+      <div class="order-card__orderinfo dart-row">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Поставщик</div>
           <div class="order-card__orderinfo-grid-text">{{ this.order.seller_name }}</div>
         </div>
-        <div class="order-card__orderinfo-grid">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Инициатор</div>
           <div class="order-card__orderinfo-grid-text">{{ this.order?.initiator_org_name }}</div>
         </div>
-        <div class="order-card__orderinfo-grid">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.order?.ur_persone?.name }}, ИНН:{{ this.order?.ur_persone?.inn }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Сумма</div>
           <div class="order-card__orderinfo-grid-text">{{ this.order.cost }}</div>
         </div>
-        <div class="order-card__orderinfo-grid">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
           <div class="order-card__orderinfo-grid-text">{{ this.order.delay }}</div>
         </div>
-        <div class="order-card__orderinfo-grid">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.order.day_delivery }} дн. ({{ this.order.delivery_date }})

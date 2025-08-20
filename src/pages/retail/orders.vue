@@ -174,7 +174,7 @@ export default {
 <style lang="scss">
 .retailorders__content .dart-row {
   justify-content: end;
-  margin-top: -39px;
+
 }
 .retailorders__content .dart-mb-1 {
   margin-bottom: 40px;
