@@ -13,7 +13,7 @@ export default {
     productGroups: [],
     activeActions: [],
     productsPrices: [],
-    groupProducts: []
+    groupProducts: [],
   },
   actions: {
     // Берем акцию ID из URL
@@ -21,7 +21,8 @@ export default {
       const data = {
         id: router.currentRoute._value.params.id,
         action_id: router.currentRoute._value.params.action,
-        extended_name: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart'
+        extended_name:
+          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
       }
       const response = await api.action.getAction(data)
       if (response) {
@@ -30,10 +31,10 @@ export default {
       return response
     },
     // Чистим данные
-    async unsetAction({ commit }){
+    async unsetAction({ commit }) {
       const data = {
         id: router.currentRoute._value.params.id,
-        action: "unset/data"
+        action: 'unset/data',
       }
       const response = await api.action.unsetAction(data)
       if (response) {
@@ -42,10 +43,11 @@ export default {
       return response
     },
     // Берем места рекламы
-    async getActionAdvPlaces({ commit }) {
+    async getActionAdvPlaces({ commit }, { type }) {
       const data = {
         id: router.currentRoute._value.params.id,
-        action: 'get/adv/pages'
+        type: type,
+        action: 'get/adv/pages',
       }
       const response = await api.action.getActionAdvPlaces(data)
       if (response) {
@@ -58,7 +60,7 @@ export default {
       const data = {
         id: router.currentRoute._value.params.id,
         action: 'get/all',
-        store_id: store_id
+        store_id: store_id,
       }
       const response = await api.action.getActionAdvPlaces(data)
       if (response) {
@@ -76,14 +78,14 @@ export default {
         filtersdata: filtersdata,
         page: page,
         perpage: perpage,
-        type: type
+        type: type,
       }
       const response = await api.action.getAvailableProducts(data)
       if (response) {
-        if(response.data.data.type == 1){
+        if (response.data.data.type == 1) {
           commit('SET_AVAILABLE_PRODUCTS', response.data)
         }
-        if(response.data.data.type == 2){
+        if (response.data.data.type == 2) {
           commit('SET_SELECTED_PRODUCTS', response.data)
         }
       }
@@ -98,14 +100,14 @@ export default {
         filter: filter,
         page: page,
         perpage: perpage,
-        type: type
+        type: type,
       }
       const response = await api.action.getAvailableProducts(data)
       if (response) {
-        if(response.data.data.type == 1){
+        if (response.data.data.type == 1) {
           commit('SET_AVAILABLE_COMPLECTS', response.data)
         }
-        if(response.data.data.type == 2){
+        if (response.data.data.type == 2) {
           commit('SET_SELECTED_COMPLECTS', response.data)
         }
       }
@@ -116,7 +118,7 @@ export default {
       const data = {
         id: router.currentRoute._value.params.id,
         action: 'get',
-        store_id: store_id
+        store_id: store_id,
       }
       const response = await api.action.getProductGroups(data)
       if (response) {
@@ -128,7 +130,7 @@ export default {
     async getActiveActions({ commit }) {
       const data = {
         id: router.currentRoute._value.params.id,
-        action: 'get/actions/active'
+        action: 'get/actions/active',
       }
       const response = await api.action.getActiveActions(data)
       if (response) {
@@ -141,7 +143,7 @@ export default {
       const data = {
         id: router.currentRoute._value.params.id,
         action: 'get/type/prices',
-        store_id: store_id
+        store_id: store_id,
       }
       const response = await api.action.getProductsPrices(data)
       if (response) {
@@ -157,7 +159,7 @@ export default {
         group_id: group_id,
         filter: filter,
         page: page,
-        perpage: perpage
+        perpage: perpage,
       }
       const response = await api.action.getGroupProducts(data)
       if (response) {

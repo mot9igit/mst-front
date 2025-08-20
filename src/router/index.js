@@ -264,6 +264,7 @@ const router = createRouter({
                   children: [
                     {
                       path: '',
+                      name: 'wholesaleIndex',
                       props: true,
                       label: 'Оптовые продажи',
                       component: Wholesale,
@@ -376,6 +377,7 @@ const router = createRouter({
                     {
                       path: '',
                       props: true,
+                      name: 'retailIndex',
                       label: 'Розничные продажи',
                       component: Retail,
                     },
@@ -458,6 +460,7 @@ const router = createRouter({
                     {
                       path: '',
                       props: true,
+                      name: 'warehouseIndex',
                       label: 'Мой склад',
                       component: Warehouse,
                     },
