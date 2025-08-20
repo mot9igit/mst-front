@@ -76,7 +76,7 @@ export default {
 }
 .modal__title {
   display: block;
-  margin: 32px 2rem 0 0;
+  margin: 24px 2rem 0 0;
   font-size: 1.5rem;
   font-weight: 700;
   font-style: normal;

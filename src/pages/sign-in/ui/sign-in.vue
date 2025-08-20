@@ -169,7 +169,7 @@
   </button>
   -->
   <teleport to="body">
-    <customModal v-model="showForgotModal" @cancel="cancel">
+    <customModal v-model="showForgotModal" @cancel="cancel" class="form-forgot">
       <template v-slot:title>Восстановление пароля</template>
       <formForgot />
     </customModal>
@@ -297,11 +297,11 @@ export default {
   },
 }
 </script>
-<style>
+<style lang="scss">
 .dart_wrapper {
   width: 100%;
   position: relative;
-  background-color:#282828;
+  background-color: #282828;
 }
 .d-input .d-input__button {
   color: #fff;
@@ -309,5 +309,10 @@ export default {
 
 .d-show__icon::before {
   color: #fff;
+}
+.form-forgot {
+  .modal-content {
+    max-width: 400px;
+  }
 }
 </style>

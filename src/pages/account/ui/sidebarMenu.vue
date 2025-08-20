@@ -9,9 +9,9 @@
       >
         <router-link
           class="sidebar__item-button"
-          :class="{ 'sidebar__item-button--active': activeMenu(item, index, 1) }"
           :to="item.to"
           v-if="toggle"
+          active-class="sidebar__item-button--active"
         >
           <div class="sidebar__item-button-content">
             <i
@@ -23,12 +23,7 @@
           </div>
           <i class="d-icon-angle-rounded-bottom sidebar__item-dropdown" v-if="item.children"></i>
         </router-link>
-        <button
-          class="sidebar__item-button"
-          @click.prevent="sidebarItem(index)"
-          v-else
-          :class="{ 'sidebar__item-button--active': activeMenu(item, index, 1) }"
-        >
+        <button class="sidebar__item-button" @click.prevent="sidebarItem(index)" v-else>
           <div class="sidebar__item-button-content">
             <i
               class="sidebar__item-icon d-icon-cube"
@@ -48,7 +43,6 @@
           >
             <router-link
               class="sidebar__item-list-item-content"
-              :class="{ 'sidebar__item-button--active': activeMenu(subitem) }"
               :to="subitem.to"
               @click.prevent="HideSidebar()"
             >
@@ -84,7 +78,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.$route)
     this.menu = this.getMenu()
   },
   computed: {
@@ -108,13 +101,13 @@ export default {
         {
           name: 'Закупки',
           icon: 'd-icon-cube',
-          collapse: true,
+          collapse: this.collapsed('purchases'),
           to: { name: 'purchases', params: { id: this.$route.params.id } },
           children: [
             {
               name: 'Оптовый каталог',
               icon: 'd-icon-doc',
-              to: { name: 'purchases', params: { id: this.$route.params.id } },
+              to: { name: 'purchasesCatalogIndex', params: { id: this.$route.params.id } },
             },
             {
               name: 'Мои заказы',
@@ -131,7 +124,7 @@ export default {
         {
           name: 'Оптовые продажи',
           icon: 'd-icon-bag',
-          collapse: false,
+          collapse: this.collapsed('wholesale'),
           to: { name: 'wholesaleOrders', params: { id: this.$route.params.id } },
           children: [
             {
@@ -159,9 +152,8 @@ export default {
         {
           name: 'Розничные продажи',
           icon: 'd-icon-sales',
-          collapse: false,
+          collapse: this.collapsed('retail'),
           to: { name: 'retailOrders', params: { id: this.$route.params.id } },
-
           children: [
             {
               name: 'Заказы',
@@ -188,9 +180,8 @@ export default {
         {
           name: 'Мой склад',
           icon: 'd-icon-boxes-2',
-          collapse: false,
+          collapse: this.collapsed('warehouse'),
           to: { name: 'warehouseReview', params: { id: this.$route.params.id } },
-
           children: [
             {
               name: 'Анализ склада',
@@ -212,7 +203,7 @@ export default {
         {
           name: 'Моя компания',
           icon: 'd-icon-company',
-          collapse: false,
+          collapse: this.collapsed('organization'),
           to: { name: 'organization', params: { id: this.$route.params.id } },
           children: [
             {
@@ -252,26 +243,14 @@ export default {
       this.toogleSidebar = true
       this.$emit('sidebarToggle')
     },
-    activeMenu(item, index = 0, setindex = 0) {
-      console.log('-------------')
-      console.log(this.$route)
+    collapsed(name) {
       let active = false
       const matched = this.$route.matched
       matched.forEach((entry) => {
-        if (entry.name == item?.to?.name) {
+        if (entry.name == name) {
           active = true
-          console.log(entry)
-          console.log(item.to)
         }
       })
-      if (active) {
-        console.log(setindex)
-        console.log(index)
-      }
-      if (active && setindex) {
-        console.log('set')
-        this.sidebarItem(index)
-      }
       return active
     },
   },

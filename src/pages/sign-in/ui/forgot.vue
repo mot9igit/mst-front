@@ -1,30 +1,29 @@
 <template>
-<div class="message d-input-error" v-if="message">
-    <i class="d-icon-warning d-input-error__icon"></i><span class="d-input-error__text">{{ message }}</span>
+  <div class="message d-input-error" v-if="message">
+    <i class="d-icon-warning d-input-error__icon"></i
+    ><span class="d-input-error__text">{{ message }}</span>
   </div>
   <form class="form-signin" @submit.prevent="forgotPass">
     <div :class="{ 'd-input--error': v$.form.email.$error }">
-    <input 
-      type="text"
-      name="username"
-      class="modal__input"
-      placeholder="Логин или email"
-      v-model="form.email"
-    />
+      <input
+        type="text"
+        name="username"
+        class="modal__input"
+        placeholder="Логин или email"
+        v-model="form.email"
+      />
     </div>
     <div v-if="v$.form.email.$error" class="d-input-error">
-            {{ console.log(v$.form.email) }}
-            <i class="d-icon-warning d-input-error__icon"></i>
-            <span v-if="v$.form.email.required" class="d-input-error__text"
-              >Пожалуйста, введите Email или Логин.</span
-            >
+      {{ console.log(v$.form.email) }}
+      <i class="d-icon-warning d-input-error__icon"></i>
+      <span v-if="v$.form.email.required" class="d-input-error__text"
+        >Пожалуйста, введите Email или Логин.</span
+      >
     </div>
-    <button class="d-button d-button-primary" type="submit">
-      Восстановить
-    </button>
+    <div class="button-container">
+      <button class="d-button d-button-primary" type="submit">Восстановить</button>
+    </div>
   </form>
-  
-
 </template>
 
 <script>
@@ -66,7 +65,7 @@ export default {
     },
   },
   watch: {
-    'form.email'(newVal, oldVal) {
+    'form.email'() {
       this.message = ''
     },
   },
@@ -86,19 +85,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.message .d-input-error__text, .message .d-input-error__icon{
-  font-size: 16px; 
+.form-signin {
+  .button-container {
+    text-align: center;
+    .d-button {
+      box-shadow: none;
+      padding: 0 16px;
+      display: inline-block;
+      width: auto;
+    }
+  }
+}
+.message .d-input-error__text,
+.message .d-input-error__icon {
+  font-size: 16px;
   margin-bottom: 5px;
 }
 .message .d-input-error {
-  width:100%;
+  width: 100%;
 }
 .message .d-input-error__icon {
-    margin-top: 4px;
+  margin-top: 4px;
 }
-.d-button{
-  width:50%;
-  margin:30px auto 0px;
+.d-button {
+  margin: 30px auto 0px;
 }
-
 </style>

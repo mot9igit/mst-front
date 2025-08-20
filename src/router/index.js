@@ -109,6 +109,8 @@ const router = createRouter({
                 },
                 {
                   path: 'purchases',
+                  name: 'purchases',
+                  redirect: { name: 'purchasesCatalogIndexPage' },
                   meta: {
                     breadcrumb: {
                       label: 'Закупки',
@@ -117,11 +119,13 @@ const router = createRouter({
                   children: [
                     {
                       path: 'catalog',
+                      name: 'purchasesCatalogIndex',
+                      redirect: { name: 'purchasesCatalogIndexPage' },
                       children: [
                         {
                           path: '',
-                          name: 'purchases',
                           props: true,
+                          name: 'purchasesCatalogIndexPage',
                           label: 'Закупки',
                           component: Purchases,
                         },
@@ -251,6 +255,7 @@ const router = createRouter({
                 },
                 {
                   path: 'wholesale',
+                  name: 'wholesale',
                   meta: {
                     breadcrumb: {
                       label: 'Оптовые продажи',
@@ -259,7 +264,6 @@ const router = createRouter({
                   children: [
                     {
                       path: '',
-                      name: 'wholesale',
                       props: true,
                       label: 'Оптовые продажи',
                       component: Wholesale,
@@ -362,6 +366,7 @@ const router = createRouter({
                 },
                 {
                   path: 'retail',
+                  name: 'retail',
                   meta: {
                     breadcrumb: {
                       label: 'Розничные продажи',
@@ -370,7 +375,6 @@ const router = createRouter({
                   children: [
                     {
                       path: '',
-                      name: 'retail',
                       props: true,
                       label: 'Розничные продажи',
                       component: Retail,
@@ -444,6 +448,7 @@ const router = createRouter({
                 },
                 {
                   path: 'warehouse',
+                  name: 'warehouse',
                   meta: {
                     breadcrumb: {
                       label: 'Мой склад',
@@ -452,7 +457,6 @@ const router = createRouter({
                   children: [
                     {
                       path: '',
-                      name: 'warehouse',
                       props: true,
                       label: 'Мой склад',
                       component: Warehouse,
@@ -497,6 +501,8 @@ const router = createRouter({
                 },
                 {
                   path: 'org',
+                  name: 'organization',
+                  redirect: { name: 'organizationIndexPage' },
                   meta: {
                     breadcrumb: {
                       label: 'Моя компания',
@@ -505,8 +511,8 @@ const router = createRouter({
                   children: [
                     {
                       path: '',
-                      name: 'organization',
                       props: true,
+                      name: 'organizationIndexPage',
                       label: 'Моя компания',
                       component: Organization,
                     },

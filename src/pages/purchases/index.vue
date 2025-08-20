@@ -154,7 +154,7 @@ export default {
         window.dispatchEvent(new Event('resize'))
       }, 500)
     },
-    '$route.params.id': {
+    $route: {
       handler: function () {
         if (this.$route.params.id) {
           this.getSalesBanners()
