@@ -10,6 +10,9 @@
   .header{
    padding-block: 11px 20px;
   }
+  .header__catalog-text {
+    display: flex;
+  }
 
 }
 
@@ -24,9 +27,11 @@
   .header{
     padding-block: 11px 20px;
   }
+  .d-search .d-search__field {
+    padding: 4px 100px 4px 15px;
+  }
   .d-search .d-search__button, .d-search .header__search-icon-button {
     right: 3px !important;
-    top: 54% !important;
   }
 
 }
@@ -82,7 +87,14 @@
     width: 90px;
     min-height: 22px;
   }
-
+  .header__upload {
+    font-size: 10px;
+    height: 24px;
+    min-height: 24px;
+  }
+  .header__upload-icon {
+    font-size: 14px;
+  }
 }
 
 @media (width <= 640px) {

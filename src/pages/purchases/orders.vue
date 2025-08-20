@@ -76,7 +76,7 @@ export default {
           class: 'cell_centeralign',
         },
         seller_address: {
-          label: 'Склад Поставщика',
+          label: 'Поставщик',
           type: 'link',
           link_to: 'purchasesOrder',
           link_params: {
