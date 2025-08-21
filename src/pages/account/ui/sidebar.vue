@@ -17,7 +17,8 @@
           </a>
           <div class="sidebar__block sidebar__toggle-block sidebar__logo-toggle">
             <button class="sidebar__toggle" @click.prevent="sidebarToggle()">
-              <i class="d-icon-arrow sidebar__toggle-icon"></i>
+              <i class="sidebar__toggle-icon" :class="isMobile === false ? 'd-icon-arrow' : 'd-icon-times-flat'"></i>
+             
             </button>
           </div>
         </div>
@@ -186,7 +187,7 @@
       <nav class="sidebar__nav">
         <ul class="sidebar__list">
           <li class="sidebar__block sidebar__item">
-            <button class="sidebar__item-button" @click.prevent="sidebarToggleMobile()">
+            <button class="sidebar__item-button" @click.prevent="sidebarToggle()">
               <i class="d-icon-burger sidebar__item-icon"></i>
             </button>
           </li>
@@ -196,16 +197,16 @@
             </button>
           </li>
           <li class="sidebar__block sidebar__item">
-            <button class="sidebar__item-button">
+            <button class="sidebar__item-button" @click.prevent="requirementOpen()">
               <i class="d-icon-upload-solid sidebar__item-icon"></i>
             </button>
           </li>
-          <li class="sidebar__block sidebar__item sidebar__item--active">
+          <li class="sidebar__block sidebar__item sidebar__item" @click.prevent="catalogOpen()">
             <button class="sidebar__item-button">
               <i class="d-icon-catalog-solid sidebar__item-icon"></i>
             </button>
           </li>
-          <li class="sidebar__block sidebar__item">
+          <li class="sidebar__block sidebar__item" @click.prevent="cartOpen()">
             <button class="sidebar__item-button">
               <i class="d-icon-cart-solid sidebar__item-icon"></i>
             </button>
@@ -265,11 +266,14 @@ export default {
   name: 'ProfileSidebar',
   data() {
     return {
+      isMobile: false,
       active: false,
-      activeMobile: false,
       showChangeOrgModal: false,
       organizations: [],
       activeOrganization: {},
+      showRequipment: false,
+      showCatalog: false,
+      showCart: false,
     }
   },
   components: { customModal, ChangeOrgWindow, sidebarMenu, Toast },
@@ -286,6 +290,20 @@ export default {
       deleteUser: 'user/deleteUser',
       getSessionUser: 'user/getSessionUser',
     }),
+    requirementOpen(){
+      
+    },
+    catalogOpen(){
+      
+    },
+    cartOpen(){
+      this.showCart = !this.showCart
+      this.active = true
+      this.showRequipment = false
+      this.showCatalog = false
+      
+      this.$emit('showCart')
+    },
     orgChange(id) {
       localStorage.setItem('global.organization', Number(id))
       this.showChangeOrgModal = false
@@ -296,12 +314,20 @@ export default {
       }
     },
     sidebarToggle() {
-      this.active = !this.active
-      localStorage.setItem('sidebar.position', Number(this.active))
+      this.isMobile = localStorage.getItem('global.isMobile')
+      console.log(this.isMobile)
+      if(this.isMobile == true){
+        this.active = !this.active 
+        //this.showRequipment = false
+        //this.showCatalog = false
+        //this.showCart = false
+      }else{
+        this.active = !this.active
+        localStorage.setItem('sidebar.position', Number(this.active))
+      }
+      
     },
-    sidebarToggleMobile() {
-      this.activeMobile = !this.activeMobile
-    },
+    
     clickAround() {
       document.addEventListener('click', (event) => {
         let sidebarElement = document.getElementById('sidebar__inner--desktop')
@@ -355,24 +381,42 @@ export default {
       })
     },
   },
+  setup(){
+     window.onload = function() {
+      let sh = document.querySelector('#app')
+      if(sh.clientWidth <= 600){
+        document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
+        localStorage.setItem('global.isMobile', true)
+      }else{
+        document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile')
+        localStorage.setItem('global.isMobile', false)
+      }  
+    }
+    
+    
+  },
   mounted() {
+    
     const sidebarPosition = localStorage.getItem('sidebar.position')
-    if (sidebarPosition) {
+    if (sidebarPosition && this.isMobile === false) {
       this.active = sidebarPosition
     }
-    this.setOrgs()
-    window.onload = function() {
-      if(window.innerWidth <= 600){
-        document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
-      }else{
-        document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile')
-      }
+    const isMob = localStorage.getItem('global.isMobile')
+    this.isMobile = isMob
+    if (isMob === true) {
+      this.active = 1
     }
+
+    this.setOrgs()
+
     window.addEventListener('resize', function(event) {
-    if(window.innerWidth <= 600){
+      let sh = document.querySelector('#app')
+      if(sh.clientWidth <= 600){
         document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
+        localStorage.setItem('global.isMobile', true)
       }else{
         document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile')
+        localStorage.setItem('global.isMobile', false)
       }
     }, true);
   },

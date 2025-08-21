@@ -1,5 +1,8 @@
 <template>
-  <ProfileSidebar></ProfileSidebar>
+  <ProfileSidebar
+    
+    @showCart="toggleCart"
+  ></ProfileSidebar>
   <div class="content">
     <ProfileHeader
       v-if="this.$route.params.id"
