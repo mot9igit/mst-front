@@ -1,5 +1,11 @@
 <template>
-  <ProfileSidebar @showCart="toggleCart"></ProfileSidebar>
+  <ProfileSidebar
+    :mobileCatalog="toggleMenu"
+    :toggleShoppingCart="toggleShoppingCart"
+    :cartBadge="cartCount"
+    @showCart="toggleCart()"
+    @showCatalog="toggleCatalog()"
+  ></ProfileSidebar>
   <div class="content">
     <ProfileHeader
       v-if="this.$route.params.id"
@@ -72,6 +78,7 @@ export default {
       toggleShoppingCart: false,
       toggleOrderWindow: false,
       headerDesignChange: false,
+      cartCount: 0,
     }
   },
   mounted() {
@@ -197,6 +204,9 @@ export default {
       handler: function () {
         this.toggleMenu = false
       },
+    },
+    basket: function (newVal) {
+      this.cartCount = newVal.cart_data?.sku_count ? newVal.cart_data.sku_count : 0
     },
   },
 }

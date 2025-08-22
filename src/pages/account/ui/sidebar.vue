@@ -211,6 +211,7 @@
           <li class="sidebar__block sidebar__item" @click.prevent="cartOpen()">
             <button class="sidebar__item-button">
               <i class="d-icon-cart-solid sidebar__item-icon"></i>
+              <span class="cart-badge" v-if="this.cartBadge > 0">{{ this.cartBadge }}</span>
             </button>
           </li>
           <li class="sidebar__block sidebar__item" v-if="this.activeOrganization">
@@ -271,7 +272,6 @@ import ChangeOrgWindow from '@/pages/org/ui/ChangeOrgWindow.vue'
 
 export default {
   name: 'ProfileSidebar',
-  emits: ['showCart'],
   data() {
     return {
       isMobile: false,
@@ -284,6 +284,21 @@ export default {
       showCart: false,
     }
   },
+  props: {
+    toggleShoppingCart: {
+      type: Boolean,
+      default: false,
+    },
+    mobileCatalog: {
+      type: Boolean,
+      default: false,
+    },
+    cartBadge: {
+      type: Number,
+      default: 0,
+    },
+  },
+  emits: ['showCart', 'showCatalog'],
   components: { customModal, ChangeOrgWindow, sidebarMenu, Toast },
   computed: {
     ...mapGetters({
@@ -299,12 +314,22 @@ export default {
       getSessionUser: 'user/getSessionUser',
     }),
     requirementOpen() {},
-    catalogOpen() {},
+    catalogOpen() {
+      this.showCatalog = this.mobileCatalog
+      this.showCatalog = !this.showCatalog
+      console.log(this.showCatalog)
+      //this.active = true
+      //this.showRequipment = false
+      //this.showCatalog = false
+
+      this.$emit('showCatalog')
+    },
     cartOpen() {
+      this.showCart = this.toggleShoppingCart
       this.showCart = !this.showCart
-      this.active = true
-      this.showRequipment = false
-      this.showCatalog = false
+      //this.active = true
+      //this.showRequipment = false
+      //this.showCatalog = false
 
       this.$emit('showCart')
     },
@@ -322,12 +347,15 @@ export default {
       console.log(this.isMobile)
       if (this.isMobile == true) {
         this.active = !this.active
-        //this.showRequipment = false
-        //this.showCatalog = false
-        //this.showCart = false
-      } else {
-        this.active = !this.active
-        localStorage.setItem('sidebar.position', Number(this.active))
+        if (this.isMobile == true) {
+          this.active = !this.active
+          //this.showRequipment = false
+          //this.showCatalog = false
+          //this.showCart = false
+        } else {
+          this.active = !this.active
+          localStorage.setItem('sidebar.position', Number(this.active))
+        }
       }
     },
 
@@ -335,7 +363,7 @@ export default {
       document.addEventListener('click', (event) => {
         let sidebarElement = document.getElementById('sidebar__inner--desktop')
         if (!sidebarElement.contains(event.target)) {
-          if (this.active === false) {
+          if (this.active === false && this.isMobile === false) {
             this.active = !this.active
             localStorage.setItem('sidebar.position', Number(this.active))
           }
@@ -411,7 +439,7 @@ export default {
 
     window.addEventListener(
       'resize',
-      function (event) {
+      function () {
         let sh = document.querySelector('#app')
         if (sh.clientWidth <= 600) {
           document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
@@ -433,6 +461,12 @@ export default {
       // if (this.$route.params.id) {
       this.setOrgs()
       // }
+    },
+    mobileCatalog: function (newVal) {
+      this.showCatalog = newVal
+    },
+    toggleShoppingCart: function (newVal) {
+      this.showCart = newVal
     },
   },
 }
