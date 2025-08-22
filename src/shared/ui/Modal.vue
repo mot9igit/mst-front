@@ -5,6 +5,7 @@
     classes="modal-container"
     content-class="modal-content"
     @closed="closed"
+    @beforeClose="beforeClose"
   >
     <span class="modal__title">
       <slot name="title"></slot>
@@ -24,13 +25,16 @@ import { VueFinalModal } from 'vue-final-modal'
 export default {
   name: 'CustomModal',
   inheritAttrs: false,
-  emits: ['confirm', 'cancel', 'close'],
+  emits: ['confirm', 'cancel', 'close', 'beforeClose'],
   components: {
     VueFinalModal,
   },
   methods: {
     closed() {
       this.$emit('close')
+    },
+    beforeClose(e) {
+      this.$emit('beforeClose', e)
     },
   },
 }

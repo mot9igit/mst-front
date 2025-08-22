@@ -20,7 +20,10 @@ export default {
     },
   },
   actions: {
-    async getOrg({ commit }, data) {
+    async getOrg({ commit }) {
+      const data = {
+        action: 'get/orgs',
+      }
       const response = await api.org.getOrg(data)
       if (response) {
         commit('SET_ORG', response.data)
@@ -92,7 +95,7 @@ export default {
       }
       return response
     },
-    async toggleVendorStores({ commit }, { active, org_id, store_id }) {
+    async toggleVendorStores(store, { active, org_id, store_id }) {
       const data = {
         action: 'toggle/vendors/stores',
         active: active,
@@ -108,7 +111,7 @@ export default {
       const response = await api.org.toggleVendorStores(data)
       return response
     },
-    async toggleOpts({ commit }, { action, id }) {
+    async toggleOpts(store, { action, id }) {
       const data = {
         type: 'toggleOptsVisible',
         id: id,
@@ -123,7 +126,7 @@ export default {
       const response = await api.org.toggleOpts(data)
       return response
     },
-    async toggleOptsVisible({ commit }, sendData) {
+    async toggleOptsVisible(store, sendData) {
       const data = {
         action: 'get/vendors',
         extended_name:
@@ -146,7 +149,7 @@ export default {
     },
     async getOrgProfile({ commit }) {
       const data = {
-        action: "get/org/profile",
+        action: 'get/org/profile',
         id: router.currentRoute._value.params.id,
       }
       const response = await api.org.getOrgProfile(data)
@@ -155,11 +158,11 @@ export default {
       }
       return response
     },
-    async editOrgProfile({ commit }, { data }) {
+    async editOrgProfile(store, { data }) {
       const sendData = {
-        action: "set/request/profile",
+        action: 'set/request/profile',
         id: router.currentRoute._value.params.id,
-        data: data
+        data: data,
       }
       const response = await api.org.editOrgProfile(sendData)
       return response

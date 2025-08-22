@@ -91,10 +91,7 @@ export default {
   },
   mounted() {
     this.getSessionUser()
-    const data = {
-      action: 'get/orgs',
-    }
-    this.getOrg(data).then((response) => {
+    this.getOrg().then((response) => {
       if (response != undefined) {
         const org = localStorage.getItem('global.organization')
         let i = 0
@@ -133,7 +130,6 @@ export default {
       basket: 'basket/basket',
       basketWarehouse: 'basket/basketWarehouse',
     }),
-
   },
   methods: {
     ...mapActions({
@@ -188,7 +184,6 @@ export default {
       document.execCommand('copy')
       window.getSelection().removeAllRanges()
     },
-
   },
   components: {
     ProfileSidebar,
@@ -202,18 +197,20 @@ export default {
     '$route.params.id': {
       handler: function () {
         if (this.$route.params.id) {
-          this.getOptVendorsAvailable({
-            filter: '',
-            page: 1,
-            perpage: this.cfg.vendors.perpage,
-          }).then(() => {
-            this.getOptVendorsSelected({
+          this.getOrg().then(() => {
+            this.getOptVendorsAvailable({
               filter: '',
               page: 1,
               perpage: this.cfg.vendors.perpage,
-            }).then(() => {})
+            }).then(() => {
+              this.getOptVendorsSelected({
+                filter: '',
+                page: 1,
+                perpage: this.cfg.vendors.perpage,
+              }).then(() => {})
+            })
+            this.getBasket()
           })
-          this.getBasket()
         }
       },
     },
@@ -222,9 +219,9 @@ export default {
         this.toggleMenu = false
       },
     },
-    basket: function(newVal){
+    basket: function (newVal) {
       this.cartCount = newVal.cart_data?.sku_count ? newVal.cart_data.sku_count : 0
-    }
+    },
   },
 }
 </script>
