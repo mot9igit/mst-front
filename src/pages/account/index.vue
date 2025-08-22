@@ -3,8 +3,11 @@
     :mobileCatalog="toggleMenu"
     :toggleShoppingCart="toggleShoppingCart"
     :cartBadge="cartCount"
+    :mobileRequipments="mobileRequipments"
     @showCart="toggleCart()"
     @showCatalog="toggleCatalog()"
+    @isMobile="mobileCatalog()"
+    @showRequipment="showRequip()"
   ></ProfileSidebar>
   <div class="content">
     <ProfileHeader
@@ -12,6 +15,8 @@
       @toggleCatalog="toggleCatalog"
       @toggleVendor="toggleVendor"
       @toggleCart="toggleCart"
+      @showRequipments="showRequip()"
+      :mobileRequipments="mobileRequipments"
       :active="toggleMenu"
     ></ProfileHeader>
 
@@ -30,6 +35,7 @@
   </div>
   <ProfileCatalogMenu
     :active="toggleMenu"
+    :isMobile="mobileCatalogShow"
     @headerDesignOff="headerDesignOff"
     @menuClose="menuClose"
   />
@@ -79,6 +85,8 @@ export default {
       toggleOrderWindow: false,
       headerDesignChange: false,
       cartCount: 0,
+      mobileCatalogShow: false,
+      mobileRequipments: false,
     }
   },
   mounted() {
@@ -149,6 +157,12 @@ export default {
       if (this.toggleMenu) {
         this.toggleMenu = false
       }
+    },
+    mobileCatalog(){
+      this.mobileCatalogShow = true
+    },
+    showRequip(){
+      this.mobileRequipments = !this.mobileRequipments
     },
     toggleVendor() {
       this.toggleVendors = !this.toggleVendors

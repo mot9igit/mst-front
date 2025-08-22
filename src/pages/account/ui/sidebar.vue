@@ -290,8 +290,12 @@ export default {
       type: Number,
       default: 0,
     },
+    mobileRequipments: {
+      type: Boolean,
+      default: false,
+    },
   },
-  emits: ['showCart', 'showCatalog'],
+  emits: ['showCart', 'showCatalog', 'isMobile', 'showRequipment'],
   components: { customModal, ChangeOrgWindow, sidebarMenu, Toast },
   computed: {
     ...mapGetters({
@@ -307,12 +311,15 @@ export default {
       getSessionUser: 'user/getSessionUser',
     }),
     requirementOpen(){
-
+      this.showRequipment = !this.showRequipment
+      console.log(this.showRequipment)
+      this.$emit('showRequipment')
     },
     catalogOpen(){
-      this.showCatalog = this.mobileCatalog
+      this.isMobile = localStorage.getItem('global.isMobile')
+      this.$emit('isMobile')
       this.showCatalog = !this.showCatalog
-      console.log(this.showCatalog)
+
       //this.active = true
       //this.showRequipment = false
       //this.showCatalog = false
@@ -320,7 +327,7 @@ export default {
       this.$emit('showCatalog')
     },
     cartOpen(){
-      this.showCart = this.toggleShoppingCart
+
       this.showCart = !this.showCart
       //this.active = true
       //this.showRequipment = false
@@ -410,6 +417,7 @@ export default {
       if(sh.clientWidth <= 600){
         document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
         localStorage.setItem('global.isMobile', true)
+
       }else{
         document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile')
         localStorage.setItem('global.isMobile', false)
@@ -437,11 +445,14 @@ export default {
       if(sh.clientWidth <= 600){
         document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
         localStorage.setItem('global.isMobile', true)
+
       }else{
         document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile')
         localStorage.setItem('global.isMobile', false)
       }
     }, true);
+
+
   },
   watch: {
     orgs: function (newVal) {
@@ -459,6 +470,9 @@ export default {
     toggleShoppingCart: function (newVal) {
       this.showCart = newVal
     },
+    mobileRequipments: function(newVal){
+      this.showRequipment = newVal
+    }
   },
 }
 </script>

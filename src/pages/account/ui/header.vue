@@ -65,7 +65,7 @@
             <a
               href="#"
               class="d-button d-button-tertiary shadow header__upload"
-              @click.prevent="this.modals.requirement = true"
+              @click.prevent="this.modals.requirement = true, openRequirementsWindow()"
             >
               <i class="d-icon-upload header__upload-icon"></i>
               <span class="header__upload-text">Потребность</span>
@@ -180,13 +180,17 @@ export default {
       },
     }
   },
-  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart'],
+  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart','showRequipments'],
   components: { Loader, customModal, changeAddressWindow, SearchField, requirement },
   props: {
     active: {
       type: Boolean,
       default: false,
     },
+    mobileRequipments: {
+      type: Boolean,
+      default: false,
+    }
   },
   mounted() {
     this.getOrgStores().then(() => {
@@ -236,9 +240,13 @@ export default {
 
       this.$emit('toggleCatalog')
     },
+    openRequirementsWindow() {
+      this.$emit('showRequipments')
+    },
     closeRequirementsWindow() {
       console.log('closeWindow')
       this.modals.requirement = false
+      this.$emit('showRequipments')
     },
     toggleVendor() {
       this.$emit('toggleVendor')
@@ -280,6 +288,9 @@ export default {
     basketWarehouse() {
       this.updateCart()
     },
+    mobileRequipments: function(newVal){
+      this.modals.requirement = newVal
+    }
   },
 }
 </script>

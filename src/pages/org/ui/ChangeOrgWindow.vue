@@ -187,6 +187,7 @@ export default {
 }
 </script>
 <style lang="scss">
+@media (width >600px){
 .change-organization__modal {
   max-width: 100%;
   width: auto;
@@ -298,7 +299,7 @@ export default {
   padding-bottom: 16px;
 }
 .change-organization__modal .change-organization__item-list {
-  border-bottom: 1px solid #7575757d;
+  border-bottom: 1px solid #75757575;
 }
 .vfm__content {
   -webkit-backdrop-filter: blur(11.4px);
@@ -307,5 +308,6 @@ export default {
 .vfm__overlay {
   -webkit-backdrop-filter: blur(17.5px);
   backdrop-filter: blur(17.5px);
+}
 }
 </style>

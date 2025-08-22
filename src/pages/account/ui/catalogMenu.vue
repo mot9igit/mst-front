@@ -236,6 +236,7 @@ export default {
       catalogListIndex: 0,
       catalogListPrevios: '',
       headerDesign: true,
+      mobileCatalog: false,
     }
   },
   emits: ['toggleCatalog', 'headerDesignOff', 'menuClose'],
@@ -244,6 +245,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    isMobile: {
+      type: Boolean,
+      default: false,
+    },
+
   },
 
   mounted() {
@@ -259,8 +265,9 @@ export default {
       //
       if (!event.target.closest('#catalogMenu')
           && !event.target.closest('#catalogBtn')
-          && !event.target.closest('.catalog__item-button')) {
+          && !event.target.closest('.catalog__item-button') && this.mobileCatalog === false) {
         this.$emit("menuClose")
+
       }
      })
   },
@@ -384,6 +391,9 @@ export default {
     //    this.clickAroundActive = newVal
     //  }
     },
+    isMobile: function(newVal){
+      this.mobileCatalog = newVal
+    }
   },
 }
 </script>

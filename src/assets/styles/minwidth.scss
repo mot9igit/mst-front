@@ -190,9 +190,6 @@
                 .d-search__icon-button {
                     margin-right: 18px;
                 }
-                .modal-content {
-                    max-width: 80vw !important;
-                }
                 .content-wrapper {
                     padding-inline: 28px;
                 }
@@ -423,6 +420,43 @@
                   color: #fff;
                   border-radius: 50%;
                 }
+                .modal-content{
+                  padding: 0px 43px 40px 43px !important;
+                }
+                .modal__title:before{
+                  content: 'Смена организации';
+                  font-size: 16px;
+                }
+                .change-organization__item-image {
+                  object-fit: cover;
+                  width: 20px;
+                  height: 20px;
+                }
+                .change-organization__item--big, .change-organization__modal-content, .d-modal2__header{
+                  padding: 0px;
+                }
+                 .change-organization__item--big .d-badge2 {
+                  padding: 3px 12px;
+                  font-weight: 400;
+                  font-size: 8px;
+                  min-height: 14px;
+                  min-width: 73px;
+                }
+                .change-organization__item--big{
+                  padding-bottom: 4px;
+                }
+                .change-organization__modal .change-organization__item-image-fallback {
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                }
+                .change-organization__modal .sitebar-avatar-none-char{
+                  font-size:10px;
+                }
+                .change-organization__item--big {
+                  border-bottom: 1.5px solid #75757575;
+                }
+
 
             }
 
