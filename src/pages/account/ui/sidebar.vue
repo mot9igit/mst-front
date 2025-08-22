@@ -17,8 +17,10 @@
           </a>
           <div class="sidebar__block sidebar__toggle-block sidebar__logo-toggle">
             <button class="sidebar__toggle" @click.prevent="sidebarToggle()">
-              <i class="sidebar__toggle-icon" :class="isMobile === false ? 'd-icon-arrow' : 'd-icon-times-flat'"></i>
-             
+              <i
+                class="sidebar__toggle-icon"
+                :class="isMobile === false ? 'd-icon-arrow' : 'd-icon-times-flat'"
+              ></i>
             </button>
           </div>
         </div>
@@ -212,33 +214,39 @@
             </button>
           </li>
           <li class="sidebar__block sidebar__item" v-if="this.activeOrganization">
-            <button class="sidebar__item-button" @click.prevent="showChangeOrgModal = true" v-if="activeOrganization.image">
+            <button
+              class="sidebar__item-button"
+              @click.prevent="showChangeOrgModal = true"
+              v-if="activeOrganization.image"
+            >
               <img
-
-                  :src="activeOrganization.image"
-                  :alt="activeOrganization.name"
-                  class="sidebar__item-img"
-                />
+                :src="activeOrganization.image"
+                :alt="activeOrganization.name"
+                class="sidebar__item-img"
+              />
             </button>
-            <button class="sidebar__item-button sidebar__item-button-none-char" @click.prevent="showChangeOrgModal = true" v-else>
-                <div  class="sitebar-avatar-none-char">
-                  {{
-                    this.activeOrganization?.name
-                      ? this.activeOrganization?.name.startsWith('ИП') ||
-                        this.activeOrganization?.name.startsWith('ООО')
-                        ? this.activeOrganization?.name
-                            .replace(/^ИП\s*/, '')
-                            .replace(/^ООО\s*/, '')
-                            .replace(/^"\s*/, '')
-                            .split(' ')[0]
-                            .slice(0, 2)
-                            .toUpperCase()
-                        : this.activeOrganization?.name.slice(0, 2).toUpperCase()
-                      : ''
-                  }}
-                </div>
+            <button
+              class="sidebar__item-button sidebar__item-button-none-char"
+              @click.prevent="showChangeOrgModal = true"
+              v-else
+            >
+              <div class="sitebar-avatar-none-char">
+                {{
+                  this.activeOrganization?.name
+                    ? this.activeOrganization?.name.startsWith('ИП') ||
+                      this.activeOrganization?.name.startsWith('ООО')
+                      ? this.activeOrganization?.name
+                          .replace(/^ИП\s*/, '')
+                          .replace(/^ООО\s*/, '')
+                          .replace(/^"\s*/, '')
+                          .split(' ')[0]
+                          .slice(0, 2)
+                          .toUpperCase()
+                      : this.activeOrganization?.name.slice(0, 2).toUpperCase()
+                    : ''
+                }}
+              </div>
             </button>
-
           </li>
         </ul>
       </nav>
@@ -253,7 +261,6 @@
       @orgChange="this.orgChange"
     />
   </customModal>
-
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -264,6 +271,7 @@ import ChangeOrgWindow from '@/pages/org/ui/ChangeOrgWindow.vue'
 
 export default {
   name: 'ProfileSidebar',
+  emits: ['showCart'],
   data() {
     return {
       isMobile: false,
@@ -290,18 +298,14 @@ export default {
       deleteUser: 'user/deleteUser',
       getSessionUser: 'user/getSessionUser',
     }),
-    requirementOpen(){
-      
-    },
-    catalogOpen(){
-      
-    },
-    cartOpen(){
+    requirementOpen() {},
+    catalogOpen() {},
+    cartOpen() {
       this.showCart = !this.showCart
       this.active = true
       this.showRequipment = false
       this.showCatalog = false
-      
+
       this.$emit('showCart')
     },
     orgChange(id) {
@@ -316,18 +320,17 @@ export default {
     sidebarToggle() {
       this.isMobile = localStorage.getItem('global.isMobile')
       console.log(this.isMobile)
-      if(this.isMobile == true){
-        this.active = !this.active 
+      if (this.isMobile == true) {
+        this.active = !this.active
         //this.showRequipment = false
         //this.showCatalog = false
         //this.showCart = false
-      }else{
+      } else {
         this.active = !this.active
         localStorage.setItem('sidebar.position', Number(this.active))
       }
-      
     },
-    
+
     clickAround() {
       document.addEventListener('click', (event) => {
         let sidebarElement = document.getElementById('sidebar__inner--desktop')
@@ -381,22 +384,19 @@ export default {
       })
     },
   },
-  setup(){
-     window.onload = function() {
+  setup() {
+    window.onload = function () {
       let sh = document.querySelector('#app')
-      if(sh.clientWidth <= 600){
+      if (sh.clientWidth <= 600) {
         document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
         localStorage.setItem('global.isMobile', true)
-      }else{
+      } else {
         document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile')
         localStorage.setItem('global.isMobile', false)
-      }  
+      }
     }
-    
-    
   },
   mounted() {
-    
     const sidebarPosition = localStorage.getItem('sidebar.position')
     if (sidebarPosition && this.isMobile === false) {
       this.active = sidebarPosition
@@ -409,16 +409,20 @@ export default {
 
     this.setOrgs()
 
-    window.addEventListener('resize', function(event) {
-      let sh = document.querySelector('#app')
-      if(sh.clientWidth <= 600){
-        document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
-        localStorage.setItem('global.isMobile', true)
-      }else{
-        document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile')
-        localStorage.setItem('global.isMobile', false)
-      }
-    }, true);
+    window.addEventListener(
+      'resize',
+      function (event) {
+        let sh = document.querySelector('#app')
+        if (sh.clientWidth <= 600) {
+          document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
+          localStorage.setItem('global.isMobile', true)
+        } else {
+          document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile')
+          localStorage.setItem('global.isMobile', false)
+        }
+      },
+      true,
+    )
   },
   watch: {
     orgs: function (newVal) {

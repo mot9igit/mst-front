@@ -1,8 +1,5 @@
 <template>
-  <ProfileSidebar
-    
-    @showCart="toggleCart"
-  ></ProfileSidebar>
+  <ProfileSidebar @showCart="toggleCart"></ProfileSidebar>
   <div class="content">
     <ProfileHeader
       v-if="this.$route.params.id"
@@ -79,10 +76,7 @@ export default {
   },
   mounted() {
     this.getSessionUser()
-    const data = {
-      action: 'get/orgs',
-    }
-    this.getOrg(data).then((response) => {
+    this.getOrg().then((response) => {
       if (response != undefined) {
         const org = localStorage.getItem('global.organization')
         let i = 0
@@ -182,18 +176,20 @@ export default {
     '$route.params.id': {
       handler: function () {
         if (this.$route.params.id) {
-          this.getOptVendorsAvailable({
-            filter: '',
-            page: 1,
-            perpage: this.cfg.vendors.perpage,
-          }).then(() => {
-            this.getOptVendorsSelected({
+          this.getOrg().then(() => {
+            this.getOptVendorsAvailable({
               filter: '',
               page: 1,
               perpage: this.cfg.vendors.perpage,
-            }).then(() => {})
+            }).then(() => {
+              this.getOptVendorsSelected({
+                filter: '',
+                page: 1,
+                perpage: this.cfg.vendors.perpage,
+              }).then(() => {})
+            })
+            this.getBasket()
           })
-          this.getBasket()
         }
       },
     },

@@ -56,13 +56,12 @@ export default {
       return response
     },
     // Берем все доступные Акции
-    async getAllActions({ commit }, { store_id }) {
+    async getAllActions({ commit }) {
       const data = {
         id: router.currentRoute._value.params.id,
         action: 'get/all',
-        store_id: store_id,
       }
-      const response = await api.action.getActionAdvPlaces(data)
+      const response = await api.action.getAllActions(data)
       if (response) {
         commit('SET_ALL_ACTIONS', response.data)
       }

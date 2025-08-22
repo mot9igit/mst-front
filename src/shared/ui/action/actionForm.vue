@@ -143,7 +143,7 @@
                 <p class="promotions__card-title">Баннер акции</p>
               </div>
               <div class="promotions__info-actions">
-                <button class="promotions__card-button" @click.prevent="openStep(2)">
+                <button class="promotions__card-button" @click.prevent="openStep(3)">
                   <i class="d-icon-pen2 promotions__card-button-icon"></i>
                 </button>
                 <div class="d-divider d-divider--vertical promotions__card-header-divider"></div>
@@ -152,17 +152,18 @@
                 </button>
               </div>
             </div>
-            <div class="promotions__card-content">
+            <div class="promotions__card-content" v-if="this.form.adv.files.max">
               <div class="promotions__card-banner-container">
                 <div class="promotions__card-banner">
-                  <div
+                  <!-- <div
                     class="d-message promotions__card-banner-message promotions__card-banner-message--banner"
                   >
                     <i class="d-icon-danger d-message__icon"></i>
                     <p class="d-message__text">Баннер не показывается в рекламе</p>
                   </div>
+                -->
                   <img
-                    src="/images/banner.png"
+                    :src="this.form.adv.files.max.original_href"
                     alt="Banner image"
                     class="promotions__card-banner-img"
                   />
@@ -182,26 +183,36 @@
                     >Места размещения баннера:</span
                   >
                   <div class="d-badge__container">
-                    <div class="d-badge">Главная страница</div>
-                    <div class="d-badge">Главная странница всех страниц</div>
+                    <template v-for="(v, i) in this.form.adv.place" :key="i">
+                      <div class="d-badge" v-if="v">
+                        {{ this.actionAdvPlaces.filter((item) => item.code == i)[0].name }}
+                      </div>
+                    </template>
                   </div>
                 </div>
               </div>
+            </div>
+            <div class="promotions__card-content" v-else>
+              <p
+                class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
+              >
+                Не указано
+              </p>
             </div>
           </div>
         </div>
       </div>
       <div class="dart-row promotions__content-card-container">
-        <div class="d-col d-col-xl-9 d-col-24">
+        <div class="d-col d-col-xl-12 d-col-24">
           <div class="promotions__card-container">
             <div class="promotions__card">
               <div class="promotions__card-header">
                 <div class="promotions__card-header-left">
                   <i class="d-icon-truck promotions__card-icon"></i>
-                  <p class="promotions__card-title">Условия акции</p>
+                  <p class="promotions__card-title">Условия доставки</p>
                 </div>
                 <div class="promotions__info-actions">
-                  <button class="promotions__card-button">
+                  <button class="promotions__card-button" @click.prevent="openStep(5)">
                     <i class="d-icon-pen2 promotions__card-button-icon"></i>
                   </button>
                   <div class="d-divider d-divider--vertical promotions__card-header-divider"></div>
@@ -219,7 +230,11 @@
                     <p
                       class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
                     >
-                      Доставка за счет покупателя
+                      {{
+                        this.form.paymentDelivery == 0
+                          ? 'Доставка за счет Покупателя'
+                          : 'Доставка за счет Продавца'
+                      }}
                     </p>
                   </div>
                   <div class="promotions__card-value-container d-md-full">
@@ -227,76 +242,166 @@
                     <p
                       class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
                     >
-                      Рассчитывается ТК
+                      {{
+                        this.form.paymentTime == 0
+                          ? 'Определяется по расчету доставки ТК'
+                          : 'Определяется данными из отгрузок'
+                      }}
                     </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="promotions__card hidden-600">
-              <div class="promotions__card-header">
-                <div class="promotions__card-header-left">
-                  <i class="d-icon-wallet promotions__card-icon"></i>
-                  <p class="promotions__card-title">Условия оплаты</p>
-                </div>
-                <div class="promotions__info-actions">
-                  <button class="promotions__card-button">
-                    <i class="d-icon-pen2 promotions__card-button-icon"></i>
-                  </button>
-                  <div class="d-divider d-divider--vertical promotions__card-header-divider"></div>
-                  <button class="promotions__card-button promotions__card-header-add">
-                    <i class="d-icon-plus promotions__card-button-icon"></i>
-                  </button>
-                </div>
-              </div>
-              <div class="promotions__card-content">
-                <div
-                  class="promotions__card-values promotions__card-values--md-horizontal promotions__card-values--md-long"
-                >
-                  <div class="promotions__card-info">
-                    <div class="promotions__card-value-container">
-                      <span class="promotions__card-label d-md-max-content">Под реализацию</span>
-                      <p
-                        class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
-                      >
-                        120 дней
-                      </p>
-                    </div>
-                    <div class="d-tooltip__container">
-                      <button class="promotions__card-info-button hidden-1200">
-                        <i class="d-icon-info promotions__card-info-icon"></i>
-                      </button>
-
-                      <div class="d-tooltip d-tooltip--right">
-                        <div class="d-tooltip__content">
-                          <span>Тут надо прописать текст о чем говорит эта иконка.</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="d-fractions">
-                    <div class="d-fractions__item">
-                      <p class="d-fractions__item-text">Предоплата</p>
-                      <div class="d-fractions__item-block" style="width: 36px"></div>
-                      <p class="d-fractions__item-text d-fractions__item-text--bottom">20%</p>
-                    </div>
-                    <div class="d-fractions__item">
-                      <p class="d-fractions__item-text">30 дней</p>
-                      <div class="d-fractions__item-block" style="width: 32px"></div>
-                      <p class="d-fractions__item-text d-fractions__item-text--bottom">30%</p>
-                    </div>
-                    <div class="d-fractions__item d-fractions__item--center">
-                      <p class="d-fractions__item-text">145 дней</p>
-                      <div class="d-fractions__item-block" style="width: 100px"></div>
-                      <p class="d-fractions__item-text d-fractions__item-text--bottom">50%</p>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="d-col d-col-xl-15 d-col-24">
+        <div class="d-col d-col-xl-12 d-col-24">
+          <div class="promotions__card">
+            <div class="promotions__card-header">
+              <div class="promotions__card-header-left">
+                <i class="d-icon-wallet promotions__card-icon"></i>
+                <p class="promotions__card-title">Условия оплаты</p>
+              </div>
+              <div class="promotions__info-actions">
+                <button class="promotions__card-button" @click.prevent="openStep(4)">
+                  <i class="d-icon-pen2 promotions__card-button-icon"></i>
+                </button>
+                <div class="d-divider d-divider--vertical promotions__card-header-divider"></div>
+                <button class="promotions__card-button promotions__card-header-add">
+                  <i class="d-icon-plus promotions__card-button-icon"></i>
+                </button>
+              </div>
+            </div>
+            <div class="promotions__card-content">
+              <div
+                class="promotions__card-values promotions__card-values--md-horizontal promotions__card-values--md-long"
+              >
+                <div class="promotions__card-info">
+                  <div class="promotions__card-value-container">
+                    <span class="promotions__card-label d-md-max-content">{{
+                      this.form.typeDelay == 1 ? 'Отсрочка платежа' : 'Под реализацию'
+                    }}</span>
+                    <p
+                      class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
+                    >
+                      {{ this.form.postponementPeriod }} дн.
+                    </p>
+                  </div>
+                  <!--
+                  <div class="d-tooltip__container">
+                    <button class="promotions__card-info-button hidden-1200">
+                      <i class="d-icon-info promotions__card-info-icon"></i>
+                    </button>
+
+                    <div class="d-tooltip d-tooltip--right">
+                      <div class="d-tooltip__content">
+                        <span>Тут надо прописать текст о чем говорит эта иконка.</span>
+                      </div>
+                    </div>
+                  </div>
+                  -->
+                </div>
+                <div class="d-fractions" v-if="this.form.typeDelay == 1">
+                  <div
+                    class="d-fractions__item"
+                    v-for="(item, index) in this.form.delay"
+                    :key="index"
+                    :style="'width: ' + item.percent + '%'"
+                  >
+                    <p class="d-fractions__item-text" v-if="item.day == 0">Предоплата</p>
+                    <p class="d-fractions__item-text" v-else>{{ item.day }} дн.</p>
+                    <div
+                      class="d-fractions__item-block"
+                      :style="'width: ' + item.percent + '%'"
+                    ></div>
+                    <p class="d-fractions__item-text d-fractions__item-text--bottom">
+                      {{ item.percent }}%
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-col d-col-xl-8 d-col-24"></div>
+      </div>
+      <div class="dart-row promotions__content-card-container">
+        <div class="d-col d-col-xl-12 d-col-24">
+          <div class="promotions__card promotions__card-dates">
+            <div class="promotions__card-header">
+              <div class="promotions__card-header-left">
+                <i class="d-icon-calendar3 promotions__card-icon"></i>
+                <p class="promotions__card-title">Даты проведения акции</p>
+              </div>
+              <div class="promotions__info-actions">
+                <button class="promotions__card-button" @click.prevent="openStep(2)">
+                  <i class="d-icon-pen2 promotions__card-button-icon"></i>
+                </button>
+                <div class="d-divider d-divider--vertical promotions__card-header-divider"></div>
+                <button class="promotions__card-button promotions__card-header-add">
+                  <i class="d-icon-plus promotions__card-button-icon"></i>
+                </button>
+              </div>
+            </div>
+            <div class="promotions__card-content">
+              <div
+                class="promotions__card-values promotions__card-values--md-horizontal promotions__card-values--md-long"
+              >
+                <div class="promotions__card-info">
+                  <div class="promotions__card-value-container" v-if="this.form.dates.length">
+                    <p
+                      class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
+                    >
+                      <span
+                        >с
+                        {{
+                          this.form.dates[0].toLocaleString(undefined, {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                          })
+                        }}
+                      </span>
+                      <span
+                        >по
+                        {{
+                          this.form.dates[1].toLocaleString(undefined, {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                          })
+                        }}</span
+                      >
+                    </p>
+                    <p
+                      class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
+                    >
+                      {{ datesDays }} дн.
+                    </p>
+                  </div>
+                  <div class="promotions__card-value-container" v-else>
+                    <p
+                      class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
+                    >
+                      Не указано
+                    </p>
+                  </div>
+                </div>
+                <div class="d-fractions d-fractions-dates" v-if="this.form.dates.length">
+                  <div class="d-fractions__item">
+                    <div
+                      class="d-fractions__item-block"
+                      :style="'width: ' + datesPercent + '%'"
+                    ></div>
+                    <p class="d-fractions__item-text d-fractions__item-text--bottom">
+                      Осталось {{ datesDaysAvailable }} дн.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-col d-col-xl-12 d-col-24">
           <div class="promotions__card">
             <div class="promotions__card-header">
               <div class="promotions__card-header-left">
@@ -304,7 +409,7 @@
                 <p class="promotions__card-title">Аудитория акции</p>
               </div>
               <div class="promotions__info-actions">
-                <button class="promotions__card-button">
+                <button class="promotions__card-button" @click.prevent="openStep(8)">
                   <i class="d-icon-pen2 promotions__card-button-icon"></i>
                 </button>
                 <div class="d-divider d-divider--vertical promotions__card-header-divider"></div>
@@ -445,22 +550,26 @@
                 <p class="promotions__card-title">Условия участия в акции</p>
 
                 <div class="d-category__container ml-44 hidden-1200">
-                  <div class="d-category">Негативная акция</div>
-                  <div class="d-category">Акция доступна только в предложениях</div>
+                  <div class="d-category" v-if="this.form.negative">Негативная акция</div>
+                  <div class="d-category" v-if="this.form.offer">
+                    Акция доступна только в предложениях
+                  </div>
                 </div>
               </div>
               <div class="promotions__card-header-right">
+                <!--
                 <div
                   class="d-message promotions__card-message promotions__card-promo-conds-message hidden-800"
                 >
                   <i class="d-icon-danger d-message__icon"></i>
                   <p class="d-message__text">Требуется интеграция склада</p>
                 </div>
+                -->
 
                 <div class="d-divider d-divider--vertical d-divider--big hidden-1200"></div>
 
                 <div class="promotions__info-actions">
-                  <button class="promotions__card-button">
+                  <button class="promotions__card-button" @click.prevent="openStep(6)">
                     <i class="d-icon-pen2 promotions__card-button-icon"></i>
                   </button>
                   <div class="d-divider d-divider--vertical promotions__card-header-divider"></div>
@@ -474,8 +583,12 @@
               <div
                 class="d-badge__container d-badge__container--long promotions__card-promo-conds-badges visible-1200 hidden-600"
               >
-                <div class="d-badge d-badge--filled">Негативная акция</div>
-                <div class="d-badge d-badge--filled">Акция доступна только в предложениях</div>
+                <div class="d-badge d-badge--filled" v-if="this.form.negative">
+                  Негативная акция
+                </div>
+                <div class="d-badge d-badge--filled" v-if="this.form.offer">
+                  Акция доступна только в предложениях
+                </div>
               </div>
               <div class="promotions__card-block-wrapper">
                 <div class="promotions__card-value-container promotions__card-block">
@@ -500,7 +613,7 @@
                     <p
                       class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value"
                     >
-                      0 ₽
+                      {{ this.form.conditionMinSum }} ₽
                     </p>
                   </div>
                 </div>
@@ -530,7 +643,7 @@
                     <p
                       class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value"
                     >
-                      Любое
+                      {{ this.form.conditionMinCount ? this.form.conditionMinCount : 'Любое' }}
                     </p>
                   </div>
                 </div>
@@ -560,7 +673,11 @@
                     <p
                       class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value"
                     >
-                      Любое
+                      {{
+                        this.form.conditionMinGeneralCount
+                          ? this.form.conditionMinGeneralCount
+                          : 'Любое'
+                      }}
                     </p>
                   </div>
                 </div>
@@ -599,7 +716,26 @@
                           <p
                             class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-title"
                           >
-                            Совместима со всеми акциями
+                            {{
+                              this.form.compatibilityDiscount == 1
+                                ? 'Совместима со всеми акциями'
+                                : ''
+                            }}
+                            {{
+                              this.form.compatibilityDiscount == 2
+                                ? 'Не совместима со всеми акциями'
+                                : ''
+                            }}
+                            {{
+                              this.form.compatibilityDiscount == 3
+                                ? 'Не совместима с выбранными акциями'
+                                : ''
+                            }}
+                            {{
+                              this.form.compatibilityDiscount == 4
+                                ? 'Совместима с выбранными акциями'
+                                : ''
+                            }}
                           </p>
                           <p
                             class="promotions__card-label promotions__card-block-description hidden-600"
@@ -635,19 +771,40 @@
                           <p
                             class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-title"
                           >
-                            Складываются
+                            {{ this.form.compabilityMode == 0 ? 'Применяется бóльшая' : '' }}
+                            {{ this.form.compabilityMode == 1 ? 'Складываются' : '' }}
+                            {{
+                              this.form.compabilityMode == 2 ? 'Назначаются последовательно' : ''
+                            }}
                           </p>
                           <p
                             class="promotions__card-label promotions__card-label--big promotions__card-block-description promotions__card-block-description--full"
                           >
-                            Процент скидки сложиться и отнимется от цены. Отсрочка сложится.
+                            {{
+                              this.form.compabilityMode == 0
+                                ? 'Будет применена бóльшая скидка и отсрочка'
+                                : ''
+                            }}
+                            {{
+                              this.form.compabilityMode == 1
+                                ? 'Проценты скидок сначала сложатся, затем сумма процентов отнимется от цены. Отсрочка сложится.'
+                                : ''
+                            }}
+                            {{
+                              this.form.compabilityMode == 2
+                                ? 'Скидки применяются по очереди. Отсрочка сложится.'
+                                : ''
+                            }}
                           </p>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <button class="d-button d-button-tertiary promotions__card-block-button">
+                  <button
+                    class="d-button d-button-tertiary promotions__card-block-button"
+                    @click.prevent="openStep(7)"
+                  >
                     <i class="d-icon-trade promotions__card-block-button-icon"></i>
                     Совместимость акций
                   </button>
@@ -691,90 +848,28 @@
                   >
                 </div>
                 <div class="promotions__card-warehouse-settings hidden-1200">
-                  <div class="d-field-container d-field-container--vertical">
-                    <div class="d-field-wrapper">
-                      <label class="d-switch" for="warehouse1">
-                        <input
-                          type="checkbox"
-                          name="warehouse1"
-                          id="warehouse1"
-                          class="d-switch__input"
-                        />
-                        <div class="d-switch__circle"></div>
-                      </label>
-                      <label for="warehouse1" class="d-switch__label">Все склады </label>
-                    </div>
-                    <div class="d-field-wrapper">
-                      <label class="d-switch" for="warehouse2">
-                        <input
-                          type="checkbox"
-                          name="warehouse2"
-                          id="warehouse2"
-                          class="d-switch__input"
-                        />
-                        <div class="d-switch__circle"></div>
-                      </label>
-                      <label for="warehouse2" class="d-switch__label"
-                        >ООО МСТ, г Химки, ул, Ленинградская д. 29
-                      </label>
-                    </div>
-                    <div class="d-field-wrapper">
-                      <label class="d-switch" for="warehouse3">
-                        <input
-                          type="checkbox"
-                          name="warehouse3"
-                          id="warehouse3"
-                          class="d-switch__input"
-                        />
-                        <div class="d-switch__circle"></div>
-                      </label>
-                      <label for="warehouse3" class="d-switch__label"
-                        >ООО МСТ, г Химки, ул, Ленинградская д. 29
-                      </label>
-                    </div>
-                  </div>
-                  <div class="d-field-container d-field-container--vertical">
-                    <div class="d-field-wrapper">
-                      <label class="d-switch" for="warehouse4">
-                        <input
-                          type="checkbox"
-                          name="warehouse4"
-                          id="warehouse4"
-                          class="d-switch__input"
-                        />
-                        <div class="d-switch__circle"></div>
-                      </label>
-                      <label for="warehouse4" class="d-switch__label"
-                        >ООО МСТ, г Химки, ул, Ленинградская д. 29
-                      </label>
-                    </div>
-                    <div class="d-field-wrapper">
-                      <label class="d-switch" for="warehouse5">
-                        <input
-                          type="checkbox"
-                          name="warehouse5"
-                          id="warehouse5"
-                          class="d-switch__input"
-                        />
-                        <div class="d-switch__circle"></div>
-                      </label>
-                      <label for="warehouse5" class="d-switch__label"
-                        >ООО МСТ, г Химки, ул, Ленинградская д. 29
-                      </label>
-                    </div>
-                    <div class="d-field-wrapper">
-                      <label class="d-switch" for="warehouse6">
-                        <input
-                          type="checkbox"
-                          name="warehouse6"
-                          id="warehouse6"
-                          class="d-switch__input"
-                        />
-                        <div class="d-switch__circle"></div>
-                      </label>
-                      <label for="warehouse6" class="d-switch__label"
-                        >ООО МСТ, г Химки, ул, Ленинградская д. 29
-                      </label>
+                  <div class="dart-row">
+                    <div
+                      class="d-col-md-12 d-col-24"
+                      v-for="store in this.orgStores.items"
+                      :key="store.id"
+                    >
+                      <div class="d-field-wrapper dart-mb-1">
+                        <label class="d-switch" :for="'warehouse' + store.id">
+                          <input
+                            type="checkbox"
+                            :name="'warehouse' + store.id"
+                            :id="'warehouse' + store.id"
+                            class="d-switch__input"
+                            v-model="this.form.store_id"
+                            :value="store.id"
+                          />
+                          <div class="d-switch__circle"></div>
+                        </label>
+                        <label :for="'warehouse' + store.id" class="d-switch__label"
+                          >{{ store.name_short ? store.name_short : store.name }}
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -803,2936 +898,12 @@
               <div
                 class="d-divider d-divider--full d-divider--semibold d-divider--black promotions__card-warehouse-divider"
               ></div>
-
-              <div class="promotions__card-warehouse promotions__card-warehouse-header-container">
-                <div class="promotions__card-value-container promotions__card-warehouse-header">
-                  <p
-                    class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-title promotions__card-warehouse-title"
-                  >
-                    Товары
-                  </p>
-                  <span
-                    class="promotions__card-label promotions__card-label--big promotions__card-warehouse-label"
-                    >Загрузите список товаров и установите скидки, которые получит клиент при
-                    выполнении условий акции</span
-                  >
-                </div>
-                <form class="d-search d-search--alt promotions__card-warehouse-search hidden-600">
-                  <i
-                    class="d-icon-search-big d-search__icon promotions__card-warehouse-search-icon"
-                  ></i>
-                  <input type="text" placeholder="Найти товар по артиклу" class="d-search__field" />
-                  <button
-                    type="button"
-                    class="d-button d-button-primary d-button-primary-small box-shadow-none d-search__button"
-                  >
-                    <span class="hidden-800">Найти</span>
-                    <i class="d-icon-search-big visible-800"></i>
-                  </button>
-
-                  <ul class="d-search__suggestions">
-                    <!-- <li class="d-search__suggestion">Россия, Москва, Большой Предтеченский переулок, 13с4</li>
-															<li class="d-search__suggestion">Россия, Москва, Большой Предтеченский переулок, 13с4</li>
-															<li class="d-search__suggestion">Россия, Москва, Большой Предтеченский переулок, 13с4</li>
-															<li class="d-search__suggestion">Россия, Москва, Большой Предтеченский переулок, 13с4</li> -->
-                  </ul>
-                </form>
-
-                <button
-                  class="d-button d-button-primary d-button-primary-small d-button--sm-shadow promotions__card-warehouse-settings-choose visible-600"
-                >
-                  <i class="d-icon-search-big"></i>
-                  Добавить коллекцию
-                </button>
-              </div>
-
-              <div class="d-table__wrapper promotions__card-products">
-                <table class="d-table hidden-1200">
-                  <thead class="d-table__head">
-                    <tr class="d-table__row">
-                      <th class="d-table__head-col">
-                        <div class="flex-center">
-                          <label class="d-radio d-radio--white" id="checkbox1">
-                            <input
-                              type="checkbox"
-                              name="checkbox1"
-                              id="checkbox1"
-                              class="d-radio__input"
-                            />
-                          </label>
-                        </div>
-                      </th>
-                      <th class="d-table__head-col" style="width: 20%">Товар</th>
-                      <th class="d-table__head-col">РРЦ</th>
-                      <th class="d-table__head-col">Скидка</th>
-                      <th class="d-table__head-col">Тип ценообразования</th>
-                      <th class="d-table__head-col">Цена со скидкой за шт.</th>
-                      <th class="d-table__head-col">Минимальное количество</th>
-                      <th class="d-table__head-col">Максимальное количество</th>
-                      <th class="d-table__head-col">Кратность</th>
-                      <th class="d-table__head-col">
-                        <div class="flex-center">
-                          <button class="d-icon-wrapper d-icon-wrapper--big d-icon-wrapper--white">
-                            <i class="d-icon-trash d-table__icon"></i>
-                          </button>
-                        </div>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="d-table__body promotions__product-card">
-                    <tr class="d-table__row">
-                      <td class="d-table__col"></td>
-                      <td class="d-table__col"></td>
-                      <td class="d-table__col"></td>
-                      <td class="d-table__col"></td>
-                      <td class="d-table__col"></td>
-                      <td class="d-table__col"></td>
-                      <td class="d-table__col"></td>
-                      <td class="d-table__col"></td>
-                      <td class="d-table__col"></td>
-                      <td class="d-table__col"></td>
-                    </tr>
-                    <tr class="d-table__row">
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <label class="d-radio d-radio--black" id="checkbox2">
-                            <input
-                              type="checkbox"
-                              name="checkbox2"
-                              id="checkbox2"
-                              class="d-radio__input"
-                            />
-                          </label>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="product-table-card">
-                          <p class="product-table-card__title">
-                            Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                          </p>
-                          <p class="product-table-card__article">Арт: 844337</p>
-                          <div class="d-badge d-badge--small">
-                            <img src="/icons/spo-logo.svg" alt="" class="d-badge__img" />
-                            МСТ
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="d-table__col-inner">
-                          <p
-                            class="promotions__card-text promotions__card-text--bold product-table-card__value"
-                          >
-                            2 500.00 ₽
-                          </p>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center flex-center--vertical">
-                          <p
-                            class="promotions__card-text promotions__card-text--bold product-table-card__discount product-table-card__value"
-                          >
-                            30% ₽
-                          </p>
-                          <button
-                            class="d-button d-button-tertiary d-button-tertiary-small product-table-card__discount-button"
-                          >
-                            <i class="d-icon-mixer product-table-card__discount-button-icon"></i>
-                            Настроить
-                          </button>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center flex-center--vertical">
-                          <p class="promotions__card-text promotions__card-text--bold">Скидка</p>
-                          <p class="product-table-card__text">по формуле</p>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <p
-                            class="promotions__card-text promotions__card-text--bold product-table-card__value"
-                          >
-                            1 750.00 ₽
-                          </p>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <div class="d-counter" data-counter="">
-                            <button class="d-counter__button" data-counter-button="decrement">
-                              <i class="d-icon-minus d-counter__button-icon"></i>
-                            </button>
-                            <input
-                              class="d-counter__input"
-                              type="text"
-                              name="test-counter"
-                              id="test-counter"
-                              value="1"
-                              data-counter-input=""
-                            />
-                            <button class="d-counter__button" data-counter-button="increment">
-                              <i class="d-icon-plus d-counter__button-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <div class="d-counter" data-counter="">
-                            <button class="d-counter__button" data-counter-button="decrement">
-                              <i class="d-icon-minus d-counter__button-icon"></i>
-                            </button>
-                            <input
-                              class="d-counter__input"
-                              type="text"
-                              name="test-counter"
-                              id="test-counter"
-                              value="1"
-                              data-counter-input=""
-                            />
-                            <button class="d-counter__button" data-counter-button="increment">
-                              <i class="d-icon-plus d-counter__button-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <div class="d-counter" data-counter="">
-                            <button class="d-counter__button" data-counter-button="decrement">
-                              <i class="d-icon-minus d-counter__button-icon"></i>
-                            </button>
-                            <input
-                              class="d-counter__input"
-                              type="text"
-                              name="test-counter"
-                              id="test-counter"
-                              value="1"
-                              data-counter-input=""
-                            />
-                            <button class="d-counter__button" data-counter-button="increment">
-                              <i class="d-icon-plus d-counter__button-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <button class="d-icon-wrapper d-icon-wrapper--big">
-                            <i class="d-icon-trash d-table__icon"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="d-table__row">
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <label class="d-radio d-radio--black" id="checkbox2">
-                            <input
-                              type="checkbox"
-                              name="checkbox2"
-                              id="checkbox2"
-                              class="d-radio__input"
-                            />
-                          </label>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="product-table-card">
-                          <p class="product-table-card__title">
-                            Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                          </p>
-                          <p class="product-table-card__article">Арт: 844337</p>
-                          <div class="d-badge d-badge--small">
-                            <img src="/icons/spo-logo.svg" alt="" class="d-badge__img" />
-                            МСТ
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="d-table__col-inner">
-                          <p
-                            class="promotions__card-text promotions__card-text--bold product-table-card__value"
-                          >
-                            2 500.00 ₽
-                          </p>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center flex-center--vertical">
-                          <p
-                            class="promotions__card-text promotions__card-text--bold product-table-card__discount product-table-card__value"
-                          >
-                            30% ₽
-                          </p>
-                          <button
-                            class="d-button d-button-tertiary d-button-tertiary-small product-table-card__discount-button"
-                          >
-                            <i class="d-icon-mixer product-table-card__discount-button-icon"></i>
-                            Настроить
-                          </button>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center flex-center--vertical">
-                          <p class="promotions__card-text promotions__card-text--bold">Скидка</p>
-                          <p class="product-table-card__text">по формуле</p>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <p
-                            class="promotions__card-text promotions__card-text--bold product-table-card__value"
-                          >
-                            1 750.00 ₽
-                          </p>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <div class="d-counter" data-counter="">
-                            <button class="d-counter__button" data-counter-button="decrement">
-                              <i class="d-icon-minus d-counter__button-icon"></i>
-                            </button>
-                            <input
-                              class="d-counter__input"
-                              type="text"
-                              name="test-counter"
-                              id="test-counter"
-                              value="1"
-                              data-counter-input=""
-                            />
-                            <button class="d-counter__button" data-counter-button="increment">
-                              <i class="d-icon-plus d-counter__button-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <div class="d-counter" data-counter="">
-                            <button class="d-counter__button" data-counter-button="decrement">
-                              <i class="d-icon-minus d-counter__button-icon"></i>
-                            </button>
-                            <input
-                              class="d-counter__input"
-                              type="text"
-                              name="test-counter"
-                              id="test-counter"
-                              value="1"
-                              data-counter-input=""
-                            />
-                            <button class="d-counter__button" data-counter-button="increment">
-                              <i class="d-icon-plus d-counter__button-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <div class="d-counter" data-counter="">
-                            <button class="d-counter__button" data-counter-button="decrement">
-                              <i class="d-icon-minus d-counter__button-icon"></i>
-                            </button>
-                            <input
-                              class="d-counter__input"
-                              type="text"
-                              name="test-counter"
-                              id="test-counter"
-                              value="1"
-                              data-counter-input=""
-                            />
-                            <button class="d-counter__button" data-counter-button="increment">
-                              <i class="d-icon-plus d-counter__button-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <button class="d-icon-wrapper d-icon-wrapper--big">
-                            <i class="d-icon-trash d-table__icon"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="d-table__row">
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <label class="d-radio d-radio--black" id="checkbox2">
-                            <input
-                              type="checkbox"
-                              name="checkbox2"
-                              id="checkbox2"
-                              class="d-radio__input"
-                            />
-                          </label>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="product-table-card">
-                          <p class="product-table-card__title">
-                            Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                          </p>
-                          <p class="product-table-card__article">Арт: 844337</p>
-                          <div class="d-badge d-badge--small">
-                            <img src="/icons/spo-logo.svg" alt="" class="d-badge__img" />
-                            МСТ
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="d-table__col-inner">
-                          <p
-                            class="promotions__card-text promotions__card-text--bold product-table-card__value"
-                          >
-                            2 500.00 ₽
-                          </p>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center flex-center--vertical">
-                          <p
-                            class="promotions__card-text promotions__card-text--bold product-table-card__discount product-table-card__value"
-                          >
-                            30% ₽
-                          </p>
-                          <button
-                            class="d-button d-button-tertiary d-button-tertiary-small product-table-card__discount-button"
-                          >
-                            <i class="d-icon-mixer product-table-card__discount-button-icon"></i>
-                            Настроить
-                          </button>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center flex-center--vertical">
-                          <p class="promotions__card-text promotions__card-text--bold">Скидка</p>
-                          <p class="product-table-card__text">по формуле</p>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <p
-                            class="promotions__card-text promotions__card-text--bold product-table-card__value"
-                          >
-                            1 750.00 ₽
-                          </p>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <div class="d-counter" data-counter="">
-                            <button class="d-counter__button" data-counter-button="decrement">
-                              <i class="d-icon-minus d-counter__button-icon"></i>
-                            </button>
-                            <input
-                              class="d-counter__input"
-                              type="text"
-                              name="test-counter"
-                              id="test-counter"
-                              value="1"
-                              data-counter-input=""
-                            />
-                            <button class="d-counter__button" data-counter-button="increment">
-                              <i class="d-icon-plus d-counter__button-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <div class="d-counter" data-counter="">
-                            <button class="d-counter__button" data-counter-button="decrement">
-                              <i class="d-icon-minus d-counter__button-icon"></i>
-                            </button>
-                            <input
-                              class="d-counter__input"
-                              type="text"
-                              name="test-counter"
-                              id="test-counter"
-                              value="1"
-                              data-counter-input=""
-                            />
-                            <button class="d-counter__button" data-counter-button="increment">
-                              <i class="d-icon-plus d-counter__button-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <div class="d-counter" data-counter="">
-                            <button class="d-counter__button" data-counter-button="decrement">
-                              <i class="d-icon-minus d-counter__button-icon"></i>
-                            </button>
-                            <input
-                              class="d-counter__input"
-                              type="text"
-                              name="test-counter"
-                              id="test-counter"
-                              value="1"
-                              data-counter-input=""
-                            />
-                            <button class="d-counter__button" data-counter-button="increment">
-                              <i class="d-icon-plus d-counter__button-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col">
-                        <div class="flex-center">
-                          <button class="d-icon-wrapper d-icon-wrapper--big">
-                            <i class="d-icon-trash d-table__icon"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                <div class="d-accordion visible-1200">
-                  <div class="d-accordion__header">
-                    <div class="d-product-list__header">
-                      <div class="d-radio__wrapper d-product-list__all">
-                        <label for="checkAll" class="d-radio__label">Выбрать все </label>
-                        <label class="d-radio d-radio--white">
-                          <input
-                            type="checkbox"
-                            name="checkAll"
-                            id="checkAll"
-                            class="d-radio__input"
-                          />
-                        </label>
-                      </div>
-                      <div
-                        class="d-divider d-divider--vertical d-divider--light d-product-list__header-divider"
-                      ></div>
-
-                      <button
-                        class="d-icon-wrapper d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--white d-product-list__header-button"
-                      >
-                        <i class="d-icon-angle-rounded-bottom"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div class="d-accordion__content">
-                    <div class="d-product-list__content">
-                      <div class="d-accordion d-product d-product--active">
-                        <div class="d-accordion__header">
-                          <div class="d-product__header">
-                            <div class="d-product__header-content">
-                              <img
-                                src="/images/product2.svg"
-                                alt=""
-                                class="d-product__img"
-                                width="50"
-                                height="52"
-                              />
-                              <div class="d-product__header-info-container">
-                                <div class="d-product__header-info">
-                                  <div class="d-product__top">
-                                    <div class="d-product__price">
-                                      <p class="d-product__price-value">1 750.00 ₽</p>
-                                      <div class="d-product__price-discount">30% ₽</div>
-                                    </div>
-                                    <div class="d-product__options">
-                                      <div class="d-radio__wrapper d-product-list__all">
-                                        <label class="d-radio d-radio--gray">
-                                          <input
-                                            type="checkbox"
-                                            name="check1"
-                                            id="check1"
-                                            class="d-radio__input"
-                                          />
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="d-divider d-divider--vertical d-divider--black d-product-list__header-divider"
-                                      ></div>
-                                      <button
-                                        class="d-icon-wrapper d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--gray d-product-list__header-button"
-                                      >
-                                        <i class="d-icon-angle-rounded-bottom"></i>
-                                      </button>
-                                    </div>
-                                  </div>
-                                  <p class="d-product__title">
-                                    Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                                  </p>
-                                  <p class="d-product__article">Арт: 844337</p>
-                                </div>
-                                <div class="d-product__multiple">
-                                  <p class="d-product__multiple-label">Кратность</p>
-                                  <div class="d-counter" data-counter="">
-                                    <button
-                                      class="d-counter__button"
-                                      data-counter-button="decrement"
-                                    >
-                                      <i class="d-icon-minus d-counter__button-icon"></i>
-                                    </button>
-                                    <input
-                                      class="d-counter__input"
-                                      type="text"
-                                      name="test-counter"
-                                      id="test-counter"
-                                      value="1"
-                                      data-counter-input=""
-                                    />
-                                    <button
-                                      class="d-counter__button"
-                                      data-counter-button="increment"
-                                    >
-                                      <i class="d-icon-plus d-counter__button-icon"></i>
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="d-accordion__content">
-                          <div class="d-product__content">
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">РРЦ</p>
-                              <div class="d-product__parameter-value">
-                                <p class="d-product__price-text">1 750.00 ₽</p>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Скидка</p>
-                              <div class="d-product__parameter-value">
-                                <div class="d-product__parameter-value-inner">
-                                  <p class="d-product__price-text">30% ₽</p>
-                                  <div class="d-divider d-divider--vertical d-divider--black"></div>
-                                  <div
-                                    class="d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--black"
-                                  >
-                                    <i class="d-icon-mixer"></i>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Тип ценообразования</p>
-                              <div class="d-product__parameter-value">
-                                <p class="d-product__parameter-text">
-                                  <span class="d-product__parameter-strong">Скидка</span
-                                  ><br class="visible-320" />
-                                  по формуле
-                                </p>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Цена с скидкой за шт.</p>
-                              <div class="d-product__parameter-value">
-                                <p class="d-product__price-text d-product__price-text--big">
-                                  1 750.00 ₽
-                                </p>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Минимальное количество</p>
-                              <div class="d-product__parameter-value">
-                                <div class="d-counter" data-counter="">
-                                  <button class="d-counter__button" data-counter-button="decrement">
-                                    <i class="d-icon-minus d-counter__button-icon"></i>
-                                  </button>
-                                  <input
-                                    class="d-counter__input"
-                                    type="text"
-                                    name="test-counter"
-                                    id="test-counter"
-                                    value="1"
-                                    data-counter-input=""
-                                  />
-                                  <button class="d-counter__button" data-counter-button="increment">
-                                    <i class="d-icon-plus d-counter__button-icon"></i>
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Максимальное количество</p>
-                              <div class="d-product__parameter-value">
-                                <div class="d-counter" data-counter="">
-                                  <button class="d-counter__button" data-counter-button="decrement">
-                                    <i class="d-icon-minus d-counter__button-icon"></i>
-                                  </button>
-                                  <input
-                                    class="d-counter__input"
-                                    type="text"
-                                    name="test-counter"
-                                    id="test-counter"
-                                    value="1"
-                                    data-counter-input=""
-                                  />
-                                  <button class="d-counter__button" data-counter-button="increment">
-                                    <i class="d-icon-plus d-counter__button-icon"></i>
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Кратность</p>
-                              <div class="d-product__parameter-value">
-                                <div class="d-counter" data-counter="">
-                                  <button class="d-counter__button" data-counter-button="decrement">
-                                    <i class="d-icon-minus d-counter__button-icon"></i>
-                                  </button>
-                                  <input
-                                    class="d-counter__input"
-                                    type="text"
-                                    name="test-counter"
-                                    id="test-counter"
-                                    value="1"
-                                    data-counter-input=""
-                                  />
-                                  <button class="d-counter__button" data-counter-button="increment">
-                                    <i class="d-icon-plus d-counter__button-icon"></i>
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="d-accordion d-product">
-                        <div class="d-accordion__header">
-                          <div class="d-product__header">
-                            <div class="d-product__header-content">
-                              <img
-                                src="/images/product2.svg"
-                                alt=""
-                                class="d-product__img"
-                                width="50"
-                                height="52"
-                              />
-                              <div class="d-product__header-info-container">
-                                <div class="d-product__header-info">
-                                  <div class="d-product__top">
-                                    <div class="d-product__price">
-                                      <p class="d-product__price-value">1 750.00 ₽</p>
-                                      <div class="d-product__price-discount">30% ₽</div>
-                                    </div>
-                                    <div class="d-product__options">
-                                      <div class="d-radio__wrapper d-product-list__all">
-                                        <label class="d-radio d-radio--gray">
-                                          <input
-                                            type="checkbox"
-                                            name="check1"
-                                            id="check1"
-                                            class="d-radio__input"
-                                          />
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="d-divider d-divider--vertical d-divider--black d-product-list__header-divider"
-                                      ></div>
-                                      <button
-                                        class="d-icon-wrapper d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--gray d-product-list__header-button"
-                                      >
-                                        <i class="d-icon-angle-rounded-bottom"></i>
-                                      </button>
-                                    </div>
-                                  </div>
-                                  <p class="d-product__title">
-                                    Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                                  </p>
-                                  <p class="d-product__article">Арт: 844337</p>
-                                </div>
-                                <div class="d-product__multiple">
-                                  <p class="d-product__multiple-label">Кратность</p>
-                                  <div class="d-counter" data-counter="">
-                                    <button
-                                      class="d-counter__button"
-                                      data-counter-button="decrement"
-                                    >
-                                      <i class="d-icon-minus d-counter__button-icon"></i>
-                                    </button>
-                                    <input
-                                      class="d-counter__input"
-                                      type="text"
-                                      name="test-counter"
-                                      id="test-counter"
-                                      value="1"
-                                      data-counter-input=""
-                                    />
-                                    <button
-                                      class="d-counter__button"
-                                      data-counter-button="increment"
-                                    >
-                                      <i class="d-icon-plus d-counter__button-icon"></i>
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <button class="d-product__delete">
-                              <i class="d-icon-trash d-product__delete-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="d-accordion d-product">
-                        <div class="d-product__header">
-                          <div class="d-product__header-content">
-                            <img
-                              src="/images/product2.svg"
-                              alt=""
-                              class="d-product__img"
-                              width="50"
-                              height="52"
-                            />
-                            <div class="d-product__header-info-container">
-                              <div class="d-product__header-info">
-                                <div class="d-product__top">
-                                  <div class="d-product__price">
-                                    <p class="d-product__price-value">1 750.00 ₽</p>
-                                    <div class="d-product__price-discount">30% ₽</div>
-                                  </div>
-                                  <div class="d-product__options">
-                                    <div class="d-radio__wrapper d-product-list__all">
-                                      <label class="d-radio d-radio--gray">
-                                        <input
-                                          type="checkbox"
-                                          name="check1"
-                                          id="check1"
-                                          class="d-radio__input"
-                                        />
-                                      </label>
-                                    </div>
-                                    <div
-                                      class="d-divider d-divider--vertical d-divider--black d-product-list__header-divider"
-                                    ></div>
-                                    <button
-                                      class="d-icon-wrapper d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--gray d-product-list__header-button"
-                                    >
-                                      <i class="d-icon-angle-rounded-bottom"></i>
-                                    </button>
-                                  </div>
-                                </div>
-                                <p class="d-product__title">
-                                  Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                                </p>
-                                <p class="d-product__article">Арт: 844337</p>
-                              </div>
-                              <div class="d-product__multiple">
-                                <p class="d-product__multiple-label">Кратность</p>
-                                <div class="d-counter" data-counter="">
-                                  <button class="d-counter__button" data-counter-button="decrement">
-                                    <i class="d-icon-minus d-counter__button-icon"></i>
-                                  </button>
-                                  <input
-                                    class="d-counter__input"
-                                    type="text"
-                                    name="test-counter"
-                                    id="test-counter"
-                                    value="1"
-                                    data-counter-input=""
-                                  />
-                                  <button class="d-counter__button" data-counter-button="increment">
-                                    <i class="d-icon-plus d-counter__button-icon"></i>
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          <button class="d-product__delete">
-                            <i class="d-icon-trash d-product__delete-icon"></i>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="d-table__footer">
-                  <div class="d-table__footer-content">
-                    <div class="d-table__footer-content-inner">
-                      <div class="d-table__footer-left">
-                        <div class="d-table__mark">Отмечено 0 из 3</div>
-                        <div
-                          class="d-divider d-divider--vertical d-divider--big d-divider--black hidden-800"
-                        ></div>
-                        <div class="d-field-wrapper d-table__footer-all">
-                          <label class="d-switch" for="products1">
-                            <input
-                              type="checkbox"
-                              name="products1"
-                              id="products1"
-                              class="d-switch__input"
-                            />
-                            <div class="d-switch__circle"></div>
-                          </label>
-                          <label for="products1" class="d-switch__label d-table__footer-all-label"
-                            >Выбрать все элементы на всех страницах
-                          </label>
-                        </div>
-                      </div>
-                      <div class="d-table__footer-right">
-                        <ul class="d-pagination d-table__footer-right-pagination">
-                          <li class="d-pagination__item">1</li>
-                          <li class="d-pagination__item">2</li>
-                          <li class="d-pagination__item">3</li>
-                          <li class="d-pagination__item d-pagination__item--active">4</li>
-                          <li class="d-pagination__item">+</li>
-                        </ul>
-                        <button class="d-select hidden-1200">
-                          <span class="d-select__title">Задать вручную</span>
-                          <i class="d-icon-angle-rounded-bottom d-select__arrow"></i>
-                        </button>
-                        <button class="d-select d-select--squared visible-1200">
-                          <span class="d-select__title">Задать вручную</span>
-                          <i class="d-icon-angle-rounded-bottom d-select__arrow"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <ul class="d-pagination d-table__footer-pagination">
-                      <li class="d-pagination__item">1</li>
-                      <li class="d-pagination__item">2</li>
-                      <li class="d-pagination__item">3</li>
-                      <li class="d-pagination__item d-pagination__item--active">4</li>
-                      <li class="d-pagination__item">+</li>
-                    </ul>
-                  </div>
-
-                  <div
-                    class="d-field-container d-field-container--long d-table__footer-fields hidden-1200"
-                  >
-                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <label for="manual" class="d-dropdown__label">Массовые действия </label>
-                      <div class="d-input d-input--light">
-                        <input
-                          type="text"
-                          placeholder="Задать вручную"
-                          name="manual"
-                          class="d-input__field d-table__footer-input"
-                          data-input-id="manual"
-                          required=""
-                        />
-                        <button class="d-input__dropdown-button">
-                          <i class="d-icon-angle-rounded-bottom d-input__dropdown-button-icon"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <label for="extra-charge" class="d-dropdown__label"
-                        >Тип ценообразования
-                      </label>
-                      <div class="d-input d-input--light">
-                        <input
-                          type="text"
-                          placeholder="Наценка"
-                          name="extra-charge"
-                          class="d-input__field d-table__footer-input"
-                          data-input-id="extra-charge"
-                          required=""
-                        />
-                        <button class="d-input__dropdown-button">
-                          <i class="d-icon-angle-rounded-bottom d-input__dropdown-button-icon"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <label for="value" class="d-dropdown__label">Значение </label>
-                      <div class="d-field-container d-field-container--long">
-                        <div class="d-input d-input--light">
-                          <input
-                            type="text"
-                            placeholder="0"
-                            name="value"
-                            class="d-input__field d-table__footer-input d-table__footer-input--value"
-                            data-input-id="value"
-                            required=""
-                          />
-                        </div>
-                        <div class="d-input d-input--light">
-                          <input
-                            type="text"
-                            placeholder="%"
-                            name="value-type"
-                            class="d-input__field d-table__footer-input d-table__footer-input--value-type"
-                            data-input-id="value-type"
-                            required=""
-                          />
-                          <button class="d-input__dropdown-button">
-                            <i
-                              class="d-icon-angle-rounded-bottom d-input__dropdown-button-icon"
-                            ></i>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <label for="test-dropdown" class="d-dropdown__label">От типа цены </label>
-                      <div class="d-input d-input--light">
-                        <input
-                          type="text"
-                          placeholder="Тип цен"
-                          name="price-type"
-                          class="d-input__field d-table__footer-input"
-                          data-input-id="price-type"
-                          required=""
-                        />
-                        <button class="d-input__dropdown-button">
-                          <i class="d-icon-angle-rounded-bottom d-input__dropdown-button-icon"></i>
-                        </button>
-                      </div>
-                    </div>
-
-                    <button class="d-icon-wrapper d-icon-wrapper--big d-icon-wrapper--active">
-                      <i class="d-icon-check"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
+              <ActionProducts />
               <div
                 class="d-divider d-divider--black d-divider--full promotions__card-products-divider"
               ></div>
 
-              <div class="promotions__card-warehouse">
-                <div class="promotions__card-value-container promotions__card-warehouse-header">
-                  <p
-                    class="promotions__card-value promotions__card-value--bold promotions__card-block-title"
-                  >
-                    Коллекции
-                  </p>
-                  <span class="promotions__card-label"
-                    >Загрузите список товаров и установите скидки, которые получит клиент при
-                    выполнении условий акции</span
-                  >
-                </div>
-                <button
-                  class="d-button d-button-primary promotions__card-block-button promotions__card-collection-add hidden-1200"
-                >
-                  <i
-                    class="d-icon-plus promotions__card-block-button-icon promotions__card-collection-add-icon"
-                  ></i>
-                  Добавить коллекцию
-                </button>
-                <form
-                  class="d-search d-search--alt promotions__card-warehouse-search visible-1200 hidden-600"
-                >
-                  <i
-                    class="d-icon-search-big d-search__icon promotions__card-warehouse-search-icon"
-                  ></i>
-                  <input type="text" placeholder="Найти коллекции" class="d-search__field" />
-                  <button
-                    type="button"
-                    class="d-button d-button-primary d-button-primary-small box-shadow-none d-search__button"
-                  >
-                    <span class="hidden-800">Найти</span>
-                    <i class="d-icon-search-big visible-800"></i>
-                  </button>
-
-                  <ul class="d-search__suggestions">
-                    <!-- <li class="d-search__suggestion">Россия, Москва, Большой Предтеченский переулок, 13с4</li>
-															<li class="d-search__suggestion">Россия, Москва, Большой Предтеченский переулок, 13с4</li>
-															<li class="d-search__suggestion">Россия, Москва, Большой Предтеченский переулок, 13с4</li>
-															<li class="d-search__suggestion">Россия, Москва, Большой Предтеченский переулок, 13с4</li> -->
-                  </ul>
-                </form>
-
-                <button
-                  class="d-button d-button-primary d-button-primary-small d-button--sm-shadow promotions__card-warehouse-settings-choose visible-600"
-                >
-                  <i class="d-icon-search-big"></i>
-                  Добавить коллекцию
-                </button>
-              </div>
-              <div class="promotions__card-collection-header hidden-1200">
-                <h2 class="promotions__card-title">Коллекция “Купить слона”№345 43</h2>
-                <div
-                  class="d-divider d-divider--vertical promotions__card-collection-header-divider"
-                ></div>
-                <button class="d-icon-wrapper d-icon-wrapper--big">
-                  <i class="d-icon-trash"></i>
-                </button>
-              </div>
-
-              <div
-                class="promotions__card-block-title-container promotions__card-collection-tabs-wrapper"
-              >
-                <div
-                  class="promotions__card-label promotions__card-label--big promotions__card-collection-tabs-title visible-1200"
-                >
-                  Выберите коллекцию
-                  <button
-                    class="d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--gray promotions__card-collection-tabs-toggle"
-                  >
-                    <i
-                      class="d-icon-angle-rounded-bottom promotions__card-collection-tabs-icon"
-                    ></i>
-                  </button>
-                </div>
-                <div class="d-tab__wrapper promotions__card-collection-tabs">
-                  <svg width="0" height="0" xmlns="http://www.w3.org/2000/svg">
-                    <clipPath id="tab-clip-path">
-                      <path
-                        d="M1 0.852539V21.0004H5H10C6.85108 19.9505 5.39759 18 4 16C3.6506 15.5 2.95906 13.9504 3 13.5C3.05931 12.8476 3.01459 13.7033 3.15389 12C3.23568 11 3.1983 10.5046 2.96518 8.5C2.5 4.5 1.36169 1.68259 1 0.852539Z"
-                      ></path>
-                    </clipPath>
-                  </svg>
-
-                  <div class="d-tab__container">
-                    <!-- NOTE: Порядок табов обратный -->
-                    <button class="d-tab d-tab--more">
-                      <div class="d-tab__more-content">+8 акций</div>
-                      <div class="d-tab__crutch"></div>
-                      <label for="test-radio1" class="d-radio d-tab__toggle">
-                        <input
-                          type="radio"
-                          name="test-radios"
-                          id="test-radio1"
-                          class="d-radio__input"
-                        />
-                      </label>
-                    </button>
-                    <button class="d-tab">
-                      Оснастка Интерскол (34332)
-                      <div class="d-tab__crutch"></div>
-                      <label for="test-radio1" class="d-radio d-tab__toggle">
-                        <input
-                          type="radio"
-                          name="test-radios"
-                          id="test-radio1"
-                          class="d-radio__input"
-                        />
-                      </label>
-                    </button>
-                    <button class="d-tab">
-                      Оснастка Интерскол (34332)
-                      <div class="d-tab__crutch"></div>
-                      <label for="test-radio1" class="d-radio d-tab__toggle">
-                        <input
-                          type="radio"
-                          name="test-radios"
-                          id="test-radio1"
-                          class="d-radio__input"
-                        />
-                      </label>
-                    </button>
-                    <button class="d-tab">
-                      Оснастка Интерскол (34332)
-                      <div class="d-tab__crutch"></div>
-                      <label for="test-radio1" class="d-radio d-tab__toggle">
-                        <input
-                          type="radio"
-                          name="test-radios"
-                          id="test-radio1"
-                          class="d-radio__input"
-                        />
-                      </label>
-                    </button>
-                    <button class="d-tab">
-                      Оснастка Интерскол (34332)
-                      <div class="d-tab__crutch"></div>
-                      <label for="test-radio1" class="d-radio d-tab__toggle">
-                        <input
-                          type="radio"
-                          name="test-radios"
-                          id="test-radio1"
-                          class="d-radio__input"
-                        />
-                      </label>
-                    </button>
-                    <button class="d-tab d-tab--active">
-                      Оснастка Интерскол (34332)
-                      <div class="d-tab__crutch"></div>
-                      <label for="test-radio1" class="d-radio d-tab__toggle">
-                        <input
-                          type="radio"
-                          name="test-radios"
-                          id="test-radio1"
-                          class="d-radio__input"
-                        />
-                      </label>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div
-                class="d-field-container d-field-container--vertical d-field-container--long promotions__card-collection-search"
-              >
-                <p class="promotions__card-text">Поиск товаров по коллекции</p>
-                <form class="d-search d-search--alt2">
-                  <input
-                    type="text"
-                    placeholder="Название, артикул, бренд, тег, категория"
-                    class="d-search__field"
-                  />
-                  <button type="submit" class="d-search__icon-button">
-                    <i class="d-icon-search-big"></i>
-                  </button>
-                  <ul class="d-search__suggestions">
-                    <!-- <li class="d-search__suggestion">
-																Россия, Москва, Большой Предтеченский переулок, 13с4
-															</li>
-															<li class="d-search__suggestion">
-																Россия, Москва, Большой Предтеченский переулок, 13с4
-															</li>
-															<li class="d-search__suggestion">
-																Россия, Москва, Большой Предтеченский переулок, 13с4
-															</li>
-															<li class="d-search__suggestion">
-																Россия, Москва, Большой Предтеченский переулок, 13с4
-															</li> -->
-                  </ul>
-                </form>
-              </div>
-
-              <div class="d-table__container promotions__card-products">
-                <div class="d-table__wrapper hidden-1200">
-                  <div class="d-table__decoration-wrapper">
-                    <div class="d-table__decoration"></div>
-                  </div>
-
-                  <table class="d-table d-table--decoration">
-                    <thead class="d-table__head">
-                      <tr class="d-table__row">
-                        <th class="d-table__head-col d-table__head-col--big">
-                          <div class="flex-center">
-                            <label class="d-radio d-radio--white" id="checkbox1">
-                              <input
-                                type="checkbox"
-                                name="checkbox1"
-                                id="checkbox1"
-                                class="d-radio__input"
-                              />
-                            </label>
-                          </div>
-                        </th>
-                        <th class="d-table__head-col d-table__head-col--big" style="width: 20%">
-                          Товар
-                        </th>
-                        <th class="d-table__head-col d-table__head-col--big">РРЦ</th>
-                        <th class="d-table__head-col d-table__head-col--big">
-                          Скидка
-                          <button
-                            class="d-button d-button-tertiary d-button-tertiary-small product-table-card__discount-button product-table-card__discount-button--table mt-4"
-                          >
-                            <i class="d-icon-mixer product-table-card__discount-button-icon"></i>
-                            Настроить
-                          </button>
-                        </th>
-                        <th class="d-table__head-col d-table__head-col--big">
-                          Тип ценообразования
-                        </th>
-                        <th class="d-table__head-col d-table__head-col--big">
-                          Цена со скидкой за шт.
-                        </th>
-                        <th class="d-table__head-col d-table__head-col--big">
-                          Минимальное количество
-                        </th>
-                        <th class="d-table__head-col d-table__head-col--big">
-                          Максимальное количество
-                        </th>
-                        <th class="d-table__head-col d-table__head-col--big">Кратность</th>
-                        <th class="d-table__head-col d-table__head-col--big">
-                          <div class="flex-center">
-                            <button
-                              class="d-icon-wrapper d-icon-wrapper--big d-icon-wrapper--white"
-                            >
-                              <i class="d-icon-trash d-table__icon"></i>
-                            </button>
-                          </div>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody class="d-table__body promotions__product-card">
-                      <tr class="d-table__row">
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                      </tr>
-                      <tr class="d-table__row">
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <label class="d-radio d-radio--black" id="checkbox2">
-                              <input
-                                type="checkbox"
-                                name="checkbox2"
-                                id="checkbox2"
-                                class="d-radio__input"
-                              />
-                            </label>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="product-table-card">
-                            <p class="product-table-card__title">
-                              Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                            </p>
-                            <p class="product-table-card__article">Арт: 844337</p>
-                            <div class="d-badge d-badge--small">
-                              <img src="/icons/spo-logo.svg" alt="" class="d-badge__img" />
-                              МСТ
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="d-table__col-inner">
-                            <p
-                              class="promotions__card-text promotions__card-text--bold product-table-card__value"
-                            >
-                              2 500.00 ₽
-                            </p>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center flex-center--vertical">
-                            <p
-                              class="promotions__card-text promotions__card-text--bold product-table-card__discount product-table-card__value"
-                            >
-                              30% ₽
-                            </p>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center flex-center--vertical">
-                            <p class="promotions__card-text promotions__card-text--bold">Скидка</p>
-                            <p class="product-table-card__text">по формуле</p>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <p
-                              class="promotions__card-text promotions__card-text--bold product-table-card__value"
-                            >
-                              1 750.00 ₽
-                            </p>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <div class="d-counter" data-counter="">
-                              <button class="d-counter__button" data-counter-button="decrement">
-                                <i class="d-icon-minus d-counter__button-icon"></i>
-                              </button>
-                              <input
-                                class="d-counter__input"
-                                type="text"
-                                name="test-counter"
-                                id="test-counter"
-                                value="1"
-                                data-counter-input=""
-                              />
-                              <button class="d-counter__button" data-counter-button="increment">
-                                <i class="d-icon-plus d-counter__button-icon"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <div class="d-counter" data-counter="">
-                              <button class="d-counter__button" data-counter-button="decrement">
-                                <i class="d-icon-minus d-counter__button-icon"></i>
-                              </button>
-                              <input
-                                class="d-counter__input"
-                                type="text"
-                                name="test-counter"
-                                id="test-counter"
-                                value="1"
-                                data-counter-input=""
-                              />
-                              <button class="d-counter__button" data-counter-button="increment">
-                                <i class="d-icon-plus d-counter__button-icon"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <div class="d-counter" data-counter="">
-                              <button class="d-counter__button" data-counter-button="decrement">
-                                <i class="d-icon-minus d-counter__button-icon"></i>
-                              </button>
-                              <input
-                                class="d-counter__input"
-                                type="text"
-                                name="test-counter"
-                                id="test-counter"
-                                value="1"
-                                data-counter-input=""
-                              />
-                              <button class="d-counter__button" data-counter-button="increment">
-                                <i class="d-icon-plus d-counter__button-icon"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <button class="d-icon-wrapper d-icon-wrapper--big">
-                              <i class="d-icon-trash d-table__icon"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr class="d-table__row">
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <label class="d-radio d-radio--black" id="checkbox2">
-                              <input
-                                type="checkbox"
-                                name="checkbox2"
-                                id="checkbox2"
-                                class="d-radio__input"
-                              />
-                            </label>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="product-table-card">
-                            <p class="product-table-card__title">
-                              Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                            </p>
-                            <p class="product-table-card__article">Арт: 844337</p>
-                            <div class="d-badge d-badge--small">
-                              <img src="/icons/spo-logo.svg" alt="" class="d-badge__img" />
-                              МСТ
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="d-table__col-inner">
-                            <p
-                              class="promotions__card-text promotions__card-text--bold product-table-card__value"
-                            >
-                              2 500.00 ₽
-                            </p>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center flex-center--vertical">
-                            <p
-                              class="promotions__card-text promotions__card-text--bold product-table-card__discount product-table-card__value"
-                            >
-                              30% ₽
-                            </p>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center flex-center--vertical">
-                            <p class="promotions__card-text promotions__card-text--bold">Скидка</p>
-                            <p class="product-table-card__text">по формуле</p>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <p
-                              class="promotions__card-text promotions__card-text--bold product-table-card__value"
-                            >
-                              1 750.00 ₽
-                            </p>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <div class="d-counter" data-counter="">
-                              <button class="d-counter__button" data-counter-button="decrement">
-                                <i class="d-icon-minus d-counter__button-icon"></i>
-                              </button>
-                              <input
-                                class="d-counter__input"
-                                type="text"
-                                name="test-counter"
-                                id="test-counter"
-                                value="1"
-                                data-counter-input=""
-                              />
-                              <button class="d-counter__button" data-counter-button="increment">
-                                <i class="d-icon-plus d-counter__button-icon"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <div class="d-counter" data-counter="">
-                              <button class="d-counter__button" data-counter-button="decrement">
-                                <i class="d-icon-minus d-counter__button-icon"></i>
-                              </button>
-                              <input
-                                class="d-counter__input"
-                                type="text"
-                                name="test-counter"
-                                id="test-counter"
-                                value="1"
-                                data-counter-input=""
-                              />
-                              <button class="d-counter__button" data-counter-button="increment">
-                                <i class="d-icon-plus d-counter__button-icon"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <div class="d-counter" data-counter="">
-                              <button class="d-counter__button" data-counter-button="decrement">
-                                <i class="d-icon-minus d-counter__button-icon"></i>
-                              </button>
-                              <input
-                                class="d-counter__input"
-                                type="text"
-                                name="test-counter"
-                                id="test-counter"
-                                value="1"
-                                data-counter-input=""
-                              />
-                              <button class="d-counter__button" data-counter-button="increment">
-                                <i class="d-icon-plus d-counter__button-icon"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <button class="d-icon-wrapper d-icon-wrapper--big">
-                              <i class="d-icon-trash d-table__icon"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <div class="d-accordion visible-1200">
-                  <div class="d-accordion__header">
-                    <div class="d-product-list__header">
-                      <div class="d-radio__wrapper d-product-list__all">
-                        <label for="checkAll" class="d-radio__label">Выбрать все </label>
-                        <label class="d-radio d-radio--white">
-                          <input
-                            type="checkbox"
-                            name="checkAll"
-                            id="checkAll"
-                            class="d-radio__input"
-                          />
-                        </label>
-                      </div>
-                      <div
-                        class="d-divider d-divider--vertical d-divider--light d-product-list__header-divider"
-                      ></div>
-
-                      <button
-                        class="d-icon-wrapper d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--white d-product-list__header-button"
-                      >
-                        <i class="d-icon-angle-rounded-bottom"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div class="d-accordion__content">
-                    <div class="d-product-list__content">
-                      <div class="d-accordion d-product d-product--active">
-                        <div class="d-product__header">
-                          <div class="d-product__header-content">
-                            <img
-                              src="/images/product2.svg"
-                              alt=""
-                              class="d-product__img"
-                              width="50"
-                              height="52"
-                            />
-                            <div class="d-product__header-info-container">
-                              <div class="d-product__header-info">
-                                <div class="d-product__top">
-                                  <div class="d-product__price">
-                                    <p class="d-product__price-value">1 750.00 ₽</p>
-                                    <div class="d-product__price-discount">30% ₽</div>
-                                  </div>
-                                  <div class="d-product__options">
-                                    <div class="d-radio__wrapper d-product-list__all">
-                                      <label class="d-radio d-radio--gray">
-                                        <input
-                                          type="checkbox"
-                                          name="check1"
-                                          id="check1"
-                                          class="d-radio__input"
-                                        />
-                                      </label>
-                                    </div>
-                                    <div
-                                      class="d-divider d-divider--vertical d-divider--black d-product-list__header-divider"
-                                    ></div>
-                                    <button
-                                      class="d-icon-wrapper d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--gray d-product-list__header-button"
-                                    >
-                                      <i class="d-icon-angle-rounded-bottom"></i>
-                                    </button>
-                                  </div>
-                                </div>
-                                <p class="d-product__title">
-                                  Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                                </p>
-                                <p class="d-product__article">Арт: 844337</p>
-                              </div>
-                              <div class="d-product__multiple">
-                                <p class="d-product__multiple-label">Кратность</p>
-                                <div class="d-counter" data-counter="">
-                                  <button class="d-counter__button" data-counter-button="decrement">
-                                    <i class="d-icon-minus d-counter__button-icon"></i>
-                                  </button>
-                                  <input
-                                    class="d-counter__input"
-                                    type="text"
-                                    name="test-counter"
-                                    id="test-counter"
-                                    value="1"
-                                    data-counter-input=""
-                                  />
-                                  <button class="d-counter__button" data-counter-button="increment">
-                                    <i class="d-icon-plus d-counter__button-icon"></i>
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          <button class="d-product__delete">
-                            <i class="d-icon-trash d-product__delete-icon"></i>
-                          </button>
-                        </div>
-                        <div class="d-accordion__content">
-                          <div class="d-product__content">
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">РРЦ</p>
-                              <div class="d-product__parameter-value">
-                                <p class="d-product__price-text">1 750.00 ₽</p>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Скидка</p>
-                              <div class="d-product__parameter-value">
-                                <div class="d-product__parameter-value-inner">
-                                  <p class="d-product__price-text">30% ₽</p>
-                                  <div class="d-divider d-divider--vertical d-divider--black"></div>
-                                  <div
-                                    class="d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--black"
-                                  >
-                                    <i class="d-icon-mixer"></i>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Тип ценообразования</p>
-                              <div class="d-product__parameter-value">
-                                <p class="d-product__parameter-text">
-                                  <span class="d-product__parameter-strong">Скидка</span
-                                  ><br class="visible-320" />
-                                  по формуле
-                                </p>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Цена с скидкой за шт.</p>
-                              <div class="d-product__parameter-value">
-                                <p class="d-product__price-text d-product__price-text--big">
-                                  1 750.00 ₽
-                                </p>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Минимальное количество</p>
-                              <div class="d-product__parameter-value">
-                                <div class="d-counter" data-counter="">
-                                  <button class="d-counter__button" data-counter-button="decrement">
-                                    <i class="d-icon-minus d-counter__button-icon"></i>
-                                  </button>
-                                  <input
-                                    class="d-counter__input"
-                                    type="text"
-                                    name="test-counter"
-                                    id="test-counter"
-                                    value="1"
-                                    data-counter-input=""
-                                  />
-                                  <button class="d-counter__button" data-counter-button="increment">
-                                    <i class="d-icon-plus d-counter__button-icon"></i>
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Максимальное количество</p>
-                              <div class="d-product__parameter-value">
-                                <div class="d-counter" data-counter="">
-                                  <button class="d-counter__button" data-counter-button="decrement">
-                                    <i class="d-icon-minus d-counter__button-icon"></i>
-                                  </button>
-                                  <input
-                                    class="d-counter__input"
-                                    type="text"
-                                    name="test-counter"
-                                    id="test-counter"
-                                    value="1"
-                                    data-counter-input=""
-                                  />
-                                  <button class="d-counter__button" data-counter-button="increment">
-                                    <i class="d-icon-plus d-counter__button-icon"></i>
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Кратность</p>
-                              <div class="d-product__parameter-value">
-                                <div class="d-counter" data-counter="">
-                                  <button class="d-counter__button" data-counter-button="decrement">
-                                    <i class="d-icon-minus d-counter__button-icon"></i>
-                                  </button>
-                                  <input
-                                    class="d-counter__input"
-                                    type="text"
-                                    name="test-counter"
-                                    id="test-counter"
-                                    value="1"
-                                    data-counter-input=""
-                                  />
-                                  <button class="d-counter__button" data-counter-button="increment">
-                                    <i class="d-icon-plus d-counter__button-icon"></i>
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="d-accordion d-product">
-                        <div class="d-accordion__header">
-                          <div class="d-product__header">
-                            <div class="d-product__header-content">
-                              <img
-                                src="/images/product2.svg"
-                                alt=""
-                                class="d-product__img"
-                                width="50"
-                                height="52"
-                              />
-                              <div class="d-product__header-info-container">
-                                <div class="d-product__header-info">
-                                  <div class="d-product__top">
-                                    <div class="d-product__price">
-                                      <p class="d-product__price-value">1 750.00 ₽</p>
-                                      <div class="d-product__price-discount">30% ₽</div>
-                                    </div>
-                                    <div class="d-product__options">
-                                      <div class="d-radio__wrapper d-product-list__all">
-                                        <label class="d-radio d-radio--gray">
-                                          <input
-                                            type="checkbox"
-                                            name="check1"
-                                            id="check1"
-                                            class="d-radio__input"
-                                          />
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="d-divider d-divider--vertical d-divider--black d-product-list__header-divider"
-                                      ></div>
-                                      <button
-                                        class="d-icon-wrapper d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--gray d-product-list__header-button"
-                                      >
-                                        <i class="d-icon-angle-rounded-bottom"></i>
-                                      </button>
-                                    </div>
-                                  </div>
-                                  <p class="d-product__title">
-                                    Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                                  </p>
-                                  <p class="d-product__article">Арт: 844337</p>
-                                </div>
-                                <div class="d-product__multiple">
-                                  <p class="d-product__multiple-label">Кратность</p>
-                                  <div class="d-counter" data-counter="">
-                                    <button
-                                      class="d-counter__button"
-                                      data-counter-button="decrement"
-                                    >
-                                      <i class="d-icon-minus d-counter__button-icon"></i>
-                                    </button>
-                                    <input
-                                      class="d-counter__input"
-                                      type="text"
-                                      name="test-counter"
-                                      id="test-counter"
-                                      value="1"
-                                      data-counter-input=""
-                                    />
-                                    <button
-                                      class="d-counter__button"
-                                      data-counter-button="increment"
-                                    >
-                                      <i class="d-icon-plus d-counter__button-icon"></i>
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <button class="d-product__delete">
-                              <i class="d-icon-trash d-product__delete-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="d-accordion d-product">
-                        <div class="d-accordion__header">
-                          <div class="d-product__header">
-                            <div class="d-product__header-content">
-                              <img
-                                src="/images/product2.svg"
-                                alt=""
-                                class="d-product__img"
-                                width="50"
-                                height="52"
-                              />
-                              <div class="d-product__header-info-container">
-                                <div class="d-product__header-info">
-                                  <div class="d-product__top">
-                                    <div class="d-product__price">
-                                      <p class="d-product__price-value">1 750.00 ₽</p>
-                                      <div class="d-product__price-discount">30% ₽</div>
-                                    </div>
-                                    <div class="d-product__options">
-                                      <div class="d-radio__wrapper d-product-list__all">
-                                        <label class="d-radio d-radio--gray">
-                                          <input
-                                            type="checkbox"
-                                            name="check1"
-                                            id="check1"
-                                            class="d-radio__input"
-                                          />
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="d-divider d-divider--vertical d-divider--black d-product-list__header-divider"
-                                      ></div>
-                                      <button
-                                        class="d-icon-wrapper d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--gray d-product-list__header-button"
-                                      >
-                                        <i class="d-icon-angle-rounded-bottom"></i>
-                                      </button>
-                                    </div>
-                                  </div>
-                                  <p class="d-product__title">
-                                    Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                                  </p>
-                                  <p class="d-product__article">Арт: 844337</p>
-                                </div>
-                                <div class="d-product__multiple">
-                                  <p class="d-product__multiple-label">Кратность</p>
-                                  <div class="d-counter" data-counter="">
-                                    <button
-                                      class="d-counter__button"
-                                      data-counter-button="decrement"
-                                    >
-                                      <i class="d-icon-minus d-counter__button-icon"></i>
-                                    </button>
-                                    <input
-                                      class="d-counter__input"
-                                      type="text"
-                                      name="test-counter"
-                                      id="test-counter"
-                                      value="1"
-                                      data-counter-input=""
-                                    />
-                                    <button
-                                      class="d-counter__button"
-                                      data-counter-button="increment"
-                                    >
-                                      <i class="d-icon-plus d-counter__button-icon"></i>
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <button class="d-product__delete">
-                              <i class="d-icon-trash d-product__delete-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="d-table__footer">
-                  <div class="d-table__footer-content">
-                    <div class="d-table__footer-content-inner">
-                      <div class="d-table__footer-left">
-                        <div class="d-table__mark">Отмечено 0 из 3</div>
-                        <div
-                          class="d-divider d-divider--vertical d-divider--big d-divider--black hidden-800"
-                        ></div>
-                        <div class="d-field-wrapper d-table__footer-all">
-                          <label class="d-switch" for="products1">
-                            <input
-                              type="checkbox"
-                              name="products1"
-                              id="products1"
-                              class="d-switch__input"
-                            />
-                            <div class="d-switch__circle"></div>
-                          </label>
-                          <label for="products1" class="d-switch__label d-table__footer-all-label"
-                            >Выбрать все элементы на всех страницах
-                          </label>
-                        </div>
-                      </div>
-                      <div class="d-table__footer-right">
-                        <ul class="d-pagination d-table__footer-right-pagination">
-                          <li class="d-pagination__item">1</li>
-                          <li class="d-pagination__item">2</li>
-                          <li class="d-pagination__item">3</li>
-                          <li class="d-pagination__item d-pagination__item--active">4</li>
-                          <li class="d-pagination__item">+</li>
-                        </ul>
-                        <button class="d-select hidden-1200">
-                          <span class="d-select__title">Задать вручную</span>
-                          <i class="d-icon-angle-rounded-bottom d-select__arrow"></i>
-                        </button>
-                        <button class="d-select d-select--squared visible-1200">
-                          <span class="d-select__title">Задать вручную</span>
-                          <i class="d-icon-angle-rounded-bottom d-select__arrow"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <ul class="d-pagination d-table__footer-pagination">
-                      <li class="d-pagination__item">1</li>
-                      <li class="d-pagination__item">2</li>
-                      <li class="d-pagination__item">3</li>
-                      <li class="d-pagination__item d-pagination__item--active">4</li>
-                      <li class="d-pagination__item">+</li>
-                    </ul>
-
-                    <button
-                      class="d-button d-button-secondary d-button-secondary-small d-button--sm-shadow d-table__mass"
-                    >
-                      Массовые действия
-                      <i class="d-icon-plus d-table__mass-icon"></i>
-                    </button>
-                  </div>
-
-                  <div
-                    class="d-field-container d-field-container--long d-table__footer-fields hidden-1200"
-                  >
-                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <label for="manual" class="d-dropdown__label">Массовые действия </label>
-                      <div class="d-input d-input--light">
-                        <input
-                          type="text"
-                          placeholder="Задать вручную"
-                          name="manual"
-                          class="d-input__field d-table__footer-input"
-                          data-input-id="manual"
-                          required=""
-                        />
-                        <button class="d-input__dropdown-button">
-                          <i class="d-icon-angle-rounded-bottom d-input__dropdown-button-icon"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <label for="extra-charge" class="d-dropdown__label"
-                        >Тип ценообразования
-                      </label>
-                      <div class="d-input d-input--light">
-                        <input
-                          type="text"
-                          placeholder="Наценка"
-                          name="extra-charge"
-                          class="d-input__field d-table__footer-input"
-                          data-input-id="extra-charge"
-                          required=""
-                        />
-                        <button class="d-input__dropdown-button">
-                          <i class="d-icon-angle-rounded-bottom d-input__dropdown-button-icon"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <label for="value" class="d-dropdown__label">Значение </label>
-                      <div class="d-field-container d-field-container--long">
-                        <div class="d-input d-input--light">
-                          <input
-                            type="text"
-                            placeholder="0"
-                            name="value"
-                            class="d-input__field d-table__footer-input d-table__footer-input--value"
-                            data-input-id="value"
-                            required=""
-                          />
-                        </div>
-                        <div class="d-input d-input--light">
-                          <input
-                            type="text"
-                            placeholder="%"
-                            name="value-type"
-                            class="d-input__field d-table__footer-input d-table__footer-input--value-type"
-                            data-input-id="value-type"
-                            required=""
-                          />
-                          <button class="d-input__dropdown-button">
-                            <i
-                              class="d-icon-angle-rounded-bottom d-input__dropdown-button-icon"
-                            ></i>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <label for="test-dropdown" class="d-dropdown__label">От типа цены </label>
-                      <div class="d-input d-input--light">
-                        <input
-                          type="text"
-                          placeholder="Тип цен"
-                          name="price-type"
-                          class="d-input__field d-table__footer-input"
-                          data-input-id="price-type"
-                          required=""
-                        />
-                        <button class="d-input__dropdown-button">
-                          <i class="d-icon-angle-rounded-bottom d-input__dropdown-button-icon"></i>
-                        </button>
-                      </div>
-                    </div>
-
-                    <button class="d-icon-wrapper d-icon-wrapper--big d-icon-wrapper--active">
-                      <i class="d-icon-check"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div
-                class="d-divider d-divider--black d-divider--full promotions__card-products-divider"
-              ></div>
-
-              <div class="promotions__card-warehouse promotions__complects-header">
-                <div class="promotions__card-value-container promotions__card-warehouse-header">
-                  <p
-                    class="promotions__card-value promotions__card-value--bold promotions__card-block-title"
-                  >
-                    Комлпекты
-                  </p>
-                  <span class="promotions__card-label"
-                    >Добавьте товары, которые продаются комплектом, и настройте условия их
-                    сочетания</span
-                  >
-                </div>
-
-                <div class="promotions__complects-header-right">
-                  <form class="d-search d-search--alt promotions__card-warehouse-search hidden-600">
-                    <i
-                      class="d-icon-search-big d-search__icon promotions__card-warehouse-search-icon"
-                    ></i>
-                    <input type="text" placeholder="Название или артикул" class="d-search__field" />
-                    <button
-                      type="button"
-                      class="d-button d-button-primary d-button-primary-small box-shadow-none d-search__button"
-                    >
-                      <span class="hidden-800">Найти</span>
-                      <i class="d-icon-search-big visible-800"></i>
-                    </button>
-
-                    <ul class="d-search__suggestions">
-                      <!-- <li class="d-search__suggestion">Россия, Москва, Большой Предтеченский переулок, 13с4</li>
-																<li class="d-search__suggestion">Россия, Москва, Большой Предтеченский переулок, 13с4</li>
-																<li class="d-search__suggestion">Россия, Москва, Большой Предтеченский переулок, 13с4</li>
-																<li class="d-search__suggestion">Россия, Москва, Большой Предтеченский переулок, 13с4</li> -->
-                    </ul>
-                  </form>
-
-                  <div class="promotions__complects-search visible-600">
-                    <button
-                      class="d-button d-button-primary d-button-primary-small d-button--sm-shadow promotions__complects-header-search-button"
-                    >
-                      <i class="d-icon-search-big"></i>
-                      Найти коллекцию
-                    </button>
-                    <div class="d-divider d-divider--vertical d-divider--full d-divider--big"></div>
-                    <button
-                      class="d-button d-button-secondary d-button-secondary-small d-button-rounded promotions__complects-add-button"
-                    >
-                      <i class="d-icon-plus"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div
-                class="promotions__card-block-title-container promotions__card-collection-tabs-wrapper promotions__complects-tabs-wrapper"
-              >
-                <span class="promotions__card-label promotions__card-label--big visible-1200"
-                  >Выберите комплекты</span
-                >
-                <div class="d-tab__wrapper promotions__card-collection-tabs">
-                  <svg width="0" height="0" xmlns="http://www.w3.org/2000/svg">
-                    <clipPath id="tab-clip-path">
-                      <path
-                        d="M1 0.852539V21.0004H5H10C6.85108 19.9505 5.39759 18 4 16C3.6506 15.5 2.95906 13.9504 3 13.5C3.05931 12.8476 3.01459 13.7033 3.15389 12C3.23568 11 3.1983 10.5046 2.96518 8.5C2.5 4.5 1.36169 1.68259 1 0.852539Z"
-                      ></path>
-                    </clipPath>
-                  </svg>
-
-                  <div class="d-tab__container">
-                    <!-- NOTE: Порядок табов обратный -->
-                    <button class="d-tab d-tab--more">
-                      <div class="d-tab__more-content">+8 акций</div>
-                      <div class="d-tab__crutch"></div>
-                    </button>
-                    <button class="d-tab">
-                      Оснастка Интерскол (34332)
-                      <div class="d-tab__crutch"></div>
-                    </button>
-                    <button class="d-tab">
-                      Оснастка Интерскол (34332)
-                      <div class="d-tab__crutch"></div>
-                    </button>
-                    <button class="d-tab">
-                      Оснастка Интерскол (34332)
-                      <div class="d-tab__crutch"></div>
-                    </button>
-                    <button class="d-tab">
-                      Оснастка Интерскол (34332)
-                      <div class="d-tab__crutch"></div>
-                    </button>
-                    <button class="d-tab d-tab--active">
-                      Оснастка Интерскол (34332)
-                      <div class="d-tab__crutch"></div>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="d-table__container promotions__card-products">
-                <div class="d-table__wrapper hidden-1200">
-                  <div class="d-table__decoration-wrapper">
-                    <div class="d-table__decoration"></div>
-                  </div>
-
-                  <table class="d-table">
-                    <thead class="d-table__head">
-                      <tr class="d-table__row">
-                        <th class="d-table__head-col">
-                          <div class="flex-center">
-                            <label class="d-radio d-radio--white" id="checkbox1">
-                              <input
-                                type="checkbox"
-                                name="checkbox1"
-                                id="checkbox1"
-                                class="d-radio__input"
-                              />
-                            </label>
-                          </div>
-                        </th>
-                        <th class="d-table__head-col" style="width: 20%">Товар</th>
-                        <th class="d-table__head-col">РРЦ</th>
-                        <th class="d-table__head-col">Скидка</th>
-                        <th class="d-table__head-col">Тип ценообразования</th>
-                        <th class="d-table__head-col">Цена со скидкой за шт.</th>
-                        <th class="d-table__head-col">Минимальное количество</th>
-                        <th class="d-table__head-col">Максимальное количество</th>
-                        <th class="d-table__head-col">Кратность</th>
-                        <th class="d-table__head-col">
-                          <div class="flex-center">
-                            <button
-                              class="d-icon-wrapper d-icon-wrapper--big d-icon-wrapper--white"
-                            >
-                              <i class="d-icon-trash d-table__icon"></i>
-                            </button>
-                          </div>
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody class="d-table__body promotions__product-card">
-                      <tr class="d-table__row">
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                        <td class="d-table__col"></td>
-                      </tr>
-                      <tr class="d-table__row">
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <label class="d-radio d-radio--black" id="checkbox2">
-                              <input
-                                type="checkbox"
-                                name="checkbox2"
-                                id="checkbox2"
-                                class="d-radio__input"
-                              />
-                            </label>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="product-table-card">
-                            <p class="product-table-card__title">
-                              Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                            </p>
-                            <p class="product-table-card__article">Арт: 844337</p>
-                            <div class="d-badge d-badge--small">
-                              <img src="/icons/spo-logo.svg" alt="" class="d-badge__img" />
-                              МСТ
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="d-table__col-inner">
-                            <p
-                              class="promotions__card-text promotions__card-text--bold product-table-card__value"
-                            >
-                              2 500.00 ₽
-                            </p>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center flex-center--vertical">
-                            <p
-                              class="promotions__card-text promotions__card-text--bold product-table-card__discount product-table-card__value"
-                            >
-                              30% ₽
-                            </p>
-                            <button
-                              class="d-button d-button-tertiary d-button-tertiary-small product-table-card__discount-button"
-                            >
-                              <i class="d-icon-mixer product-table-card__discount-button-icon"></i>
-                              Настроить
-                            </button>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center flex-center--vertical">
-                            <p class="promotions__card-text promotions__card-text--bold">Скидка</p>
-                            <p class="product-table-card__text">по формуле</p>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <p
-                              class="promotions__card-text promotions__card-text--bold product-table-card__value"
-                            >
-                              1 750.00 ₽
-                            </p>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <div class="d-counter" data-counter="">
-                              <button class="d-counter__button" data-counter-button="decrement">
-                                <i class="d-icon-minus d-counter__button-icon"></i>
-                              </button>
-                              <input
-                                class="d-counter__input"
-                                type="text"
-                                name="test-counter"
-                                id="test-counter"
-                                value="1"
-                                data-counter-input=""
-                              />
-                              <button class="d-counter__button" data-counter-button="increment">
-                                <i class="d-icon-plus d-counter__button-icon"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <div class="d-counter" data-counter="">
-                              <button class="d-counter__button" data-counter-button="decrement">
-                                <i class="d-icon-minus d-counter__button-icon"></i>
-                              </button>
-                              <input
-                                class="d-counter__input"
-                                type="text"
-                                name="test-counter"
-                                id="test-counter"
-                                value="1"
-                                data-counter-input=""
-                              />
-                              <button class="d-counter__button" data-counter-button="increment">
-                                <i class="d-icon-plus d-counter__button-icon"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <div class="d-counter" data-counter="">
-                              <button class="d-counter__button" data-counter-button="decrement">
-                                <i class="d-icon-minus d-counter__button-icon"></i>
-                              </button>
-                              <input
-                                class="d-counter__input"
-                                type="text"
-                                name="test-counter"
-                                id="test-counter"
-                                value="1"
-                                data-counter-input=""
-                              />
-                              <button class="d-counter__button" data-counter-button="increment">
-                                <i class="d-icon-plus d-counter__button-icon"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <button class="d-icon-wrapper d-icon-wrapper--big">
-                              <i class="d-icon-trash d-table__icon"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr class="d-table__row">
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <label class="d-radio d-radio--black" id="checkbox2">
-                              <input
-                                type="checkbox"
-                                name="checkbox2"
-                                id="checkbox2"
-                                class="d-radio__input"
-                              />
-                            </label>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="product-table-card">
-                            <p class="product-table-card__title">
-                              Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                            </p>
-                            <p class="product-table-card__article">Арт: 844337</p>
-                            <div class="d-badge d-badge--small">
-                              <img src="/icons/spo-logo.svg" alt="" class="d-badge__img" />
-                              МСТ
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="d-table__col-inner">
-                            <p
-                              class="promotions__card-text promotions__card-text--bold product-table-card__value"
-                            >
-                              2 500.00 ₽
-                            </p>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center flex-center--vertical">
-                            <p
-                              class="promotions__card-text promotions__card-text--bold product-table-card__discount product-table-card__value"
-                            >
-                              30% ₽
-                            </p>
-                            <button
-                              class="d-button d-button-tertiary d-button-tertiary-small product-table-card__discount-button"
-                            >
-                              <i class="d-icon-mixer product-table-card__discount-button-icon"></i>
-                              Настроить
-                            </button>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center flex-center--vertical">
-                            <p class="promotions__card-text promotions__card-text--bold">Скидка</p>
-                            <p class="product-table-card__text">по формуле</p>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <p
-                              class="promotions__card-text promotions__card-text--bold product-table-card__value"
-                            >
-                              1 750.00 ₽
-                            </p>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <div class="d-counter" data-counter="">
-                              <button class="d-counter__button" data-counter-button="decrement">
-                                <i class="d-icon-minus d-counter__button-icon"></i>
-                              </button>
-                              <input
-                                class="d-counter__input"
-                                type="text"
-                                name="test-counter"
-                                id="test-counter"
-                                value="1"
-                                data-counter-input=""
-                              />
-                              <button class="d-counter__button" data-counter-button="increment">
-                                <i class="d-icon-plus d-counter__button-icon"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <div class="d-counter" data-counter="">
-                              <button class="d-counter__button" data-counter-button="decrement">
-                                <i class="d-icon-minus d-counter__button-icon"></i>
-                              </button>
-                              <input
-                                class="d-counter__input"
-                                type="text"
-                                name="test-counter"
-                                id="test-counter"
-                                value="1"
-                                data-counter-input=""
-                              />
-                              <button class="d-counter__button" data-counter-button="increment">
-                                <i class="d-icon-plus d-counter__button-icon"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <div class="d-counter" data-counter="">
-                              <button class="d-counter__button" data-counter-button="decrement">
-                                <i class="d-icon-minus d-counter__button-icon"></i>
-                              </button>
-                              <input
-                                class="d-counter__input"
-                                type="text"
-                                name="test-counter"
-                                id="test-counter"
-                                value="1"
-                                data-counter-input=""
-                              />
-                              <button class="d-counter__button" data-counter-button="increment">
-                                <i class="d-icon-plus d-counter__button-icon"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="d-table__col">
-                          <div class="flex-center">
-                            <button class="d-icon-wrapper d-icon-wrapper--big">
-                              <i class="d-icon-trash d-table__icon"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <div class="d-accordion visible-1200">
-                  <div class="d-accordion__header">
-                    <div class="d-product-list__header">
-                      <div class="d-radio__wrapper d-product-list__all">
-                        <label for="checkAll" class="d-radio__label">Выбрать все </label>
-                        <label class="d-radio d-radio--white">
-                          <input
-                            type="checkbox"
-                            name="checkAll"
-                            id="checkAll"
-                            class="d-radio__input"
-                          />
-                        </label>
-                      </div>
-                      <div
-                        class="d-divider d-divider--vertical d-divider--light d-product-list__header-divider"
-                      ></div>
-
-                      <button
-                        class="d-icon-wrapper d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--white d-product-list__header-button"
-                      >
-                        <i class="d-icon-angle-rounded-bottom"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div class="d-accordion__content">
-                    <div class="d-product-list__content">
-                      <div class="d-accordion d-product d-product--active">
-                        <div class="d-accordion__header">
-                          <div class="d-product__header">
-                            <div class="d-product__header-content">
-                              <img
-                                src="/images/product2.svg"
-                                alt=""
-                                class="d-product__img"
-                                width="50"
-                                height="52"
-                              />
-                              <div class="d-product__header-info-container">
-                                <div class="d-product__header-info">
-                                  <div class="d-product__top">
-                                    <div class="d-product__price">
-                                      <p class="d-product__price-value">1 750.00 ₽</p>
-                                      <div class="d-product__price-discount">30% ₽</div>
-                                    </div>
-                                    <div class="d-product__options">
-                                      <div class="d-radio__wrapper d-product-list__all">
-                                        <label class="d-radio d-radio--gray">
-                                          <input
-                                            type="checkbox"
-                                            name="check1"
-                                            id="check1"
-                                            class="d-radio__input"
-                                          />
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="d-divider d-divider--vertical d-divider--black d-product-list__header-divider"
-                                      ></div>
-                                      <button
-                                        class="d-icon-wrapper d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--gray d-product-list__header-button"
-                                      >
-                                        <i class="d-icon-angle-rounded-bottom"></i>
-                                      </button>
-                                    </div>
-                                  </div>
-                                  <p class="d-product__title">
-                                    Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                                  </p>
-                                  <p class="d-product__article">Арт: 844337</p>
-                                </div>
-                                <div class="d-product__multiple">
-                                  <p class="d-product__multiple-label">Кратность</p>
-                                  <div class="d-counter" data-counter="">
-                                    <button
-                                      class="d-counter__button"
-                                      data-counter-button="decrement"
-                                    >
-                                      <i class="d-icon-minus d-counter__button-icon"></i>
-                                    </button>
-                                    <input
-                                      class="d-counter__input"
-                                      type="text"
-                                      name="test-counter"
-                                      id="test-counter"
-                                      value="1"
-                                      data-counter-input=""
-                                    />
-                                    <button
-                                      class="d-counter__button"
-                                      data-counter-button="increment"
-                                    >
-                                      <i class="d-icon-plus d-counter__button-icon"></i>
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <button class="d-product__delete">
-                              <i class="d-icon-trash d-product__delete-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                        <div class="d-accordion__content">
-                          <div class="d-product__content">
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">РРЦ</p>
-                              <div class="d-product__parameter-value">
-                                <p class="d-product__price-text">1 750.00 ₽</p>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Скидка</p>
-                              <div class="d-product__parameter-value">
-                                <div class="d-product__parameter-value-inner">
-                                  <p class="d-product__price-text">30% ₽</p>
-                                  <div class="d-divider d-divider--vertical d-divider--black"></div>
-                                  <div
-                                    class="d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--black"
-                                  >
-                                    <i class="d-icon-mixer"></i>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Тип ценообразования</p>
-                              <div class="d-product__parameter-value">
-                                <p class="d-product__parameter-text">
-                                  <span class="d-product__parameter-strong">Скидка</span
-                                  ><br class="visible-320" />
-                                  по формуле
-                                </p>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Цена с скидкой за шт.</p>
-                              <div class="d-product__parameter-value">
-                                <p class="d-product__price-text d-product__price-text--big">
-                                  1 750.00 ₽
-                                </p>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Минимальное количество</p>
-                              <div class="d-product__parameter-value">
-                                <div class="d-counter" data-counter="">
-                                  <button class="d-counter__button" data-counter-button="decrement">
-                                    <i class="d-icon-minus d-counter__button-icon"></i>
-                                  </button>
-                                  <input
-                                    class="d-counter__input"
-                                    type="text"
-                                    name="test-counter"
-                                    id="test-counter"
-                                    value="1"
-                                    data-counter-input=""
-                                  />
-                                  <button class="d-counter__button" data-counter-button="increment">
-                                    <i class="d-icon-plus d-counter__button-icon"></i>
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Максимальное количество</p>
-                              <div class="d-product__parameter-value">
-                                <div class="d-counter" data-counter="">
-                                  <button class="d-counter__button" data-counter-button="decrement">
-                                    <i class="d-icon-minus d-counter__button-icon"></i>
-                                  </button>
-                                  <input
-                                    class="d-counter__input"
-                                    type="text"
-                                    name="test-counter"
-                                    id="test-counter"
-                                    value="1"
-                                    data-counter-input=""
-                                  />
-                                  <button class="d-counter__button" data-counter-button="increment">
-                                    <i class="d-icon-plus d-counter__button-icon"></i>
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="d-product__parameter">
-                              <p class="d-product__parameter-title">Кратность</p>
-                              <div class="d-product__parameter-value">
-                                <div class="d-counter" data-counter="">
-                                  <button class="d-counter__button" data-counter-button="decrement">
-                                    <i class="d-icon-minus d-counter__button-icon"></i>
-                                  </button>
-                                  <input
-                                    class="d-counter__input"
-                                    type="text"
-                                    name="test-counter"
-                                    id="test-counter"
-                                    value="1"
-                                    data-counter-input=""
-                                  />
-                                  <button class="d-counter__button" data-counter-button="increment">
-                                    <i class="d-icon-plus d-counter__button-icon"></i>
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="d-accordion d-product">
-                        <div class="d-accordion__header">
-                          <div class="d-product__header">
-                            <div class="d-product__header-content">
-                              <img
-                                src="/images/product2.svg"
-                                alt=""
-                                class="d-product__img"
-                                width="50"
-                                height="52"
-                              />
-                              <div class="d-product__header-info-container">
-                                <div class="d-product__header-info">
-                                  <div class="d-product__top">
-                                    <div class="d-product__price">
-                                      <p class="d-product__price-value">1 750.00 ₽</p>
-                                      <div class="d-product__price-discount">30% ₽</div>
-                                    </div>
-                                    <div class="d-product__options">
-                                      <div class="d-radio__wrapper d-product-list__all">
-                                        <label class="d-radio d-radio--gray">
-                                          <input
-                                            type="checkbox"
-                                            name="check1"
-                                            id="check1"
-                                            class="d-radio__input"
-                                          />
-                                        </label>
-                                      </div>
-                                      <div
-                                        class="d-divider d-divider--vertical d-divider--black d-product-list__header-divider"
-                                      ></div>
-                                      <button
-                                        class="d-icon-wrapper d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--gray d-product-list__header-button"
-                                      >
-                                        <i class="d-icon-angle-rounded-bottom"></i>
-                                      </button>
-                                    </div>
-                                  </div>
-                                  <p class="d-product__title">
-                                    Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                                  </p>
-                                  <p class="d-product__article">Арт: 844337</p>
-                                </div>
-                                <div class="d-product__multiple">
-                                  <p class="d-product__multiple-label">Кратность</p>
-                                  <div class="d-counter" data-counter="">
-                                    <button
-                                      class="d-counter__button"
-                                      data-counter-button="decrement"
-                                    >
-                                      <i class="d-icon-minus d-counter__button-icon"></i>
-                                    </button>
-                                    <input
-                                      class="d-counter__input"
-                                      type="text"
-                                      name="test-counter"
-                                      id="test-counter"
-                                      value="1"
-                                      data-counter-input=""
-                                    />
-                                    <button
-                                      class="d-counter__button"
-                                      data-counter-button="increment"
-                                    >
-                                      <i class="d-icon-plus d-counter__button-icon"></i>
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-                            <button class="d-product__delete">
-                              <i class="d-icon-trash d-product__delete-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="d-accordion d-product">
-                        <div class="d-accordion__header">
-                          <div class="d-product__header">
-                            <div class="d-product__header-content">
-                              <img
-                                src="/images/product2.svg"
-                                alt=""
-                                class="d-product__img"
-                                width="50"
-                                height="52"
-                              />
-                              <div class="d-product__header-info">
-                                <div class="d-product__price">
-                                  <p class="d-product__price-value">1 750.00 ₽</p>
-                                  <div class="d-product__price-discount">30% ₽</div>
-                                </div>
-                                <p class="d-product__title">
-                                  Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                                </p>
-                                <p class="d-product__article">Арт: 844337</p>
-                              </div>
-                            </div>
-                            <div class="d-product__options">
-                              <div class="d-radio__wrapper d-product-list__all">
-                                <label class="d-radio d-radio--gray">
-                                  <input
-                                    type="checkbox"
-                                    name="check1"
-                                    id="check1"
-                                    class="d-radio__input"
-                                  />
-                                </label>
-                              </div>
-                              <div
-                                class="d-divider d-divider--vertical d-divider--black d-product-list__header-divider--long"
-                              ></div>
-                              <button
-                                class="d-icon-wrapper d-icon-wrapper d-icon-wrapper--no-hover d-icon-wrapper--gray d-product-list__header-button"
-                              >
-                                <i class="d-icon-angle-rounded-bottom"></i>
-                              </button>
-                            </div>
-
-                            <button class="d-product__delete">
-                              <i class="d-icon-trash d-product__delete-icon"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="d-table__footer">
-                  <div class="d-table__footer-content">
-                    <div class="d-table__footer-content-inner">
-                      <div class="d-table__footer-left">
-                        <div class="d-table__mark">Отмечено 0 из 3</div>
-                        <div
-                          class="d-divider d-divider--vertical d-divider--big d-divider--black hidden-800"
-                        ></div>
-                        <div class="d-field-wrapper d-table__footer-all">
-                          <label class="d-switch" for="products1">
-                            <input
-                              type="checkbox"
-                              name="products1"
-                              id="products1"
-                              class="d-switch__input"
-                            />
-                            <div class="d-switch__circle"></div>
-                          </label>
-                          <label for="products1" class="d-switch__label d-table__footer-all-label"
-                            >Выбрать все элементы на всех страницах
-                          </label>
-                        </div>
-                      </div>
-                      <div class="d-table__footer-right">
-                        <ul class="d-pagination d-table__footer-right-pagination">
-                          <li class="d-pagination__item">1</li>
-                          <li class="d-pagination__item">2</li>
-                          <li class="d-pagination__item">3</li>
-                          <li class="d-pagination__item d-pagination__item--active">4</li>
-                          <li class="d-pagination__item">+</li>
-                        </ul>
-                        <button class="d-select hidden-1200">
-                          <span class="d-select__title">Задать вручную</span>
-                          <i class="d-icon-angle-rounded-bottom d-select__arrow"></i>
-                        </button>
-                        <button class="d-select d-select--squared visible-1200">
-                          <span class="d-select__title">Задать вручную</span>
-                          <i class="d-icon-angle-rounded-bottom d-select__arrow"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <ul class="d-pagination d-table__footer-pagination">
-                      <li class="d-pagination__item">1</li>
-                      <li class="d-pagination__item">2</li>
-                      <li class="d-pagination__item">3</li>
-                      <li class="d-pagination__item d-pagination__item--active">4</li>
-                      <li class="d-pagination__item">+</li>
-                    </ul>
-
-                    <button
-                      class="d-button d-button-secondary d-button-secondary-small d-button--sm-shadow d-table__mass"
-                    >
-                      Массовые действия
-                      <i class="d-icon-plus d-table__mass-icon"></i>
-                    </button>
-                  </div>
-
-                  <div
-                    class="d-field-container d-field-container--long d-table__footer-fields hidden-1200"
-                  >
-                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <label for="manual" class="d-dropdown__label">Массовые действия </label>
-                      <div class="d-input d-input--light">
-                        <input
-                          type="text"
-                          placeholder="Задать вручную"
-                          name="manual"
-                          class="d-input__field d-table__footer-input"
-                          data-input-id="manual"
-                          required=""
-                        />
-                        <button class="d-input__dropdown-button">
-                          <i class="d-icon-angle-rounded-bottom d-input__dropdown-button-icon"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <label for="extra-charge" class="d-dropdown__label"
-                        >Тип ценообразования
-                      </label>
-                      <div class="d-input d-input--light">
-                        <input
-                          type="text"
-                          placeholder="Наценка"
-                          name="extra-charge"
-                          class="d-input__field d-table__footer-input"
-                          data-input-id="extra-charge"
-                          required=""
-                        />
-                        <button class="d-input__dropdown-button">
-                          <i class="d-icon-angle-rounded-bottom d-input__dropdown-button-icon"></i>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <label for="value" class="d-dropdown__label">Значение </label>
-                      <div class="d-field-container d-field-container--long">
-                        <div class="d-input d-input--light">
-                          <input
-                            type="text"
-                            placeholder="0"
-                            name="value"
-                            class="d-input__field d-table__footer-input d-table__footer-input--value"
-                            data-input-id="value"
-                            required=""
-                          />
-                        </div>
-                        <div class="d-input d-input--light">
-                          <input
-                            type="text"
-                            placeholder="%"
-                            name="value-type"
-                            class="d-input__field d-table__footer-input d-table__footer-input--value-type"
-                            data-input-id="value-type"
-                            required=""
-                          />
-                          <button class="d-input__dropdown-button">
-                            <i
-                              class="d-icon-angle-rounded-bottom d-input__dropdown-button-icon"
-                            ></i>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <label for="test-dropdown" class="d-dropdown__label">От типа цены </label>
-                      <div class="d-input d-input--light">
-                        <input
-                          type="text"
-                          placeholder="Тип цен"
-                          name="price-type"
-                          class="d-input__field d-table__footer-input"
-                          data-input-id="price-type"
-                          required=""
-                        />
-                        <button class="d-input__dropdown-button">
-                          <i class="d-icon-angle-rounded-bottom d-input__dropdown-button-icon"></i>
-                        </button>
-                      </div>
-                    </div>
-
-                    <button class="d-icon-wrapper d-icon-wrapper--big d-icon-wrapper--active">
-                      <i class="d-icon-check"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <ActionCollections />
             </div>
           </div>
         </div>
@@ -3826,7 +997,7 @@
           <div class="promo-modal__header-right">
             <div class="d-progress promo-modal__progress">
               <p class="d-progress__label promo-modal__progress-label">
-                Пройдено {{ masterStep }} из 10 шагов
+                Пройдено {{ this.visibleMasterSteps.length }} из 10 шагов
               </p>
               <div class="d-progress__line promo-modal__progress-line"></div>
             </div>
@@ -3968,12 +1139,14 @@
                     v-if="!this.upload_product"
                     class=""
                     :maxFiles="Number(1)"
+                    :maxFileSize="5000000"
                     url="/rest/file_upload.php?banner=max"
                     :uploadOnDrop="true"
                     :multipleUpload="true"
                     :acceptedFiles="['png', 'jpeg', 'jpg', 'svg']"
                     :parallelUpload="1"
                     @sending="parseFileBanner"
+                    @uploaded="uploadedFile"
                     @removedFile="deselectFileBannerAll"
                     v-bind="args"
                   >
@@ -4010,7 +1183,6 @@
                         v-for="(item, key) in this.actionAdvPlaces"
                         :key="key"
                       >
-                        {{ console.log(item) }}
                         <label class="d-switch" :for="'place_' + item.code">
                           <input
                             type="checkbox"
@@ -4224,8 +1396,9 @@
                     <div class="d-input d-input--light d-input--width-280">
                       <input
                         class="d-input__field"
+                        v-model="this.form.conditionMinSum"
                         type="text"
-                        placeholder="0"
+                        placeholder="30000"
                         name="dateStart"
                         value="30 000 ₽"
                       />
@@ -4248,8 +1421,9 @@
                         class="d-input__field"
                         type="text"
                         placeholder="0"
+                        v-model="this.form.conditionMinCount"
                         name="dateStart"
-                        value="2 SKU"
+                        value="2"
                       />
                     </div>
                   </div>
@@ -4269,6 +1443,7 @@
                       <input
                         class="d-input__field"
                         type="text"
+                        v-model="this.form.conditionMinGeneralCount"
                         placeholder="Введите количество шт."
                         name="dateStart"
                       />
@@ -4284,6 +1459,7 @@
                         <input
                           type="checkbox"
                           name="negative-promo1"
+                          v-model="this.form.negative"
                           id="negative-promo1"
                           class="d-switch__input"
                         />
@@ -4310,6 +1486,7 @@
                           type="checkbox"
                           name="negative-promo2"
                           id="negative-promo2"
+                          v-model="this.form.offer"
                           class="d-switch__input"
                         />
                         <div class="d-switch__circle"></div>
@@ -4350,7 +1527,9 @@
                             type="radio"
                             name="compatibility"
                             id="compatibility1"
+                            value="1"
                             class="d-radio__input"
+                            v-model="this.form.compatibilityDiscount"
                           />
                         </label>
                         <label for="compatibility1" class="d-radio__label promo-master__radio-label"
@@ -4364,6 +1543,8 @@
                             name="compatibility"
                             id="compatibility2"
                             class="d-radio__input"
+                            value="4"
+                            v-model="this.form.compatibilityDiscount"
                           />
                         </label>
                         <label for="compatibility2" class="d-radio__label promo-master__radio-label"
@@ -4376,6 +1557,8 @@
                             type="radio"
                             name="compatibility"
                             id="compatibility3"
+                            value="2"
+                            v-model="this.form.compatibilityDiscount"
                             class="d-radio__input"
                           />
                         </label>
@@ -4390,11 +1573,35 @@
                             name="compatibility"
                             id="compatibility4"
                             class="d-radio__input"
+                            value="3"
+                            v-model="this.form.compatibilityDiscount"
                           />
                         </label>
                         <label for="compatibility4" class="d-radio__label promo-master__radio-label"
                           >Не совместима с выбранными акциями
                         </label>
+                      </div>
+                      <div
+                        class="dart-form-group dart-mt-1"
+                        v-if="
+                          (this.form.compatibilityDiscount == 3 ||
+                            this.form.compatibilityDiscount == 4) &&
+                          this.type != 2
+                        "
+                      >
+                        <label class="d-text promo-master__description"
+                          >Выберите акции из списка</label
+                        >
+                        <MultiSelect
+                          :key="new Date().getMilliseconds()"
+                          filter
+                          v-model="this.form.actions"
+                          display="chip"
+                          :options="this.allAction"
+                          optionLabel="name"
+                          placeholder="Выберите из списка"
+                          class="w-full dart-mt-1"
+                        />
                       </div>
                     </div>
                   </div>
@@ -4412,12 +1619,34 @@
                       class="d-radio__container d-radio__container--big d-radio__container--1200-vertical d-radio__container--1200-tiny-small"
                     >
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
+                        <label for="compatibilitymode0" class="d-radio">
+                          <input
+                            type="radio"
+                            name="compatibilitymode"
+                            id="compatibilitymode0"
+                            class="d-radio__input"
+                            value="0"
+                            v-model="this.form.compabilityMode"
+                          />
+                        </label>
+                        <div class="d-radio__label-container">
+                          <label
+                            for="compatibilit0"
+                            class="d-radio__label promo-master__radio-label"
+                            >Применяется бóльшая
+                          </label>
+                          <p class="d-description">Будет применена бóльшая скидка и отсрочка</p>
+                        </div>
+                      </div>
+                      <div class="d-radio__wrapper promo-master__radio-wrapper">
                         <label for="compatibilitymode1" class="d-radio">
                           <input
                             type="radio"
                             name="compatibilitymode"
                             id="compatibilitymode1"
                             class="d-radio__input"
+                            value="1"
+                            v-model="this.form.compabilityMode"
                           />
                         </label>
                         <div class="d-radio__label-container">
@@ -4439,6 +1668,8 @@
                             name="compatibilitymode"
                             id="compatibilitymode2"
                             class="d-radio__input"
+                            value="2"
+                            v-model="this.form.compabilityMode"
                           />
                         </label>
                         <div class="d-radio__label-container">
@@ -4459,116 +1690,165 @@
                 <div class="contents" id="promoAudience" v-if="masterStep == 8">
                   <p class="promo-master__title promo-master__title--ms-margin">Аудитория акции</p>
                   <div
-                    class="d-button__container promo-master__actions promo-master__audience-button-container"
+                    class="d-radio__container d-radio__container-vertical d-radio__container--big d-radio__container--1200-vertical d-radio__container--1200-tiny-small"
                   >
-                    <button
-                      class="d-button d-button-primary d-button-primary-small d-button--sm-padding box-shadow-none promo-master__audience-button"
-                    >
-                      Аудитория акции
-                    </button>
-                    <button
-                      class="d-button d-button-secondary d-button-secondary-small d-button--sm-padding box-shadow-none promo-master__audience-button"
-                    >
-                      Исключения участников из акции
-                    </button>
-                  </div>
-                  <!-- Участники акции -->
-                  <div
-                    class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings promo-master__settings--sm-margin"
-                  >
-                    <div class="promo-master__subtitle-container">
-                      <p class="promo-master__subtitle">Участники акции</p>
-                      <p class="d-text promo-master__description">Кому будет доступна акция</p>
-                    </div>
-                  </div>
-                  <div class="promo-master__audience-changes">
-                    <!-- Участники по географии -->
-                    <div
-                      class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings"
-                    >
-                      <p class="promo-master__subtitle promo-master__subtitle--small">
-                        Участники по географии
-                      </p>
-                      <div
-                        class="d-radio__container d-radio__container--small d-radio__container--vertical promo-master__audience-change"
-                      >
-                        <div class="d-field-wrapper">
-                          <label class="d-switch" for="all-regions">
-                            <input
-                              type="checkbox"
-                              name="all-regions"
-                              id="all-regions"
-                              class="d-switch__input"
-                            />
-                            <div class="d-switch__circle"></div>
-                          </label>
-                          <label for="all-regions" class="d-switch__label">Все регионы </label>
-                        </div>
-                        <div class="d-field-wrapper">
-                          <label class="d-switch" for="change-region">
-                            <input
-                              type="checkbox"
-                              name="change-region"
-                              id="change-region"
-                              class="d-switch__input"
-                            />
-                            <div class="d-switch__circle"></div>
-                          </label>
-                          <label for="change-region" class="d-switch__label"
-                            >Регионы по выбору
-                          </label>
-                        </div>
+                    <div class="d-radio__wrapper promo-master__radio-wrapper">
+                      <label for="participantsType3" class="d-radio">
+                        <input
+                          type="radio"
+                          name="participantsType"
+                          id="participantsType3"
+                          class="d-radio__input"
+                          value="3"
+                          v-model="this.form.participantsType"
+                        />
+                      </label>
+                      <div class="d-radio__label-container">
+                        <label
+                          for="participantsType3"
+                          class="d-radio__label promo-master__radio-label"
+                          >Неограниченный круг участников
+                        </label>
                       </div>
                     </div>
-                    <!-- Участники по типу компании -->
+                    <div class="d-radio__wrapper promo-master__radio-wrapper">
+                      <label for="participantsType2" class="d-radio">
+                        <input
+                          type="radio"
+                          name="compatibilitymode"
+                          id="participantsType2"
+                          class="d-radio__input"
+                          value="2"
+                          v-model="this.form.participantsType"
+                        />
+                      </label>
+                      <div class="d-radio__label-container">
+                        <label
+                          for="participantsType2"
+                          class="d-radio__label promo-master__radio-label"
+                          >Исключить регион/участников показа
+                        </label>
+                      </div>
+                    </div>
+                    <div class="d-radio__wrapper promo-master__radio-wrapper">
+                      <label for="participantsType1" class="d-radio">
+                        <input
+                          type="radio"
+                          name="compatibilitymode"
+                          id="participantsType1"
+                          class="d-radio__input"
+                          value="1"
+                          v-model="this.form.compabilityMode"
+                        />
+                      </label>
+                      <div class="d-radio__label-container">
+                        <label
+                          for="participantsType1"
+                          class="d-radio__label promo-master__radio-label"
+                          >Выбрать регион/участников показа
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Участники акции -->
+                  <div v-if="this.form.participantsType != 3" class="dart-mt-2">
                     <div
-                      class="d-field-container d-field-container--long d-field-container--vertical"
+                      class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings promo-master__settings--sm-margin"
                     >
-                      <p class="promo-master__subtitle promo-master__subtitle--small">
-                        Участники по типу компании
-                      </p>
+                      <div class="promo-master__subtitle-container">
+                        <p class="promo-master__subtitle">Участники акции</p>
+                        <p class="d-text promo-master__description">Кому будет доступна акция</p>
+                      </div>
+                    </div>
+                    <div class="promo-master__audience-changes">
+                      <!-- Участники по географии -->
                       <div
-                        class="d-radio__container d-radio__container--small d-radio__container--verticalpromo-master__settings promo-master__audience-change"
+                        class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings"
                       >
-                        <div class="d-field-wrapper">
-                          <label class="d-switch" for="shops">
-                            <input
-                              type="checkbox"
-                              name="shops"
-                              id="shops"
-                              class="d-switch__input"
-                            />
-                            <div class="d-switch__circle"></div>
-                          </label>
-                          <label for="shops" class="d-switch__label">Магазины </label>
+                        <p class="promo-master__subtitle promo-master__subtitle--small">
+                          Участники по географии
+                        </p>
+                        <div
+                          class="d-radio__container d-radio__container--small d-radio__container--vertical promo-master__audience-change"
+                        >
+                          <div class="d-field-wrapper">
+                            <label class="d-switch" for="all-regions">
+                              <input
+                                type="checkbox"
+                                name="all-regions"
+                                id="all-regions"
+                                class="d-switch__input"
+                              />
+                              <div class="d-switch__circle"></div>
+                            </label>
+                            <label for="all-regions" class="d-switch__label">Все регионы </label>
+                          </div>
+                          <div class="d-field-wrapper">
+                            <label class="d-switch" for="change-region">
+                              <input
+                                type="checkbox"
+                                name="change-region"
+                                id="change-region"
+                                class="d-switch__input"
+                              />
+                              <div class="d-switch__circle"></div>
+                            </label>
+                            <label for="change-region" class="d-switch__label"
+                              >Регионы по выбору
+                            </label>
+                          </div>
                         </div>
-                        <div class="d-field-wrapper">
-                          <label class="d-switch" for="wholesale-company">
-                            <input
-                              type="checkbox"
-                              name="wholesale-company"
-                              id="wholesale-company"
-                              class="d-switch__input"
-                            />
-                            <div class="d-switch__circle"></div>
-                          </label>
-                          <label for="wholesale-company" class="d-switch__label"
-                            >Оптовые компании
-                          </label>
-                        </div>
-                        <div class="d-field-wrapper">
-                          <label class="d-switch" for="wholesale-company">
-                            <input
-                              type="checkbox"
-                              name="wholesale-company"
-                              id="wholesale-company"
-                              class="d-switch__input"
-                            />
-                            <div class="d-switch__circle"></div>
-                          </label>
-                          <label for="wholesale-company" class="d-switch__label"
-                            >Производители
-                          </label>
+                      </div>
+                      <!-- Участники по типу компании -->
+                      <div
+                        class="d-field-container d-field-container--long d-field-container--vertical"
+                      >
+                        <p class="promo-master__subtitle promo-master__subtitle--small">
+                          Участники по типу компании
+                        </p>
+                        <div
+                          class="d-radio__container d-radio__container--small d-radio__container--verticalpromo-master__settings promo-master__audience-change"
+                        >
+                          <div class="d-field-wrapper">
+                            <label class="d-switch" for="shops">
+                              <input
+                                type="checkbox"
+                                name="shops"
+                                id="shops"
+                                class="d-switch__input"
+                              />
+                              <div class="d-switch__circle"></div>
+                            </label>
+                            <label for="shops" class="d-switch__label">Магазины </label>
+                          </div>
+                          <div class="d-field-wrapper">
+                            <label class="d-switch" for="wholesale-company">
+                              <input
+                                type="checkbox"
+                                name="wholesale-company"
+                                id="wholesale-company"
+                                class="d-switch__input"
+                              />
+                              <div class="d-switch__circle"></div>
+                            </label>
+                            <label for="wholesale-company" class="d-switch__label"
+                              >Оптовые компании
+                            </label>
+                          </div>
+                          <div class="d-field-wrapper">
+                            <label class="d-switch" for="wholesale-company">
+                              <input
+                                type="checkbox"
+                                name="wholesale-company"
+                                id="wholesale-company"
+                                class="d-switch__input"
+                              />
+                              <div class="d-switch__circle"></div>
+                            </label>
+                            <label for="wholesale-company" class="d-switch__label"
+                              >Производители
+                            </label>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -4602,6 +1882,7 @@
               <div class="promo-master__content-right">
                 <div class="promo-master__setting-container">
                   <button
+                    @click.prevent="openStep(1)"
                     class="d-button d-button-tertiary box-shadow-none promo-master__setting"
                     :class="{
                       'promo-master__setting--used': this.isUsed(1),
@@ -4612,6 +1893,7 @@
                     Контент акции
                   </button>
                   <button
+                    @click.prevent="openStep(2)"
                     class="d-button d-button-tertiary box-shadow-none promo-master__setting"
                     :class="{
                       'promo-master__setting--used': this.isUsed(2),
@@ -4622,6 +1904,7 @@
                     Даты проведения акции
                   </button>
                   <button
+                    @click.prevent="openStep(3)"
                     class="d-button d-button-tertiary box-shadow-none promo-master__setting"
                     :class="{
                       'promo-master__setting--used': this.isUsed(3),
@@ -4632,6 +1915,7 @@
                     Баннер акции
                   </button>
                   <button
+                    @click.prevent="openStep(4)"
                     class="d-button d-button-tertiary box-shadow-none promo-master__setting"
                     :class="{
                       'promo-master__setting--used': this.isUsed(4),
@@ -4642,6 +1926,7 @@
                     Условия оплаты
                   </button>
                   <button
+                    @click.prevent="openStep(5)"
                     class="d-button d-button-tertiary box-shadow-none promo-master__setting"
                     :class="{
                       'promo-master__setting--used': this.isUsed(5),
@@ -4652,6 +1937,7 @@
                     Условия доставки
                   </button>
                   <button
+                    @click.prevent="openStep(6)"
                     class="d-button d-button-tertiary box-shadow-none promo-master__setting"
                     :class="{
                       'promo-master__setting--used': this.isUsed(6),
@@ -4662,6 +1948,7 @@
                     Условия участия в акции: Требования к заказу
                   </button>
                   <button
+                    @click.prevent="openStep(7)"
                     class="d-button d-button-tertiary box-shadow-none promo-master__setting"
                     :class="{
                       'promo-master__setting--used': this.isUsed(7),
@@ -4672,6 +1959,7 @@
                     Условия участия в акции: Совместимость
                   </button>
                   <button
+                    @click.prevent="openStep(8)"
                     class="d-button d-button-tertiary box-shadow-none promo-master__setting"
                     :class="{
                       'promo-master__setting--used': this.isUsed(8),
@@ -4682,6 +1970,7 @@
                     Аудитория акции
                   </button>
                   <button
+                    @click.prevent="openStep(9)"
                     class="d-button d-button-tertiary box-shadow-none promo-master__setting"
                     :class="{
                       'promo-master__setting--used': this.isUsed(9),
@@ -4692,6 +1981,7 @@
                     Товары и скидки: Склады
                   </button>
                   <button
+                    @click.prevent="openStep(10)"
                     class="d-button d-button-tertiary box-shadow-none promo-master__setting"
                     :class="{
                       'promo-master__setting--used': this.isUsed(10),
@@ -4802,7 +2092,7 @@
           </div>
         </div>
       </customModal>
-      <customModal v-model="this.modals.delay" class="delay-window">
+      <customModal v-model="this.modals.delay" class="delay-window" @beforeClose="delayModalClose">
         <template v-slot:title>Настройка отсрочки платежа</template>
         <div>
           <div class="deferred-payment" v-for="(item, index) in this.form.delay" :key="index">
@@ -4882,9 +2172,12 @@ import Editor from '@tinymce/tinymce-vue'
 import Toast from 'primevue/toast'
 import InputNumber from 'primevue/inputnumber'
 import DatePicker from 'primevue/datepicker'
+import MultiSelect from 'primevue/multiselect'
 import { useVuelidate } from '@vuelidate/core'
 import { mapActions, mapGetters } from 'vuex'
 import { helpers, required } from '@vuelidate/validators'
+import ActionProducts from './actionProducts.vue'
+import ActionCollections from './actionCollections.vue'
 
 export default {
   name: 'actionForm',
@@ -4896,7 +2189,10 @@ export default {
     DropZone,
     DatePicker,
     Loader,
+    MultiSelect,
     customModal,
+    ActionProducts,
+    ActionCollections,
   },
   props: {
     type: {
@@ -4918,7 +2214,7 @@ export default {
       windowWidth: 1920,
       total_products: 0,
       per_page: 24,
-      masterStep: 1,
+      masterStep: 0,
       visibleMasterSteps: [],
       // Флаги окон
       modals: {
@@ -5012,10 +2308,10 @@ export default {
         name: '',
         description: '',
         client_id: 0,
-        compatibilityDiscount: '1',
+        compatibilityDiscount: 1,
         actions: [],
         product_groups: {},
-        compabilityMode: { name: 'Применяется бóльшая', key: 0 },
+        compabilityMode: 0,
         paymentDelivery: 0,
         paymentTime: 0,
         typeDelay: '1',
@@ -5035,7 +2331,7 @@ export default {
         offer: 0,
         integration: 0,
         delayfix: 1,
-        participantsType: '3',
+        participantsType: 3,
         all_organizations_selected: {},
         regions: [],
         stores: 0,
@@ -5058,6 +2354,7 @@ export default {
       this.getCatalogs()
       this.getRegions()
       this.getOrgStores()
+      this.getAllActions()
       this.getActionAdvPlaces({ type: this.type })
       if (this.$route.params.action) {
         this.getAction().then(() => {
@@ -5087,6 +2384,7 @@ export default {
           }
         })
       } else {
+        this.masterStepInc()
         this.modals.master = true
       }
     })
@@ -5099,6 +2397,7 @@ export default {
       getAction: 'action/getAction',
       unsetAction: 'action/unsetAction',
       getActionAdvPlaces: 'action/getActionAdvPlaces',
+      getAllActions: 'action/getAllActions',
       getAvailableProducts: 'action/getAvailableProducts',
       getAvailableComplects: 'action/getAvailableComplects',
       getProductGroups: 'action/getProductGroups',
@@ -5114,10 +2413,43 @@ export default {
       this.form.delay.pop()
       this.delayUpdate()
     },
-    parseFileBanner(files, xhr, formData) {
-      console.log(files)
-      console.log(xhr)
-      console.log(formData)
+    uploadedFile(file) {
+      console.log(file)
+    },
+    parseFileBanner(files, xhr) {
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          if (xhr.response) {
+            console.log(xhr.response)
+            const response = JSON.parse(xhr.response)
+            console.log(response)
+            if (Object.prototype.hasOwnProperty.call(response.data, 'files')) {
+              // перечень загруженных файлов
+              if (response.data.files[0].type_banner === 'max') {
+                this.form.adv.files.max = response.data.files[0]
+              }
+              if (response.data.files[0].type_banner === 'min') {
+                this.form.adv.files.min = response.data.files[0]
+              }
+              if (response.data.files[0].type_banner === 'icon') {
+                this.form.adv.files.icon = response.data.files[0]
+              }
+              if (response.data.files[0].type_banner === 'small') {
+                this.form.adv.files.small = response.data.files[0]
+              }
+              if (response.data.files[0].type_banner === 'file') {
+                this.form.adv.files.file = response.data.files[0]
+              }
+            }
+          }
+          this.$toast.add({
+            severity: 'info',
+            summary: 'Файлы загружены',
+            detail: 'Файл был успешно загружен',
+            life: 3000,
+          })
+        }
+      }
     },
     deselectFileBannerAll() {
       console.log('deselect')
@@ -5135,6 +2467,17 @@ export default {
           this.delayData.postponementPeriod +
           this.form.delay[i].day * (this.form.delay[i].percent / 100)
         this.form.postponementPeriod = this.delayData.postponementPeriod
+      }
+    },
+    delayModalClose(e) {
+      if (this.delayData.delayPercentSum != 100) {
+        e.stop()
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Сумма процентов должна составлять 100%',
+          life: 3000,
+        })
       }
     },
     delaySubmit() {
@@ -5279,7 +2622,51 @@ export default {
       productGroups: 'action/productGroups',
       activeActions: 'action/activeActions',
       groupProducts: 'action/groupProducts',
+      allActions: 'action/allActions',
     }),
+    datesPercent() {
+      const dateFrom = this.form.dates[0]
+      const dateTo = this.form.dates[1]
+      let diffTime = 0
+      let diffTimeAll = dateTo.getTime() - dateFrom.getTime()
+      const today = new Date()
+      if (today > dateFrom) {
+        if (today > dateTo) {
+          return 100
+        } else {
+          diffTime = dateTo.getTime() - today.getTime()
+        }
+      } else {
+        return 10
+      }
+      return 100 - Math.ceil((diffTime / diffTimeAll) * 100)
+    },
+    datesDays() {
+      if (this.form.dates.length) {
+        const dateFrom = this.form.dates[0]
+        const dateTo = this.form.dates[1]
+        let diffTime = dateTo.getTime() - dateFrom.getTime()
+        return Math.ceil(diffTime / (1000 * 3600 * 24))
+      } else {
+        return 0
+      }
+    },
+    datesDaysAvailable() {
+      const dateFrom = this.form.dates[0]
+      const dateTo = this.form.dates[1]
+      const today = new Date()
+      if (today > dateFrom) {
+        if (today > dateTo) {
+          return 0
+        } else {
+          let diffTime = dateTo.getTime() - today.getTime()
+          return Math.ceil(diffTime / (1000 * 3600 * 24))
+        }
+      } else {
+        let diffTime = dateTo.getTime() - dateFrom.getTime()
+        return Math.ceil(diffTime / (1000 * 3600 * 24))
+      }
+    },
   },
   setup() {
     return { v$: useVuelidate() }
@@ -5388,17 +2775,99 @@ export default {
         }
       }
     },
+    allActions: function (newVal) {
+      this.allAction = []
+      this.allAction = newVal.items.map(function (el) {
+        return { name: el.name, code: el.id }
+      })
+    },
   },
 }
 </script>
 <style lang="scss">
 body {
-  .p-inputtext {
-    background: #fff;
-    border: none;
-    color: #282828;
+  .tox-tinymce {
+    border-radius: 5px;
+  }
+  .d-radio__container-vertical {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .promotions__info {
+    border-radius: 12px;
+  }
+  .d-badge {
+    background-color: #ededed;
+    border: 1px solid #ededed;
+  }
+  .promotions__card-label {
+    margin-bottom: 8px;
+  }
+  .promotions__card-block-inner {
+    width: 100%;
+  }
+  .d-fractions {
+    flex: inline-flex;
+    flex-wrap: wrap;
+    .d-fractions__item {
+      &:first-child {
+        justify-items: flex-start;
+      }
+      &:last-child {
+        align-items: start;
+      }
+      .d-fractions__item-text,
+      .d-fractions__item-text--bottom {
+        text-align: left;
+      }
+    }
+  }
+  .promo-master__setting {
+    text-align: left;
   }
 }
+
+.promotions__card-dates {
+  .promotions__card-value-container {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .promotions__card-value {
+    span {
+      display: inline-block;
+      &:nth-child(2) {
+        position: relative;
+        margin-left: 16px;
+        padding-left: 16px;
+        &::before {
+          content: '';
+          display: inline-block;
+          height: 17px;
+          top: 50%;
+          left: 0;
+          position: absolute;
+          background: #757575;
+          width: 1px;
+          transform: translate(0, -50%);
+        }
+      }
+    }
+  }
+  .d-fractions.d-fractions-dates {
+    .d-fractions__item {
+      width: 100%;
+      &:last-child {
+        align-items: start;
+      }
+    }
+  }
+}
+
 .d-modal2__actions-start {
   justify-content: flex-start;
   margin-bottom: 15px;
