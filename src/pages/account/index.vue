@@ -1,7 +1,10 @@
 <template>
   <ProfileSidebar
+    :mobileCatalog="toggleMenu"
     :toggleShoppingCart="toggleShoppingCart"
+    :cartBadge="cartCount"
     @showCart="toggleCart()"
+    @showCatalog="toggleCatalog()"
   ></ProfileSidebar>
   <div class="content">
     <ProfileHeader
@@ -75,6 +78,7 @@ export default {
       toggleShoppingCart: false,
       toggleOrderWindow: false,
       headerDesignChange: false,
+      cartCount: 0,
     }
   },
   mounted() {
@@ -121,6 +125,7 @@ export default {
       basket: 'basket/basket',
       basketWarehouse: 'basket/basketWarehouse',
     }),
+
   },
   methods: {
     ...mapActions({
@@ -169,6 +174,7 @@ export default {
       document.execCommand('copy')
       window.getSelection().removeAllRanges()
     },
+
   },
   components: {
     ProfileSidebar,
@@ -202,6 +208,9 @@ export default {
         this.toggleMenu = false
       },
     },
+    basket: function(newVal){
+      this.cartCount = newVal.cart_data?.sku_count ? newVal.cart_data.sku_count : 0
+    }
   },
 }
 </script>

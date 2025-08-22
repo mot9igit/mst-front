@@ -209,6 +209,7 @@
           <li class="sidebar__block sidebar__item" @click.prevent="cartOpen()">
             <button class="sidebar__item-button">
               <i class="d-icon-cart-solid sidebar__item-icon"></i>
+              <span class="cart-badge" v-if="this.cartBadge > 0">{{ this.cartBadge }}</span>
             </button>
           </li>
           <li class="sidebar__block sidebar__item" v-if="this.activeOrganization">
@@ -281,8 +282,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    mobileCatalog: {
+      type: Boolean,
+      default: false,
+    },
+    cartBadge: {
+      type: Number,
+      default: 0,
+    },
   },
-  emits: ['showCart'],
+  emits: ['showCart', 'showCatalog'],
   components: { customModal, ChangeOrgWindow, sidebarMenu, Toast },
   computed: {
     ...mapGetters({
@@ -301,14 +310,21 @@ export default {
 
     },
     catalogOpen(){
+      this.showCatalog = this.mobileCatalog
+      this.showCatalog = !this.showCatalog
+      console.log(this.showCatalog)
+      //this.active = true
+      //this.showRequipment = false
+      //this.showCatalog = false
 
+      this.$emit('showCatalog')
     },
     cartOpen(){
       this.showCart = this.toggleShoppingCart
       this.showCart = !this.showCart
-      this.active = true
-      this.showRequipment = false
-      this.showCatalog = false
+      //this.active = true
+      //this.showRequipment = false
+      //this.showCatalog = false
 
       this.$emit('showCart')
     },
@@ -323,7 +339,6 @@ export default {
     },
     sidebarToggle() {
       this.isMobile = localStorage.getItem('global.isMobile')
-      console.log(this.isMobile)
       if(this.isMobile == true){
         this.active = !this.active
         //this.showRequipment = false
@@ -340,7 +355,7 @@ export default {
       document.addEventListener('click', (event) => {
         let sidebarElement = document.getElementById('sidebar__inner--desktop')
         if (!sidebarElement.contains(event.target)) {
-          if (this.active === false) {
+          if (this.active === false && this.isMobile === false) {
             this.active = !this.active
             localStorage.setItem('sidebar.position', Number(this.active))
           }
@@ -437,6 +452,12 @@ export default {
       // if (this.$route.params.id) {
       this.setOrgs()
       // }
+    },
+    mobileCatalog: function (newVal) {
+      this.showCatalog = newVal
+    },
+    toggleShoppingCart: function (newVal) {
+      this.showCart = newVal
     },
   },
 }
