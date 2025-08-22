@@ -1,7 +1,7 @@
 <template>
   <ProfileSidebar
-    
-    @showCart="toggleCart"
+    :toggleShoppingCart="toggleShoppingCart"
+    @showCart="toggleCart()"
   ></ProfileSidebar>
   <div class="content">
     <ProfileHeader

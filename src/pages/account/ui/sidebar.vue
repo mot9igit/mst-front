@@ -18,7 +18,7 @@
           <div class="sidebar__block sidebar__toggle-block sidebar__logo-toggle">
             <button class="sidebar__toggle" @click.prevent="sidebarToggle()">
               <i class="sidebar__toggle-icon" :class="isMobile === false ? 'd-icon-arrow' : 'd-icon-times-flat'"></i>
-             
+
             </button>
           </div>
         </div>
@@ -276,6 +276,13 @@ export default {
       showCart: false,
     }
   },
+  props: {
+    toggleShoppingCart: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  emits: ['showCart'],
   components: { customModal, ChangeOrgWindow, sidebarMenu, Toast },
   computed: {
     ...mapGetters({
@@ -291,17 +298,18 @@ export default {
       getSessionUser: 'user/getSessionUser',
     }),
     requirementOpen(){
-      
+
     },
     catalogOpen(){
-      
+
     },
     cartOpen(){
+      this.showCart = this.toggleShoppingCart
       this.showCart = !this.showCart
       this.active = true
       this.showRequipment = false
       this.showCatalog = false
-      
+
       this.$emit('showCart')
     },
     orgChange(id) {
@@ -317,7 +325,7 @@ export default {
       this.isMobile = localStorage.getItem('global.isMobile')
       console.log(this.isMobile)
       if(this.isMobile == true){
-        this.active = !this.active 
+        this.active = !this.active
         //this.showRequipment = false
         //this.showCatalog = false
         //this.showCart = false
@@ -325,9 +333,9 @@ export default {
         this.active = !this.active
         localStorage.setItem('sidebar.position', Number(this.active))
       }
-      
+
     },
-    
+
     clickAround() {
       document.addEventListener('click', (event) => {
         let sidebarElement = document.getElementById('sidebar__inner--desktop')
@@ -390,13 +398,13 @@ export default {
       }else{
         document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile')
         localStorage.setItem('global.isMobile', false)
-      }  
+      }
     }
-    
-    
+
+
   },
   mounted() {
-    
+
     const sidebarPosition = localStorage.getItem('sidebar.position')
     if (sidebarPosition && this.isMobile === false) {
       this.active = sidebarPosition
