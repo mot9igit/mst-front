@@ -195,17 +195,16 @@ export default {
     })
     // mobile header
     let elem = document.querySelector('.main')
-    elem.addEventListener('scroll', function(event) {
+    elem.addEventListener('scroll', function () {
       let scrolling = elem.scrollTop
-      if(window.innerWidth <= 600){
+      if (window.innerWidth <= 600) {
         if (scrolling >= 100) {
           document.querySelector('.header').classList.add('min-mobile-header')
-        }else{
+        } else {
           document.querySelector('.header').classList.remove('min-mobile-header')
         }
       }
-    });
-
+    })
   },
   computed: {
     ...mapGetters({
@@ -271,7 +270,6 @@ export default {
         this.basketStore = {}
       }
     },
-
   },
   watch: {
     basket() {
