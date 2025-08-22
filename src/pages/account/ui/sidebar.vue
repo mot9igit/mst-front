@@ -354,18 +354,17 @@ export default {
     sidebarToggle() {
       this.isMobile = localStorage.getItem('global.isMobile')
       console.log(this.isMobile)
-      if (this.isMobile == true) {
-        this.active = !this.active
+
         if (this.isMobile == true) {
           this.active = !this.active
           //this.showRequipment = false
           //this.showCatalog = false
           //this.showCart = false
-        } else {
+      } else {
           this.active = !this.active
           localStorage.setItem('sidebar.position', Number(this.active))
         }
-      }
+
     },
 
     clickAround() {
