@@ -6,7 +6,6 @@
       class="d-search__field header__search-field"
       @focus="
         (event) => {
-          console.log(event)
           event.target.select()
         }
       "
@@ -164,7 +163,7 @@ export default {
     height: auto;
     max-height: 90%;
     min-height: auto;
-    right: 5px;
+    right: 2px;
     top: 50%;
     transform: translate(0, -50%);
   }

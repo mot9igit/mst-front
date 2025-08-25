@@ -90,6 +90,38 @@ export default {
       }
       return response
     },
+    // Загрузка файла с Товарами
+    async uploadProductsFile(store, { file, store_id }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action: 'upload/products/file',
+        store_id: store_id,
+        file: file,
+        type: 'b2b',
+      }
+      const response = await api.action.uploadProductsFile(data)
+      return response
+    },
+    // Снимаем отметку у Товара
+    async setDeselectedProduct(store, id) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action: 'product/set/deselected',
+        remain_id: id,
+      }
+      const response = await api.action.setDeselectedProduct(data)
+      return response
+    },
+    // Отмечаем Товар
+    async setSelectedProduct(store, id) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action: 'product/set/selected',
+        remain_id: id,
+      }
+      const response = await api.action.setSelectedProduct(data)
+      return response
+    },
     // Берем доступные комплекты
     async getAvailableComplects({ commit }, { store_id, filter, page, perpage, type }) {
       const data = {
