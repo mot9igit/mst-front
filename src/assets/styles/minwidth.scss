@@ -1,6 +1,12 @@
             .sidebar__divider {
                 background-color: #757575;
             }
+            .sidebar__logo-toggle .d-icon-arrow{
+              display:block;
+            }
+            .sidebar__logo-toggle .d-icon-times-flat{
+              display:none;
+            }
 
             @media (width <=1920px) {
                 .header {
@@ -216,7 +222,7 @@
                     transition: all 0.2s ease;
                 }
                 .sidebar {
-                    z-index:55;
+                    z-index:2000;
                 }
                 .sidebar__inner--mobile {
                     justify-content: center;
@@ -329,6 +335,12 @@
                 .sidebar.sidebar--full .sidebar--mobile .sidebar__inner--mobile .sidebar__item-button{
                   padding: 8px;
                 }
+                .sidebar__logo-toggle .d-icon-arrow{
+                  display:none;
+                }
+                .sidebar__logo-toggle .d-icon-times-flat{
+                  display:block;
+                }
                 .cart {
                     --cart-padding-x: 40px;
                     --cart-header-height: 40px;
@@ -368,6 +380,11 @@
                 .vfm__overlay {
                     display: none;
                 }
+                .modal-container{
+                  max-height: calc(100vh - var(--sidebar-height))!important;
+                  height: calc(100vh - var(--sidebar-height));
+                  min-height: calc(100vh - var(--sidebar-height));
+                }
                 .vfm__content {
                     top: 0 !important;
                     bottom: 0;
@@ -375,9 +392,14 @@
                     right: 0;
                     width: 100vw!important;
                     height: calc(100vh - var(--sidebar-height));
+                    min-height: calc(100vh - var(--sidebar-height));
                     transform: translate(0%, 0%) !important;
                     max-height: calc(100vh - var(--sidebar-height))!important;
                     margin: 0 0 0 0 !important;
+                }
+                .vfm--inset {
+                    top: 0;
+                    left: 0;
                 }
                 .catalog--desktop {
                   display: flex;
@@ -420,10 +442,27 @@
                   color: #fff;
                   border-radius: 50%;
                 }
-                .modal-content{
-                  padding: 0px 43px 40px 43px !important;
+                .sidebar__inner--mobile .sidebar__item--active{
+                  color: #f92c0d;
                 }
-                .modal__title:before{
+                .vfm__content{
+                  padding: 0 43px !important;
+                }
+                .need-modal .vfm__content{
+                  padding: 0 !important;
+                }
+                .modal-content{
+                  box-shadow: none !important;
+                  border: none !important;
+                  border-radius: 12px 12px 0px 0px !important;
+                }
+                .need-modal .modal-content{
+                   padding: 24px 43px;
+                }
+                .need-modal .modal__title,.need-modal-create .modal__title, .need-modal-view .modal__title{
+                  padding: 0px 43px;
+                }
+                .change-organization__modal-cont .modal__title:before{
                   content: 'Смена организации';
                   font-size: 16px;
                 }
@@ -456,6 +495,160 @@
                 .change-organization__item--big {
                   border-bottom: 1.5px solid #75757575;
                 }
+                .need-vendor__notice {
+                  background: #ededed;
+                  color: #282828 !important;
+                  border-radius: 0;
+                  padding: 8px 43px;
+                }
+                .need-modal .v-table .profile-content__title,.need-modal .v-table .dart-mb-1,.need-modal .v-table .d-table__wrapper{
+                  padding-right: 43px;
+                  padding-left: 43px;
+                }
+                .need-modal .v-table .title{
+                  font-weight: 600;
+                }
+                .need-modal .p-inputtext {
+                  width:100%;
+                  font-size: 12px;
+                  color: #282828;
+                  border: 1px solid #EDEDED;
+                  border-radius: 30px;
+                  height: 32px;
+                  box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
+                  border-radius: 30px;
+                  padding-right: 42px;
+                }
+                .need-modal .input_pl:after {
+                  content: "\e01d";
+                  font-family: 'Iconly';
+                  position: absolute;
+                  display: block;
+                  top: 7px;
+                  right: 21.6px;
+                  font-size: 16px;
+                  color: #757575;
+                }
+                .need-modal .d-col-xl-6, .need-modal .d-col-md-4{
+                  padding-right: 0px;
+                  padding-left: 0px;
+                }
+                .need-modal .p-floatlabel label  {
+                    font-size: 12px;
+                    color: #757575;
+                    font-weight: 400;
+                }
+                .need-modal .v-table .d-table__wrapper{
+                  background: rgba(255, 255, 255, 0.55);
+                  box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
+                  border-radius: 2px;
+                }
+                .need-modal .v-table .d-table__head{
+                  display: none;
+                }
+                .need-modal .v-table tbody .d-table__row:first-child::after,
+                .need-modal tbody .d-table__row:not(:last-child, :first-child)::after
+                {
+                  background-color: #757575;
+                  width:100%;
+                  height:0.5px;
+                }
+                .need-modal .d-table__row:not(:first-child) .d-table__head-col:not(:first-child)::before,
+                .need-modal .d-table__row:not(:first-child) .d-table__col:not(:first-child)::before,
+                .need-modal tbody .d-table__row:first-child .d-table__head-col::before,
+                .need-modal tbody .d-table__row:first-child .d-table__col::before  {
+                  display: none;
+                }
+                .need-modal .d-table__row{
+                  display:flex;
+                  flex-direction: column;
+                  justify-content: space-between;
+                  gap:4px;
+                  padding:8px 0;
+                }
+                .need-modal .d-table__row:first-child{
+                   padding-top:16px;
+                }
+                .need-modal .d-table__row .d-table__col{
+                  width: 100%;
+                  padding: 0;
+                }
+                .need-modal .d-table__head-col:first-child,.need-modal .d-table__col:first-child {
+                  padding-left: 0;
+                }
+                .need-modal .d-table__head-col, .need-modal .d-table__col {
+                  font-size: 12px;
+                }
+                .need-modal .d-table__row .d-table__col:first-child .cell_value:before{
+                  content: '№:';
+                }
+                .need-modal .d-table__row .d-table__col:nth-child(2) .cell_value:before{
+                  content: 'Наименование:';
+                }
+                .need-modal .d-table__row .d-table__col:nth-child(3) .cell_value:before{
+                  content: 'Тип:';
+                }
+                .need-modal .d-table__row .d-table__col .cell_value:before{
+                  color:#757575;
+                  position:relative;
+                  float: left;
+                  margin-right: 3px;
+                }
+                .need-modal .d-table__row .d-table__col:last-child{
+                  position: absolute;
+                  top:8px;
+                  right:0;
+                  width: auto;
+                }
+                .need-modal .p-button-text.p-button-secondary {
+                    color: #282828;
+                }
+                .need-modal .d-table__row .kenostButton {
+                    padding: 0px !important;
+                    background: transparent !important;
+                    box-shadow: none;
+                    border: none;
+                    border-radius: 0;
+                }
+                .need-modal .d-table__row .kenostButton:first-child {
+                    padding: 0px 8px!important;
+                  }
+                .need-modal .d-table__row .d-table__col .kenostButton:first-child::after {
+                    content: '';
+                    background-color: #75757575;
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    width: 0.5px;
+                    height: 100%;
+                }
+                .need-modal .pi {
+                    font-size: 12px;
+                }
+                .need-modal .p-button-text.p-button-secondary:not(:disabled):hover {
+                    background: transparent;
+                    border: none;
+                    color: #f92c0d;
+                }
+                .need-modal .modal__content{
+                  overflow-x: hidden;
+                }
+                .need-modal-create, .need-modal-create{
+                  max-width: calc(100vh - var(--sidebar-height));
+                  width: calc(100vh - var(--sidebar-height));
+                  min-width: calc(100vh - var(--sidebar-height));
+                }
+                .need-modal-create .vfm__content,.need-modal-view .vfm__content {
+                  padding:0 !important;
+                }
+                .need-modal-create .modal__content form, .need-modal-view .modal__content form{
+                  padding-left: 43px;
+                  padding-right: 43px;
+                }
+                .need-modal-create .desc-block{
+                  text-align: center;
+                }
+
 
 
             }

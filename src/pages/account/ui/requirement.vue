@@ -3,7 +3,7 @@
     <ConfirmDialog />
     <Toast />
     <teleport to="body">
-      <customModal v-model="modals.requirements" @cancel="cancel">
+      <customModal v-model="modals.requirements" @cancel="cancel" class="need-modal">
         <template v-slot:title>Потребности</template>
         <div>
           <Loader v-if="loading" />
@@ -40,7 +40,7 @@
           </BaseTable>
         </div>
       </customModal>
-      <customModal v-model="modals.createRequirement">
+      <customModal v-model="modals.createRequirement" class="need-modal-create">
         <template v-slot:title>Загрузка потребности</template>
         <form @submit.prevent="formRequirementsSubmit" :class="{ loading: loading }">
           <div class="need__notice need-vendor__notice">
@@ -129,13 +129,14 @@
           </div>
         </form>
       </customModal>
-      <customModal v-model="modals.requirementsView">
+      <customModal v-model="modals.requirementsView"  class="need-modal-view">
         <template v-slot:title>Выберите Поставщика</template>
-        <form @submit.prevent="formRequirementsViewSubmit" :class="{ loading: loading }">
-          <div class="need__notice need-vendor__notice">
+        <div class="need__notice need-vendor__notice">
             Для того, чтобы посмотреть предложения согласно Вашей Потребности, необходимо выбрать
             Поставщика для просмотра.
           </div>
+        <form @submit.prevent="formRequirementsViewSubmit" :class="{ loading: loading }">
+
           <div
             class="dart-form-group dart-mb-2"
             :class="{
