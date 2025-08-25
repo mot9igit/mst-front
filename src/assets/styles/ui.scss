@@ -1,5 +1,5 @@
-@use "mixins" as *;
-@use "variables" as *;
+@use 'mixins' as *;
+@use 'variables' as *;
 
 :root {
   // __________Input___________
@@ -251,24 +251,24 @@
 }
 
 .d-button-secondary {
-  background-color: #fbfbfb;
+  background-color: #ededed;
   color: #282828;
 
   &:hover {
     background-color: #f92c0d;
-    color: #fbfbfb;
+    color: #ededed;
   }
 
   &:active {
-    background-color: #fbfbfb;
-    color: #282828;
+    background-color: #ededed;
+    color: #f92c0d;
     font-weight: 600;
   }
 
   &:focus-visible {
     background-color: #282828;
-    border-color: #fbfbfb;
-    color: #fbfbfb;
+    border-color: #ededed;
+    color: #ededed;
   }
 
   &:disabled {
@@ -565,7 +565,9 @@
     background-color: #202020;
     border: 1px solid #75757566;
     border-radius: 4px;
-    box-shadow: 0px 0px 2px 0px #0000001f, 0px 8px 16px 0px #00000024;
+    box-shadow:
+      0px 0px 2px 0px #0000001f,
+      0px 8px 16px 0px #00000024;
 
     position: absolute;
     top: calc(100% + 2px);
@@ -621,7 +623,7 @@
     }
 
     &::before {
-      content: "";
+      content: '';
 
       background-color: #fbfbfb;
       border: 1px solid #0000000a;
@@ -638,7 +640,7 @@
     }
 
     &::after {
-      content: "";
+      content: '';
 
       background-color: #f92c0d;
       border-radius: 999px;
@@ -953,10 +955,7 @@
 
 .d-button-secondary-small {
   font-size: 14px;
-  border-color: #282828;
-
   padding-inline: 24px;
-
   width: fit-content;
   min-height: 32px;
 
@@ -1150,7 +1149,6 @@
   }
 
   &--disabled {
-
     .d-notion__category-name,
     .d-notion__title {
       color: #282828;
@@ -1298,7 +1296,7 @@
 
   &::before,
   &::after {
-    content: "";
+    content: '';
 
     position: absolute;
     top: 50%;
@@ -1561,7 +1559,9 @@
   &__suggestions[class] {
     @include scrollbar;
 
-    box-shadow: 0px 0px 2px 0px #0000001f, 0px 8px 16px 0px #00000024;
+    box-shadow:
+      0px 0px 2px 0px #0000001f,
+      0px 8px 16px 0px #00000024;
     background-color: #ffffff;
     border-radius: 4px;
 
@@ -1603,7 +1603,7 @@
     width: 100%;
 
     &::before {
-      content: "";
+      content: '';
 
       background-color: #f92c0d;
       border-radius: 999px;
@@ -1668,7 +1668,9 @@
 }
 
 .d-indicator {
-  box-shadow: 0 0 4px #f92c0d, 0 0 7px #f92c0d;
+  box-shadow:
+    0 0 4px #f92c0d,
+    0 0 7px #f92c0d;
   width: 8px;
   height: 8px;
   background-color: #f92c0d;
@@ -2162,7 +2164,7 @@
 
     &:first-child {
       .d-fractions__item-block::before {
-        content: "";
+        content: '';
         background-color: #757575;
         position: absolute;
         top: 50%;
@@ -2376,7 +2378,7 @@
   }
 
   &::before {
-    content: url("/icons/tab-crutch.svg");
+    content: url('/icons/tab-crutch.svg');
     position: absolute;
     bottom: -5px;
     left: calc(100% - 14px);
@@ -2498,7 +2500,7 @@
     .d-table__head-col {
       &:not(:first-child) {
         &::before {
-          content: "";
+          content: '';
 
           background-color: #ededed;
 
@@ -2530,7 +2532,7 @@
     .d-table__row {
       &:not(:not(:last-child, :first-child)) {
         &::after {
-          content: "";
+          content: '';
           background-color: #757575;
           position: absolute;
           bottom: 0;
@@ -2543,7 +2545,7 @@
     }
 
     .d-table__head {
-      &>.d-table__row {
+      & > .d-table__row {
         &:not(:not(:last-child, :first-child)) {
           &::after {
             display: none;
@@ -2556,12 +2558,11 @@
   &--first-col-divider {
     .d-table__row {
       &:not(:not(:first-child)) {
-
         .d-table__head-col,
         .d-table__col {
           &:not(:first-child) {
             &::before {
-              content: "";
+              content: '';
 
               position: absolute;
               top: 50%;
@@ -2588,13 +2589,13 @@
   &__row {
     position: relative;
 
-    &:first-child>.d-table__col {
+    &:first-child > .d-table__col {
       padding-top: 8px;
     }
 
     &:not(:last-child, :first-child) {
       &::after {
-        content: "";
+        content: '';
         background-color: #757575;
         position: absolute;
         bottom: 0;
@@ -2606,12 +2607,11 @@
     }
 
     &:not(:first-child) {
-
       .d-table__head-col,
       .d-table__col {
         &:not(:first-child) {
           &::before {
-            content: "";
+            content: '';
 
             position: absolute;
             top: 50%;
@@ -2783,7 +2783,7 @@
 
     &::before,
     &::after {
-      content: "";
+      content: '';
 
       background-color: #282828;
       border-radius: 50%;
@@ -2841,7 +2841,7 @@
   height: var(--d-radio-width);
 
   &::before {
-    content: "";
+    content: '';
 
     background-color: transparent;
     border-radius: 50%;
@@ -3343,7 +3343,7 @@
   z-index: 10;
 
   &::before {
-    content: "";
+    content: '';
 
     background-color: var(--d-tooltip-arrow-bg-color);
 
@@ -3853,7 +3853,6 @@
 
   @media (width <=600px) {
     &:not(&--active) {
-
       .d-product--hovered,
       &:hover {
         .d-product__header-content {
@@ -3941,7 +3940,6 @@
 
   @media (width <=320px) {
     &:not(&--active) {
-
       .d-product--hovered,
       &:hover {
         .d-product__delete {
@@ -4080,13 +4078,13 @@
 }
 
 .d-sheet {
-  background-color: #FFFFFF8C;
+  background-color: #ffffff8c;
   backdrop-filter: blur(22px);
   border-radius: 12px 0 / 0 12px;
   box-shadow: 0px 4px 13.4px -5px #00000042;
 
   translate: 100% 0;
-  transition-duration: .3s;
+  transition-duration: 0.3s;
 
   padding-block: 32px;
   padding-inline: 18px 32px;
@@ -4106,7 +4104,7 @@
     position: absolute;
     inset: 0;
     z-index: 40;
-    transition-duration: .3s;
+    transition-duration: 0.3s;
     height: 100%;
     width: 100%;
 
@@ -4243,7 +4241,6 @@
   }
 
   @media (width <=320px) {
-
     &,
     &:not(:last-child) {
       width: calc(100% - var(--primary-padding) * 2);
@@ -4382,13 +4379,12 @@
 
   @media (width <=600px) {
     display: none;
-
   }
 }
 
 .d-tab2 {
-  --d-tab2-bg-active: #F92C0D;
-  --d-tab2-color-active: #FBFBFB;
+  --d-tab2-bg-active: #f92c0d;
+  --d-tab2-color-active: #fbfbfb;
   --d-tab2-font-weight-active: 600;
 
   display: flex;
@@ -4403,7 +4399,7 @@
   font-size: 16px;
   font-weight: 500;
 
-  transition-duration: .2s;
+  transition-duration: 0.2s;
 
   padding: 4px 16px;
   height: 36px;
@@ -4419,8 +4415,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background-color: #FBFBFB;
-    border: 1px solid #EDEDED;
+    background-color: #fbfbfb;
+    border: 1px solid #ededed;
     border-radius: 26px;
     padding: 1px;
     height: 40px;

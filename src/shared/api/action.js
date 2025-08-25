@@ -102,6 +102,46 @@ export default function (instance) {
         })
       return data
     },
+    setDeselectedProduct(payload) {
+      const data = instance
+        .post('front_getavproducts/', payload)
+        .then(function (res) {
+          return res
+        })
+        .catch(function (err) {
+          // TODO: подключить компонент обработки ошибок
+          // console.log(err)
+          if (err.response) {
+            if (err.status == 403) {
+              localStorage.removeItem('user')
+              router.push({ name: 'home' })
+            }
+          } else {
+            return 'technical error'
+          }
+        })
+      return data
+    },
+    setSelectedProduct(payload) {
+      const data = instance
+        .post('front_getavproducts/', payload)
+        .then(function (res) {
+          return res
+        })
+        .catch(function (err) {
+          // TODO: подключить компонент обработки ошибок
+          // console.log(err)
+          if (err.response) {
+            if (err.status == 403) {
+              localStorage.removeItem('user')
+              router.push({ name: 'home' })
+            }
+          } else {
+            return 'technical error'
+          }
+        })
+      return data
+    },
     getAvailableComplects(payload) {
       const data = instance
         .post('front_getavproducts/', payload)
@@ -125,6 +165,26 @@ export default function (instance) {
     getProductGroups(payload) {
       const data = instance
         .post('front_group/', payload)
+        .then(function (res) {
+          return res
+        })
+        .catch(function (err) {
+          // TODO: подключить компонент обработки ошибок
+          // console.log(err)
+          if (err.response) {
+            if (err.status == 403) {
+              localStorage.removeItem('user')
+              router.push({ name: 'home' })
+            }
+          } else {
+            return 'technical error'
+          }
+        })
+      return data
+    },
+    uploadProductsFile(payload) {
+      const data = instance
+        .post('front_getavproducts/', payload)
         .then(function (res) {
           return res
         })

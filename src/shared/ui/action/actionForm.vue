@@ -817,6 +817,7 @@
       <div class="dart-row promotions__content-card-container">
         <div class="d-col d-col-24">
           <div class="promotions__card products__card">
+            <Loader v-if="this.productLoading" />
             <div class="promotions__card-header">
               <div class="promotions__card-header-left">
                 <i class="d-icon-cube promotions__card-icon"></i>
@@ -898,7 +899,20 @@
               <div
                 class="d-divider d-divider--full d-divider--semibold d-divider--black promotions__card-warehouse-divider"
               ></div>
-              <ActionProducts />
+              <ActionProducts
+                :productsSelected="productsSelected"
+                :productsAvailable="productsAvailable"
+                :productsAvailablePage="productsAvailablePage"
+                :productsSelectedPage="productsSelectedPage"
+                :perPage="this.per_page"
+                @paginateProductsSelected="paginateProductsSelected"
+                @paginateProductsAvailable="paginateProductsAvailable"
+                @filterProductsSelected="filterProductsSelected"
+                @filterProductsAvailable="filterProductsAvailable"
+                @selectProduct="selectProduct"
+                @deSelectProduct="deSelectProduct"
+                @openFileDialog="openFileDialog"
+              />
               <div
                 class="d-divider d-divider--black d-divider--full promotions__card-products-divider"
               ></div>
@@ -2160,6 +2174,76 @@
           </div>
         </div>
       </customModal>
+      <customModal v-model="this.modals.productsFile" class="productsFileWindow">
+        <template v-slot:title>Загрузите товары файлом</template>
+        <div>
+          <a
+            :href="site_url_prefix + '/assets/files/files/examples/ExampleLoadingProducts.xlsx'"
+            class="d-button d-button-tertiary d-button-tertiary-small d-button--no-shadow"
+            target="_blank"
+          >
+            <i class="d-icon-download"></i> Скачать шаблон файла</a
+          >
+          <DropZone
+            v-if="!this.upload_product"
+            class="dropzone dart-mt-1"
+            :maxFiles="Number(1)"
+            url="/rest/file_upload.php?upload_products=xlsx"
+            :uploadOnDrop="true"
+            :multipleUpload="true"
+            :acceptedFiles="['xlsx', 'xlsx']"
+            :parallelUpload="1"
+            @sending="parseFile"
+            @removedFile="deselectProductAll"
+            v-bind="args"
+          >
+            <template v-slot:message>
+              <div class="d-upload promo-master__upload">
+                <img
+                  src="/icons/upload-cloud.svg"
+                  alt="Upload icon"
+                  class="d-upload__icon"
+                  width="80"
+                  height="50"
+                />
+                <p class="d-upload__title">Перетащите файл в эту область</p>
+                <p class="d-upload__description">
+                  Вы также можете загрузить файлы xlsx,
+                  <span class="d-link d-upload__link">нажав сюда</span>
+                </p>
+              </div>
+            </template>
+          </DropZone>
+          <div class="dart-upload-xlsx" v-if="this.upload_product">
+            <div class="dart-upload-xlsx__file">
+              <!-- <img src="../../../public/img/files/xls.png" alt=""> -->
+              <a targer="_blank" :href="files?.xlsx?.original_href">{{ files?.xlsx?.name }}</a>
+            </div>
+            <div class="dart-upload-xlsx__info">
+              <p>Загружено товаров: {{ Object.keys(this.upload_selected).length }} шт</p>
+              <p>
+                Всего товаров:
+                {{ Object.keys(this.upload_selected).length + upload_error.length }} шт
+              </p>
+              <div
+                class="dart-link-blue"
+                v-if="upload_error.length"
+                @click="this.modals.error_product = true"
+              >
+                Список незагруженных товаров
+              </div>
+            </div>
+          </div>
+          <div class="d-modal2__actions">
+            <button
+              class="d-button d-button-primary d-button-primary-small box-shadow-none d-modal2__action-button"
+              @click="this.modals.productsFile = false"
+            >
+              Ок
+            </button>
+          </div>
+        </div>
+      </customModal>
     </teleport>
   </section>
 </template>
@@ -2196,8 +2280,8 @@ export default {
   },
   props: {
     type: {
-      type: Number,
-      default: 2,
+      type: String,
+      default: '2',
     },
   },
   data() {
@@ -2206,14 +2290,15 @@ export default {
       productLoading: false,
       complectLoading: false,
       productUploadLoading: false,
-      productAvailablePage: 1,
-      productSelectedPage: 1,
+      productsAvailablePage: 1,
+      productsSelectedPage: 1,
       complectAvailablePage: 1,
       complectSelectedPage: 1,
       selected_group: {},
       windowWidth: 1920,
       total_products: 0,
-      per_page: 24,
+      per_page: 2,
+      per_page_small: 5,
       masterStep: 0,
       visibleMasterSteps: [],
       // Флаги окон
@@ -2227,6 +2312,7 @@ export default {
         price: false,
         price_step: 0,
         price_type: '',
+        productsFile: false,
       },
       // Склады Организации
       stores: [],
@@ -2404,6 +2490,9 @@ export default {
       getActiveActions: 'action/getActiveActions',
       getProductsPrices: 'action/getProductsPrices',
       getGroupProducts: 'action/getGroupProducts',
+      setSelectedProduct: 'action/setSelectedProduct',
+      setDeselectedProduct: 'action/setDeselectedProduct',
+      uploadProductsFile: 'action/uploadProductsFile',
     }),
     addDelayItem() {
       this.form.delay.push({ percent: 0, day: 0 })
@@ -2415,6 +2504,57 @@ export default {
     },
     uploadedFile(file) {
       console.log(file)
+    },
+    parseFile(files, xhr) {
+      this.productUploadLoading = true
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          if (xhr.response) {
+            const response = JSON.parse(xhr.response)
+            this.uploadProductsFile({
+              file: response.data.files[0].original,
+              store_id: this.form.store_id,
+            }).then((res) => {
+              this.productUploadLoading = false
+              this.upload_product = true
+              this.upload_selected = []
+              this.upload_error = []
+              const productsList = res.data.data
+              for (let i = 1; i < Object.keys(productsList).length; i++) {
+                const tempProduct = productsList[Object.keys(productsList)[i]]
+                if (!tempProduct.error) {
+                  this.upload_selected.push(tempProduct.A)
+                } else {
+                  this.upload_error.push(tempProduct.A)
+                }
+              }
+              this.getAvailableProducts({
+                store_id: this.form.store_id,
+                filter: '',
+                page: 1,
+                perpage: this.per_page_small,
+                type: 1,
+              }).then(() => {
+                this.getAvailableProducts({
+                  store_id: this.form.store_id,
+                  filter: '',
+                  page: 1,
+                  perpage: this.per_page,
+                  type: 2,
+                }).then(() => {
+                  this.productLoading = false
+                })
+              })
+            })
+            this.$toast.add({
+              severity: 'info',
+              summary: 'Файл загружен',
+              detail: 'Файл был успешно загружен',
+              life: 3000,
+            })
+          }
+        }
+      }
     },
     parseFileBanner(files, xhr) {
       xhr.onreadystatechange = () => {
@@ -2607,6 +2747,92 @@ export default {
       }
       this.modals.master = true
     },
+    deSelectProduct(id) {
+      this.productLoading = true
+      this.setDeselectedProduct(id).then(() => {
+        this.getAvailableProducts({
+          store_id: this.form.store_id,
+          filter: '',
+          page: 1,
+          perpage: this.per_page_small,
+          type: 1,
+        }).then(() => {
+          this.getAvailableProducts({
+            store_id: this.form.store_id,
+            filter: '',
+            page: 1,
+            perpage: this.per_page,
+            type: 2,
+          }).then(() => {
+            this.productLoading = false
+          })
+        })
+      })
+    },
+    selectProduct(data) {
+      this.productLoading = true
+      this.setSelectedProduct(data.id).then(() => {
+        this.getAvailableProducts({
+          store_id: this.form.store_id,
+          filter: '',
+          page: 1,
+          perpage: this.per_page_small,
+          type: 1,
+        }).then(() => {
+          this.getAvailableProducts({
+            store_id: this.form.store_id,
+            filter: '',
+            page: 1,
+            perpage: this.per_page,
+            type: 2,
+          }).then(() => {
+            this.productLoading = false
+          })
+        })
+      })
+    },
+    paginateProductsSelected(data) {
+      this.productLoading = true
+      this.productsSelectedPage = data.page
+      this.getAvailableProducts({
+        store_id: this.form.store_id,
+        filter: '',
+        page: data.page,
+        perpage: this.per_page,
+        type: 2,
+      }).then(() => {
+        this.productLoading = false
+      })
+    },
+    openFileDialog() {
+      this.modals.productsFile = true
+    },
+    paginateProductsAvailable(data) {
+      console.log(data)
+    },
+    filterProductsSelected(data) {
+      console.log(data)
+    },
+    filterProductsAvailable(data) {
+      this.productLoading = true
+      this.getAvailableProducts({
+        store_id: this.form.store_id,
+        filter: data,
+        page: 1,
+        perpage: this.per_page_small,
+        type: 1,
+      }).then(() => {
+        this.getAvailableProducts({
+          store_id: this.form.store_id,
+          filter: '',
+          page: 1,
+          perpage: this.per_page,
+          type: 2,
+        }).then(() => {
+          this.productLoading = false
+        })
+      })
+    },
   },
   computed: {
     ...mapGetters({
@@ -2699,6 +2925,26 @@ export default {
     },
     actionAdvPlaces: function (newVal) {
       this.places = newVal
+    },
+    'form.store_id': function (newVal) {
+      this.productLoading = true
+      this.getAvailableProducts({
+        store_id: newVal,
+        filter: '',
+        page: this.productsAvailablePage,
+        perpage: this.per_page_small,
+        type: 1,
+      }).then(() => {
+        this.getAvailableProducts({
+          store_id: newVal,
+          filter: '',
+          page: this.productsSelectedPage,
+          perpage: this.per_page,
+          type: 2,
+        }).then(() => {
+          this.productLoading = false
+        })
+      })
     },
     // Акция (редактирование)
     action: function (newVal) {
@@ -2825,8 +3071,32 @@ body {
   .promo-master__setting {
     text-align: left;
   }
+  .promotions__card {
+    .promotions__card-warehouse-header-container {
+      position: relative;
+      z-index: 3;
+    }
+    .d-search .d-search__field {
+      padding: 7px 100px 7px 45px;
+    }
+    .d-search--alt .d-search__icon {
+      position: absolute;
+      z-index: 8;
+      top: 50%;
+      left: 16px;
+      margin: 0;
+      transform: translate(0, -14px);
+    }
+    .d-search .d-search__button {
+      height: auto;
+      min-height: auto;
+      max-height: auto;
+      top: 50%;
+      right: 4px;
+      transform: translate(0, -47%);
+    }
+  }
 }
-
 .promotions__card-dates {
   .promotions__card-value-container {
     display: flex;
@@ -2871,6 +3141,11 @@ body {
 .d-modal2__actions-start {
   justify-content: flex-start;
   margin-bottom: 15px;
+}
+.productsFileWindow {
+  .modal-content {
+    max-width: 600px;
+  }
 }
 .delay-window {
   .vfm__content {
