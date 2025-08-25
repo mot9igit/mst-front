@@ -8,6 +8,7 @@
               display:none;
             }
 
+
             @media (width <=1920px) {
                 .header {
                     padding-block: 11px 20px;
@@ -27,6 +28,17 @@
                 .header {
                     padding-block: 11px 20px;
                 }
+                .clients__filters-left {
+                  flex-direction: row;
+                }
+                .clients__card-top{
+                  padding-bottom: 8px;
+                }
+                .clients__card-right-right{
+                  padding-top: 8px;
+                }
+
+
             }
 
             @media (width <=1024px) {
@@ -52,6 +64,10 @@
                 .header__address {
                     flex-wrap: nowrap;
                 }
+                .clients__card-top{
+                  padding-bottom: 8px;
+                }
+
             }
 
             @media (width <=800px) {
@@ -128,6 +144,9 @@
                 .sidebar__new-organization-icon {
                     font-size: 14px;
                 }
+                .clients__card-top{
+                  padding-bottom: 8px;
+                }
             }
 
             @media (width <=600px) {
@@ -197,7 +216,7 @@
                     margin-right: 18px;
                 }
                 .content-wrapper {
-                    padding-inline: 28px;
+                    padding-inline: 43px;
                 }
                 .main {
                     padding-top: 149px;
@@ -648,7 +667,138 @@
                 .need-modal-create .desc-block{
                   text-align: center;
                 }
+                .clients__filters {
+                  display: block;
+                  justify-content: inherit;
 
+                }
+                .clients__filters .d-input{
+                  margin:0 0 16px 0;
+                  width:100%;
+                  max-width:100%;
+                }
+                 .d-input--light {
+                  --d-input-border-color: #75757575;
+                  --d-input-active-border-color: #75757575;
+                }
+                .clients__card.dart-row{
+                  margin-right:-44px;
+                  margin-left: -44px;
+                }
+                .clients__filters-input {
+                  --d-input-padding: 12px 16px;
+                  border-radius: 6px;
+                  font-size: 12px;
+                  height: 40px
+                }
+                .clients__header-description {
+                    font-size: 12px;
+                    color:#757575;
+
+                }
+                .clients__header-title {
+                    font-size: 14px;
+                }
+                .clients__filters-radio-wrapper .p-checkbox, .clients__filters-radio-wrapper .p-checkbox-box {
+                    width: 18px;
+                    height: 18px;
+                }
+                .clients__card-top{
+                  flex-direction: column;
+                }
+                .clients__card-info{
+                  padding-left:43px;
+                  padding-right: 43px;
+                  min-width: 100%;
+                  width:100%;
+                }
+                .clients__card {
+                    padding: 16px 0;
+                    border-radius: 0;
+                }
+                .clients__card-info-title {
+                  font-size: 14px;
+                }
+                .clients__card-info-address {
+                  font-size: 12px;
+                }
+                .clients__card-info-content {
+                    padding-right: 0px;
+                }
+                .clients__card-bottom {
+                  border-top:none;
+                }
+                .clients__card-top .clients__card-info{
+                  border-bottom: 0.5px solid #75757575;
+                  padding-bottom: 10px;
+                }
+                .clients__card-bottom{
+                  padding: 12px 43px;
+                }
+                .clients__card-contact-container{
+                  padding-left:0 !important;
+                  padding-right:0 !important;
+                  flex-direction: row;
+                  justify-content: start;
+                  align-items: center;
+                }
+                .clients__card-bottom-left{
+                  flex-direction: column;
+                  width:100%;
+                }
+                .clients__card-contact,.clients__card-inn{
+                  font-size:10px;
+                  display:flex;
+                  align-items: center;
+                }
+                .clients__card-inn{
+                  padding-left: 0px !important;
+                }
+                .clients__card-contact-icon {
+                  width:14px;
+                  text-align: center;
+                  height: 100%;
+                }
+                .clients__card-top-right{
+                  display:none;
+                }
+                .clients__card-right{
+                  display: flex;
+                  flex-direction: column;
+                  width:100%;
+                }
+                .clients__card-right-left.d-col-3{
+                  width:100%;
+                  justify-content: center;
+                }
+                .clients__card-vendor{
+                  width: 100%;
+                }
+                .clients__card-vendor {
+                  font-size: 10px;
+                  height: 24px;
+                  min-height: 24px;
+                }
+                .clients__card-right-right.d-col-7{
+                  width: 100%;
+                  padding: 24px 0 0 0
+                }
+                .clients__card-offer{
+                  font-size: 14px;
+                  height: 32px;
+                  min-width: 200px;
+                }
+                .clients__card-offer-icon {
+                    font-size: 14px;
+                    width: 14px;
+                    height: 14px;
+                }
+                .clients__card-action {
+                    font-size: 11px;
+                    width: 24px;
+                    height: 24px;
+                    color:#757575;
+                }
 
 
             }

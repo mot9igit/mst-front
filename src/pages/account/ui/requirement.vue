@@ -42,10 +42,11 @@
       </customModal>
       <customModal v-model="modals.createRequirement" class="need-modal-create">
         <template v-slot:title>Загрузка потребности</template>
-        <form @submit.prevent="formRequirementsSubmit" :class="{ loading: loading }">
-          <div class="need__notice need-vendor__notice">
+        <div class="need__notice need-vendor__notice">
             Обратите внимание! Данная потребность будет привязана к складу доставки.
           </div>
+        <form @submit.prevent="formRequirementsSubmit" :class="{ loading: loading }">
+
           <div
             class="dart-form-group dart-mb-2"
             :class="{
