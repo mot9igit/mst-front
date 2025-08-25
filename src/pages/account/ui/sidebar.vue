@@ -17,10 +17,8 @@
           </a>
           <div class="sidebar__block sidebar__toggle-block sidebar__logo-toggle">
             <button class="sidebar__toggle" @click.prevent="sidebarToggle()">
-              <i
-                class="sidebar__toggle-icon"
-                :class="isMobile === false ? 'd-icon-arrow' : 'd-icon-times-flat'"
-              ></i>
+              <i class="sidebar__toggle-icon d-icon-arrow"></i>
+              <i class="sidebar__toggle-icon d-icon-times-flat"></i>
             </button>
           </div>
         </div>
@@ -200,17 +198,17 @@
           </li>
           <li class="sidebar__block sidebar__item">
             <button class="sidebar__item-button" @click.prevent="requirementOpen()">
-              <i class="d-icon-upload-solid sidebar__item-icon"></i>
+              <i class="d-icon-upload-solid" :class="showRequipment ? 'sidebar__item--active' : 'sidebar__item-icon'"></i>
             </button>
           </li>
           <li class="sidebar__block sidebar__item sidebar__item" @click.prevent="catalogOpen()">
             <button class="sidebar__item-button">
-              <i class="d-icon-catalog-solid sidebar__item-icon"></i>
+              <i class="d-icon-catalog-solid" :class="showCatalog ? 'sidebar__item--active' : 'sidebar__item-icon'"></i>
             </button>
           </li>
           <li class="sidebar__block sidebar__item" @click.prevent="cartOpen()">
             <button class="sidebar__item-button">
-              <i class="d-icon-cart-solid sidebar__item-icon"></i>
+              <i class="d-icon-cart-solid" :class="showCart ? 'sidebar__item--active' : 'sidebar__item-icon'"></i>
               <span class="cart-badge" v-if="this.cartBadge > 0">{{ this.cartBadge }}</span>
             </button>
           </li>
@@ -254,7 +252,7 @@
     </div>
   </aside>
 
-  <customModal v-model="showChangeOrgModal" @cancel="cancel">
+  <customModal v-model="showChangeOrgModal" @cancel="cancel" class="change-organization__modal-cont">
     <template v-slot:title></template>
     <ChangeOrgWindow
       :organizations="this.organizations"
@@ -319,28 +317,41 @@ export default {
     }),
     requirementOpen(){
       this.showRequipment = !this.showRequipment
-      console.log(this.showRequipment)
       this.$emit('showRequipment')
+      if(this.showCatalog){
+        this.showCatalog = false
+        this.$emit('showCatalog')
+      }
+      if(this.showCart){
+        this.showCart = false
+        this.$emit('showCart')
+      }
     },
     catalogOpen(){
       this.isMobile = localStorage.getItem('global.isMobile')
       this.$emit('isMobile')
       this.showCatalog = !this.showCatalog
-
-      //this.active = true
-      //this.showRequipment = false
-      //this.showCatalog = false
-
       this.$emit('showCatalog')
+      if(this.showRequipment){
+        this.showRequipment = false
+        this.$emit('showRequipment')
+      }
+      if(this.showCart){
+        this.showCart = false
+        this.$emit('showCart')
+      }
     },
     cartOpen(){
-
       this.showCart = !this.showCart
-      //this.active = true
-      //this.showRequipment = false
-      //this.showCatalog = false
-
       this.$emit('showCart')
+      if(this.showCatalog){
+        this.showCatalog = false
+        this.$emit('showCatalog')
+      }
+      if(this.showRequipment){
+        this.showRequipment = false
+        this.$emit('showRequipment')
+      }
     },
     orgChange(id) {
       localStorage.setItem('global.organization', Number(id))
@@ -353,14 +364,9 @@ export default {
     },
     sidebarToggle() {
       this.isMobile = localStorage.getItem('global.isMobile')
-      console.log(this.isMobile)
-
-        if (this.isMobile == true) {
+        if (this.isMobile === true) {
           this.active = !this.active
-          //this.showRequipment = false
-          //this.showCatalog = false
-          //this.showCart = false
-      } else {
+        } else {
           this.active = !this.active
           localStorage.setItem('sidebar.position', Number(this.active))
         }
@@ -478,6 +484,22 @@ export default {
     },
     mobileRequipments: function(newVal){
       this.showRequipment = newVal
+    },
+    active: function (newVal){
+      if(newVal === false){
+        if(this.showRequipment){
+          this.showRequipment = false
+          this.$emit('showRequipment')
+        }
+        if(this.showCart){
+          this.showCart = false
+          this.$emit('showCart')
+        }
+        if(this.showCatalog){
+          this.showCatalog = false
+          this.$emit('showCatalog')
+        }
+      }
     }
   },
 }
@@ -577,4 +599,5 @@ aside {
   height: 32px;
   width: 100%;
 }
+
 </style>
