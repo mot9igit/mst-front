@@ -1,5 +1,5 @@
 <template>
-  <section class="shipments" id="shipments">
+  <section class="shipments shipments-main" id="shipments">
     <!-- Верхушка страницы -->
     <div class="d-top">
       <breadcrumbs />

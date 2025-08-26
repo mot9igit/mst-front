@@ -215,7 +215,7 @@
           <li class="sidebar__block sidebar__item" v-if="this.activeOrganization">
             <button
               class="sidebar__item-button"
-              @click.prevent="showChangeOrgModal = true"
+              @click.prevent="showOrgs()"
               v-if="activeOrganization.image"
             >
               <img
@@ -226,7 +226,7 @@
             </button>
             <button
               class="sidebar__item-button sidebar__item-button-none-char"
-              @click.prevent="showChangeOrgModal = true"
+              @click.prevent="showOrgs()"
               v-else
             >
               <div class="sitebar-avatar-none-char">
@@ -318,40 +318,46 @@ export default {
     requirementOpen(){
       this.showRequipment = !this.showRequipment
       this.$emit('showRequipment')
-      if(this.showCatalog){
+      if(this.showCatalog===true){
         this.showCatalog = false
         this.$emit('showCatalog')
       }
-      if(this.showCart){
+      if(this.showCart===true){
         this.showCart = false
         this.$emit('showCart')
       }
+      this.showChangeOrgModal = false
     },
     catalogOpen(){
       this.isMobile = localStorage.getItem('global.isMobile')
       this.$emit('isMobile')
       this.showCatalog = !this.showCatalog
       this.$emit('showCatalog')
-      if(this.showRequipment){
-        this.showRequipment = false
+      if(this.showRequipment===true){
+        this.showRequipment = !this.showRequipment
         this.$emit('showRequipment')
       }
-      if(this.showCart){
+      if(this.showCart===true){
         this.showCart = false
         this.$emit('showCart')
       }
+      this.showChangeOrgModal = false
     },
     cartOpen(){
       this.showCart = !this.showCart
       this.$emit('showCart')
-      if(this.showCatalog){
+      if(this.showCatalog===true){
         this.showCatalog = false
         this.$emit('showCatalog')
       }
-      if(this.showRequipment){
-        this.showRequipment = false
+      if(this.showRequipment===true){
+        this.showRequipment = !this.showRequipment
         this.$emit('showRequipment')
       }
+      this.showChangeOrgModal = false
+    },
+    showOrgs(){
+      this.showChangeOrgModal = !this.showChangeOrgModal
     },
     orgChange(id) {
       localStorage.setItem('global.organization', Number(id))

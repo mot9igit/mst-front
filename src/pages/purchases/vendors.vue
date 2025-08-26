@@ -1,5 +1,5 @@
 <template>
-  <section class="shipments" id="shipments">
+  <section class="shipments vendors" id="shipments">
     <Toast />
     <!-- Верхушка страницы -->
     <div class="d-top">
@@ -190,6 +190,33 @@
             </div>
           </div>-->
         </div>
+        <div class="clients__card-top-mobile">
+            <div class="clients__card-top-right-top">
+              <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
+                <i class="d-icon-plus-flat clients__card-offer-icon"></i>
+                Предложение
+              </button>
+              <div class="clients__card-action-container">
+                <button class="clients__card-action">
+                  <i class="d-icon-pen2"></i>
+                </button>
+                <div
+                  class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
+                ></div>
+                <button class="clients__card-action">
+                  <i class="d-icon-trash"></i>
+                </button>
+              </div>
+            </div>
+            <div class="clients__card-vendor-wrapper">
+              <div
+                class="clients__card-vendor"
+                v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
+              >
+                Создан поставщиком
+              </div>
+            </div>
+          </div>
       </div>
       <div class="clients__paginate" v-if="this.countPages > 1">
         <paginate

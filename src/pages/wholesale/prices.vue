@@ -1,5 +1,5 @@
 <template>
-  <section class="shipments" id="shipments">
+  <section class="shipments wholesaleprices" id="shipments">
     <div class="d-top">
       <Breadcrumbs />
     </div>
@@ -10,8 +10,9 @@
       <div class="d-col-md-12 d-flex d-flex-end">
         <router-link
           :to="{ name: 'wholesaleSaleNew', params: { id: this.$route.params.id } }"
-          class="d-button d-button-primary box-shadow-none d-inline-block"
+          class="d-button d-button-primary d-button--sm-shadow d-button-wholesaleprices"
         >
+        <i class="d-icon-plus-flat clients__card-offer-icon"></i>
           Создать Акцию
         </router-link>
       </div>
@@ -192,5 +193,8 @@ export default {
 }
 .promotions__card-collection-tabs-wrapper {
   overflow: hidden;
+}
+.d-button-wholesaleprices{
+  width:auto
 }
 </style>

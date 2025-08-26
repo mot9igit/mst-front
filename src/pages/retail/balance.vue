@@ -422,10 +422,7 @@ export default {
   line-height: 31px;
   color: #282828;
 }
-.panel-widget {
-  width: 710px;
-  height: 300px;
-}
+
 .balance-info__container {
   min-height: 195px;
 }
@@ -501,7 +498,17 @@ export default {
   -webkit-appearance: none;
   margin: 0;
 }
+@media (width>1920px){
+  .panel-widget {
+  width: 710px;
+  min-height: 300px;
+}
+}
 @media (width <= 1920px) {
+  .panel-widget {
+  width: 710px;
+  min-height: 300px;
+}
   .balance-info__container {
     min-height: 195px;
   }
