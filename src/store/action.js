@@ -14,6 +14,7 @@ export default {
     activeActions: [],
     productsPrices: [],
     groupProducts: [],
+    productPrices: [],
   },
   actions: {
     // Берем акцию ID из URL
@@ -100,6 +101,18 @@ export default {
         type: 'b2b',
       }
       const response = await api.action.uploadProductsFile(data)
+      return response
+    },
+    // Сохраняем данные товаров
+    async setSelectedProductData(store, { type, products, data }) {
+      const sendData = {
+        id: router.currentRoute._value.params.id,
+        action: 'product/set/data',
+        type: type,
+        products: products,
+        data: data,
+      }
+      const response = await api.action.setSelectedProductData(sendData)
       return response
     },
     // Снимаем отметку у Товара
@@ -196,7 +209,7 @@ export default {
       if (response) {
         commit('SET_GROUP_PRODUCTS', response.data)
       }
-      return response
+      return response.data
     },
   },
   mutations: {

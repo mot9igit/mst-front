@@ -58,8 +58,7 @@
         Загрузить товары
       </button>
     </div>
-
-    <div class="d-table__wrapper promotions__card-products">
+    <div class="d-table__wrapper promotions__card-products" v-if="productsSelected.total > 0">
       <table class="d-table hidden-1200">
         <thead class="d-table__head">
           <tr class="d-table__row">
@@ -83,9 +82,7 @@
             <th class="d-table__head-col">Кратность</th>
             <th class="d-table__head-col">
               <div class="flex-center">
-                <button class="d-icon-wrapper d-icon-wrapper--big d-icon-wrapper--white">
-                  <i class="d-icon-trash d-table__icon"></i>
-                </button>
+                <i class="d-icon-trash d-table__icon"></i>
               </div>
             </th>
           </tr>
@@ -114,7 +111,7 @@
                 <p
                   class="promotions__card-text promotions__card-text--bold product-table-card__value"
                 >
-                  2 500.00 ₽
+                  {{ product.price }} ₽
                 </p>
               </div>
             </td>
@@ -123,10 +120,11 @@
                 <p
                   class="promotions__card-text promotions__card-text--bold product-table-card__discount product-table-card__value"
                 >
-                  30% ₽
+                  {{ product.save_data.sale }} %
                 </p>
                 <button
                   class="d-button d-button-tertiary d-button-tertiary-small product-table-card__discount-button"
+                  @click.prevent="settings(product, 'items')"
                 >
                   <i class="d-icon-mixer product-table-card__discount-button-icon"></i>
                   Настроить
@@ -136,7 +134,9 @@
             <td class="d-table__col">
               <div class="flex-center flex-center--vertical">
                 <p class="promotions__card-text promotions__card-text--bold">Скидка</p>
-                <p class="product-table-card__text">по формуле</p>
+                <p class="product-table-card__text">
+                  {{ product.save_data.type_price ? 'по типу цены' : 'по формуле' }}
+                </p>
               </div>
             </td>
             <td class="d-table__col">
@@ -144,7 +144,7 @@
                 <p
                   class="promotions__card-text promotions__card-text--bold product-table-card__value"
                 >
-                  1 750.00 ₽
+                  {{ product.save_data.new_price }} ₽
                 </p>
               </div>
             </td>
@@ -525,7 +525,7 @@
         </div>
       </div>
 
-      <div class="d-table__footer">
+      <div class="d-table__footer dart-mt-1">
         <div class="d-table__footer-content">
           <div class="d-table__footer-content-inner">
             <div class="d-table__footer-left">
@@ -560,13 +560,13 @@
               </div>
             </div>
             <div class="d-table__footer-right">
-              <button class="d-select hidden-1200">
+              <button class="d-select hidden-1200" @click.prevent="massActions">
                 <span class="d-select__title">Массовые действия</span>
-                <i class="d-icon-angle-rounded-bottom d-select__arrow"></i>
+                <!-- <i class="d-icon-angle-rounded-bottom d-select__arrow"></i> -->
               </button>
-              <button class="d-select d-select--squared visible-1200">
+              <button class="d-select d-select--squared visible-1200" @click.prevent="massActions">
                 <span class="d-select__title">Массовые действия</span>
-                <i class="d-icon-angle-rounded-bottom d-select__arrow"></i>
+                <!-- <i class="d-icon-angle-rounded-bottom d-select__arrow"></i> -->
               </button>
             </div>
           </div>
@@ -585,6 +585,12 @@
             </paginate>
           </div>
         </div>
+      </div>
+    </div>
+    <div v-else>
+      <div class="dart-alert dart-alert-info">
+        Таблица с товарами появиться тогда, когда вы выберите хоть один товар или загрузите
+        номенклатуру файлом.
       </div>
     </div>
   </div>
@@ -608,6 +614,7 @@ export default {
     'changeMultiplicity',
     'changeMinCount',
     'openFileDialog',
+    'settings',
   ],
   props: {
     productsSelected: {
@@ -692,6 +699,33 @@ export default {
       } else {
         this.table = []
       }
+    },
+    settings(item, type) {
+      this.selected = []
+      this.selected.push(item)
+      this.$emit('settings', this.selected, type)
+    },
+    massActions() {
+      this.selected = []
+      var type = 'items'
+      if (this.filter_table_global) {
+        type = 'all'
+        this.selected.push(1)
+        this.selected.push(2)
+      } else {
+        console.log(this.table)
+        Object.entries(this.table).forEach((val) => {
+          const [key, value] = val
+          Object.entries(this.productsSelected.products).forEach((ival) => {
+            const [ikey, ivalue] = ival
+            if (value == ivalue.id) {
+              this.selected.push(ivalue)
+            }
+          })
+        })
+      }
+      console.log(this.selected)
+      this.$emit('settings', this.selected, type)
     },
   },
   computed: {

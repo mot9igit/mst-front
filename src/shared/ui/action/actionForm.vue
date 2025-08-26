@@ -900,7 +900,8 @@
                 class="d-divider d-divider--full d-divider--semibold d-divider--black promotions__card-warehouse-divider"
               ></div>
               <ActionProducts
-                :productsSelected="productsSelected"
+                v-if="this.form.store_id.length"
+                :productsSelected="productsSelectedIn"
                 :productsAvailable="productsAvailable"
                 :productsAvailablePage="productsAvailablePage"
                 :productsSelectedPage="productsSelectedPage"
@@ -912,12 +913,20 @@
                 @selectProduct="selectProduct"
                 @deSelectProduct="deSelectProduct"
                 @openFileDialog="openFileDialog"
+                @settings="settings"
               />
               <div
                 class="d-divider d-divider--black d-divider--full promotions__card-products-divider"
               ></div>
 
-              <ActionCollections />
+              <ActionCollections
+                v-if="this.form.store_id.length"
+                :collectionsAvailable="productGroups"
+                :collections="this.form.product_groups"
+                :perPage="this.per_page"
+                @selectCollection="selectCollection"
+                @deleteCollection="deleteCollection"
+              />
             </div>
           </div>
         </div>
@@ -2244,6 +2253,203 @@
           </div>
         </div>
       </customModal>
+      <customModal
+        v-model="this.modals.price"
+        class="productsSettingsWindow"
+        @close="resetDiscountFormula"
+      >
+        <template v-slot:title>{{
+          this.productsSelected.length > 1 ? 'Массовые действия' : 'Настройка цены'
+        }}</template>
+        <div class="dart-modal-price">
+          <div
+            class="dart-alert dart-alert-info"
+            v-if="this.modals.typePrice != 3 && this.modals.priceStep == 1"
+          >
+            Если у товара не будет задан выбранный тип цен, скидка будет рассчитана от розничной
+            цены.
+          </div>
+          <div
+            class="product-dart-card"
+            v-if="this.productsSelected.length == 1 && this.modals.priceType != 'group'"
+          >
+            <img :src="this.productsSelected[0].image" />
+            <div class="product-dart-card__text">
+              <p>{{ this.productsSelected[0].name }}</p>
+              <span>{{ this.productsSelected[0].article }}</span>
+            </div>
+          </div>
+          <div class="dart-method-edit-flex dart-mt-1" v-if="this.modals.priceStep == 0">
+            <div class="d-flex align-items-center gap-1 mt-3">
+              <RadioButton
+                v-model="this.modals.typePrice"
+                inputId="type_price-1"
+                name="type_pricing"
+                value="1"
+              />
+              <label for="type_price-1" class="ml-2 radioLabel">Задать вручную</label>
+            </div>
+            <div class="d-flex align-items-center gap-1 mt-3">
+              <RadioButton
+                v-model="this.modals.typePrice"
+                inputId="type_price-2"
+                name="type_pricing"
+                value="2"
+              />
+              <label for="type_price-2" class="ml-2 radioLabel">Тип цен</label>
+            </div>
+            <div class="flex align-items-center gap-1 mt-3" v-if="this.productsSelected.length > 1">
+              <RadioButton
+                v-model="this.modals.typePrice"
+                inputId="type_price-3"
+                name="type_pricing"
+                value="3"
+              />
+              <label for="type_price-3" class="ml-2 radioLabel">Кратность</label>
+            </div>
+          </div>
+          <div
+            v-if="this.modals.priceStep == 1 && this.modals.typePrice == 1"
+            class="dart-row dart-mt-1"
+          >
+            <div class="dart-widget d-col-6">
+              <p>Тип ценообразования</p>
+              <InputSelect
+                @change="resetDiscount()"
+                v-model="this.productsSelectedData.type_pricing"
+                :options="this.type_pricing"
+                optionDisabled="disabledkey"
+                optionLabel="name"
+                class="w-full md:w-14rem"
+              />
+            </div>
+            <div
+              class="dart-widget d-col-6"
+              v-if="this.productsSelectedData.type_pricing?.key != 3"
+            >
+              <p>От типа цены</p>
+              <InputSelect
+                @change="updateFormula()"
+                v-model="this.productsSelectedData.type_price"
+                :options="this.productsPrices"
+                optionLabel="name"
+                class="w-full md:w-14rem"
+              />
+            </div>
+            <div class="d-col-12">
+              <div class="dart-row">
+                <div class="dart-widget d-col-12">
+                  <p>Значение</p>
+                  <InputNumber
+                    v-model="this.productsSelectedData.sale_value"
+                    inputId="horizontal-buttons"
+                    :step="0.1"
+                    :min="Number(0)"
+                    @update:modelValue="updateFormula()"
+                    incrementButtonIcon="pi pi-plus"
+                    decrementButtonIcon="pi pi-minus"
+                  />
+                </div>
+                <div class="dart-widget d-col-12">
+                  <p>&nbsp;</p>
+                  <InputSelect
+                    @change="updateFormula()"
+                    :disabled="this.productsSelectedData.type_pricing?.key == 3"
+                    v-model="this.productsSelectedData.type_formula"
+                    :options="this.type_formula"
+                    optionLabel="name"
+                    class="w-full md:w-14rem"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            v-if="this.modals.priceStep == 1 && this.modals.typePrice == 2"
+            class="dart-row dart-mt-1"
+          >
+            <div class="dart-widget d-col-12">
+              <p>Тип цены</p>
+              <InputSelect
+                @change="updateFormula()"
+                v-model="this.productsSelectedData.type_price"
+                :options="this.productsPrices"
+                optionLabel="name"
+                class="w-full md:w-14rem"
+              />
+            </div>
+          </div>
+
+          <div
+            v-if="this.modals.priceStep == 1 && this.modals.typePrice == 3"
+            class="dart-row dart-mt-1"
+          >
+            <div class="dart-widget d-col-12">
+              <p>Кратность</p>
+              <InputNumber
+                v-model="this.productsSelectedData.multiplicity"
+                inputId="horizontal-buttons"
+                :step="1"
+                :min="Number(1)"
+                incrementButtonIcon="pi pi-plus"
+                decrementButtonIcon="pi pi-minus"
+              />
+            </div>
+          </div>
+
+          <div
+            class="dart-info-line"
+            v-if="
+              this.modals.priceStep != 0 &&
+              this.productsSelected.length == 1 &&
+              this.modals.priceType != 'group'
+            "
+          >
+            <p>РРЦ: {{ this.productsSelected[0].price ?? '—' }} ₽</p>
+            <p>
+              Скидка от РРЦ:
+              {{ this.productsSelected[0]?.save_data.sale }} %
+            </p>
+            <p>
+              Цена со скидой:
+              {{
+                this.productsSelected[0]?.save_data.new_price
+                  ? this.productsSelected[0]?.save_data.new_price
+                  : this.productsSelected[0]?.price
+              }}
+              ₽
+            </p>
+          </div>
+
+          <div
+            v-if="
+              this.productsSelectedData.type_pricing?.key == 3 &&
+              this.modals.priceStep != 0 &&
+              this.productsSelected.length == 1
+            "
+          >
+            <div class="dart-alert dart-alert-info dart-mt-1">
+              Цена будет всегда оставаться неизменной, даже при изменении типов цен, РРЦ и любых
+              других параметров товара.
+            </div>
+          </div>
+
+          <div class="dart-modal-price__button dart-modal-price__flex dart-mt-1">
+            <span v-if="this.modals.priceStep == 0"></span>
+            <div
+              v-if="this.modals.priceStep != 0"
+              class="d-button d-button-secondary d-button--no-shadow"
+              @click="this.modals.priceStep = 0"
+            >
+              Назад
+            </div>
+            <div class="d-button d-button-primary d-button--no-shadow" @click="closeDialogPrice">
+              {{ this.modals.priceStep == 0 ? 'Далее' : 'Готово' }}
+            </div>
+          </div>
+        </div>
+      </customModal>
     </teleport>
   </section>
 </template>
@@ -2257,6 +2463,8 @@ import Toast from 'primevue/toast'
 import InputNumber from 'primevue/inputnumber'
 import DatePicker from 'primevue/datepicker'
 import MultiSelect from 'primevue/multiselect'
+import RadioButton from 'primevue/radiobutton'
+import InputSelect from 'primevue/select'
 import { useVuelidate } from '@vuelidate/core'
 import { mapActions, mapGetters } from 'vuex'
 import { helpers, required } from '@vuelidate/validators'
@@ -2274,6 +2482,8 @@ export default {
     DatePicker,
     Loader,
     MultiSelect,
+    InputSelect,
+    RadioButton,
     customModal,
     ActionProducts,
     ActionCollections,
@@ -2310,10 +2520,14 @@ export default {
         view_actions: false,
         delay: false,
         price: false,
-        price_step: 0,
-        price_type: '',
+        priceStep: 0,
+        priceType: '',
         productsFile: false,
       },
+      // Доступные товары
+      products: [],
+      productsSelected: [],
+      productsSelectedData: {},
       // Склады Организации
       stores: [],
       // Регионы
@@ -2493,6 +2707,7 @@ export default {
       setSelectedProduct: 'action/setSelectedProduct',
       setDeselectedProduct: 'action/setDeselectedProduct',
       uploadProductsFile: 'action/uploadProductsFile',
+      setSelectedProductData: 'action/setSelectedProductData',
     }),
     addDelayItem() {
       this.form.delay.push({ percent: 0, day: 0 })
@@ -2504,6 +2719,26 @@ export default {
     },
     uploadedFile(file) {
       console.log(file)
+    },
+    updateProductList() {
+      this.productLoading = true
+      this.getAvailableProducts({
+        store_id: this.form.store_id,
+        filter: '',
+        page: 1,
+        perpage: this.per_page_small,
+        type: 1,
+      }).then(() => {
+        this.getAvailableProducts({
+          store_id: this.form.store_id,
+          filter: '',
+          page: 1,
+          perpage: this.per_page,
+          type: 2,
+        }).then(() => {
+          this.productLoading = false
+        })
+      })
     },
     parseFile(files, xhr) {
       this.productUploadLoading = true
@@ -2528,23 +2763,7 @@ export default {
                   this.upload_error.push(tempProduct.A)
                 }
               }
-              this.getAvailableProducts({
-                store_id: this.form.store_id,
-                filter: '',
-                page: 1,
-                perpage: this.per_page_small,
-                type: 1,
-              }).then(() => {
-                this.getAvailableProducts({
-                  store_id: this.form.store_id,
-                  filter: '',
-                  page: 1,
-                  perpage: this.per_page,
-                  type: 2,
-                }).then(() => {
-                  this.productLoading = false
-                })
-              })
+              this.updateProductList()
             })
             this.$toast.add({
               severity: 'info',
@@ -2643,32 +2862,7 @@ export default {
         this.getProductsPrices({
           store_id: this.form.store_id,
         })
-        const types = [1, 2]
-        types.forEach(function (entry) {
-          let pageProducts = 1
-          let pageComplects = 1
-          if (entry == 1) {
-            pageProducts = this.productsAvailablePage
-            pageComplects = this.complectsSelectedPage
-          } else {
-            pageProducts = this.productsSelectedPage
-            pageComplects = this.complectsSelectedPage
-          }
-          this.getAvailableProducts({
-            store_id: this.form.store_id,
-            filter: '',
-            page: pageProducts,
-            perpage: this.per_page,
-            type: entry,
-          })
-          this.getAvailableComplects({
-            store_id: this.form.store_id,
-            filter: '',
-            page: pageComplects,
-            perpage: this.per_page,
-            type: entry,
-          })
-        })
+        this.updateProductList()
         this.getProductGroups({
           store_id: this.form.store_id,
         })
@@ -2700,7 +2894,7 @@ export default {
         this.updateGroups(data.object_id)
       }
     },
-    deleteGroup(id) {
+    deleteCollection(id) {
       this.form.product_groups = Object.fromEntries(
         Object.entries(this.form.product_groups).filter(([key]) => key !== id.toString()),
       )
@@ -2748,48 +2942,32 @@ export default {
       this.modals.master = true
     },
     deSelectProduct(id) {
-      this.productLoading = true
       this.setDeselectedProduct(id).then(() => {
-        this.getAvailableProducts({
-          store_id: this.form.store_id,
-          filter: '',
-          page: 1,
-          perpage: this.per_page_small,
-          type: 1,
-        }).then(() => {
-          this.getAvailableProducts({
-            store_id: this.form.store_id,
-            filter: '',
-            page: 1,
-            perpage: this.per_page,
-            type: 2,
-          }).then(() => {
-            this.productLoading = false
-          })
-        })
+        this.updateProductList()
       })
     },
     selectProduct(data) {
       this.productLoading = true
       this.setSelectedProduct(data.id).then(() => {
-        this.getAvailableProducts({
-          store_id: this.form.store_id,
-          filter: '',
-          page: 1,
-          perpage: this.per_page_small,
-          type: 1,
-        }).then(() => {
-          this.getAvailableProducts({
-            store_id: this.form.store_id,
-            filter: '',
-            page: 1,
-            perpage: this.per_page,
-            type: 2,
-          }).then(() => {
-            this.productLoading = false
-          })
-        })
+        this.updateProductList()
       })
+    },
+    selectCollection(data) {
+      if (data.id) {
+        console.log(data.id)
+        this.form.product_groups[data.id] = {
+          group: data,
+          page: 1,
+          search: '',
+          typePricing: null,
+          prices: null,
+          price: 'key',
+          saleValue: 0,
+          typeFormul: null,
+        }
+        this.updateGroups(data.id)
+        this.selected_group = {}
+      }
     },
     paginateProductsSelected(data) {
       this.productLoading = true
@@ -2833,6 +3011,157 @@ export default {
         })
       })
     },
+    settings(items, type) {
+      // console.log(items)
+      this.modals.priceType = type
+      this.productsSelected = items
+      this.modals.price_step = 0
+      if (type == 'group') {
+        Object.entries(this.type_pricing).forEach((entry) => {
+          const [key, value] = entry
+          if (value.key == 3) {
+            this.type_pricing[key].disabledkey = true
+          }
+        })
+      }
+      this.modals.price = true
+      if (items.length == 1 && type != 'group') {
+        // Если источник = Файл, устанавливаем фиксированную цену
+        if (items[0].save_data.source == 2) {
+          this.modals.priceType = '1'
+          this.modals.priceStep = 1
+          Object.entries(this.typePricing).forEach((value) => {
+            if (value.key == 3) {
+              this.productsSelectedData.type_pricing = value
+            }
+          })
+          Object.entries(this.typeFormula).forEach((value) => {
+            if (value.key == 0) {
+              this.productsSelectedData.type_formula = value
+            }
+          })
+          this.productsSelectedData.sale_value = Number(items[0].save_data.new_price)
+        }
+      }
+    },
+    resetDiscountFormula() {
+      this.modals.typePrice == 1
+      this.productsSelectedData = {}
+      Object.entries(this.type_pricing).forEach((entry) => {
+        const [key, value] = entry
+        if (value.key == 3) {
+          this.type_pricing[key].disabledkey = false
+        }
+      })
+    },
+    updateFormula() {
+      if (this.productsSelected.length == 1 && this.modals.priceType != 'group') {
+        var base_price = this.productsSelected[0].price
+        var rrc_price = this.productsSelected[0].price
+        // Если указан тип цены меняем базовую стоимость
+        if (this.productsSelectedData.type_price?.key) {
+          Object.entries(this.productsSelected[0].save_data.prices).forEach((value) => {
+            if (value.guid == this.productsSelectedData.type_price?.key) {
+              base_price = value.price
+            }
+          })
+        }
+        if (this.modals.typePrice == 2) {
+          this.productsSelected[0].save_data.new_price = base_price
+          if (base_price < rrc_price) {
+            this.productsSelected[0].save_data.sale =
+              ((rrc_price - this.productsSelected[0].save_data.new_price) / rrc_price) * 100
+          } else {
+            this.productsSelected[0].save_data.sale = 0
+          }
+        }
+        if (this.modals.typePrice == 1) {
+          if (
+            this.productsSelectedData.type_pricing &&
+            this.productsSelectedData.sale_value &&
+            this.productsSelectedData.type_formula
+          ) {
+            // Наценка
+            if (this.productsSelectedData.type_pricing?.key == 1) {
+              // Рубли
+              if (this.productsSelectedData.type_formula?.key == 0) {
+                this.productsSelected[0].save_data.new_price =
+                  base_price + this.productsSelectedData.sale_value
+                this.productsSelected[0].save_data.sale =
+                  ((rrc_price - this.productsSelected[0].save_data.new_price) / rrc_price) * 100
+              }
+              // Проценты
+              if (this.productsSelectedData.type_formula?.key == 1) {
+                const koeff = (100 + Number(this.productsSelectedData.sale_value)) * 0.01
+                this.productsSelected[0].save_data.new_price = Number(base_price * koeff).toFixed(2)
+                this.productsSelected[0].save_data.sale =
+                  ((rrc_price - this.productsSelected[0].save_data.new_price) / rrc_price) * 100
+              }
+            }
+            // Скидка
+            if (this.productsSelectedData.type_pricing?.key == 2) {
+              // Рубли
+              if (this.productsSelectedData.type_formula?.key == 0) {
+                this.productsSelected[0].save_data.new_price =
+                  base_price - this.productsSelectedData.sale_value
+                this.productsSelected[0].save_data.sale =
+                  ((rrc_price - this.productsSelected[0].save_data.new_price) / rrc_price) * 100
+              }
+              // Проценты
+              if (this.productsSelectedData.type_formula?.key == 1) {
+                const koeff = (100 - Number(this.productsSelectedData.sale_value)) * 0.01
+                this.productsSelected[0].save_data.new_price = Number(base_price * koeff).toFixed(2)
+                this.productsSelected[0].save_data.sale =
+                  ((rrc_price - this.productsSelected[0].save_data.new_price) / rrc_price) * 100
+              }
+            }
+            // Фиксированная
+            if (this.productsSelectedData.type_pricing?.key == 3) {
+              this.productsSelected[0].save_data.new_price = this.productsSelectedData.sale_value
+              this.productsSelected[0].save_data.sale =
+                ((rrc_price - this.productsSelected[0].save_data.new_price) / rrc_price) * 100
+            }
+          } else {
+            this.productsSelected[0].save_data.new_price = base_price
+            this.productsSelected[0].save_data.sale = 0
+          }
+          this.productsSelected[0].save_data.sale = Number(
+            this.productsSelected[0].save_data.sale,
+          ).toFixed(2)
+        }
+      }
+    },
+    closeDialogPrice() {
+      if (this.modals.priceStep === 0) {
+        this.modals.priceStep = 1
+      } else {
+        this.modals.priceStep = 0
+        this.modals.price = false
+        Object.entries(this.type_pricing).forEach((entry) => {
+          const [key, value] = entry
+          if (value.key == 3) {
+            this.type_pricing[key].disabledkey = false
+          }
+        })
+        const data = {
+          type: this.modals.priceType,
+          products: this.productsSelected,
+          data: this.productsSelectedData,
+        }
+        this.setSelectedProductData(data).then(() => {
+          this.resetDiscountFormula()
+          this.updateStoreData()
+          if (this.modals.priceType == 'group') {
+            this.updateGroups(this.productsSelected[0])
+          }
+        })
+      }
+    },
+    resetDiscount() {
+      this.productsSelectedData.type_price = {}
+      this.productsSelectedData.type_formula = {}
+      this.productsSelectedData.sale_value = null
+    },
   },
   computed: {
     ...mapGetters({
@@ -2842,10 +3171,11 @@ export default {
       action: 'action/action',
       actionAdvPlaces: 'action/actionAdvPlaces',
       productsAvailable: 'action/productsAvailable',
-      productsSelected: 'action/productsSelected',
+      productsSelectedIn: 'action/productsSelected',
       complectsAvailable: 'action/complectsAvailable',
       complectsSelected: 'action/complectsSelected',
       productGroups: 'action/productGroups',
+      productsPrices: 'action/productsPrices',
       activeActions: 'action/activeActions',
       groupProducts: 'action/groupProducts',
       allActions: 'action/allActions',
@@ -2927,23 +3257,10 @@ export default {
       this.places = newVal
     },
     'form.store_id': function (newVal) {
-      this.productLoading = true
-      this.getAvailableProducts({
+      this.updateProductList()
+      this.getProductsPrices({ store_id: newVal })
+      this.getProductGroups({
         store_id: newVal,
-        filter: '',
-        page: this.productsAvailablePage,
-        perpage: this.per_page_small,
-        type: 1,
-      }).then(() => {
-        this.getAvailableProducts({
-          store_id: newVal,
-          filter: '',
-          page: this.productsSelectedPage,
-          perpage: this.per_page,
-          type: 2,
-        }).then(() => {
-          this.productLoading = false
-        })
       })
     },
     // Акция (редактирование)
@@ -3147,6 +3464,11 @@ body {
     max-width: 600px;
   }
 }
+.productsSettingsWindow {
+  .modal-content {
+    max-width: 800px;
+  }
+}
 .delay-window {
   .vfm__content {
     backdrop-filter: none;
@@ -3258,5 +3580,126 @@ body {
 }
 .dropzone__box {
   z-index: 1;
+}
+
+.dart-modal-price__button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .d-button {
+    display: inline-block;
+    width: auto;
+  }
+}
+
+.product-dart-card {
+  max-width: 400px;
+  display: flex;
+  gap: 8px;
+  img {
+    width: 38px;
+    height: 38px !important;
+    object-fit: contain;
+    border-radius: 5px;
+    margin: 0;
+  }
+  &__text {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    p {
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 400;
+      color: #282828;
+      line-height: 1;
+      text-align: left;
+    }
+    span {
+      font-size: 14px;
+      font-weight: 400;
+      color: #adadad;
+      line-height: 1;
+      text-align: left;
+    }
+  }
+}
+.dart-method-edit-flex {
+  display: flex;
+  gap: 40px;
+}
+
+.dart-info-line {
+  display: flex;
+  padding: 12px 16px;
+  background: #f8f7f5;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 5px;
+  margin-top: 8px;
+  p {
+    color: #a0a0a0;
+    font-size: 12px;
+    margin: 0;
+  }
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.align-items-center {
+  align-items: center !important;
+}
+
+.gap-1 {
+  gap: 8px !important;
+}
+
+.dart-widget {
+  .p-component {
+    max-width: 100%;
+  }
+  p {
+    font-size: 12px;
+  }
+}
+
+.dart-alert {
+  position: relative;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+
+.dart-alert-primary {
+  color: #084298;
+  background-color: #cfe2ff;
+  border-color: #b6d4fe;
+}
+
+.dart-alert-info {
+  color: #055160;
+  background-color: #cff4fc;
+  border-color: #b6effb;
+}
+
+.dart-alert-error {
+  color: #842029;
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+}
+
+.dart-alert-success {
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+}
+
+.dart-alert-warning {
+  color: #664d03;
+  background-color: #fff3cd;
+  border-color: #ffecb5;
 }
 </style>
