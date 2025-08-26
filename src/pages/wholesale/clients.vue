@@ -196,7 +196,7 @@
             </div>
           </div>
         </div>
-<div class="clients__card-bottom">
+        <div class="clients__card-bottom">
           <div class="clients__card-bottom-left">
             <div class="clients__card-contact-container">
               <a :href="'tel:' + item.phone.replace(/[^+\d]/g, '')" class="clients__card-contact">
