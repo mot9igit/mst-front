@@ -7,6 +7,12 @@
             .sidebar__logo-toggle .d-icon-times-flat{
               display:none;
             }
+            .d-input--light {
+
+              --d-input-border-color: #75757575;
+              --d-input-active-border-color: #75757575;
+
+            }
 
 
             @media (width <=1920px) {
@@ -286,7 +292,7 @@
                 }
                 .header__design,
                 .header__design {
-                    gap: 43px;
+                    gap: 44px;
                 }
                 .header__address {
                     flex-wrap: nowrap;
@@ -480,7 +486,7 @@
                     margin-right: 18px;
                 }
                 .content-wrapper {
-                    padding-inline: 43px;
+                    padding-inline: 44px;
                 }
                 .main {
                     padding-top: 149px;
@@ -714,7 +720,7 @@
                   border-top-right-radius: 0px !important;
                 }
                 .catalog__content {
-                  padding: 12px 43px;
+                  padding: 12px 44px;
                 }
                 .sidebar__inner--mobile .cart-badge{
                   position: absolute;
@@ -734,7 +740,7 @@
                   color: #f92c0d;
                 }
                 .vfm__content{
-                  padding: 0 43px !important;
+                  padding: 0 44px !important;
                 }
                 .need-modal .vfm__content{
                   padding: 0 !important;
@@ -745,10 +751,10 @@
                   border-radius: 12px 12px 0px 0px !important;
                 }
                 .need-modal .modal-content{
-                   padding: 24px 43px;
+                   padding: 24px 44px;
                 }
                 .need-modal .modal__title,.need-modal-create .modal__title, .need-modal-view .modal__title{
-                  padding: 0px 43px;
+                  padding: 0px 44px;
                 }
                 .change-organization__modal-cont .modal__title:before{
                   content: 'Смена организации';
@@ -787,11 +793,11 @@
                   background: #ededed;
                   color: #282828 !important;
                   border-radius: 0;
-                  padding: 8px 43px;
+                  padding: 8px 44px;
                 }
                 .need-modal .v-table .profile-content__title,.need-modal .v-table .dart-mb-1,.need-modal .v-table .d-table__wrapper{
-                  padding-right: 43px;
-                  padding-left: 43px;
+                  padding-right: 44px;
+                  padding-left: 44px;
                 }
                 .need-modal .v-table .title{
                   font-weight: 600;
@@ -930,8 +936,8 @@
                   padding:0 !important;
                 }
                 .need-modal-create .modal__content form, .need-modal-view .modal__content form{
-                  padding-left: 43px;
-                  padding-right: 43px;
+                  padding-left: 44px;
+                  padding-right: 44px;
                 }
                 .need-modal-create .desc-block{
                   text-align: center;
@@ -976,8 +982,8 @@
                   flex-direction: column;
                 }
                 .clients__card-info{
-                  padding-left:43px;
-                  padding-right: 43px;
+                  padding-left:44px;
+                  padding-right: 44px;
                   min-width: 100%;
                   width:100%;
                 }
@@ -1002,7 +1008,7 @@
                   padding-bottom: 10px;
                 }
                 .clients__card-bottom{
-                  padding: 12px 43px;
+                  padding: 12px 44px;
                 }
                 .clients__card-contact-container{
                   padding-left:0 !important;
@@ -1073,7 +1079,7 @@
                     color:#757575;
                 }
                 .clients__card-right{
-                  padding:0 43px;
+                  padding:0 44px;
                 }
                 .clients__paginate{
                   display:flex;
@@ -1081,9 +1087,9 @@
                   justify-content: center;
                 }
                 .promos {
-                  width: calc(43px + 100% + 43px) !important;
+                  width: calc(44px + 100% + 44px) !important;
                   overflow: hidden;
-                  margin-left:-43px;
+                  margin-left:-44px;
                   padding-top: calc(var(--header-height) + 16px);
                 }
                 .promos .swiper-slide{
@@ -1199,7 +1205,7 @@
                   display:flex;
                   width:100%;
                   min-width: 100%;
-                  padding:0 43px;
+                  padding:0 44px;
                 }
                 .clients__card-top-mobile .clients__card-top-right-top{
                   display:flex;
@@ -1232,8 +1238,8 @@
                   min-height: 32px;
                 }
                 .shipments__card-container{
-                  width: calc(43px + 100% + 43px);
-                  margin-left:-43px;
+                  width: calc(44px + 100% + 44px);
+                  margin-left:-44px;
 
                 }
 
