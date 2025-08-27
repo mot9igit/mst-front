@@ -926,6 +926,9 @@
                 :perPage="this.per_page"
                 @selectCollection="selectCollection"
                 @deleteCollection="deleteCollection"
+                @paginateGroup="paginateGroupProduct"
+                @filterGroup="filterGroupProductSelected"
+                @settings="settings"
               />
             </div>
           </div>
@@ -2507,7 +2510,7 @@ export default {
       selected_group: {},
       windowWidth: 1920,
       total_products: 0,
-      per_page: 2,
+      per_page: 24,
       per_page_small: 5,
       masterStep: 0,
       visibleMasterSteps: [],
@@ -2881,17 +2884,17 @@ export default {
       })
     },
     paginateGroupProduct(data) {
-      if (data.object_id) {
-        this.form.product_groups[data.object_id].page = data.page
-        this.updateGroups(data.object_id)
+      console.log(data)
+      if (data.group_id) {
+        this.form.product_groups[data.group_id].page = data.page
+        this.updateGroups(data.group_id)
       }
     },
     filterGroupProductSelected(data) {
-      console.log(data)
-      if (data.object_id) {
-        this.form.product_groups[data.object_id].filter = data.filter
-        this.form.product_groups[data.object_id].page = data.page
-        this.updateGroups(data.object_id)
+      if (data.group_id) {
+        this.form.product_groups[data.group_id].filter = data.filter
+        this.form.product_groups[data.group_id].page = data.page
+        this.updateGroups(data.group_id)
       }
     },
     deleteCollection(id) {
@@ -3362,6 +3365,10 @@ body {
   .d-badge {
     background-color: #ededed;
     border: 1px solid #ededed;
+  }
+  .product-table-card__discount-button {
+    display: flex;
+    margin: 5px auto 0;
   }
   .promotions__card-label {
     margin-bottom: 8px;
