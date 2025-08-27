@@ -275,20 +275,7 @@
                 padding: 3px ;
                 top:48% !important;
               }
-              .balance-info__info-wrapper{
-                padding: 24px 24px 24px 29px !important;
-              }
-              .balance__main:before {
-                display: none;
-              }
-              .balance__table-accordion h3{
-                font-size: 12px !important;
-              }
-              .balance__main .d-table__head-col, .balance__main .d-table__col {
-                  font-size: 12px;
-                  font-weight: 400;
-                  position: relative;
-              }
+
 
             }
 
@@ -422,26 +409,7 @@
                 .wholesaleprices .d-table__head-col, .d-table__col {
                     font-size: 12px;
                 }
-                .balance-info__info-wrapper {
-                    padding: 24px 24px 24px 16px !important;
-                }
-                .balance-info {
-                  gap: 30px !important;
-                }
-                .balance-info__info-wrapper h3, .balance-info__text {
-                    font-size: 8px !important;
-                    line-height: 10px !important;
-                }
-                .balance__main:before {
-                    display: none;
-                  }
-                .balance__main .d-table__head-col, .balance__main .d-table__col {
-                  font-size: 10px;
-                }
-                .panel-widget,.balance__main{
-                  width:100% !important;
-                  max-width: 100% !important;
-                }
+
 
               }
 
