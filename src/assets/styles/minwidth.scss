@@ -24,6 +24,20 @@
                 -webkit-box-shadow: 0 0 0px 1000px #202020 inset !important;
                 color:#EDEDED;
             }
+            .product-card__footer .d-badge2 {
+                background: #EDEDED;
+                border-radius: 41px;
+                padding: 3px 12px;
+                font-style: normal;
+                font-weight: 600;
+                font-size: 14px;
+                line-height: 18px;
+                text-align: center;
+                color: #757575;
+                min-height: 24px;
+                min-width: 24px;
+            }
+
 
             @media (width <=1920px) {
                 .header {
@@ -173,6 +187,13 @@
                 .balance__main {
                   gap:16px !important;
                 }
+                .product-card__promo {
+                  line-height: 12px;
+                  font-size: 10px;
+                }
+
+
+
             }
             @media (width <=1536px) {
                 .header {
@@ -186,6 +207,14 @@
                 }
                 .balance__main:before {
                   display: none !important;
+                }
+                .product-card__promo {
+                  line-height: 10px;
+                  font-size: 9px;
+                }
+                .product-card__price-value-discounted {
+                  font-size: 32px;
+                  font-weight: 700;
                 }
             }
 
@@ -202,28 +231,52 @@
                 .clients__card-right-right{
                   padding-top: 8px;
                 }
-              .d-top-order-container-date-created{
-                font-size: 14px;
-              }
-              .d-top-order-container-info h3,
-              .d-order-container h3 {
-                font-size: 14px;
-                line-height: 20px;
-              }
-              .order-card__orderinfo-grid-lable {
-                font-size: 12px;
-                line-height: 16px;
-              }
-              .order-card__orderinfo-grid-text {
-                font-size: 14px;
-              }
-              .d-top-order-container-date-created{
-                font-size: 14px;
-              }
-              .clients__card-inn {
-                  padding-left: 21px;
-                  padding-bottom: 8px;
-              }
+                .d-top-order-container-date-created{
+                  font-size: 14px;
+                }
+                .d-top-order-container-info h3,
+                .d-order-container h3 {
+                  font-size: 14px;
+                  line-height: 20px;
+                }
+                .order-card__orderinfo-grid-lable {
+                  font-size: 12px;
+                  line-height: 16px;
+                }
+                .order-card__orderinfo-grid-text {
+                  font-size: 14px;
+                }
+                .d-top-order-container-date-created{
+                  font-size: 14px;
+                }
+                .clients__card-inn {
+                    padding-left: 21px;
+                    padding-bottom: 8px;
+                }
+                .products__list {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 16px;
+                  margin-bottom: 0px;
+                }
+                .product-card__price-value-discounted {
+                  font-size: 36px;
+                  font-weight: 700;
+                }
+                .products__header{
+                  background: #EDEDED;
+                  border-radius: 8px;
+                  padding: 8px 16px;
+                  display: flex;
+                  flex-direction: column-reverse;
+                  justify-content: start;
+                  align-items: start;
+                  gap: 8px;
+                }
+                .products__stat{
+                  color:#757575;
+                }
+
 
             }
 
@@ -1347,7 +1400,7 @@
                   min-width:50px;
                 }
                 .auth__form {
-                    margin-top: 12.5%;
+                    margin-top: 12.5vh;
                 }
                 .form-forgot {
                   .modal-content {
