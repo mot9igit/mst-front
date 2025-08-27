@@ -16,6 +16,14 @@
             .profile__info-item {
               border-color: #75757575;
             }
+            .auth__fields .d-input{
+              filter: drop-shadow(0px 32px 64px rgba(0, 0, 0, 0.56));
+              background-color: #202020;
+            }
+            .auth__fields .d-input__field:-webkit-autofill, .auth__fields .d-input__field:-webkit-autofill:hover, .auth__fields .d-input__field:-webkit-autofill:focus {
+                -webkit-box-shadow: 0 0 0px 1000px #202020 inset !important;
+                color:#EDEDED;
+            }
 
             @media (width <=1920px) {
                 .header {
@@ -1338,7 +1346,14 @@
                 .profile__info-button{
                   min-width:50px;
                 }
-
+                .auth__form {
+                    margin-top: 12.5%;
+                }
+                .form-forgot {
+                  .modal-content {
+                    max-width: 100%  !important;
+                  }
+                }
 
             }
 

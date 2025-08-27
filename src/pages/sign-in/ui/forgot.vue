@@ -8,7 +8,7 @@
       <input
         type="text"
         name="username"
-        class="modal__input"
+        class="d-input__field modal__input"
         placeholder="Логин или email"
         v-model="form.email"
       />

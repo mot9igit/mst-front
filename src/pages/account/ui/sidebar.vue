@@ -382,7 +382,7 @@ export default {
     clickAround() {
       document.addEventListener('click', (event) => {
         let sidebarElement = document.getElementById('sidebar__inner--desktop')
-        if (!sidebarElement.contains(event.target)) {
+        if (sidebarElement && !sidebarElement.contains(event.target)) {
           if (this.active === false && this.isMobile === false) {
             this.active = !this.active
             localStorage.setItem('sidebar.position', Number(this.active))
@@ -435,7 +435,7 @@ export default {
   setup() {
     window.onload = function () {
       let sh = document.querySelector('#app')
-      if (sh.clientWidth <= 600) {
+      if (sh.clientWidth <= 600 && document.querySelector('.sidebar__inner--desktop')) {
         document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
         localStorage.setItem('global.isMobile', true)
 
