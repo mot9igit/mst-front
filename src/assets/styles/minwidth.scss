@@ -7,7 +7,23 @@
             .sidebar__logo-toggle .d-icon-times-flat{
               display:none;
             }
+            .d-input--light {
 
+              --d-input-border-color: #75757575;
+              --d-input-active-border-color: #75757575;
+
+            }
+            .profile__info-item {
+              border-color: #75757575;
+            }
+            .auth__fields .d-input{
+              filter: drop-shadow(0px 32px 64px rgba(0, 0, 0, 0.56));
+              background-color: #202020;
+            }
+            .auth__fields .d-input__field:-webkit-autofill, .auth__fields .d-input__field:-webkit-autofill:hover, .auth__fields .d-input__field:-webkit-autofill:focus {
+                -webkit-box-shadow: 0 0 0px 1000px #202020 inset !important;
+                color:#EDEDED;
+            }
 
             @media (width <=1920px) {
                 .header {
@@ -275,6 +291,9 @@
                 padding: 3px ;
                 top:48% !important;
               }
+              .profile__title{
+                font-size: 24px;
+              }
 
 
             }
@@ -286,7 +305,7 @@
                 }
                 .header__design,
                 .header__design {
-                    gap: 43px;
+                    gap: 44px;
                 }
                 .header__address {
                     flex-wrap: nowrap;
@@ -409,6 +428,30 @@
                 .wholesaleprices .d-table__head-col, .d-table__col {
                     font-size: 12px;
                 }
+                .profile__title {
+                  font-size: 14px;
+                }
+                .profile__info-label{
+                  font-size: 10px;
+                }
+                .profile__info-label-description{
+                  font-size: 9px;
+                }
+                .profile__info-input-wrapper .d-input {
+                  font-size: 10px;
+                  width: auto;
+                  height:24px
+                }
+                .profile__info-input-wrapper .d-input__field {
+                  padding: 4px 8px;
+                }
+                .profile__info-input:after {
+                  font-size: 12px !important;
+                }
+                .profile__submit-button{
+                  font-size: 10px !important;
+                  height: 24px !important;
+                }
 
 
               }
@@ -480,7 +523,7 @@
                     margin-right: 18px;
                 }
                 .content-wrapper {
-                    padding-inline: 43px;
+                    padding-inline: 44px;
                 }
                 .main {
                     padding-top: 149px;
@@ -685,9 +728,9 @@
                     margin: 0 0 0 0 !important;
                 }
                 .vfm--inset {
-                    top: 0;
-                    left: 0;
-                    bottom:auto;
+                  top: 0;
+                  left: 0;
+                  bottom:auto;
                 }
                 .catalog--desktop {
                   display: flex;
@@ -714,7 +757,7 @@
                   border-top-right-radius: 0px !important;
                 }
                 .catalog__content {
-                  padding: 12px 43px;
+                  padding: 12px 44px;
                 }
                 .sidebar__inner--mobile .cart-badge{
                   position: absolute;
@@ -734,7 +777,7 @@
                   color: #f92c0d;
                 }
                 .vfm__content{
-                  padding: 0 43px !important;
+                  padding: 0 44px !important;
                 }
                 .need-modal .vfm__content{
                   padding: 0 !important;
@@ -745,10 +788,10 @@
                   border-radius: 12px 12px 0px 0px !important;
                 }
                 .need-modal .modal-content{
-                   padding: 24px 43px;
+                   padding: 24px 44px;
                 }
                 .need-modal .modal__title,.need-modal-create .modal__title, .need-modal-view .modal__title{
-                  padding: 0px 43px;
+                  padding: 0px 44px;
                 }
                 .change-organization__modal-cont .modal__title:before{
                   content: 'Смена организации';
@@ -787,11 +830,11 @@
                   background: #ededed;
                   color: #282828 !important;
                   border-radius: 0;
-                  padding: 8px 43px;
+                  padding: 8px 44px;
                 }
                 .need-modal .v-table .profile-content__title,.need-modal .v-table .dart-mb-1,.need-modal .v-table .d-table__wrapper{
-                  padding-right: 43px;
-                  padding-left: 43px;
+                  padding-right: 44px;
+                  padding-left: 44px;
                 }
                 .need-modal .v-table .title{
                   font-weight: 600;
@@ -930,8 +973,8 @@
                   padding:0 !important;
                 }
                 .need-modal-create .modal__content form, .need-modal-view .modal__content form{
-                  padding-left: 43px;
-                  padding-right: 43px;
+                  padding-left: 44px;
+                  padding-right: 44px;
                 }
                 .need-modal-create .desc-block{
                   text-align: center;
@@ -976,14 +1019,14 @@
                   flex-direction: column;
                 }
                 .clients__card-info{
-                  padding-left:43px;
-                  padding-right: 43px;
+                  padding-left:44px;
+                  padding-right: 44px;
                   min-width: 100%;
                   width:100%;
                 }
                 .clients__card {
-                    padding: 16px 0;
-                    border-radius: 0;
+                  padding: 16px 0;
+                  border-radius: 0;
                 }
                 .clients__card-info-title {
                   font-size: 14px;
@@ -992,7 +1035,7 @@
                   font-size: 12px;
                 }
                 .clients__card-info-content {
-                    padding-right: 0px;
+                  padding-right: 0px;
                 }
                 .clients__card-bottom {
                   border-top:none;
@@ -1002,7 +1045,7 @@
                   padding-bottom: 10px;
                 }
                 .clients__card-bottom{
-                  padding: 12px 43px;
+                  padding: 12px 44px;
                 }
                 .clients__card-contact-container{
                   padding-left:0 !important;
@@ -1073,7 +1116,7 @@
                     color:#757575;
                 }
                 .clients__card-right{
-                  padding:0 43px;
+                  padding:0 44px;
                 }
                 .clients__paginate{
                   display:flex;
@@ -1081,9 +1124,9 @@
                   justify-content: center;
                 }
                 .promos {
-                  width: calc(43px + 100% + 43px) !important;
+                  width: calc(44px + 100% + 44px) !important;
                   overflow: hidden;
-                  margin-left:-43px;
+                  margin-left:-44px;
                   padding-top: calc(var(--header-height) + 16px);
                 }
                 .promos .swiper-slide{
@@ -1110,9 +1153,11 @@
                 .myorders__content .dart-mb-1 {
                   margin-bottom: 16px !important;
                 }
+                .v-table{
+                  width:max-content;
+                }
                 .d-table__wrapper{
-                  width:100%;
-
+                  width:max-content;
                 }
                 .shipments{
                   overflow:visible;
@@ -1199,7 +1244,7 @@
                   display:flex;
                   width:100%;
                   min-width: 100%;
-                  padding:0 43px;
+                  padding:0 44px;
                 }
                 .clients__card-top-mobile .clients__card-top-right-top{
                   display:flex;
@@ -1208,9 +1253,9 @@
                   justify-content: space-between;
                 }
                 .clients__filters-create-icon {
-                    font-size: 14px;
-                    width: 14px;
-                    height: 14px;
+                  font-size: 14px;
+                  width: 14px;
+                  height: 14px;
                 }
                 .wholesaleprices h1{
                   font-size: 14px;
@@ -1232,11 +1277,9 @@
                   min-height: 32px;
                 }
                 .shipments__card-container{
-                  width: calc(43px + 100% + 43px);
-                  margin-left:-43px;
-
+                  width: calc(44px + 100% + 44px);
+                  margin-left:-44px;
                 }
-
                 .retailorders__content .v-table{
                   margin-top: 40px;
                 }
@@ -1258,10 +1301,59 @@
                   min-width: 100%;
                   width:100%;
                 }
-
-
-
-
+                .profile__title {
+                  font-size: 16px;
+                }
+                .profile__info-label{
+                  font-size: 16px;
+                }
+                .profile__info-label-description{
+                  font-size: 14px;
+                }
+                .profile__info-input-wrapper .d-input {
+                  font-size: 14px;
+                  width: auto;
+                  height:32px
+                }
+                .profile__info-input-wrapper .d-input__field {
+                  padding: 4px 8px;
+                }
+                .profile__info-input:after {
+                  font-size: 14px !important;
+                }
+                .profile__submit-button{
+                  font-size: 14px !important;
+                  height: 32px !important;
+                }
+                .profile__info-item{
+                  flex-direction: column;
+                }
+                .profile__info-label-wrapper {
+                    width: 100%;
+                }
+                .profile__info-item{
+                  gap:16px;
+                }
+                .profile__submit-button{
+                  width:100%;
+                }
+                .profile__info2{
+                  width: calc(44px + 100% + 44px);
+                  margin-left: -44px;
+                  padding-left:44px;
+                  padding-right: 44px;
+                }
+                .profile__info-button{
+                  min-width:50px;
+                }
+                .auth__form {
+                    margin-top: 12.5%;
+                }
+                .form-forgot {
+                  .modal-content {
+                    max-width: 100%  !important;
+                  }
+                }
 
             }
 

@@ -201,7 +201,7 @@ export default {
     let elem = document.querySelector('.main')
     elem.addEventListener('scroll', function () {
       let scrolling = elem.scrollTop
-      if (window.innerWidth <= 600) {
+      if (window.innerWidth <= 600 && document.querySelector('.header')) {
         if (scrolling >= 100) {
           document.querySelector('.header').classList.add('min-mobile-header')
         } else {
