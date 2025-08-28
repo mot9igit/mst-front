@@ -228,6 +228,9 @@ export default {
 <style lang="scss">
 body {
   overflow: hidden;
+  button{
+    color: inherit;
+  }
 }
 header button,
 aside button {
@@ -246,6 +249,11 @@ aside button {
   }
   .d-modal2__actions-start {
     justify-content: flex-start;
+  }
+}
+@media (max-width: 600px){
+  .content {
+    max-width: 100%;
   }
 }
 </style>
