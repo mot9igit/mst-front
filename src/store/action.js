@@ -158,11 +158,12 @@ export default {
       return response
     },
     // Берем доступные Группы Товаров
-    async getProductGroups({ commit }, { store_id }) {
+    async getProductGroups({ commit }, { store_id, filter }) {
       const data = {
         id: router.currentRoute._value.params.id,
         action: 'get',
         store_id: store_id,
+        filter: filter
       }
       const response = await api.action.getProductGroups(data)
       if (response) {

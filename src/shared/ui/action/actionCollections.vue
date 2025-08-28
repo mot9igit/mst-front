@@ -44,7 +44,7 @@
       </form>
     </div>
 
-    <div class="tab-container" v-if="this.collections">
+    <div class="tab-container" v-if="this.collections.length">
       <div class="tab-button-container">
         <template v-for="el in this.collections" :key="el.group.id">
           <button
@@ -550,6 +550,11 @@
         </TabPanels>
       </Tabs>
     </div>
+    <div v-else>
+      <div class="dart-alert dart-alert-info dart-mt-1">
+        Список коллекций появится тогда, когда вы выберите хоть одну коллекцию.
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -564,6 +569,7 @@ export default {
     'filterCollections',
     'paginateGroup',
     'filterGroup',
+    'filterGroupProduct',
     'selectCollection',
     'deleteCollection',
     'settings',
@@ -595,6 +601,7 @@ export default {
     return {
       suggestionsShow: false,
       search: '',
+      searchProducts: '',
       searchPTimer: null,
       selected: [],
       table: [],
@@ -642,10 +649,28 @@ export default {
   watch: {
     search(newVal) {
       if (newVal.length < 3) {
+        if(newVal == ''){
+          this.debounce(() => {
+            this.$emit('filterGroup', { filter: '' })
+          }, 300)
+        }
         return
       }
       this.debounce(() => {
-        this.$emit('filterGroup', { filter: this.search, group_id: this.value })
+        this.$emit('filterGroup', { filter: this.search })
+      }, 300)
+    },
+    searchProducts(newVal) {
+      if (newVal.length < 3) {
+        if(newVal == ''){
+          this.debounce(() => {
+            this.$emit('filterGroupProduct', { filter: '', group_id: this.value, page: 1 })
+          }, 300)
+        }
+        return
+      }
+      this.debounce(() => {
+        this.$emit('filterGroupProduct', { filter: this.search, group_id: this.value, page: 1 })
       }, 300)
     },
   },

@@ -435,6 +435,7 @@
               </div>
             </div>
             <div class="promotions__card-content">
+              <!--
               <div class="promotions__card-info promotions__card-info--fit mb-24 hidden-1200">
                 <p class="promotions__card-info-text">
                   Скрыто у клиентов с индивидуальными условиями
@@ -443,12 +444,21 @@
                   <i class="d-icon-info promotions__card-info-icon"></i>
                 </button>
               </div>
+              -->
 
               <div class="promotions__card-value-container">
                 <span class="promotions__card-label promotions__card-audience-label"
                   >По географии</span
                 >
-                <div class="d-badge__container">
+                <div class="d-badge__container" v-if="this.form.regions">
+                  <div class="d-badge promotions__card-audience-badge" v-for="region in this.form.regions" :key="region.code">
+                    <i
+                      class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"
+                    ></i>
+                    {{ region.name }}
+                  </div>
+                </div>
+                <div class="d-badge__container" v-else>
                   <div class="d-badge promotions__card-audience-badge">
                     <i
                       class="d-icon-toggles d-badge__icon promotions__card-audience-badge-icon"
@@ -465,75 +475,39 @@
                   >Типы компаний</span
                 >
                 <div class="d-badge__container">
-                  <div class="d-badge promotions__card-audience-badge">
+                  <div class="d-badge promotions__card-audience-badge" v-if="this.form.stores">
                     <i
                       class="d-icon-toggles d-badge__icon promotions__card-audience-badge-icon"
                     ></i>
-                    Все регионы
+                    Магазины
+                  </div>
+                  <div class="d-badge promotions__card-audience-badge" v-if="this.form.warehouses">
+                    <i
+                      class="d-icon-toggles d-badge__icon promotions__card-audience-badge-icon"
+                    ></i>
+                    Оптовые компании
+                  </div>
+                  <div class="d-badge promotions__card-audience-badge" v-if="this.form.vendors">
+                    <i
+                      class="d-icon-toggles d-badge__icon promotions__card-audience-badge-icon"
+                    ></i>
+                    Производители
                   </div>
                 </div>
               </div>
 
               <div class="d-divider d-divider--full promotions__card-audience-divider"></div>
 
-              <div class="promotions__card-value-container">
+              <div class="promotions__card-value-container" v-if="this.form.all_organizations_selected">
                 <span class="promotions__card-label promotions__card-audience-label"
                   >Отдельные компании</span
                 >
                 <div class="d-badge__container">
-                  <div class="d-badge promotions__card-audience-badge">
+                  <div class="d-badge promotions__card-audience-badge" v-for="company in this.form.all_organizations_selected" :key="company.code">
                     <div
                       class="d-badge__img-fallback promotions__card-audience-badge-fallback"
                     ></div>
-                    КЛС-Трейд
-                  </div>
-                  <div class="d-badge promotions__card-audience-badge">
-                    <div
-                      class="d-badge__img-fallback promotions__card-audience-badge-fallback"
-                    ></div>
-                    КЛС-Трейд
-                  </div>
-                  <div class="d-badge promotions__card-audience-badge">
-                    <img
-                      src="/icons/spo-logo.svg"
-                      alt=""
-                      class="d-badge__img promotions__card-audience-badge-img"
-                    />
-                    Alteco
-                  </div>
-                  <div class="d-badge promotions__card-audience-badge">
-                    <img
-                      src="/icons/spo-logo.svg"
-                      alt=""
-                      class="d-badge__img promotions__card-audience-badge-img"
-                    />
-                    Alteco
-                  </div>
-                  <div class="d-badge promotions__card-audience-badge">
-                    <div
-                      class="d-badge__img-fallback promotions__card-audience-badge-fallback"
-                    ></div>
-                    КЛС-Трейд
-                  </div>
-                  <div class="d-badge promotions__card-audience-badge">
-                    <i
-                      class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"
-                    ></i>
-                    Члябинская область
-                  </div>
-                  <div class="d-badge promotions__card-audience-badge">
-                    <img
-                      src="/icons/spo-logo.svg"
-                      alt=""
-                      class="d-badge__img promotions__card-audience-badge-img"
-                    />
-                    Alteco
-                  </div>
-                  <div class="d-badge promotions__card-audience-badge">
-                    <div
-                      class="d-badge__img-fallback promotions__card-audience-badge-fallback"
-                    ></div>
-                    КЛС-Трейд
+                    {{ company.name }}
                   </div>
                 </div>
               </div>
@@ -897,6 +871,7 @@
                 </div>
               </div>
               <div
+              v-if="this.form.store_id.length"
                 class="d-divider d-divider--full d-divider--semibold d-divider--black promotions__card-warehouse-divider"
               ></div>
               <ActionProducts
@@ -916,6 +891,7 @@
                 @settings="settings"
               />
               <div
+              v-if="this.form.store_id.length"
                 class="d-divider d-divider--black d-divider--full promotions__card-products-divider"
               ></div>
 
@@ -927,7 +903,8 @@
                 @selectCollection="selectCollection"
                 @deleteCollection="deleteCollection"
                 @paginateGroup="paginateGroupProduct"
-                @filterGroup="filterGroupProductSelected"
+                @filterGroup="filterGroup"
+                @filterGroupProduct="filterGroupProductSelected"
                 @settings="settings"
               />
             </div>
@@ -1798,30 +1775,17 @@
                           class="d-radio__container d-radio__container--small d-radio__container--vertical promo-master__audience-change"
                         >
                           <div class="d-field-wrapper">
-                            <label class="d-switch" for="all-regions">
-                              <input
-                                type="checkbox"
-                                name="all-regions"
-                                id="all-regions"
-                                class="d-switch__input"
-                              />
-                              <div class="d-switch__circle"></div>
-                            </label>
-                            <label for="all-regions" class="d-switch__label">Все регионы </label>
+                            <MultiSelect filter v-model="this.form.regions" display="chip" :options="this.regions_all"
+                    optionLabel="name" placeholder="Выберите регионы"
+                    :maxSelectedLabels="3"
+                    class="w-full md:w-20rem mt-2" />
                           </div>
                           <div class="d-field-wrapper">
-                            <label class="d-switch" for="change-region">
-                              <input
-                                type="checkbox"
-                                name="change-region"
-                                id="change-region"
-                                class="d-switch__input"
-                              />
-                              <div class="d-switch__circle"></div>
-                            </label>
-                            <label for="change-region" class="d-switch__label"
-                              >Регионы по выбору
-                            </label>
+                            <MultiSelect filter v-model="this.form.all_organizations_selected" display="chip" :options="this.organizations_all"
+                    optionLabel="name" placeholder="Выберите организации"
+                    :maxSelectedLabels="3"
+                    @filter="filterOrganizations()"
+                    class="w-full md:w-20rem mt-2" />
                           </div>
                         </div>
                       </div>
@@ -1836,42 +1800,45 @@
                           class="d-radio__container d-radio__container--small d-radio__container--verticalpromo-master__settings promo-master__audience-change"
                         >
                           <div class="d-field-wrapper">
-                            <label class="d-switch" for="shops">
+                            <label class="d-switch" for="actionShops">
                               <input
                                 type="checkbox"
                                 name="shops"
-                                id="shops"
+                                id="actionShops"
                                 class="d-switch__input"
+                                v-model="this.form.stores"
                               />
                               <div class="d-switch__circle"></div>
                             </label>
-                            <label for="shops" class="d-switch__label">Магазины </label>
+                            <label for="actionShops" class="d-switch__label">Магазины </label>
                           </div>
                           <div class="d-field-wrapper">
-                            <label class="d-switch" for="wholesale-company">
+                            <label class="d-switch" for="actionWholesale">
                               <input
                                 type="checkbox"
-                                name="wholesale-company"
-                                id="wholesale-company"
+                                name="actionWholesale"
+                                id="actionWholesale"
                                 class="d-switch__input"
+                                v-model="this.form.warehouses"
                               />
                               <div class="d-switch__circle"></div>
                             </label>
-                            <label for="wholesale-company" class="d-switch__label"
+                            <label for="actionWholesale" class="d-switch__label"
                               >Оптовые компании
                             </label>
                           </div>
                           <div class="d-field-wrapper">
-                            <label class="d-switch" for="wholesale-company">
+                            <label class="d-switch" for="actionVendors">
                               <input
                                 type="checkbox"
-                                name="wholesale-company"
-                                id="wholesale-company"
+                                name="actionVendors"
+                                id="actionVendors"
                                 class="d-switch__input"
+                                v-model="this.form.vendors"
                               />
                               <div class="d-switch__circle"></div>
                             </label>
-                            <label for="wholesale-company" class="d-switch__label"
+                            <label for="actionVendors" class="d-switch__label"
                               >Производители
                             </label>
                           </div>
@@ -2032,6 +1999,7 @@
               <i class="d-icon-arrow-left promo-master__action-button-icon"></i>
               <span class="promo-master__action-button-text">Назад</span>
             </button>
+            <span v-else></span>
             <button
               class="d-button d-button-secondary d-button-secondary-small box-shadow-none promo-master__action-button promo-master__action-button--next"
               v-if="masterStep < 10"
@@ -2655,7 +2623,17 @@ export default {
   mounted() {
     this.unsetAction().then(() => {
       this.getCatalogs()
-      this.getRegions()
+      // Берем географию
+      this.getRegions().then(() => {
+        this.regions_all = this.regions.map(function (el) {
+            return { name: el.label, code: el.key };
+        });
+      });
+      this.getOrganizations().then(() => {
+        this.organizations_all = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id };
+        });
+      });
       this.getOrgStores()
       this.getAllActions()
       this.getActionAdvPlaces({ type: this.type })
@@ -2682,6 +2660,7 @@ export default {
             })
             this.getProductGroups({
               store_id: this.form.store_id,
+              filter: ''
             })
             this.getActiveActions()
           }
@@ -2696,6 +2675,7 @@ export default {
     ...mapActions({
       getCatalogs: 'addition/getCatalogs',
       getRegions: 'addition/getRegions',
+      getOrganizations: 'addition/getOrganizations',
       getOrgStores: 'org/getOrgStores',
       getAction: 'action/getAction',
       unsetAction: 'action/unsetAction',
@@ -2868,6 +2848,7 @@ export default {
         this.updateProductList()
         this.getProductGroups({
           store_id: this.form.store_id,
+          filter: ''
         })
         this.getActiveActions()
       }
@@ -2896,6 +2877,13 @@ export default {
         this.form.product_groups[data.group_id].page = data.page
         this.updateGroups(data.group_id)
       }
+    },
+    filterGroup(data) {
+      console.log(data)
+      this.getProductGroups({
+        store_id: this.form.store_id,
+        filter: data.filter
+      })
     },
     deleteCollection(id) {
       this.form.product_groups = Object.fromEntries(
@@ -3165,11 +3153,15 @@ export default {
       this.productsSelectedData.type_formula = {}
       this.productsSelectedData.sale_value = null
     },
+    filterOrganizations(value){
+      console.log(value)
+    }
   },
   computed: {
     ...mapGetters({
       catalogs: 'addition/catalogs',
       regions: 'addition/regions',
+      organizations: 'addition/organizations',
       orgStores: 'org/orgStores',
       action: 'action/action',
       actionAdvPlaces: 'action/actionAdvPlaces',
@@ -3264,6 +3256,7 @@ export default {
       this.getProductsPrices({ store_id: newVal })
       this.getProductGroups({
         store_id: newVal,
+        filter: ''
       })
     },
     // Акция (редактирование)
@@ -3354,6 +3347,9 @@ export default {
 body {
   .tox-tinymce {
     border-radius: 5px;
+  }
+  .p-tabpanels{
+    color: #282828;
   }
   .d-radio__container-vertical {
     flex-direction: column;

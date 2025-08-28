@@ -6,7 +6,8 @@ export default {
   state: {
     vendors: [],
     catalogs: [],
-    regions: []
+    regions: [],
+    organizations: []
   },
   actions: {
     async getVendors({ commit }, sendData) {
@@ -47,6 +48,17 @@ export default {
       }
       return response
     },
+    async getOrganizations({ commit }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        type: 'get/organizations'
+      }
+      const response = await api.addition.getOrganizations(data)
+      if (response) {
+        commit('SET_ORGANIZATIONS', response.data)
+      }
+      return response
+    },
   },
   mutations: {
     SET_VENDORS: (state, data) => {
@@ -58,6 +70,9 @@ export default {
     SET_REGIONS: (state, data) => {
       state.regions = data.data
     },
+    SET_ORGANIZATIONS: (state, data) => {
+      state.organizations = data.data
+    },
   },
   getters: {
     vendors(state) {
@@ -68,6 +83,9 @@ export default {
     },
     regions(state) {
       return state.regions
+    },
+    organizations(state) {
+      return state.organizations
     },
   },
 }
