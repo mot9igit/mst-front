@@ -84,6 +84,30 @@
             </div>
           </div>
         </div>
+        <!-- Для узкого экрана -->
+         <div class="product-card__count product-card__count-min">
+          <p class="product-card__count-value">
+            <span class="product-card__count-label">В наличии: </span>
+            <span v-if="offer.remains_abstract != offer.available">{{
+              offer.remains_abstract
+            }}</span>
+            <span v-else>{{ offer.available }} шт</span>
+          </p>
+          <div
+            class="d-divider d-divider--vertical product-card__count-divider"
+            v-if="offer.requirement"
+          ></div>
+          <div class="product-card__count-value" v-if="offer.requirement">
+            <span class="product-card__count-label">Ваша потребность: </span>
+            {{ Number(offer.requirement.count) }} шт
+            <div v-if="offer.requirement" class="redder">
+              <span v-if="Number(offer.requirement.count) > Number(offer.available)"
+                >Не хватает
+                {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
+              >
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Информация о цене и количестве -->
