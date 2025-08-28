@@ -652,7 +652,7 @@ export default {
   .balance{
     width: calc(43px + 100% + 43px);
     margin-left: -43px;
-    padding-block: 40px;
+    padding-block: 60px;
   }
   .balance-info__container{
     flex-direction: column;
