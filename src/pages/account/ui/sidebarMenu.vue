@@ -142,11 +142,11 @@ export default {
               icon: 'd-icon-people',
               to: { name: 'wholesaleClients', params: { id: this.$route.params.id } },
             },
-            {
-              name: 'Отгрузки',
-              icon: 'd-icon-truck',
-              to: { name: 'wholesaleShipments', params: { id: this.$route.params.id } },
-            },
+            // {
+            //   name: 'Отгрузки',
+            //   icon: 'd-icon-truck',
+            //   to: { name: 'wholesaleShipments', params: { id: this.$route.params.id } },
+            // },
           ],
         },
         {
@@ -170,36 +170,36 @@ export default {
               icon: 'd-icon-wallet',
               to: { name: 'retailBalance', params: { id: this.$route.params.id } },
             },
-            {
-              name: 'Сопоставление товаров',
-              icon: 'd-icon-shuffle',
-              to: { name: 'retailCompareProducts', params: { id: this.$route.params.id } },
-            },
+            // {
+            //   name: 'Сопоставление товаров',
+            //   icon: 'd-icon-shuffle',
+            //   to: { name: 'retailCompareProducts', params: { id: this.$route.params.id } },
+            // },
           ],
         },
-        {
-          name: 'Мой склад',
-          icon: 'd-icon-boxes-2',
-          collapse: this.collapsed('warehouse'),
-          to: { name: 'warehouseReview', params: { id: this.$route.params.id } },
-          children: [
-            {
-              name: 'Анализ склада',
-              icon: 'd-icon-line-chart',
-              to: { name: 'warehouseReview', params: { id: this.$route.params.id } },
-            },
-            {
-              name: 'Коллекции товара',
-              icon: 'd-icon-layers',
-              to: { name: 'warehouseProducts', params: { id: this.$route.params.id } },
-            },
-            {
-              name: 'Настройки склада',
-              icon: 'd-icon-conveyor',
-              to: { name: 'warehouseCustomization', params: { id: this.$route.params.id } },
-            },
-          ],
-        },
+        // {
+        //   name: 'Мой склад',
+        //   icon: 'd-icon-boxes-2',
+        //   collapse: this.collapsed('warehouse'),
+        //   to: { name: 'warehouseReview', params: { id: this.$route.params.id } },
+        //   children: [
+        //     {
+        //       name: 'Анализ склада',
+        //       icon: 'd-icon-line-chart',
+        //       to: { name: 'warehouseReview', params: { id: this.$route.params.id } },
+        //     },
+        //     {
+        //       name: 'Коллекции товара',
+        //       icon: 'd-icon-layers',
+        //       to: { name: 'warehouseProducts', params: { id: this.$route.params.id } },
+        //     },
+        //     {
+        //       name: 'Настройки склада',
+        //       icon: 'd-icon-conveyor',
+        //       to: { name: 'warehouseCustomization', params: { id: this.$route.params.id } },
+        //     },
+        //   ],
+        // },
         {
           name: 'Моя компания',
           icon: 'd-icon-company',
@@ -211,16 +211,16 @@ export default {
               icon: 'd-icon-focus',
               to: { name: 'organization', params: { id: this.$route.params.id } },
             },
-            {
-              name: 'Сотрудники',
-              icon: 'd-icon-user',
-              to: { name: 'profileStuff', params: { id: this.$route.params.id } },
-            },
-            {
-              name: 'Политики доступа',
-              icon: 'd-icon-lock-open',
-              to: { name: 'profileAccess', params: { id: this.$route.params.id } },
-            },
+            // {
+            //   name: 'Сотрудники',
+            //   icon: 'd-icon-user',
+            //   to: { name: 'profileStuff', params: { id: this.$route.params.id } },
+            // },
+            // {
+            //   name: 'Политики доступа',
+            //   icon: 'd-icon-lock-open',
+            //   to: { name: 'profileAccess', params: { id: this.$route.params.id } },
+            // },
           ],
         },
       ]
