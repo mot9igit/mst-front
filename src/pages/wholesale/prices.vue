@@ -12,7 +12,7 @@
           :to="{ name: 'wholesaleSaleNew', params: { id: this.$route.params.id } }"
           class="d-button d-button-primary d-button--sm-shadow d-button-wholesaleprices"
         >
-        <i class="d-icon-plus-flat clients__card-offer-icon"></i>
+          <i class="d-icon-plus-flat clients__card-offer-icon"></i>
           Создать Акцию
         </router-link>
       </div>
@@ -163,6 +163,8 @@ export default {
   methods: {
     ...mapActions({
       getSales: 'sales/getSales',
+      toggleAction: 'action/toggleAction',
+      delAction: 'action/delAction',
     }),
     paginate(data) {
       this.page = data.page
@@ -174,9 +176,98 @@ export default {
       this.page = 1
       this.getSales(data)
     },
-    editElem(item) {},
-    approveElem(item) {},
-    deleteElem(item) {},
+    editElem(item) {
+      this.$router.push({
+        name: 'wholesaleSale',
+        params: { id: this.$route.params.id, action: item.id },
+      })
+    },
+    approveElem(item) {
+      let header = ''
+      let message = ''
+      if (item.active == '1') {
+        header = 'Подтверждение отключения'
+        message = 'Вы уверены, что хотите отключить Акцию с ID ' + item.id + '?'
+      } else {
+        header = 'Подтверждение включения'
+        message = 'Вы уверены, что хотите включить Акцию с ID ' + item.id + '?'
+      }
+      this.$confirm.require({
+        message: message,
+        header: header,
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.toggleAction({ action_id: item.id }).then((response) => {
+            if (response.data.data.status) {
+              this.$toast.add({
+                severity: 'success',
+                summary: 'Действие произведено успешно',
+                life: 3000,
+              })
+              this.getSales({
+                page: this.page,
+                perpage: this.pagination_items_per_page,
+                type: 1,
+              })
+            } else {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: response.data.data.message,
+                life: 3000,
+              })
+            }
+          })
+        },
+        reject: () => {
+          this.$toast.add({
+            severity: 'error',
+            summary: header,
+            detail: 'Действие отклонено',
+            life: 3000,
+          })
+        },
+      })
+    },
+    deleteElem(item) {
+      this.$confirm.require({
+        message: 'Вы уверены, что хотите удалить Акцию с ID ' + item.id + '?',
+        header: 'Удаление акции',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.delAction({ action_id: item.id }).then((response) => {
+            console.log(response)
+            if (response.data.data.status) {
+              this.$toast.add({
+                severity: 'success',
+                summary: 'Удаление прошло успешно',
+                life: 3000,
+              })
+              this.getSales({
+                page: this.page,
+                perpage: this.pagination_items_per_page,
+                type: 1,
+              })
+            } else {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: response.data.data.message,
+                life: 3000,
+              })
+            }
+          })
+        },
+        reject: () => {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Удаление акции',
+            detail: 'Действие отклонено',
+            life: 3000,
+          })
+        },
+      })
+    },
   },
 }
 </script>
@@ -194,7 +285,7 @@ export default {
 .promotions__card-collection-tabs-wrapper {
   overflow: hidden;
 }
-.d-button-wholesaleprices{
-  width:auto
+.d-button-wholesaleprices {
+  width: auto;
 }
 </style>

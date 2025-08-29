@@ -14,7 +14,6 @@ import Wholesale from '../pages/wholesale/index.vue'
 import WholesaleOrders from '../pages/wholesale/orders.vue'
 import WholesaleOrder from '../pages/wholesale/order.vue'
 import WholesalePrices from '../pages/wholesale/prices.vue'
-import WholesaleSale from '../pages/wholesale/sale.vue'
 import WholesaleSaleNew from '../pages/wholesale/saleNew.vue'
 import WholesaleClients from '../pages/wholesale/clients.vue'
 import WholesaleShipments from '../pages/wholesale/shipments.vue'
@@ -22,6 +21,7 @@ import Retail from '../pages/retail/index.vue'
 import RetailOrders from '../pages/retail/orders.vue'
 import RetailOrder from '../pages/retail/order.vue'
 import RetailActions from '../pages/retail/actions.vue'
+import retailSaleNew from '../pages/retail/saleNew.vue'
 import RetailBalance from '../pages/retail/balance.vue'
 import RetailCompareProducts from '../pages/retail/compareProducts.vue'
 import Warehouse from '../pages/warehouse/index.vue'
@@ -330,7 +330,7 @@ const router = createRouter({
                           name: 'wholesaleSale',
                           props: true,
                           label: 'Акция',
-                          component: WholesaleSale,
+                          component: WholesaleSaleNew,
                           meta: {
                             breadcrumb: {
                               label: 'Редактирование акции',
@@ -412,15 +412,44 @@ const router = createRouter({
                     },
                     {
                       path: 'actions',
-                      name: 'retailActions',
-                      props: true,
-                      label: 'Акции',
-                      component: RetailActions,
                       meta: {
                         breadcrumb: {
                           label: 'Розничные акции',
                         },
                       },
+                      children: [
+                        {
+                          path: '',
+                          name: 'retailActions',
+                          props: true,
+                          label: 'Оптовые цены',
+                          component: RetailActions,
+                        },
+                        {
+                          path: 'new',
+                          name: 'retailSaleNew',
+                          props: true,
+                          label: 'Акция',
+                          component: retailSaleNew,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Создание акции',
+                            },
+                          },
+                        },
+                        {
+                          path: ':action',
+                          name: 'retailSale',
+                          props: true,
+                          label: 'Акция',
+                          component: retailSaleNew,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Редактирование акции',
+                            },
+                          },
+                        },
+                      ],
                     },
                     {
                       path: 'balance',
