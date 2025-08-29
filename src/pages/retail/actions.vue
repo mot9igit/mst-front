@@ -3,157 +3,49 @@
     <div class="d-top">
       <Breadcrumbs />
     </div>
-    <h2>Акции</h2>
-    <div class="dart-row dart-align-items-center dart-mb-1 retail__sales-top">
-      <div class="d-col-xl-6 d-col-md-4" v-for="(ffilter, i) in filters" :key="i">
-        <div class="form_input_group input_pl input-parent required" v-if="ffilter.type == 'text'">
-          <InputText
-            :id="ffilter.name"
-            :placeholder="ffilter.placeholder"
-            :name="i"
-            class="d-input__field clients__filters-input-field"
-            v-model="filterText"
-            @input="setFilter('filter')"
-          />
-        </div>
+    <div class="dart-row">
+      <div class="d-col-md-12">
+        <h1 class="dart-mb-2">Розничные акции</h1>
       </div>
-      <div class="retail__sales-button-container">
+      <div class="d-col-md-12 d-flex d-flex-end">
         <router-link
           :to="{ name: 'retailSaleNew', params: { id: this.$route.params.id } }"
-          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow retail__sales-button"
+          class="d-button d-button-primary d-button--sm-shadow d-button-wholesaleprices"
         >
-          <i class="d-icon-plus-flat clients__filters-create-icon"></i>
-          Создать акцию
+          <i class="d-icon-plus-flat clients__card-offer-icon"></i>
+          Создать Акцию
         </router-link>
       </div>
     </div>
-    <div class="v-table__widgets">
-      <slot name="widgets"></slot>
-    </div>
     <Loader v-if="loading" />
-    <div v-else>
-      <div class="d-table__wrapper" v-if="this.retailSales.length > 0">
-        <table class="d-table">
-          <thead class="d-table__head">
-            <tr class="d-table__row">
-              <th v-for="(row, index) in table_data" :key="index" class="d-table__head-col">
-                <div>
-                  <span>
-                    {{ row.label }}
-                  </span>
-                </div>
-              </th>
-            </tr>
-          </thead>
-
-          <tbody class="d-table__body">
-            <!-- v-if="sales.total != 0">-->
-            <tr class="d-table__row" v-for="(item, i) in retailSales" :key="i">
-              <td class="d-table__col">
-                <div class="cell_value cell_value-center">
-                  {{ item.id }}
-                </div>
-              </td>
-              <td class="d-table__col">
-                <div class="cell_value cell_value-center">
-                  <div class="img_abs">
-                    <img :src="item.image" :alt="item.name" v-if="item.image != ''" />
-                    <img :src="site_url_prefix + 'assets/files/img/nopic.png'" alt="" v-else />
-                  </div>
-                </div>
-              </td>
-              <td class="d-table__col">
-                <div class="cell_value cell_value-center">
-                  {{ item.name }}
-                </div>
-              </td>
-              <td class="d-table__col">
-                <div class="cell_value cell_value-center">
-                  {{ item.date_from }}
-                </div>
-              </td>
-              <td class="d-table__col">
-                <div class="cell_value cell_value-center">
-                  {{ item.date_to }}
-                </div>
-              </td>
-              <!--<td class="d-table__col">
-              <div class="cell_value cell_value-center">
-                <div class="cell_status_green">{{ item.status }}</div>
-              </div>
-            </td>-->
-              <td class="d-table__col">
-                <div class="cell_value cell_value-center">
-                  <div class="cell_status_green cell_active" v-if="item.active == 1"></div>
-                </div>
-              </td>
-              <td class="d-table__col">
-                <div class="cell_value cell_value-center">
-                  {{ item.store_name }}
-                </div>
-              </td>
-              <td class="d-table__col">
-                <div class="cell_value cell_value-center">
-                  {{ item.comment }}
-                </div>
-              </td>
-              <td class="d-table__col">
-                <div class="cell_actions">
-                  <button class="clients__card-action">
-                    <i class="d-icon-pen2"></i>
-                  </button>
-                </div>
-              </td>
-              <td class="d-table__col">
-                <div class="cell_actions">
-                  <button class="clients__card-action">
-                    <i class="d-icon-mixer"></i>
-                  </button>
-                </div>
-              </td>
-              <td class="d-table__col">
-                <div class="cell_actions">
-                  <button class="clients__card-action">
-                    <i class="d-icon-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="d-pagination-wrap" v-if="countPages > 1">
-          <paginate
-            :page-count="countPages"
-            :click-handler="pagClickCallback"
-            :prev-text="'Пред'"
-            :next-text="'След'"
-            :container-class="'d-pagination d-table__footer-right-pagination'"
-            :page-class="'d-pagination__item'"
-            :active-class="'d-pagination__item--active'"
-            :initialPage="this.page"
-            :forcePage="this.page"
-          >
-          </paginate>
-        </div>
-      </div>
-      <div class="profile-products__products" v-else>
-        <div class="dart-alert dart-alert-info">Ничего не найдено</div>
-      </div>
-    </div>
+    <BaseTable
+      v-else
+      :items_data="sales.items"
+      :total="sales.total"
+      :pagination_items_per_page="this.pagination_items_per_page"
+      :pagination_offset="this.pagination_offset"
+      :page="this.page"
+      :table_data="this.table_data"
+      :filters="this.filters"
+      @filter="filter"
+      @sort="filter"
+      @paginate="paginate"
+      @editElem="editElem"
+      @approveElem="approveElem"
+      @deleteElem="deleteElem"
+    />
   </section>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
-
-import InputText from 'primevue/inputtext'
+import BaseTable from '@/shared/ui/table/table.vue'
 import { toRaw } from 'vue'
-import Paginate from 'vuejs-paginate-next'
 
 export default {
   name: 'RetailActions',
-  components: { Breadcrumbs, Loader, InputText, Paginate },
+  components: { Breadcrumbs, Loader, BaseTable },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -195,7 +87,7 @@ export default {
           label: 'Название',
           type: 'link',
           // TODO
-          link_to: 'promotion',
+          link_to: 'retailSale',
           link_params: {
             id: this.$route.params.id,
             action: 'id',
@@ -229,22 +121,24 @@ export default {
           type: 'text',
           class: 'cell_value-center',
         },
-        comment: {
-          label: 'Комментарий',
-          type: 'text',
-          class: 'cell_value-center',
-        },
-        edit: {
-          icon: 'pi pi-pencil',
-          label: '',
-        },
-        approve: {
-          icon: 'pi pi-power-off',
-          label: '',
-        },
-        delete: {
-          icon: 'pi pi-trash',
-          label: '',
+        actions: {
+          label: 'Действия',
+          type: 'actions',
+          sort: false,
+          available: {
+            edit: {
+              icon: 'pi pi-pencil',
+              label: 'Редактировать',
+            },
+            approve: {
+              icon: 'pi pi-power-off',
+              label: 'Включить',
+            },
+            delete: {
+              icon: 'pi pi-trash',
+              label: 'Удалить',
+            },
+          },
         },
       },
     }
@@ -253,6 +147,8 @@ export default {
     ...mapActions({
       getSales: 'retail/getSales',
       unsetSales: 'retail/unsetSales',
+      toggleAction: 'action/toggleAction',
+      delAction: 'action/delAction',
     }),
     setFilter(type = '0') {
       if (type === 'filter') {
@@ -283,25 +179,104 @@ export default {
         this.loading = false
       })
     },
-    pagClickCallback(pageNum) {
-      this.paginate({
-        filter: this.filterText,
-        filtersdata: toRaw(this.filterValues),
-        page: pageNum,
-        perpage: this.pagination_items_per_page,
-      })
-
-      const el = document.querySelector('retail__sales-container')
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' })
-      }
-    },
     paginate(data) {
       this.loading = true
       this.unsetDilers()
       this.page = data.page
       this.getDilers(data).then(() => {
         this.loading = false
+      })
+    },
+    editElem(item) {
+      this.$router.push({
+        name: 'retailSale',
+        params: { id: this.$route.params.id, action: item.id },
+      })
+    },
+    approveElem(item) {
+      let header = ''
+      let message = ''
+      if (item.active == '1') {
+        header = 'Подтверждение отключения'
+        message = 'Вы уверены, что хотите отключить Акцию с ID ' + item.id + '?'
+      } else {
+        header = 'Подтверждение включения'
+        message = 'Вы уверены, что хотите включить Акцию с ID ' + item.id + '?'
+      }
+      this.$confirm.require({
+        message: message,
+        header: header,
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.toggleAction({ action_id: item.id }).then((response) => {
+            if (response.data.data.status) {
+              this.$toast.add({
+                severity: 'success',
+                summary: 'Действие произведено успешно',
+                life: 3000,
+              })
+              this.getSales({
+                page: this.page,
+                perpage: this.pagination_items_per_page,
+                type: 1,
+              })
+            } else {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: response.data.data.message,
+                life: 3000,
+              })
+            }
+          })
+        },
+        reject: () => {
+          this.$toast.add({
+            severity: 'error',
+            summary: header,
+            detail: 'Действие отклонено',
+            life: 3000,
+          })
+        },
+      })
+    },
+    deleteElem(item) {
+      this.$confirm.require({
+        message: 'Вы уверены, что хотите удалить Акцию с ID ' + item.id + '?',
+        header: 'Удаление акции',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.delAction({ action_id: item.id }).then((response) => {
+            console.log(response)
+            if (response.data.data.status) {
+              this.$toast.add({
+                severity: 'success',
+                summary: 'Удаление прошло успешно',
+                life: 3000,
+              })
+              this.getSales({
+                page: this.page,
+                perpage: this.pagination_items_per_page,
+                type: 1,
+              })
+            } else {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: response.data.data.message,
+                life: 3000,
+              })
+            }
+          })
+        },
+        reject: () => {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Удаление акции',
+            detail: 'Действие отклонено',
+            life: 3000,
+          })
+        },
       })
     },
   },
@@ -319,7 +294,7 @@ export default {
     }),
   },
   watch: {
-    sales: function (newVal, oldVal) {
+    sales: function (newVal) {
       this.countPages = Math.ceil(this.sales.total / this.pagination_items_per_page)
       if (this.countPages === 0) {
         this.countPages = 1
