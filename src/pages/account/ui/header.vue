@@ -150,7 +150,7 @@
     @closeWindow="closeRequirementsWindow"
   />
   <teleport to="body">
-    <customModal v-model="showChangeAddressModal" @cancel="cancel">
+    <customModal v-model="showChangeAddressModal" @cancel="cancel" class="header__address-edit-modal">
       <template v-slot:title>Выбрать склад доставки</template>
       <Loader v-if="loading.changeBasketStore"></Loader>
       <changeAddressWindow @setWarehouse="setWarehouse" />
