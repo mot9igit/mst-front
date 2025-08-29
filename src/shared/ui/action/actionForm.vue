@@ -48,11 +48,13 @@
         <p class="promotions__info-description">Создайте акцию в несколько этапов</p>
       </div>
 
+      <!--
       <div class="d-progress hidden-1200">
         <p class="d-progress__label">Пройдено этапов:</p>
         <p class="d-progress__value">78%</p>
         <div class="d-progress__line"></div>
       </div>
+      -->
 
       <div class="promotions__info-actions promotions__info-top-actions">
         <div class="promotions__info-additional">
@@ -71,7 +73,10 @@
           <div class="d-divider d-divider--vertical promotions__info-icon-divider"></div>
         </div>
         <div class="promotions__info-main-actions">
-          <button class="d-icon-wrapper d-icon-wrapper--big promotions__info-edit">
+          <button
+            class="d-icon-wrapper d-icon-wrapper--big promotions__info-edit"
+            @click.prevent="this.modals.master = true"
+          >
             <i class="d-icon-pen2 promotions__icon"></i>
           </button>
           <div
@@ -225,7 +230,7 @@
                 <div
                   class="promotions__card-values promotions__card-values--md-horizontal promotions__card-promo-conds-content"
                 >
-                  <div class="promotions__card-value-container d-md-full">
+                  <div class="promotions__card-value-container d-md-full" v-if="type == 1">
                     <span class="promotions__card-label">Оплата доставки:</span>
                     <p
                       class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
@@ -237,7 +242,25 @@
                       }}
                     </p>
                   </div>
-                  <div class="promotions__card-value-container d-md-full">
+                  <div class="promotions__card-value-container d-md-full" v-if="type == 2">
+                    <span class="promotions__card-label">Оплата доставки:</span>
+                    <p
+                      class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
+                    >
+                      {{
+                        this.form.typeDelivery == 1
+                          ? 'Покупатель оплачивает доставку'
+                          : 'Поставщик компенсирует доставку'
+                      }}
+                    </p>
+                  </div>
+                  <div v-if="type == 2 && this.form.typeDelivery == 2">
+                    <p>
+                      Процент скидки от стоимости товара, который поставщик выделяет для компенсации
+                      доставки: <b>{{ this.form.typeDeliveryPercent }}%</b>
+                    </p>
+                  </div>
+                  <div class="promotions__card-value-container d-md-full" v-if="type == 1">
                     <span class="promotions__card-label">Срок доставки:</span>
                     <p
                       class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
@@ -274,6 +297,7 @@
             <div class="promotions__card-content">
               <div
                 class="promotions__card-values promotions__card-values--md-horizontal promotions__card-values--md-long"
+                v-if="type == 1"
               >
                 <div class="promotions__card-info">
                   <div class="promotions__card-value-container">
@@ -317,6 +341,26 @@
                       {{ item.percent }}%
                     </p>
                   </div>
+                </div>
+              </div>
+              <div v-else>
+                <div class="promotions__card-value-container d-md-full" v-if="type == 2">
+                  <span class="promotions__card-label">Условия оплаты:</span>
+                  <p
+                    class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
+                  >
+                    {{
+                      this.form.typePay == 1
+                        ? 'Покупатель оплачивает товар при заказе'
+                        : 'Предоставление рассрочки на 6 месяцев покупателю, за счет поставщика'
+                    }}
+                  </p>
+                </div>
+                <div class="dart-mt-1" v-if="this.form.typePay == 2">
+                  <p>
+                    Процент скидки от стоимости товара, который поставщик выделяет для компенсации
+                    рассрочки: <b>{{ this.form.typePayPercent }}%</b>
+                  </p>
                 </div>
               </div>
             </div>
@@ -418,6 +462,7 @@
                 </button>
               </div>
             </div>
+            <!--
             <div class="promotions__card-note">
               <p class="promotions__card-note-label">
                 Скрыто у клиентов с индивидуальными условиями
@@ -434,6 +479,7 @@
                 </div>
               </div>
             </div>
+            -->
             <div class="promotions__card-content">
               <!--
               <div class="promotions__card-info promotions__card-info--fit mb-24 hidden-1200">
@@ -450,8 +496,12 @@
                 <span class="promotions__card-label promotions__card-audience-label"
                   >По географии</span
                 >
-                <div class="d-badge__container" v-if="this.form.regions">
-                  <div class="d-badge promotions__card-audience-badge" v-for="region in this.form.regions" :key="region.code">
+                <div class="d-badge__container" v-if="this.form.regions.length">
+                  <div
+                    class="d-badge promotions__card-audience-badge"
+                    v-for="region in this.form.regions"
+                    :key="region.code"
+                  >
                     <i
                       class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"
                     ></i>
@@ -468,13 +518,19 @@
                 </div>
               </div>
 
-              <div class="d-divider d-divider--full promotions__card-audience-divider"></div>
+              <div
+                class="d-divider d-divider--full promotions__card-audience-divider"
+                v-if="type == 1"
+              ></div>
 
-              <div class="promotions__card-value-container">
+              <div class="promotions__card-value-container" v-if="type == 1">
                 <span class="promotions__card-label promotions__card-audience-label"
                   >Типы компаний</span
                 >
-                <div class="d-badge__container">
+                <div
+                  class="d-badge__container"
+                  v-if="this.form.stores || this.form.warehouses || this.form.vendors"
+                >
                   <div class="d-badge promotions__card-audience-badge" v-if="this.form.stores">
                     <i
                       class="d-icon-toggles d-badge__icon promotions__card-audience-badge-icon"
@@ -494,20 +550,43 @@
                     Производители
                   </div>
                 </div>
+                <div class="d-badge__container" v-else>
+                  <div class="d-badge promotions__card-audience-badge">
+                    <i
+                      class="d-icon-toggles d-badge__icon promotions__card-audience-badge-icon"
+                    ></i>
+                    Все компании
+                  </div>
+                </div>
               </div>
 
-              <div class="d-divider d-divider--full promotions__card-audience-divider"></div>
+              <div
+                class="d-divider d-divider--full promotions__card-audience-divider"
+                v-if="type == 1"
+              ></div>
 
-              <div class="promotions__card-value-container" v-if="this.form.all_organizations_selected">
+              <div class="promotions__card-value-container" v-if="type == 1">
                 <span class="promotions__card-label promotions__card-audience-label"
                   >Отдельные компании</span
                 >
-                <div class="d-badge__container">
-                  <div class="d-badge promotions__card-audience-badge" v-for="company in this.form.all_organizations_selected" :key="company.code">
+                <div class="d-badge__container" v-if="this.form.all_organizations_selected.length">
+                  <div
+                    class="d-badge promotions__card-audience-badge"
+                    v-for="company in this.form.all_organizations_selected"
+                    :key="company.code"
+                  >
                     <div
                       class="d-badge__img-fallback promotions__card-audience-badge-fallback"
                     ></div>
                     {{ company.name }}
+                  </div>
+                </div>
+                <div class="d-badge__container" v-else>
+                  <div class="d-badge promotions__card-audience-badge">
+                    <i
+                      class="d-icon-toggles d-badge__icon promotions__card-audience-badge-icon"
+                    ></i>
+                    Все компании
                   </div>
                 </div>
               </div>
@@ -515,7 +594,7 @@
           </div>
         </div>
       </div>
-      <div class="dart-row promotions__content-card-container">
+      <div class="dart-row promotions__content-card-container" v-if="type == 1">
         <div class="d-col d-col-24">
           <div class="promotions__card">
             <div class="promotions__card-header">
@@ -798,10 +877,6 @@
                 <p class="promotions__card-title">Товары и скидки</p>
               </div>
               <div class="promotions__info-actions">
-                <button class="promotions__card-button">
-                  <i class="d-icon-pen2 promotions__card-button-icon"></i>
-                </button>
-                <div class="d-divider d-divider--vertical promotions__card-header-divider"></div>
                 <button class="promotions__card-button promotions__card-header-add">
                   <i class="d-icon-plus promotions__card-button-icon"></i>
                 </button>
@@ -809,6 +884,7 @@
             </div>
             <div
               class="promotions__card-content products__card-content promotions__card-content--no-x-padding"
+              id="warehouseProducts"
             >
               <div class="promotions__card-warehouse">
                 <div class="promotions__card-value-container promotions__card-warehouse-header">
@@ -871,7 +947,7 @@
                 </div>
               </div>
               <div
-              v-if="this.form.store_id.length"
+                v-if="this.form.store_id.length"
                 class="d-divider d-divider--full d-divider--semibold d-divider--black promotions__card-warehouse-divider"
               ></div>
               <ActionProducts
@@ -891,7 +967,7 @@
                 @settings="settings"
               />
               <div
-              v-if="this.form.store_id.length"
+                v-if="this.form.store_id.length"
                 class="d-divider d-divider--black d-divider--full promotions__card-products-divider"
               ></div>
 
@@ -998,12 +1074,14 @@
             </span>
           </div>
           <div class="promo-modal__header-right">
+            <!--
             <div class="d-progress promo-modal__progress">
               <p class="d-progress__label promo-modal__progress-label">
                 Пройдено {{ this.visibleMasterSteps.length }} из 10 шагов
               </p>
               <div class="d-progress__line promo-modal__progress-line"></div>
             </div>
+            -->
             <a
               href="#"
               @click.prevent="this.modals.master = false"
@@ -1129,76 +1207,180 @@
                 <!-- 3 ЭТАП Баннер акции -->
                 <div class="contents" id="promoBanner" v-if="masterStep == 3">
                   <p class="promo-master__title">Баннер акции</p>
-                  <div
-                    class="d-field-container d-field-container--vertical promo-master__upload-header"
-                  >
-                    <p class="promo-master__subtitle">Загрузка баннера</p>
-                    <p class="d-text promo-master__description">
-                      Загрузите изображение с разрешением 6824х1996, в формате png, jpeg, svg.
-                      Размер изображения не должен превышать 5 Мбайт&nbsp;.
-                    </p>
-                  </div>
-                  <DropZone
-                    v-if="!this.upload_product"
-                    class=""
-                    :maxFiles="Number(1)"
-                    :maxFileSize="5000000"
-                    url="/rest/file_upload.php?banner=max"
-                    :uploadOnDrop="true"
-                    :multipleUpload="true"
-                    :acceptedFiles="['png', 'jpeg', 'jpg', 'svg']"
-                    :parallelUpload="1"
-                    @sending="parseFileBanner"
-                    @uploaded="uploadedFile"
-                    @removedFile="deselectFileBannerAll"
-                    v-bind="args"
-                  >
-                    <template v-slot:message>
-                      <div class="d-upload promo-master__upload">
-                        <img
-                          src="/icons/upload-cloud.svg"
-                          alt="Upload icon"
-                          class="d-upload__icon"
-                          width="80"
-                          height="50"
-                        />
-                        <p class="d-upload__title">Перетащите файл в эту область</p>
-                        <p class="d-upload__description">
-                          Вы также можете загрузить файлы png, jpeg, svg,
-                          <span class="d-link d-upload__link">нажав сюда</span>
-                        </p>
+                  <div class="dart-row">
+                    <div class="d-col-24 d-col-md-12">
+                      <div class="banner-wrap">
+                        <div
+                          class="d-field-container d-field-container--vertical promo-master__upload-header"
+                        >
+                          <p class="promo-master__subtitle">Большой баннер</p>
+                          <p class="d-text promo-master__description">
+                            Загрузите изображение с разрешением 6824х1996, в формате png, jpeg, svg.
+                            Размер изображения не должен превышать 5 Мбайт&nbsp;.
+                          </p>
+                        </div>
+                        <DropZone
+                          v-if="!this.upload_product"
+                          class=""
+                          :maxFiles="Number(1)"
+                          :maxFileSize="5000000"
+                          url="/rest/file_upload.php?banner=max"
+                          :uploadOnDrop="true"
+                          :multipleUpload="true"
+                          :acceptedFiles="['png', 'jpeg', 'jpg', 'svg']"
+                          :parallelUpload="1"
+                          @sending="parseFileBanner"
+                          @uploaded="uploadedFile"
+                          @removedFile="deselectFileBannerAll"
+                          v-bind="args"
+                        >
+                          <template v-slot:message>
+                            <div class="d-upload promo-master__upload">
+                              <img
+                                src="/icons/upload-cloud.svg"
+                                alt="Upload icon"
+                                class="d-upload__icon"
+                                width="80"
+                                height="50"
+                              />
+                              <p class="d-upload__title">Перетащите файл в эту область</p>
+                              <p class="d-upload__description">
+                                Вы также можете загрузить файлы png, jpeg, svg,
+                                <span class="d-link d-upload__link">нажав сюда</span>
+                              </p>
+                            </div>
+                          </template>
+                        </DropZone>
+                        <div class="upload-banner__image">
+                          <img
+                            :src="this.files?.max?.original_href"
+                            v-if="this.files?.max?.original_href"
+                          />
+                        </div>
                       </div>
-                    </template>
-                  </DropZone>
-                  <div class="upload-banner__image">
-                    <img
-                      :src="this.files?.max?.original_href"
-                      v-if="this.files?.max?.original_href"
-                    />
+                    </div>
+                    <div class="d-col-24 d-col-md-12">
+                      <div class="banner-wrap" v-if="type == 2">
+                        <div
+                          class="d-field-container d-field-container--vertical promo-master__upload-header"
+                        >
+                          <p class="promo-master__subtitle">Малый баннер</p>
+                          <p class="d-text promo-master__description">
+                            Загрузить изображение нужно размером не менее 324х161, соблюдая
+                            пропорции. Размер изображения не должен превышать 5 Мбайт.
+                          </p>
+                        </div>
+                        <DropZone
+                          v-if="!this.upload_product"
+                          class=""
+                          :maxFiles="Number(1)"
+                          :maxFileSize="5000000"
+                          url="/rest/file_upload.php?banner=min"
+                          :uploadOnDrop="true"
+                          :multipleUpload="true"
+                          :acceptedFiles="['png', 'jpeg', 'jpg', 'svg']"
+                          :parallelUpload="1"
+                          @sending="parseFileBanner"
+                          @uploaded="uploadedFile"
+                          @removedFile="deselectFileBannerAll"
+                          v-bind="args"
+                        >
+                          <template v-slot:message>
+                            <div class="d-upload promo-master__upload">
+                              <img
+                                src="/icons/upload-cloud.svg"
+                                alt="Upload icon"
+                                class="d-upload__icon"
+                                width="80"
+                                height="50"
+                              />
+                              <p class="d-upload__title">Перетащите файл в эту область</p>
+                              <p class="d-upload__description">
+                                Вы также можете загрузить файлы png, jpeg, svg,
+                                <span class="d-link d-upload__link">нажав сюда</span>
+                              </p>
+                            </div>
+                          </template>
+                        </DropZone>
+                        <div class="upload-banner__image">
+                          <img
+                            :src="this.files?.min?.original_href"
+                            v-if="this.files?.min?.original_href"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-col-24 d-col-md-12">
+                      <div class="banner-wrap" v-if="type == 2">
+                        <div
+                          class="d-field-container d-field-container--vertical promo-master__upload-header"
+                        >
+                          <p class="promo-master__subtitle">Квадратный баннер</p>
+                          <p class="d-text promo-master__description">
+                            Загрузить изображение нужно размером не менее 459х459, соблюдая
+                            пропорции. Размер изображения не должен превышать 5 Мбайт.
+                          </p>
+                        </div>
+                        <DropZone
+                          v-if="!this.upload_product"
+                          class=""
+                          :maxFiles="Number(1)"
+                          :maxFileSize="5000000"
+                          url="/rest/file_upload.php?banner=small"
+                          :uploadOnDrop="true"
+                          :multipleUpload="true"
+                          :acceptedFiles="['png', 'jpeg', 'jpg', 'svg']"
+                          :parallelUpload="1"
+                          @sending="parseFileBanner"
+                          @uploaded="uploadedFile"
+                          @removedFile="deselectFileBannerAll"
+                          v-bind="args"
+                        >
+                          <template v-slot:message>
+                            <div class="d-upload promo-master__upload">
+                              <img
+                                src="/icons/upload-cloud.svg"
+                                alt="Upload icon"
+                                class="d-upload__icon"
+                                width="80"
+                                height="50"
+                              />
+                              <p class="d-upload__title">Перетащите файл в эту область</p>
+                              <p class="d-upload__description">
+                                Вы также можете загрузить файлы png, jpeg, svg,
+                                <span class="d-link d-upload__link">нажав сюда</span>
+                              </p>
+                            </div>
+                          </template>
+                        </DropZone>
+                        <div class="upload-banner__image">
+                          <img
+                            :src="this.files?.small?.original_href"
+                            v-if="this.files?.small?.original_href"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="d-field-container d-field-container--vertical promo-master__settings">
                     <p class="promo-master__subtitle">Места размещения</p>
-                    <div
-                      class="d-radio__container d-radio__container--small promo-master__radio-container"
-                    >
-                      <div
-                        class="d-radio__wrapper promo-master__radio-wrapper"
-                        v-for="(item, key) in this.actionAdvPlaces"
-                        :key="key"
-                      >
-                        <label class="d-switch" :for="'place_' + item.code">
-                          <input
-                            type="checkbox"
-                            :name="'place_' + item.code"
-                            :id="'place_' + item.code"
-                            class="d-switch__input"
-                            v-model="this.form.adv.place[item.code]"
-                          />
-                          <div class="d-switch__circle"></div>
-                        </label>
-                        <label :for="'place_' + item.code" class="d-switch__label"
-                          >{{ item.name }}
-                        </label>
+                    <div class="dart-row promo-master__radio-container dart-mt-1">
+                      <div class="d-col-12" v-for="(item, key) in this.actionAdvPages" :key="key">
+                        <div class="d-radio__wrapper promo-master__radio-wrapper dart-mb-1">
+                          <label class="d-switch" :for="'place_' + item.code">
+                            <input
+                              type="checkbox"
+                              :name="'place_' + item.code"
+                              :id="'place_' + item.code"
+                              class="d-switch__input"
+                              v-model="this.form.adv.place[item.code]"
+                            />
+                            <div class="d-switch__circle"></div>
+                          </label>
+                          <label :for="'place_' + item.code" class="d-switch__label"
+                            >{{ item.name }}
+                          </label>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1208,7 +1390,43 @@
                   <p class="promo-master__title">Условия оплаты</p>
                   <div class="d-field-container d-field-container--vertical promo-master__settings">
                     <p class="promo-master__subtitle">Настройка отсрочки платежа</p>
-                    <div class="d-radio__container d-radio__container--small">
+                    <div class="d-radio__container d-radio__container--small" v-if="type == 2">
+                      <div class="d-radio__wrapper promo-master__radio-wrapper">
+                        <label for="deferred-payment-1" class="d-radio">
+                          <input
+                            type="radio"
+                            name="deferred-payment"
+                            id="deferred-payment-1"
+                            v-model="this.form.typePay"
+                            value="1"
+                            class="d-radio__input"
+                          />
+                        </label>
+                        <label
+                          for="deferred-payment-1"
+                          class="d-radio__label promo-master__radio-label"
+                          >Покупатель оплачивает товар при заказе
+                        </label>
+                      </div>
+                      <div class="d-radio__wrapper promo-master__radio-wrapper">
+                        <label for="deferred-payment-2" class="d-radio">
+                          <input
+                            type="radio"
+                            name="deferred-payment"
+                            id="deferred-payment-2"
+                            v-model="this.form.typePay"
+                            value="2"
+                            class="d-radio__input"
+                          />
+                        </label>
+                        <label
+                          for="deferred-payment-2"
+                          class="d-radio__label promo-master__radio-label"
+                          >Предоставление рассрочки на 6 месяцев покупателю, за счет поставщика
+                        </label>
+                      </div>
+                    </div>
+                    <div class="d-radio__container d-radio__container--small" v-if="type == 1">
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
                         <label for="deferred-payment-1" class="d-radio">
                           <input
@@ -1245,55 +1463,78 @@
                       </div>
                     </div>
                   </div>
-                  <div
-                    class="promotions__card promotions__card--small promo-master__card"
-                    v-if="this.form.typeDelay == 1"
-                  >
-                    <div class="promotions__card-header promo-master__card-header">
-                      <div class="promotions__card-header-left">
-                        <p class="promotions__card-title">
-                          Срок отсрочки платежа:
-                          <span class="promotions__card-title-span"
-                            >{{ this.form.postponementPeriod }} дн.</span
-                          >
-                        </p>
-                      </div>
-                      <a
-                        href="#"
-                        @click.prevent="this.modals.delay = true"
-                        class="promotions__card-button"
-                      >
-                        <i class="d-icon-pen2 promotions__card-button-icon"></i>
-                      </a>
-                    </div>
-                    <div class="promotions__card-content promo-master__card-content">
-                      <div class="promotions__card-values promo-master__card-values">
-                        <p
-                          class="promotions__card-text promotions__card-text--bold promotions__card-text--small"
-                        >
-                          Срок отсрочки платежа:
-                        </p>
-                        <div class="d-field-container d-field-container--vertical">
-                          <p
-                            class="promotions__card-text promotions__card-text--dark-gray promo-master__card-text"
-                            v-for="(item, index) in this.form.delay"
-                            :key="index"
-                          >
-                            — {{ item.percent }}% через {{ item.day }} дн. после отгрузки
+                  <div v-if="type == 1">
+                    <div
+                      class="promotions__card promotions__card--small promo-master__card"
+                      v-if="this.form.typeDelay == 1"
+                    >
+                      <div class="promotions__card-header promo-master__card-header">
+                        <div class="promotions__card-header-left">
+                          <p class="promotions__card-title">
+                            Срок отсрочки платежа:
+                            <span class="promotions__card-title-span"
+                              >{{ this.form.postponementPeriod }} дн.</span
+                            >
                           </p>
                         </div>
+                        <a
+                          href="#"
+                          @click.prevent="this.modals.delay = true"
+                          class="promotions__card-button"
+                        >
+                          <i class="d-icon-pen2 promotions__card-button-icon"></i>
+                        </a>
+                      </div>
+                      <div class="promotions__card-content promo-master__card-content">
+                        <div class="promotions__card-values promo-master__card-values">
+                          <p
+                            class="promotions__card-text promotions__card-text--bold promotions__card-text--small"
+                          >
+                            Срок отсрочки платежа:
+                          </p>
+                          <div class="d-field-container d-field-container--vertical">
+                            <p
+                              class="promotions__card-text promotions__card-text--dark-gray promo-master__card-text"
+                              v-for="(item, index) in this.form.delay"
+                              :key="index"
+                            >
+                              — {{ item.percent }}% через {{ item.day }} дн. после отгрузки
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div v-else>
+                      <div class="d-input d-input--light d-input--width-280">
+                        <input
+                          class="d-input__field"
+                          type="text"
+                          placeholder="0"
+                          name="dateStart"
+                          v-model="this.form.postponementPeriod"
+                        />
                       </div>
                     </div>
                   </div>
                   <div v-else>
-                    <div class="d-input d-input--light d-input--width-280">
-                      <input
-                        class="d-input__field"
-                        type="text"
-                        placeholder="0"
-                        name="dateStart"
-                        v-model="this.form.postponementPeriod"
-                      />
+                    <div v-if="this.form.typePay == '2'">
+                      <label for="typeDelayPercent"
+                        >Процент скидки от стоимости товара, который поставщик выделяет для
+                        компенсации рассрочки:</label
+                      >
+                      <div class="dart-mt-1">
+                        <InputNumber
+                          v-model="this.form.typePayPercent"
+                          id="typeDelayPercent"
+                          inputId="horizontal-buttons"
+                          :step="0.1"
+                          min="0"
+                          max="100"
+                          suffix=" %"
+                          incrementButtonIcon="pi pi-plus"
+                          decrementButtonIcon="pi pi-minus"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1302,6 +1543,7 @@
                   <p class="promo-master__title">Условия доставки</p>
                   <div
                     class="d-field-container d-field-container--vertical promo-master__settings promo-master__settings--sm-margin"
+                    v-if="type == 1"
                   >
                     <p class="promo-master__subtitle">Кто оплачивает доставку:</p>
                     <div class="d-radio__container d-radio__container--small">
@@ -1341,7 +1583,10 @@
                       </div>
                     </div>
                   </div>
-                  <div class="d-field-container d-field-container--vertical promo-master__settings">
+                  <div
+                    class="d-field-container d-field-container--vertical promo-master__settings"
+                    v-if="type == 1"
+                  >
                     <p class="promo-master__subtitle">Сроки отгрузки товаров</p>
                     <div class="d-radio__container d-radio__container--small">
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
@@ -1380,10 +1625,65 @@
                       </div>
                     </div>
                   </div>
+                  <div class="d-radio__container d-radio__container--small" v-if="type == 2">
+                    <div class="d-radio__wrapper promo-master__radio-wrapper">
+                      <label for="deferred-payment-1" class="d-radio">
+                        <input
+                          type="radio"
+                          name="deferred-payment"
+                          id="deferred-payment-1"
+                          v-model="this.form.typeDelivery"
+                          value="1"
+                          class="d-radio__input"
+                        />
+                      </label>
+                      <label
+                        for="deferred-payment-1"
+                        class="d-radio__label promo-master__radio-label"
+                        >Покупатель оплачивает доставку
+                      </label>
+                    </div>
+                    <div class="d-radio__wrapper promo-master__radio-wrapper">
+                      <label for="deferred-payment-2" class="d-radio">
+                        <input
+                          type="radio"
+                          name="deferred-payment"
+                          id="deferred-payment-2"
+                          v-model="this.form.typeDelivery"
+                          value="2"
+                          class="d-radio__input"
+                        />
+                      </label>
+                      <label
+                        for="deferred-payment-2"
+                        class="d-radio__label promo-master__radio-label"
+                        >Поставщик компенсирует доставку
+                      </label>
+                    </div>
+                  </div>
+                  <div class="dart-mt-1" v-if="type == 2 && this.form.typeDelivery == 2">
+                    <label for="typeDelayPercent"
+                      >Процент скидки от стоимости товара, который поставщик выделяет для
+                      компенсации рассрочки:</label
+                    >
+                    <div class="dart-mt-1">
+                      <InputNumber
+                        v-model="this.form.typeDeliveryPercent"
+                        id="typeDelayPercent"
+                        inputId="horizontal-buttons"
+                        :step="0.1"
+                        min="0"
+                        max="100"
+                        suffix=" %"
+                        incrementButtonIcon="pi pi-plus"
+                        decrementButtonIcon="pi pi-minus"
+                      />
+                    </div>
+                  </div>
                 </div>
                 <!-- 6 ЭТАП - Условия участия в акции: Требования к заказу -->
                 <div class="contents" id="promoConditionsRequirements" v-if="masterStep == 6">
-                  <p class="promo-master__title">Условия участия в акции: требованя к заказу</p>
+                  <p class="promo-master__title">Условия участия в акции: требования к заказу</p>
                   <!-- Минимальная общая сумма заказа товаров акции -->
                   <div
                     class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings promo-master__settings--sm-margin"
@@ -1775,23 +2075,36 @@
                           class="d-radio__container d-radio__container--small d-radio__container--vertical promo-master__audience-change"
                         >
                           <div class="d-field-wrapper">
-                            <MultiSelect filter v-model="this.form.regions" display="chip" :options="this.regions_all"
-                    optionLabel="name" placeholder="Выберите регионы"
-                    :maxSelectedLabels="3"
-                    class="w-full md:w-20rem mt-2" />
+                            <MultiSelect
+                              filter
+                              v-model="this.form.regions"
+                              display="chip"
+                              :options="this.regions_all"
+                              optionLabel="name"
+                              placeholder="Выберите регионы"
+                              :maxSelectedLabels="3"
+                              class="w-full md:w-20rem mt-2"
+                            />
                           </div>
-                          <div class="d-field-wrapper">
-                            <MultiSelect filter v-model="this.form.all_organizations_selected" display="chip" :options="this.organizations_all"
-                    optionLabel="name" placeholder="Выберите организации"
-                    :maxSelectedLabels="3"
-                    @filter="filterOrganizations()"
-                    class="w-full md:w-20rem mt-2" />
+                          <div class="d-field-wrapper" v-if="type == 1">
+                            <MultiSelect
+                              filter
+                              v-model="this.form.all_organizations_selected"
+                              display="chip"
+                              :options="this.organizations_all"
+                              optionLabel="name"
+                              placeholder="Выберите организации"
+                              :maxSelectedLabels="3"
+                              @filter="filterOrganizations()"
+                              class="w-full md:w-20rem mt-2"
+                            />
                           </div>
                         </div>
                       </div>
                       <!-- Участники по типу компании -->
                       <div
                         class="d-field-container d-field-container--long d-field-container--vertical"
+                        v-if="type == 1"
                       >
                         <p class="promo-master__subtitle promo-master__subtitle--small">
                           Участники по типу компании
@@ -1851,19 +2164,33 @@
                 <div class="contents" id="congratulations" v-if="masterStep == 9">
                   <div class="promo-master__title-container">
                     <p class="promo-master__title promo-master__title--no-margin">
+                      Поздравляем!<br />Вы почти настроили Акцию
+                    </p>
+                    <div class="d-description">
+                      Сейчас система переместит вас в разде "Товары и скидки", где вы сможете
+                      выбрать склад и добавить товары в Акцию.
+                    </div>
+                  </div>
+                </div>
+                <!-- Поздравляем -->
+                <div class="contents" id="congratulations" v-if="masterStep == 11">
+                  <div class="promo-master__title-container">
+                    <p class="promo-master__title promo-master__title--no-margin">
                       Поздравляем!<br />Вы создали акцию «Купи слона»
                     </p>
                     <div class="d-description">
-                      Вы прошли 10 из 10 шагов, а это значит, что ваша акция будет максимально
+                      Вы прошли много шагов, а это значит, что ваша акция будет максимально
                       эффективной!
                     </div>
                   </div>
                   <div class="d-button__container d-button__container--small promo-master__actions">
+                    <!--
                     <button
                       class="d-button d-button-secondary d-button-secondary-small d-button--sm-padding d-button--sm-shadow"
                     >
                       Смотреть релиз акции
                     </button>
+                    -->
                     <button
                       class="d-button d-button-primary d-button-primary-small d-button--sm-padding d-button--sm-shadow"
                     >
@@ -1930,6 +2257,7 @@
                     Условия доставки
                   </button>
                   <button
+                    v-if="type == 1"
                     @click.prevent="openStep(6)"
                     class="d-button d-button-tertiary box-shadow-none promo-master__setting"
                     :class="{
@@ -1941,6 +2269,7 @@
                     Условия участия в акции: Требования к заказу
                   </button>
                   <button
+                    v-if="type == 1"
                     @click.prevent="openStep(7)"
                     class="d-button d-button-tertiary box-shadow-none promo-master__setting"
                     :class="{
@@ -2002,15 +2331,27 @@
             <span v-else></span>
             <button
               class="d-button d-button-secondary d-button-secondary-small box-shadow-none promo-master__action-button promo-master__action-button--next"
-              v-if="masterStep < 10"
+              v-if="masterStep < 9"
               @click.prevent="masterStepInc()"
             >
               <span class="promo-master__action-button-text">Далее</span>
               <i class="d-icon-arrow-right promo-master__action-button-icon"></i>
             </button>
+            <button
+              class="d-button d-button-primary d-button-primary-small box-shadow-none"
+              v-if="masterStep > 8"
+              @click.prevent="
+                () => {
+                  this.modals.master = false
+                  this.masterStep = 8
+                }
+              "
+            >
+              <span class="promo-master__action-button-text">Ок</span>
+            </button>
           </div>
+          <!--
           <div class="promo-master__footer-content promo-master__footer-content--between">
-            <!-- Универсальная секция для адаптив <1200px -->
             <div class="promo-master__info-block-wrapper visible-1200">
               <div class="promo-master__info-block">
                 <i class="d-icon-message-status promo-master__info-block-icon"></i>
@@ -2084,6 +2425,7 @@
               </button>
             </div>
           </div>
+          -->
         </div>
       </customModal>
       <customModal v-model="this.modals.delay" class="delay-window" @beforeClose="delayModalClose">
@@ -2462,7 +2804,7 @@ export default {
   props: {
     type: {
       type: String,
-      default: '2',
+      default: '2', // 1 - розница, 2 - опт
     },
   },
   data() {
@@ -2585,6 +2927,10 @@ export default {
         compabilityMode: 0,
         paymentDelivery: 0,
         paymentTime: 0,
+        typePay: '1',
+        typePayPercent: 15,
+        typeDelivery: '1',
+        typeDeliveryPercent: 15,
         typeDelay: '1',
         delay: [
           {
@@ -2626,17 +2972,17 @@ export default {
       // Берем географию
       this.getRegions().then(() => {
         this.regions_all = this.regions.map(function (el) {
-            return { name: el.label, code: el.key };
-        });
-      });
+          return { name: el.label, code: el.key }
+        })
+      })
       this.getOrganizations().then(() => {
         this.organizations_all = this.organizations.map(function (el) {
-            return { name: el.name, code: el.id };
-        });
-      });
+          return { name: el.name, code: el.id }
+        })
+      })
       this.getOrgStores()
       this.getAllActions()
-      this.getActionAdvPlaces({ type: this.type })
+      this.getActionAdvPages({ type: this.type })
       if (this.$route.params.action) {
         this.getAction().then(() => {
           this.loading = false
@@ -2660,7 +3006,7 @@ export default {
             })
             this.getProductGroups({
               store_id: this.form.store_id,
-              filter: ''
+              filter: '',
             })
             this.getActiveActions()
           }
@@ -2680,6 +3026,7 @@ export default {
       getAction: 'action/getAction',
       unsetAction: 'action/unsetAction',
       getActionAdvPlaces: 'action/getActionAdvPlaces',
+      getActionAdvPages: 'action/getActionAdvPages',
       getAllActions: 'action/getAllActions',
       getAvailableProducts: 'action/getAvailableProducts',
       getAvailableComplects: 'action/getAvailableComplects',
@@ -2848,7 +3195,7 @@ export default {
         this.updateProductList()
         this.getProductGroups({
           store_id: this.form.store_id,
-          filter: ''
+          filter: '',
         })
         this.getActiveActions()
       }
@@ -2882,7 +3229,7 @@ export default {
       console.log(data)
       this.getProductGroups({
         store_id: this.form.store_id,
-        filter: data.filter
+        filter: data.filter,
       })
     },
     deleteCollection(id) {
@@ -2913,6 +3260,14 @@ export default {
       }
       if (this.masterStep <= 10) {
         this.masterStep++
+        if (this.masterStep > 8 && this.masterStep < 11) {
+          this.slideToProducts()
+        }
+        if (this.type == 2) {
+          if (this.masterStep == 6 || this.masterStep == 7) {
+            this.masterStep = 8
+          }
+        }
       }
     },
     masterStepDec() {
@@ -2922,7 +3277,21 @@ export default {
       }
       if (this.masterStep > 1) {
         this.masterStep--
+        if (this.type == 2) {
+          if (this.masterStep == 6 || this.masterStep == 7) {
+            this.masterStep = 5
+          }
+        }
       }
+    },
+    slideToProducts() {
+      setTimeout(() => {
+        this.modals.master = false
+        this.visibleMasterSteps.push(9)
+        this.visibleMasterSteps.push(10)
+        this.masterStep = 8
+        document.querySelector('#warehouseProducts').scrollIntoView({ behavior: 'smooth' })
+      }, 1000)
     },
     openStep(step) {
       this.masterStep = step
@@ -2931,6 +3300,14 @@ export default {
         this.visibleMasterSteps.push(this.masterStep)
       }
       this.modals.master = true
+      if (this.type == 2) {
+        if (this.masterStep == 6 || this.masterStep == 7) {
+          this.masterStep = 8
+        }
+      }
+      if (this.masterStep > 8 && this.masterStep < 11) {
+        this.slideToProducts()
+      }
     },
     deSelectProduct(id) {
       this.setDeselectedProduct(id).then(() => {
@@ -3153,9 +3530,9 @@ export default {
       this.productsSelectedData.type_formula = {}
       this.productsSelectedData.sale_value = null
     },
-    filterOrganizations(value){
+    filterOrganizations(value) {
       console.log(value)
-    }
+    },
   },
   computed: {
     ...mapGetters({
@@ -3164,6 +3541,7 @@ export default {
       organizations: 'addition/organizations',
       orgStores: 'org/orgStores',
       action: 'action/action',
+      actionAdvPages: 'action/actionAdvPages',
       actionAdvPlaces: 'action/actionAdvPlaces',
       productsAvailable: 'action/productsAvailable',
       productsSelectedIn: 'action/productsSelected',
@@ -3256,7 +3634,7 @@ export default {
       this.getProductsPrices({ store_id: newVal })
       this.getProductGroups({
         store_id: newVal,
-        filter: ''
+        filter: '',
       })
     },
     // Акция (редактирование)
@@ -3297,6 +3675,10 @@ export default {
         this.form.stores = Boolean(newVal.available_stores)
         this.form.warehouses = Boolean(newVal.available_vendors)
         this.form.vendors = Boolean(newVal.integration)
+        this.form.typePay = String(newVal.pay_type)
+        this.form.typePayPercent = String(newVal.pay_type_percent)
+        this.form.typeDelivery = String(newVal.delivery_type)
+        this.form.typeDeliveryPercent = Number(newVal.delivery_type_percent)
         this.form.typeDelay = String(newVal.delay_type)
         this.form.delay = newVal.delay_graph
         this.form.conditionMinSum = newVal.condition_min_sum
@@ -3348,7 +3730,13 @@ body {
   .tox-tinymce {
     border-radius: 5px;
   }
-  .p-tabpanels{
+  .d-description {
+    font-size: 16px;
+  }
+  .promo-modal__header-right {
+    padding: 32px;
+  }
+  .p-tabpanels {
     color: #282828;
   }
   .d-radio__container-vertical {

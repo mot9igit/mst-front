@@ -5,6 +5,7 @@ export default {
   namespaced: true,
   state: {
     action: {},
+    actionAdvPages: [],
     actionAdvPlaces: [],
     productsAvailable: [],
     productsSelected: [],
@@ -22,6 +23,7 @@ export default {
       const data = {
         id: router.currentRoute._value.params.id,
         action_id: router.currentRoute._value.params.action,
+        action: 'get',
         extended_name:
           router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
       }
@@ -29,6 +31,26 @@ export default {
       if (response) {
         commit('SET_ACTION', response.data)
       }
+      return response
+    },
+    // Включение/Отключение акции
+    async toggleAction(store, { action_id }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action_id: action_id,
+        action: 'off/on',
+      }
+      const response = await api.action.toggleAction(data)
+      return response
+    },
+    // Удаление акции
+    async delAction(store, { action_id }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action_id: action_id,
+        action: 'delete',
+      }
+      const response = await api.action.delAction(data)
       return response
     },
     // Чистим данные
@@ -43,12 +65,25 @@ export default {
       }
       return response
     },
+    // Берем страницы рекламы
+    async getActionAdvPages({ commit }, { type }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        type: type,
+        action: 'get/adv/pages',
+      }
+      const response = await api.action.getActionAdvPages(data)
+      if (response) {
+        commit('SET_ACTION_ADV_PAGES', response.data)
+      }
+      return response
+    },
     // Берем места рекламы
     async getActionAdvPlaces({ commit }, { type }) {
       const data = {
         id: router.currentRoute._value.params.id,
         type: type,
-        action: 'get/adv/pages',
+        action: 'get/adv/places',
       }
       const response = await api.action.getActionAdvPlaces(data)
       if (response) {
@@ -163,7 +198,7 @@ export default {
         id: router.currentRoute._value.params.id,
         action: 'get',
         store_id: store_id,
-        filter: filter
+        filter: filter,
       }
       const response = await api.action.getProductGroups(data)
       if (response) {
@@ -220,6 +255,9 @@ export default {
     UNSET_ACTION: (state) => {
       state.action = {}
     },
+    SET_ACTION_ADV_PAGES: (state, data) => {
+      state.actionAdvPages = data.data
+    },
     SET_ACTION_ADV_PLACES: (state, data) => {
       state.actionAdvPlaces = data.data
     },
@@ -254,6 +292,9 @@ export default {
   getters: {
     action(state) {
       return state.action
+    },
+    actionAdvPages(state) {
+      return state.actionAdvPages
     },
     actionAdvPlaces(state) {
       return state.actionAdvPlaces

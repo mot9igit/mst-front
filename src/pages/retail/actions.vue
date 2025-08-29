@@ -18,15 +18,13 @@
         </div>
       </div>
       <div class="retail__sales-button-container">
-        <button
-          type="button"
-          href="#"
+        <router-link
+          :to="{ name: 'retailSaleNew', params: { id: this.$route.params.id } }"
           class="d-button d-button-primary d-button-primary-small d-button--sm-shadow retail__sales-button"
-          @click.prevent=""
         >
           <i class="d-icon-plus-flat clients__filters-create-icon"></i>
           Создать акцию
-        </button>
+        </router-link>
       </div>
     </div>
     <div class="v-table__widgets">
@@ -224,7 +222,8 @@ export default {
         active: {
           label: 'Активно',
           type: 'boolean',
-          class: 'cell_value-center',        },
+          class: 'cell_value-center',
+        },
         store_name: {
           label: 'Склад',
           type: 'text',
