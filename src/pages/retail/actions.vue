@@ -86,7 +86,6 @@ export default {
         name: {
           label: 'Название',
           type: 'link',
-          // TODO
           link_to: 'retailSale',
           link_params: {
             id: this.$route.params.id,
