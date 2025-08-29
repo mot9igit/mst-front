@@ -161,38 +161,101 @@
     </div>
 
     <!-- Нижняя часть карточки с информацией об акциях -->
-    <div class="product-card__footer" v-if="offer.actions">
+    <div class="product-card__footer" v-if="offer.actions && offer.actions.length">
       <!-- Список акций -->
       <div class="product-card__promo-list">
         <div class="product-card__promo">
           Активные акции
-          <div class="d-badge2 product-card__promo-badge">4</div>
+          <div class="d-badge2 product-card__promo-badge">{{ activeActions }}</div>
         </div>
         <div class="product-card__promo">
           Акции без выполненных условий
-          <div class="d-badge2 product-card__promo-badge">6</div>
+          <div class="d-badge2 product-card__promo-badge">{{ otherActions }}</div>
         </div>
-        <div class="product-card__promo">
+        <!--<div class="product-card__promo">
           Возможные акции
           <div class="d-badge2 product-card__promo-badge">20</div>
-        </div>
+        </div>-->
       </div>
       <div class="d-divider d-divider--vertical product-card__footer-divider"></div>
 
       <!-- Кнопка: "Все акции" -->
       <button
         class="d-button d-button--sm-shadow d-button-tertiary d-button-tertiary-small product-card__promo-all"
+        @click.prevent="showModal()"
       >
         Все акции
       </button>
     </div>
   </div>
+  <teleport to="body">
+    <customModal v-model="this.modalActions" class="product-card-actions__modal">
+
+      <div class="product-card-actions__modal-container">
+        <div class="product-card-actions__modal-buttons">
+          <button @click.prevent="modalActiveActions = true, modalOtherActions = false" v-if="activeActions > 0"
+            :class="modalActiveActions ? 'product-card-actions__modal-button-active' : 'product-card-actions__modal-button'">
+            Активные акции <div class="d-badge2 product-card__promo-badge">{{ activeActions }}</div>
+          </button>
+          <button class="product-card-actions__modal-button" @click.prevent="modalOtherActions = true, modalActiveActions = false"  v-if="otherActions > 0"
+            :class="modalOtherActions ? 'product-card-actions__modal-button-active' : 'product-card-actions__modal-button'">
+            Акции без выполненных условий <div class="d-badge2 product-card__promo-badge">{{ otherActions }}</div>
+          </button>
+        </div>
+        <div v-if="modalActiveActions">
+          <div class="product-card-actions__modal-actions" v-for="(item,index) in activeActionsData" :key="index">
+            <div class="product-card-actions__modal-actions-header"><i class="product-card-actions__modal-actions-header-icon d-icon-percent-rounded"></i>
+            {{ item.type != 3 ? item.name : 'Индивидуальная скидка'}}
+            </div>
+            <div class="product-card-actions__modal-actions-content">
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.delay_type == 2">Под реализацию</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.delay_type < 2">{{
+                item.delay_type == 1 && item.delay > 0 ? Number(item.delay).toFixed(0) + ' дн. отсрочки' : 'Предоплата'
+              }}</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.percent > 0">{{ item.percent }}% Скидка</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.delivery_type == 2">Бесплатная доставка</div>
+            </div>
+          </div>
+        </div>
+        <div v-else>
+          <div class="product-card-actions__modal-actions" v-for="(item,index) in otherActionsData" :key="index">
+            <div class="product-card-actions__modal-actions-header"><i class="product-card-actions__modal-actions-header-icon d-icon-percent-rounded"></i>
+            {{ item.type != 3 ? item.name : 'Индивидуальная скидка'}}
+            </div>
+            <div class="product-card-actions__modal-actions-content">
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.delay_type == 2">Под реализацию</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.delay_type < 2">{{
+                item.delay_type == 1 && item.delay > 0 ? Number(item.delay).toFixed(0) + ' дн. отсрочки' : 'Предоплата'
+              }}</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.percent > 0">{{ item.percent }}% Скидка</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.delivery_type == 2">Бесплатная доставка</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </customModal>
+  </teleport>
 </template>
 <script>
 import { mapActions } from 'vuex'
+import customModal from '@/shared/ui/Modal.vue'
 
 export default {
   name: 'productOffer',
+  data(){
+    return {
+      activeActions: 0,
+      otherActions: 0,
+      modalActions: false,
+      modalActiveActions: false,
+      modalOtherActions: false,
+      activeActionsData: [],
+      otherActionsData: [],
+    }
+  },
+  components: { customModal },
   emits: ['updateBasket'],
   props: {
     offer: {
@@ -208,11 +271,24 @@ export default {
       },
     },
   },
+  mounted() {
+    this.getActiveActions()
+  },
   computed: {},
   methods: {
     ...mapActions({
       basketProductAdd: 'basket/basketProductAdd',
     }),
+    showModal(){
+      this.modalActions = true
+      if(this.activeActions != 0){
+        this.modalActiveActions = true
+        this.modalOtherActions = false
+      }else{
+        this.modalActiveActions = false
+        this.modalOtherActions = true
+      }
+    },
     addBasket(item) {
       console.log(item)
       const data = {
@@ -247,6 +323,18 @@ export default {
         },
       })
     },
+    getActiveActions(){
+      for (var i in this.offer.actions) {
+        if(this.offer.actions[i].enabled === 1){
+          this.activeActions++
+          this.activeActionsData.push(this.offer.actions[i])
+
+        }else{
+          this.otherActions++
+          this.otherActionsData.push(this.offer.actions[i])
+        }
+      }
+    }
   },
 }
 </script>
@@ -275,5 +363,264 @@ export default {
 }
 .product-card__stat-content--horizontal {
   flex-direction: column;
+}
+.product-card-actions__modal-button-active{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  gap: 8px;
+  background: #282828;
+  border-radius: 35px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 21px;
+  color: #FBFBFB;
+  height: 32px;
+  border:1px solid #282828;
+}
+.product-card-actions__modal .d-badge2 {
+  width: 19px;
+  max-width: 19px;
+  min-width: 19px;
+  height: 19px;
+  max-height: 19px;
+  min-height: 19px;
+  border-radius: 19px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 123%;
+  text-align: center;
+  padding:0 0 0 0;
+}
+.product-card-actions__modal-button-active .d-badge2 {
+    background-color: #ededed;
+    color: #282828;
+}
+.product-card-actions__modal-buttons{
+  display: flex;
+  justify-content: start;
+  gap: 16px;
+  margin-top:-24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #75757575;
+}
+.product-card-actions__modal-button{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  gap: 8px;
+  background: #EDEDED;
+  border-radius: 35px;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 21px;
+  color: #282828;
+  height: 32px;
+  border:1px solid #282828;
+}
+.product-card-actions__modal-button .d-badge2 {
+    color: #ededed;
+    background-color: #282828;
+}
+.product-card-actions__modal-actions{
+  position: relative;
+  width: calc(50% - 10px);
+  height: auto;
+  background: #EDEDED;
+  box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
+  border-radius: 8px;
+  margin-top: 21px;
+  margin-bottom: 20px;
+  padding: 0 11px 8px 0;
+  position: relative;
+  float: left;
+}
+.product-card-actions__modal-actions:nth-child(odd){
+  margin-right: 20px;
+}
+.product-card-actions__modal-actions-header{
+  background: #FBFBFB;
+  border-radius:  7px 0px 7px 0px;
+  padding: 4px 9px;
+  width: max-content;
+  max-width: 80%;
+  position: relative;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 123%;
+  color: #282828;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.product-card-actions__modal-actions-header:before {
+  content: "";
+  background-color:#FBFBFB;
+  width: 10px;
+  height: 10px;
+  display: block;
+  position: absolute;
+  margin-top: 0px;
+  margin-left: 0px;
+  top: 0px;
+  right: -10px;
+}
+.product-card-actions__modal-actions-header:after {
+  content: "";
+  background-color:#ededed;
+  width: 10px;
+  height: 10px;
+  display: block;
+  position: absolute;
+  margin-top: 0px;
+  margin-left: 0px;
+  top: 0px;
+  right: -10px;
+  border-radius: 10px 0 0 0;
+}
+.product-card-actions__modal-actions-content{
+  position:relative;
+  padding: 8px 11px;
+}
+.product-card-actions__modal-actions-content:before {
+  content: "";
+  background-color:#FBFBFB;
+  width: 10px;
+  height: 10px;
+  display: block;
+  position: absolute;
+  margin-top: 0px;
+  margin-left: 0px;
+  top: 0px;
+  left:0px;
+}
+.product-card-actions__modal-actions-content:after {
+  content: "";
+  background-color:#ededed;
+  width: 10px;
+  height: 10px;
+  display: block;
+  position: absolute;
+  margin-top: 0px;
+  margin-left: 0px;
+  top: 0px;
+  left: 0px;
+  border-radius: 10px 0 0 0;
+}
+.product-card-actions__modal-actions-content-item{
+  padding: 4px 10px;
+  color:#282828;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 123%;
+  background: rgba(255, 255, 255, 0.55);
+  border: 0.5px solid #757575;
+  border-radius: 24px;
+  width:max-content;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  float: left;
+}
+.product-card-actions__modal-actions-header-icon{
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+
+}
+.product-card-actions__modal .modal-content{
+  max-width:890px;
+}
+@media (width <=1024px) {
+  .product-card-actions__modal .modal-content{
+    max-width:80%;
+  }
+}
+@media (width <=800px) {
+  .product-card-actions__modal-button-active{
+    font-size: 10px;
+    height: 24px;
+  }
+  .product-card-actions__modal .d-badge2 {
+    width: 14px;
+    max-width: 14px;
+    min-width: 14px;
+    height: 14px;
+    max-height: 14px;
+    min-height: 14px;
+    border-radius: 14px;
+    font-size: 10px;
+  }
+  .product-card-actions__modal-button{
+    font-size: 10px;
+    height: 24px;
+  }
+  .product-card-actions__modal-actions{
+    position: relative;
+    width: 100%;
+    height: auto;
+    margin-bottom: 0px;
+  }
+  .product-card-actions__modal-actions:nth-child(odd){
+    margin-right: 0px;
+  }
+  .product-card-actions__modal-actions-header{
+    font-size: 10px;
+  }
+  .product-card-actions__modal-actions-content-item{
+    font-size: 9px;
+  }
+  .product-card-actions__modal-actions-header-icon{
+    width: 10px;
+    height: 10px;
+    font-size: 10px;
+  }
+
+}
+@media (width <=600px) {
+  .product-card-actions__modal-button-active{
+    font-size: 14px;
+    height: 32px;
+  }
+  .product-card-actions__modal .d-badge2 {
+    width: 19px;
+    max-width: 19px;
+    min-width: 19px;
+    height: 19px;
+    max-height: 19px;
+    min-height: 19px;
+    border-radius: 19px;
+    font-size: 12px;
+  }
+  .product-card-actions__modal-button{
+    font-size: 14px;
+    height: 32px;
+  }
+  .product-card-actions__modal-actions{
+    position: relative;
+    width: 100%;
+    height: auto;
+    margin-bottom: 0px;
+  }
+  .product-card-actions__modal-actions:nth-child(odd){
+    margin-right: 0px;
+  }
+  .product-card-actions__modal-actions-header{
+    font-size: 14px;
+  }
+  .product-card-actions__modal-actions-content-item{
+    font-size: 12px;
+  }
+  .product-card-actions__modal-actions-header-icon{
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+  .product-card-actions__modal .modal-content{
+    max-width:100%;
+  }
 }
 </style>
