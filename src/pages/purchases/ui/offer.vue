@@ -584,6 +584,7 @@ export default {
   .product-card-actions__modal-button-active{
     font-size: 14px;
     height: 32px;
+    width: calc(100% - 88px);
   }
   .product-card-actions__modal .d-badge2 {
     width: 19px;
@@ -595,9 +596,13 @@ export default {
     border-radius: 19px;
     font-size: 12px;
   }
+  .product-card-actions__modal-buttons{
+    margin-top:8px;
+  }
   .product-card-actions__modal-button{
     font-size: 14px;
     height: 32px;
+    width: calc(100% - 88px);
   }
   .product-card-actions__modal-actions{
     position: relative;
@@ -608,11 +613,37 @@ export default {
   .product-card-actions__modal-actions:nth-child(odd){
     margin-right: 0px;
   }
+  .product-card-actions__modal-actions{
+    margin-right: 0px;
+    border-top: 0.5px solid #282828;
+    border-bottom: 0.5px solid #282828;
+    border-radius: 7px 0 0 0;
+    background: transparent;
+    box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
+    backdrop-filter: blur(13.4px);
+  }
+  .product-card-actions__modal-actions-header:before,.product-card-actions__modal-actions-content:before {
+    background-color: #282828;
+  }
+  .product-card-actions__modal-actions-header:after,.product-card-actions__modal-actions-content:after {
+    background-color: #fff;
+  }
   .product-card-actions__modal-actions-header{
-    font-size: 14px;
+    min-width: 262px;
+    background-color: #282828;
+    color: #FBFBFB;
+    padding: 2px 44px
+  }
+  .product-card-actions__modal-actions-header{
+    font-size: 12px;
+  }
+  .product-card-actions__modal-actions-content{
+    padding: 13px 44px 16px;
   }
   .product-card-actions__modal-actions-content-item{
     font-size: 12px;
+    background: #EDEDED;
+    border: none;
   }
   .product-card-actions__modal-actions-header-icon{
     width: 16px;
@@ -621,6 +652,20 @@ export default {
   }
   .product-card-actions__modal .modal-content{
     max-width:100%;
+  }
+  .product-card-actions__modal-buttons{
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+    gap:16px;
+  }
+  .product-card-actions__modal .modal-content{
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .product-card-actions__modal .modal__title:before{
+    content:'Акции';
+    padding-left:44px;
   }
 }
 </style>
