@@ -458,7 +458,7 @@ export default {
 
     this.setOrgs()
 
-    window.addEventListener('resize', function(event) {
+    window.addEventListener('resize', function() {
       let sh = document.querySelector('#app')
       if(sh.clientWidth <= 600){
         document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
@@ -522,10 +522,6 @@ aside {
     display: block;
   }
   .version-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
     width: 100%;
     padding: 5px 20px;
     text-align: center;

@@ -43,8 +43,8 @@
         </ul>
       </form>
     </div>
-
-    <div class="tab-container" v-if="this.collections.length">
+    {{ collections.length }}
+    <div class="tab-container" v-if="Object.keys(this.collections).length">
       <div class="tab-button-container">
         <template v-for="el in this.collections" :key="el.group.id">
           <button

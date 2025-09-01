@@ -33,6 +33,14 @@ export default {
       }
       return response
     },
+    // Сохранение данных акции
+    async setAction(store, data) {
+      console.log(data)
+      data.id = router.currentRoute._value.params.id
+      data.action = 'save'
+      const response = await api.action.setAction(data)
+      return response
+    },
     // Включение/Отключение акции
     async toggleAction(store, { action_id }) {
       const data = {

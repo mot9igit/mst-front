@@ -84,7 +84,7 @@
           ></div>
           <div class="promotions__info-primary-actions">
             <div class="d-divider d-divider--vertical promotions__info-icon-divider"></div>
-            <button class="d-icon-wrapper d-icon-wrapper--big promotions__info-add">
+            <button class="d-icon-wrapper d-icon-wrapper--big promotions__info-add" @click.prevent="formSubmit()">
               <i class="d-icon-plus promotions__icon promotions__icon--plus"></i>
             </button>
           </div>
@@ -190,7 +190,7 @@
                   <div class="d-badge__container">
                     <template v-for="(v, i) in this.form.adv.place" :key="i">
                       <div class="d-badge" v-if="v">
-                        {{ this.actionAdvPlaces.filter((item) => item.code == i)[0].name }}
+                        {{ this.actionAdvPages.filter((item) => item.code == i)[0]?.name }}
                       </div>
                     </template>
                   </div>
@@ -496,7 +496,7 @@
                 <span class="promotions__card-label promotions__card-audience-label"
                   >По географии</span
                 >
-                <div class="d-badge__container" v-if="this.form.regions.length">
+                <div class="d-badge__container" v-if="this.form.regions">
                   <div
                     class="d-badge promotions__card-audience-badge"
                     v-for="region in this.form.regions"
@@ -565,11 +565,11 @@
                 v-if="type == 1"
               ></div>
 
-              <div class="promotions__card-value-container" v-if="type == 1">
+              <div class="promotions__card-value-container" v-if="type == 1 && this.form.all_organizations_selected">
                 <span class="promotions__card-label promotions__card-audience-label"
                   >Отдельные компании</span
                 >
-                <div class="d-badge__container" v-if="this.form.all_organizations_selected.length">
+                <div class="d-badge__container" v-if="this.form.all_organizations_selected?.length">
                   <div
                     class="d-badge promotions__card-audience-badge"
                     v-for="company in this.form.all_organizations_selected"
@@ -947,7 +947,7 @@
                 </div>
               </div>
               <div
-                v-if="this.form.store_id.length"
+                v-if="this.form.store_id?.length"
                 class="d-divider d-divider--full d-divider--semibold d-divider--black promotions__card-warehouse-divider"
               ></div>
               <ActionProducts
@@ -2041,7 +2041,7 @@
                           id="participantsType1"
                           class="d-radio__input"
                           value="1"
-                          v-model="this.form.compabilityMode"
+                          v-model="this.form.participantsType"
                         />
                       </label>
                       <div class="d-radio__label-container">
@@ -2961,13 +2961,30 @@ export default {
           place: {},
           place_position: '',
           geo: '',
-          files: {},
+          files: {
+            max: {
+              original_href: '',
+            },
+            small: {
+              original_href: '',
+            },
+            min: {
+              original_href: '',
+            },
+            icon: {
+              original_href: '',
+            },
+            file: {
+              original_href: '',
+            },
+          },
         },
       },
     }
   },
   mounted() {
     this.unsetAction().then(() => {
+      this.masterStepInc()
       this.getCatalogs()
       // Берем географию
       this.getRegions().then(() => {
@@ -2987,21 +3004,21 @@ export default {
         this.getAction().then(() => {
           this.loading = false
           if (this.form.store_id) {
-            const types = [1, 2]
-            types.forEach(function (entry) {
+            this.getAvailableProducts({
+              store_id: this.form.store_id,
+              filter: '',
+              page: 1,
+              perpage: this.per_page_small,
+              type: 1,
+            }).then(() => {
               this.getAvailableProducts({
                 store_id: this.form.store_id,
                 filter: '',
-                page: this.product_available_page,
+                page: 1,
                 perpage: this.per_page,
-                type: entry,
-              })
-              this.getAvailableComplects({
-                store_id: this.form.store_id,
-                filter: '',
-                page: this.product_available_page,
-                perpage: this.per_page,
-                type: entry,
+                type: 2,
+              }).then(() => {
+                this.productLoading = false
               })
             })
             this.getProductGroups({
@@ -3012,7 +3029,6 @@ export default {
           }
         })
       } else {
-        this.masterStepInc()
         this.modals.master = true
       }
     })
@@ -3024,6 +3040,7 @@ export default {
       getOrganizations: 'addition/getOrganizations',
       getOrgStores: 'org/getOrgStores',
       getAction: 'action/getAction',
+      setAction: 'action/setAction',
       unsetAction: 'action/unsetAction',
       getActionAdvPlaces: 'action/getActionAdvPlaces',
       getActionAdvPages: 'action/getActionAdvPages',
@@ -3533,6 +3550,31 @@ export default {
     filterOrganizations(value) {
       console.log(value)
     },
+    async formSubmit() {
+      this.loading = true;
+      const validationResult = await this.v$.$validate();
+      if (!validationResult) {
+        this.loading = false
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Проверьте заполненные данные',
+          detail: 'Проверьте корректно ли вы заполнили данные Акции',
+          life: 3000,
+        })
+        return;
+      }
+      const save_data = this.form;
+      save_data.type = this.type;
+      this.setAction(save_data).then(() => {
+        this.loading = false
+        if(this.type == 1){
+          this.$router.push({ name: 'wholesalePrices', params: { id: this.$route.params.id } });
+        }
+        if(this.type == 2){
+          this.$router.push({ name: 'retailActions', params: { id: this.$route.params.id } });
+        }
+      })
+    },
   },
   computed: {
     ...mapGetters({
@@ -3647,21 +3689,24 @@ export default {
         this.form.store_id = newVal.store_ids
         this.form.client_id = String(newVal.client_id)
         if (newVal.image) {
-          this.files.max.original_href = newVal.image.image
+          this.form.adv.files.max.original_href = newVal.image.image
         }
         if (newVal.page_create) {
           this.form.adv.active = true
         }
-        this.getActionAdvPlaces({ type: this.type }).then(() => {
+        this.getActionAdvPages({ type: this.type }).then(() => {
           this.form.adv.place = []
-          const places = newVal.page_places.split(',')
-          Object.entries(this.place).forEach((value) => {
-            places.forEach((pvalue) => {
-              if (value.key == pvalue) {
-                this.form.adv.place.push(value)
-              }
+          if(newVal.page_places){
+            const places = newVal.page_places.split(',')
+            Object.entries(places).forEach((value) => {
+              const [kk, vv] = value
+              this.actionAdvPages.forEach((pvalue) => {
+                if (vv == pvalue.code) {
+                  this.form.adv.place[vv] = 1
+                }
+              })
             })
-          })
+          }
         })
         const dateto = new Date(newVal.date_to)
         const datefrom = new Date(newVal.date_from)
@@ -3673,8 +3718,8 @@ export default {
         this.form.offer = Boolean(newVal.offer)
         this.form.integration = Boolean(newVal.integration)
         this.form.stores = Boolean(newVal.available_stores)
-        this.form.warehouses = Boolean(newVal.available_vendors)
-        this.form.vendors = Boolean(newVal.integration)
+        this.form.warehouses = Boolean(newVal.available_opt)
+        this.form.vendors = Boolean(newVal.available_vendors)
         this.form.typePay = String(newVal.pay_type)
         this.form.typePayPercent = String(newVal.pay_type_percent)
         this.form.typeDelivery = String(newVal.delivery_type)
@@ -3684,7 +3729,7 @@ export default {
         this.form.conditionMinSum = newVal.condition_min_sum
         this.form.regions = newVal.regions
         this.form.actions = newVal.big_sale_actions
-        this.form.all_organizations_selected = newVal.organization
+        this.form.all_organizations_selected = newVal.all_organizations_selected
         this.form.postponementPeriod = newVal.delay
         this.form.participantsType = String(newVal.participants_type)
         this.form.compatibilityDiscount = String(newVal.compatibility_discount)
@@ -3695,16 +3740,8 @@ export default {
             }
           })
         }
-        Object.entries(this.paymentDelivery).forEach((value) => {
-          if (value.key == newVal.payer) {
-            this.form.paymentDelivery = value
-          }
-        })
-        Object.entries(this.compabilityMode).forEach((value) => {
-          if (value.key == newVal.compatibility_discount_mode) {
-            this.form.compabilityMode = value
-          }
-        })
+        this.form.paymentDelivery = newVal.payer
+        this.form.compabilityMode = newVal.compatibility_discount_mode
         this.form.compatibilityDiscount = String(newVal.compatibility_discount)
         this.form.conditionMinSum = newVal.condition_min_sum
         this.form.conditionMinCount = newVal.condition_SKU

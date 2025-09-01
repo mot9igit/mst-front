@@ -39,6 +39,24 @@ const MyPreset = definePreset(Aura, {
       900: 'rgba(249,44,13,1)',
       950: 'rgba(249,44,13,1)',
     },
+    colorScheme: {
+      dark: {
+          surface: {
+              0: '#282828',
+              50: '{zinc.50}',
+              100: '{zinc.100}',
+              200: '#282828',
+              300: '{zinc.300}',
+              400: '{zinc.400}',
+              500: '{zinc.500}',
+              600: '{zinc.600}',
+              700: '#dedede',
+              800: '#ffffff',
+              900: '#ffffff',
+              950: '#ffffff'
+          }
+      },
+    }
   },
 })
 
