@@ -221,6 +221,17 @@ export default {
     }),
     updateBasket() {
       this.getBasket()
+      const data = {
+        page: this.page,
+        perpage: this.per_page,
+      }
+      if (this.$route.name == 'purchasesCatalogSearch') {
+        data.search = this.$route.params.search
+      }
+      this.getOptProducts(data).then(() => {
+        this.opt_products = this.optProducts
+        this.loading = false
+      })
     },
     updatePage(order_id) {
       this.order_id = order_id

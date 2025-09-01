@@ -8,12 +8,8 @@
         <div class="product-card__header">
           <!-- Продавец -->
           <div class="product-card__seller">
-            <img
-              :src="offer.store_image"
-              :alt="offer.org.name"
-              class="product-card__seller-image"
-              v-if="offer.store_image"
-            />
+            <img :src="offer.store_image" :alt="offer.org.name" class="product-card__seller-image"
+              v-if="offer.store_image" />
             <p class="product-card__seller-name">{{ offer.org.name }}</p>
             <button class="product-card__seller-button">
               <i class="d-icon-angle-rounded-bottom product-card__seller-button-icon"></i>
@@ -85,26 +81,21 @@
           </div>
         </div>
         <!-- Для узкого экрана -->
-         <div class="product-card__count product-card__count-min">
+        <div class="product-card__count product-card__count-min">
           <p class="product-card__count-value">
             <span class="product-card__count-label">В наличии: </span>
             <span v-if="offer.remains_abstract != offer.available">{{
               offer.remains_abstract
-            }}</span>
+              }}</span>
             <span v-else>{{ offer.available }} шт</span>
           </p>
-          <div
-            class="d-divider d-divider--vertical product-card__count-divider"
-            v-if="offer.requirement"
-          ></div>
+          <div class="d-divider d-divider--vertical product-card__count-divider" v-if="offer.requirement"></div>
           <div class="product-card__count-value" v-if="offer.requirement">
             <span class="product-card__count-label">Ваша потребность: </span>
             {{ Number(offer.requirement.count) }} шт
             <div v-if="offer.requirement" class="redder">
-              <span v-if="Number(offer.requirement.count) > Number(offer.available)"
-                >Не хватает
-                {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
-              >
+              <span v-if="Number(offer.requirement.count) > Number(offer.available)">Не хватает
+                {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span>
             </div>
           </div>
         </div>
@@ -125,13 +116,17 @@
         </div>
 
         <!-- Купить -->
-        <button
-          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card__buy"
-          @click="addBasket(offer)"
-        >
-          <i class="d-icon-cart product-card__buy-icon"></i>
-          Купить
-        </button>
+        <div class="product-card__basket-button"
+          :class="{ 'basket-true': offer?.basket?.availability, 'loading-counter': this.fetchIds.indexOf(offer.key) != -1 }">
+          <Counter @ElemCount="ElemCount" :min="0" :max="offer.max" :id="offer.remain_id" :store_id="offer.store_id"
+            :index="index" :value="offer?.basket?.count" :step="offer?.multiplicity ? offer?.multiplicity : 1"
+            :item="offer" />
+          <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card__buy"
+            @click="addBasket(offer)">
+            <i class="d-icon-cart product-card__buy-icon"></i>
+            Купить
+          </button>
+        </div>
 
         <!-- Количество -->
         <div class="product-card__count">
@@ -139,21 +134,16 @@
             <span class="product-card__count-label">В наличии: </span>
             <span v-if="offer.remains_abstract != offer.available">{{
               offer.remains_abstract
-            }}</span>
+              }}</span>
             <span v-else>{{ offer.available }} шт</span>
           </p>
-          <div
-            class="d-divider d-divider--vertical product-card__count-divider"
-            v-if="offer.requirement"
-          ></div>
+          <div class="d-divider d-divider--vertical product-card__count-divider" v-if="offer.requirement"></div>
           <div class="product-card__count-value" v-if="offer.requirement">
             <span class="product-card__count-label">Ваша потребность: </span>
             {{ Number(offer.requirement.count) }} шт
             <div v-if="offer.requirement" class="redder">
-              <span v-if="Number(offer.requirement.count) > Number(offer.available)"
-                >Не хватает
-                {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
-              >
+              <span v-if="Number(offer.requirement.count) > Number(offer.available)">Не хватает
+                {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span>
             </div>
           </div>
         </div>
@@ -180,10 +170,8 @@
       <div class="d-divider d-divider--vertical product-card__footer-divider"></div>
 
       <!-- Кнопка: "Все акции" -->
-      <button
-        class="d-button d-button--sm-shadow d-button-tertiary d-button-tertiary-small product-card__promo-all"
-        @click.prevent="showModal()"
-      >
+      <button class="d-button d-button--sm-shadow d-button-tertiary d-button-tertiary-small product-card__promo-all"
+        @click.prevent="showModal()">
         Все акции
       </button>
     </div>
@@ -197,38 +185,47 @@
             :class="modalActiveActions ? 'product-card-actions__modal-button-active' : 'product-card-actions__modal-button'">
             Активные акции <div class="d-badge2 product-card__promo-badge">{{ activeActions }}</div>
           </button>
-          <button class="product-card-actions__modal-button" @click.prevent="modalOtherActions = true, modalActiveActions = false"  v-if="otherActions > 0"
+          <button class="product-card-actions__modal-button"
+            @click.prevent="modalOtherActions = true, modalActiveActions = false" v-if="otherActions > 0"
             :class="modalOtherActions ? 'product-card-actions__modal-button-active' : 'product-card-actions__modal-button'">
             Акции без выполненных условий <div class="d-badge2 product-card__promo-badge">{{ otherActions }}</div>
           </button>
         </div>
         <div v-if="modalActiveActions">
-          <div class="product-card-actions__modal-actions" v-for="(item,index) in activeActionsData" :key="index">
-            <div class="product-card-actions__modal-actions-header"><i class="product-card-actions__modal-actions-header-icon d-icon-percent-rounded"></i>
-            {{ item.type != 3 ? item.name : 'Индивидуальная скидка'}}
+          <div class="product-card-actions__modal-actions" v-for="(item, index) in activeActionsData" :key="index">
+            <div class="product-card-actions__modal-actions-header"><i
+                class="product-card-actions__modal-actions-header-icon d-icon-percent-rounded"></i>
+              {{ item.type != 3 ? item.name : 'Индивидуальная скидка' }}
             </div>
             <div class="product-card-actions__modal-actions-content">
-              <div class="product-card-actions__modal-actions-content-item" v-if="item.delay_type == 2">Под реализацию</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.delay_type == 2">Под реализацию
+              </div>
               <div class="product-card-actions__modal-actions-content-item" v-if="item.delay_type < 2">{{
                 item.delay_type == 1 && item.delay > 0 ? Number(item.delay).toFixed(0) + ' дн. отсрочки' : 'Предоплата'
-              }}</div>
-              <div class="product-card-actions__modal-actions-content-item" v-if="item.percent > 0">{{ item.percent }}% Скидка</div>
-              <div class="product-card-actions__modal-actions-content-item" v-if="item.delivery_type == 2">Бесплатная доставка</div>
+                }}</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.percent > 0">{{ item.percent }}%
+                Скидка</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.delivery_type == 2">Бесплатная
+                доставка</div>
             </div>
           </div>
         </div>
         <div v-else>
-          <div class="product-card-actions__modal-actions" v-for="(item,index) in otherActionsData" :key="index">
-            <div class="product-card-actions__modal-actions-header"><i class="product-card-actions__modal-actions-header-icon d-icon-percent-rounded"></i>
-            {{ item.type != 3 ? item.name : 'Индивидуальная скидка'}}
+          <div class="product-card-actions__modal-actions" v-for="(item, index) in otherActionsData" :key="index">
+            <div class="product-card-actions__modal-actions-header"><i
+                class="product-card-actions__modal-actions-header-icon d-icon-percent-rounded"></i>
+              {{ item.type != 3 ? item.name : 'Индивидуальная скидка' }}
             </div>
             <div class="product-card-actions__modal-actions-content">
-              <div class="product-card-actions__modal-actions-content-item" v-if="item.delay_type == 2">Под реализацию</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.delay_type == 2">Под реализацию
+              </div>
               <div class="product-card-actions__modal-actions-content-item" v-if="item.delay_type < 2">{{
                 item.delay_type == 1 && item.delay > 0 ? Number(item.delay).toFixed(0) + ' дн. отсрочки' : 'Предоплата'
-              }}</div>
-              <div class="product-card-actions__modal-actions-content-item" v-if="item.percent > 0">{{ item.percent }}% Скидка</div>
-              <div class="product-card-actions__modal-actions-content-item" v-if="item.delivery_type == 2">Бесплатная доставка</div>
+                }}</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.percent > 0">{{ item.percent }}%
+                Скидка</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.delivery_type == 2">Бесплатная
+                доставка</div>
             </div>
           </div>
         </div>
@@ -241,10 +238,11 @@
 <script>
 import { mapActions } from 'vuex'
 import customModal from '@/shared/ui/Modal.vue'
+import Counter from '@/shared/ui/Counter.vue'
 
 export default {
   name: 'productOffer',
-  data(){
+  data() {
     return {
       activeActions: 0,
       otherActions: 0,
@@ -253,9 +251,10 @@ export default {
       modalOtherActions: false,
       activeActionsData: [],
       otherActionsData: [],
+      fetchIds: [],
     }
   },
-  components: { customModal },
+  components: { customModal, Counter },
   emits: ['updateBasket'],
   props: {
     offer: {
@@ -278,19 +277,84 @@ export default {
   methods: {
     ...mapActions({
       basketProductAdd: 'basket/basketProductAdd',
+      getBasket: 'basket/getBasket',
+      basketClear: 'basket/basketClear',
+      basketProductRemove: 'basket/basketProductRemove',
+      basketProductUpdate: 'basket/basketProductUpdate',
     }),
-    showModal(){
+    ElemCount(object) {
+      console.log(object)
+      if (!this.fetchIds.includes(object.item.key)) {
+        this.fetchIds.push(object.item.key)
+      }
+      if (object.value == object.min) {
+        this.clearBasketProduct(
+          object.item.org_id,
+          object.item.store_id,
+          object.item.key,
+          object.item,
+        )
+        return
+      }
+      if (object.value > Number(object.max)) {
+        this.modal_remain = true
+        const index = this.fetchIds.indexOf(object.item.product.key)
+        if (index !== -1) {
+          this.fetchIds.splice(index, 1) // Удаляем один элемент по индексу
+        }
+      } else {
+        this.loading = true
+        const data = {
+          org_id: object.item.org_id,
+          store_id: object.item.store_id,
+          id_remain: object.id,
+          count: object.value,
+          key: object.item.key,
+          actions: object.item.actions,
+        }
+        this.basketProductUpdate(data).then((response) => {
+          // console.log(response)
+          if (!response?.data?.data?.success && response?.data?.data?.message) {
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: response?.data?.data?.message,
+              life: 3000,
+            })
+          }
+          this.$emit('updateBasket')
+        })
+        if (Number(object.value) != object.old_value) {
+          window.dataLayer = window.dataLayer || []
+          window.dataLayer.push({
+            ecommerce: {
+              currencyCode: 'RUB', // Валюта
+              add: {
+                products: [
+                  {
+                    id: object.id, // ID товара
+                    name: object.item.product.name, // Название товара
+                    price: object.item.basket.price, // Цена товара
+                    quantity: object.value, // Количество товара
+                  },
+                ],
+              },
+            },
+          })
+        }
+      }
+    },
+    showModal() {
       this.modalActions = true
-      if(this.activeActions != 0){
+      if (this.activeActions != 0) {
         this.modalActiveActions = true
         this.modalOtherActions = false
-      }else{
+      } else {
         this.modalActiveActions = false
         this.modalOtherActions = true
       }
     },
     addBasket(item) {
-      console.log(item)
       const data = {
         org_id: item.org_id,
         store_id: item.store_id,
@@ -323,13 +387,13 @@ export default {
         },
       })
     },
-    getActiveActions(){
+    getActiveActions() {
       for (var i in this.offer.actions) {
-        if(this.offer.actions[i].enabled === 1){
+        if (this.offer.actions[i].enabled === 1) {
           this.activeActions++
           this.activeActionsData.push(this.offer.actions[i])
 
-        }else{
+        } else {
           this.otherActions++
           this.otherActionsData.push(this.offer.actions[i])
         }
@@ -342,15 +406,36 @@ export default {
 .product-card {
   width: auto;
   padding-bottom: 6px;
+
+  .product-card__basket-button{
+    &.basket-true{
+      .d-counter{
+        display: flex;
+      }
+      .d-button{
+        display: none;
+      }
+    }
+    .d-counter{
+      display: none;
+    }
+    .d-button{
+      display: flex;
+    }
+  }
+
   .product-card__promo {
     min-width: auto;
   }
+
   .d-badge2 {
     min-width: auto;
   }
+
   .product-card__count {
     align-items: start;
   }
+
   .redder {
     display: block;
     text-align: right;
@@ -361,10 +446,12 @@ export default {
     color: #f92c0d;
   }
 }
+
 .product-card__stat-content--horizontal {
   flex-direction: column;
 }
-.product-card-actions__modal-button-active{
+
+.product-card-actions__modal-button-active {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -378,8 +465,9 @@ export default {
   line-height: 21px;
   color: #FBFBFB;
   height: 32px;
-  border:1px solid #282828;
+  border: 1px solid #282828;
 }
+
 .product-card-actions__modal .d-badge2 {
   width: 19px;
   max-width: 19px;
@@ -392,21 +480,24 @@ export default {
   font-size: 12px;
   line-height: 123%;
   text-align: center;
-  padding:0 0 0 0;
+  padding: 0 0 0 0;
 }
+
 .product-card-actions__modal-button-active .d-badge2 {
-    background-color: #ededed;
-    color: #282828;
+  background-color: #ededed;
+  color: #282828;
 }
-.product-card-actions__modal-buttons{
+
+.product-card-actions__modal-buttons {
   display: flex;
   justify-content: start;
   gap: 16px;
-  margin-top:-24px;
+  margin-top: -24px;
   padding-bottom: 16px;
   border-bottom: 1px solid #75757575;
 }
-.product-card-actions__modal-button{
+
+.product-card-actions__modal-button {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -420,13 +511,15 @@ export default {
   line-height: 21px;
   color: #282828;
   height: 32px;
-  border:1px solid #282828;
+  border: 1px solid #282828;
 }
+
 .product-card-actions__modal-button .d-badge2 {
-    color: #ededed;
-    background-color: #282828;
+  color: #ededed;
+  background-color: #282828;
 }
-.product-card-actions__modal-actions{
+
+.product-card-actions__modal-actions {
   position: relative;
   width: calc(50% - 10px);
   height: auto;
@@ -439,12 +532,14 @@ export default {
   position: relative;
   float: left;
 }
-.product-card-actions__modal-actions:nth-child(odd){
+
+.product-card-actions__modal-actions:nth-child(odd) {
   margin-right: 20px;
 }
-.product-card-actions__modal-actions-header{
+
+.product-card-actions__modal-actions-header {
   background: #FBFBFB;
-  border-radius:  7px 0px 7px 0px;
+  border-radius: 7px 0px 7px 0px;
   padding: 4px 9px;
   width: max-content;
   max-width: 80%;
@@ -457,9 +552,10 @@ export default {
   gap: 8px;
   align-items: center;
 }
+
 .product-card-actions__modal-actions-header:before {
   content: "";
-  background-color:#FBFBFB;
+  background-color: #FBFBFB;
   width: 10px;
   height: 10px;
   display: block;
@@ -469,9 +565,10 @@ export default {
   top: 0px;
   right: -10px;
 }
+
 .product-card-actions__modal-actions-header:after {
   content: "";
-  background-color:#ededed;
+  background-color: #ededed;
   width: 10px;
   height: 10px;
   display: block;
@@ -482,13 +579,15 @@ export default {
   right: -10px;
   border-radius: 10px 0 0 0;
 }
-.product-card-actions__modal-actions-content{
-  position:relative;
+
+.product-card-actions__modal-actions-content {
+  position: relative;
   padding: 8px 11px;
 }
+
 .product-card-actions__modal-actions-content:before {
   content: "";
-  background-color:#FBFBFB;
+  background-color: #FBFBFB;
   width: 10px;
   height: 10px;
   display: block;
@@ -496,11 +595,12 @@ export default {
   margin-top: 0px;
   margin-left: 0px;
   top: 0px;
-  left:0px;
+  left: 0px;
 }
+
 .product-card-actions__modal-actions-content:after {
   content: "";
-  background-color:#ededed;
+  background-color: #ededed;
   width: 10px;
   height: 10px;
   display: block;
@@ -511,39 +611,45 @@ export default {
   left: 0px;
   border-radius: 10px 0 0 0;
 }
-.product-card-actions__modal-actions-content-item{
+
+.product-card-actions__modal-actions-content-item {
   padding: 4px 10px;
-  color:#282828;
+  color: #282828;
   font-weight: 500;
   font-size: 12px;
   line-height: 123%;
   background: rgba(255, 255, 255, 0.55);
   border: 0.5px solid #757575;
   border-radius: 24px;
-  width:max-content;
+  width: max-content;
   margin-right: 8px;
   margin-bottom: 8px;
   float: left;
 }
-.product-card-actions__modal-actions-header-icon{
+
+.product-card-actions__modal-actions-header-icon {
   width: 16px;
   height: 16px;
   font-size: 16px;
 
 }
-.product-card-actions__modal .modal-content{
-  max-width:890px;
+
+.product-card-actions__modal .modal-content {
+  max-width: 890px;
 }
+
 @media (width <=1024px) {
-  .product-card-actions__modal .modal-content{
-    max-width:80%;
+  .product-card-actions__modal .modal-content {
+    max-width: 80%;
   }
 }
+
 @media (width <=800px) {
-  .product-card-actions__modal-button-active{
+  .product-card-actions__modal-button-active {
     font-size: 10px;
     height: 24px;
   }
+
   .product-card-actions__modal .d-badge2 {
     width: 14px;
     max-width: 14px;
@@ -554,37 +660,45 @@ export default {
     border-radius: 14px;
     font-size: 10px;
   }
-  .product-card-actions__modal-button{
+
+  .product-card-actions__modal-button {
     font-size: 10px;
     height: 24px;
   }
-  .product-card-actions__modal-actions{
+
+  .product-card-actions__modal-actions {
     position: relative;
     width: 100%;
     height: auto;
     margin-bottom: 0px;
   }
-  .product-card-actions__modal-actions:nth-child(odd){
+
+  .product-card-actions__modal-actions:nth-child(odd) {
     margin-right: 0px;
   }
-  .product-card-actions__modal-actions-header{
+
+  .product-card-actions__modal-actions-header {
     font-size: 10px;
   }
-  .product-card-actions__modal-actions-content-item{
+
+  .product-card-actions__modal-actions-content-item {
     font-size: 9px;
   }
-  .product-card-actions__modal-actions-header-icon{
+
+  .product-card-actions__modal-actions-header-icon {
     width: 10px;
     height: 10px;
     font-size: 10px;
   }
 
 }
+
 @media (width <=600px) {
-  .product-card-actions__modal-button-active{
+  .product-card-actions__modal-button-active {
     font-size: 14px;
     height: 32px;
   }
+
   .product-card-actions__modal .d-badge2 {
     width: 19px;
     max-width: 19px;
@@ -595,32 +709,39 @@ export default {
     border-radius: 19px;
     font-size: 12px;
   }
-  .product-card-actions__modal-button{
+
+  .product-card-actions__modal-button {
     font-size: 14px;
     height: 32px;
   }
-  .product-card-actions__modal-actions{
+
+  .product-card-actions__modal-actions {
     position: relative;
     width: 100%;
     height: auto;
     margin-bottom: 0px;
   }
-  .product-card-actions__modal-actions:nth-child(odd){
+
+  .product-card-actions__modal-actions:nth-child(odd) {
     margin-right: 0px;
   }
-  .product-card-actions__modal-actions-header{
+
+  .product-card-actions__modal-actions-header {
     font-size: 14px;
   }
-  .product-card-actions__modal-actions-content-item{
+
+  .product-card-actions__modal-actions-content-item {
     font-size: 12px;
   }
-  .product-card-actions__modal-actions-header-icon{
+
+  .product-card-actions__modal-actions-header-icon {
     width: 16px;
     height: 16px;
     font-size: 16px;
   }
-  .product-card-actions__modal .modal-content{
-    max-width:100%;
+
+  .product-card-actions__modal .modal-content {
+    max-width: 100%;
   }
 }
 </style>

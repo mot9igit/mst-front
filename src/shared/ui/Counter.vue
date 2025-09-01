@@ -184,6 +184,11 @@ export default {
 }
 </script>
 <style lang="scss">
+.d-counter{
+  .d-counter__input{
+    color: #282828;
+  }
+}
 .product-not-available {
   .modal-content {
     display: flex;

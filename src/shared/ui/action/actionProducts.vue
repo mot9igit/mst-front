@@ -156,7 +156,7 @@
                   :id="Number(product.id)"
                   field="min_count"
                   :min="1"
-                  :value="product.save_data.min_count"
+                  :value="Number(product.save_data.min_count)"
                   :key="new Date().getMilliseconds() + product.id"
                 />
               </div>
@@ -169,7 +169,7 @@
                   :id="Number(product.id)"
                   field="multiplicity"
                   :min="1"
-                  :value="product.save_data.multiplicity"
+                  :value="Number(product.save_data.multiplicity)"
                   :key="new Date().getMilliseconds() + product.id"
                 />
               </div>
