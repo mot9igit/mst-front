@@ -31,6 +31,10 @@
                     color: #EDEDED;
                 }
 
+                .products__title {
+                  font-size: 16px;
+                  font-weight: 600;
+                }
                 .product-card__footer .d-badge2 {
                     background: #EDEDED;
                     border-radius: 41px;
@@ -360,6 +364,9 @@
                     }
                     .products__stat {
                         color: #757575;
+                    }
+                    .product-card__stat-list{
+                      display:flex;
                     }
                     .vendor-change__connected-search .vendor-change__connected-search-button {
                         margin-top: 5px;

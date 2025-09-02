@@ -11,9 +11,9 @@
             <img :src="offer.store_image" :alt="offer.org.name" class="product-card__seller-image"
               v-if="offer.store_image" />
             <p class="product-card__seller-name">{{ offer.org.name }}</p>
-            <button class="product-card__seller-button">
+            <!-- <button class="product-card__seller-button">
               <i class="d-icon-angle-rounded-bottom product-card__seller-button-icon"></i>
-            </button>
+            </button>-->
           </div>
         </div>
         <!-- Главная информация -->
@@ -631,16 +631,138 @@ export default {
   width: 16px;
   height: 16px;
   font-size: 16px;
-
 }
 
 .product-card-actions__modal .modal-content {
   max-width: 890px;
 }
+.product-card__basket-button.basket-true{
+  display:flex;
+  justify-content: end;
+  margin: 16px 20px 28px 0;
+  width:100%;
+}
+.product-card__basket-button.basket-true .d-counter{
+  background: #EDEDED;
+  box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
+  border-radius: 35px;
+  border: none;
+}
 
+@media (width>1280px){
+    .product-card__basket-button.basket-true .d-counter, .product-card__buy{
+      height: 32px;
+      width: 167px;
+      max-width: 167px;
+    }
+    .product-card__content-left{
+      max-width: 380px;
+    }
+    .product-card__basket-button.basket-true .d-counter__button{
+      width:39.5px;
+      padding-inline: 13px;
+      position:relative;
+    }
+    .product-card__basket-button.basket-true .d-counter__button-icon {
+        color: #757575;
+        font-size: 13px;
+    }
+    .product-card__basket-button.basket-true .d-counter__button:first-child:after{
+      content:'';
+      background-color: rgb(117 117 117 / 30%);
+      width: 0.5px;
+      height:13px;
+      position:absolute;
+      right:0;
+      top:50%;
+      transform: translate(-50%, -50%);
+    }
+    .product-card__basket-button.basket-true .d-counter__button:last-child:before{
+      content:'';
+      background-color: rgb(117 117 117 / 30%);
+      width: 0.5px;
+      height:13px;
+      position:absolute;
+      left:0;
+      top:50%;
+      transform: translate(-50%, -50%);
+    }
+}
+@media (width <=1536px) {
+  .product-card__price-value-discounted{
+    font-size: 30px;
+  }
+}
+@media (width <=1280px) {
+
+    .product-card__basket-button.basket-true .d-counter, .product-card__buy{
+      height: 24px;
+      width: 103px;
+      max-width: 103px;
+    }
+    .product-card__buy{
+      min-height: 24px;
+      font-size:10px;
+    }
+    .product-card__buy-icon {
+        font-size: 13px;
+    }
+    .product-card__price-value-discounted {
+        font-size: 24px;
+    }
+    .product-card__content-left{
+      max-width: auto;
+    }
+    .product-card__basket-button.basket-true .d-counter__button{
+      width:25.5px;
+      padding-inline: 8px;
+      position:relative;
+    }
+    .product-card__basket-button.basket-true .d-counter__button-icon {
+        color: #757575;
+        font-size: 8px;
+    }
+    .product-card__basket-button.basket-true .d-counter__button:first-child:after{
+      content:'';
+      background-color: rgb(117 117 117 / 30%);
+      width: 0.5px;
+      height:8px;
+      position:absolute;
+      right:0;
+      top:50%;
+      transform: translate(-50%, -50%);
+    }
+    .product-card__basket-button.basket-true .d-counter__button:last-child:before{
+      content:'';
+      background-color: rgb(117 117 117 / 30%);
+      width: 0.5px;
+      height:8px;
+      position:absolute;
+      left:0;
+      top:50%;
+      transform: translate(-50%, -50%);
+    }
+    .product-card__basket-button.basket-true .d-counter__input {
+      font-size: 10px;
+    }
+
+}
 @media (width <=1024px) {
   .product-card-actions__modal .modal-content {
     max-width: 80%;
+  }
+  .product-card__basket-button.basket-true .d-counter, .product-card__buy{
+      height: 24px;
+      width: 117px;
+      max-width: 117px;
+  }
+  .product-card__price-value-discounted {
+      font-size: 20px;
+  }
+  .product-card__basket-button.basket-true{
+
+    margin: 16px 0px 28px 0;
+
   }
 }
 
@@ -690,6 +812,7 @@ export default {
     height: 10px;
     font-size: 10px;
   }
+
 
 }
 
