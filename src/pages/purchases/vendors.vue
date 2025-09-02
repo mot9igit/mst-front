@@ -237,7 +237,7 @@
       <customModal v-model="this.modalAdd" class="clients-form__modal">
         <div class="clients-info__value-container">
           <h2>Добавление поставщика</h2>
-          <div class="clients-info__label">Введите ИНН или код поставщика</div>
+          <div class="clients-info__label">Введите код поставщика</div>
           <form
             class="clients-form__modal"
             @submit.prevent="formAddVendor()"
@@ -247,13 +247,13 @@
               type="text"
               class="modal__input clients-form__input"
               :class="{ 'd-input--error': v$.form.inn.$error }"
-              placeholder="Введите ИНН или код поставщика"
+              placeholder="Введите код поставщика"
               v-model="form.inn"
             />
             <div v-if="v$.form.inn.$error" class="d-input-error">
               <i class="d-icon-warning d-input-error__icon"></i>
               <span v-if="v$.form.inn.required" class="d-input-error__text"
-                >Пожалуйста, введите ИНН или код поставщика</span
+                >Пожалуйста, введите код поставщика</span
               >
             </div>
             <button

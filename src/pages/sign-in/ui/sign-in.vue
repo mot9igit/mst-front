@@ -187,6 +187,7 @@ import useVuelidate from '@vuelidate/core'
 
 export default {
   name: 'SignInForm',
+  emits: ['setRegForm'],
   data() {
     return {
       form: {

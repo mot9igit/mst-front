@@ -214,6 +214,7 @@ export default {
     ...mapGetters({
       getUser: 'user/getUser',
       orgStores: 'org/orgStores',
+      orgActive: 'org/orgActive',
       basket: 'basket/basket',
       basketWarehouse: 'basket/basketWarehouse',
       optVendorsAvailable: 'org/optVendorsAvailable',
@@ -288,7 +289,12 @@ export default {
     },
     mobileRequipments: function(newVal){
       this.modals.requirement = newVal
-    }
+    },
+    orgActive: function(){
+      this.getOrgStores().then(() => {
+        this.getOrgBasketStore()
+      })
+    },
   },
 }
 </script>

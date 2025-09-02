@@ -290,6 +290,10 @@ export default {
   computed: {
     ...mapGetters({
       optProducts: 'catalog/optProducts',
+      orgActive: 'org/orgActive',
+      optVendorsAvailable: 'org/optVendorsAvailable',
+      optVendorsSelected: 'org/optVendorsSelected',
+      basketWarehouse: 'basket/basketWarehouse',
     }),
     pagesCount() {
       let pages = Math.ceil(this.optProducts.total / this.per_page)
@@ -302,6 +306,15 @@ export default {
   watch: {
     optProducts: function (newVal) {
       this.opt_products = newVal
+    },
+    optVendorsAvailable: function () {
+      this.updatePage(0)
+    },
+    basketWarehouse: function () {
+      this.updatePage(0)
+    },
+    orgActive: function () {
+      this.updatePage(0)
     },
     $route() {
       this.updatePage(0)

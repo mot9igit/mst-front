@@ -125,6 +125,7 @@ export default {
   computed: {
     ...mapGetters({
       orgs: 'org/orgs',
+      orgActive: 'org/orgActive',
       optVendorsAvailable: 'org/optVendorsAvailable',
       optVendorsSelected: 'org/optVendorsSelected',
       basket: 'basket/basket',
@@ -239,6 +240,19 @@ aside button {
 .content {
   background-color: #ededed;
   max-width: calc(100% - 84px);
+  .header__wrapper{
+    position: relative;
+    z-index: 2;
+  }
+  main{
+    position: relative;
+    z-index: 1;
+  }
+  @media (width > 600px) {
+    .header__wrapper {
+        display: block;
+    }
+  }
 }
 .text-center {
   text-align: center;
