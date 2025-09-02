@@ -3430,7 +3430,8 @@ export default {
       }
     },
     resetDiscountFormula() {
-      this.modals.typePrice == 1
+      this.modals.typePrice == ''
+      this.modals.priceStep = 0
       this.productsSelectedData = {}
       Object.entries(this.type_pricing).forEach((entry) => {
         const [key, value] = entry
@@ -3515,6 +3516,10 @@ export default {
           ).toFixed(2)
         }
       }
+    },
+    closeDialogPriceBtn() {
+      this.modals.priceType = '',
+      this.productsSelectedData = {}
     },
     closeDialogPrice() {
       if (this.modals.priceStep === 0) {
