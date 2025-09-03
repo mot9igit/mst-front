@@ -1116,7 +1116,7 @@
                   <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
                     <label for="dateStart" class="d-dropdown__label">Описание акции </label>
                     <Editor
-                      api-key="ctqgmxpl4dimvsnrt6lnhbyk2xb7eyrhvbbh9lch2kltngkh"
+                      api-key="6rm0whw8wmdnboh5ygnqkezf3b797nz9ufxilvttbxq8mgl1"
                       language_url="../../../src/locales/tiny/ru.js"
                       :language_load="true"
                       v-model="this.form.description"
@@ -1696,14 +1696,17 @@
                         Общая сумма товаров акции должна быть не менее указанной суммы
                       </p>
                     </div>
-                    <div class="d-input d-input--light d-input--width-280">
-                      <input
-                        class="d-input__field"
+                    <div class="d-input--width-280">
+                      <InputNumber
                         v-model="this.form.conditionMinSum"
-                        type="text"
-                        placeholder="30000"
-                        name="dateStart"
-                        value="30 000 ₽"
+                        id="conditionMinSum"
+                        inputId="horizontal-buttons"
+                        :step="1"
+                        min="0"
+                        max="99999999"
+                        suffix=" ₽"
+                        incrementButtonIcon="pi pi-plus"
+                        decrementButtonIcon="pi pi-minus"
                       />
                     </div>
                   </div>
@@ -1719,14 +1722,17 @@
                         В заказе должно быть не менее заданного количества SKU товаров акции
                       </p>
                     </div>
-                    <div class="d-input d-input--light d-input--width-280">
-                      <input
-                        class="d-input__field"
-                        type="text"
-                        placeholder="0"
+                    <div class="d-input--width-280">
+                      <InputNumber
                         v-model="this.form.conditionMinCount"
-                        name="dateStart"
-                        value="2"
+                        id="conditionMinCount"
+                        inputId="horizontal-buttons"
+                        :step="1"
+                        min="0"
+                        max="999999"
+                        suffix=" шт"
+                        incrementButtonIcon="pi pi-plus"
+                        decrementButtonIcon="pi pi-minus"
                       />
                     </div>
                   </div>
@@ -1742,13 +1748,17 @@
                         В заказе должно быть не менее заданного общего количества товаров акции
                       </p>
                     </div>
-                    <div class="d-input d-input--light d-input--width-280">
-                      <input
-                        class="d-input__field"
-                        type="text"
+                    <div class="d-input--width-280">
+                      <InputNumber
                         v-model="this.form.conditionMinGeneralCount"
-                        placeholder="Введите количество шт."
-                        name="dateStart"
+                        id="conditionMinGeneralCount"
+                        inputId="horizontal-buttons"
+                        :step="1"
+                        min="0"
+                        max="999999"
+                        suffix=" шт"
+                        incrementButtonIcon="pi pi-plus"
+                        decrementButtonIcon="pi pi-minus"
                       />
                     </div>
                   </div>
@@ -3769,6 +3779,11 @@ export default {
 </script>
 <style lang="scss">
 body {
+  .d-input--width-280{
+    & > *{
+      width: 100%;
+    }
+  }
   .tox-tinymce {
     border-radius: 5px;
   }
