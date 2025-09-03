@@ -27,6 +27,7 @@ export default {
     window.setInterval(() => {
       this.pollPerson()
     }, 2500)
+
   },
 }
 </script>

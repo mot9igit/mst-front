@@ -1,5 +1,6 @@
 <template>
-  <!-- Карточка товара -->
+
+  <!--Карточка товара -->
   <div class="product-card">
     <div class="product-card__content">
       <!-- Информация о товаре -->
@@ -240,6 +241,7 @@ import { mapActions } from 'vuex'
 import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
 
+
 export default {
   name: 'productOffer',
   data() {
@@ -252,6 +254,7 @@ export default {
       activeActionsData: [],
       otherActionsData: [],
       fetchIds: [],
+
     }
   },
   components: { customModal, Counter },
@@ -968,6 +971,30 @@ export default {
   .product-card__basket-button{
     margin-top: -36px !important;
   }
+  .product-card__content, .product-card__stat-list {
+    gap: 8px;
+  }
+  .product-card__buy {
+    font-size: 1px;
+    color:transparent;
+    width:32px !important;
+    max-width: 32px;
+    min-width: 32px;
+    aspect-ratio: 1;
+    padding:6px;
+  }
+  .product-card__buy-icon {
+    display:flex;
+    font-size: 20px;
+    color:#FBFBFB;
+    position: absolute;
 
+  }
+  .product-card__buy:hover .product-card__buy-icon {
+    color:#f92c0d;
+  }
+  .product-card__buy:hover{
+    color:transparent;
+  }
 }
 </style>

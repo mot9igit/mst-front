@@ -33,32 +33,51 @@
     <div class="d-top-order-container-info">
       <h3>Информация о заказе</h3>
       <div class="order-card__orderinfo dart-row">
-        <div class="order-card__orderinfo-grid d-col-md-4">
-          <div class="order-card__orderinfo-grid-lable">Поставщик</div>
-          <div class="order-card__orderinfo-grid-text">{{ this.order.seller_name }}</div>
+        <div class="order-card__orderinfo-grid d-col-md-3">
+          <div class="order-card__orderinfo-grid-lable">Сумма</div>
+          <div class="order-card__orderinfo-grid-text">{{ this.order?.cost != '' ? this.order?.cost : '-' }}</div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-4">
+        <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Инициатор</div>
-          <div class="order-card__orderinfo-grid-text">{{ this.order?.initiator_org_name }}</div>
-        </div>
-        <div class="order-card__orderinfo-grid d-col-md-4">
-          <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.ur_persone?.name }}, ИНН:{{ this.order?.ur_persone?.inn }}
+            {{ this.order?.initiator_org_name != '' ? this.order?.initiator_org_name : '' }}
+          </div>
+          <div class="order-card__orderinfo-grid-text-down">
+            ({{ this.order?.initiator_user_name != '' ? this.order?.initiator_user_name : '' }})
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-4">
-          <div class="order-card__orderinfo-grid-lable">Сумма</div>
-          <div class="order-card__orderinfo-grid-text">{{ this.order.cost }}</div>
+        <div class="order-card__orderinfo-grid d-col-md-5">
+          <div class="order-card__orderinfo-grid-lable">Покупатель</div>
+          <div class="order-card__orderinfo-grid-text">
+            <p>{{ this.order?.ur_persone?.name }}</p>
+            <p>ИНН:{{ this.order?.ur_persone?.inn }}</p>
+          </div>
+          <div class="order-card__orderinfo-grid-text-down">
+            {{ this.order?.ur_persone?.ur_address }}
+          </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-4">
+        <div class="order-card__orderinfo-grid d-col-md-5">
+          <div class="order-card__orderinfo-grid-lable">Покупатель</div>
+          <div class="order-card__orderinfo-grid-text">
+            <p>{{ this.order?.seller_name }}</p>
+            <p>ИНН:{{ this.order?.seller_inn ? this.order?.seller_inn : ' -' }}</p>
+          </div>
+          <div class="order-card__orderinfo-grid-text-down">
+            {{ this.order?.seller_address }}
+          </div>
+        </div>
+        <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
-          <div class="order-card__orderinfo-grid-text">{{ this.order.delay }}</div>
+          <div class="order-card__orderinfo-grid-text">{{ this.order?.delay }}</div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-4">
+        <div class="order-card__orderinfo-grid d-col-md-3">
+          <div class="order-card__orderinfo-grid-lable">Оплата доставки</div>
+          <div class="order-card__orderinfo-grid-text">{{ this.order?.payer }}</div>
+        </div>
+        <div class="order-card__orderinfo-grid d-col-md-2">
           <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order.day_delivery }} дн. ({{ this.order.delivery_date }})
+            {{ this.order?.day_delivery }} дн. ({{ this.order?.delivery_date }})
           </div>
         </div>
       </div>

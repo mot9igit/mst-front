@@ -383,7 +383,7 @@ export default {
       document.addEventListener('click', (event) => {
         let sidebarElement = document.getElementById('sidebar__inner--desktop')
         if (sidebarElement && !sidebarElement.contains(event.target)) {
-          if (this.active === false && this.isMobile === false) {
+          if (this.active === false) {
             this.active = !this.active
             localStorage.setItem('sidebar.position', Number(this.active))
           }
@@ -511,6 +511,9 @@ export default {
 }
 </script>
 <style lang="scss">
+.sidebar__inner {
+    z-index: 175;
+}
 .d-fw {
   width: 100%;
 }
@@ -525,7 +528,7 @@ aside {
     width: 100%;
     padding: 5px 20px;
     text-align: center;
-    z-index: 75;
+    z-index: 175;
     display: none;
     span {
       display: block;
@@ -586,7 +589,7 @@ aside {
   margin-block: 35px 32px;
 }
 .sidebar__inner {
-  z-index: 75;
+  z-index: 175;
 }
 .sidebar__user {
   display: flex;

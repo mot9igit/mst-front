@@ -119,7 +119,7 @@ export default {
           class: 'cell_centeralign',
         },
         status: {
-          label: 'Оплата доставки',
+          label: 'Статус',
           type: 'status',
           sort: true,
           class: 'cell_centeralign',

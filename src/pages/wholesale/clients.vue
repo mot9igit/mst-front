@@ -38,7 +38,7 @@
               </button>
             </div>
           </div>
-          <div
+          <!--<div
             class="d-input d-input--light clients__filters-input clients__filters-input-multiselect"
             v-if="ffilter.type == 'multiselect'"
           >
@@ -62,12 +62,12 @@
               </button>
               <div
                 class="d-divider d-divider--vertical d-input__actions-divider clients__filters-input-actions-divider"
-              ></div>
+              ></div>-->
               <!--<button class="d-icon-wrapper clients__filters-input-button">
                 <i class="d-icon-angle-rounded-bottom-bold"></i>
               </button>-->
-            </div>
-          </div>
+            <!--</div>
+          </div>-->
         </div>
         <div
           class="d-radio__wrapper clients__filters-radio-wrapper"
