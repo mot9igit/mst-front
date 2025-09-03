@@ -2961,9 +2961,9 @@ export default {
         participantsType: 3,
         all_organizations_selected: {},
         regions: [],
-        stores: 0,
-        warehouses: 0,
-        vendors: 0,
+        stores: true,
+        warehouses: true,
+        vendors: true,
         store_id: [],
         dates: [],
         adv: {
@@ -3839,10 +3839,13 @@ body {
   .promotions__card {
     .promotions__card-warehouse-header-container {
       position: relative;
-      z-index: 3;
+      z-index: 2;
     }
-    .d-search .d-search__field {
-      padding: 7px 100px 7px 45px;
+    .d-search {
+      z-index: 1;
+      .d-search__field {
+        padding: 7px 100px 7px 45px;
+      }
     }
     .d-search--alt .d-search__icon {
       position: absolute;
