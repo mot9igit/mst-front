@@ -384,8 +384,10 @@ export default {
         let sidebarElement = document.getElementById('sidebar__inner--desktop')
         if (sidebarElement && !sidebarElement.contains(event.target)) {
           if (this.active === false) {
-            this.active = !this.active
+            if(this.isMobile === 'false'){
+              this.active = !this.active
             localStorage.setItem('sidebar.position', Number(this.active))
+            }
           }
         }
       })

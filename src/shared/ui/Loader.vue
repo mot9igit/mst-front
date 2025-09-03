@@ -33,6 +33,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.main__content-wrapper .preloader{
+  position: fixed;
+  border-top-left-radius: 40px;
+  top: var(--header-height);
+  left: var(--sidebar-width);
+}
+
+
 .preloader {
   width: 100%;
   height: 100%;
@@ -94,5 +102,6 @@ export default {
       z-index: 9;
     }
   }
+
 }
 </style>

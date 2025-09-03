@@ -51,7 +51,7 @@
         <div class="order-card__orderinfo-grid d-col-md-5">
           <div class="order-card__orderinfo-grid-lable">Поставщик</div>
           <div class="order-card__orderinfo-grid-text">{{ this.order?.seller_name != '' ? this.order?.seller_name : '' }}</div>
-          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">ИНН:</div>
+          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">ИНН: {{ this.order?.seller_inn != '' ? this.order?.seller_inn : '-' }}</div>
           <div class="order-card__orderinfo-grid-text-down">{{ this.order?.seller_address != '' ? this.order?.seller_address : '' }}</div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-5">

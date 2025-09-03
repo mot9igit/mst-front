@@ -464,13 +464,19 @@
                         width: 300px !important;
                     }
 
+
                 }
 
                 @media (width <=800px) {
                     .header {
+                        --header-height: 68px;
                         max-height: 68px;
                         padding-block: 5px 20px;
                     }
+                    .main__content-wrapper .preloader{
+                      top: 68px !important;
+                    }
+
                     .header__vendor-value {
                         font-size: 12px;
                     }
@@ -881,6 +887,10 @@
                     .d-search .d-search__field {
                         max-height: 32px !important;
                         height: 32px;
+                    }
+                    .main__content-wrapper .preloader{
+                      top: 0px !important;
+                      left: 0px !important;
                     }
                     .header__catalog-content .header__vendor {
                         display: flex;
