@@ -365,7 +365,7 @@ export default {
       this.getUserData.username = newVal.username
       this.getUserData.email = newVal.profile.email
       this.getUserInfo.fullname = newVal.profile.fullname
-      this.getUserInfo.phone = this.formatPhoneInput(newVal.profile.phone)
+      this.getUserInfo.phone = newVal.profile.phone ? this.formatPhoneInput(newVal.profile.phone) : ''
     }
   },
 
