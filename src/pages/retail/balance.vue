@@ -753,5 +753,16 @@ export default {
   .balance__main .d-table__wrapper{
     margin-left: -23px;
   }
+  .balance-info__value-container {
+
+    justify-content: start;
+
+}
+}
+@media (width <= 320px) {
+    .balance-info__value {
+        font-size: 24px;
+        text-align:center;
+    }
 }
 </style>

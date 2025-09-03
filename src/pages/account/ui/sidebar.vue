@@ -130,7 +130,10 @@
               ></span>
             </button>
 
-            <router-link :to="{ name: 'profile' }" class="sidebar__user sidebar__hidden">
+            <router-link
+            :to="{ name: 'profile' }"
+            class="sidebar__user sidebar__hidden"
+            @click.prevent="sidebarToggle()">
               <i class="d-icon-profile sidebar__user-icon"></i>
               <span class="sidebar__user-text">{{ this.getUser?.profile?.fullname }}</span>
             </router-link>

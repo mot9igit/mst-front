@@ -304,6 +304,9 @@
                         margin-top: 2px;
                         margin-right: 2px;
                     }
+                    .order-card__status {
+                        margin-top: 0px;
+                    }
 
                 }
 
@@ -374,6 +377,9 @@
                     }
                     .shipments .d-col-xl-6 {
                         width: 400px !important;
+                    }
+                    .shipments .d-badge2{
+                      font-size:12px;
                     }
 
                 }
@@ -2233,10 +2239,19 @@
                         margin-top: 24px;
                     }
                     .shipments .dart-row .p-inputtext {
-                        width: calc(95vw - 88px);
+                        width: calc(100vw - 88px);
+                    }
+                    .wholesaleorders__content .form_input_group:after {
+                        right: 40px !important;
                     }
                     .wholesaleprices .dart-row {
-                        width: calc(95vw - 88px);
+                        width: calc(100vw - 88px);
+                    }
+                    .retailorders__content .form_input_group:after {
+                        right: 40px;
+                    }
+                    .myorders__content .form_input_group:after {
+                        right: 12px;
                     }
                     .lk-about__dropzone-custom {
                         min-width: 100% !important;
@@ -2333,7 +2348,7 @@
                         width: calc(100vw - 21px);
                     }
                     .myorders__content .dart-row,.shipments .dart-row .p-inputtext{
-                        width: calc(95vw - 56px);
+                        width: calc(100vw - 56px);
                     }
                     .myorders__content .form_input_group:after {
                         right: 12px;
@@ -2399,9 +2414,18 @@
                     .retailorders__content .d-top-order-container-date-created {
                         padding-bottom: 0px;
                     }
-                    .retailorders__content .order-card__status{
+                    .retailorders__content .order-card__status, .shipments .order-card__status{
                       margin-bottom: 16px;
+                      width:auto;
+                      margin-top:8px;
+                    }
+                    .shipments .d-top-order-container-left{
+                      flex-direction: column;
+                      gap:0;
                       width:100%;
+                    }
+                    .d-top-order-container-date-created {
+                        padding-bottom: 0px;
                     }
                     .lk-about__block-header-button--hide {
                         font-size: 12px !important;
@@ -2420,6 +2444,32 @@
                     }
                     .product-card-actions__modal .modal__title {
                       margin: 31px 2rem 0 0;
+                    }
+                    .shipments .dart-row .p-inputtext{
+                        width: calc(100vw - 56px);
+                    }
+                    .p-floatlabel label {
+                      font-size:12px;
+                    }
+                    .shipments .d-col-xl-6 {
+                        max-width: calc(100vw - 56px);
+                        width: calc(100vw - 56px);
+                    }
+                    .retail__sales .dart-row {
+                      width: calc(100vw - 56px);
+                      margin-top:20px;
+                    }
+                    .shipments.retail__sales .dart-row .p-inputtext {
+                        width: calc(100vw - 72px);
+                    }
+                    .lk-about__info-button, .lk-about__block-header-button--hide {
+                        padding: 20px;
+                    }
+                    .lk-about__block-header-button {
+                        white-space: wrap !important;
+                    }
+                    .lk-about-info__value-container-modal .d-button-primary-small {
+                        font-size: 14px !important;
                     }
 
                 }
