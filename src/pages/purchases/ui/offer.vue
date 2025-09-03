@@ -760,9 +760,7 @@ export default {
       font-size: 20px;
   }
   .product-card__basket-button.basket-true{
-
     margin: 16px 0px 28px 0;
-
   }
 }
 
@@ -923,5 +921,53 @@ export default {
     content:'Акции';
     padding-left:44px;
   }
+  .product-card__basket-button.basket-true {
+    margin: 16px 0px 0px 0;
+  }
+  .product-card__basket-button.basket-true .d-counter, .product-card__buy{
+      height: 32px;
+      width: 100px;
+      max-width: 100px;
+  }
+  .product-card__price-value-discounted {
+      font-size: 24px;
+  }
+  .product-card__stat-content--horizontal,.product-card__stat-content {
+    flex-direction: column !important;
+  }
+}
+@media (width <=320px) {
+.products__header {
+    gap: 16px;
+    width: calc(28px + 100% + 28px);
+    margin-left: -28px;
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+  .products__stat {
+    gap: 8px;
+  }
+  .products__header-right .d-divider--vertical {
+    margin-inline: 8px;
+  }
+  .product-card__stat-list {
+    width:100%;
+    padding-right: 28px;
+  }
+  .product-card__stat-content--horizontal,.product-card__stat-content {
+    flex-direction: row !important;
+  }
+  .product-card__content-right {
+    margin-top: 0px;
+    padding-right: 28px
+  }
+  .product-card__price{
+    align-self: start;
+    padding-left:28px;
+  }
+  .product-card__basket-button{
+    margin-top: -36px !important;
+  }
+
 }
 </style>
