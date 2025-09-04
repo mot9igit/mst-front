@@ -637,7 +637,7 @@ export default {
             type: 'image',
           },
           {
-            name: 'id',
+            name: 'code',
             label: 'Код поставщика',
             placeholder:
               'Данный необходим вашим клиентам, для подключения к вашему каталогу в МС: Закупки',
@@ -1162,7 +1162,6 @@ export default {
   margin-left: 0px;
   margin-right: 9px;
   font-size: 18px;
-
 }
 .lk-about__info {
   border-bottom: 0.5px solid #75757575;
@@ -1251,7 +1250,8 @@ export default {
   border-bottom: 0.5px solid #75757575;
   padding: 24px 20px 24px 0;
 }
-.lk-about__block-table-col:nth-last-child(2),.lk-about__block-table-col:last-child{
+.lk-about__block-table-col:nth-last-child(2),
+.lk-about__block-table-col:last-child {
   border-bottom: none;
 }
 .lk-about__block-table-row {
@@ -1407,25 +1407,36 @@ export default {
 .lk-about__info .dropzone__details {
   display: none;
 }
-.lk-about__block-header-button{
+.lk-about__block-header-button {
   white-space: nowrap;
 }
 @media (width <=1280px) {
-  .lk-about__info-title-label,.lk-about__block-subtitle,
-  .lk-about__block-header-title,.lk-about h1, .lk-about-top-modal h3 {
+  .lk-about__info-title-label,
+  .lk-about__block-subtitle,
+  .lk-about__block-header-title,
+  .lk-about h1,
+  .lk-about-top-modal h3 {
     font-size: 14px;
   }
-  .lk-about__info-title-description,.lk-about__info-input,.lk-about__info-text,.lk-about__block-header-title-description {
+  .lk-about__info-title-description,
+  .lk-about__info-input,
+  .lk-about__info-text,
+  .lk-about__block-header-title-description {
     font-size: 12px;
   }
-  .lk-about__block-header-button,.lk-about__info-button,.lk-about__block-header-button,
+  .lk-about__block-header-button,
+  .lk-about__info-button,
+  .lk-about__block-header-button,
   .lk-about__submit-button,
   .lk-about__block-header-button--hide.lk-about-info__button {
     font-size: 14px;
     padding: 8px 29px;
     height: 34px;
   }
-  .lk-about-info__value-container-modal .lk-about__info-input-field, .lk-about-info__value-container-modal .lk-about__info-input-field:focus, .lk-about__block-table-modal-bank .dart-form-control, .lk-about__block-table-modal-bank .dart-form-control:focus {
+  .lk-about-info__value-container-modal .lk-about__info-input-field,
+  .lk-about-info__value-container-modal .lk-about__info-input-field:focus,
+  .lk-about__block-table-modal-bank .dart-form-control,
+  .lk-about__block-table-modal-bank .dart-form-control:focus {
     height: 34px;
     font-size: 12px;
   }
@@ -1434,11 +1445,11 @@ export default {
   }
 }
 @media (width <=1024px) {
-  .lk-about__block-table-col{
-    min-height:130px;
+  .lk-about__block-table-col {
+    min-height: 130px;
   }
-  .lk-about__info-title-wrapper{
-    width:220px;
+  .lk-about__info-title-wrapper {
+    width: 220px;
   }
   .lk-about-form__modal .lk-about__block-table-col {
     padding: 8px 20px 8px 0;
@@ -1448,17 +1459,29 @@ export default {
   }
 }
 @media (width <=800px) {
-  .lk-about__info-title-label,.lk-about__block-subtitle,.lk-about__block-header-title,
-  .lk-about h1, .lk-about-top-modal h3,.lk-about__block-header-button-icon {
+  .lk-about__info-title-label,
+  .lk-about__block-subtitle,
+  .lk-about__block-header-title,
+  .lk-about h1,
+  .lk-about-top-modal h3,
+  .lk-about__block-header-button-icon {
     font-size: 10px;
   }
-  .lk-about__info-title-description,.lk-about__info-input,.lk-about__info-text,.lk-about__block-header-title-description,
-  .lk-about__block-table-label,.lk-about__block-table-value,.lk-about__block-radio-label {
+  .lk-about__info-title-description,
+  .lk-about__info-input,
+  .lk-about__info-text,
+  .lk-about__block-header-title-description,
+  .lk-about__block-table-label,
+  .lk-about__block-table-value,
+  .lk-about__block-radio-label {
     font-size: 9px;
   }
-  .lk-about__block-header-button,.lk-about__info-button,.lk-about__block-header-button,
+  .lk-about__block-header-button,
+  .lk-about__info-button,
+  .lk-about__block-header-button,
   .lk-about__submit-button,
-  .lk-about__block-header-button--hide,.lk-about-info__button {
+  .lk-about__block-header-button--hide,
+  .lk-about-info__button {
     font-size: 10px;
     padding: 5.5px 18.5px;
     height: 24px;
@@ -1466,7 +1489,10 @@ export default {
   .lk-about__flexcenter {
     margin-top: -25px;
   }
-  .lk-about-info__value-container-modal .lk-about__info-input-field, .lk-about-info__value-container-modal .lk-about__info-input-field:focus, .lk-about__block-table-modal-bank .dart-form-control, .lk-about__block-table-modal-bank .dart-form-control:focus {
+  .lk-about-info__value-container-modal .lk-about__info-input-field,
+  .lk-about-info__value-container-modal .lk-about__info-input-field:focus,
+  .lk-about__block-table-modal-bank .dart-form-control,
+  .lk-about__block-table-modal-bank .dart-form-control:focus {
     height: 24px;
     font-size: 9px;
   }
@@ -1482,17 +1508,18 @@ export default {
   .lk-about__info {
     gap: 19px;
   }
-  .lk-about__info-title-wrapper{
-    width:150px;
+  .lk-about__info-title-wrapper {
+    width: 150px;
   }
-  .lk-about__block-table-col{
-    min-height:auto;
+  .lk-about__block-table-col {
+    min-height: auto;
     padding: 8px 10px 8px 0;
   }
-  .lk-about__block-table-row{
-    padding-bottom:8px;
+  .lk-about__block-table-row {
+    padding-bottom: 8px;
   }
-  .lk-about__block-radio-wrapper .p-checkbox,.lk-about__block-radio-wrapper .p-checkbox-box {
+  .lk-about__block-radio-wrapper .p-checkbox,
+  .lk-about__block-radio-wrapper .p-checkbox-box {
     width: 16px;
     height: 16px;
   }
@@ -1502,39 +1529,50 @@ export default {
 }
 @media (width <=600px) {
   .lk-about {
-    padding-top:110px;
+    padding-top: 110px;
   }
-  .lk-about__info-title-label,.lk-about__block-subtitle,.lk-about__block-header-title,
-  .lk-about h1, .lk-about-top-modal h3 {
+  .lk-about__info-title-label,
+  .lk-about__block-subtitle,
+  .lk-about__block-header-title,
+  .lk-about h1,
+  .lk-about-top-modal h3 {
     font-size: 14px;
   }
-  .lk-about__info-title-description,.lk-about__info-input,.lk-about__info-text,.lk-about__block-header-title-description,
-  .lk-about__block-table-label,.lk-about__block-table-value,.lk-about__block-radio-label,
+  .lk-about__info-title-description,
+  .lk-about__info-input,
+  .lk-about__info-text,
+  .lk-about__block-header-title-description,
+  .lk-about__block-table-label,
+  .lk-about__block-table-value,
+  .lk-about__block-radio-label,
   .lk-about-info__value-container-modal .lk-about__info-input-field,
   .lk-about-info__value-container-modal .lk-about__info-input-field:focus,
   .lk-about__block-table-modal-bank .dart-form-control,
   .lk-about__block-table-modal-bank .dart-form-control:focus {
     font-size: 12px;
   }
-  .lk-about__block-header-button,.lk-about__info-button,
-  .lk-about__block-header-button,.lk-about__submit-button,
+  .lk-about__block-header-button,
+  .lk-about__info-button,
+  .lk-about__block-header-button,
+  .lk-about__submit-button,
   .lk-about__block-header-button--hide {
     font-size: 14px;
     padding: 7px 20px;
     height: 32px;
-    width:100%;
+    width: 100%;
   }
-  .lk-about__info{
+  .lk-about__info {
     flex-direction: column;
   }
-  .lk-about__info-title-wrapper{
-    width:100%;
+  .lk-about__info-title-wrapper {
+    width: 100%;
   }
   .lk-about__info-input:after {
     font-size: 14px;
   }
-  .lk-about__info-input .d-input__field,.lk-about__info-input {
-    height:40px;
+  .lk-about__info-input .d-input__field,
+  .lk-about__info-input {
+    height: 40px;
   }
   .lk-about__info {
     gap: 16px;
@@ -1545,16 +1583,16 @@ export default {
   .lk-about__info-container {
     gap: 16px;
   }
-  .lk-about__info-image-wrapper{
+  .lk-about__info-image-wrapper {
     display: flex;
     justify-content: center;
   }
-  .lk-about__block{
+  .lk-about__block {
     width: calc(44px + 100% + 44px);
     margin-left: -44px;
-    padding:16px 44px;
+    padding: 16px 44px;
   }
-  .lk-about__block-header{
+  .lk-about__block-header {
     flex-direction: column;
   }
   .lk-about__block-table-col {
@@ -1562,9 +1600,9 @@ export default {
     float: none;
 
     padding: 16px 0;
-    gap:6px;
+    gap: 6px;
   }
-  .lk-about__block-table-col:nth-last-child(2){
+  .lk-about__block-table-col:nth-last-child(2) {
     border-bottom: 0.5px solid rgba(117, 117, 117, 0.4588235294);
   }
   .lk-about__block-table {
@@ -1576,34 +1614,38 @@ export default {
   .lk-about__block--requisites {
     margin-bottom: 16px;
   }
-  .lk-about__flexend{
+  .lk-about__flexend {
     padding: 0;
   }
-  .lk-about__block-header-button--hide,.lk-about__info-button,
-  .lk-about__submit-button,.lk-about__block-header-button
-  {
+  .lk-about__block-header-button--hide,
+  .lk-about__info-button,
+  .lk-about__submit-button,
+  .lk-about__block-header-button {
     box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
   }
-  .lk-about-top-modal{
+  .lk-about-top-modal {
     flex-direction: column-reverse;
   }
-  .lk-about-form__modal .modal__title{
+  .lk-about-form__modal .modal__title {
     margin-top: 0px;
   }
-  .lk-about-form__modal .modal__content{
-    padding-top:0;
+  .lk-about-form__modal .modal__content {
+    padding-top: 0;
   }
   .lk-about-top-modal {
     margin: 20px 16px 16px 0;
     width: 100%;
     padding-right: 24px;
-    gap: 24px
+    gap: 24px;
   }
   .lk-about-info__value-container-modal .lk-about__block-table-col {
     width: calc(100% - 20px);
     padding-bottom: 8px;
   }
-  .lk-about-info__value-container-modal .lk-about__info-input-field, .lk-about-info__value-container-modal .lk-about__info-input-field:focus, .lk-about__block-table-modal-bank .dart-form-control, .lk-about__block-table-modal-bank .dart-form-control:focus {
+  .lk-about-info__value-container-modal .lk-about__info-input-field,
+  .lk-about-info__value-container-modal .lk-about__info-input-field:focus,
+  .lk-about__block-table-modal-bank .dart-form-control,
+  .lk-about__block-table-modal-bank .dart-form-control:focus {
     padding: 11px;
     padding-right: 0;
     width: 100%;
@@ -1616,10 +1658,10 @@ export default {
   .lk-about-info__value-container-modal .lk-about__block-table-col:nth-last-child(2) {
     border-bottom: none;
   }
-  .lk-about-info__value-container-modal .lk-about__block-table-modal-bank{
-    padding-top:16px;
+  .lk-about-info__value-container-modal .lk-about__block-table-modal-bank {
+    padding-top: 16px;
   }
-  .lk-about-info__value-container-modal .lk-about__block-delete .lk-about__card-action{
+  .lk-about-info__value-container-modal .lk-about__block-delete .lk-about__card-action {
     display: flex;
     align-items: center;
   }
@@ -1635,9 +1677,9 @@ export default {
     height: 24px;
     color: #282828;
   }
-  .lk-about-info__value-container-modal .lk-about__flexend{
-    padding:0 25px 0 0;
-    width:100%;
+  .lk-about-info__value-container-modal .lk-about__flexend {
+    padding: 0 25px 0 0;
+    width: 100%;
   }
   .lk-about__flexcenter {
     margin-top: 24px;

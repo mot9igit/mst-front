@@ -10,9 +10,9 @@
 
           <div class="d-top-order-container-date-created">от {{ this.order.date }}</div>
         </div>
-        <div class="d-badge2 d-badge2--fit d-button--sm-shadow order-card__status"
-      >
-        {{ order.status_name }}</div>
+        <div class="d-badge2 d-badge2--fit d-button--sm-shadow order-card__status">
+          {{ order.status_name }}
+        </div>
       </div>
       <div class="d-top-order-container-right">
         <!-- <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>
@@ -32,7 +32,9 @@
       <div class="order-card__orderinfo dart-row">
         <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Сумма</div>
-          <div class="order-card__orderinfo-grid-text">{{ this.order?.cost != '' ? this.order?.cost : '-' }}</div>
+          <div class="order-card__orderinfo-grid-text">
+            {{ this.order?.cost != '' ? this.order?.cost : '-' }}
+          </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Инициатор</div>
@@ -47,7 +49,7 @@
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
             <p>{{ this.order?.ur_persone?.name }}</p>
-            <p>ИНН:{{ this.order?.ur_persone?.inn }}</p>
+            <p>ИНН: {{ this.order?.ur_persone?.inn }}</p>
           </div>
           <div class="order-card__orderinfo-grid-text-down">
             {{ this.order?.ur_persone?.ur_address }}
@@ -57,7 +59,7 @@
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
             <p>{{ this.order?.seller_name }}</p>
-            <p>ИНН:{{ this.order?.seller_inn ? this.order?.seller_inn : ' -' }}</p>
+            <p>ИНН: {{ this.order?.seller_inn ? this.order?.seller_inn : ' -' }}</p>
           </div>
           <div class="order-card__orderinfo-grid-text-down">
             {{ this.order?.seller_address }}
@@ -124,7 +126,7 @@ export default {
         article: {
           label: 'Артикул',
           type: 'text',
-          class: 'cell_centeralign'
+          class: 'cell_centeralign',
         },
         price: {
           label: 'Стоимость за единицу',

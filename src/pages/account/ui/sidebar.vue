@@ -9,13 +9,14 @@
       <div class="sidebar__content-wrapper">
         <div class="sidebar__logo-wrapper">
           <router-link
-          :to="'/' + this.$route.params.id + '/purchases/catalog'"
-          class="sidebar__logo-container"
-          @click.prevent="!active ? sidebarToggle() : ''">
+            :to="'/' + this.$route.params.id + '/purchases/catalog'"
+            class="sidebar__logo-container"
+            @click.prevent="!active ? sidebarToggle() : ''"
+          >
             <img src="/icons/logo.svg" alt="MST" width="40" height="40" class="sidebar__logo" />
             <span class="sidebar__logo-text"
               ><span class="sidebar__logo-text sidebar__logo-text--bold">МС:</span>Управление
-              продажами <br>и закупками</span
+              продажами <br />и закупками</span
             >
           </router-link>
           <div class="sidebar__block sidebar__toggle-block sidebar__logo-toggle">
@@ -111,7 +112,7 @@
                     @click.prevent="showChangeOrgModal = true"
                   >
                     <i class="d-icon-refresh sidebar__organization-button-icon"></i>
-                    <span class="sidebar__organization-button-text">Сменить компанию</span>
+                    <span class="sidebar__organization-button-text">Выбрать компанию</span>
                   </button>
                 </div>
               </div>
@@ -131,9 +132,10 @@
             </button>
 
             <router-link
-            :to="{ name: 'profile' }"
-            class="sidebar__user sidebar__hidden"
-            @click.prevent="sidebarToggle()">
+              :to="{ name: 'profile' }"
+              class="sidebar__user sidebar__hidden"
+              @click.prevent="sidebarToggle()"
+            >
               <i class="d-icon-profile sidebar__user-icon"></i>
               <span class="sidebar__user-text">{{ this.getUser?.profile?.fullname }}</span>
             </router-link>
@@ -204,17 +206,26 @@
           </li>
           <li class="sidebar__block sidebar__item">
             <button class="sidebar__item-button" @click.prevent="requirementOpen()">
-              <i class="d-icon-upload-solid" :class="showRequipment ? 'sidebar__item--active' : 'sidebar__item-icon'"></i>
+              <i
+                class="d-icon-upload-solid"
+                :class="showRequipment ? 'sidebar__item--active' : 'sidebar__item-icon'"
+              ></i>
             </button>
           </li>
           <li class="sidebar__block sidebar__item sidebar__item" @click.prevent="catalogOpen()">
             <button class="sidebar__item-button">
-              <i class="d-icon-catalog-solid" :class="showCatalog ? 'sidebar__item--active' : 'sidebar__item-icon'"></i>
+              <i
+                class="d-icon-catalog-solid"
+                :class="showCatalog ? 'sidebar__item--active' : 'sidebar__item-icon'"
+              ></i>
             </button>
           </li>
           <li class="sidebar__block sidebar__item" @click.prevent="cartOpen()">
             <button class="sidebar__item-button">
-              <i class="d-icon-cart-solid" :class="showCart ? 'sidebar__item--active' : 'sidebar__item-icon'"></i>
+              <i
+                class="d-icon-cart-solid"
+                :class="showCart ? 'sidebar__item--active' : 'sidebar__item-icon'"
+              ></i>
               <span class="cart-badge" v-if="this.cartBadge > 0">{{ this.cartBadge }}</span>
             </button>
           </li>
@@ -258,7 +269,11 @@
     </div>
   </aside>
 
-  <customModal v-model="showChangeOrgModal" @cancel="cancel" class="change-organization__modal-cont">
+  <customModal
+    v-model="showChangeOrgModal"
+    @cancel="cancel"
+    class="change-organization__modal-cont"
+  >
     <template v-slot:title></template>
     <ChangeOrgWindow
       :organizations="this.organizations"
@@ -321,48 +336,48 @@ export default {
       deleteUser: 'user/deleteUser',
       getSessionUser: 'user/getSessionUser',
     }),
-    requirementOpen(){
+    requirementOpen() {
       this.showRequipment = !this.showRequipment
       this.$emit('showRequipment')
-      if(this.showCatalog===true){
+      if (this.showCatalog === true) {
         this.showCatalog = false
         this.$emit('showCatalog')
       }
-      if(this.showCart===true){
+      if (this.showCart === true) {
         this.showCart = false
         this.$emit('showCart')
       }
       this.showChangeOrgModal = false
     },
-    catalogOpen(){
+    catalogOpen() {
       this.isMobile = localStorage.getItem('global.isMobile')
       this.$emit('isMobile')
       this.showCatalog = !this.showCatalog
       this.$emit('showCatalog')
-      if(this.showRequipment===true){
+      if (this.showRequipment === true) {
         this.showRequipment = !this.showRequipment
         this.$emit('showRequipment')
       }
-      if(this.showCart===true){
+      if (this.showCart === true) {
         this.showCart = false
         this.$emit('showCart')
       }
       this.showChangeOrgModal = false
     },
-    cartOpen(){
+    cartOpen() {
       this.showCart = !this.showCart
       this.$emit('showCart')
-      if(this.showCatalog===true){
+      if (this.showCatalog === true) {
         this.showCatalog = false
         this.$emit('showCatalog')
       }
-      if(this.showRequipment===true){
+      if (this.showRequipment === true) {
         this.showRequipment = !this.showRequipment
         this.$emit('showRequipment')
       }
       this.showChangeOrgModal = false
     },
-    showOrgs(){
+    showOrgs() {
       this.showChangeOrgModal = !this.showChangeOrgModal
     },
     orgChange(id) {
@@ -376,13 +391,12 @@ export default {
     },
     sidebarToggle() {
       this.isMobile = localStorage.getItem('global.isMobile')
-        if (this.isMobile === true) {
-          this.active = !this.active
-        } else {
-          this.active = !this.active
-          localStorage.setItem('sidebar.position', Number(this.active))
-        }
-
+      if (this.isMobile === true) {
+        this.active = !this.active
+      } else {
+        this.active = !this.active
+        localStorage.setItem('sidebar.position', Number(this.active))
+      }
     },
 
     clickAround() {
@@ -390,9 +404,9 @@ export default {
         let sidebarElement = document.getElementById('sidebar__inner--desktop')
         if (sidebarElement && !sidebarElement.contains(event.target)) {
           if (this.active === false) {
-            if(this.isMobile === 'false'){
+            if (this.isMobile === 'false') {
               this.active = !this.active
-            localStorage.setItem('sidebar.position', Number(this.active))
+              localStorage.setItem('sidebar.position', Number(this.active))
             }
           }
         }
@@ -446,8 +460,7 @@ export default {
       if (sh.clientWidth <= 600 && document.querySelector('.sidebar__inner--desktop')) {
         document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
         localStorage.setItem('global.isMobile', true)
-
-      }else{
+      } else {
         document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile')
         localStorage.setItem('global.isMobile', false)
       }
@@ -466,19 +479,20 @@ export default {
 
     this.setOrgs()
 
-    window.addEventListener('resize', function() {
-      let sh = document.querySelector('#app')
-      if(sh.clientWidth <= 600){
-        document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
-        localStorage.setItem('global.isMobile', true)
-
-      }else{
-        document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile')
-        localStorage.setItem('global.isMobile', false)
-      }
-    }, true);
-
-
+    window.addEventListener(
+      'resize',
+      function () {
+        let sh = document.querySelector('#app')
+        if (sh.clientWidth <= 600) {
+          document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
+          localStorage.setItem('global.isMobile', true)
+        } else {
+          document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile')
+          localStorage.setItem('global.isMobile', false)
+        }
+      },
+      true,
+    )
   },
   watch: {
     orgs: function (newVal) {
@@ -496,31 +510,31 @@ export default {
     toggleShoppingCart: function (newVal) {
       this.showCart = newVal
     },
-    mobileRequipments: function(newVal){
+    mobileRequipments: function (newVal) {
       this.showRequipment = newVal
     },
-    active: function (newVal){
-      if(newVal === false){
-        if(this.showRequipment){
+    active: function (newVal) {
+      if (newVal === false) {
+        if (this.showRequipment) {
           this.showRequipment = false
           this.$emit('showRequipment')
         }
-        if(this.showCart){
+        if (this.showCart) {
           this.showCart = false
           this.$emit('showCart')
         }
-        if(this.showCatalog){
+        if (this.showCatalog) {
           this.showCatalog = false
           this.$emit('showCatalog')
         }
       }
-    }
+    },
   },
 }
 </script>
 <style lang="scss">
 .sidebar__inner {
-    z-index: 175;
+  z-index: 175;
 }
 .d-fw {
   width: 100%;
@@ -612,5 +626,4 @@ aside {
   height: 32px;
   width: 100%;
 }
-
 </style>

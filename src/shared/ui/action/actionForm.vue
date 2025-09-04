@@ -84,7 +84,10 @@
           ></div>
           <div class="promotions__info-primary-actions">
             <div class="d-divider d-divider--vertical promotions__info-icon-divider"></div>
-            <button class="d-icon-wrapper d-icon-wrapper--big promotions__info-add" @click.prevent="formSubmit()">
+            <button
+              class="d-icon-wrapper d-icon-wrapper--big promotions__info-add"
+              @click.prevent="formSubmit()"
+            >
               <i class="d-icon-plus promotions__icon promotions__icon--plus"></i>
             </button>
           </div>
@@ -565,7 +568,10 @@
                 v-if="type == 1"
               ></div>
 
-              <div class="promotions__card-value-container" v-if="type == 1 && this.form.all_organizations_selected">
+              <div
+                class="promotions__card-value-container"
+                v-if="type == 1 && this.form.all_organizations_selected"
+              >
                 <span class="promotions__card-label promotions__card-audience-label"
                   >Отдельные компании</span
                 >
@@ -1942,10 +1948,10 @@
                             v-model="this.form.compabilityMode"
                           />
                         </label>
-                        <div class="d-radio__label-container">
+                        <div class="d-switch__label-container">
                           <label
-                            for="compatibilit0"
-                            class="d-radio__label promo-master__radio-label"
+                            for="compatibilitymode0"
+                            class="d-switch__label d-switch__label--regular"
                             >Применяется бóльшая
                           </label>
                           <p class="d-description">Будет применена бóльшая скидка и отсрочка</p>
@@ -1962,10 +1968,10 @@
                             v-model="this.form.compabilityMode"
                           />
                         </label>
-                        <div class="d-radio__label-container">
+                        <div class="d-switch__label-container">
                           <label
-                            for="compatibilit1"
-                            class="d-radio__label promo-master__radio-label"
+                            for="compatibilitymode1"
+                            class="d-switch__label d-switch__label--regular"
                             >Складываются
                           </label>
                           <p class="d-description">
@@ -1985,10 +1991,10 @@
                             v-model="this.form.compabilityMode"
                           />
                         </label>
-                        <div class="d-radio__label-container">
+                        <div class="d-switch__label-container">
                           <label
                             for="compatibilitymode2"
-                            class="d-radio__label promo-master__radio-label"
+                            class="d-switch__label d-switch__label--regular"
                             >Назначаются последовательно
                           </label>
                           <p class="d-description">
@@ -3455,13 +3461,19 @@ export default {
         var base_price = this.productsSelected[0].price
         var rrc_price = this.productsSelected[0].price
         // Если указан тип цены меняем базовую стоимость
-        if (this.productsSelectedData.type_price?.key) {
-          Object.entries(this.productsSelected[0].save_data.prices).forEach((value) => {
-            if (value.guid == this.productsSelectedData.type_price?.key) {
+        // console.log(this.productsSelectedData)
+        // console.log(this.productsSelected[0].save_data.prices)
+        // console.log(base_price)
+        if (this.productsSelectedData.type_price?.guid) {
+          Object.entries(this.productsSelected[0].save_data.prices).forEach((val) => {
+            const [k, value] = val
+            console.log(value + ' == ' + this.productsSelectedData.type_price?.guid)
+            if (value.guid == this.productsSelectedData.type_price?.guid) {
               base_price = value.price
             }
           })
         }
+        // console.log(base_price)
         if (this.modals.typePrice == 2) {
           this.productsSelected[0].save_data.new_price = base_price
           if (base_price < rrc_price) {
@@ -3521,15 +3533,14 @@ export default {
             this.productsSelected[0].save_data.new_price = base_price
             this.productsSelected[0].save_data.sale = 0
           }
-          this.productsSelected[0].save_data.sale = Number(
-            this.productsSelected[0].save_data.sale,
-          ).toFixed(2)
         }
+        this.productsSelected[0].save_data.sale = Number(
+          this.productsSelected[0].save_data.sale,
+        ).toFixed(2)
       }
     },
     closeDialogPriceBtn() {
-      this.modals.priceType = '',
-      this.productsSelectedData = {}
+      ;(this.modals.priceType = ''), (this.productsSelectedData = {})
     },
     closeDialogPrice() {
       if (this.modals.priceStep === 0) {
@@ -3566,8 +3577,8 @@ export default {
       console.log(value)
     },
     async formSubmit() {
-      this.loading = true;
-      const validationResult = await this.v$.$validate();
+      this.loading = true
+      const validationResult = await this.v$.$validate()
       if (!validationResult) {
         this.loading = false
         this.$toast.add({
@@ -3576,17 +3587,17 @@ export default {
           detail: 'Проверьте корректно ли вы заполнили данные Акции',
           life: 3000,
         })
-        return;
+        return
       }
-      const save_data = this.form;
-      save_data.type = this.type;
+      const save_data = this.form
+      save_data.type = this.type
       this.setAction(save_data).then(() => {
         this.loading = false
-        if(this.type == 1){
-          this.$router.push({ name: 'wholesalePrices', params: { id: this.$route.params.id } });
+        if (this.type == 1) {
+          this.$router.push({ name: 'wholesalePrices', params: { id: this.$route.params.id } })
         }
-        if(this.type == 2){
-          this.$router.push({ name: 'retailActions', params: { id: this.$route.params.id } });
+        if (this.type == 2) {
+          this.$router.push({ name: 'retailActions', params: { id: this.$route.params.id } })
         }
       })
     },
@@ -3711,7 +3722,7 @@ export default {
         }
         this.getActionAdvPages({ type: this.type }).then(() => {
           this.form.adv.place = []
-          if(newVal.page_places){
+          if (newVal.page_places) {
             const places = newVal.page_places.split(',')
             Object.entries(places).forEach((value) => {
               const [kk, vv] = value
@@ -3779,8 +3790,8 @@ export default {
 </script>
 <style lang="scss">
 body {
-  .d-input--width-280{
-    & > *{
+  .d-input--width-280 {
+    & > * {
       width: 100%;
     }
   }

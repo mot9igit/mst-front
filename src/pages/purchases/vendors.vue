@@ -191,32 +191,32 @@
           </div>-->
         </div>
         <div class="clients__card-top-mobile">
-            <div class="clients__card-top-right-top">
-              <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
-                <i class="d-icon-plus-flat clients__card-offer-icon"></i>
-                Предложение
+          <div class="clients__card-top-right-top">
+            <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
+              <i class="d-icon-plus-flat clients__card-offer-icon"></i>
+              Предложение
+            </button>
+            <div class="clients__card-action-container">
+              <button class="clients__card-action">
+                <i class="d-icon-pen2"></i>
               </button>
-              <div class="clients__card-action-container">
-                <button class="clients__card-action">
-                  <i class="d-icon-pen2"></i>
-                </button>
-                <div
-                  class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
-                ></div>
-                <button class="clients__card-action">
-                  <i class="d-icon-trash"></i>
-                </button>
-              </div>
-            </div>
-            <div class="clients__card-vendor-wrapper">
               <div
-                class="clients__card-vendor"
-                v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
-              >
-                Создан поставщиком
-              </div>
+                class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
+              ></div>
+              <button class="clients__card-action">
+                <i class="d-icon-trash"></i>
+              </button>
             </div>
           </div>
+          <div class="clients__card-vendor-wrapper">
+            <div
+              class="clients__card-vendor"
+              v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
+            >
+              Создан поставщиком
+            </div>
+          </div>
+        </div>
       </div>
       <div class="clients__paginate" v-if="this.countPages > 1">
         <paginate
@@ -377,11 +377,12 @@ export default {
         await this.setNewOrgProfile({
           code: this.form.inn,
         }).then((res) => {
-          if (res.data.success) {
+          console.log(res)
+          if (res.data.data.success) {
             this.$toast.add({
               severity: 'success',
-              summary: 'Успех!',
-              detail: res.data.message,
+              summary: 'Поставщик успешно добавлен!',
+              detail: res.data.data.message,
               life: 3000,
             })
             this.getOpts({
@@ -393,7 +394,7 @@ export default {
             this.$toast.add({
               severity: 'error',
               summary: 'Ошибка',
-              detail: res.data.message,
+              detail: res.data.data.message,
               life: 3000,
             })
           }

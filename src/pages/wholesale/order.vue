@@ -34,7 +34,7 @@
       <h3>Информация о заказе</h3>
       <div class="order-card__orderinfo dart-row">
         <div class="order-card__orderinfo-grid d-col-md-3">
-        <div class="order-card__orderinfo-grid-lable">Сумма</div>
+          <div class="order-card__orderinfo-grid-lable">Сумма</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.order?.cost != '' ? this.order?.cost : '-' }}
           </div>
@@ -50,28 +50,47 @@
         </div>
         <div class="order-card__orderinfo-grid d-col-md-5">
           <div class="order-card__orderinfo-grid-lable">Поставщик</div>
-          <div class="order-card__orderinfo-grid-text">{{ this.order?.seller_name != '' ? this.order?.seller_name : '' }}</div>
-          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">ИНН: {{ this.order?.seller_inn != '' ? this.order?.seller_inn : '-' }}</div>
-          <div class="order-card__orderinfo-grid-text-down">{{ this.order?.seller_address != '' ? this.order?.seller_address : '' }}</div>
+          <div class="order-card__orderinfo-grid-text">
+            {{ this.order?.seller_name != '' ? this.order?.seller_name : '' }}
+          </div>
+          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
+            ИНН: {{ this.order?.seller_inn != '' ? this.order?.seller_inn : '-' }}
+          </div>
+          <div class="order-card__orderinfo-grid-text-down">
+            {{ this.order?.seller_address != '' ? this.order?.seller_address : '' }}
+          </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-5">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
-          <div class="order-card__orderinfo-grid-text">{{ this.order?.buyer_name != '' ? this.order?.buyer_name : '' }}</div>
-          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">ИНН: {{ this.order?.ur_persone?.inn != '' ? this.order?.ur_persone?.inn : '' }}</div>
-          <div class="order-card__orderinfo-grid-text-down">{{ this.order?.buyer_address != '' ? this.order?.buyer_address : '' }}</div>
+          <div class="order-card__orderinfo-grid-text">
+            {{ this.order?.buyer_name != '' ? this.order?.buyer_name : '' }}
+          </div>
+          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
+            ИНН: {{ this.order?.ur_persone?.inn != '' ? this.order?.ur_persone?.inn : '' }}
+          </div>
+          <div class="order-card__orderinfo-grid-text-down">
+            {{ this.order?.buyer_address != '' ? this.order?.buyer_address : '' }}
+          </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
-          <div class="order-card__orderinfo-grid-text">{{ this.order?.delay != '' ? this.order?.delay : '-' }}</div>
+          <div class="order-card__orderinfo-grid-text">
+            {{ this.order?.delay != '' ? this.order?.delay : '-' }}
+          </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Оплата доставки</div>
-          <div class="order-card__orderinfo-grid-text">{{ this.order?.payer != '' ? this.order?.payer : '-' }}</div>
+          <div class="order-card__orderinfo-grid-text">
+            {{ this.order?.payer != '' ? this.order?.payer : '-' }}
+          </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-2">
           <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
-          <div class="order-card__orderinfo-grid-text">{{ this.order?.day_delivery != '' ? this.order?.day_delivery : '?' }} дн.
-            <br>({{ this.order?.delivery_date != '' ? this.order?.delivery_date : '-' }})</div>
+          <div class="order-card__orderinfo-grid-text">
+            {{ this.order?.day_delivery != '' ? this.order?.day_delivery : '?' }} дн. <br />({{
+              this.order?.delivery_date != '' ? this.order?.delivery_date : '-'
+            }})
+          </div>
         </div>
       </div>
     </div>
@@ -178,6 +197,4 @@ export default {
   min-height: 24px;
   min-width: 146px;
 }
-
-
 </style>
