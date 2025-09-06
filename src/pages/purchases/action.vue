@@ -97,9 +97,15 @@
               >
                 <div class="promotions__card-info">
                   <div class="promotions__card-value-container">
-                    <span class="promotions__card-label d-md-max-content" v-if="sale.delay_type < 2">{{
-                      sale.delay_type == 1 && sale.delay_graph.lengh > 1 ? 'Отсрочка платежа' : 'Предоплата'
-                    }}</span>
+                    <span
+                      class="promotions__card-label d-md-max-content"
+                      v-if="sale.delay_type < 2"
+                      >{{
+                        sale.delay_type == 1 && sale.delay_graph.lengh > 1
+                          ? 'Отсрочка платежа'
+                          : 'Предоплата'
+                      }}</span
+                    >
                     <span class="promotions__card-label d-md-max-content" v-else>{{
                       sale.delay_type == 2 ? 'Под реализацию' : 'Предоплата'
                     }}</span>
@@ -110,18 +116,36 @@
                     </p>
                   </div>
                 </div>
-                <div class="d-fractions promo__cards-item-values-fractions" v-if="sale.delay_type < 2">
-                  <div class="d-fractions__item" v-for = "(delayGraph, index) in sale.delay_graph" :key="index" :style="'width: ' + Number(delayGraph.percent) + '%'" >
-                    <p class="d-fractions__item-text">{{ Math.round(delayGraph.day) == 0 ? 'Предоплата' : Math.round(delayGraph.day) + ' дн.' }}</p>
+                <div
+                  class="d-fractions promo__cards-item-values-fractions"
+                  v-if="sale.delay_type < 2"
+                >
+                  <div
+                    class="d-fractions__item"
+                    v-for="(delayGraph, index) in sale.delay_graph"
+                    :key="index"
+                    :style="'width: ' + Number(delayGraph.percent) + '%'"
+                  >
+                    <p class="d-fractions__item-text">
+                      {{
+                        Math.round(delayGraph.day) == 0
+                          ? 'Предоплата'
+                          : Math.round(delayGraph.day) + ' дн.'
+                      }}
+                    </p>
                     <div class="d-fractions__item-block"></div>
-                    <p class="d-fractions__item-text d-fractions__item-text--bottom">{{ Math.round(delayGraph.percent) }}%</p>
+                    <p class="d-fractions__item-text d-fractions__item-text--bottom">
+                      {{ Math.round(delayGraph.percent) }}%
+                    </p>
                   </div>
                 </div>
                 <div class="d-fractions promo__cards-item-values-fractions" v-else>
                   <div class="d-fractions__item" style="width: 100%" v-if="sale.delay > 0">
                     <p class="d-fractions__item-text">Под реализацию</p>
                     <div class="d-fractions__item-block"></div>
-                    <p class="d-fractions__item-text d-fractions__item-text--bottom">{{ Math.round(sale.delay) }} дней</p>
+                    <p class="d-fractions__item-text d-fractions__item-text--bottom">
+                      {{ Math.round(sale.delay) }} дней
+                    </p>
                   </div>
                 </div>
               </div>
@@ -134,44 +158,48 @@
                 <p class="promotions__card-title">Даты акции</p>
               </div>
             </div>
-            <div class="promotions__card-content promo__cards-item-content promo__cards-item-content--small">
-              <div class="promotions__card-values promotions__card-values--md-long promo__cards-item-values promo__cards-item-date-values">
+            <div
+              class="promotions__card-content promo__cards-item-content promo__cards-item-content--small"
+            >
+              <div
+                class="promotions__card-values promotions__card-values--md-long promo__cards-item-values promo__cards-item-date-values"
+              >
                 <div class="promotions__card-info">
                   <div class="promotions__card-value-container">
-                        <span class="promotions__card-label d-md-max-content"
-                          >Срок проведения акции:</span
+                    <span class="promotions__card-label d-md-max-content"
+                      >Срок проведения акции:</span
+                    >
+                    <div
+                      class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value promo__cards-item-conds-value"
+                    >
+                      <div class="promo__cards-item-conds-value-content">
+                        <span
+                          >с
+                          {{ new Date(sale?.date_from).toLocaleString('ru', this.options) }}</span
                         >
                         <div
-                          class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value promo__cards-item-conds-value"
+                          class="d-divider d-divider--vertical d-divider--no-margin promo__cards-item-conds-value-divider"
+                        ></div>
+                        <span
+                          >до {{ new Date(sale?.date_to).toLocaleString('ru', this.options) }}</span
                         >
-                          <div class="promo__cards-item-conds-value-content">
-                            <span
-                              >с
-                              {{
-                                new Date(sale?.date_from).toLocaleString('ru', this.options)
-                              }}</span
-                            >
-                            <div
-                              class="d-divider d-divider--vertical d-divider--no-margin promo__cards-item-conds-value-divider"
-                            ></div>
-                            <span
-                              >до
-                              {{ new Date(sale?.date_to).toLocaleString('ru', this.options) }}</span
-                            >
-                          </div>
-                          <p class="promo__cards-item-conds-value-total">{{ getDiffDays }} дн.</p>
-                        </div>
                       </div>
+                      <p class="promo__cards-item-conds-value-total">{{ getDiffDays }} дн.</p>
+                    </div>
+                  </div>
                 </div>
                 <div class="d-fractions promo__cards-item-values-fractions">
                   <div class="d-fractions promo__cards-date-container">
-                      <div class="d-fractions__item d-fractions__item--center " :style="'width:'+(getDiffDaysRemain*100/getDiffDays)+'%'">
-                        <div class="d-fractions__item-block" ></div>
-                        <p class="d-fractions__item-text d-fractions__item-text--bottom">
-                          Осталось {{ getDiffDaysRemain }} дн.
-                        </p>
-                      </div>
+                    <div
+                      class="d-fractions__item d-fractions__item--center"
+                      :style="'width:' + (getDiffDaysRemain * 100) / getDiffDays + '%'"
+                    >
+                      <div class="d-fractions__item-block"></div>
+                      <p class="d-fractions__item-text d-fractions__item-text--bottom">
+                        Осталось {{ getDiffDaysRemain }} дн.
+                      </p>
                     </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -180,41 +208,56 @@
       </div>
     </div>
     <div class="promo__cards-wrap">
-
-          <div class="promotions__card promo__card">
-            <div class="promotions__card-header">
-              <div class="promotions__card-header-left">
-                <i class="d-icon-check-list promotions__card-icon"></i>
-                <p class="promotions__card-title">Условия участия в акции</p>
-              </div>
-            </div>
-            <div class="promotions__card-content promotions__card-last">
-              <div class="promotions__card-block-wrapper promo__card-block-wrapper">
-                <div class="promotions__card-value-container promotions__card-block promo__card-block" v-for="(field, index_field) in sale_condition" :key="index_field">
-                  <div class="promotions__card-block-inner promo__card-block-inner dart-row">
-                    <div class="d-col-md-10">
-                      <span class="promotions__card-label promotions__card-label--big" v-if="field.name == 'condition_min_sum'"
-                        >Требования к заказу</span>
-                      <p class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-title">
-                        {{ field.label }}
-                      </p>
-                    </div>
-                    <div class="d-col-md-10">
-                    <p class="promotions__card-label promotions__card-label--big promotions__card-block-description promo__card-block-description  ">
-                      {{ field.text }}
-                    </p>
-                    </div>
-                    <div class="d-col-md-4">
-                    <p class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value promo__card-block-value">
-                      {{ sale[field.name] != undefined ? sale[field.name] + ' ' + field.units : '0 ' + field.units}}
-                    </p>
-                    </div>
-                  </div>
+      <div class="promotions__card promo__card">
+        <div class="promotions__card-header">
+          <div class="promotions__card-header-left">
+            <i class="d-icon-check-list promotions__card-icon"></i>
+            <p class="promotions__card-title">Условия участия в акции</p>
+          </div>
+        </div>
+        <div class="promotions__card-content promotions__card-last">
+          <div class="promotions__card-block-wrapper promo__card-block-wrapper">
+            <div
+              class="promotions__card-value-container promotions__card-block promo__card-block"
+              v-for="(field, index_field) in sale_condition"
+              :key="index_field"
+            >
+              <div class="promotions__card-block-inner promo__card-block-inner dart-row">
+                <div class="d-col-md-10">
+                  <span
+                    class="promotions__card-label promotions__card-label--big"
+                    v-if="field.name == 'condition_min_sum'"
+                    >Требования к заказу</span
+                  >
+                  <p
+                    class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-title"
+                  >
+                    {{ field.label }}
+                  </p>
+                </div>
+                <div class="d-col-md-10">
+                  <p
+                    class="promotions__card-label promotions__card-label--big promotions__card-block-description promo__card-block-description"
+                  >
+                    {{ field.text }}
+                  </p>
+                </div>
+                <div class="d-col-md-4">
+                  <p
+                    class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value promo__card-block-value"
+                  >
+                    {{
+                      sale[field.name] != undefined
+                        ? sale[field.name] + ' ' + field.units
+                        : '0 ' + field.units
+                    }}
+                  </p>
                 </div>
               </div>
             </div>
           </div>
-
+        </div>
+      </div>
     </div>
     <BaseTable
       :items_data="salesProducts.items"
@@ -257,7 +300,6 @@ export default {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
-
       },
       filters: {},
       table_data: {
@@ -282,7 +324,7 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
-        price: {
+        new_price: {
           label: 'Цена со скидкой',
           type: 'text',
           class: 'cell_centeralign',
@@ -319,8 +361,7 @@ export default {
           text: 'В заказе должно быть не менее заданного общего количества товаров акции',
           units: 'шт',
         },
-      ]
-
+      ],
     }
   },
   computed: {
@@ -390,9 +431,7 @@ export default {
       })
     },
   },
-  watch: {
-
-  }
+  watch: {},
 }
 </script>
 <style lang="scss">
@@ -416,67 +455,70 @@ export default {
   }
 }
 .promotions__card-header {
-    border-radius: 12px 12px 0 0;
-    border-bottom: 0.3px solid #75757575;
+  border-radius: 12px 12px 0 0;
+  border-bottom: 0.3px solid #75757575;
 }
 .promo__cards-item-values-fractions {
-    width: 370px;
+  width: 370px;
 }
-.d-fractions__item-text,.d-fractions__item-text--bottom {
-    text-align: center;
-    width: 100%;
-}
-.promo__cards-item-values-fractions{
-  gap:20px;
-}
-.d-fractions__item-block{
+.d-fractions__item-text,
+.d-fractions__item-text--bottom {
+  text-align: center;
   width: 100%;
 }
-.promo__cards-date-container{
+.promo__cards-item-values-fractions {
+  gap: 20px;
+}
+.d-fractions__item-block {
+  width: 100%;
+}
+.promo__cards-date-container {
   width: 100%;
   min-width: 300px;
 }
 .promo__card-block-value {
-    width: 145px;
+  width: 145px;
 }
 .promotions__card-last .promotions__card-block-inner {
   gap: 0;
 }
-.promotions__card-last .promo__card-block-title-container, .promotions__card-last .promo__card-block-description, .promotions__card-last .promo__card-block-value {
-     width: auto;
+.promotions__card-last .promo__card-block-title-container,
+.promotions__card-last .promo__card-block-description,
+.promotions__card-last .promo__card-block-value {
+  width: auto;
 }
-.promo__cards-date-container .d-fractions__item{
+.promo__cards-date-container .d-fractions__item {
   min-width: 70px;
 }
 @media (width <= 1200px) {
-  .promo__card-block-description, .promo__cards-item-conds-value-total {
+  .promo__card-block-description,
+  .promo__cards-item-conds-value-total {
     font-size: 14px;
   }
   .promotions__card-header {
     border-radius: 6px 6px 0 0;
   }
-  .promo__cards-item-date-values{
+  .promo__cards-item-date-values {
     flex-direction: column;
-    gap:12px;
+    gap: 12px;
   }
-  .promo__cards-date-container .d-fractions__item{
-      min-width: 100px;
+  .promo__cards-date-container .d-fractions__item {
+    min-width: 100px;
   }
-
 }
 @media (width <= 800px) {
-    .promo__cards-item-values {
-      gap: 24px;
-    }
-    .promo__cards-date-container .d-fractions__item{
-      min-width: 70px;
-    }
-    .promo__cards-item-date-values{
-      flex-direction: row;
-      gap:12px;
-    }
-    .promo__cards-item-date-values .promo__cards-item-conds-value {
-      gap: 12px
-    }
+  .promo__cards-item-values {
+    gap: 24px;
+  }
+  .promo__cards-date-container .d-fractions__item {
+    min-width: 70px;
+  }
+  .promo__cards-item-date-values {
+    flex-direction: row;
+    gap: 12px;
+  }
+  .promo__cards-item-date-values .promo__cards-item-conds-value {
+    gap: 12px;
+  }
 }
 </style>
