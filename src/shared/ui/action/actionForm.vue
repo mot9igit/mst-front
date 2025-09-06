@@ -160,7 +160,7 @@
                 </button>
               </div>
             </div>
-            <div class="promotions__card-content" v-if="this.form.adv.files.max">
+            <div class="promotions__card-content" v-if="this.form.adv.files.max.original_href">
               <div class="promotions__card-banner-container">
                 <div class="promotions__card-banner">
                   <!-- <div
@@ -201,11 +201,12 @@
               </div>
             </div>
             <div class="promotions__card-content" v-else>
-              <p
-                class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
-              >
-                Не указано
-              </p>
+              <div class="promotions__card__no-banner">
+                <div>
+                  <i class="d-icon-picture"></i>
+                  <span>Добавьте баннер <br />в мастере настройки акции</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -873,7 +874,7 @@
           </div>
         </div>
       </div>
-      <div class="dart-row promotions__content-card-container">
+      <div class="dart-row promotions__content-card-container" ref="warehouseProducts">
         <div class="d-col d-col-24">
           <div class="promotions__card products__card">
             <Loader v-if="this.productLoading" />
@@ -890,7 +891,6 @@
             </div>
             <div
               class="promotions__card-content products__card-content promotions__card-content--no-x-padding"
-              id="warehouseProducts"
             >
               <div class="promotions__card-warehouse">
                 <div class="promotions__card-value-container promotions__card-warehouse-header">
@@ -957,12 +957,14 @@
                 class="d-divider d-divider--full d-divider--semibold d-divider--black promotions__card-warehouse-divider"
               ></div>
               <ActionProducts
-                v-if="this.form.store_id.length"
+                v-if="this.form.store_id?.length"
                 :productsSelected="productsSelectedIn"
                 :productsAvailable="productsAvailable"
                 :productsAvailablePage="productsAvailablePage"
                 :productsSelectedPage="productsSelectedPage"
                 :perPage="this.per_page"
+                @changeMinCount="changeMinCount"
+                @changeMultiplicity="changeMultiplicity"
                 @paginateProductsSelected="paginateProductsSelected"
                 @paginateProductsAvailable="paginateProductsAvailable"
                 @filterProductsSelected="filterProductsSelected"
@@ -973,12 +975,12 @@
                 @settings="settings"
               />
               <div
-                v-if="this.form.store_id.length"
+                v-if="this.form.store_id?.length"
                 class="d-divider d-divider--black d-divider--full promotions__card-products-divider"
               ></div>
 
               <ActionCollections
-                v-if="this.form.store_id.length"
+                v-if="this.form.store_id?.length"
                 :collectionsAvailable="productGroups"
                 :collections="this.form.product_groups"
                 :perPage="this.per_page"
@@ -1257,11 +1259,11 @@
                             </div>
                           </template>
                         </DropZone>
-                        <div class="upload-banner__image">
-                          <img
-                            :src="this.files?.max?.original_href"
-                            v-if="this.files?.max?.original_href"
-                          />
+                        <div
+                          class="upload-banner__image"
+                          v-if="this.form.adv.files.max.original_href"
+                        >
+                          <img :src="this.form.adv.files.max.original_href" />
                         </div>
                       </div>
                     </div>
@@ -2076,7 +2078,9 @@
                     >
                       <div class="promo-master__subtitle-container">
                         <p class="promo-master__subtitle">Участники акции</p>
-                        <p class="d-text promo-master__description">Кому будет доступна акция</p>
+                        <p class="d-text promo-master__description">
+                          По умолчанию, акция доступна всем без исключения.
+                        </p>
                       </div>
                     </div>
                     <div class="promo-master__audience-changes">
@@ -2087,33 +2091,59 @@
                         <p class="promo-master__subtitle promo-master__subtitle--small">
                           Участники по географии
                         </p>
-                        <div
-                          class="d-radio__container d-radio__container--small d-radio__container--vertical promo-master__audience-change"
-                        >
-                          <div class="d-field-wrapper">
-                            <MultiSelect
-                              filter
-                              v-model="this.form.regions"
-                              display="chip"
-                              :options="this.regions_all"
-                              optionLabel="name"
-                              placeholder="Выберите регионы"
-                              :maxSelectedLabels="3"
-                              class="w-full md:w-20rem mt-2"
-                            />
+                        <div>
+                          <button
+                            class="d-button d-button-primary d-button--no-shadow d-button--width-auto"
+                            @click.prevent="this.modals.regions = true"
+                          >
+                            <i class="d-icon-plus"></i>
+                            <span>Выбрать регионы</span>
+                          </button>
+                          <div class="chips">
+                            <div
+                              class="chip"
+                              v-for="(item, index) in this.form.regions"
+                              :key="item.code"
+                            >
+                              <i
+                                class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"
+                              ></i>
+                              <span>{{ item.name }}</span>
+                              <a href="#" class="chip-close" @click.prevent="regionDel(index)"></a>
+                            </div>
                           </div>
-                          <div class="d-field-wrapper" v-if="type == 1">
-                            <MultiSelect
-                              filter
-                              v-model="this.form.all_organizations_selected"
-                              display="chip"
-                              :options="this.organizations_all"
-                              optionLabel="name"
-                              placeholder="Выберите организации"
-                              :maxSelectedLabels="3"
-                              @filter="filterOrganizations()"
-                              class="w-full md:w-20rem mt-2"
-                            />
+                        </div>
+                      </div>
+                      <div
+                        class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings"
+                      >
+                        <p class="promo-master__subtitle promo-master__subtitle--small">
+                          Отдельные компании
+                        </p>
+                        <div>
+                          <button
+                            class="d-button d-button-primary d-button--no-shadow d-button--width-auto"
+                            @click.prevent="this.modals.organization = true"
+                          >
+                            <i class="d-icon-plus"></i>
+                            <span>Выбрать организации</span>
+                          </button>
+                          <div class="chips">
+                            <div
+                              class="chip"
+                              v-for="(item, index) in this.form.all_organizations_selected"
+                              :key="item.code"
+                            >
+                              <img
+                                v-if="item.image"
+                                :src="item.image"
+                                :alt="item.name"
+                                class="chip-img"
+                              />
+                              <span v-else class="chip-img"></span>
+                              <span>{{ item.name }}</span>
+                              <a href="#" class="chip-close" @click.prevent="orgDel(index)"></a>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -2779,6 +2809,114 @@
           </div>
         </div>
       </customModal>
+      <customModal v-model="this.modals.regions" class="select-window">
+        <template v-slot:title>Выбрать регионы</template>
+        <div>
+          <div class="regions">
+            <form class="d-search d-search--alt">
+              <i
+                class="d-icon-search-big d-search__icon promotions__card-warehouse-search-icon"
+              ></i>
+              <input
+                type="text"
+                placeholder="Найти регион"
+                class="d-search__field"
+                v-model="search.region"
+                @focus="search.regionSuggestionsShow = true"
+                @blur="unActivateRegion()"
+              />
+              <ul class="d-search__suggestions" v-if="this.search.regionSuggestionsShow">
+                <li
+                  class="d-search__suggestion"
+                  v-for="suggestion in regions_all"
+                  :key="suggestion.code"
+                >
+                  <a
+                    href="#"
+                    class="d-search__suggestion-card"
+                    @click.prevent="
+                      () => {
+                        console.log('1')
+                        this.regionSelect(suggestion)
+                      }
+                    "
+                  >
+                    <img
+                      :src="suggestion.image"
+                      alt=""
+                      class="d-search__suggestion-card__img"
+                      v-if="suggestion.image"
+                    />
+                    <div class="d-search__suggestion-card__content">
+                      <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </form>
+            <div class="chips">
+              <div class="chip" v-for="(item, index) in this.form.regions" :key="item.code">
+                <i class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"></i>
+                <span>{{ item.name }}</span>
+                <a href="#" class="chip-close" @click.prevent="regionDel(index)"></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </customModal>
+      <customModal v-model="this.modals.organization" class="select-window">
+        <template v-slot:title>Выбрать организации</template>
+        <div>
+          <div class="regions">
+            <form class="d-search d-search--alt">
+              <i class="d-icon-search-big d-search__icon"></i>
+              <input
+                type="text"
+                placeholder="Найти организацию"
+                class="d-search__field"
+                v-model="search.organization"
+                @focus="search.organizationSuggestionsShow = true"
+                @blur="unActivateOrganization()"
+              />
+              <ul class="d-search__suggestions" v-if="this.search.organizationSuggestionsShow">
+                <li
+                  class="d-search__suggestion"
+                  v-for="suggestion in organizations"
+                  :key="suggestion.code"
+                >
+                  <a
+                    href="#"
+                    class="d-search__suggestion-card"
+                    @click.prevent="orgSelect(suggestion)"
+                  >
+                    <img
+                      :src="suggestion.image"
+                      alt=""
+                      class="d-search__suggestion-card__img"
+                      v-if="suggestion.image"
+                    />
+                    <div class="d-search__suggestion-card__content">
+                      <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </form>
+            <div class="chips">
+              <div
+                class="chip"
+                v-for="(item, index) in this.form.all_organizations_selected"
+                :key="item.code"
+              >
+                <img v-if="item.image" :src="item.image" :alt="item.name" class="chip-img" />
+                <span v-else class="chip-img"></span>
+                <span>{{ item.name }}</span>
+                <a href="#" class="chip-close" @click.prevent="orgDel(index)"></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </customModal>
     </teleport>
   </section>
 </template>
@@ -2852,6 +2990,15 @@ export default {
         priceStep: 0,
         priceType: '',
         productsFile: false,
+        region: false,
+        organization: false,
+      },
+      // Поиск
+      search: {
+        region: '',
+        regionSuggestionsShow: false,
+        organization: '',
+        organizationSuggestionsShow: false,
       },
       // Доступные товары
       products: [],
@@ -2965,7 +3112,7 @@ export default {
         integration: 0,
         delayfix: 1,
         participantsType: 3,
-        all_organizations_selected: {},
+        all_organizations_selected: [],
         regions: [],
         stores: true,
         warehouses: true,
@@ -3003,12 +3150,12 @@ export default {
       this.masterStepInc()
       this.getCatalogs()
       // Берем географию
-      this.getRegions().then(() => {
+      this.getRegions({ exclude: [], filter: '' }).then(() => {
         this.regions_all = this.regions.map(function (el) {
           return { name: el.label, code: el.key }
         })
       })
-      this.getOrganizations().then(() => {
+      this.getOrganizations({ exclude: [], filter: '' }).then(() => {
         this.organizations_all = this.organizations.map(function (el) {
           return { name: el.name, code: el.id }
         })
@@ -3323,7 +3470,7 @@ export default {
         this.visibleMasterSteps.push(9)
         this.visibleMasterSteps.push(10)
         this.masterStep = 8
-        document.querySelector('#warehouseProducts').scrollIntoView({ behavior: 'smooth' })
+        this.$refs.warehouseProducts.scrollIntoView({ behavior: 'smooth' })
       }, 1000)
     },
     openStep(step) {
@@ -3454,6 +3601,34 @@ export default {
         if (value.key == 3) {
           this.type_pricing[key].disabledkey = false
         }
+      })
+    },
+    changeMinCount(data) {
+      this.productsSelectedData.min_count = data.value
+      this.productsSelected = []
+      this.productsSelected.push(data.item)
+      const sendData = {
+        type: 'items',
+        products: this.productsSelected,
+        data: this.productsSelectedData,
+      }
+      this.setSelectedProductData(sendData).then(() => {
+        this.resetDiscountFormula()
+        this.updateStoreData()
+      })
+    },
+    changeMultiplicity(data) {
+      this.productsSelectedData.multiplicity = data.value
+      this.productsSelected = []
+      this.productsSelected.push(data.item)
+      const sendData = {
+        type: 'items',
+        products: this.productsSelected,
+        data: this.productsSelectedData,
+      }
+      this.setSelectedProductData(sendData).then(() => {
+        this.resetDiscountFormula()
+        this.updateStoreData()
       })
     },
     updateFormula() {
@@ -3601,6 +3776,43 @@ export default {
         }
       })
     },
+    unActivateOrganization() {
+      setTimeout(() => (this.search.organizationSuggestionsShow = false), 250)
+    },
+    unActivateRegion() {
+      setTimeout(() => (this.search.regionSuggestionsShow = false), 250)
+    },
+    regionDel(index) {
+      this.form.regions.splice(index, 1)
+    },
+    orgDel(index) {
+      this.form.all_organizations_selected.splice(index, 1)
+    },
+    regionSelect(item) {
+      console.log(item)
+      this.form.regions.push(item)
+      // Берем географию
+      this.getRegions({ exclude: this.form.regions, filter: '' }).then(() => {
+        this.regions_all = this.regions.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
+      })
+    },
+    orgSelect(item) {
+      console.log(item)
+      this.form.all_organizations_selected.push(item)
+      this.getOrganizations({ exclude: this.form.all_organizations_selected, filter: '' }).then(
+        () => {
+          this.organizations_all = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id }
+          })
+        },
+      )
+    },
+    debounce(func, delay) {
+      clearTimeout(this.searchPTimer)
+      this.searchPTimer = setTimeout(func, delay)
+    },
   },
   computed: {
     ...mapGetters({
@@ -3728,7 +3940,7 @@ export default {
               const [kk, vv] = value
               this.actionAdvPages.forEach((pvalue) => {
                 if (vv == pvalue.code) {
-                  this.form.adv.place[vv] = 1
+                  this.form.adv.place[vv] = true
                 }
               })
             })
@@ -3773,6 +3985,19 @@ export default {
         this.form.conditionMinCount = newVal.condition_SKU
         this.form.conditionMinGeneralCount = newVal.condition_min_count
         this.form.product_groups = newVal.product_groups
+        // Берем географию
+        this.getRegions({ exclude: this.form.regions, filter: '' }).then(() => {
+          this.regions_all = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+        this.getOrganizations({ exclude: this.form.all_organizations_selected, filter: '' }).then(
+          () => {
+            this.organizations_all = this.organizations.map(function (el) {
+              return { name: el.name, code: el.id }
+            })
+          },
+        )
         this.updateStoreData()
         if (newVal.pg) {
           this.updateGroups(newVal.pg)
@@ -3785,11 +4010,185 @@ export default {
         return { name: el.name, code: el.id }
       })
     },
+    regions: function (newVal) {
+      this.regions_all = newVal.map(function (el) {
+        return { name: el.label, code: el.key }
+      })
+    },
+    organizations: function (newVal) {
+      this.all_organizations = newVal.map(function (el) {
+        return { name: el.name, code: el.id, image: el.image }
+      })
+    },
+    'search.region': function (newVal, oldVal) {
+      if (newVal.length < 3 && oldVal.length < newVal.length) {
+        return
+      }
+      if (newVal.length < 3) {
+        newVal = ''
+      }
+      this.debounce(() => {
+        this.getRegions({ exclude: this.form.regions, filter: newVal }).then(() => {
+          this.regions_all = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+      }, 300)
+    },
+    'search.organization': function (newVal, oldVal) {
+      if (newVal.length < 3 && oldVal.length < newVal.length) {
+        return
+      }
+      if (newVal.length < 3) {
+        newVal = ''
+      }
+      this.debounce(() => {
+        this.getOrganizations({
+          exclude: this.form.all_organizations_selected,
+          filter: newVal,
+        }).then(() => {
+          this.all_organizations = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id }
+          })
+        })
+      }, 300)
+    },
   },
 }
 </script>
 <style lang="scss">
+.promotions__card__no-banner {
+  padding: 32px 32px;
+  border-radius: 3px;
+  background: #ededed;
+  display: flex;
+  justify-content: center;
+  div {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  i {
+    font-size: 65px;
+    color: #757575;
+  }
+  span {
+    display: inline-block;
+    padding-left: 24px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #757575;
+  }
+}
+.select-window {
+  .modal-content {
+    min-height: 400px;
+    .regions {
+      padding: 0 15px;
+    }
+  }
+  .d-search--alt {
+    padding: 0 2px;
+    .d-search__icon {
+      display: none;
+      position: absolute;
+      top: 5px;
+      left: 0;
+      z-index: 4;
+    }
+    .d-search__field {
+      border-radius: 5px;
+    }
+    .d-search__suggestions {
+      position: absolute;
+      overflow-y: auto;
+      max-height: 250px;
+      .d-search__suggestion {
+        align-items: center;
+        display: flex;
+        a {
+          display: flex;
+          width: 100%;
+        }
+        img {
+          width: 25px;
+          height: 25px;
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+}
 body {
+  .chips {
+    display: block;
+    margin-left: -4px;
+    margin-right: -4px;
+    .chip {
+      display: inline-block;
+      padding: 5px 32px 5px 12px;
+      border: 1px solid #282828;
+      border-radius: 24px;
+      position: relative;
+      margin: 8px 4px;
+      vertical-align: middle;
+      font-size: 0;
+      & > * {
+        vertical-align: middle;
+        font-size: 16px;
+        line-height: 1.3;
+      }
+      span {
+        font-size: 14px;
+        font-weight: 500;
+        color: #282828;
+      }
+      span.chip-img {
+        background: #282828;
+      }
+      .chip-img {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+        border-radius: 50%;
+      }
+      i {
+        display: inline-block;
+        margin-right: 8px;
+      }
+      .chip-close {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        right: 12px;
+        top: 50%;
+        transform: translate(0, -50%);
+        &::before {
+          content: '';
+          display: inline-block;
+          width: 15px;
+          height: 1px;
+          background: #282828;
+          transform: rotate(45deg);
+          position: absolute;
+          top: 50%;
+          right: 0;
+        }
+        &::after {
+          content: '';
+          display: inline-block;
+          width: 15px;
+          height: 1px;
+          background: #282828;
+          transform: rotate(-45deg);
+          position: absolute;
+          top: 50%;
+          right: 0;
+        }
+      }
+    }
+  }
   .d-input--width-280 {
     & > * {
       width: 100%;
@@ -4163,5 +4562,9 @@ body {
   color: #664d03;
   background-color: #fff3cd;
   border-color: #ffecb5;
+}
+
+.p-ink {
+  display: none;
 }
 </style>

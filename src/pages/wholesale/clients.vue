@@ -166,10 +166,12 @@
 
           <div class="clients__card-top-right">
             <div class="clients__card-top-right-top">
+              <!--
               <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
+              -->
               <div class="clients__card-action-container">
                 <!--<button class="clients__card-action"   v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id">
                   <i class="d-icon-pen2"></i>
@@ -262,10 +264,12 @@
                   : ''
               "
             >
+              <!--
               <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
+              -->
             </div>
             <div class="clients__card-action-container d-col-6">
               <!--<button class="clients__card-action" v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id">
@@ -284,10 +288,6 @@
             </div>
           </div>
         </div>
-
-
-
-
       </div>
       <div class="clients__paginate" v-if="countPages > 1">
         <paginate
@@ -375,12 +375,14 @@ export default {
           placeholder: 'Введите название организации',
           type: 'text',
         },
+        /*
         manager: {
           name: 'Менеджер',
           placeholder: 'Выберите менеджера',
           type: 'multiselect',
           values: [],
         },
+        */
         our: {
           name: 'Созданные поставщиком',
           placeholder: 'Созданные поставщиком',

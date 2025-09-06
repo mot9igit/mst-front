@@ -208,6 +208,10 @@
     box-shadow: none;
   }
 
+  &--width-auto {
+    width: auto;
+  }
+
   &__container {
     display: flex;
     gap: 24px;

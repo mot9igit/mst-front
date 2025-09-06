@@ -7,7 +7,7 @@ export default {
     vendors: [],
     catalogs: [],
     regions: [],
-    organizations: []
+    organizations: [],
   },
   actions: {
     async getVendors({ commit }, sendData) {
@@ -29,7 +29,7 @@ export default {
     async getCatalogs({ commit }) {
       const data = {
         id: router.currentRoute._value.params.id,
-        get_type: 'catalog'
+        get_type: 'catalog',
       }
       const response = await api.addition.getCatalogs(data)
       if (response) {
@@ -37,10 +37,12 @@ export default {
       }
       return response
     },
-    async getRegions({ commit }) {
+    async getRegions({ commit }, { exclude, filter }) {
       const data = {
         id: router.currentRoute._value.params.id,
-        get_type: 'regions'
+        get_type: 'regions',
+        exclude: exclude,
+        filter: filter,
       }
       const response = await api.addition.getRegions(data)
       if (response) {
@@ -48,10 +50,12 @@ export default {
       }
       return response
     },
-    async getOrganizations({ commit }) {
+    async getOrganizations({ commit }, { exclude, filter }) {
       const data = {
         id: router.currentRoute._value.params.id,
-        type: 'get/organizations'
+        type: 'get/organizations',
+        exclude: exclude,
+        filter: filter,
       }
       const response = await api.addition.getOrganizations(data)
       if (response) {
