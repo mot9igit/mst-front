@@ -101,7 +101,12 @@
                 </p>
                 <p class="product-table-card__article">Арт: {{ product.article }}</p>
                 <div class="d-badge d-badge--small">
-                  <img src="/icons/spo-logo.svg" alt="" class="d-badge__img" />
+                  <img
+                    :src="product.store_image"
+                    alt=""
+                    class="d-badge__img"
+                    v-if="product.store_image"
+                  />
                   {{ product.store }}
                 </div>
               </div>
