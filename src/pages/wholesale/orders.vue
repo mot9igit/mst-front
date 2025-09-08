@@ -106,7 +106,7 @@ export default {
           class: 'cell_centeralign',
         },
         ur_persone_name: {
-          label: 'Покупатель',
+          label: 'Поставщик',
           type: 'link',
           link_to: 'wholesaleOrder',
           link_params: {

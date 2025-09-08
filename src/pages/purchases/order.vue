@@ -46,7 +46,7 @@
           </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-5">
-          <div class="order-card__orderinfo-grid-lable">Покупатель</div>
+          <div class="order-card__orderinfo-grid-lable">Поставщик</div>
           <div class="order-card__orderinfo-grid-text">
             <p>{{ this.order?.ur_persone?.name }}</p>
             <p>ИНН: {{ this.order?.ur_persone?.inn }}</p>
