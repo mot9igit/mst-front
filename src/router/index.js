@@ -266,6 +266,7 @@ const router = createRouter({
                     {
                       path: '',
                       name: 'wholesaleIndex',
+                      redirect: { name: 'wholesaleOrders' },
                       props: true,
                       label: 'Оптовые продажи',
                       component: Wholesale,
@@ -379,6 +380,7 @@ const router = createRouter({
                       path: '',
                       props: true,
                       name: 'retailIndex',
+                      redirect: { name: 'retailOrders' },
                       label: 'Розничные продажи',
                       component: Retail,
                     },
