@@ -26,7 +26,8 @@ import RetailBalance from '../pages/retail/balance.vue'
 import RetailCompareProducts from '../pages/retail/compareProducts.vue'
 import Warehouse from '../pages/warehouse/index.vue'
 import WarehouseReview from '../pages/warehouse/review.vue'
-import WarehouseProducts from '../pages/warehouse/products.vue'
+import WarehouseCollections from '../pages/warehouse/collections.vue'
+import WarehouseCollection from '../pages/warehouse/collection.vue'
 import WarehouseCustomization from '../pages/warehouse/customization.vue'
 import ProfileCard from '../pages/org/card.vue'
 import ProfileStuff from '../pages/org/staff.vue'
@@ -507,15 +508,32 @@ const router = createRouter({
                     },
                     {
                       path: 'products',
-                      name: 'warehouseProducts',
-                      props: true,
-                      label: 'Коллекции товара',
-                      component: WarehouseProducts,
                       meta: {
                         breadcrumb: {
                           label: 'Коллекции товаров',
                         },
                       },
+                      children: [
+                        {
+                          path: '',
+                          name: 'WarehouseCollections',
+                          props: true,
+                          label: 'Коллекции товара',
+                          component: WarehouseCollections,
+                        },
+                        {
+                          path: ':collection_id',
+                          name: 'WarehouseCollection',
+                          props: true,
+                          label: 'Коллекция товара',
+                          component: WarehouseCollection,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Редактирование коллекции',
+                            },
+                          },
+                        },
+                      ],
                     },
                     {
                       path: 'customization',

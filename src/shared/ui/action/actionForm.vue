@@ -26,11 +26,15 @@
               name="enable-promotion"
               id="enable-promotion"
               class="d-switch__input"
+              v-model="this.form.active"
             />
             <div class="d-switch__circle"></div>
           </div>
-          <span class="d-switch-button__text">Включить акцию</span>
+          <span class="d-switch-button__text">{{
+            this.form.active ? 'Выключить акцию' : 'Включить акцию'
+          }}</span>
         </label>
+        <!--
         <div class="d-divider d-divider--vertical"></div>
         <button class="d-icon-wrapper d-icon-wrapper--big">
           <i class="d-icon-copy promotions__icon"></i>
@@ -39,6 +43,7 @@
         <button class="d-icon-wrapper d-icon-wrapper--big">
           <i class="d-icon-trash promotions__icon"></i>
         </button>
+        -->
       </div>
     </div>
 
@@ -65,10 +70,13 @@
                 name="enable-promotion2"
                 id="enable-promotion2"
                 class="d-switch__input promotions__info-switch-field"
+                v-model="this.form.active"
               />
               <div class="d-switch__circle"></div>
             </div>
-            <span class="d-switch-button__text promotions__info-switch-label">Включить акцию</span>
+            <span class="d-switch-button__text promotions__info-switch-label">{{
+              this.form.active ? 'Выключить акцию' : 'Включить акцию'
+            }}</span>
           </label>
           <div class="d-divider d-divider--vertical promotions__info-icon-divider"></div>
         </div>
@@ -3923,6 +3931,7 @@ export default {
         console.log(newVal)
         this.form.action_id = newVal.id
         this.form.name = newVal.name
+        this.form.active = newVal.active
         this.form.description = newVal.description
         this.form.store_id = newVal.store_ids
         this.form.client_id = String(newVal.client_id)

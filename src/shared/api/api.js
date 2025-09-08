@@ -10,6 +10,7 @@ import salesModule from '@/pages/wholesale/api/sales'
 import actionModule from '@/shared/api/action'
 import purchasesModule from '@/pages/purchases/api'
 import requirementsModule from '@/pages/account/api/requirements'
+import warehouseModule from '@/pages/warehouse/api/index'
 
 export default {
   auth: authModule(instance),
@@ -23,4 +24,5 @@ export default {
   action: actionModule(instance),
   purchases: purchasesModule(instance),
   requirements: requirementsModule(instance),
+  warehouse: warehouseModule(instance),
 }

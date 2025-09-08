@@ -43,7 +43,7 @@
                 </div>
                 <div class="promotions__card-value-container">
                   <span class="promotions__card-label">Описание акции:</span>
-                  <p class="promotions__card-value">{{ sale?.description }}</p>
+                  <p class="promotions__card-value" v-html="sale?.description"></p>
                 </div>
               </div>
             </div>
