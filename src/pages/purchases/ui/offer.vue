@@ -194,10 +194,17 @@
         </div>
         <div v-if="modalActiveActions">
           <div class="product-card-actions__modal-actions" v-for="(item, index) in activeActionsData" :key="index">
+            <!--<router-link
+                :to="{
+                  name: 'purchasesAction',
+                  params: { action_id:  },
+                }"
+              >-->
             <div class="product-card-actions__modal-actions-header"><i
                 class="product-card-actions__modal-actions-header-icon d-icon-percent-rounded"></i>
               {{ item.type != 3 ? item.name : 'Индивидуальная скидка' }}
             </div>
+            <!--</router-link>-->
             <div class="product-card-actions__modal-actions-content">
               <div class="product-card-actions__modal-actions-content-item" v-if="item.delay_type == 2">Под реализацию
               </div>

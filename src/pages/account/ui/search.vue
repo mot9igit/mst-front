@@ -130,6 +130,8 @@ export default {
       if (this.$route.params.search) {
         this.showSearchSuggestions = false
         this.search = this.$route.params.search
+      }else{
+        this.search = ''
       }
     },
   },
