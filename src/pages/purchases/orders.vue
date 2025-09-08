@@ -83,7 +83,8 @@ export default {
             order_id: 'id',
           },
           sort: true,
-          class: 'cell_centeralign',
+          class: 'cell_centeralign cell_org-data',
+          items: ['seller_name','seller_inn','seller_address'],
         },
         ur_persone_name: {
           label: 'Покупатель',
@@ -94,7 +95,8 @@ export default {
             order_id: 'id',
           },
           sort: true,
-          class: 'cell_centeralign',
+          class: 'cell_centeralign  cell_org-data',
+          items: ['ur_persone_name','buyer_address'],
         },
         initiator: {
           label: 'Инициатор',
@@ -105,7 +107,8 @@ export default {
             order_id: 'id',
           },
           sort: true,
-          class: 'cell_centeralign',
+          class: 'cell_centeralign cell_initiatior-data',
+          items: ['initiator','initiator_user_name'],
         },
         cost: {
           label: 'Сумма',
@@ -204,4 +207,27 @@ export default {
 .myorders__content .d-table__row:first-child > .d-table__col {
   padding: 16px;
 }
+.cell_org-data .multyitem_cell{
+  width:fit-content;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+  margin-right: 3px;
+}
+ .cell_org-data .multyitem_cell:first-child::after{
+  content:',';
+  position: relative;
+}
+.cell_initiatior-data .multyitem_cell{
+  display:block;
+}
+.cell_initiatior-data .multyitem_cell:last-child span::before{
+  content: '(';
+  position: relative;
+}
+.cell_initiatior-data .multyitem_cell:last-child span::after{
+  content: ')';
+  position: relative;
+}
+
 </style>

@@ -45,7 +45,7 @@
       class="cell_value"
       :class="cell_key == 'name' ? 'name '+ cell_data.class : cell_data.class"
 
-      v-else-if="cell_data.type == 'link'"
+      v-else-if="cell_data.type == 'link' && !cell_data.items"
     >
       <router-link
         :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
@@ -59,6 +59,19 @@
             {{ value[cell_key].description.text }}
           </span>
         </div>
+      </router-link>
+    </div>
+    <div class="cell_value"
+      v-if="cell_data.type == 'link' && cell_data.items"
+      :class="cell_key == 'name' ? 'name '+ cell_data.class : cell_data.class"
+      >
+      <router-link
+        :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
+      >
+      <div v-for="item in cell_data.items" :key="item" class="multyitem_cell">
+        <span v-if="item.includes('inn')">ИНН: {{ value[item] ? value[item] : '-' }}</span>
+        <span v-if="value[item]" class="cell_value-inn">{{ value[item] }}</span>
+      </div>
       </router-link>
     </div>
     <div
@@ -388,5 +401,5 @@ export default {
 }
 .cell_centeralign{
   text-align:center;
-  }
+}
 </style>
