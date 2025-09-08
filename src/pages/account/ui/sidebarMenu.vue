@@ -191,7 +191,7 @@ export default {
         //     {
         //       name: 'Коллекции товара',
         //       icon: 'd-icon-layers',
-        //       to: { name: 'warehouseProducts', params: { id: this.$route.params.id } },
+        //       to: { name: 'WarehouseCollections', params: { id: this.$route.params.id } },
         //     },
         //     {
         //       name: 'Настройки склада',
