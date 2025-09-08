@@ -1,7 +1,7 @@
 <template>
 
   <!--Карточка товара -->
-  <div class="product-card">
+  <div class="product-card" :class="{'product-card-noactive' : offer.requirement && offer.available == 0}">
     <div class="product-card__content">
       <!-- Информация о товаре -->
       <div class="product-card__content-left">
@@ -105,7 +105,13 @@
       <!-- Информация о цене и количестве -->
       <div class="product-card__content-right">
         <!-- Цена -->
-        <div class="product-card__price">
+         <div class="product-card__price" v-if="offer.requirement && offer.available == 0">
+          <p class="product-card__price-value-discounted product-card__noavailable">
+            Нет в наличии
+          </p>
+
+        </div>
+        <div class="product-card__price" v-else>
           <p class="product-card__price-value-discounted">
             {{ offer.price.toLocaleString('ru') }} ₽
           </p>
@@ -117,7 +123,7 @@
         </div>
 
         <!-- Купить -->
-        <div class="product-card__basket-button"
+        <div class="product-card__basket-button" v-if="!offer.requirement || offer.requirement && offer.available > 0"
           :class="{ 'basket-true': offer?.basket?.availability, 'loading-counter': this.fetchIds.indexOf(offer.key) != -1 }">
           <Counter @ElemCount="ElemCount" :min="0" :max="offer.max" :id="offer.remain_id" :store_id="offer.store_id"
             :index="index" :value="offer?.basket?.count" :step="offer?.multiplicity ? offer?.multiplicity : 1"
@@ -664,6 +670,9 @@ export default {
   box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
   border-radius: 35px;
   border: none;
+}
+.product-card-noactive{
+  opacity:0.5;
 }
 
 @media (width>1280px){

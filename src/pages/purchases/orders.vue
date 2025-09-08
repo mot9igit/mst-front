@@ -95,7 +95,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
-          class: 'cell_centeralign  cell_org-data',
+          class: 'cell_centeralign',
           items: ['ur_persone_name','buyer_address'],
         },
         initiator: {
@@ -218,6 +218,7 @@ export default {
   content:',';
   position: relative;
 }
+
 .cell_initiatior-data .multyitem_cell{
   display:block;
 }

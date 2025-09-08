@@ -69,8 +69,8 @@
         :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
       >
       <div v-for="item in cell_data.items" :key="item" class="multyitem_cell">
-        <span v-if="item.includes('inn')">ИНН: {{ value[item] ? value[item] : '-' }}</span>
-        <span v-if="value[item]" class="cell_value-inn">{{ value[item] }}</span>
+        <span v-if="value[item] && item.includes('inn')">ИНН: {{ value[item] ? value[item] : '-' }}</span>
+        <span v-if="value[item]  && !item.includes('inn')" class="cell_value-inn">{{ value[item] }}</span>
       </div>
       </router-link>
     </div>
