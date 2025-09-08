@@ -446,7 +446,6 @@ export default {
     }),
     close() {
       this.$emit('close')
-      console.log('1')
     },
     clearCart() {
       this.loading = true

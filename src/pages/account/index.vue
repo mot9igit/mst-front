@@ -24,13 +24,19 @@
       <div class="content-wrapper main__content-wrapper">
         <router-view> </router-view>
       </div>
-      <ProfileCart
+      <teleport to="body">
+        <ProfileCart
         @toggleCart="toggleCart()"
         @toggleOrder="toggleOrder()"
         :active="toggleShoppingCart"
       />
+      </teleport>
+
       <changeVendorsWindow :active="this.toggleVendors" @close="changeVendorsWindowClose()" />
-      <OrderWindow :active="this.toggleOrderWindow" @close="changeOrderWindowClose()" />
+      <teleport to="body">
+        <OrderWindow :active="this.toggleOrderWindow" @close="changeOrderWindowClose()" />
+      </teleport>
+
     </main>
   </div>
   <ProfileCatalogMenu
