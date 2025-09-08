@@ -465,7 +465,7 @@ export default {
   }
 }
 .promotions__card {
-  height: auto;
+  height: 100%;
   box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
   &.promotions__card--height {
     height: 100%;
@@ -540,5 +540,13 @@ export default {
   .promo__cards-item-date-values .promo__cards-item-conds-value {
     gap: 12px;
   }
+}
+.promo-master__footer{
+  position: fixed;
+  bottom:0;
+  left:0;
+}
+.promo-master__content {
+  padding-bottom:60px;
 }
 </style>
