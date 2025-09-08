@@ -9,7 +9,7 @@
 
     <div
       class="promos__banners-item promos__banners-item--primary promos__banners-item--big promo__banner"
-      v-if="sale"
+      v-if="sale?.image?.image"
     >
       <img
         :src="sale?.image?.image"
@@ -172,7 +172,13 @@
                     <div
                       class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value promo__cards-item-conds-value"
                     >
-                      <div class="promo__cards-item-conds-value-content">
+                      <div
+                        class="promo__cards-item-conds-value-content"
+                        v-if="
+                          new Date(sale?.date_from).getTime() > 0 &&
+                          new Date(sale?.date_to).getTime() > 0
+                        "
+                      >
                         <span
                           >с
                           {{ new Date(sale?.date_from).toLocaleString('ru', this.options) }}</span
@@ -184,11 +190,25 @@
                           >до {{ new Date(sale?.date_to).toLocaleString('ru', this.options) }}</span
                         >
                       </div>
-                      <p class="promo__cards-item-conds-value-total">{{ getDiffDays }} дн.</p>
+                      <p
+                        class="promo__cards-item-conds-value-total"
+                        v-if="
+                          new Date(sale?.date_from).getTime() > 0 &&
+                          new Date(sale?.date_to).getTime() > 0
+                        "
+                      >
+                        {{ getDiffDays }} дн.
+                      </p>
+                      <p class="promo__cards-item-conds-value-total" v-else>Бессрочная</p>
                     </div>
                   </div>
                 </div>
-                <div class="d-fractions promo__cards-item-values-fractions">
+                <div
+                  class="d-fractions promo__cards-item-values-fractions"
+                  v-if="
+                    new Date(sale?.date_from).getTime() > 0 && new Date(sale?.date_to).getTime() > 0
+                  "
+                >
                   <div class="d-fractions promo__cards-date-container">
                     <div
                       class="d-fractions__item d-fractions__item--center"
