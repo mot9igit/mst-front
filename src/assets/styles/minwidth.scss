@@ -699,7 +699,9 @@
                         .d-sheet__overlay {
                           z-index: 176;
                         }
-
+                        .product-card__noavailable{
+                          margin-top: -50px;
+                        }
                     }
 
                     @media (width <=800px) {
@@ -938,6 +940,9 @@
                     @media (width <=680px) {
                         .header__left {
                             gap: 50px;
+                        }
+                        .product-card__noavailable{
+                          font-size: 16px !important;
                         }
                     }
 
@@ -2363,12 +2368,25 @@
                           top: 0 !important;
                         }
                         .order {
-
                           padding: 0 0 0 0;
-                      }
+                        }
+                        .product-card__noavailable{
+                          margin-top: -30px;
+                          padding-bottom:60px;
+                          font-size:24px  !important;
+                        }
+                        .product-card__price{
+                          text-align: right;
+                        }
                     }
 
-                    @media (width <=400px) {}
+                    @media (width <=400px) {
+                      .product-card__noavailable{
+                          margin-top: -30px;
+                          padding-bottom:60px;
+                          font-size:18px  !important;
+                        }
+                    }
 
                     @media (width <=320px) {
                         .content-wrapper {
@@ -2557,5 +2575,18 @@
                         }
                         .p-toast {
                             width: calc(100% - 40px) !important;
+                        }
+                        .product-card__noavailable{
+                          margin-top: 0px;
+                          padding-bottom:8px;
+                          font-size:24px  !important;
+                          min-width:calc(100vw - 56px);
+                          text-align: center;
+                        }
+                        .product-card__price{
+                          text-align: left;
+                        }
+                        .product-card__price-value{
+                          font-size:18px;
                         }
                     }
