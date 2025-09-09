@@ -673,6 +673,9 @@ export default {
 .product-card-noactive{
   opacity:0.5;
 }
+.product-card-noactive .product-card__footer{
+    display: none;
+  }
 
 @media (width>1280px){
     .product-card__basket-button.basket-true .d-counter, .product-card__buy{
@@ -1018,5 +1021,6 @@ export default {
   .product-card__buy:hover{
     color:transparent;
   }
+
 }
 </style>

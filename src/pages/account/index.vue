@@ -224,7 +224,6 @@ export default {
     $route: {
       handler: function () {
         this.toggleMenu = false
-        console.log('perehod')
         let content = document.querySelector('main')
         content.scrollTo({
           top: 0,

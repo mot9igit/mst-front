@@ -76,6 +76,9 @@ export default {
       type: Boolean,
       default: true,
     },
+    activeOrganization: {
+      type: Object,
+    }
   },
   mounted() {
     this.menu = this.getMenu()
@@ -97,7 +100,8 @@ export default {
   },
   methods: {
     getMenu() {
-      return [
+      let punkts = []
+      punkts.push(
         {
           name: 'Закупки',
           icon: 'd-icon-cube',
@@ -120,35 +124,41 @@ export default {
               to: { name: 'purchasesVendors', params: { id: this.$route.params.id } },
             },
           ],
-        },
-        {
-          name: 'Оптовые продажи',
-          icon: 'd-icon-bag',
-          collapse: this.collapsed('wholesale'),
-          to: { name: 'wholesaleOrders', params: { id: this.$route.params.id } },
-          children: [
+        }
+      )
+      if(this.activeOrganization.warehouse != 0 || this.activeOrganization.vendor != 0){
+         punkts.push(
             {
-              name: 'Заказы',
-              icon: 'd-icon-doc',
+              name: 'Оптовые продажи',
+              icon: 'd-icon-bag',
+              collapse: this.collapsed('wholesale'),
               to: { name: 'wholesaleOrders', params: { id: this.$route.params.id } },
+              children: [
+                {
+                  name: 'Заказы',
+                  icon: 'd-icon-doc',
+                  to: { name: 'wholesaleOrders', params: { id: this.$route.params.id } },
+                },
+                {
+                  name: 'Оптовые цены',
+                  icon: 'd-icon-cart',
+                  to: { name: 'wholesalePrices', params: { id: this.$route.params.id } },
+                },
+                {
+                  name: 'Клиенты',
+                  icon: 'd-icon-people',
+                  to: { name: 'wholesaleClients', params: { id: this.$route.params.id } },
+                },
+                // {
+                //   name: 'Отгрузки',
+                //   icon: 'd-icon-truck',
+                //   to: { name: 'wholesaleShipments', params: { id: this.$route.params.id } },
+                // },
+              ],
             },
-            {
-              name: 'Оптовые цены',
-              icon: 'd-icon-cart',
-              to: { name: 'wholesalePrices', params: { id: this.$route.params.id } },
-            },
-            {
-              name: 'Клиенты',
-              icon: 'd-icon-people',
-              to: { name: 'wholesaleClients', params: { id: this.$route.params.id } },
-            },
-            // {
-            //   name: 'Отгрузки',
-            //   icon: 'd-icon-truck',
-            //   to: { name: 'wholesaleShipments', params: { id: this.$route.params.id } },
-            // },
-          ],
-        },
+         )
+      }
+      punkts.push(
         {
           name: 'Розничные продажи',
           icon: 'd-icon-sales',
@@ -177,6 +187,8 @@ export default {
             // },
           ],
         },
+      )
+      //punkts.push(
         // {
         //   name: 'Мой склад',
         //   icon: 'd-icon-boxes-2',
@@ -200,6 +212,8 @@ export default {
         //     },
         //   ],
         // },
+      //)
+      punkts.push(
         {
           name: 'Моя компания',
           icon: 'd-icon-company',
@@ -223,7 +237,8 @@ export default {
             // },
           ],
         },
-      ]
+      )
+      return punkts
     },
     sidebarItem(index) {
       this.active = this.menu[index].collapse

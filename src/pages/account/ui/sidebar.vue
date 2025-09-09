@@ -148,6 +148,7 @@
           <!-- <div class="sidebar__divider sidebar__nav-divider--top"></div> -->
 
           <sidebarMenu
+            :activeOrganization="activeOrganization"
             :toggle="Boolean(active)"
             @sidebarToggle="sidebarToggle()"
             v-if="this.$route.params.id"
