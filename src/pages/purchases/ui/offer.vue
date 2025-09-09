@@ -188,11 +188,12 @@
 
       <div class="product-card-actions__modal-container">
         <div class="product-card-actions__modal-buttons">
-          <button @click.prevent="modalActiveActions = true, modalOtherActions = false" v-if="activeActions > 0"
+          <button
+          @click.prevent="modalActiveActions = true, modalOtherActions = false" v-if="activeActions > 0"
             :class="modalActiveActions ? 'product-card-actions__modal-button-active' : 'product-card-actions__modal-button'">
             Активные акции <div class="d-badge2 product-card__promo-badge">{{ activeActions }}</div>
           </button>
-          <button class="product-card-actions__modal-button"
+          <button
             @click.prevent="modalOtherActions = true, modalActiveActions = false" v-if="otherActions > 0"
             :class="modalOtherActions ? 'product-card-actions__modal-button-active' : 'product-card-actions__modal-button'">
             Акции без выполненных условий <div class="d-badge2 product-card__promo-badge">{{ otherActions }}</div>
@@ -250,9 +251,7 @@
             </div>
           </div>
         </div>
-
       </div>
-
     </customModal>
   </teleport>
 </template>
@@ -372,7 +371,7 @@ export default {
       if (this.activeActions != 0) {
         this.modalActiveActions = true
         this.modalOtherActions = false
-      } else {
+      }else{
         this.modalActiveActions = false
         this.modalOtherActions = true
       }
