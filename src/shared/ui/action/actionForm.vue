@@ -1207,14 +1207,30 @@
                   <p class="promo-master__title promo-master__title--sm-margin">
                     Даты проведения акции
                   </p>
-                  <div class="d-field-container d-field-container--long">
-                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                      <DatePicker
+                  <div class="d-field-container d-field-container--long ">
+                    <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical promo-master__dates">
+                      <!--<DatePicker
                         v-model="this.form.dates"
                         dateFormat="dd.mm.yy"
                         selectionMode="range"
                         placeholder="Выберите даты"
                         :manualInput="false"
+                        showIcon
+                      />-->
+                      <DatePicker
+                        v-model="this.form.start_date"
+                        dateFormat="dd.mm.yy"
+                        placeholder="Выберите дату начала"
+                        :manualInput="false"
+                        :maxDate="dateStart"
+                        showIcon
+                      />
+                      <DatePicker
+                        v-model="this.form.end_date"
+                        dateFormat="dd.mm.yy"
+                        placeholder="Выберите дату окончания"
+                        :manualInput="false"
+                        :minDate="dateTomorrow"
                         showIcon
                       />
                     </div>
@@ -2987,6 +3003,7 @@ export default {
       per_page_small: 5,
       masterStep: 0,
       visibleMasterSteps: [],
+      stopDate: undefined,
       // Флаги окон
       modals: {
         master: false,
@@ -3128,6 +3145,8 @@ export default {
         vendors: true,
         store_id: [],
         dates: [],
+        start_date: '',
+        end_date: '',
         adv: {
           active: false,
           place: {},
@@ -3869,6 +3888,7 @@ export default {
       } else {
         return 0
       }
+
     },
     datesDaysAvailable() {
       const dateFrom = this.form.dates[0]
@@ -3886,6 +3906,32 @@ export default {
         return Math.ceil(diffTime / (1000 * 3600 * 24))
       }
     },
+    dateTomorrow(){
+      const dateSt = this.form.dates[0]
+      const today = new Date()
+        const tomorrow = new Date(today.getTime() + (1000 * 24 * 3600));
+      if(!dateSt){
+        return tomorrow
+      }else{
+        const dayStop = new Date(dateSt.getTime() + (1000 * 24 * 3600));
+        if(dayStop < tomorrow){
+          return tomorrow
+        }else{
+          return dayStop
+        }
+
+      }
+    },
+    dateStart(){
+      const dateTo = this.form.dates[1]
+      if(dateTo){
+        const stopDate = new Date(dateTo.getTime() - (1000 * 24 * 3600));
+        return stopDate
+      }else{
+        return undefined
+      }
+    }
+
   },
   setup() {
     return { v$: useVuelidate() }
@@ -3909,6 +3955,26 @@ export default {
     }
   },
   watch: {
+    'form.start_date': function (newVal) {
+      if(this.form.end_date){
+        if(newVal < this.form.end_date){
+          this.form.dates[0] = newVal
+        }else{
+          this.form.start_date = new Date()
+          this.form.dates[0] = new Date()
+        }
+      }else{
+        this.dateTomorrow = new Date(newVal.getTime() + (1000 * 24 * 3600))
+      }
+    },
+    'form.end_date': function (newVal) {
+      this.form.dates[1] = newVal
+      this.dateStart = new Date(newVal.getTime() - (1000 * 24 * 3600))
+      if(newVal < this.form.start_date || !this.form.start_date){
+        this.form.start_date = new Date()
+        this.form.dates[0] = new Date()
+      }
+    },
     // Склады Организации
     orgStores: function (newVal) {
       this.stores = []
@@ -4064,6 +4130,7 @@ export default {
         })
       }, 300)
     },
+
   },
 }
 </script>
@@ -4597,5 +4664,10 @@ body {
 
 .p-ink {
   display: none;
+}
+
+.promo-master__dates{
+  flex-direction: row;
+  gap: 40px;
 }
 </style>
