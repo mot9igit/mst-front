@@ -87,7 +87,7 @@
           </div>
         </div>
         <div class="profile__flex">
-          <p class="profile__info-label-description">* Редактирование нужно будет подтвердить по вашей почте</p>
+          <p class="profile__info-label-description">* Изменения необходимо подтвердить в вашей почте. Мы отправим письмо после сохранения изменений.</p>
           <button
             type="submit"
             href="#"
@@ -154,9 +154,9 @@ export default {
         },
         {
           name: 'email',
-          lable: 'Личный email',
-          text: 'Виден только коллегам, используется для востановления пароля',
-          placeholder: 'Введите новый email',
+          lable: 'Личный e-mail',
+          text: 'Виден только коллегам, используется для восстановления пароля',
+          placeholder: 'Введите новый e-mail',
         },
         {
           name: 'newpassw',

@@ -222,6 +222,12 @@
                 Скидка</div>
               <div class="product-card-actions__modal-actions-content-item" v-if="item.delivery_type == 2">Бесплатная
                 доставка</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.condition_min_sum > 0">Минимальная общая сумма заказа - {{item.condition_min_sum}}₽</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.condition_SKU > 0">Минимальное количество SKU акции - {{item.condition_SKU}}шт</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.condition_min_count > 0">Минимальное количество SKU акции - {{item.condition_min_count}}шт</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.multiplicity > 1">Кратность - {{item.multiplicity}}шт</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.integration == 1">Интеграция с MachineStore</div>
+
             </div>
           </div>
         </div>
@@ -248,6 +254,11 @@
                 Скидка</div>
               <div class="product-card-actions__modal-actions-content-item" v-if="item.delivery_type == 2">Бесплатная
                 доставка</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.condition_min_sum > 0">Минимальная общая сумма заказа - {{item.condition_min_sum}}₽</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.condition_SKU > 0">Минимальное количество SKU акции - {{item.condition_SKU}}шт</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.condition_min_count > 0">Минимальное количество SKU акции - {{item.condition_min_count}}шт</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.multiplicity > 1">Кратность - {{item.multiplicity}}шт</div>
+              <div class="product-card-actions__modal-actions-content-item" v-if="item.integration == 1">Интеграция с MachineStore</div>
             </div>
           </div>
         </div>
