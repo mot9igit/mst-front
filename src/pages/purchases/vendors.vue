@@ -107,7 +107,7 @@
           </div>-->
           <div class="clients__card-right-right d-col-24">
             <div class="clients__card-action-container d-col-6">
-              <button class="clients__card-action">
+              <button class="clients__card-action" @click.prevent="changeOpts(item.id, 0)">
                 <i class="d-icon-trash"></i>
               </button>
             </div>
@@ -143,7 +143,7 @@
                 <div
                   class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
                 ></div>
-                <button class="clients__card-action">
+                <button class="clients__card-action" @click.prevent="changeOpts(item.id, 0)">
                   <i class="d-icon-trash"></i>
                 </button>
               </div>
@@ -203,7 +203,7 @@
               <div
                 class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
               ></div>
-              <button class="clients__card-action">
+              <button class="clients__card-action" @click.prevent="changeOpts(item.id, 0)">
                 <i class="d-icon-trash"></i>
               </button>
             </div>
@@ -315,6 +315,7 @@ export default {
   methods: {
     ...mapActions({
       getOpts: 'purchases/getOpts',
+      toggleOpts: 'purchases/toggleOpts',
       unsetOpts: 'purchases/unsetOpts',
       setNewOrgProfile: 'purchases/setNewOrgProfile',
     }),
@@ -339,7 +340,21 @@ export default {
         })
       }
     },
-
+    // TODO: сделать подтверждение удаления
+    changeOpts(id, action) {
+      const data = {
+        id: id,
+        action: action,
+      }
+      this.toggleOpts(data).then(() => {
+        this.loading = true
+        this.unsetOpts()
+        this.page = 1
+        this.getOpts(data).then(() => {
+          this.loading = false
+        })
+      })
+    },
     filter(data) {
       console.log(data)
       this.loading = true
@@ -371,13 +386,12 @@ export default {
     },
     formAddVendor() {
       this.v$.$touch()
-
       this.$load(async () => {
         this.loading = true
         await this.setNewOrgProfile({
           code: this.form.inn,
         }).then((res) => {
-          console.log(res)
+          // console.log(res)
           if (res.data.data.success) {
             this.$toast.add({
               severity: 'success',
@@ -417,7 +431,7 @@ export default {
     }),
   },
   watch: {
-    opts: function (newVal, oldVal) {
+    opts: function () {
       this.countPages = Math.ceil(this.opts.total / this.pagination_items_per_page)
       if (this.countPages === 0) {
         this.countPages = 1
