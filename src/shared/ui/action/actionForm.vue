@@ -2929,6 +2929,7 @@
   </section>
 </template>
 <script>
+import { ref } from 'vue'
 import breadcrumbs from '../breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
@@ -3473,12 +3474,13 @@ export default {
       }
     },
     slideToProducts() {
+      this.modals.master = false
       setTimeout(() => {
-        this.modals.master = false
         this.visibleMasterSteps.push(9)
         this.visibleMasterSteps.push(10)
         this.masterStep = 8
-        this.$refs.warehouseProducts.scrollIntoView({ behavior: 'smooth' })
+        const refVar = 'warehouseProducts'
+        this.$refs[refVar].scrollIntoView({ behavior: 'smooth' })
       }, 1000)
     },
     openStep(step) {
@@ -4362,7 +4364,27 @@ body {
     padding: 0;
   }
   .modal-content {
-    padding: 0;
+    padding: 128px 0 68px 0;
+    position: relative;
+    .promo-master {
+      padding-top: 0;
+    }
+    .promo-modal__header {
+      position: absolute;
+      top: 0;
+      z-index: 1001;
+      left: 0;
+      right: 0;
+    }
+    .promo-master__footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      .promo-master__footer-actions {
+        margin-bottom: 0;
+      }
+    }
   }
   .modal__close {
     display: none;
