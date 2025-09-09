@@ -556,7 +556,7 @@ export default {
     position: absolute;
     z-index: 1001;
 }
-.promotions__card--collapsed{
+.promotions .promotions__card{
   height: 100%;
 }
 </style>
