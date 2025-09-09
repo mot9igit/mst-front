@@ -465,7 +465,7 @@ export default {
   }
 }
 .promotions__card {
-  height: 100%;
+  height: auto;
   box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
   &.promotions__card--height {
     height: 100%;
@@ -548,5 +548,15 @@ export default {
 }
 .promo-master__content {
   padding-bottom:60px;
+}
+.promo-master {
+    padding-top: 115px;
+}
+.promo-modal__header {
+    position: absolute;
+    z-index: 1001;
+}
+.promotions__card--collapsed{
+  height: 100%;
 }
 </style>
