@@ -730,7 +730,7 @@
                       <p
                         class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-title"
                       >
-                        Минимально общее количество товаров
+                        Минимальное общее количество товаров
                       </p>
                     </div>
                     <p
@@ -1522,7 +1522,7 @@
                           <p
                             class="promotions__card-text promotions__card-text--bold promotions__card-text--small"
                           >
-                            Срок отсрочки платежа:
+                            График платежей:
                           </p>
                           <div class="d-field-container d-field-container--vertical">
                             <p
