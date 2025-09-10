@@ -1621,7 +1621,7 @@
                   >
                     <p class="promo-master__subtitle">Сроки отгрузки товаров</p>
                     <div class="d-radio__container d-radio__container--small">
-                      <div class="d-radio__wrapper promo-master__radio-wrapper">
+                    <!--  <div class="d-radio__wrapper promo-master__radio-wrapper">
                         <label for="shipment-deadline-1" class="d-radio">
                           <input
                             type="radio"
@@ -1637,7 +1637,7 @@
                           class="d-radio__label promo-master__radio-label"
                           >Определяется данными из отгрузок
                         </label>
-                      </div>
+                      </div>-->
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
                         <label for="shipment-deadline-2" class="d-radio">
                           <input
@@ -1823,7 +1823,7 @@
                         </p>
                       </div>
                     </div>
-                    <div
+                    <!--<div
                       class="d-radio__wrapper d-radio__wrapper--1200-start promo-master__radio-wrapper"
                     >
                       <label class="d-switch" for="negative-promo2">
@@ -1847,7 +1847,7 @@
                           в разделе «Акции поставщиков» выводиться не будет.
                         </p>
                       </div>
-                    </div>
+                    </div>-->
                   </div>
                 </div>
                 <!-- 7 ЭТАП - Условия участия в акции: Совместимость -->

@@ -1723,6 +1723,12 @@
                         .shipments {
                             overflow: visible;
                         }
+                        .shipments h1{
+                          margin-bottom: 40px;
+                        }
+                        .wholesaleorders__content .dart-mb-1,.retailorders__content .dart-mb-1 {
+                            margin-bottom: 8px !important;
+                        }
                         .d-table__head-col,
                         .d-table__col {
                             font-size: 12px;
@@ -2296,7 +2302,7 @@
                             width: calc(100vw - 88px);
                         }
                         .retailorders__content .form_input_group:after {
-                            right: 40px;
+                            right: 40px !important;
                         }
                         .myorders__content .form_input_group:after {
                             right: 12px;
