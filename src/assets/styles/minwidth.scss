@@ -130,6 +130,9 @@
                     .d-breadcrumbs {
                       padding: 8px 15px;
                     }
+                    .d-sheet__overlay.active {
+                      top: var(--header-height);
+                    }
 
                     @media (width <=1920px) {
                         .header {
@@ -702,6 +705,9 @@
                         .product-card__noavailable{
                           margin-top: -50px;
                         }
+                        .d-sheet__overlay.active {
+                          top: 0;
+                      }
                     }
 
                     @media (width <=800px) {
