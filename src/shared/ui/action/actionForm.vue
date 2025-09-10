@@ -2835,9 +2835,10 @@
       </customModal>
       <customModal v-model="this.modals.regions" class="select-window">
         <template v-slot:title>Выбрать регионы</template>
-        <div>
+        <div class="regions-container">
           <div class="regions">
             <form class="d-search d-search--alt">
+              <div>
               <i
                 class="d-icon-search-big d-search__icon promotions__card-warehouse-search-icon"
               ></i>
@@ -2849,6 +2850,8 @@
                 @focus="search.regionSuggestionsShow = true"
                 @blur="unActivateRegion()"
               />
+              </div>
+
               <ul class="d-search__suggestions" v-if="this.search.regionSuggestionsShow">
                 <li
                   class="d-search__suggestion"
@@ -2877,14 +2880,25 @@
                   </a>
                 </li>
               </ul>
+
             </form>
             <div class="chips">
-              <div class="chip" v-for="(item, index) in this.form.regions" :key="item.code">
+              <!--<div class="chip" v-for="(item, index) in this.form.regions" :key="item.code">-->
+              <div class="chip" v-for="(item, index) in this.form.regionsTemp" :key="item.code">
                 <i class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"></i>
                 <span>{{ item.name }}</span>
-                <a href="#" class="chip-close" @click.prevent="regionDel(index)"></a>
+                <a href="#" class="chip-close" @click.prevent="regionTempDel(index)"></a>
               </div>
             </div>
+          </div>
+          <div class="regions-submit">
+            <button
+                  class="d-button d-button-primary d-button-primary-small d-button--sm-shadow d-ib"
+                  type="button"
+                  @click.prevent="setRegions()"
+                >
+                  Добавить
+            </button>
           </div>
         </div>
       </customModal>
@@ -3140,6 +3154,7 @@ export default {
         participantsType: 3,
         all_organizations_selected: [],
         regions: [],
+        regionsTemp: [],
         stores: true,
         warehouses: true,
         vendors: true,
@@ -3811,21 +3826,32 @@ export default {
     unActivateRegion() {
       setTimeout(() => (this.search.regionSuggestionsShow = false), 250)
     },
+    regionTempDel(index) {
+      this.form.regionsTemp.splice(index, 1)
+      // не добавляется в список городов обратно
+    },
     regionDel(index) {
       this.form.regions.splice(index, 1)
+      this.form.regionsTemp = this.form.regions
+      // не добавляется в список городов обратно
     },
     orgDel(index) {
       this.form.all_organizations_selected.splice(index, 1)
     },
     regionSelect(item) {
       console.log(item)
-      this.form.regions.push(item)
+      this.form.regionsTemp.push(item)
       // Берем географию
-      this.getRegions({ exclude: this.form.regions, filter: '' }).then(() => {
+      this.getRegions({ exclude: this.form.regionsTemp, filter: '' }).then(() => {
         this.regions_all = this.regions.map(function (el) {
           return { name: el.label, code: el.key }
         })
       })
+      this.search.region = ''
+    },
+    setRegions(){
+      this.form.regions = this.form.regionsTemp
+      this.modals.regions = false
     },
     orgSelect(item) {
       console.log(item)
@@ -3969,7 +3995,7 @@ export default {
     },
     'form.end_date': function (newVal) {
       this.form.dates[1] = newVal
-      this.dateStart = new Date(newVal.getTime() - (1000 * 24 * 3600))
+      //this.dateStart = new Date(newVal.getTime() - (1000 * 24 * 3600))
       if(newVal < this.form.start_date || !this.form.start_date){
         this.form.start_date = new Date()
         this.form.dates[0] = new Date()
@@ -4026,6 +4052,8 @@ export default {
         const dateto = new Date(newVal.date_to)
         const datefrom = new Date(newVal.date_from)
         this.form.dates = [datefrom, dateto]
+        this.form.start_date = datefrom
+        this.form.end_date = dateto
         this.form.geo_action = this.geo[newVal.page_geo]
         this.form.position = newVal.page_place_position
         this.form.hide_for_clients = Boolean(newVal.hide_for_clients)
@@ -4063,7 +4091,7 @@ export default {
         this.form.conditionMinGeneralCount = newVal.condition_min_count
         this.form.product_groups = newVal.product_groups
         // Берем географию
-        this.getRegions({ exclude: this.form.regions, filter: '' }).then(() => {
+        this.getRegions({ exclude: this.form.regionsTemp, filter: '' }).then(() => {
           this.regions_all = this.regions.map(function (el) {
             return { name: el.label, code: el.key }
           })
@@ -4105,7 +4133,7 @@ export default {
         newVal = ''
       }
       this.debounce(() => {
-        this.getRegions({ exclude: this.form.regions, filter: newVal }).then(() => {
+        this.getRegions({ exclude: this.form.regionsTemp, filter: newVal }).then(() => {
           this.regions_all = this.regions.map(function (el) {
             return { name: el.label, code: el.key }
           })
@@ -4670,4 +4698,16 @@ body {
   flex-direction: row;
   gap: 40px;
 }
+.regions{
+  min-height: 230px;
+}
+.regions-container{
+  display: flex;
+  flex-direction: column;
+}
+.regions-submit{
+  display: flex;
+  justify-content: center;
+}
+
 </style>
