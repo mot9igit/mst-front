@@ -2852,6 +2852,7 @@
                 v-model="search.region"
                 @focus="search.regionSuggestionsShow = true"
                 @blur="unActivateRegion()"
+                @keypress.enter.prevent=""
               />
               </div>
 
@@ -2866,7 +2867,6 @@
                     class="d-search__suggestion-card"
                     @click.prevent="
                       () => {
-                        console.log('1')
                         this.regionSelect(suggestion)
                       }
                     "
@@ -2878,7 +2878,7 @@
                       v-if="suggestion.image"
                     />
                     <div class="d-search__suggestion-card__content">
-                      <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
+                      <span class="d-search__suggestion-card__title" >{{ suggestion.name }}</span>
                     </div>
                   </a>
                 </li>
