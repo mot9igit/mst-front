@@ -2121,7 +2121,7 @@
                         <div>
                           <button
                             class="d-button d-button-primary d-button--no-shadow d-button--width-auto"
-                            @click.prevent="this.modals.regions = true"
+                            @click.prevent="this.modals.regions = true, resolveRegTemp()"
                           >
                             <i class="d-icon-plus"></i>
                             <span>Выбрать регионы</span>
@@ -3831,12 +3831,20 @@ export default {
     },
     regionTempDel(index) {
       this.form.regionsTemp.splice(index, 1)
-      // не добавляется в список городов обратно
+      this.getRegions({ exclude: this.form.regionsTemp, filter: '' }).then(() => {
+        this.regions_all = this.regions.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
+      })
     },
     regionDel(index) {
       this.form.regions.splice(index, 1)
       this.form.regionsTemp = this.form.regions
-      // не добавляется в список городов обратно
+      this.getRegions({ exclude: this.form.regionsTemp, filter: '' }).then(() => {
+        this.regions_all = this.regions.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
+      })
     },
     orgDel(index) {
       this.form.all_organizations_selected.splice(index, 1)
@@ -3853,8 +3861,22 @@ export default {
       this.search.region = ''
     },
     setRegions(){
-      this.form.regions = this.form.regionsTemp
+      this.form.regions = []
+      for(let index = 0; index < this.form.regionsTemp.length; index++){
+        this.form.regions.push(this.form.regionsTemp[index])
+      }
       this.modals.regions = false
+    },
+    resolveRegTemp(){
+        this.form.regionsTemp = []
+      for(let index = 0; index < this.form.regions.length; index++){
+        this.form.regionsTemp.push(this.form.regions[index])
+      }
+      this.getRegions({ exclude: this.form.regionsTemp, filter: '' }).then(() => {
+        this.regions_all = this.regions.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
+      })
     },
     orgSelect(item) {
       console.log(item)
@@ -3995,7 +4017,6 @@ export default {
     },
     'form.end_date': function (newVal) {
       this.form.dates[1] = newVal
-      //this.dateStart = new Date(newVal.getTime() - (1000 * 24 * 3600))
       if(newVal < this.form.start_date || !this.form.start_date){
         this.form.start_date = new Date()
         this.form.dates[0] = new Date()
@@ -4071,6 +4092,9 @@ export default {
         this.form.delay = newVal.delay_graph
         this.form.conditionMinSum = newVal.condition_min_sum
         this.form.regions = newVal.regions
+        //if(this.form.regions.length && !this.form.regionsTemp.length){
+        //  this.form.regionsTemp = this.form.regions
+        //}
         this.form.actions = newVal.big_sale_actions
         this.form.all_organizations_selected = newVal.all_organizations_selected
         this.form.postponementPeriod = newVal.delay
