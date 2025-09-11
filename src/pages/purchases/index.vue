@@ -169,6 +169,7 @@
                   type="button"
                   href="#"
                   class="d-button d-button-primary d-button--sm-shadow  clients__filters-create clients__filters-cansel"
+                  @click.prevent="this.modalAdd = false"
                 >
                   Отмена
                 </button>

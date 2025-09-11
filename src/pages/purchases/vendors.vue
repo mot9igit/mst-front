@@ -234,39 +234,50 @@
       </div>
     </div>
     <teleport to="body" v-if="this.modalAdd === true">
-      <customModal v-model="this.modalAdd" class="clients-form__modal">
-        <div class="clients-info__value-container">
-          <h2>Добавление поставщика</h2>
-          <div class="clients-info__label">Введите код поставщика</div>
-          <form
-            class="clients-form__modal"
-            @submit.prevent="formAddVendor()"
-            :class="{ 'd-input--error': v$.form.inn.$error }"
-          >
-            <input
-              type="text"
-              class="modal__input clients-form__input"
+        <customModal v-model="this.modalAdd" class="clients-form__modal-main">
+          <div class="clients-info__value-container">
+            <h2>Добавление поставщика</h2>
+            <div class="clients-info__label">Обратитесь к своему поставщику за кодом</div>
+            <form
+              class="clients-form__modal"
+              @submit.prevent="formAddVendor()"
               :class="{ 'd-input--error': v$.form.inn.$error }"
-              placeholder="Введите код поставщика"
-              v-model="form.inn"
-            />
-            <div v-if="v$.form.inn.$error" class="d-input-error">
-              <i class="d-icon-warning d-input-error__icon"></i>
-              <span v-if="v$.form.inn.required" class="d-input-error__text"
-                >Пожалуйста, введите код поставщика</span
-              >
-            </div>
-            <button
-              type="submit"
-              href="#"
-              class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
             >
-              <i class="d-icon-plus-flat clients__filters-create-icon"></i>Добавить поставщика
-            </button>
-          </form>
-        </div>
-      </customModal>
-    </teleport>
+              <InputOtp
+                class="clients-form__modal-numbers"
+                :class="{ 'd-input--error': v$.form.inn.$error }"
+                :length="6"
+                v-model="form.inn"
+                integerOnly
+              />
+              <div v-if="v$.form.inn.$error" class="d-input-error">
+                <i class="d-icon-warning d-input-error__icon"></i>
+                <span v-if="v$.form.inn.required" class="d-input-error__text"
+                  >Пожалуйста, введите код поставщика</span
+                >
+              </div>
+              <div class="clients-form__modal-buttons">
+                <button
+                  type="button"
+                  href="#"
+                  class="d-button d-button-primary d-button--sm-shadow  clients__filters-create clients__filters-cansel"
+                  @click.prevent="this.modalAdd = false"
+                >
+                  Отмена
+                </button>
+                <button
+                  type="submit"
+                  href="#"
+                  class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
+                >
+                  Ok
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </customModal>
+      </teleport>
   </section>
 </template>
 <script>
@@ -279,10 +290,11 @@ import customModal from '@/shared/ui/Modal.vue'
 import { required } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 import Toast from 'primevue/toast'
+import InputOtp from 'primevue/inputotp';
 
 export default {
   name: 'purchasesVendors',
-  components: { Breadcrumbs, Loader, Paginate, customModal, Toast },
+  components: { Breadcrumbs, Loader, Paginate, customModal, Toast, InputOtp },
   props: {
     pagination_items_per_page: {
       type: Number,
