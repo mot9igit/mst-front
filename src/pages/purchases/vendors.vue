@@ -1,6 +1,5 @@
 <template>
   <section class="shipments vendors" id="shipments">
-    <Toast />
     <!-- Верхушка страницы -->
     <div class="d-top">
       <Breadcrumbs />
@@ -235,47 +234,7 @@
     </div>
     <teleport to="body" v-if="this.modalAdd === true">
         <customModal v-model="this.modalAdd" class="clients-form__modal-main">
-          <div class="clients-info__value-container">
-            <h2>Добавление поставщика</h2>
-            <div class="clients-info__label">Обратитесь к своему поставщику за кодом</div>
-            <form
-              class="clients-form__modal"
-              @submit.prevent="formAddVendor()"
-              :class="{ 'd-input--error': v$.form.inn.$error }"
-            >
-              <InputOtp
-                class="clients-form__modal-numbers"
-                :class="{ 'd-input--error': v$.form.inn.$error }"
-                :length="6"
-                v-model="form.inn"
-                integerOnly
-              />
-              <div v-if="v$.form.inn.$error" class="d-input-error">
-                <i class="d-icon-warning d-input-error__icon"></i>
-                <span v-if="v$.form.inn.required" class="d-input-error__text"
-                  >Пожалуйста, введите код поставщика</span
-                >
-              </div>
-              <div class="clients-form__modal-buttons">
-                <button
-                  type="button"
-                  href="#"
-                  class="d-button d-button-primary d-button--sm-shadow  clients__filters-create clients__filters-cansel"
-                  @click.prevent="this.modalAdd = false"
-                >
-                  Отмена
-                </button>
-                <button
-                  type="submit"
-                  href="#"
-                  class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
-                >
-                  Ok
-                </button>
-              </div>
-
-            </form>
-          </div>
+          <addVendorWindow @closeAddWindow="close()" @addVendor="addNewVendor()"/>
         </customModal>
       </teleport>
   </section>
@@ -287,14 +246,12 @@ import Paginate from 'vuejs-paginate-next'
 import Loader from '@/shared/ui/Loader.vue'
 import { toRaw } from 'vue'
 import customModal from '@/shared/ui/Modal.vue'
-import { required } from '@vuelidate/validators'
-import useVuelidate from '@vuelidate/core'
-import Toast from 'primevue/toast'
-import InputOtp from 'primevue/inputotp';
+import addVendorWindow from '../account/ui/addVendorWindow.vue'
+
 
 export default {
   name: 'purchasesVendors',
-  components: { Breadcrumbs, Loader, Paginate, customModal, Toast, InputOtp },
+  components: { Breadcrumbs, Loader, Paginate, customModal, addVendorWindow },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -319,9 +276,6 @@ export default {
           type: 'text',
         },
       },
-      form: {
-        inn: '',
-      },
     }
   },
   methods: {
@@ -329,7 +283,6 @@ export default {
       getOpts: 'purchases/getOpts',
       toggleOpts: 'purchases/toggleOpts',
       unsetOpts: 'purchases/unsetOpts',
-      setNewOrgProfile: 'purchases/setNewOrgProfile',
     }),
     setFilter(type = '0') {
       if (type === 'filter') {
@@ -396,38 +349,18 @@ export default {
         this.loading = false
       })
     },
-    formAddVendor() {
-      this.v$.$touch()
-      this.$load(async () => {
-        this.loading = true
-        await this.setNewOrgProfile({
-          code: this.form.inn,
-        }).then((res) => {
-          // console.log(res)
-          if (res.data.data.success) {
-            this.$toast.add({
-              severity: 'success',
-              summary: 'Поставщик успешно добавлен!',
-              detail: res.data.data.message,
-              life: 3000,
-            })
-            this.getOpts({
-              page: this.page,
-              perpage: this.pagination_items_per_page,
-            })
-            this.modalAdd = false
-          } else {
-            this.$toast.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: res.data.data.message,
-              life: 3000,
-            })
-          }
-          this.loading = false
-        })
-      })
+    close(){
+      this.modalAdd = false
     },
+    addNewVendor(){
+      this.modalAdd = false
+      this.getOpts({
+      page: this.page,
+      perpage: this.pagination_items_per_page,
+    }).then(() => {
+      this.loading = false
+    })
+    }
   },
   mounted() {
     this.getOpts({
@@ -450,18 +383,7 @@ export default {
       }
     },
   },
-  setup() {
-    return { v$: useVuelidate() }
-  },
-  validations() {
-    return {
-      form: {
-        inn: {
-          required,
-        },
-      },
-    }
-  },
+
 }
 </script>
 <style lang="scss" scoped>
