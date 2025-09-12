@@ -186,7 +186,7 @@ const router = createRouter({
                           component: PurchasesCatalog,
                         },
                         {
-                          path: 'search/:search',
+                          path: 'search',
                           name: 'purchasesCatalogSearch',
                           props: true,
                           label: 'Оптовый каталог',

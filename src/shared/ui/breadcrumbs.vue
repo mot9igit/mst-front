@@ -226,7 +226,7 @@ export default {
           return this.sale.name
         }
         case ':search': {
-          return `Поиск: ${this.$route.params.search}`
+          return `Поиск: ${this.$route.query.search}`
         }
         case ':requirement_id': {
           const text = currentRoute.params?.requirement_id.split('_')

@@ -88,7 +88,7 @@ export default {
         //   },
         // })
       } else {
-        this.$router.push({ name: 'purchasesCatalogSearch', params: { search: this.search } })
+        this.$router.push({ name: 'purchasesCatalogSearch', query: { search: this.search } })
       }
     },
     async searchProducts() {
@@ -108,13 +108,13 @@ export default {
     },
   },
   mounted() {
-    if (this.$route.params.search) {
-      this.search = this.$route.params.search
+    if (this.$route.query.search) {
+      this.search = this.$route.query.search
     }
   },
   watch: {
     search(newVal) {
-      if (newVal.length < 3 || newVal == this.$route.params.search) {
+      if (newVal.length < 3 || newVal == this.$route.query.search) {
         this.showSearchSuggestions = false
         return
       }
@@ -127,9 +127,9 @@ export default {
       }, 300)
     },
     $route() {
-      if (this.$route.params.search) {
+      if (this.$route.query.search) {
         this.showSearchSuggestions = false
-        this.search = this.$route.params.search
+        this.search = this.$route.query.search
       }else{
         this.search = ''
       }

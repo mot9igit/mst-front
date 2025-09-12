@@ -226,7 +226,7 @@ export default {
         perpage: this.per_page,
       }
       if (this.$route.name == 'purchasesCatalogSearch') {
-        data.search = this.$route.params.search
+        data.search = this.$route.query.search
       }
       this.getOptProducts(data).then(() => {
         this.opt_products = this.optProducts
@@ -244,7 +244,7 @@ export default {
         basket: this.basket,
       }
       if (this.$route.name == 'purchasesCatalogSearch') {
-        data.search = this.$route.params.search
+        data.search = this.$route.query.search
       }
       this.getOptProducts(data).then(() => {
         this.opt_products = this.optProducts
@@ -261,7 +261,7 @@ export default {
         basket: this.basket,
       }
       if (this.$route.name == 'purchasesCatalogSearch') {
-        data.search = this.$route.params.search
+        data.search = this.$route.query.search
       }
       this.getOptProducts(data).then(() => {
         this.opt_products = this.optProducts
@@ -280,7 +280,7 @@ export default {
       perpage: this.per_page,
     }
     if (this.$route.name == 'purchasesCatalogSearch') {
-      data.search = this.$route.params.search
+      data.search = this.$route.query.search
     }
     this.getOptProducts(data).then(() => {
       this.opt_products = this.optProducts
