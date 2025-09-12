@@ -26,17 +26,17 @@
       </div>
       <teleport to="body">
         <ProfileCart
-        @toggleCart="toggleCart()"
-        @toggleOrder="toggleOrder()"
-        :active="toggleShoppingCart"
-      />
+          @toggleCart="toggleCart()"
+          @toggleOrder="toggleOrder()"
+          @catalogUpdate="catalogUpdate()"
+          :active="toggleShoppingCart"
+        />
       </teleport>
 
       <changeVendorsWindow :active="this.toggleVendors" @close="changeVendorsWindowClose()" />
       <teleport to="body">
         <OrderWindow :active="this.toggleOrderWindow" @close="changeOrderWindowClose()" />
       </teleport>
-
     </main>
   </div>
   <ProfileCatalogMenu
@@ -47,6 +47,7 @@
   />
 </template>
 <script>
+import { computed } from 'vue'
 import { mapActions, mapGetters } from 'vuex'
 import ProfileSidebar from './ui/sidebar.vue'
 import ProfileHeader from './ui/header.vue'
@@ -90,6 +91,7 @@ export default {
       toggleShoppingCart: false,
       toggleOrderWindow: false,
       headerDesignChange: false,
+      catalogUpdater: false,
       cartCount: 0,
       mobileCatalogShow: false,
       mobileRequipments: false,
@@ -149,6 +151,12 @@ export default {
       getOptVendorsAvailable: 'org/getOptVendorsAvailable',
       getOptVendorsSelected: 'org/getOptVendorsSelected',
     }),
+    catalogUpdate() {
+      this.catalogUpdater = true
+      setTimeout(() => {
+        this.catalogUpdater = false
+      }, 500)
+    },
     toggleCatalog() {
       this.toggleMenu = !this.toggleMenu
     },
@@ -161,10 +169,10 @@ export default {
         this.toggleMenu = false
       }
     },
-    mobileCatalog(){
+    mobileCatalog() {
       this.mobileCatalogShow = true
     },
-    showRequip(){
+    showRequip() {
       this.mobileRequipments = !this.mobileRequipments
     },
     toggleVendor() {
@@ -191,6 +199,11 @@ export default {
       document.execCommand('copy')
       window.getSelection().removeAllRanges()
     },
+  },
+  provide() {
+    return {
+      catalogUpdater: computed(() => this.catalogUpdater),
+    }
   },
   components: {
     ProfileSidebar,
@@ -227,7 +240,7 @@ export default {
         let content = document.querySelector('main')
         content.scrollTo({
           top: 0,
-          behavior: 'smooth'
+          behavior: 'smooth',
         })
       },
     },
@@ -240,7 +253,7 @@ export default {
 <style lang="scss">
 body {
   overflow: hidden;
-  button{
+  button {
     color: inherit;
   }
 }
@@ -251,17 +264,17 @@ aside button {
 .content {
   background-color: #ededed;
   max-width: calc(100% - 84px);
-  .header__wrapper{
+  .header__wrapper {
     position: relative;
     z-index: 2;
   }
-  main{
+  main {
     position: relative;
     z-index: 1;
   }
   @media (width > 600px) {
     .header__wrapper {
-        display: block;
+      display: block;
     }
   }
 }
@@ -276,7 +289,7 @@ aside button {
     justify-content: flex-start;
   }
 }
-@media (max-width: 600px){
+@media (max-width: 600px) {
   .content {
     max-width: 100%;
   }

@@ -149,6 +149,7 @@ import product from './ui/product.vue'
 
 export default {
   name: 'purchasesCatalog',
+  inject: ['catalogUpdater'],
   components: { breadcrumbs, Loader, Paginate, product },
   props: {
     id: {
@@ -315,6 +316,21 @@ export default {
     },
     orgActive: function () {
       this.updatePage(0)
+    },
+    catalogUpdater: function (newVal) {
+      if (newVal) {
+        const data = {
+          page: this.page,
+          perpage: this.per_page,
+        }
+        if (this.$route.name == 'purchasesCatalogSearch') {
+          data.search = this.$route.query.search
+        }
+        this.getOptProducts(data).then(() => {
+          this.opt_products = this.optProducts
+          this.loading = false
+        })
+      }
     },
     $route() {
       this.updatePage(0)

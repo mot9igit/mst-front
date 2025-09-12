@@ -138,7 +138,7 @@
           v-if="!offer.requirement || (offer.requirement && offer.available > 0)"
           :class="{
             'basket-true': offer?.basket?.availability,
-            'loading-counter': this.fetchIds.indexOf(offer.key) != -1,
+            'loading-counter': this.loading,
           }"
         >
           <Counter
@@ -154,10 +154,13 @@
           />
           <button
             class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card__buy"
+            :class="{ 'd-button--loading': this.loading }"
             @click="addBasket(offer)"
           >
-            <i class="d-icon-cart product-card__buy-icon"></i>
-            Купить
+            <div class="d-button__text">
+              <i class="d-icon-cart product-card__buy-icon"></i>
+              Купить
+            </div>
           </button>
         </div>
 
@@ -414,6 +417,7 @@ export default {
   name: 'productOffer',
   data() {
     return {
+      loading: false,
       activeActions: 0,
       otherActions: 0,
       modalActions: false,
@@ -452,11 +456,48 @@ export default {
       basketProductRemove: 'basket/basketProductRemove',
       basketProductUpdate: 'basket/basketProductUpdate',
     }),
-    ElemCount(object) {
-      console.log(object)
-      if (!this.fetchIds.includes(object.item.key)) {
-        this.fetchIds.push(object.item.key)
+    clearBasketProduct(org_id, store_id, key, product) {
+      this.loading = true
+      const data = {
+        org_id: org_id,
+        store_id: store_id,
+        key: key,
+        product: product,
       }
+      this.basketProductRemove(data).then((response) => {
+        this.$emit('updateBasket')
+        if (!response?.data?.data?.success && response?.data?.data?.message) {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: response?.data?.data?.message,
+            life: 3000,
+          })
+        }
+        this.loading = false
+      })
+
+      // Убедитесь, что dataLayer существует
+      window.dataLayer = window.dataLayer || []
+
+      // Отправка данных в dataLayer
+      window.dataLayer.push({
+        ecommerce: {
+          currencyCode: 'RUB', // Валюта
+          remove: {
+            products: [
+              {
+                id: product.remain_id, // ID товара
+                name: product.name, // Название товара
+                price: product.price, // Цена товара
+                quantity: product.count, // Количество товара
+              },
+            ],
+          },
+        },
+      })
+    },
+    ElemCount(object) {
       if (object.value == object.min) {
         this.clearBasketProduct(
           object.item.org_id,
@@ -468,10 +509,6 @@ export default {
       }
       if (object.value > Number(object.max)) {
         this.modal_remain = true
-        const index = this.fetchIds.indexOf(object.item.product.key)
-        if (index !== -1) {
-          this.fetchIds.splice(index, 1) // Удаляем один элемент по индексу
-        }
       } else {
         this.loading = true
         const data = {
@@ -483,7 +520,7 @@ export default {
           actions: object.item.actions,
         }
         this.basketProductUpdate(data).then((response) => {
-          // console.log(response)
+          this.loading = false
           if (!response?.data?.data?.success && response?.data?.data?.message) {
             this.$toast.add({
               severity: 'error',
@@ -503,7 +540,7 @@ export default {
                 products: [
                   {
                     id: object.id, // ID товара
-                    name: object.item.product.name, // Название товара
+                    name: object.item.name, // Название товара
                     price: object.item.basket.price, // Цена товара
                     quantity: object.value, // Количество товара
                   },
@@ -525,6 +562,7 @@ export default {
       }
     },
     addBasket(item) {
+      this.loading = true
       const data = {
         org_id: item.org_id,
         store_id: item.store_id,
@@ -533,6 +571,7 @@ export default {
         actions: item.actions,
       }
       this.basketProductAdd(data).then(() => {
+        this.loading = false
         this.$emit('updateBasket')
       })
 
@@ -572,6 +611,87 @@ export default {
 }
 </script>
 <style lang="scss">
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.product-card__basket-button:not(.basket-true) form {
+  display: none;
+}
+
+.basket-true .product-card__buy {
+  display: none;
+}
+
+.loading-counter form {
+  position: relative;
+  display: block;
+  &:before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 35px;
+    background: #ededed;
+    z-index: 3;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    border: 2px solid transparent;
+    border-top-color: #343434;
+    border-radius: 50%;
+    z-index: 4;
+    animation: button-loading-spinner 1s ease infinite;
+  }
+}
+
+.d-button__text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.2s;
+}
+
+.d-button--loading {
+  position: relative;
+  .d-button__text {
+    visibility: hidden;
+    opacity: 0;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    border: 4px solid transparent;
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: button-loading-spinner 1s ease infinite;
+  }
+}
+
 .product-card {
   width: auto;
   padding-bottom: 6px;
