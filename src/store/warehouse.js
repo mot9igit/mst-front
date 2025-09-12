@@ -33,7 +33,7 @@ export default {
       const data = {
         action: 'get',
         id: router.currentRoute._value.params.id,
-        collection_id: router.currentRoute._value.params.collection_id,
+        group_id: router.currentRoute._value.params.collection_id,
       }
       const response = await api.warehouse.getCollection(data)
       if (response) {

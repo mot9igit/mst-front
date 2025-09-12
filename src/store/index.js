@@ -11,6 +11,7 @@ import sales from './sales'
 import action from './action'
 import purchases from './purchases'
 import requirements from './requirements'
+import warehouse from './warehouse'
 
 export default new Vuex.Store({
   modules: {
@@ -25,5 +26,6 @@ export default new Vuex.Store({
     action,
     purchases,
     requirements,
+    warehouse,
   },
 })

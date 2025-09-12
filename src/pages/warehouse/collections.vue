@@ -10,12 +10,11 @@
     <div class="collection__header">
       <h1 class="collection__header-title">Мои коллекции</h1>
     </div>
-
+    <Loader v-if="loading" />
     <div class="collection__block-container">
-      <Loader v-if="loading" />
       <BaseTable
-        :items_data="optorders.orders"
-        :total="optorders.total"
+        :items_data="this.collects"
+        :total="this.total"
         :pagination_items_per_page="this.pagination_items_per_page"
         :pagination_offset="this.pagination_offset"
         :page="this.page"
@@ -49,37 +48,64 @@ export default {
   },
   data() {
     return {
+      loading: true,
       page: 1,
-      filter: {
-        name: '',
+      collects: {},
+      total: 0,
+      filters: {
+        name: {
+          name: 'Искать в коллекциях',
+          placeholder: 'Искать в коллекциях',
+          type: 'text',
+        },
       },
       table_data: {
         id: {
           label: 'Номер',
-          type: 'text',
+          type: 'link',
+          link_to: 'WarehouseCollection',
+          link_params: {
+            id: this.$route.params.id,
+            collection_id: 'id',
+          },
+          class: 'cell_centeralign',
         },
         name: {
           label: 'Наименование',
           type: 'link',
-          link_to: 'warehouseCollectionEdit',
+          link_to: 'WarehouseCollection',
           link_params: {
             id: this.$route.params.id,
-            group_id: 'id',
+            collection_id: 'id',
           },
           sort: true,
+          class: 'cell_centeralign',
         },
         store_name: {
           label: 'Склад',
-          type: 'text',
+          type: 'link',
+          link_to: 'WarehouseCollection',
+          link_params: {
+            id: this.$route.params.id,
+            collection_id: 'id',
+          },
+          class: 'cell_centeralign',
         },
         description: {
           label: 'Описание',
-          type: 'text',
+          type: 'link',
+          link_to: 'WarehouseCollection',
+          link_params: {
+            id: this.$route.params.id,
+            collection_id: 'id',
+          },
+          class: 'cell_centeralign',
         },
         actions: {
           label: 'Действия',
           type: 'actions',
           sort: false,
+          class: 'cell_centeralign',
           available: {
             edit: {
               icon: 'pi pi-pencil',
@@ -96,15 +122,47 @@ export default {
   },
   methods: {
     ...mapActions({
-      getCollection: 'warehouse/getCollection',
-      setCollection: 'warehouse/setCollection',
+      getCollections: 'warehouse/getCollections',
+      unsetCollections: 'warehouse/unsetCollections',
     }),
+    filter(data) {
+      console.log(data)
+      this.loading = true
+      this.unsetCollections()
+      this.page = 1
+      this.getCollections(data).then(() => {
+        this.loading = false
+      })
+    },
+    paginate(data) {
+      this.loading = true
+      this.unsetCollections()
+      this.page = data.page
+      this.getCollections(data).then(() => {
+        this.loading = false
+      })
+    },
   },
   computed: {
     ...mapGetters({
       collections: 'warehouse/collections',
     }),
   },
+  mounted() {
+    this.getCollections({
+      page: this.page,
+      perpage: this.pagination_items_per_page,
+    }).then(() => {
+        this.loading = false
+      })
+  },
+  watch: {
+    collections: function(newVal){
+      this.collects = newVal.items
+      this.total = newVal.total
+    }
+  },
+
 }
 </script>
 <style lang="scss"></style>

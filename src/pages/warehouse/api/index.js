@@ -22,7 +22,7 @@ export default function (instance) {
         })
       return data
     },
-    setCollection(payload) {
+    getCollection(payload) {
       const data = instance
         .post('front_group/', payload)
         .then(function (res) {

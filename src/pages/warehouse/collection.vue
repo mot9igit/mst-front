@@ -8,7 +8,7 @@
     <div class="collection__header">
       <h1 class="collection__header-title">Мои коллекции</h1>
     </div>
-
+    <Loader v-if="loading" />
     <div class="collection__block-container">
       <div class="collection__block">
         <div class="collection__block-title-wrapper">
@@ -23,13 +23,8 @@
             placeholder="Основная продукция Интерскол"
             name="date"
             class="d-input__field collection__block-input-field"
+            v-model="collectionData.name"
           />
-          <div class="d-input__actions">
-            <div class="d-divider d-divider--vertical d-input__actions-divider"></div>
-            <button class="d-icon-wrapper collection__block-input-button">
-              <i class="d-icon-pen2"></i>
-            </button>
-          </div>
         </div>
       </div>
       <div class="collection__block">
@@ -45,15 +40,32 @@
             placeholder="Основная продукция Интерскол"
             name="date"
             class="d-input__field collection__block-input-field"
+            v-model="collectionData.description"
           />
-          <div class="d-input__actions">
-            <div class="d-divider d-divider--vertical d-input__actions-divider"></div>
-            <button class="d-icon-wrapper collection__block-input-button">
-              <i class="d-icon-pen2"></i>
-            </button>
-          </div>
         </div>
       </div>
+
+      <ul class="d-tab2__container collection__tabs">
+        <li class="d-tab2" :class="{'d-tab2--active' : tabException}">
+          <button
+          class="collection__tabs-link"
+          @click.prevent="tabException = true"
+          >
+            <span>Исключения</span>
+            <span class="collection__tabs-badge">8</span>
+          </button>
+        </li>
+        <li class="d-tab2" :class="{'d-tab2--active' : !tabException}">
+          <button
+          class="collection__tabs-link"
+          @click.prevent="tabException = false"
+          >
+            <span>Добавленные товары</span>
+            <span class="collection__tabs-badge">8</span>
+          </button>
+        </li>
+      </ul>
+
       <div class="collection__block collection__block--alt">
         <div class="collection__block-inner">
           <div class="collection__block-title-wrapper">
@@ -68,7 +80,8 @@
                     name="test-radios"
                     id="test-radio1"
                     class="d-radio__input collection__block-radio-input"
-                    checked
+                    value = "1"
+                    v-model="this.type"
                   />
                 </label>
                 <label for="test-radio1" class="d-radio__label collection__block-radio-label"
@@ -82,6 +95,8 @@
                     name="test-radios"
                     id="test-radio2"
                     class="d-radio__input collection__block-radio-input"
+                    value = "2"
+                    v-model="this.type"
                   />
                 </label>
                 <label for="test-radio2" class="d-radio__label collection__block-radio-label"
@@ -95,6 +110,8 @@
                     name="test-radios"
                     id="test-radio3"
                     class="d-radio__input collection__block-radio-input"
+                    value = "3"
+                    v-model="this.type"
                   />
                 </label>
                 <label for="test-radio3" class="d-radio__label collection__block-radio-label"
@@ -102,32 +119,11 @@
                 >
               </div>
             </div>
-            <div class="collection__block-conditions-add">
-              <div class="d-radio__wrapper collection__block-radio-wrapper">
-                <label for="test-radio4" class="d-radio collection__block-radio">
-                  <input
-                    type="checkbox"
-                    name="test-radios2"
-                    id="test-radio4"
-                    class="d-radio__input collection__block-radio-input"
-                  />
-                </label>
-                <label for="test-radio4" class="d-radio__label collection__block-radio-label"
-                  >Загрузить файлом</label
-                >
-              </div>
-              <button
-                class="d-button d-button-primary d-button--no-shadow collection__block-conditions-add-button"
-                data-modal2-trigger="chooseConditions"
-              >
-                <i class="d-icon-plus-flat collection__block-conditions-add-button-icon"></i>
-                <span>Добавить условие</span>
-              </button>
-            </div>
+
           </div>
         </div>
 
-        <div class="collection__block-conditions-category">
+       <div class="collection__block-conditions-category" v-if="type == 1">
           <div class="collection__block-conditions-category-content">
             <div class="collection__block-title-wrapper">
               <p class="collection__block-title">&nbsp;</p>
@@ -146,6 +142,21 @@
               >
             </div>
           </div>
+          <div class="collection__block-conditions-category-content">
+            <div class="collection__block-title-wrapper">
+              <p class="collection__block-title">&nbsp;</p>
+            </div>
+            <div class="d-radio__wrapper collection__block-radio-wrapper">
+              <button
+                  class="d-button d-button-primary d-button--no-shadow collection__block-conditions-add-button"
+                  data-modal2-trigger="chooseConditions"
+                >
+                <i class="d-icon-plus-flat collection__block-conditions-add-button-icon"></i>
+                <span>Добавить условие</span>
+              </button>
+            </div>
+          </div>
+
 
           <div class="collection__block-conditions-category-content">
             <div class="collection__block-title-wrapper">
@@ -175,9 +186,10 @@
               </button>
             </div>
           </div>
+
         </div>
 
-        <div class="collection__files">
+      <!--  <div class="collection__files">
           <div class="collection__files-header">
             <p class="collection__files-header-title">Загруженные файлы:</p>
 
@@ -231,9 +243,9 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
 
-        <label class="d-upload collection__upload" for="promo-upload">
+      <!--  <label class="d-upload collection__upload" for="promo-upload">
           <input type="file" name="promo-upload" id="promo-upload" class="d-upload__input" />
           <img
             src="/icons/upload-cloud.svg"
@@ -249,26 +261,18 @@
               <a href="/" class="d-link d-upload__link collection__upload-link"> нажав сюда</a>
             </p>
           </div>
-        </label>
+        </label>-->
+
       </div>
+
+
+
+
     </div>
 
-    <ul class="d-tab2__container collection__tabs">
-      <li class="d-tab2 d-tab2--active">
-        <a href="/views/lk/about/index.html" class="collection__tabs-link">
-          <span>Исключения</span>
-          <span class="collection__tabs-badge">8</span>
-        </a>
-      </li>
-      <li class="d-tab2">
-        <a href="/views/lk/staff/index.html" class="collection__tabs-link">
-          <span>Добавленные товары</span>
-          <span class="collection__tabs-badge">8</span>
-        </a>
-      </li>
-    </ul>
 
-    <form class="d-search collection__search">
+
+    <!--<form class="d-search collection__search">
       <input
         type="text"
         placeholder="Найти товар по названию или артикулу"
@@ -281,7 +285,7 @@
         Найти
       </button>
       <ul class="d-search__suggestions">
-        <!-- <li class="d-search__suggestion">
+         <li class="d-search__suggestion">
 										Россия, Москва, Большой Предтеченский переулок, 13с4
 									</li>
 									<li class="d-search__suggestion">
@@ -292,11 +296,11 @@
 									</li>
 									<li class="d-search__suggestion">
 										Россия, Москва, Большой Предтеченский переулок, 13с4
-									</li> -->
+									</li>
       </ul>
-    </form>
+    </form>-->
 
-    <div class="d-table__wrapper promotions__card-products">
+  <!--  <div class="d-table__wrapper promotions__card-products">
       <table class="d-table d-table--head-col-divider collection__table">
         <thead class="d-table__head collection__table-head">
           <tr class="d-table__row collection__table-hrow">
@@ -625,15 +629,57 @@
           </button>
         </div>
       </div>
-    </div>
+    </div> -->
   </section>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
+import Loader from '@/shared/ui/Loader.vue';
 
 export default {
   name: 'WarehouseCollection',
-  components: { Breadcrumbs },
+  components: { Breadcrumbs, Loader },
+  data() {
+    return {
+      loading: true,
+      collectionData: [],
+      tabException: true,
+      type: 1,
+
+    }
+  },
+  methods: {
+    ...mapActions({
+      getCollection: 'warehouse/getCollection',
+      unsetCollection: 'warehouse/unsetCollection',
+    })
+  },
+  mounted() {
+    this.getCollection({
+      collection_id: this.$route.params.collection_id,
+    }).then(() => (this.loading = false))
+  },
+  computed: {
+    ...mapGetters({
+      collection: 'warehouse/collection',
+    }),
+  },
+  watch: {
+    collection: function(newVal){
+      this.collectionData = newVal
+    }
+  },
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.collection__block {
+    gap: 54px;
+  }
+.collection__block-title-wrapper {
+    max-width: 348px;
+}
+.d-tab2--active{
+  font-weight: 500;
+}
+</style>
