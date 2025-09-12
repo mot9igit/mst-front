@@ -96,7 +96,11 @@
               class="d-icon-wrapper d-icon-wrapper--big promotions__info-add"
               @click.prevent="formSubmit()"
             >
-              <i class="d-icon-plus promotions__icon promotions__icon--plus"></i>
+              <i
+                class="pi pi-save promotions__icon promotions__icon--plus"
+                v-if="$route.params.action"
+              ></i>
+              <i class="d-icon-plus promotions__icon promotions__icon--plus" v-else></i>
             </button>
           </div>
           <div class="promotions__info-additional-actions">
@@ -403,7 +407,7 @@
                 class="promotions__card-values promotions__card-values--md-horizontal promotions__card-values--md-long"
               >
                 <div class="promotions__card-info">
-                  <div class="promotions__card-value-container" v-if="this.form.dates.length">
+                  <div class="promotions__card-value-container" v-if="this.form.dates.length == 2">
                     <p
                       class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
                     >
@@ -442,7 +446,7 @@
                     </p>
                   </div>
                 </div>
-                <div class="d-fractions d-fractions-dates" v-if="this.form.dates.length">
+                <div class="d-fractions d-fractions-dates" v-if="this.form.dates.length == 2">
                   <div class="d-fractions__item">
                     <div
                       class="d-fractions__item-block"
@@ -2121,7 +2125,7 @@
                         <div>
                           <button
                             class="d-button d-button-primary d-button--no-shadow d-button--width-auto"
-                            @click.prevent="this.modals.regions = true, resolveRegTemp()"
+                            @click.prevent="((this.modals.regions = true), resolveRegTemp())"
                           >
                             <i class="d-icon-plus"></i>
                             <span>Выбрать регионы</span>
@@ -2842,18 +2846,18 @@
           <div class="regions">
             <form class="d-search d-search--alt">
               <div>
-              <i
-                class="d-icon-search-big d-search__icon promotions__card-warehouse-search-icon"
-              ></i>
-              <input
-                type="text"
-                placeholder="Найти регион"
-                class="d-search__field"
-                v-model="search.region"
-                @focus="search.regionSuggestionsShow = true"
-                @blur="unActivateRegion()"
-                @keypress.enter.prevent=""
-              />
+                <i
+                  class="d-icon-search-big d-search__icon promotions__card-warehouse-search-icon"
+                ></i>
+                <input
+                  type="text"
+                  placeholder="Найти регион"
+                  class="d-search__field"
+                  v-model="search.region"
+                  @focus="search.regionSuggestionsShow = true"
+                  @blur="unActivateRegion()"
+                  @keypress.enter.prevent=""
+                />
               </div>
 
               <ul class="d-search__suggestions" v-if="this.search.regionSuggestionsShow">
@@ -2878,12 +2882,11 @@
                       v-if="suggestion.image"
                     />
                     <div class="d-search__suggestion-card__content">
-                      <span class="d-search__suggestion-card__title" >{{ suggestion.name }}</span>
+                      <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
                     </div>
                   </a>
                 </li>
               </ul>
-
             </form>
             <div class="chips">
               <!--<div class="chip" v-for="(item, index) in this.form.regions" :key="item.code">-->
@@ -2896,11 +2899,11 @@
           </div>
           <div class="regions-submit">
             <button
-                  class="d-button d-button-primary d-button-primary-small d-button--sm-shadow d-ib"
-                  type="button"
-                  @click.prevent="setRegions()"
-                >
-                  Добавить
+              class="d-button d-button-primary d-button-primary-small d-button--sm-shadow d-ib"
+              type="button"
+              @click.prevent="setRegions()"
+            >
+              Добавить
             </button>
           </div>
         </div>
@@ -2962,7 +2965,6 @@
   </section>
 </template>
 <script>
-import { ref } from 'vue'
 import breadcrumbs from '../breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
@@ -3860,16 +3862,16 @@ export default {
       })
       this.search.region = ''
     },
-    setRegions(){
+    setRegions() {
       this.form.regions = []
-      for(let index = 0; index < this.form.regionsTemp.length; index++){
+      for (let index = 0; index < this.form.regionsTemp.length; index++) {
         this.form.regions.push(this.form.regionsTemp[index])
       }
       this.modals.regions = false
     },
-    resolveRegTemp(){
-        this.form.regionsTemp = []
-      for(let index = 0; index < this.form.regions.length; index++){
+    resolveRegTemp() {
+      this.form.regionsTemp = []
+      for (let index = 0; index < this.form.regions.length; index++) {
         this.form.regionsTemp.push(this.form.regions[index])
       }
       this.getRegions({ exclude: this.form.regionsTemp, filter: '' }).then(() => {
@@ -3914,24 +3916,28 @@ export default {
       allActions: 'action/allActions',
     }),
     datesPercent() {
-      const dateFrom = this.form.dates[0]
-      const dateTo = this.form.dates[1]
-      let diffTime = 0
-      let diffTimeAll = dateTo.getTime() - dateFrom.getTime()
-      const today = new Date()
-      if (today > dateFrom) {
-        if (today > dateTo) {
-          return 100
+      if (this.form.dates.length == 2) {
+        const dateFrom = this.form.dates[0]
+        const dateTo = this.form.dates[1]
+        let diffTime = 0
+        let diffTimeAll = dateTo.getTime() - dateFrom.getTime()
+        const today = new Date()
+        if (today > dateFrom) {
+          if (today > dateTo) {
+            return 100
+          } else {
+            diffTime = dateTo.getTime() - today.getTime()
+          }
         } else {
-          diffTime = dateTo.getTime() - today.getTime()
+          return 10
         }
+        return 100 - Math.ceil((diffTime / diffTimeAll) * 100)
       } else {
-        return 10
+        return 0
       }
-      return 100 - Math.ceil((diffTime / diffTimeAll) * 100)
     },
     datesDays() {
-      if (this.form.dates.length) {
+      if (this.form.dates.length == 2) {
         const dateFrom = this.form.dates[0]
         const dateTo = this.form.dates[1]
         let diffTime = dateTo.getTime() - dateFrom.getTime()
@@ -3941,19 +3947,23 @@ export default {
       }
     },
     datesDaysAvailable() {
-      const dateFrom = this.form.dates[0]
-      const dateTo = this.form.dates[1]
-      const today = new Date()
-      if (today > dateFrom) {
-        if (today > dateTo) {
-          return 0
+      if (this.form.dates.length == 2) {
+        const dateFrom = this.form.dates[0]
+        const dateTo = this.form.dates[1]
+        const today = new Date()
+        if (today > dateFrom) {
+          if (today > dateTo) {
+            return 0
+          } else {
+            let diffTime = dateTo.getTime() - today.getTime()
+            return Math.ceil(diffTime / (1000 * 3600 * 24))
+          }
         } else {
-          let diffTime = dateTo.getTime() - today.getTime()
+          let diffTime = dateTo.getTime() - dateFrom.getTime()
           return Math.ceil(diffTime / (1000 * 3600 * 24))
         }
       } else {
-        let diffTime = dateTo.getTime() - dateFrom.getTime()
-        return Math.ceil(diffTime / (1000 * 3600 * 24))
+        return 0
       }
     },
     dateTomorrow() {
@@ -4004,6 +4014,8 @@ export default {
   },
   watch: {
     'form.start_date': function (newVal) {
+      console.log(newVal + ' ' + this.form.start_date + ' ' + this.form.end_date)
+      console.log(this.form.dates)
       if (this.form.end_date) {
         if (newVal < this.form.end_date) {
           this.form.dates[0] = newVal
@@ -4012,12 +4024,15 @@ export default {
           this.form.dates[0] = new Date()
         }
       } else {
+        this.form.dates[0] = newVal
         this.dateTomorrow = new Date(newVal.getTime() + 1000 * 24 * 3600)
       }
     },
     'form.end_date': function (newVal) {
       this.form.dates[1] = newVal
-      if(newVal < this.form.start_date || !this.form.start_date){
+      console.log(newVal + ' ' + this.form.start_date + ' ' + this.form.end_date)
+      console.log(this.form.dates)
+      if (newVal < this.form.start_date || !this.form.start_date) {
         this.form.start_date = new Date()
         this.form.dates[0] = new Date()
       }
@@ -4721,16 +4736,15 @@ body {
   flex-direction: row;
   gap: 40px;
 }
-.regions{
+.regions {
   min-height: 230px;
 }
-.regions-container{
+.regions-container {
   display: flex;
   flex-direction: column;
 }
-.regions-submit{
+.regions-submit {
   display: flex;
   justify-content: center;
 }
-
 </style>
