@@ -1,6 +1,5 @@
 <template>
   <section class="promos" id="promos">
-    <Toast />
     <div class="promos__header">
       <h1 class="promos__header-title">Акции</h1>
       <!--
@@ -143,47 +142,7 @@
       </button>
       <teleport to="body" v-if="this.modalAdd === true">
         <customModal v-model="this.modalAdd" class="clients-form__modal-main">
-          <div class="clients-info__value-container">
-            <h2>Добавление поставщика</h2>
-            <div class="clients-info__label">Обратитесь к своему поставщику за кодом</div>
-            <form
-              class="clients-form__modal"
-              @submit.prevent="formAddVendor()"
-              :class="{ 'd-input--error': v$.form.code.$error }"
-            >
-              <InputOtp
-                class="clients-form__modal-numbers"
-                :class="{ 'd-input--error': v$.form.code.$error }"
-                :length="6"
-                v-model="form.code"
-                integerOnly
-              />
-              <div v-if="v$.form.code.$error" class="d-input-error">
-                <i class="d-icon-warning d-input-error__icon"></i>
-                <span v-if="v$.form.code.required" class="d-input-error__text"
-                  >Пожалуйста, введите код поставщика</span
-                >
-              </div>
-              <div class="clients-form__modal-buttons">
-                <button
-                  type="button"
-                  href="#"
-                  class="d-button d-button-primary d-button--sm-shadow  clients__filters-create clients__filters-cansel"
-                  @click.prevent="this.modalAdd = false"
-                >
-                  Отмена
-                </button>
-                <button
-                  type="submit"
-                  href="#"
-                  class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
-                >
-                  Ok
-                </button>
-              </div>
-
-            </form>
-          </div>
+          <addVendorWindow @closeAddWindow="close()" @addVendor="addNewVendor()"/>
         </customModal>
       </teleport>
     </div>
@@ -195,10 +154,7 @@ import SwiperCore, { Pagination } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/swiper.scss'
 import customModal from '@/shared/ui/Modal.vue'
-import { required } from '@vuelidate/validators'
-import useVuelidate from '@vuelidate/core'
-import Toast from 'primevue/toast'
-import InputOtp from 'primevue/inputotp';
+import addVendorWindow from '../account/ui/addVendorWindow.vue'
 
 SwiperCore.use([Pagination])
 
@@ -207,12 +163,9 @@ export default {
   data(){
     return{
       modalAdd: false,
-      form: {
-        code: '',
-      },
     }
   },
-  components: { Swiper, SwiperSlide, customModal, Toast, InputOtp },
+  components: { Swiper, SwiperSlide, customModal, addVendorWindow },
   mounted() {
     this.getSalesBanners()
     this.getOpts({
@@ -226,40 +179,21 @@ export default {
     ...mapActions({
       getSalesBanners: 'sales/getSalesBanners',
       getOpts: 'purchases/getOpts',
-      setNewOrgProfile: 'purchases/setNewOrgProfile',
     }),
-    formAddVendor() {
-      this.v$.$touch()
-      this.$load(async () => {
-        await this.setNewOrgProfile({
-          code: this.form.code,
-        }).then((res) => {
-          // console.log(res)
-          if (res.data.data.success) {
-            this.$toast.add({
-              severity: 'success',
-              summary: 'Поставщик успешно добавлен!',
-              detail: res.data.data.message,
-              life: 3000,
-            })
-            this.getOpts({
-              page: 0,
-              perpage: 0,
-              filter: 0,
-              filtersdata: 0,
-            })
-            this.modalAdd = false
-          } else {
-            this.$toast.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: res.data.data.message,
-              life: 3000,
-            })
-          }
-        })
-      })
+    close(){
+      this.modalAdd = false
     },
+    addNewVendor(){
+      this.modalAdd = false
+      this.getOpts({
+      page: 0,
+      perpage: 0,
+      filter: 0,
+      filtersdata: 0,
+    }).then(() => {
+      this.loading = false
+    })
+    }
   },
   computed: {
     ...mapGetters({
@@ -285,18 +219,7 @@ export default {
       },
     },
   },
-  setup() {
-    return { v$: useVuelidate() }
-  },
-  validations() {
-    return {
-      form: {
-        code: {
-          required,
-        },
-      },
-    }
-  },
+
 }
 </script>
 <style lang="scss">
