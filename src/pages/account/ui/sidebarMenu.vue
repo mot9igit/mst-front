@@ -78,7 +78,7 @@ export default {
     },
     activeOrganization: {
       type: Object,
-    }
+    },
   },
   mounted() {
     this.menu = this.getMenu()
@@ -101,143 +101,133 @@ export default {
   methods: {
     getMenu() {
       let punkts = []
-      punkts.push(
-        {
-          name: 'Закупки',
-          icon: 'd-icon-cube',
-          collapse: this.collapsed('purchases'),
-          to: { name: 'purchases', params: { id: this.$route.params.id } },
-          children: [
-            {
-              name: 'Оптовый каталог',
-              icon: 'd-icon-doc',
-              to: { name: 'purchasesCatalogIndex', params: { id: this.$route.params.id } },
-            },
-            {
-              name: 'Мои заказы',
-              icon: 'd-icon-cart',
-              to: { name: 'purchasesOrders', params: { id: this.$route.params.id } },
-            },
-            {
-              name: 'Мои поставщики',
-              icon: 'd-icon-cube',
-              to: { name: 'purchasesVendors', params: { id: this.$route.params.id } },
-            },
-          ],
-        }
-      )
-      if(this.activeOrganization.warehouse != 0 || this.activeOrganization.vendor != 0){
-         punkts.push(
-            {
-              name: 'Оптовые продажи',
-              icon: 'd-icon-bag',
-              collapse: this.collapsed('wholesale'),
-              to: { name: 'wholesaleOrders', params: { id: this.$route.params.id } },
-              children: [
-                {
-                  name: 'Заказы',
-                  icon: 'd-icon-doc',
-                  to: { name: 'wholesaleOrders', params: { id: this.$route.params.id } },
-                },
-                {
-                  name: 'Оптовые цены',
-                  icon: 'd-icon-cart',
-                  to: { name: 'wholesalePrices', params: { id: this.$route.params.id } },
-                },
-                {
-                  name: 'Клиенты',
-                  icon: 'd-icon-people',
-                  to: { name: 'wholesaleClients', params: { id: this.$route.params.id } },
-                },
-                // {
-                //   name: 'Отгрузки',
-                //   icon: 'd-icon-truck',
-                //   to: { name: 'wholesaleShipments', params: { id: this.$route.params.id } },
-                // },
-              ],
-            },
-         )
-      }
-      punkts.push(
-        {
-          name: 'Розничные продажи',
-          icon: 'd-icon-sales',
-          collapse: this.collapsed('retail'),
-          to: { name: 'retailOrders', params: { id: this.$route.params.id } },
+      punkts.push({
+        name: 'Закупки',
+        icon: 'd-icon-cube',
+        collapse: this.collapsed('purchases'),
+        to: { name: 'purchases', params: { id: this.$route.params.id } },
+        children: [
+          {
+            name: 'Оптовый каталог',
+            icon: 'd-icon-doc',
+            to: { name: 'purchasesCatalogIndex', params: { id: this.$route.params.id } },
+          },
+          {
+            name: 'Мои заказы',
+            icon: 'd-icon-cart',
+            to: { name: 'purchasesOrders', params: { id: this.$route.params.id } },
+          },
+          {
+            name: 'Мои поставщики',
+            icon: 'd-icon-cube',
+            to: { name: 'purchasesVendors', params: { id: this.$route.params.id } },
+          },
+        ],
+      })
+      if (this.activeOrganization.warehouse != 0 || this.activeOrganization.vendor != 0) {
+        punkts.push({
+          name: 'Оптовые продажи',
+          icon: 'd-icon-bag',
+          collapse: this.collapsed('wholesale'),
+          to: { name: 'wholesaleOrders', params: { id: this.$route.params.id } },
           children: [
             {
               name: 'Заказы',
               icon: 'd-icon-doc',
-              to: { name: 'retailOrders', params: { id: this.$route.params.id } },
+              to: { name: 'wholesaleOrders', params: { id: this.$route.params.id } },
             },
             {
-              name: 'Акции',
-              icon: 'd-icon-percent-rounded',
-              to: { name: 'retailActions', params: { id: this.$route.params.id } },
+              name: 'Оптовые цены',
+              icon: 'd-icon-cart',
+              to: { name: 'wholesalePrices', params: { id: this.$route.params.id } },
             },
             {
-              name: 'Баланс',
-              icon: 'd-icon-wallet',
-              to: { name: 'retailBalance', params: { id: this.$route.params.id } },
+              name: 'Клиенты',
+              icon: 'd-icon-people',
+              to: { name: 'wholesaleClients', params: { id: this.$route.params.id } },
             },
             // {
-            //   name: 'Сопоставление товаров',
-            //   icon: 'd-icon-shuffle',
-            //   to: { name: 'retailCompareProducts', params: { id: this.$route.params.id } },
+            //   name: 'Отгрузки',
+            //   icon: 'd-icon-truck',
+            //   to: { name: 'wholesaleShipments', params: { id: this.$route.params.id } },
             // },
           ],
-        },
-      )
-      //punkts.push(
-        // {
-        //   name: 'Мой склад',
-        //   icon: 'd-icon-boxes-2',
-        //   collapse: this.collapsed('warehouse'),
-        //   to: { name: 'warehouseReview', params: { id: this.$route.params.id } },
-        //   children: [
-        //     {
-        //       name: 'Анализ склада',
-        //       icon: 'd-icon-line-chart',
-        //       to: { name: 'warehouseReview', params: { id: this.$route.params.id } },
-        //     },
-        //     {
-        //       name: 'Коллекции товара',
-        //       icon: 'd-icon-layers',
-        //       to: { name: 'WarehouseCollections', params: { id: this.$route.params.id } },
-        //     },
-        //     {
-        //       name: 'Настройки склада',
-        //       icon: 'd-icon-conveyor',
-        //       to: { name: 'warehouseCustomization', params: { id: this.$route.params.id } },
-        //     },
-        //   ],
-        // },
-      //)
-      punkts.push(
-        {
-          name: 'Моя компания',
-          icon: 'd-icon-company',
-          collapse: this.collapsed('organization'),
-          to: { name: 'organization', params: { id: this.$route.params.id } },
-          children: [
-            {
-              name: 'Карточка компании',
-              icon: 'd-icon-focus',
-              to: { name: 'organization', params: { id: this.$route.params.id } },
-            },
-            // {
-            //   name: 'Сотрудники',
-            //   icon: 'd-icon-user',
-            //   to: { name: 'profileStuff', params: { id: this.$route.params.id } },
-            // },
-            // {
-            //   name: 'Политики доступа',
-            //   icon: 'd-icon-lock-open',
-            //   to: { name: 'profileAccess', params: { id: this.$route.params.id } },
-            // },
-          ],
-        },
-      )
+        })
+      }
+      punkts.push({
+        name: 'Розничные продажи',
+        icon: 'd-icon-sales',
+        collapse: this.collapsed('retail'),
+        to: { name: 'retailOrders', params: { id: this.$route.params.id } },
+        children: [
+          {
+            name: 'Заказы',
+            icon: 'd-icon-doc',
+            to: { name: 'retailOrders', params: { id: this.$route.params.id } },
+          },
+          {
+            name: 'Акции',
+            icon: 'd-icon-percent-rounded',
+            to: { name: 'retailActions', params: { id: this.$route.params.id } },
+          },
+          {
+            name: 'Баланс',
+            icon: 'd-icon-wallet',
+            to: { name: 'retailBalance', params: { id: this.$route.params.id } },
+          },
+          // {
+          //   name: 'Сопоставление товаров',
+          //   icon: 'd-icon-shuffle',
+          //   to: { name: 'retailCompareProducts', params: { id: this.$route.params.id } },
+          // },
+        ],
+      })
+      punkts.push({
+        name: 'Мой склад',
+        icon: 'd-icon-boxes-2',
+        collapse: this.collapsed('warehouse'),
+        to: { name: 'WarehouseCollections', params: { id: this.$route.params.id } },
+        children: [
+          // {
+          //   name: 'Анализ склада',
+          //   icon: 'd-icon-line-chart',
+          //   to: { name: 'warehouseReview', params: { id: this.$route.params.id } },
+          // },
+          {
+            name: 'Коллекции товара',
+            icon: 'd-icon-layers',
+            to: { name: 'WarehouseCollections', params: { id: this.$route.params.id } },
+          },
+          // {
+          //   name: 'Настройки склада',
+          //   icon: 'd-icon-conveyor',
+          //   to: { name: 'warehouseCustomization', params: { id: this.$route.params.id } },
+          // },
+        ],
+      })
+      punkts.push({
+        name: 'Моя компания',
+        icon: 'd-icon-company',
+        collapse: this.collapsed('organization'),
+        to: { name: 'organization', params: { id: this.$route.params.id } },
+        children: [
+          {
+            name: 'Карточка компании',
+            icon: 'd-icon-focus',
+            to: { name: 'organization', params: { id: this.$route.params.id } },
+          },
+          // {
+          //   name: 'Сотрудники',
+          //   icon: 'd-icon-user',
+          //   to: { name: 'profileStuff', params: { id: this.$route.params.id } },
+          // },
+          // {
+          //   name: 'Политики доступа',
+          //   icon: 'd-icon-lock-open',
+          //   to: { name: 'profileAccess', params: { id: this.$route.params.id } },
+          // },
+        ],
+      })
       return punkts
     },
     sidebarItem(index) {
