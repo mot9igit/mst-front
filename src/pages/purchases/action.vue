@@ -556,7 +556,7 @@ export default {
     position: absolute;
     z-index: 1001;
 }
-.promotions .promotions__card{
+.promotions .promotions__card,.promotions .promotions__card-container{
   height: 100%;
 }
 </style>
