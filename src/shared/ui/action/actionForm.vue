@@ -3376,7 +3376,7 @@ export default {
       this.delayData.postponementPeriod = 0
       for (let i = 0; i < this.form.delay.length; i++) {
         if (this.form.delay[i].percent > 0) {
-          this.delayData.delayPercentSum += this.form.delay[i].percent
+          this.delayData.delayPercentSum += Number(this.form.delay[i].percent)
         } else {
           this.delayData.delayPercentSum += 100
         }
@@ -4037,6 +4037,14 @@ export default {
         this.form.dates[0] = new Date()
       }
     },
+    'form.typeDelay': function (newVal) {
+      if(newVal == 2){
+        this.form.postponementPeriod = 0
+        this.form.delay = []
+      }else{
+        this.form.postponementPeriod = 0
+      }
+    },
     // Склады Организации
     orgStores: function (newVal) {
       this.stores = []
@@ -4100,7 +4108,7 @@ export default {
         this.form.warehouses = Boolean(newVal.available_opt)
         this.form.vendors = Boolean(newVal.available_vendors)
         this.form.typePay = String(newVal.pay_type)
-        this.form.typePayPercent = String(newVal.pay_type_percent)
+        this.form.typePayPercent = newVal.pay_type_percent ? String(newVal.pay_type_percent) : 0
         this.form.typeDelivery = String(newVal.delivery_type)
         this.form.typeDeliveryPercent = Number(newVal.delivery_type_percent)
         this.form.typeDelay = String(newVal.delay_type)
