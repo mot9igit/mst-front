@@ -509,7 +509,7 @@ const router = createRouter({
                       },
                     },
                     {
-                      path: 'products',
+                      path: 'collections',
                       meta: {
                         breadcrumb: {
                           label: 'Коллекции товаров',
@@ -522,6 +522,18 @@ const router = createRouter({
                           props: true,
                           label: 'Коллекции товара',
                           component: WarehouseCollections,
+                        },
+                        {
+                          path: 'new',
+                          name: 'WarehouseCollectionNew',
+                          props: true,
+                          label: 'Коллекция товара',
+                          component: WarehouseCollection,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Создание коллекции',
+                            },
+                          },
                         },
                         {
                           path: ':collection_id',

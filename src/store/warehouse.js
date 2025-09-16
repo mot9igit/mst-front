@@ -41,6 +41,35 @@ export default {
       }
       return response
     },
+    async setCollection(
+      store,
+      { store_id, type, name, description, terms, black_list, file, apply },
+    ) {
+      const data = {
+        action: 'set',
+        id: router.currentRoute._value.params.id,
+        group_id: router.currentRoute._value.params.collection_id,
+        store_id: store_id,
+        type: type,
+        name: name,
+        description: description,
+        terms: terms,
+        black_list: Object.keys(black_list),
+        file: file,
+        apply: apply.length > 0 ? true : false,
+      }
+      const response = await api.warehouse.setCollection(data)
+      return response
+    },
+    async deleteCollection(store, { group_id }) {
+      const data = {
+        action: 'delete',
+        id: router.currentRoute._value.params.id,
+        group_id: group_id,
+      }
+      const response = await api.warehouse.deleteCollection(data)
+      return response
+    },
     unsetCollections({ commit }) {
       commit('UNSET_COLLECTIONS')
     },
