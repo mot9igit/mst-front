@@ -8,6 +8,10 @@ export default {
       orders: [],
       total: -1,
     },
+    collectionBuild: {
+      items: [],
+      total: -1,
+    },
     order: {},
     dilers: {},
     managers: {},
@@ -38,6 +42,24 @@ export default {
       const response = await api.warehouse.getCollection(data)
       if (response) {
         commit('SET_COLLECTION', response.data)
+      }
+      return response
+    },
+    async buildCollection({ commit }, { store_id, terms, page, perpage, filter, type, file }) {
+      const data = {
+        action: 'build',
+        id: router.currentRoute._value.params.id,
+        store_id: store_id,
+        terms: terms,
+        page: page,
+        perpage: perpage,
+        filter: filter,
+        type: type,
+        file: file,
+      }
+      const response = await api.warehouse.buildCollection(data)
+      if (response) {
+        commit('SET_COLLECTION_BUILD', response.data)
       }
       return response
     },
@@ -84,6 +106,9 @@ export default {
     SET_COLLECTION: (state, data) => {
       state.collection = data.data
     },
+    SET_COLLECTION_BUILD: (state, data) => {
+      state.collectionBuild = data.data
+    },
     UNSET_COLLECTIONS: (state) => {
       state.collections = []
     },
@@ -97,6 +122,9 @@ export default {
     },
     collection(state) {
       return state.collection
+    },
+    collectionBuild(state) {
+      return state.collectionBuild
     },
   },
 }

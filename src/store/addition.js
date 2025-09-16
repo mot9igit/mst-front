@@ -6,8 +6,10 @@ export default {
   state: {
     vendors: [],
     catalogs: [],
+    out_catalogs: [],
     regions: [],
     organizations: [],
+    tags: [],
   },
   actions: {
     async getVendors({ commit }, sendData) {
@@ -26,6 +28,18 @@ export default {
       }
       return response
     },
+    async getOurVendors({ commit }, { store_id }) {
+      const data = {
+        action: 'get/vendors',
+        id: router.currentRoute._value.params.id,
+        store_id: store_id,
+      }
+      const response = await api.addition.getOurVendors(data)
+      if (response) {
+        commit('SET_OUR_VENDORS', response.data)
+      }
+      return response
+    },
     async getCatalogs({ commit }) {
       const data = {
         id: router.currentRoute._value.params.id,
@@ -34,6 +48,18 @@ export default {
       const response = await api.addition.getCatalogs(data)
       if (response) {
         commit('SET_CATALOGS', response.data)
+      }
+      return response
+    },
+    async getOutCatalogs({ commit }, { store_id }) {
+      const data = {
+        action: 'get/catalog/warehouse',
+        id: router.currentRoute._value.params.id,
+        store_id: store_id,
+      }
+      const response = await api.addition.getOutCatalogs(data)
+      if (response) {
+        commit('SET_OUT_CATALOGS', response.data)
       }
       return response
     },
@@ -63,13 +89,31 @@ export default {
       }
       return response
     },
+    async getTags({ commit }, { store_id }) {
+      const data = {
+        action: 'get/tags',
+        id: router.currentRoute._value.params.id,
+        store_id: store_id,
+      }
+      const response = await api.addition.getTags(data)
+      if (response) {
+        commit('SET_TAGS', response.data)
+      }
+      return response
+    },
   },
   mutations: {
     SET_VENDORS: (state, data) => {
       state.vendors = data.data
     },
+    SET_OUR_VENDORS: (state, data) => {
+      state.our_vendors = data.data
+    },
     SET_CATALOGS: (state, data) => {
       state.catalogs = data.data
+    },
+    SET_OUT_CATALOGS: (state, data) => {
+      state.out_catalogs = data.data
     },
     SET_REGIONS: (state, data) => {
       state.regions = data.data
@@ -77,19 +121,31 @@ export default {
     SET_ORGANIZATIONS: (state, data) => {
       state.organizations = data.data
     },
+    SET_TAGS: (state, data) => {
+      state.tags = data.data
+    },
   },
   getters: {
     vendors(state) {
       return state.vendors
     },
+    our_vendors(state) {
+      return state.our_vendors
+    },
     catalogs(state) {
       return state.catalogs
+    },
+    out_catalogs(state) {
+      return state.out_catalogs
     },
     regions(state) {
       return state.regions
     },
     organizations(state) {
       return state.organizations
+    },
+    tags(state) {
+      return state.tags
     },
   },
 }

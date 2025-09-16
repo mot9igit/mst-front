@@ -64,22 +64,24 @@
 
       <Tabs v-if="this.collectionData.store_id">
         <TabList class="d-tab2__container collection__tabs">
+          <Tab class="d-tab2" :class="{ 'd-tab2--active': !tabException }" :value="tabException">
+            <button class="collection__tabs-link" @click.prevent="tabException = false">
+              <span>Добавленные товары</span>
+              <span class="collection__tabs-badge">{{
+                this.collectionBuild.total > 0 ? this.collectionBuild.total : 0
+              }}</span>
+            </button>
+          </Tab>
           <Tab class="d-tab2" :class="{ 'd-tab2--active': tabException }" :value="tabException">
             <button class="collection__tabs-link" @click.prevent="tabException = true">
               <span>Исключения</span>
               <span class="collection__tabs-badge">8</span>
             </button>
           </Tab>
-          <Tab class="d-tab2" :class="{ 'd-tab2--active': !tabException }" :value="tabException">
-            <button class="collection__tabs-link" @click.prevent="tabException = false">
-              <span>Добавленные товары</span>
-              <span class="collection__tabs-badge">8</span>
-            </button>
-          </Tab>
         </TabList>
 
         <TabPanels>
-          <TabPanel v-if="tabException">
+          <TabPanel v-if="!tabException">
             <div class="collection__block collection__block--alt">
               <div class="collection__block-inner">
                 <div class="collection__block-title-wrapper">
@@ -102,7 +104,7 @@
                           :id="index"
                           class="d-radio__input collection__block-radio-input"
                           :value="item.value"
-                          v-model="this.type"
+                          v-model="this.collectionData.type"
                         />
                       </label>
                       <label :for="index" class="d-radio__label collection__block-radio-label"
@@ -113,7 +115,7 @@
                 </div>
               </div>
 
-              <TabPanel v-if="type == 1">
+              <TabPanel v-if="this.collectionData.type == 1">
                 <div class="collection__block-conditions-category">
                   <div class="collection__block-conditions-category-content">
                     <div class="collection__block-title-wrapper">
@@ -121,7 +123,7 @@
                     </div>
                     <div class="d-radio__wrapper collection__block-radio-wrapper">
                       <Checkbox
-                        v-model="this.collectionData.active"
+                        v-model="this.collectionData.update"
                         :binary="true"
                         inputId="tonew'"
                         name="tonew"
@@ -148,49 +150,9 @@
                       </button>
                     </div>
                   </div>
-
-                  <teleport to="body">
-                    <customModal v-model="this.chooseConditionsModal" class="collection__modal">
-                      <h2>Выберите тип условия</h2>
-                      <div class="chips">
-                        <div
-                          class="chip"
-                          v-for="(item, index) in termsChips"
-                          :key="index"
-                          :class="{ 'collection__modal-chip-active': item.active === true }"
-                        >
-                          <button
-                            class="collection__modal-chips"
-                            @click.prevent="activeChip(index)"
-                          >
-                            {{ item.name }}
-                          </button>
-                        </div>
-                      </div>
-                      <div class="collection__modal-buttons">
-                        <button
-                          type="button"
-                          href="#"
-                          class="d-button d-button-primary d-button--sm-shadow collection__modal-cansel"
-                          @click.prevent="this.chooseConditionsModal = false"
-                        >
-                          Отмена
-                        </button>
-                        <button
-                          type="button"
-                          href="#"
-                          class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
-                          @click.prevent="addTerms()"
-                        >
-                          Ok
-                        </button>
-                      </div>
-                    </customModal>
-                  </teleport>
-
                   <div
                     class="collection__block-conditions-category-content"
-                    v-for="(item, index) in this.termsData"
+                    v-for="(item, index) in this.collectionData.terms.include"
                     :key="index"
                   >
                     <div class="collection__block-title-wrapper">
@@ -207,22 +169,88 @@
                         }}
                       </p>
                     </div>
-
-                    <div class="collection__block-conditions-category-actions">
-                      <div class="d-input d-input--light collection__block-input">
-                        <input
-                          type="text"
-                          placeholder="Основная продукция Интерскол"
-                          name="date"
-                          class="d-input__field collection__block-input-field"
-                        />
-                        <div class="d-input__actions">
-                          <div class="d-divider d-divider--vertical d-input__actions-divider"></div>
-                          <button class="d-icon-wrapper collection__block-input-button">
-                            <i class="d-icon-angle-rounded-bottom-bold"></i>
-                          </button>
-                        </div>
-                      </div>
+                    <div
+                      class="collection__block-conditions-category-actions"
+                      v-if="item.term == '1'"
+                    >
+                      <TreeSelect
+                        :key="this.updateKey"
+                        @change="updateBuild"
+                        selectionMode="checkbox"
+                        v-model="collectionData.terms.include[index].value"
+                        :options="this.catalogs"
+                        placeholder="Выберите категории"
+                      />
+                      <div
+                        class="d-divider d-divider--vertical d-divider--no-margi collection__block-conditions-category-actions-divider"
+                      ></div>
+                      <button
+                        class="collection__block-conditions-category-actions-button"
+                        @click.prevent="deleteTerms(index)"
+                      >
+                        <i class="d-icon-trash"></i>
+                      </button>
+                    </div>
+                    <div
+                      class="collection__block-conditions-category-actions"
+                      v-if="item.term == '2'"
+                    >
+                      <TreeSelect
+                        :key="this.updateKey"
+                        @change="updateBuild"
+                        selectionMode="checkbox"
+                        v-model="collectionData.terms.include[index].value"
+                        :options="this.out_catalogs"
+                        placeholder="Выберите категории"
+                      />
+                      <div
+                        class="d-divider d-divider--vertical d-divider--no-margi collection__block-conditions-category-actions-divider"
+                      ></div>
+                      <button
+                        class="collection__block-conditions-category-actions-button"
+                        @click.prevent="deleteTerms(index)"
+                      >
+                        <i class="d-icon-trash"></i>
+                      </button>
+                    </div>
+                    <div
+                      class="collection__block-conditions-category-actions"
+                      v-if="item.term == '3'"
+                    >
+                      <MultiSelect
+                        v-model="collectionData.terms.include[index].value"
+                        :options="tags"
+                        option-label="label"
+                        option-value="value"
+                        placeholder="Выберите теги"
+                        filter
+                        display="chip"
+                        @change="updateBuild"
+                      />
+                      <div
+                        class="d-divider d-divider--vertical d-divider--no-margi collection__block-conditions-category-actions-divider"
+                      ></div>
+                      <button
+                        class="collection__block-conditions-category-actions-button"
+                        @click.prevent="deleteTerms(index)"
+                      >
+                        <i class="d-icon-trash"></i>
+                      </button>
+                    </div>
+                    <div
+                      class="collection__block-conditions-category-actions"
+                      v-if="item.term == '4'"
+                    >
+                      <MultiSelect
+                        v-model="collectionData.terms.include[index].value"
+                        :options="this.our_vendors"
+                        option-label="name"
+                        option-value="id"
+                        placeholder="Выберите бренды"
+                        filter
+                        display="chip"
+                        @change="updateBuild"
+                      />
                       <div
                         class="d-divider d-divider--vertical d-divider--no-margi collection__block-conditions-category-actions-divider"
                       ></div>
@@ -237,7 +265,7 @@
                 </div>
               </TabPanel>
 
-              <TabPanel v-if="type == 2">
+              <TabPanel v-if="this.collectionData.type == 2">
                 <div class="collection__files" v-if="files && !showDropZone">
                   <div class="collection__files-header">
                     <p class="collection__files-header-title">Загруженные файлы:</p>
@@ -284,7 +312,7 @@
                   v-else
                   class="d-upload collection__upload"
                   :maxFiles="Number(1)"
-                  url="/rest/file_upload.php?upload_products=xlsx"
+                  url="/rest/file_upload.php?upload_groups=xlsx"
                   :uploadOnDrop="true"
                   :multipleUpload="true"
                   :acceptedFiles="['xlsx', 'xlsx']"
@@ -309,288 +337,22 @@
                 </DropZone>
               </TabPanel>
 
-              <TabPanel v-if="type == 3"> </TabPanel>
+              <TabPanel v-if="this.collectionData.type == 3"> </TabPanel>
 
-              <form class="d-search collection__search">
-                <input
-                  type="text"
-                  placeholder="Найти товар по названию или артикулу"
-                  class="d-search__field collection__search-field"
+              <div class="products-collection-wrapper">
+                <BaseTable
+                  :items_data="this.collectionBuild.items"
+                  :total="this.collectionBuild.total"
+                  :pagination_items_per_page="this.pagination_items_per_page"
+                  :pagination_offset="this.pagination_offset"
+                  :page="this.page"
+                  :table_data="this.table_data"
+                  :filters="this.filters"
+                  @deleteElem="deleteElem"
+                  @filter="filter"
+                  @sort="filter"
+                  @paginate="paginate"
                 />
-                <button
-                  type="submit"
-                  class="d-button d-button-primary d-button-primary-small box-shadow-none d-search__button collection__search-button"
-                >
-                  Найти
-                </button>
-              </form>
-
-              <div class="d-table__wrapper promotions__card-products">
-                <table class="d-table d-table--head-col-divider collection__table">
-                  <thead class="d-table__head collection__table-head">
-                    <tr class="d-table__row collection__table-hrow">
-                      <th class="d-table__head-col collection__table-hcol">
-                        <div class="flex-center">
-                          <label class="d-radio d-radio--white" id="checkbox1">
-                            <input
-                              type="checkbox"
-                              name="checkbox1"
-                              id="checkbox1"
-                              class="d-radio__input"
-                            />
-                          </label>
-                        </div>
-                      </th>
-                      <th class="d-table__head-col collection__table-hcol">Товар</th>
-                      <th class="d-table__head-col collection__table-hcol">Тип добавления</th>
-                      <th class="d-table__head-col collection__table-hcol">Бренд</th>
-                      <th class="d-table__head-col collection__table-hcol">Категория</th>
-                      <th class="d-table__head-col collection__table-hcol">Тег</th>
-                      <th class="d-table__head-col collection__table-hcol">
-                        <div class="flex-center">
-                          <button class="d-icon-wrapper d-icon-wrapper--big d-icon-wrapper--white">
-                            <i class="d-icon-trash d-table__icon"></i>
-                          </button>
-                        </div>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody class="d-table__body">
-                    <tr class="d-table__row">
-                      <td class="d-table__col collection__table-col"></td>
-                      <td class="d-table__col collection__table-col"></td>
-                      <td class="d-table__col collection__table-col"></td>
-                      <td class="d-table__col collection__table-col"></td>
-                      <td class="d-table__col collection__table-col"></td>
-                      <td class="d-table__col collection__table-col"></td>
-                      <td class="d-table__col collection__table-col"></td>
-                    </tr>
-                    <tr class="d-table__row">
-                      <td class="d-table__col collection__table-col">
-                        <div class="flex-center">
-                          <label class="d-radio d-radio--black" id="checkbox2">
-                            <input
-                              type="checkbox"
-                              name="checkbox2"
-                              id="checkbox2"
-                              class="d-radio__input"
-                            />
-                          </label>
-                        </div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="product-table-card">
-                          <p class="product-table-card__title">
-                            Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                          </p>
-                          <p class="product-table-card__article">Арт: 844337</p>
-                          <div class="d-badge d-badge--small">
-                            <img src="/icons/spo-logo.svg" alt="" class="d-badge__img" />
-                            МСТ
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner">Файлом</div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner">Интерскол</div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner"></div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner"></div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="flex-center">
-                          <button class="d-icon-wrapper d-icon-wrapper--big">
-                            <i class="d-icon-trash d-table__icon"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="d-table__row">
-                      <td class="d-table__col collection__table-col">
-                        <div class="flex-center">
-                          <label class="d-radio d-radio--black" id="checkbox2">
-                            <input
-                              type="checkbox"
-                              name="checkbox2"
-                              id="checkbox2"
-                              class="d-radio__input"
-                            />
-                          </label>
-                        </div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="product-table-card">
-                          <p class="product-table-card__title">
-                            Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                          </p>
-                          <p class="product-table-card__article">Арт: 844337</p>
-                          <div class="d-badge d-badge--small">
-                            <img src="/icons/spo-logo.svg" alt="" class="d-badge__img" />
-                            МСТ
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner">Файлом</div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner">Интерскол</div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner"></div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner"></div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="flex-center">
-                          <button class="d-icon-wrapper d-icon-wrapper--big">
-                            <i class="d-icon-trash d-table__icon"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="d-table__row">
-                      <td class="d-table__col collection__table-col">
-                        <div class="flex-center">
-                          <label class="d-radio d-radio--black" id="checkbox2">
-                            <input
-                              type="checkbox"
-                              name="checkbox2"
-                              id="checkbox2"
-                              class="d-radio__input"
-                            />
-                          </label>
-                        </div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="product-table-card">
-                          <p class="product-table-card__title">
-                            Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                          </p>
-                          <p class="product-table-card__article">Арт: 844337</p>
-                          <div class="d-badge d-badge--small">
-                            <img src="/icons/spo-logo.svg" alt="" class="d-badge__img" />
-                            МСТ
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner">Файлом</div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner">Интерскол</div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner"></div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner"></div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="flex-center">
-                          <button class="d-icon-wrapper d-icon-wrapper--big">
-                            <i class="d-icon-trash d-table__icon"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="d-table__row">
-                      <td class="d-table__col collection__table-col">
-                        <div class="flex-center">
-                          <label class="d-radio d-radio--black" id="checkbox2">
-                            <input
-                              type="checkbox"
-                              name="checkbox2"
-                              id="checkbox2"
-                              class="d-radio__input"
-                            />
-                          </label>
-                        </div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="product-table-card">
-                          <p class="product-table-card__title">
-                            Аккумуляторная дрель-шуруповерт ИНТЕРСКОЛ ДА-10/14.4Л2
-                          </p>
-                          <p class="product-table-card__article">Арт: 844337</p>
-                          <div class="d-badge d-badge--small">
-                            <img src="/icons/spo-logo.svg" alt="" class="d-badge__img" />
-                            МСТ
-                          </div>
-                        </div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner">Файлом</div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner">Интерскол</div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner"></div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="d-table__col-inner"></div>
-                      </td>
-                      <td class="d-table__col collection__table-col">
-                        <div class="flex-center">
-                          <button class="d-icon-wrapper d-icon-wrapper--big">
-                            <i class="d-icon-trash d-table__icon"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                <div class="d-table__footer">
-                  <div class="d-table__footer-content">
-                    <div class="d-table__footer-content-inner">
-                      <div class="d-table__footer-left">
-                        <div class="d-table__mark">Отмечено 0 из 3</div>
-                        <div
-                          class="d-divider d-divider--vertical d-divider--big d-divider--black hidden-800"
-                        ></div>
-                        <div class="d-field-wrapper d-table__footer-all">
-                          <label class="d-switch" for="products1">
-                            <input
-                              type="checkbox"
-                              name="products1"
-                              id="products1"
-                              class="d-switch__input"
-                            />
-                            <div class="d-switch__circle"></div>
-                          </label>
-                          <label for="products1" class="d-switch__label d-table__footer-all-label"
-                            >Выбрать все элементы на всех страницах
-                          </label>
-                        </div>
-                      </div>
-                      <div class="d-table__footer-right">
-                        <ul class="d-pagination d-table__footer-right-pagination">
-                          <li class="d-pagination__item">1</li>
-                          <li class="d-pagination__item">2</li>
-                          <li class="d-pagination__item">3</li>
-                          <li class="d-pagination__item d-pagination__item--active">4</li>
-                          <li class="d-pagination__item">+</li>
-                        </ul>
-                        <button class="d-select hidden-1200">
-                          <span class="d-select__title">Задать вручную</span>
-                          <i class="d-icon-angle-rounded-bottom d-select__arrow"></i>
-                        </button>
-                        <button class="d-select d-select--squared visible-1200">
-                          <span class="d-select__title">Задать вручную</span>
-                          <i class="d-icon-angle-rounded-bottom d-select__arrow"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </TabPanel>
@@ -598,14 +360,51 @@
         </TabPanels>
       </Tabs>
     </div>
+    <teleport to="body">
+      <customModal v-model="this.chooseConditionsModal" class="collection__modal">
+        <h2>Выберите тип условия</h2>
+        <div class="chips">
+          <div
+            class="chip"
+            v-for="(item, index) in termsChips"
+            :key="index"
+            :class="{ 'collection__modal-chip-active': item.active === true }"
+          >
+            <button class="collection__modal-chips" @click.prevent="activeChip(index)">
+              {{ item.name }}
+            </button>
+          </div>
+        </div>
+        <div class="collection__modal-buttons">
+          <button
+            type="button"
+            href="#"
+            class="d-button d-button-primary d-button--sm-shadow collection__modal-cansel"
+            @click.prevent="this.chooseConditionsModal = false"
+          >
+            Отмена
+          </button>
+          <button
+            type="button"
+            href="#"
+            class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
+            @click.prevent="addTerms()"
+          >
+            Ok
+          </button>
+        </div>
+      </customModal>
+    </teleport>
   </section>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
+import MultiSelect from 'primevue/multiselect'
 import SelectInput from 'primevue/select'
 import Checkbox from 'primevue/checkbox'
+import TreeSelect from 'primevue/treeselect'
 import Tabs from 'primevue/tabs'
 import TabList from 'primevue/tablist'
 import TabPanels from 'primevue/tabpanels'
@@ -627,17 +426,36 @@ export default {
     DropZone,
     SelectInput,
     Checkbox,
+    MultiSelect,
+    TreeSelect,
     BaseTable,
+  },
+  props: {
+    pagination_items_per_page: {
+      type: Number,
+      default: 25,
+    },
+    pagination_offset: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
       loading: true,
+      productLoading: false,
       collectionData: {
         store_id: 0,
+        update: false,
+        terms: {
+          include: [],
+          exclude: [],
+        },
+        type: 1,
+        file: [],
       },
-      tabException: true,
+      tabException: false,
       type: 1,
-      terms: [],
       term: '1',
       chooseConditionsModal: false,
       tabs: {
@@ -655,39 +473,95 @@ export default {
         },
       },
       termsChips: [
-        { name: 'Категории', active: false, placeholder: 'Выберите категории' },
+        { name: 'Категории', active: false, placeholder: 'Выберите категории', key: 'categories' },
         {
           name: 'Категории системы интеграции',
           active: false,
           placeholder: 'Выберите категории системы интеграции',
+          key: 'out_categories',
         },
-        { name: 'Теги', active: false, placeholder: 'Выберите теги' },
-        { name: 'Бренды', active: false, placeholder: 'Выберите бренды' },
+        { name: 'Теги', active: false, placeholder: 'Выберите теги', key: 'tags' },
+        { name: 'Бренды', active: false, placeholder: 'Выберите бренды', key: 'brands' },
       ],
-      termsData: [],
+      terms: {
+        include: {},
+        exclude: {},
+      },
       apply: [],
       tags: [],
-      vendors: [],
       catalog_our: [],
       catalog: [],
       products: {},
       selected: {},
       total: 0,
+      page: 1,
       ids: [],
-      filter: {
-        name: '',
-      },
       black_list: {},
       updateKey: 0,
       files: null,
       showDropZone: false,
+      filters: {
+        name: {
+          name: 'Наименование, артикул',
+          placeholder: 'Наименование, артикул',
+          type: 'text',
+        },
+      },
+      table_data: {
+        remain_id: {
+          label: 'ID',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        article: {
+          label: 'Артикул',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        name: {
+          label: 'Наименование',
+          type: 'text',
+        },
+        brand: {
+          label: 'Бренд',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        category: {
+          label: 'Категория',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        tags: {
+          label: 'Теги',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        actions: {
+          label: 'Действия',
+          type: 'actions',
+          sort: false,
+          class: 'cell_centeralign',
+          available: {
+            delete: {
+              icon: 'pi pi-trash',
+              label: 'Удалить',
+            },
+          },
+        },
+      },
     }
   },
   methods: {
     ...mapActions({
       getCollection: 'warehouse/getCollection',
       unsetCollection: 'warehouse/unsetCollection',
+      buildCollection: 'warehouse/buildCollection',
       getOrgStores: 'org/getOrgStores',
+      getOurVendors: 'addition/getOurVendors',
+      getCatalogs: 'addition/getCatalogs',
+      getOutCatalogs: 'addition/getOutCatalogs',
+      getTags: 'addition/getTags',
     }),
     openChooseConditionsModal() {
       for (let i = 0; i < this.termsChips.length; ++i) {
@@ -713,34 +587,39 @@ export default {
       }
     },
     addTerms() {
+      let mode = 'include'
+      if (this.tabException) {
+        mode = 'exclude'
+      }
       for (let i = 0; i < this.termsChips.length; ++i) {
         if (this.termsChips[i].active == true) {
-          this.termsData.push({
+          this.collectionData.terms[mode].push({
             term: i + 1,
             placeholder: this.termsChips[i].placeholder,
-            tags: [],
-            vendors: [],
-            catalog: [],
-            catalog_our: [],
+            key: this.termsChips[i].key,
+            value: [],
           })
-          ;(this.term = '1'), (this.apply = [])
         }
       }
       this.chooseConditionsModal = false
     },
     deleteTerms(index) {
-      this.termsData.splice(index, 1)
-      //this.updateBuild()
+      let mode = 'include'
+      if (this.tabException) {
+        mode = 'exclude'
+      }
+      this.collectionData.terms[mode].splice(index, 1)
+      this.updateBuild()
     },
     parseFile(files, xhr) {
-      console.log(files)
-      console.log(xhr)
       const callback = (e) => {
         const res = JSON.parse(e)
-        console.log(res)
         if (res.data.files[0].name) {
           this.files = res.data.files[0]
+          this.collectionData.file = this.files.name
           this.showDropZone = false
+          this.page = 1
+          this.updateBuild()
         }
       }
       xhr.onreadystatechange = () => {
@@ -753,13 +632,72 @@ export default {
       this.files = null
       this.showDropZone = true
     },
+    updateStore() {
+      this.getTags({
+        store_id: this.collectionData.store_id,
+      })
+      this.getOutCatalogs({
+        store_id: this.collectionData.store_id,
+      })
+      this.getOurVendors({
+        store_id: this.collectionData.store_id,
+      })
+      this.page = 1
+      this.updateBuild()
+    },
+    updateBuild() {
+      this.productLoading = true
+      this.buildCollection({
+        store_id: this.collectionData.store_id,
+        terms: this.collectionData.terms,
+        page: this.page,
+        perpage: this.pagination_items_per_page,
+        filter: this.filter,
+        type: this.collectionData.type,
+        file: this.collectionData.file,
+      }).then(() => {
+        this.productLoading = false
+      })
+    },
+    filter(data) {
+      this.productLoading = true
+      this.buildCollection({
+        store_id: this.collectionData.store_id,
+        terms: this.collectionData.terms,
+        page: this.page,
+        perpage: this.pagination_items_per_page,
+        filter: data.filter,
+        type: this.collectionData.type,
+        file: this.collectionData.file,
+      }).then(() => {
+        this.productLoading = false
+      })
+    },
+    paginate(data) {
+      this.productLoading = true
+      this.page = data.page
+      this.buildCollection({
+        store_id: this.collectionData.store_id,
+        terms: this.collectionData.terms,
+        page: this.page,
+        perpage: this.pagination_items_per_page,
+        filter: data.filter,
+        type: this.collectionData.type,
+        file: this.collectionData.file,
+      }).then(() => {
+        this.productLoading = false
+      })
+    },
   },
   mounted() {
     this.getOrgStores().then(() => {
+      this.getCatalogs()
       if (this.$route.params.collection_id) {
         this.getCollection({
           collection_id: this.$route.params.collection_id,
         }).then(() => {
+          this.updateStore()
+          this.updateBuild()
           this.loading = false
         })
       } else {
@@ -769,7 +707,12 @@ export default {
   },
   computed: {
     ...mapGetters({
+      groupTags: 'addition/tags',
+      catalogs: 'addition/catalogs',
+      out_catalogs: 'addition/out_catalogs',
+      our_vendors: 'addition/our_vendors',
       collection: 'warehouse/collection',
+      collectionBuild: 'warehouse/collectionBuild',
       orgStores: 'org/orgStores',
     }),
   },
@@ -777,16 +720,38 @@ export default {
     collection: function (newVal) {
       this.collectionData = newVal
     },
+    'collectionData.store_id': function (newVal) {
+      if (newVal) {
+        this.updateStore()
+      }
+    },
     orgStores: function (newVal) {
       this.stores = []
       for (let i = 0; i < newVal.items.length; i++) {
         this.stores.push({ label: newVal.items[i].name, value: Number(newVal.items[i].id) })
       }
     },
+    groupTags: function (newVal) {
+      this.tags = newVal.map((tag) => ({ label: tag, value: tag }))
+    },
   },
 }
 </script>
 <style lang="scss">
+.products-collection-wrapper {
+  width: 100%;
+}
+
+.collection__block-conditions-category-actions .p-multiselect {
+  width: 100%;
+  max-width: 300px;
+}
+
+.collection__block-conditions-category-actions .p-treeselect {
+  width: 100%;
+  max-width: 400px;
+}
+
 .collection__block {
   gap: 54px;
 }
