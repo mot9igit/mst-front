@@ -24,7 +24,7 @@
         :items_data="orgStores.items"
         :total="orgStores.total"
         :table_data="this.table_stores"
-        @deleteElem="deleteElem"
+
       />
     </div>
 
@@ -117,885 +117,11 @@
                 @filter="filter"
                 @sort="filter"
                 @paginate="paginate"
+                class="warehouse-analysis__products"
 
             >
             </BaseTable>
 
-    <div class="warehouse-analysis__filters">
-      <div class="d-input d-input--light test-input">
-        <input
-          type="text"
-          placeholder="Наименование, артикул"
-          name="date"
-          class="d-input__field test-input-field"
-        />
-        <div class="d-input__actions">
-          <button class="d-icon-wrapper test-input-button">
-            <i class="d-icon-search-big"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="d-input d-input--light test-input">
-        <input
-          type="text"
-          placeholder="Дней без движения"
-          name="date"
-          class="d-input__field test-input-field"
-        />
-        <div class="d-input__actions">
-          <button class="d-icon-wrapper test-input-button">
-            <i class="d-icon-angle-rounded-top"></i>
-          </button>
-          <div class="d-divider d-divider--vertical d-input__actions-divider"></div>
-          <button class="d-icon-wrapper test-input-button">
-            <i class="d-icon-angle-rounded-bottom"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="d-input d-input--light test-input">
-        <input
-          type="text"
-          placeholder="Выберите производителя"
-          name="date"
-          class="d-input__field test-input-field"
-        />
-        <div class="d-input__actions">
-          <button class="d-icon-wrapper test-input-button">
-            <i class="d-icon-angle-rounded-bottom"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="d-input d-input--light test-input">
-        <input
-          type="text"
-          placeholder="Выберите категорию"
-          name="date"
-          class="d-input__field test-input-field"
-        />
-        <div class="d-input__actions">
-          <button class="d-icon-wrapper test-input-button">
-            <i class="d-icon-angle-rounded-bottom"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="d-radio__container warehouse-analysis__radio-container">
-      <div class="d-radio__wrapper warehouse-analysis__radio-wrapper">
-        <label for="test-radio1" class="d-radio warehouse-analysis__radio">
-          <input
-            type="radio"
-            name="test-radios"
-            id="test-radio1"
-            class="d-radio__input warehouse-analysis__radio-input"
-          />
-        </label>
-
-        <label for="test-radio1" class="d-radio__label warehouse-analysis__radio-label"
-          >Только отрицательные значения</label
-        >
-      </div>
-      <div class="d-radio__wrapper warehouse-analysis__radio-wrapper">
-        <label for="test-radio2" class="d-radio warehouse-analysis__radio">
-          <input
-            type="radio"
-            name="test-radios"
-            id="test-radio2"
-            class="d-radio__input warehouse-analysis__radio-input"
-          />
-        </label>
-        <label for="test-radio2" class="d-radio__label warehouse-analysis__radio-label"
-          >Только в наличии</label
-        >
-      </div>
-    </div>
-
-    <table class="d-table d-table--head-col-divider warehouse-analysis__table2">
-      <thead class="d-table__head warehouse-analysis__table2-head">
-        <tr class="d-table__row warehouse-analysis__table2-row">
-          <th class="d-table__head-col warehouse-analysis__table2-hcol">Бренд</th>
-          <th class="d-table__head-col warehouse-analysis__table2-hcol">Артикул</th>
-          <th class="d-table__head-col warehouse-analysis__table2-hcol">Покупатель</th>
-          <th class="d-table__head-col warehouse-analysis__table2-hcol">
-            <div class="d-table__head-col-block">
-              <span>Продаж<br />за 30 дней</span>
-              <i class="d-icon-swap d-table__head-col-block-icon"></i>
-            </div>
-          </th>
-          <th class="d-table__head-col warehouse-analysis__table2-hcol">Инициатор</th>
-          <th class="d-table__head-col warehouse-analysis__table2-hcol">
-            <div class="d-table__head-col-block d-table__head-col-block--alt">
-              <span>Цена<br />товара</span>
-              <i
-                class="d-icon-swap d-table__head-col-block-icon d-table__head-col-block-icon--alt"
-              ></i>
-            </div>
-          </th>
-          <th class="d-table__head-col warehouse-analysis__table2-hcol">
-            Прогноз остатков<br />на завтра / 7 дней
-          </th>
-          <th class="d-table__head-col warehouse-analysis__table2-hcol">График</th>
-          <th class="d-table__head-col warehouse-analysis__table2-hcol">Статус</th>
-          <th class="d-table__head-col warehouse-analysis__table2-hcol">Активен</th>
-          <th class="d-table__head-col warehouse-analysis__table2-hcol">Скидки</th>
-          <th class="d-table__head-col warehouse-analysis__table2-hcol"></th>
-        </tr>
-      </thead>
-      <tbody class="d-table__body warehouse-analysis__table2-body">
-        <tr class="d-table__row warehouse-analysis__table2-row">
-          <td class="d-table__col warehouse-analysis__table2-col"></td>
-          <td class="d-table__col warehouse-analysis__table2-col"></td>
-          <td class="d-table__col warehouse-analysis__table2-col"></td>
-          <td class="d-table__col warehouse-analysis__table2-col"></td>
-          <td class="d-table__col warehouse-analysis__table2-col"></td>
-          <td class="d-table__col warehouse-analysis__table2-col"></td>
-          <td class="d-table__col warehouse-analysis__table2-col"></td>
-          <td class="d-table__col warehouse-analysis__table2-col"></td>
-          <td class="d-table__col warehouse-analysis__table2-col"></td>
-          <td class="d-table__col warehouse-analysis__table2-col"></td>
-          <td class="d-table__col warehouse-analysis__table2-col"></td>
-          <td class="d-table__col warehouse-analysis__table2-col"></td>
-        </tr>
-        <tr class="d-table__row warehouse-analysis__table2-row">
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-image-wrapper">
-              <img src="/icons/logo.svg" alt="" class="warehouse-analysis__table2-image" />
-              <i class="d-icon-info warehouse-analysis__table2-image-badge"></i>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">34.55.65653</td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-buyer">
-              <div class="warehouse-analysis__table2-buyer-image-wrapper">
-                <img
-                  src="/icons/spo-logo.svg"
-                  alt=""
-                  class="warehouse-analysis__table2-buyer-image"
-                />
-              </div>
-              <span>Спец Проф Оборудование</span>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <b>234</b>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-initiator">
-              <p class="warehouse-analysis__table2-initiator-label">Инициатор</p>
-              <p class="warehouse-analysis__table2-initiator-text">МСТ</p>
-              <p class="warehouse-analysis__table2-initiator-text">Ксения</p>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">1 750.00 ₽</td>
-          <td class="d-table__col warehouse-analysis__table2-col">994 / 994</td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <img src="/images/line-chart.png" alt="" />
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--wait">
-              В пути
-            </div>
-            <!-- <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--cancelled">В пути</div> -->
-            <!-- <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--completed">В пути</div> -->
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-check-wrapper">
-              <div class="warehouse-analysis__table2-check">
-                <i class="d-icon-check"></i>
-              </div>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-discount-container">
-              <div class="d-tooltip__container">
-                <div class="warehouse-analysis__table2-discount">
-                  <label
-                    class="d-switch warehouse-analysis__table2-discount-switch"
-                    for="test-switch"
-                  >
-                    <input
-                      type="checkbox"
-                      name="test-switch"
-                      id="test-switch"
-                      class="d-switch__input warehouse-analysis__table2-discount-input"
-                      disabled
-                    />
-                    <div class="d-switch__circle warehouse-analysis__table2-discount-circle"></div>
-                  </label>
-                  <span>14 дней отсрочки</span>
-                </div>
-
-                <div class="d-tooltip d-tooltip--top">
-                  <div class="d-tooltip__content warehouse-analysis__table2-tooltip-content">
-                    <div class="warehouse-analysis__table2-tooltip-image-wrapper">
-                      <img
-                        src="/images/promo.png"
-                        alt=""
-                        class="warehouse-analysis__table2-tooltip-image"
-                      />
-                    </div>
-                    <p class="warehouse-analysis__table2-tooltip-title">Индивидуальная акция</p>
-                    <div class="warehouse-analysis__table2-tooltip-badge-container">
-                      <div class="warehouse-analysis__table2-tooltip-badge">
-                        <label
-                          class="d-switch warehouse-analysis__table2-tooltip-badge-switch"
-                          for="test-switch"
-                        >
-                          <input
-                            type="checkbox"
-                            name="test-switch"
-                            id="test-switch"
-                            class="d-switch__input warehouse-analysis__table2-tooltip-badge-input"
-                            disabled
-                          />
-                          <div
-                            class="d-switch__circle warehouse-analysis__table2-tooltip-badge-circle"
-                          ></div>
-                        </label>
-                        <span>14 дней отсрочки</span>
-                      </div>
-                      <div class="warehouse-analysis__table2-tooltip-badge">
-                        <i
-                          class="d-icon-percent-rounded warehouse-analysis__table2-tooltip-badge-icon"
-                        ></i>
-                        <span>25%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="warehouse-analysis__table2-discount">
-                <i class="d-icon-percent-rounded warehouse-analysis__table2-discount-icon"></i>
-                <span>25%</span>
-              </div>
-
-              <div class="warehouse-analysis__table2-discount">
-                <span>0₽</span>
-                <span>Доставка</span>
-              </div>
-
-              <div
-                class="warehouse-analysis__table2-discount warehouse-analysis__table2-discount--alt"
-              >
-                <span>+8</span>
-                <span>Еще</span>
-              </div>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-actions">
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-eye"></i>
-              </button>
-              <div
-                class="d-divider d-divider--vertical d-divider--no-margin warehouse-analysis__table2-actions-divider"
-              ></div>
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-pen2"></i>
-              </button>
-              <div
-                class="d-divider d-divider--vertical d-divider--no-margin warehouse-analysis__table2-actions-divider"
-              ></div>
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-trash"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-        <tr class="d-table__row warehouse-analysis__table2-row">
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-image-wrapper">
-              <img src="/icons/logo.svg" alt="" class="warehouse-analysis__table2-image" />
-              <i class="d-icon-info warehouse-analysis__table2-image-badge"></i>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">34.55.65653</td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-buyer">
-              <div class="warehouse-analysis__table2-buyer-image-wrapper">
-                <img
-                  src="/icons/spo-logo.svg"
-                  alt=""
-                  class="warehouse-analysis__table2-buyer-image"
-                />
-              </div>
-              <span>Спец Проф Оборудование</span>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <b>234</b>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-initiator">
-              <p class="warehouse-analysis__table2-initiator-label">Инициатор</p>
-              <p class="warehouse-analysis__table2-initiator-text">МСТ</p>
-              <p class="warehouse-analysis__table2-initiator-text">Ксения</p>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">1 750.00 ₽</td>
-          <td class="d-table__col warehouse-analysis__table2-col">994 / 994</td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <img src="/images/line-chart.png" alt="" />
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--wait">
-              В пути
-            </div>
-            <!-- <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--cancelled">В пути</div> -->
-            <!-- <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--completed">В пути</div> -->
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-check-wrapper">
-              <div class="warehouse-analysis__table2-check">
-                <i class="d-icon-check"></i>
-              </div>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-discount-container">
-              <div class="d-tooltip__container">
-                <div class="warehouse-analysis__table2-discount">
-                  <label
-                    class="d-switch warehouse-analysis__table2-discount-switch"
-                    for="test-switch"
-                  >
-                    <input
-                      type="checkbox"
-                      name="test-switch"
-                      id="test-switch"
-                      class="d-switch__input warehouse-analysis__table2-discount-input"
-                      disabled
-                    />
-                    <div class="d-switch__circle warehouse-analysis__table2-discount-circle"></div>
-                  </label>
-                  <span>14 дней отсрочки</span>
-                </div>
-
-                <div class="d-tooltip d-tooltip--top">
-                  <div class="d-tooltip__content warehouse-analysis__table2-tooltip-content">
-                    <div class="warehouse-analysis__table2-tooltip-image-wrapper">
-                      <img
-                        src="/images/promo.png"
-                        alt=""
-                        class="warehouse-analysis__table2-tooltip-image"
-                      />
-                    </div>
-                    <p class="warehouse-analysis__table2-tooltip-title">Индивидуальная акция</p>
-                    <div class="warehouse-analysis__table2-tooltip-badge-container">
-                      <div class="warehouse-analysis__table2-tooltip-badge">
-                        <label
-                          class="d-switch warehouse-analysis__table2-tooltip-badge-switch"
-                          for="test-switch"
-                        >
-                          <input
-                            type="checkbox"
-                            name="test-switch"
-                            id="test-switch"
-                            class="d-switch__input warehouse-analysis__table2-tooltip-badge-input"
-                            disabled
-                          />
-                          <div
-                            class="d-switch__circle warehouse-analysis__table2-tooltip-badge-circle"
-                          ></div>
-                        </label>
-                        <span>14 дней отсрочки</span>
-                      </div>
-                      <div class="warehouse-analysis__table2-tooltip-badge">
-                        <i
-                          class="d-icon-percent-rounded warehouse-analysis__table2-tooltip-badge-icon"
-                        ></i>
-                        <span>25%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="warehouse-analysis__table2-discount">
-                <i class="d-icon-percent-rounded warehouse-analysis__table2-discount-icon"></i>
-                <span>25%</span>
-              </div>
-
-              <div class="warehouse-analysis__table2-discount">
-                <span>0₽</span>
-                <span>Доставка</span>
-              </div>
-
-              <div
-                class="warehouse-analysis__table2-discount warehouse-analysis__table2-discount--alt"
-              >
-                <span>+8</span>
-                <span>Еще</span>
-              </div>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-actions">
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-eye"></i>
-              </button>
-              <div
-                class="d-divider d-divider--vertical d-divider--no-margin warehouse-analysis__table2-actions-divider"
-              ></div>
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-pen2"></i>
-              </button>
-              <div
-                class="d-divider d-divider--vertical d-divider--no-margin warehouse-analysis__table2-actions-divider"
-              ></div>
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-trash"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-        <tr class="d-table__row warehouse-analysis__table2-row">
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-image-wrapper">
-              <img src="/icons/logo.svg" alt="" class="warehouse-analysis__table2-image" />
-              <i class="d-icon-info warehouse-analysis__table2-image-badge"></i>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">34.55.65653</td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-buyer">
-              <div class="warehouse-analysis__table2-buyer-image-wrapper">
-                <img
-                  src="/icons/spo-logo.svg"
-                  alt=""
-                  class="warehouse-analysis__table2-buyer-image"
-                />
-              </div>
-              <span>Спец Проф Оборудование</span>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <b>234</b>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-initiator">
-              <p class="warehouse-analysis__table2-initiator-label">Инициатор</p>
-              <p class="warehouse-analysis__table2-initiator-text">МСТ</p>
-              <p class="warehouse-analysis__table2-initiator-text">Ксения</p>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">1 750.00 ₽</td>
-          <td class="d-table__col warehouse-analysis__table2-col">994 / 994</td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <img src="/images/line-chart.png" alt="" />
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--wait">
-              В пути
-            </div>
-            <!-- <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--cancelled">В пути</div> -->
-            <!-- <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--completed">В пути</div> -->
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-check-wrapper">
-              <div class="warehouse-analysis__table2-check">
-                <i class="d-icon-check"></i>
-              </div>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-discount-container">
-              <div class="d-tooltip__container">
-                <div class="warehouse-analysis__table2-discount">
-                  <label
-                    class="d-switch warehouse-analysis__table2-discount-switch"
-                    for="test-switch"
-                  >
-                    <input
-                      type="checkbox"
-                      name="test-switch"
-                      id="test-switch"
-                      class="d-switch__input warehouse-analysis__table2-discount-input"
-                      disabled
-                    />
-                    <div class="d-switch__circle warehouse-analysis__table2-discount-circle"></div>
-                  </label>
-                  <span>14 дней отсрочки</span>
-                </div>
-
-                <div class="d-tooltip d-tooltip--top">
-                  <div class="d-tooltip__content warehouse-analysis__table2-tooltip-content">
-                    <div class="warehouse-analysis__table2-tooltip-image-wrapper">
-                      <img
-                        src="/images/promo.png"
-                        alt=""
-                        class="warehouse-analysis__table2-tooltip-image"
-                      />
-                    </div>
-                    <p class="warehouse-analysis__table2-tooltip-title">Индивидуальная акция</p>
-                    <div class="warehouse-analysis__table2-tooltip-badge-container">
-                      <div class="warehouse-analysis__table2-tooltip-badge">
-                        <label
-                          class="d-switch warehouse-analysis__table2-tooltip-badge-switch"
-                          for="test-switch"
-                        >
-                          <input
-                            type="checkbox"
-                            name="test-switch"
-                            id="test-switch"
-                            class="d-switch__input warehouse-analysis__table2-tooltip-badge-input"
-                            disabled
-                          />
-                          <div
-                            class="d-switch__circle warehouse-analysis__table2-tooltip-badge-circle"
-                          ></div>
-                        </label>
-                        <span>14 дней отсрочки</span>
-                      </div>
-                      <div class="warehouse-analysis__table2-tooltip-badge">
-                        <i
-                          class="d-icon-percent-rounded warehouse-analysis__table2-tooltip-badge-icon"
-                        ></i>
-                        <span>25%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="warehouse-analysis__table2-discount">
-                <i class="d-icon-percent-rounded warehouse-analysis__table2-discount-icon"></i>
-                <span>25%</span>
-              </div>
-
-              <div class="warehouse-analysis__table2-discount">
-                <span>0₽</span>
-                <span>Доставка</span>
-              </div>
-
-              <div
-                class="warehouse-analysis__table2-discount warehouse-analysis__table2-discount--alt"
-              >
-                <span>+8</span>
-                <span>Еще</span>
-              </div>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-actions">
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-eye"></i>
-              </button>
-              <div
-                class="d-divider d-divider--vertical d-divider--no-margin warehouse-analysis__table2-actions-divider"
-              ></div>
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-pen2"></i>
-              </button>
-              <div
-                class="d-divider d-divider--vertical d-divider--no-margin warehouse-analysis__table2-actions-divider"
-              ></div>
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-trash"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-        <tr class="d-table__row warehouse-analysis__table2-row">
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-image-wrapper">
-              <img src="/icons/logo.svg" alt="" class="warehouse-analysis__table2-image" />
-              <i class="d-icon-info warehouse-analysis__table2-image-badge"></i>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">34.55.65653</td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-buyer">
-              <div class="warehouse-analysis__table2-buyer-image-wrapper">
-                <img
-                  src="/icons/spo-logo.svg"
-                  alt=""
-                  class="warehouse-analysis__table2-buyer-image"
-                />
-              </div>
-              <span>Спец Проф Оборудование</span>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <b>234</b>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-initiator">
-              <p class="warehouse-analysis__table2-initiator-label">Инициатор</p>
-              <p class="warehouse-analysis__table2-initiator-text">МСТ</p>
-              <p class="warehouse-analysis__table2-initiator-text">Ксения</p>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">1 750.00 ₽</td>
-          <td class="d-table__col warehouse-analysis__table2-col">994 / 994</td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <img src="/images/line-chart.png" alt="" />
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--wait">
-              В пути
-            </div>
-            <!-- <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--cancelled">В пути</div> -->
-            <!-- <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--completed">В пути</div> -->
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-check-wrapper">
-              <div class="warehouse-analysis__table2-check">
-                <i class="d-icon-check"></i>
-              </div>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-discount-container">
-              <div class="d-tooltip__container">
-                <div class="warehouse-analysis__table2-discount">
-                  <label
-                    class="d-switch warehouse-analysis__table2-discount-switch"
-                    for="test-switch"
-                  >
-                    <input
-                      type="checkbox"
-                      name="test-switch"
-                      id="test-switch"
-                      class="d-switch__input warehouse-analysis__table2-discount-input"
-                      disabled
-                    />
-                    <div class="d-switch__circle warehouse-analysis__table2-discount-circle"></div>
-                  </label>
-                  <span>14 дней отсрочки</span>
-                </div>
-
-                <div class="d-tooltip d-tooltip--top">
-                  <div class="d-tooltip__content warehouse-analysis__table2-tooltip-content">
-                    <div class="warehouse-analysis__table2-tooltip-image-wrapper">
-                      <img
-                        src="/images/promo.png"
-                        alt=""
-                        class="warehouse-analysis__table2-tooltip-image"
-                      />
-                    </div>
-                    <p class="warehouse-analysis__table2-tooltip-title">Индивидуальная акция</p>
-                    <div class="warehouse-analysis__table2-tooltip-badge-container">
-                      <div class="warehouse-analysis__table2-tooltip-badge">
-                        <label
-                          class="d-switch warehouse-analysis__table2-tooltip-badge-switch"
-                          for="test-switch"
-                        >
-                          <input
-                            type="checkbox"
-                            name="test-switch"
-                            id="test-switch"
-                            class="d-switch__input warehouse-analysis__table2-tooltip-badge-input"
-                            disabled
-                          />
-                          <div
-                            class="d-switch__circle warehouse-analysis__table2-tooltip-badge-circle"
-                          ></div>
-                        </label>
-                        <span>14 дней отсрочки</span>
-                      </div>
-                      <div class="warehouse-analysis__table2-tooltip-badge">
-                        <i
-                          class="d-icon-percent-rounded warehouse-analysis__table2-tooltip-badge-icon"
-                        ></i>
-                        <span>25%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="warehouse-analysis__table2-discount">
-                <i class="d-icon-percent-rounded warehouse-analysis__table2-discount-icon"></i>
-                <span>25%</span>
-              </div>
-
-              <div class="warehouse-analysis__table2-discount">
-                <span>0₽</span>
-                <span>Доставка</span>
-              </div>
-
-              <div
-                class="warehouse-analysis__table2-discount warehouse-analysis__table2-discount--alt"
-              >
-                <span>+8</span>
-                <span>Еще</span>
-              </div>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-actions">
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-eye"></i>
-              </button>
-              <div
-                class="d-divider d-divider--vertical d-divider--no-margin warehouse-analysis__table2-actions-divider"
-              ></div>
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-pen2"></i>
-              </button>
-              <div
-                class="d-divider d-divider--vertical d-divider--no-margin warehouse-analysis__table2-actions-divider"
-              ></div>
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-trash"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-        <tr class="d-table__row warehouse-analysis__table2-row">
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-image-wrapper">
-              <img src="/icons/logo.svg" alt="" class="warehouse-analysis__table2-image" />
-              <i class="d-icon-info warehouse-analysis__table2-image-badge"></i>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">34.55.65653</td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-buyer">
-              <div class="warehouse-analysis__table2-buyer-image-wrapper">
-                <img
-                  src="/icons/spo-logo.svg"
-                  alt=""
-                  class="warehouse-analysis__table2-buyer-image"
-                />
-              </div>
-              <span>Спец Проф Оборудование</span>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <b>234</b>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-initiator">
-              <p class="warehouse-analysis__table2-initiator-label">Инициатор</p>
-              <p class="warehouse-analysis__table2-initiator-text">МСТ</p>
-              <p class="warehouse-analysis__table2-initiator-text">Ксения</p>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">1 750.00 ₽</td>
-          <td class="d-table__col warehouse-analysis__table2-col">994 / 994</td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <img src="/images/line-chart.png" alt="" />
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--wait">
-              В пути
-            </div>
-            <!-- <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--cancelled">В пути</div> -->
-            <!-- <div class="warehouse-analysis__table2-badge warehouse-analysis__table2-badge--completed">В пути</div> -->
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-check-wrapper">
-              <div class="warehouse-analysis__table2-check">
-                <i class="d-icon-check"></i>
-              </div>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-discount-container">
-              <div class="d-tooltip__container">
-                <div class="warehouse-analysis__table2-discount">
-                  <label
-                    class="d-switch warehouse-analysis__table2-discount-switch"
-                    for="test-switch"
-                  >
-                    <input
-                      type="checkbox"
-                      name="test-switch"
-                      id="test-switch"
-                      class="d-switch__input warehouse-analysis__table2-discount-input"
-                      disabled
-                    />
-                    <div class="d-switch__circle warehouse-analysis__table2-discount-circle"></div>
-                  </label>
-                  <span>14 дней отсрочки</span>
-                </div>
-
-                <div class="d-tooltip d-tooltip--top">
-                  <div class="d-tooltip__content warehouse-analysis__table2-tooltip-content">
-                    <div class="warehouse-analysis__table2-tooltip-image-wrapper">
-                      <img
-                        src="/images/promo.png"
-                        alt=""
-                        class="warehouse-analysis__table2-tooltip-image"
-                      />
-                    </div>
-                    <p class="warehouse-analysis__table2-tooltip-title">Индивидуальная акция</p>
-                    <div class="warehouse-analysis__table2-tooltip-badge-container">
-                      <div class="warehouse-analysis__table2-tooltip-badge">
-                        <label
-                          class="d-switch warehouse-analysis__table2-tooltip-badge-switch"
-                          for="test-switch"
-                        >
-                          <input
-                            type="checkbox"
-                            name="test-switch"
-                            id="test-switch"
-                            class="d-switch__input warehouse-analysis__table2-tooltip-badge-input"
-                            disabled
-                          />
-                          <div
-                            class="d-switch__circle warehouse-analysis__table2-tooltip-badge-circle"
-                          ></div>
-                        </label>
-                        <span>14 дней отсрочки</span>
-                      </div>
-                      <div class="warehouse-analysis__table2-tooltip-badge">
-                        <i
-                          class="d-icon-percent-rounded warehouse-analysis__table2-tooltip-badge-icon"
-                        ></i>
-                        <span>25%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="warehouse-analysis__table2-discount">
-                <i class="d-icon-percent-rounded warehouse-analysis__table2-discount-icon"></i>
-                <span>25%</span>
-              </div>
-
-              <div class="warehouse-analysis__table2-discount">
-                <span>0₽</span>
-                <span>Доставка</span>
-              </div>
-
-              <div
-                class="warehouse-analysis__table2-discount warehouse-analysis__table2-discount--alt"
-              >
-                <span>+8</span>
-                <span>Еще</span>
-              </div>
-            </div>
-          </td>
-          <td class="d-table__col warehouse-analysis__table2-col">
-            <div class="warehouse-analysis__table2-actions">
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-eye"></i>
-              </button>
-              <div
-                class="d-divider d-divider--vertical d-divider--no-margin warehouse-analysis__table2-actions-divider"
-              ></div>
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-pen2"></i>
-              </button>
-              <div
-                class="d-divider d-divider--vertical d-divider--no-margin warehouse-analysis__table2-actions-divider"
-              ></div>
-              <button class="warehouse-analysis__table2-actions-button">
-                <i class="d-icon-trash"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </section>
 </template>
 <script>
@@ -1024,10 +150,16 @@ export default {
       modalAddStore: false,
       productsData: [],
       productsTotal: 0,
+      color: '#757575',
 			table_stores: {
         name: {
           label: 'Название',
           type: 'link',
+          link_to: 'warehouseReviewStore',
+          link_params: {
+              id: this.$route.params.id,
+              store_id: 'id',
+          },
           class: 'cell_review-stores-name',
           items: ['name_short','address'],
         },
@@ -1036,18 +168,18 @@ export default {
 					type: "boolean",
           class: 'cell_centeralign cell_review-stores-active',
 				},
-        actions: {
-          label: '',
-          type: 'actions',
-          sort: false,
-          available: {
-            delete: {
-              icon: 'pi pi-trash',
-              label: 'Удалить',
-            },
-          },
-          class: 'cell_rightalign cell_review-stores-trash',
-        },
+        //actions: {
+        //  label: '',
+        //  type: 'actions',
+        //  sort: false,
+        //  available: {
+        //    delete: {
+        //      icon: 'pi pi-trash',
+        //      label: 'Удалить',
+        //    },
+        //  },
+        //  class: 'cell_rightalign cell_review-stores-trash',
+        //},
       },
       form: {
         name: '',
@@ -1091,57 +223,68 @@ export default {
         product_table_data: {
           image: {
             label: 'Фото',
-            type: 'image'
+            type: 'image',
+            class: 'cell_centeralign',
           },
           article: {
             label: 'Артикул',
             type: 'text',
-            sort: true
+            sort: true,
+            class: 'cell_centeralign',
           },
           name: {
             label: 'Наименование',
             type: 'text',
-            sort: true
+            sort: true,
+            class: 'cell_centeralign',
           },
           price: {
             label: 'Цена товара',
             type: 'text',
-            sort: true
+            sort: true,
+            class: 'cell_centeralign',
           },
           available: {
             label: 'Остаток сейчас',
             type: 'text',
-            sort: true
+            sort: true,
+            class: 'cell_centeralign',
           },
           sales_30: {
             label: 'Продаж за 30 дней',
             type: 'text',
-            sort: true
+            sort: true,
+            class: 'cell_centeralign',
           },
           purchase_speed: {
             label: 'Скорость продажи шт/день',
             type: 'text',
-            sort: true
+            sort: true,
+            class: 'cell_centeralign',
           },
           out_of_stock_days: {
             label: 'Дней с Out Of Stock',
             type: 'text',
-            sort: true
+            sort: true,
+            class: 'cell_centeralign',
           },
           remains_history: {
             label: 'Изменение остатков',
             type: 'gist',
-            sort: false
+            sort: false,
+            class: 'cell_centeralign',
           },
           no_money: {
             label: 'Упущенная выручка',
             type: 'text',
-            sort: true
+            sort: true,
+            class: 'cell_centeralign',
           },
           forecast_all: {
             label: 'Прогноз остатков на завтра / 7 дней',
             type: 'text',
-            sort: true
+            sort: true,
+            class: 'cell_centeralign',
           }
         },
         page: 1,
@@ -1210,6 +353,23 @@ export default {
     products: function(newVal){
       this.productsData = newVal.products
       this.productsTotal = newVal.total
+      if (typeof newVal === 'object') {
+          this.avg_info.remains = newVal.avg_info?.remains
+          if (Object.prototype.hasOwnProperty.call(newVal.avg_info, 'no_money')) {
+            this.avg_info.no_money = newVal.avg_info.no_money
+          } else {
+            this.avg_info.no_money = 0
+          }
+          if (Object.prototype.hasOwnProperty.call(newVal.avg_info, 'sales_speed')) {
+            this.avg_info.sales_speed = newVal.avg_info.sales_speed
+          } else {
+            this.avg_info.sales_speed = 0
+          }
+      } else {
+          this.avg_info.remains = 0
+          this.avg_info.no_money = 0
+          this.avg_info.sales_speed = 0
+      }
     },
     vendors: function(newVal) {
       this.products_filters.vendor.values = newVal
@@ -1221,19 +381,20 @@ export default {
 }
 </script>
 <style lang="scss">
+/* восстановить, если появляется возможность удалить склад
 .warehouse-analysis__table .d-table__head .d-table__head-col:last-child:before{
   display:none;
-}
+}*/
 .warehouse-analysis__table .d-table__head .d-table__head-col:nth-child(2),.warehouse-analysis__table .d-table__row .d-table__col:nth-child(2){
   min-width: 40%;
   width: 40%;
 }
-.warehouse-analysis__table .d-table__row .d-table__col:first-child .router-link-active{
+.warehouse-analysis__table .d-table__row .d-table__col:first-child a{
   display: flex;
   align-items: center;
   gap: 0;
 }
-.warehouse-analysis__table .d-table__row .d-table__col:first-child .router-link-active .multyitem_cell:first-child{
+.warehouse-analysis__table .d-table__row .d-table__col:first-child a .multyitem_cell:first-child{
   font-size: 16px;
   font-weight: 600;
   padding-right: 32px;
@@ -1241,7 +402,7 @@ export default {
   position:relative;
 }
 
-.warehouse-analysis__table .d-table__row .d-table__col:first-child .router-link-active .multyitem_cell:last-child{
+.warehouse-analysis__table .d-table__row .d-table__col:first-child a .multyitem_cell:last-child{
   color: #757575;
   font-size: 14px;
   font-weight: 400;
@@ -1249,7 +410,7 @@ export default {
   padding-left: 52px;
   position:relative;
 }
-.warehouse-analysis__table .d-table__row .d-table__col:first-child .router-link-active .multyitem_cell:first-child::after {
+.warehouse-analysis__table .d-table__row .d-table__col:first-child a .multyitem_cell:first-child::after {
     content: "";
     position: absolute;
     top: 50%;
@@ -1259,7 +420,7 @@ export default {
     height: var(--d-table-col-divider-height);
     background-color: rgba(117, 117, 117, 0.4588235294);
 }
-.warehouse-analysis__table .d-table__row .d-table__col:first-child .router-link-active .multyitem_cell:last-child::before {
+.warehouse-analysis__table .d-table__row .d-table__col:first-child a .multyitem_cell:last-child::before {
   content: '\e00b';
   font-family: 'Iconly';
   position: absolute;
@@ -1320,4 +481,37 @@ export default {
     border: 1px solid #282828;
     color:  #fff;
 }
+.warehouse-analysis__products .dart-row .d-col-xl-6:last-child,.warehouse-analysis__products .dart-row .d-col-xl-6:nth-last-child(2){
+  margin-top: 16px;
+}
+.warehouse-analysis__products .p-inputtext, .warehouse-analysis__products .p-inputnumber, .warehouse-analysis__products .p-select{
+  width: 100%;
+}
+.warehouse-analysis__products .dart-row .d-col-xl-6:nth-child(-n+3){
+  padding-right:20px;
+}
+.warehouse-analysis__products .dart-row .d-col-xl-6:nth-child(2),.warehouse-analysis__products .dart-row .d-col-xl-6:nth-child(3),.warehouse-analysis__products .dart-row .d-col-xl-6:nth-child(4),
+.warehouse-analysis__products .dart-row .d-col-xl-6:nth-child(6){
+  padding-left:20px;
+}
+.warehouse-analysis__products .p-checkbox{
+  margin-right: 16px;
+}
+.warehouse-analysis__products .dart-form-group label{
+  font-size: 16px;
+  color: #757575;
+}
+.warehouse-analysis__products .p-floatlabel label, .warehouse-analysis__products .p-inputtext::placeholder, .warehouse-analysis__products .p-placeholder{
+  font-size: 14px;
+  color: #757575;
+}
+.warehouse-analysis__products .form_input_group:after {
+  content: '\e003';
+  font-family: 'Iconly' !important;
+  position: absolute;
+  font-size: 16.8px;
+  top: calc(50% - 8.4px);
+  right: 30px;
+}
+
 </style>
