@@ -188,11 +188,11 @@ export default {
         collapse: this.collapsed('warehouse'),
         to: { name: 'WarehouseCollections', params: { id: this.$route.params.id } },
         children: [
-          // {
-          //   name: 'Анализ склада',
-          //   icon: 'd-icon-line-chart',
-          //   to: { name: 'warehouseReview', params: { id: this.$route.params.id } },
-          // },
+           {
+             name: 'Анализ склада',
+             icon: 'd-icon-line-chart',
+             to: { name: 'warehouseReview', params: { id: this.$route.params.id } },
+           },
           {
             name: 'Коллекции товара',
             icon: 'd-icon-layers',
