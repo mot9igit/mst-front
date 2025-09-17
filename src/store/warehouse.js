@@ -11,6 +11,12 @@ export default {
     collectionBuild: {
       items: [],
       total: -1,
+      totalAll: 0,
+    },
+    collectionBuildExclude: {
+      items: [],
+      total: -1,
+      totalAll: 0,
     },
     products: {},
     order: {},
@@ -46,40 +52,52 @@ export default {
       }
       return response
     },
-    async buildCollection({ commit }, { store_id, terms, page, perpage, filter, type, file }) {
+    async buildCollection(
+      { commit },
+      { typeData, store_id, terms, page, perpage, filter, type, typeExclude, file, fileExclude },
+    ) {
       const data = {
         action: 'build',
         id: router.currentRoute._value.params.id,
+        typeData: typeData,
         store_id: store_id,
         terms: terms,
         page: page,
         perpage: perpage,
         filter: filter,
         type: type,
+        typeExclude: typeExclude,
         file: file,
+        fileExclude: fileExclude,
       }
       const response = await api.warehouse.buildCollection(data)
       if (response) {
-        commit('SET_COLLECTION_BUILD', response.data)
+        if (typeData == 1) {
+          commit('SET_COLLECTION_BUILD', response.data)
+        }
+        if (typeData == 2) {
+          commit('SET_COLLECTION_EXCLUDE_BUILD', response.data)
+        }
       }
       return response
     },
     async setCollection(
       store,
-      { store_id, type, name, description, terms, black_list, file, apply },
+      { store_id, terms, type, typeExclude, name, description, update, file, fileExclude },
     ) {
       const data = {
         action: 'set',
         id: router.currentRoute._value.params.id,
         group_id: router.currentRoute._value.params.collection_id,
         store_id: store_id,
+        terms: terms,
         type: type,
+        typeExclude: typeExclude,
         name: name,
         description: description,
-        terms: terms,
-        black_list: Object.keys(black_list),
         file: file,
-        apply: apply.length > 0 ? true : false,
+        fileExclude: fileExclude,
+        update: update,
       }
       const response = await api.warehouse.setCollection(data)
       return response
@@ -141,6 +159,9 @@ export default {
     SET_COLLECTION_BUILD: (state, data) => {
       state.collectionBuild = data.data
     },
+    SET_COLLECTION_EXCLUDE_BUILD: (state, data) => {
+      state.collectionBuildExclude = data.data
+    },
     UNSET_COLLECTIONS: (state) => {
       state.collections = []
     },
@@ -160,6 +181,9 @@ export default {
     },
     collectionBuild(state) {
       return state.collectionBuild
+    },
+    collectionBuildExclude(state) {
+      return state.collectionBuildExclude
     },
   },
 }

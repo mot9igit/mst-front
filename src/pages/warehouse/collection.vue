@@ -6,7 +6,27 @@
     </div>
 
     <div class="collection__header">
-      <h1 class="collection__header-title">Мои коллекции</h1>
+      <div class="dart-row">
+        <div class="d-col-md-12">
+          <h1 class="collection__header-title" v-if="this.$route.params.collection_id">
+            Редактирование коллекции {{ collectionData.name }}
+          </h1>
+          <h1 class="collection__header-title" v-else>Создание коллекции</h1>
+        </div>
+        <div class="d-col-md-12 d-flex d-flex-end">
+          <a
+            href="#"
+            @click.prevent="saveCollection()"
+            class="d-button d-button-primary d-button--sm-shadow d-button-wholesaleprices"
+            :class="{ 'd-button--loading': loading }"
+            :disabled="loading"
+          >
+            <span class="d-button__text">
+              <i class="pi pi-save"></i> <span>Сохранить Коллекцию</span>
+            </span>
+          </a>
+        </div>
+      </div>
     </div>
     <Loader v-if="loading" />
     <div class="collection__block-container">
@@ -68,14 +88,16 @@
             <button class="collection__tabs-link" @click.prevent="tabException = false">
               <span>Добавленные товары</span>
               <span class="collection__tabs-badge">{{
-                this.collectionBuild.total > 0 ? this.collectionBuild.total : 0
+                this.collectionBuild.totalAll > 0 ? this.collectionBuild.totalAll : 0
               }}</span>
             </button>
           </Tab>
           <Tab class="d-tab2" :class="{ 'd-tab2--active': tabException }" :value="tabException">
             <button class="collection__tabs-link" @click.prevent="tabException = true">
               <span>Исключения</span>
-              <span class="collection__tabs-badge">8</span>
+              <span class="collection__tabs-badge">{{
+                this.collectionBuildExclude.totalAll > 0 ? this.collectionBuildExclude.totalAll : 0
+              }}</span>
             </button>
           </Tab>
         </TabList>
@@ -349,14 +371,269 @@
                   :table_data="this.table_data"
                   :filters="this.filters"
                   @deleteElem="deleteElem"
-                  @filter="filter"
-                  @sort="filter"
+                  @filter="filterCollection"
+                  @sort="filterCollection"
                   @paginate="paginate"
                 />
               </div>
             </div>
           </TabPanel>
-          <TabPanel v-else> </TabPanel>
+          <TabPanel v-else>
+            <div class="collection__block collection__block--alt">
+              <div class="collection__block-inner">
+                <div class="collection__block-title-wrapper">
+                  <p class="collection__block-title">Выберите условие исключения товаров</p>
+                </div>
+                <div class="collection__block-conditions">
+                  <TabList
+                    v-for="(item, index) in tabs"
+                    :key="index"
+                    class="collection__block-radio-container"
+                  >
+                    <Tab
+                      :value="item.value"
+                      class="d-radio__wrapper collection__block-radio-wrapper"
+                      v-if="item.value != 3"
+                    >
+                      <label :for="index" class="d-radio collection__block-radio">
+                        <input
+                          type="radio"
+                          :name="index"
+                          :id="index"
+                          class="d-radio__input collection__block-radio-input"
+                          :value="item.value"
+                          v-model="this.collectionData.typeExclude"
+                        />
+                      </label>
+                      <label :for="index" class="d-radio__label collection__block-radio-label"
+                        >{{ item.title }}
+                      </label>
+                    </Tab>
+                  </TabList>
+                </div>
+              </div>
+
+              <TabPanel v-if="this.collectionData.typeExclude == 1">
+                <div class="collection__block-conditions-category">
+                  <div class="collection__block-conditions-category-content">
+                    <div class="collection__block-title-wrapper">
+                      <p class="collection__block-title">&nbsp;</p>
+                    </div>
+                    <div class="d-radio__wrapper collection__block-radio-wrapper">
+                      <button
+                        class="d-button d-button-primary d-button--no-shadow collection__block-conditions-add-button"
+                        @click.prevent="openChooseConditionsModal()"
+                      >
+                        <i
+                          class="d-icon-plus-flat collection__block-conditions-add-button-icon"
+                        ></i>
+                        <span>Добавить условие</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div
+                    class="collection__block-conditions-category-content"
+                    v-for="(item, index) in this.collectionData.terms.exclude"
+                    :key="index"
+                  >
+                    <div class="collection__block-title-wrapper">
+                      <p class="collection__block-title">
+                        Условие:
+                        {{
+                          item.term == '1'
+                            ? 'Категории'
+                            : item.term == '2'
+                              ? 'Категории системы интеграции'
+                              : item.term == '3'
+                                ? 'Теги'
+                                : 'Бренды'
+                        }}
+                      </p>
+                    </div>
+                    <div
+                      class="collection__block-conditions-category-actions"
+                      v-if="item.term == '1'"
+                    >
+                      <TreeSelect
+                        :key="this.updateKey"
+                        @change="updateBuild"
+                        selectionMode="checkbox"
+                        v-model="collectionData.terms.exclude[index].value"
+                        :options="this.catalogs"
+                        placeholder="Выберите категории"
+                      />
+                      <div
+                        class="d-divider d-divider--vertical d-divider--no-margi collection__block-conditions-category-actions-divider"
+                      ></div>
+                      <button
+                        class="collection__block-conditions-category-actions-button"
+                        @click.prevent="deleteTerms(index)"
+                      >
+                        <i class="d-icon-trash"></i>
+                      </button>
+                    </div>
+                    <div
+                      class="collection__block-conditions-category-actions"
+                      v-if="item.term == '2'"
+                    >
+                      <TreeSelect
+                        :key="this.updateKey"
+                        @change="updateBuild"
+                        selectionMode="checkbox"
+                        v-model="collectionData.terms.exclude[index].value"
+                        :options="this.out_catalogs"
+                        placeholder="Выберите категории"
+                      />
+                      <div
+                        class="d-divider d-divider--vertical d-divider--no-margi collection__block-conditions-category-actions-divider"
+                      ></div>
+                      <button
+                        class="collection__block-conditions-category-actions-button"
+                        @click.prevent="deleteTerms(index)"
+                      >
+                        <i class="d-icon-trash"></i>
+                      </button>
+                    </div>
+                    <div
+                      class="collection__block-conditions-category-actions"
+                      v-if="item.term == '3'"
+                    >
+                      <MultiSelect
+                        v-model="collectionData.terms.exclude[index].value"
+                        :options="tags"
+                        option-label="label"
+                        option-value="value"
+                        placeholder="Выберите теги"
+                        filter
+                        display="chip"
+                        @change="updateBuild"
+                      />
+                      <div
+                        class="d-divider d-divider--vertical d-divider--no-margi collection__block-conditions-category-actions-divider"
+                      ></div>
+                      <button
+                        class="collection__block-conditions-category-actions-button"
+                        @click.prevent="deleteTerms(index)"
+                      >
+                        <i class="d-icon-trash"></i>
+                      </button>
+                    </div>
+                    <div
+                      class="collection__block-conditions-category-actions"
+                      v-if="item.term == '4'"
+                    >
+                      <MultiSelect
+                        v-model="collectionData.terms.exclude[index].value"
+                        :options="this.our_vendors"
+                        option-label="name"
+                        option-value="id"
+                        placeholder="Выберите бренды"
+                        filter
+                        display="chip"
+                        @change="updateBuild"
+                      />
+                      <div
+                        class="d-divider d-divider--vertical d-divider--no-margi collection__block-conditions-category-actions-divider"
+                      ></div>
+                      <button
+                        class="collection__block-conditions-category-actions-button"
+                        @click.prevent="deleteTerms(index)"
+                      >
+                        <i class="d-icon-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </TabPanel>
+
+              <TabPanel v-if="this.collectionData.typeExclude == 2">
+                <div class="collection__files" v-if="filesExclude && !showDropZoneExclude">
+                  <div class="collection__files-header">
+                    <p class="collection__files-header-title">Загруженные файлы:</p>
+
+                    <button
+                      class="d-button d-button-primary d-button-primary-small d-button--no-shadow collection__files-header-button"
+                      @click.prevent="this.showDropZoneExclude = true"
+                    >
+                      <i class="d-icon-download collection__files-header-button-icon"></i>
+                      <span>Загрузить файл</span>
+                    </button>
+                  </div>
+
+                  <div class="collection__files-list">
+                    <div class="collection__files-list-item">
+                      <div class="collection__files-list-item-title-wrapper">
+                        <i class="d-icon-excel collection__files-list-item-title-icon"></i>
+                        <p class="collection__files-list-item-title">{{ filesExclude.name }}</p>
+                      </div>
+
+                      <div class="collection__files-list-item-actions">
+                        <a
+                          :href="filesExclude.original_href"
+                          target="_blank"
+                          class="d-button d-button-quaternary d-button-quaternary-small d-button--no-shadow collection__files-list-item-actions-button"
+                        >
+                          Смотреть файл
+                        </a>
+                        <div
+                          class="d-divider d-divider--vertical d-divider--no-margin collection__files-list-item-actions-divider"
+                        ></div>
+                        <button
+                          class="collection__files-list-item-actions-delete"
+                          @click.prevent="deleteFileExclude()"
+                        >
+                          <i class="d-icon-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <DropZone
+                  v-else
+                  class="d-upload collection__upload"
+                  :maxFiles="Number(1)"
+                  url="/rest/file_upload.php?upload_groups=xlsx"
+                  :uploadOnDrop="true"
+                  :multipleUpload="true"
+                  :acceptedFiles="['xlsx', 'xlsx']"
+                  :parallelUpload="1"
+                  @sending="parseFileExclude"
+                  v-bind="args"
+                >
+                  <template v-slot:message>
+                    <div class="collection__upload-title-wrapper">
+                      <i class="pi pi-cloud-upload"></i>
+                      <b class="d-upload__title collection__upload-title"
+                        >Перетащите файл в эту область</b
+                      >
+                      <p class="d-upload__description collection__upload-description">
+                        Вы также можете загрузить файл,
+                        <span class="d-link d-upload__link collection__upload-link"
+                          >нажав сюда</span
+                        >
+                      </p>
+                    </div>
+                  </template>
+                </DropZone>
+              </TabPanel>
+              <div class="products-collection-wrapper">
+                <BaseTable
+                  :items_data="this.collectionBuildExclude.items"
+                  :total="this.collectionBuildExclude.total"
+                  :pagination_items_per_page="this.pagination_items_per_page"
+                  :pagination_offset="this.pagination_offset"
+                  :page="this.pageExclude"
+                  :table_data="this.table_data"
+                  :filters="this.filters"
+                  @deleteElem="deleteElemExclude"
+                  @filter="filterCollectionExclude"
+                  @sort="filterCollectionExclude"
+                  @paginate="paginateExclude"
+                />
+              </div>
+            </div>
+          </TabPanel>
         </TabPanels>
       </Tabs>
     </div>
@@ -445,6 +722,8 @@ export default {
       loading: true,
       productLoading: false,
       collectionData: {
+        name: '',
+        description: '',
         store_id: 0,
         update: false,
         terms: {
@@ -452,7 +731,9 @@ export default {
           exclude: [],
         },
         type: 1,
+        typeExclude: 1,
         file: [],
+        fileExclude: [],
       },
       tabException: false,
       type: 1,
@@ -483,11 +764,6 @@ export default {
         { name: 'Теги', active: false, placeholder: 'Выберите теги', key: 'tags' },
         { name: 'Бренды', active: false, placeholder: 'Выберите бренды', key: 'brands' },
       ],
-      terms: {
-        include: {},
-        exclude: {},
-      },
-      apply: [],
       tags: [],
       catalog_our: [],
       catalog: [],
@@ -495,11 +771,16 @@ export default {
       selected: {},
       total: 0,
       page: 1,
+      pageExclude: 1,
       ids: [],
       black_list: {},
       updateKey: 0,
       files: null,
+      filesExclude: null,
       showDropZone: false,
+      showDropZoneExclude: false,
+      filter: '',
+      filterExclude: '',
       filters: {
         name: {
           name: 'Наименование, артикул',
@@ -537,24 +818,25 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
-        actions: {
-          label: 'Действия',
-          type: 'actions',
-          sort: false,
-          class: 'cell_centeralign',
-          available: {
-            delete: {
-              icon: 'pi pi-trash',
-              label: 'Удалить',
-            },
-          },
-        },
+        // actions: {
+        //   label: 'Действия',
+        //   type: 'actions',
+        //   sort: false,
+        //   class: 'cell_centeralign',
+        //   available: {
+        //     delete: {
+        //       icon: 'pi pi-trash',
+        //       label: 'Удалить',
+        //     },
+        //   },
+        // },
       },
     }
   },
   methods: {
     ...mapActions({
       getCollection: 'warehouse/getCollection',
+      setCollection: 'warehouse/setCollection',
       unsetCollection: 'warehouse/unsetCollection',
       buildCollection: 'warehouse/buildCollection',
       getOrgStores: 'org/getOrgStores',
@@ -628,9 +910,30 @@ export default {
         }
       }
     },
+    parseFileExclude(files, xhr) {
+      const callback = (e) => {
+        const res = JSON.parse(e)
+        if (res.data.files[0].name) {
+          this.filesExclude = res.data.files[0]
+          this.collectionData.fileExclude = this.filesExclude.name
+          this.showDropZoneExclude = false
+          this.page = 1
+          this.updateBuild()
+        }
+      }
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          callback(xhr.response)
+        }
+      }
+    },
     deleteFile() {
       this.files = null
       this.showDropZone = true
+    },
+    deleteFileExclude() {
+      this.filesExclude = null
+      this.showDropZoneExclude = true
     },
     updateStore() {
       this.getTags({
@@ -647,28 +950,68 @@ export default {
     },
     updateBuild() {
       this.productLoading = true
+      // Выбранные товары
       this.buildCollection({
+        typeData: 1,
         store_id: this.collectionData.store_id,
         terms: this.collectionData.terms,
         page: this.page,
         perpage: this.pagination_items_per_page,
         filter: this.filter,
         type: this.collectionData.type,
+        typeExclude: this.collectionData.typeExclude,
         file: this.collectionData.file,
+        fileExclude: this.collectionData.fileExclude,
       }).then(() => {
-        this.productLoading = false
+        // Исключения
+        this.buildCollection({
+          typeData: 2,
+          store_id: this.collectionData.store_id,
+          terms: this.collectionData.terms,
+          page: this.pageExclude,
+          perpage: this.pagination_items_per_page,
+          filter: this.filterExclude,
+          type: this.collectionData.type,
+          typeExclude: this.collectionData.typeExclude,
+          file: this.collectionData.file,
+          fileExclude: this.collectionData.fileExclude,
+        }).then(() => {
+          this.productLoading = false
+        })
       })
     },
-    filter(data) {
+    filterCollection(data) {
       this.productLoading = true
+      this.page = 1
       this.buildCollection({
+        typeData: 1,
         store_id: this.collectionData.store_id,
         terms: this.collectionData.terms,
         page: this.page,
         perpage: this.pagination_items_per_page,
         filter: data.filter,
         type: this.collectionData.type,
+        typeExclude: this.collectionData.typeExclude,
         file: this.collectionData.file,
+        fileExclude: this.collectionData.fileExclude,
+      }).then(() => {
+        this.productLoading = false
+      })
+    },
+    filterCollectionExclude(data) {
+      this.productLoading = true
+      this.pageExclude = 1
+      this.buildCollection({
+        typeData: 2,
+        store_id: this.collectionData.store_id,
+        terms: this.collectionData.terms,
+        page: this.pageExclude,
+        perpage: this.pagination_items_per_page,
+        filter: data.filter,
+        type: this.collectionData.type,
+        typeExclude: this.collectionData.typeExclude,
+        file: this.collectionData.file,
+        fileExclude: this.collectionData.fileExclude,
       }).then(() => {
         this.productLoading = false
       })
@@ -677,16 +1020,59 @@ export default {
       this.productLoading = true
       this.page = data.page
       this.buildCollection({
+        typeData: 1,
         store_id: this.collectionData.store_id,
         terms: this.collectionData.terms,
         page: this.page,
         perpage: this.pagination_items_per_page,
         filter: data.filter,
         type: this.collectionData.type,
+        typeExclude: this.collectionData.typeExclude,
         file: this.collectionData.file,
+        fileExclude: this.collectionData.fileExclude,
       }).then(() => {
         this.productLoading = false
       })
+    },
+    paginateExclude(data) {
+      this.productLoading = true
+      this.pageExclude = data.page
+      this.buildCollection({
+        typeData: 2,
+        store_id: this.collectionData.store_id,
+        terms: this.collectionData.terms,
+        page: this.pageExclude,
+        perpage: this.pagination_items_per_page,
+        filter: data.filter,
+        type: this.collectionData.type,
+        typeExclude: this.collectionData.typeExclude,
+        file: this.collectionData.file,
+        fileExclude: this.collectionData.fileExclude,
+      }).then(() => {
+        this.productLoading = false
+      })
+    },
+    saveCollection() {
+      this.loading = true
+      const data = {
+        store_id: this.collectionData.store_id,
+        terms: this.collectionData.terms,
+        type: this.collectionData.type,
+        typeExclude: this.collectionData.typeExclude,
+        name: this.collectionData.name,
+        description: this.collectionData.description,
+        file: this.collectionData.file,
+        fileExclude: this.collectionData.fileExclude,
+        update: this.collectionData.update,
+      }
+      this.setCollection(data)
+        .then(() => {
+          this.loading = false
+          this.$router.push({ name: 'WarehouseCollections', params: { id: this.$route.params.id } })
+        })
+        .catch((result) => {
+          console.log(result)
+        })
     },
   },
   mounted() {
@@ -713,12 +1099,21 @@ export default {
       our_vendors: 'addition/our_vendors',
       collection: 'warehouse/collection',
       collectionBuild: 'warehouse/collectionBuild',
+      collectionBuildExclude: 'warehouse/collectionBuildExclude',
       orgStores: 'org/orgStores',
     }),
   },
   watch: {
     collection: function (newVal) {
-      this.collectionData = newVal
+      this.collectionData.name = newVal.name
+      this.collectionData.description = newVal.description
+      this.collectionData.store_id = newVal.store_id
+      this.collectionData.update = newVal.update
+      this.collectionData.type = newVal.type
+      this.collectionData.terms = newVal.properties.terms
+      this.collectionData.typeExclude = newVal.type_exclude
+      this.collectionData.file = newVal.file
+      this.collectionData.fileExclude = newVal.file_exclude
     },
     'collectionData.store_id': function (newVal) {
       if (newVal) {
