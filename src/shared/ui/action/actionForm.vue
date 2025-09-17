@@ -4038,10 +4038,10 @@ export default {
       }
     },
     'form.typeDelay': function (newVal) {
-      if(newVal == 2){
+      if (newVal == 2) {
         this.form.postponementPeriod = 0
         this.form.delay = []
-      }else{
+      } else {
         this.form.postponementPeriod = 0
       }
     },
@@ -4136,7 +4136,11 @@ export default {
         this.form.conditionMinSum = newVal.condition_min_sum
         this.form.conditionMinCount = newVal.condition_SKU
         this.form.conditionMinGeneralCount = newVal.condition_min_count
-        this.form.product_groups = newVal.product_groups
+        if (newVal.product_groups) {
+          this.form.product_groups = newVal.product_groups
+        } else {
+          this.form.product_groups = {}
+        }
         // Берем географию
         this.getRegions({ exclude: this.form.regionsTemp, filter: '' }).then(() => {
           this.regions_all = this.regions.map(function (el) {

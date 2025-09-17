@@ -818,18 +818,18 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
-        actions: {
-          label: 'Действия',
-          type: 'actions',
-          sort: false,
-          class: 'cell_centeralign',
-          available: {
-            delete: {
-              icon: 'pi pi-trash',
-              label: 'Удалить',
-            },
-          },
-        },
+        // actions: {
+        //   label: 'Действия',
+        //   type: 'actions',
+        //   sort: false,
+        //   class: 'cell_centeralign',
+        //   available: {
+        //     delete: {
+        //       icon: 'pi pi-trash',
+        //       label: 'Удалить',
+        //     },
+        //   },
+        // },
       },
     }
   },
