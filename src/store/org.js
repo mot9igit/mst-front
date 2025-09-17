@@ -7,6 +7,7 @@ export default {
     orgActive: {},
     orgs: [],
     orgStores: [],
+    orgStore: [],
     orgprofile: [],
     optVendorsAvailable: {
       items: [],
@@ -45,6 +46,18 @@ export default {
       const response = await api.org.getOrg(data)
       if (response) {
         commit('SET_ORG_STORES', response.data)
+      }
+      return response
+    },
+    async getOrgStore({ commit }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        store_id: router.currentRoute._value.params.store_id,
+        action: 'get/org/store'
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_ORG_STORE', response.data)
       }
       return response
     },
@@ -178,6 +191,9 @@ export default {
     SET_ORG_STORES: (state, data) => {
       state.orgStores = data.data
     },
+    SET_ORG_STORE: (state, data) => {
+      state.orgStore = data.data
+    },
     SET_OPT_VENDORS_AVAILABLE: (state, data) => {
       state.optVendorsAvailable = data.data
     },
@@ -197,6 +213,9 @@ export default {
     },
     orgStores(state) {
       return state.orgStores
+    },
+    orgStore(state) {
+      return state.orgStore
     },
     optVendorsAvailable(state) {
       return state.optVendorsAvailable

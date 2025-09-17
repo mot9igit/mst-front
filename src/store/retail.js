@@ -11,6 +11,10 @@ export default {
     order: {},
     balance: {},
     balance_request: {},
+    organization: [],
+    report_copo: [],
+    cardstatus: [],
+    msproducts: [],
   },
   actions: {
     async getOrders({ commit }, { filter, sort, page, perpage }) {
@@ -117,6 +121,61 @@ export default {
       const response = await api.retail.checkCode(data)
       return response
     },
+    async getOrganization({ commit }) {
+      const data = {
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        id: router.currentRoute._value.params.id,
+      }
+      const response = await api.retail.getOrganization(data)
+      if (response) {
+        commit('SET_ORGANIZATION', response.data)
+      }
+      return response
+    },
+    async getReportCopo({ commit }, { tabledata, filter, filtersdata, page, sort, perpage }) {
+      const data = {
+          id: router.currentRoute._value.params.id,
+          store_id: router.currentRoute._value.params.store_id,
+          type: 'report_copo',
+          filter: filter,
+          filtersdata: filtersdata,
+          tabledata: tabledata,
+          sort: sort,
+          page: page,
+          perpage: perpage
+      }
+      const response = await api.retail.getReportCopo(data)
+      if (response) {
+        commit('SET_REPORT_COPO', response.data)
+      }
+      return response
+    },
+    async getCardstatus({ commit }) {
+      const data = {
+          type: 'cardstatus'
+      }
+      const response = await api.retail.getCardstatus(data)
+      if (response) {
+        commit('SET_CARDSTATUS', response.data)
+      }
+      return response
+    },
+    async getMSProducts({ commit }, { filter, filtersdata, page, sort, perpage }) {
+      const data = {
+          id: router.currentRoute._value.params.id,
+          type: 'msproducts',
+          filter: filter,
+          filtersdata: filtersdata,
+          sort: sort,
+          page: page,
+          perpage: perpage
+      }
+      const response = await api.retail.getMSProducts(data)
+      if (response) {
+        commit('SET_MSPRODUCTS', response.data)
+      }
+      return response
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },
@@ -156,6 +215,18 @@ export default {
     UNSET_SALES: (state) => {
       state.sales = {}
     },
+    SET_ORGANIZATION: (state, data) => {
+      state.organization = data.data
+    },
+    SET_REPORT_COPO: (state, data) => {
+      state.report_copo = data.data
+    },
+    SET_CARDSTATUS: (state, data) => {
+      state.cardstatus = data.data.items
+    },
+    SET_MSPRODUCTS: (state, data) => {
+      state.msproducts = data.data
+    },
   },
   getters: {
     orders(state) {
@@ -172,6 +243,18 @@ export default {
     },
     sales(state) {
       return state.sales
+    },
+    organization (state) {
+      return state.organization
+    },
+    report_copo (state) {
+      return state.report_copo
+    },
+    cardstatus (state) {
+      return state.cardstatus
+    },
+    msproducts (state) {
+      return state.msproducts
     },
   },
 }

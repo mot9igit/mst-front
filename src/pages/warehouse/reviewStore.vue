@@ -192,7 +192,7 @@ components: { Breadcrumbs, Loader, BaseTable },
 		}
   },
   mounted() {
-    this.getOrgStores()
+    this.getOrgStore()
     this.getData({
           page: this.page,
           perpage: this.pagination_items_per_page,
@@ -204,7 +204,7 @@ components: { Breadcrumbs, Loader, BaseTable },
   },
   computed: {
     ...mapGetters({
-      orgStores: 'org/orgStores',
+      orgStore: 'org/orgStore',
       vendors: 'addition/vendors',
       catalogs: 'addition/catalogs',
       products: 'warehouse/products'
@@ -212,7 +212,7 @@ components: { Breadcrumbs, Loader, BaseTable },
   },
   methods: {
     ...mapActions({
-      getOrgStores: 'org/getOrgStores',
+      getOrgStore: 'org/getOrgStore',
       getVendors: 'addition/getVendors',
       getCatalogs: 'addition/getCatalogs',
       getData: 'warehouse/getData'
@@ -270,15 +270,12 @@ components: { Breadcrumbs, Loader, BaseTable },
     catalogs: function(newVal) {
       this.products_filters.catalog.values = newVal
     },
-    orgStores: function(newVal) {
-      let items = newVal.items
-      for (let i = 0; i < items.length; i++) {
-        if(items[i].id == this.$route.params.store_id){
-          this.storeName = items[i].name_short
-          this.storeImage = items[i].image
-          this.storeAddress = items[i].address
-        }
-      }
+    orgStore: function(newVal) {
+
+          this.storeName = newVal.name_short
+          this.storeImage = newVal.image
+          this.storeAddress = newVal.address
+
     }
   }
 }
