@@ -26,6 +26,7 @@ import RetailBalance from '../pages/retail/balance.vue'
 import RetailCompareProducts from '../pages/retail/compareProducts.vue'
 import Warehouse from '../pages/warehouse/index.vue'
 import WarehouseReview from '../pages/warehouse/review.vue'
+import WarehouseReviewStore from '../pages/warehouse/reviewStore.vue'
 import WarehouseCollections from '../pages/warehouse/collections.vue'
 import WarehouseCollection from '../pages/warehouse/collection.vue'
 import WarehouseCustomization from '../pages/warehouse/customization.vue'
@@ -496,17 +497,46 @@ const router = createRouter({
                       label: 'Мой склад',
                       component: Warehouse,
                     },
+                    //{
+                    //  path: 'review',
+                    //  name: 'warehouseReview',
+                    //  props: true,
+                    //  label: 'Анализ склада',
+                    //  component: WarehouseReview,
+                    //  meta: {
+                    //    breadcrumb: {
+                    //      label: 'Анализ склада',
+                    //    },
+                    //  },
+                    //},
                     {
                       path: 'review',
-                      name: 'warehouseReview',
-                      props: true,
-                      label: 'Анализ склада',
-                      component: WarehouseReview,
                       meta: {
                         breadcrumb: {
                           label: 'Анализ склада',
                         },
                       },
+                      children: [
+                        {
+                          path: '',
+                          name: 'warehouseReview',
+                          props: true,
+                          label: 'Анализ склада',
+                          component: WarehouseReview,
+                        },
+                        {
+                          path: ':store_id',
+                          name: 'warehouseReviewStore',
+                          props: true,
+                          label: 'Статистика склада',
+                          component: WarehouseReviewStore,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Статистика склада',
+                            },
+                          },
+                        },
+                      ],
                     },
                     {
                       path: 'collections',
