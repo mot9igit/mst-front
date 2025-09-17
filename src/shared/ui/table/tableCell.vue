@@ -41,11 +41,21 @@
         <span class="cell__success" v-else>Да</span>
       </div>
     </div>
+    <div class="cell_value" v-else-if="cell_data.type == 'boolean_active'" :class="cell_data.class">
+      <div v-if="value[cell_key] == 0">
+        <span class="cell__error-active" v-if="cell_data.calc == 'positive'"><i class="d-icon-minus"></i></span>
+        <span class="cell__error-active" v-else><i class="d-icon-minus"></i></span>
+      </div>
+      <div v-else>
+        <span class="cell__success-active" v-if="cell_data.calc == 'negative'"><i class="d-icon-check"></i></span>
+        <span class="cell__success-active" v-else><i class="d-icon-check"></i></span>
+      </div>
+    </div>
     <div
       class="cell_value"
       :class="cell_key == 'name' ? 'name '+ cell_data.class : cell_data.class"
 
-      v-else-if="cell_data.type == 'link' && !cell_data.items"
+      v-else-if="cell_data.type == 'link' && !cell_data.items && !cell_data.items_incl_img"
     >
       <router-link
         :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
@@ -59,6 +69,27 @@
             {{ value[cell_key].description.text }}
           </span>
         </div>
+      </router-link>
+    </div>
+    <div class="cell_value"
+      v-if="cell_data.type == 'link' && cell_data.items_incl_img"
+      :class="cell_key == 'name' ? 'name '+ cell_data.class : cell_data.class"
+      >
+      <router-link
+        :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
+      >
+      <div class="d-table2__info">
+        <div class="d-table2__info-header">
+          <div class="d-table2__info-header-image-wrapper">
+            <img :src="value[cell_data.items_incl_img[0]]"  class="cell-flex-d-table2__info-header-image-item"/>
+          </div>
+
+          <p class="d-table2__info-header-title">{{ value[cell_data.items_incl_img[1]] }}</p>
+        </div>
+        <div  class="d-table2__info-address">
+          <i class="d-icon-location d-table2__info-address-icon"></i><span>{{ value[cell_data.items_incl_img[2]] }}</span>
+        </div>
+    </div>
       </router-link>
     </div>
     <div class="cell_value"
@@ -401,5 +432,28 @@ export default {
 }
 .cell_centeralign{
   text-align:center;
+}
+.cell__error-active{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ff715b;
+    border-radius: 50%;
+    font-size: 8px;
+    font-weight: 600;
+    width: 18px;
+    height: 18px;
+    margin: 0 auto;
+}
+.cell__success-active{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #cdf0a9;
+    border-radius: 50%;
+    font-size: 8px;
+    width: 18px;
+    height: 18px;
+    margin: 0 auto;
 }
 </style>
