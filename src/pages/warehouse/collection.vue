@@ -359,9 +359,8 @@
                 </DropZone>
               </TabPanel>
 
-              <TabPanel v-if="this.collectionData.type == 3"> </TabPanel>
-
               <div class="products-collection-wrapper">
+                <Loader v-if="productLoading" />
                 <BaseTable
                   :items_data="this.collectionBuild.items"
                   :total="this.collectionBuild.total"
@@ -618,6 +617,7 @@
                 </DropZone>
               </TabPanel>
               <div class="products-collection-wrapper">
+                <Loader v-if="productLoading" />
                 <BaseTable
                   :items_data="this.collectionBuildExclude.items"
                   :total="this.collectionBuildExclude.total"
@@ -626,7 +626,7 @@
                   :page="this.pageExclude"
                   :table_data="this.table_data"
                   :filters="this.filters"
-                  @deleteElem="deleteElemExclude"
+                  @deleteElem="deleteElem"
                   @filter="filterCollectionExclude"
                   @sort="filterCollectionExclude"
                   @paginate="paginateExclude"
@@ -748,10 +748,10 @@ export default {
           value: 2,
           title: 'Загрузить файлом',
         },
-        products: {
-          value: 3,
-          title: 'Все товары',
-        },
+        // products: {
+        //   value: 3,
+        //   title: 'Все товары',
+        // },
       },
       termsChips: [
         { name: 'Категории', active: false, placeholder: 'Выберите категории', key: 'categories' },
@@ -818,18 +818,18 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
-        // actions: {
-        //   label: 'Действия',
-        //   type: 'actions',
-        //   sort: false,
-        //   class: 'cell_centeralign',
-        //   available: {
-        //     delete: {
-        //       icon: 'pi pi-trash',
-        //       label: 'Удалить',
-        //     },
-        //   },
-        // },
+        actions: {
+          label: 'Действия',
+          type: 'actions',
+          sort: false,
+          class: 'cell_centeralign',
+          available: {
+            delete: {
+              icon: 'pi pi-trash',
+              label: 'Удалить',
+            },
+          },
+        },
       },
     }
   },
@@ -839,6 +839,8 @@ export default {
       setCollection: 'warehouse/setCollection',
       unsetCollection: 'warehouse/unsetCollection',
       buildCollection: 'warehouse/buildCollection',
+      clearCollectionData: 'warehouse/clearCollectionData',
+      toggleProductCollection: 'warehouse/toggleProductCollection',
       getOrgStores: 'org/getOrgStores',
       getOurVendors: 'addition/getOurVendors',
       getCatalogs: 'addition/getCatalogs',
@@ -930,10 +932,14 @@ export default {
     deleteFile() {
       this.files = null
       this.showDropZone = true
+      this.collectionData.file = ''
+      this.updateBuild()
     },
     deleteFileExclude() {
       this.filesExclude = null
+      this.collectionData.fileExclude = ''
       this.showDropZoneExclude = true
+      this.updateBuild()
     },
     updateStore() {
       this.getTags({
@@ -1074,21 +1080,39 @@ export default {
           console.log(result)
         })
     },
+    deleteElem(item) {
+      let mode = 'include'
+      if (this.tabException) {
+        mode = 'exclude'
+      }
+      const data = {
+        mode: mode,
+        remain_id: item.remain_id,
+      }
+      this.productLoading = true
+      this.toggleProductCollection(data).then(() => {
+        this.updateBuild().then(() => {
+          this.productLoading = false
+        })
+      })
+    },
   },
   mounted() {
     this.getOrgStores().then(() => {
       this.getCatalogs()
-      if (this.$route.params.collection_id) {
-        this.getCollection({
-          collection_id: this.$route.params.collection_id,
-        }).then(() => {
-          this.updateStore()
-          this.updateBuild()
+      this.clearCollectionData().then(() => {
+        if (this.$route.params.collection_id) {
+          this.getCollection({
+            collection_id: this.$route.params.collection_id,
+          }).then(() => {
+            this.updateStore()
+            this.updateBuild()
+            this.loading = false
+          })
+        } else {
           this.loading = false
-        })
-      } else {
-        this.loading = false
-      }
+        }
+      })
     })
   },
   computed: {
@@ -1112,8 +1136,14 @@ export default {
       this.collectionData.type = newVal.type
       this.collectionData.terms = newVal.properties.terms
       this.collectionData.typeExclude = newVal.type_exclude
-      this.collectionData.file = newVal.file
-      this.collectionData.fileExclude = newVal.file_exclude
+      if (newVal.file) {
+        this.files = newVal.file
+        this.collectionData.file = newVal.file.name
+      }
+      if (newVal.fileExclude) {
+        this.filesExclude = newVal.fileExclude
+        this.collectionData.fileExclude = newVal.file_exclude.name
+      }
     },
     'collectionData.store_id': function (newVal) {
       if (newVal) {
@@ -1135,6 +1165,7 @@ export default {
 <style lang="scss">
 .products-collection-wrapper {
   width: 100%;
+  position: relative;
 }
 
 .collection__block-conditions-category-actions .p-multiselect {

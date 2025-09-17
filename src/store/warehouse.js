@@ -81,6 +81,24 @@ export default {
       }
       return response
     },
+    async clearCollectionData() {
+      const data = {
+        action: 'clear/data',
+        id: router.currentRoute._value.params.id,
+      }
+      const response = await api.warehouse.clearCollectionData(data)
+      return response
+    },
+    async toggleProductCollection(store, { mode, remain_id }) {
+      const data = {
+        action: 'toogle/product',
+        id: router.currentRoute._value.params.id,
+        mode: mode,
+        remain_id: remain_id,
+      }
+      const response = await api.warehouse.toggleProductCollection(data)
+      return response
+    },
     async setCollection(
       store,
       { store_id, terms, type, typeExclude, name, description, update, file, fileExclude },
