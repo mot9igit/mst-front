@@ -61,7 +61,7 @@
             <div class="product-card__stat-content">
               <p class="product-card__stat-name">Доставка</p>
               <p class="product-card__stat-description">
-                за счет {{ offer.payer === '1' ? 'поставщика' : 'покупателя' }}
+                за счет {{ offer.payer == 1 ? 'поставщика' : 'покупателя' }}
               </p>
             </div>
           </div>

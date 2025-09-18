@@ -330,12 +330,7 @@ export default {
         },
         pagetitle: {
           label: 'Наименование',
-          type: 'link',
-          link_to: 'purchasesCatalogSearch',
-          link_params: {
-            id: this.$route.params.id,
-            search: 'pagetitle',
-          },
+          type: 'text',
           sort: true,
           class: 'cell_centeralign',
         },
@@ -447,7 +442,8 @@ export default {
     viewProduct(item) {
       this.$router.push({
         name: 'purchasesCatalogSearch',
-        params: { id: this.$route.params.id, search: item.pagetitle },
+        params: { id: this.$route.params.id },
+        query: { search: item.pagetitle },
       })
     },
   },
@@ -541,22 +537,23 @@ export default {
     gap: 12px;
   }
 }
-.promo-master__footer{
+.promo-master__footer {
   position: fixed;
-  bottom:0;
-  left:0;
+  bottom: 0;
+  left: 0;
 }
 .promo-master__content {
-  padding-bottom:60px;
+  padding-bottom: 60px;
 }
 .promo-master {
-    padding-top: 115px;
+  padding-top: 115px;
 }
 .promo-modal__header {
-    position: absolute;
-    z-index: 1001;
+  position: absolute;
+  z-index: 1001;
 }
-.promotions .promotions__card,.promotions .promotions__card-container{
+.promotions .promotions__card,
+.promotions .promotions__card-container {
   height: 100%;
 }
 </style>

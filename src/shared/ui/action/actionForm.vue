@@ -3193,56 +3193,57 @@ export default {
       },
     }
   },
+  unmounted() {
+    this.unsetAction()
+  },
   mounted() {
-    this.unsetAction().then(() => {
-      this.masterStepInc()
-      this.getCatalogs()
-      // Берем географию
-      this.getRegions({ exclude: [], filter: '' }).then(() => {
-        this.regions_all = this.regions.map(function (el) {
-          return { name: el.label, code: el.key }
-        })
+    this.masterStepInc()
+    this.getCatalogs()
+    // Берем географию
+    this.getRegions({ exclude: [], filter: '' }).then(() => {
+      this.regions_all = this.regions.map(function (el) {
+        return { name: el.label, code: el.key }
       })
-      this.getOrganizations({ exclude: [], filter: '' }).then(() => {
-        this.organizations_all = this.organizations.map(function (el) {
-          return { name: el.name, code: el.id }
-        })
+    })
+    this.getOrganizations({ exclude: [], filter: '' }).then(() => {
+      this.organizations_all = this.organizations.map(function (el) {
+        return { name: el.name, code: el.id }
       })
-      this.getOrgStores()
-      this.getAllActions()
-      this.getActionAdvPages({ type: this.type })
-      if (this.$route.params.action) {
-        this.getAction().then(() => {
-          this.loading = false
-          if (this.form.store_id) {
+    })
+    this.getOrgStores()
+    this.getAllActions()
+    this.getActionAdvPages({ type: this.type })
+    if (this.$route.params.action) {
+      this.getAction().then(() => {
+        this.loading = false
+        if (this.form.store_id) {
+          this.getAvailableProducts({
+            store_id: this.form.store_id,
+            filter: '',
+            page: 1,
+            perpage: this.per_page_small,
+            type: 1,
+          }).then(() => {
             this.getAvailableProducts({
               store_id: this.form.store_id,
               filter: '',
               page: 1,
-              perpage: this.per_page_small,
-              type: 1,
+              perpage: this.per_page,
+              type: 2,
             }).then(() => {
-              this.getAvailableProducts({
-                store_id: this.form.store_id,
-                filter: '',
-                page: 1,
-                perpage: this.per_page,
-                type: 2,
-              }).then(() => {
-                this.productLoading = false
-              })
+              this.productLoading = false
             })
-            this.getProductGroups({
-              store_id: this.form.store_id,
-              filter: '',
-            })
-            this.getActiveActions()
-          }
-        })
-      } else {
-        this.modals.master = true
-      }
-    })
+          })
+          this.getProductGroups({
+            store_id: this.form.store_id,
+            filter: '',
+          })
+          this.getActiveActions()
+        }
+      })
+    } else {
+      this.modals.master = true
+    }
   },
   methods: {
     ...mapActions({
@@ -3374,16 +3375,20 @@ export default {
     delayUpdate() {
       this.delayData.delayPercentSum = 0
       this.delayData.postponementPeriod = 0
-      for (let i = 0; i < this.form.delay.length; i++) {
-        if (this.form.delay[i].percent > 0) {
-          this.delayData.delayPercentSum += Number(this.form.delay[i].percent)
-        } else {
-          this.delayData.delayPercentSum += 100
+      if (this.form.delay) {
+        console.log(this.form.delay)
+        console.log(this.form.delay.length)
+        for (let i = 0; i < this.form.delay.length; i++) {
+          if (this.form.delay[i].percent > 0) {
+            this.delayData.delayPercentSum += Number(this.form.delay[i].percent)
+          } else {
+            this.delayData.delayPercentSum += 100
+          }
+          this.delayData.postponementPeriod =
+            this.delayData.postponementPeriod +
+            this.form.delay[i].day * (this.form.delay[i].percent / 100)
+          this.form.postponementPeriod = this.delayData.postponementPeriod
         }
-        this.delayData.postponementPeriod =
-          this.delayData.postponementPeriod +
-          this.form.delay[i].day * (this.form.delay[i].percent / 100)
-        this.form.postponementPeriod = this.delayData.postponementPeriod
       }
     },
     delayModalClose(e) {
@@ -3454,7 +3459,7 @@ export default {
       }
     },
     filterGroup(data) {
-      console.log(data)
+      // console.log(data)
       this.getProductGroups({
         store_id: this.form.store_id,
         filter: data.filter,
@@ -4014,8 +4019,8 @@ export default {
   },
   watch: {
     'form.start_date': function (newVal) {
-      console.log(newVal + ' ' + this.form.start_date + ' ' + this.form.end_date)
-      console.log(this.form.dates)
+      // console.log(newVal + ' ' + this.form.start_date + ' ' + this.form.end_date)
+      // console.log(this.form.dates)
       if (this.form.end_date) {
         if (newVal < this.form.end_date) {
           this.form.dates[0] = newVal
@@ -4030,8 +4035,8 @@ export default {
     },
     'form.end_date': function (newVal) {
       this.form.dates[1] = newVal
-      console.log(newVal + ' ' + this.form.start_date + ' ' + this.form.end_date)
-      console.log(this.form.dates)
+      // console.log(newVal + ' ' + this.form.start_date + ' ' + this.form.end_date)
+      // console.log(this.form.dates)
       if (newVal < this.form.start_date || !this.form.start_date) {
         this.form.start_date = new Date()
         this.form.dates[0] = new Date()
@@ -4040,9 +4045,15 @@ export default {
     'form.typeDelay': function (newVal) {
       if (newVal == 2) {
         this.form.postponementPeriod = 0
-        this.form.delay = []
+        this.form.delay = [
+          {
+            percent: 100,
+            day: 0,
+          },
+        ]
       } else {
         this.form.postponementPeriod = 0
+        this.delayUpdate()
       }
     },
     // Склады Организации
@@ -4111,8 +4122,8 @@ export default {
         this.form.typePayPercent = newVal.pay_type_percent ? String(newVal.pay_type_percent) : 0
         this.form.typeDelivery = String(newVal.delivery_type)
         this.form.typeDeliveryPercent = Number(newVal.delivery_type_percent)
-        this.form.typeDelay = String(newVal.delay_type)
         this.form.delay = newVal.delay_graph
+        this.form.typeDelay = String(newVal.delay_type)
         this.form.conditionMinSum = newVal.condition_min_sum
         this.form.regions = newVal.regions
         //if(this.form.regions.length && !this.form.regionsTemp.length){
@@ -4138,6 +4149,11 @@ export default {
         this.form.conditionMinGeneralCount = newVal.condition_min_count
         if (newVal.product_groups) {
           this.form.product_groups = newVal.product_groups
+          Object.entries(newVal.product_groups).forEach((value) => {
+            if (value[0]) {
+              this.updateGroups(value[0])
+            }
+          })
         } else {
           this.form.product_groups = {}
         }
@@ -4155,9 +4171,6 @@ export default {
           },
         )
         this.updateStoreData()
-        if (newVal.pg) {
-          this.updateGroups(newVal.pg)
-        }
       }
     },
     allActions: function (newVal) {

@@ -182,14 +182,28 @@
                   </div>
                   <div class="order__item-content-bottom">
                     <div class="order__item-content-bottom-left">
-                      <div class="order__item-prop">
-                        <p class="order__item-prop-label">Отсрочка:&nbsp;</p>
-                        <p class="order__item-prop-value">Предоплата</p>
+                      <div
+                        class="order__item-prop"
+                        v-if="org?.cart_data?.delay_type == 1 && org?.cart_data?.delay == 0"
+                      >
+                        <p class="order__item-prop-label">Предоплата</p>
+                      </div>
+                      <div class="order__item-prop" v-else>
+                        <p class="order__item-prop-label">
+                          {{
+                            org?.cart_data?.delay_type == 1
+                              ? 'Отсрочка:&nbsp;'
+                              : 'Под реализацию:&nbsp;'
+                          }}
+                        </p>
+                        <p class="order__item-prop-value">{{ org?.cart_data?.delay }} дней</p>
                       </div>
                       <div class="d-divider d-divider--vertical order__item-prop-divider"></div>
                       <div class="order__item-prop">
                         <p class="order__item-prop-label">Оплата доставки:&nbsp;</p>
-                        <p class="order__item-prop-value">Покупатель</p>
+                        <p class="order__item-prop-value">
+                          {{ org?.cart_data?.payer == 1 ? 'Поставщик' : 'Покупатель' }}
+                        </p>
                       </div>
                     </div>
                     <div class="order__item-content-bottom-right">
