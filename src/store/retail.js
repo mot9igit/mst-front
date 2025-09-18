@@ -185,6 +185,9 @@ export default {
     unsetSales({ commit }) {
       commit('UNSET_SALES')
     },
+    unsetReportCopo ({ commit }) {
+      commit('UNSET_REPORT_COPO')
+    },
   },
 
   mutations: {
@@ -220,6 +223,9 @@ export default {
     },
     SET_REPORT_COPO: (state, data) => {
       state.report_copo = data.data
+    },
+    UNSET_REPORT_COPO: (state) => {
+      state.report_copo = {}
     },
     SET_CARDSTATUS: (state, data) => {
       state.cardstatus = data.data.items
