@@ -68,7 +68,7 @@
                   <p
                     class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
                   >
-                    Доставка за счет {{ sale.payer === '1' ? 'Поставщика' : 'Покупателя' }}
+                    Доставка за счет {{ sale.payer == '1' ? 'Поставщика' : 'Покупателя' }}
                   </p>
                 </div>
                 <div class="promotions__card-value-container">
@@ -335,12 +335,12 @@ export default {
           class: 'cell_centeralign',
         },
         price_rrc: {
-          label: 'РРЦ',
+          label: 'РРЦ, ₽',
           type: 'text',
           class: 'cell_centeralign',
         },
-        new_price: {
-          label: 'Цена со скидкой',
+        sale: {
+          label: 'Скидка от РРЦ, %',
           type: 'text',
           class: 'cell_centeralign',
         },
