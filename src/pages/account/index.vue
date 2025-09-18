@@ -79,6 +79,10 @@ export default {
       type: String,
       default: '',
     },
+    action: {
+      type: String,
+      default: '',
+    },
     order_id: {
       type: String,
       default: '',
