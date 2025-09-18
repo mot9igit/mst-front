@@ -454,6 +454,14 @@ export default {
         life: 3000,
       })
     },
+    //screenToggle(){
+    //  this.isMobile = localStorage.getItem('global.isMobile')
+    //  if((this.active === true || this.active === '1' || this.active === '0') && this.isMobile === 'false'){
+        // setTimeout(() => {
+        // this.sidebarToggle()
+        //}, 500)
+    //  }
+    //}
   },
   setup() {
     window.onload = function () {
@@ -495,7 +503,6 @@ export default {
       true,
     )
 
-
   },
   watch: {
     orgs: function (newVal) {
@@ -517,7 +524,8 @@ export default {
       this.showRequipment = newVal
     },
     active: function (newVal) {
-      if (newVal === false) {
+      this.isMobile = localStorage.getItem('global.isMobile')
+      if (newVal === false && this.isMobile === true) {
         if (this.showRequipment) {
           this.showRequipment = false
           this.$emit('showRequipment')
