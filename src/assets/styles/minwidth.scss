@@ -133,7 +133,6 @@
                     .d-sheet__overlay.active {
                       top: var(--header-height);
                     }
-
                     @media (width <=1920px) {
                         .header {
                             padding-block: 11px 20px;
@@ -266,6 +265,21 @@
                         }
                         .clients__card-top-mobile {
                             display: none;
+                        }
+                        .d-search .d-search__field {
+                          padding: 5px 180px 5px 21px !important;
+                        }
+                        .header__search-button:before {
+                          content: '';
+                          width: 40px;
+                          height:100%;
+                          background: linear-gradient(270deg, #fff 0%,  #fff 40%, #ffffff00 100%);
+                          position: absolute;
+                          top: 0;
+                          left: -41px;
+                          display: block;
+                          z-index: 3;
+                          pointer-events:none;
                         }
                     }
 
@@ -476,6 +490,21 @@
                         }
                         .shipments .d-col-xl-6 {
                             width: 300px !important;
+                        }
+                        .d-search .d-search__field {
+                          padding: 5px 100px 5px 13px!important;
+                        }
+                        .header__search-button:before {
+                          content: '';
+                          width: 30px;
+                          height:100%;
+                          background: linear-gradient(270deg, #fff 0%,  #fff 40%, #ffffff00 100%);
+                          position: absolute;
+                          top: 0;
+                          left: -31px;
+                          display: block;
+                          z-index: 3;
+                          pointer-events:none;
                         }
                     }
 
@@ -925,11 +954,20 @@
                         .order__item-list {
                             padding-bottom: 24px;
                         }
-                        .order__sheet-overlay {
-                            /*position: fixed;
-                            top: 68px;
-                            left: 40px !important;
-                            border-top-left-radius: 40px;*/
+                        .d-search .d-search__field {
+                          padding: 5px 98px 5px 13px!important;
+                        }
+                        .header__search-button:before {
+                          content: '';
+                          width: 25px;
+                          height:100%;
+                          background: linear-gradient(270deg, #fff 0%,  #fff 40%, #ffffff00 100%);
+                          position: absolute;
+                          top: 0;
+                          left: -26px;
+                          display: block;
+                          z-index: 3;
+                          pointer-events:none;
                         }
                     }
 
@@ -956,7 +994,19 @@
                         .d-search .d-search__field {
                             max-height: 32px !important;
                             height: 32px;
-                            padding: 5px 40px 5px 15px !important;
+                            padding: 5px 45px 5px 15px !important;
+                        }
+                        .header__search-icon-button:before {
+                          content: '';
+                          width: 25px;
+                          height:100%;
+                          background: linear-gradient(270deg, #fff 0%,  #fff 40%, #ffffff00 100%);
+                          position: absolute;
+                          top: 0;
+                          left: -25px;
+                          display: block;
+                          z-index: 3;
+                          pointer-events:none;
                         }
                         .main__content-wrapper .preloader {
                             top: 0px !important;
@@ -2401,6 +2451,18 @@
                     }
 
                     @media (width <=320px) {
+                      .header__search-icon-button:before {
+                          content: '';
+                          width: 20px;
+                          height:100%;
+                          background: linear-gradient(270deg, #fff 0%,  #fff 40%, #ffffff00 100%);
+                          position: absolute;
+                          top: 0;
+                          left: -20px;
+                          display: block;
+                          z-index: 3;
+                          pointer-events:none;
+                        }
                         .content-wrapper {
                             padding-inline: 28px;
                         }
