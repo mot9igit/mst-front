@@ -363,29 +363,29 @@
     <customModal v-model="this.showChangedCount" class="clear_cart">
       <b>На складе не хватает товара</b>
       <p>
-        Пока вы формировали, заказ у Поставщиков изменилось количество товаров на складе. Мы внесли
+        Пока вы формировали заказ, у Поставщиков изменилось количество товаров на складе. Мы внесли
         изменения в ваш заказ в соответствии с остатками продукции на складах. Вам необходимо
         проверить заказ и отправить его снова.
       </p>
-      <div class="kenost-basket-change__info">
-        <div class="kenost-basket-change__h2">Нет на складе:</div>
-        <div class="kenost-basket-change__products">
+      <div class="basket-change__info">
+        <div class="basket-change__h2">Нет на складе:</div>
+        <div class="basket-change__products">
           <div v-for="warehouse in this.basket.data" v-bind:key="warehouse.store_data.id">
             <div v-for="org in warehouse.data" v-bind:key="org.org_data.id">
               <div v-for="store in org.data" v-bind:key="store.warehouse_data.id">
                 <div v-for="(item, p_key) in store.data" v-bind:key="p_key">
                   <div
-                    class="kenost-basket-change__product"
+                    class="basket-change__product"
                     v-if="Number(item.available) - item.count < 0"
                   >
-                    <div class="kenost-basket-change__product-left">
+                    <div class="basket-change__product-left">
                       <img :src="item.image" alt="" />
-                      <div class="kenost-basket-change__product-info">
-                        <div class="kenost-basket-change__product-name">{{ item.name }}</div>
-                        <div class="kenost-basket-change__product-article">{{ item.article }}</div>
+                      <div class="basket-change__product-info">
+                        <div class="basket-change__product-name">{{ item.name }}</div>
+                        <div class="basket-change__product-article">{{ item.article }}</div>
                       </div>
                     </div>
-                    <div class="kenost-basket-change__product-right">
+                    <div class="basket-change__product-right">
                       Нет в наличии: <br />
                       {{ item.available }} шт. <span>из {{ item.count }} шт</span>
                     </div>
@@ -396,7 +396,7 @@
           </div>
         </div>
       </div>
-      <div class="kenost-basket-change__buttons">
+      <div class="basket-change__buttons">
         <div
           class="d-button d-button-primary d-button-primary-small"
           @click="this.showChangedCount = false"
@@ -584,7 +584,7 @@ export default {
     async orderSubmit(orgId) {
       this.loading = true
       this.getBasket().then((response) => {
-        console.log(response.data?.data?.data)
+        // console.log(response.data?.data?.data)
         if (response.data?.data?.data?.cart_data?.not_available) {
           this.loading = false
           this.showChangedCount = true
