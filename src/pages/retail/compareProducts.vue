@@ -6,70 +6,102 @@
     <h2>Сопоставление товаров</h2>
     <Loader v-if="loading" />
     <div class="product-comparison__stats">
-								<div class="product-comparison__stats-top">
+								<div class="product-comparison__stats-top" v-if="prods.all">
 									<div class="product-comparison__stats-block">
 										<p class="product-comparison__stats-block-title">Сопоставление товаров по стоимости</p>
 										<div class="product-comparison__stats-block-content">
-											<img src="/icons/donuts/donut-blue.svg" alt="" class="product-comparison__stats-block-image" />
+											<Chart
+                        type="doughnut"
+                        :data="chartDataMoney"
+                        :options="chartOptions"
+                        class="product-comparison__stats-block-image"
+                      />
 											<div class="product-comparison__stats-block-info">
-												<p class="product-comparison__stats-block-percent">80.54%</p>
+												<p class="product-comparison__stats-block-percent">{{ $filters.round(prods.copo_money_percent) }}%</p>
 												<div class="product-comparison__stats-block-progress product-comparison__stats-block-progress--primary">
 													<div class="product-comparison__stats-block-progress-header">
 														<p class="product-comparison__stats-block-progress-title">Товаров на сумму</p>
-														<p class="product-comparison__stats-block-progress-value">2 123 432 434,45</p>
+														<p class="product-comparison__stats-block-progress-value">{{ prods.summ }}</p>
 													</div>
-													<div class="product-comparison__stats-block-progress-line"></div>
+													<div class="product-comparison__stats-block-progress-line">
+                            <div class="product-comparison__stats-block-progress-line-pink"></div>
+                          </div>
+
 												</div>
 												<div class="product-comparison__stats-block-progress product-comparison__stats-block-progress--secondary">
 													<div class="product-comparison__stats-block-progress-header">
-														<p class="product-comparison__stats-block-progress-title">Товаров на сумму</p>
-														<p class="product-comparison__stats-block-progress-value">2 123 432 434,45</p>
+														<p class="product-comparison__stats-block-progress-title">Товаров сопоставлено на сумму</p>
+														<p class="product-comparison__stats-block-progress-value">{{ prods.summ_copo }}</p>
 													</div>
-													<div class="product-comparison__stats-block-progress-line"></div>
+													<div class="product-comparison__stats-block-progress-line">
+                            <div class="product-comparison__stats-block-progress-line-purple" :style="'width: ' + prods.copo_money_percent + '%;'"></div>
+                          </div>
 												</div>
 											</div>
 										</div>
 									</div>
 									<div class="product-comparison__stats-block">
-										<p class="product-comparison__stats-block-title">Сопоставление товаров по стоимости</p>
+										<p class="product-comparison__stats-block-title">Сопоставленных товаров</p>
 										<div class="product-comparison__stats-block-content">
-											<img src="/icons/donuts/donut-solid-blue.svg" alt="" class="product-comparison__stats-block-image" />
+                      <Chart
+                        type="doughnut"
+                        :data="chartData"
+                        :options="chartOptions"
+                        class="product-comparison__stats-block-image"
+                      />
 											<div class="product-comparison__stats-block-info">
-												<p class="product-comparison__stats-block-percent">80.54%</p>
+												<p class="product-comparison__stats-block-percent">{{ $filters.round(prods.copo_percent) }}%</p>
 												<div class="product-comparison__stats-block-progress product-comparison__stats-block-progress--solid product-comparison__stats-block-progress--primary">
 													<div class="product-comparison__stats-block-progress-header">
-														<p class="product-comparison__stats-block-progress-title">Товаров на сумму</p>
-														<p class="product-comparison__stats-block-progress-value">2 123 432 434,45</p>
+														<p class="product-comparison__stats-block-progress-title">Товаров всего</p>
+														<p class="product-comparison__stats-block-progress-value">{{ prods.all }}</p>
 													</div>
-													<div class="product-comparison__stats-block-progress-line"></div>
+													<div class="product-comparison__stats-block-progress-line">
+                            <div class="product-comparison__stats-block-progress-line-red"></div>
+                          </div>
 												</div>
 												<div
 													class="product-comparison__stats-block-progress product-comparison__stats-block-progress--solid product-comparison__stats-block-progress--secondary"
 												>
 													<div class="product-comparison__stats-block-progress-header">
-														<p class="product-comparison__stats-block-progress-title">Товаров на сумму</p>
-														<p class="product-comparison__stats-block-progress-value">2 123 432 434,45</p>
+														<p class="product-comparison__stats-block-progress-title">Товаров сопоставлено</p>
+														<p class="product-comparison__stats-block-progress-value">{{ prods.copo }}</p>
 													</div>
-													<div class="product-comparison__stats-block-progress-line"></div>
+													<div class="product-comparison__stats-block-progress-line">
+                            <div class="product-comparison__stats-block-progress-line-purple-dark" :style="'width: ' + prods.copo_percent + '%;'"></div>
+                          </div>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 
-								<div class="product-comparison__stats-bottom">
+								<div class="product-comparison__stats-bottom"  v-if="products.status">
 									<div class="product-comparison__stats-item product-comparison__stats-item--blue">
 										<div class="product-comparison__stats-item-header">
 											<div class="product-comparison__stats-item-header-left">
 												<p class="product-comparison__stats-item-title">Укажите цену</p>
-												<div class="d-badge2 d-badge2--fit product-comparison__stats-item-badge">0</div>
+												<div class="d-badge2 d-badge2--fit product-comparison__stats-item-badge">
+                          {{ products.status[5]?.count?.toLocaleString("ru") }}
+                        </div>
+
 											</div>
 										</div>
 
 										<div class="product-comparison__stats-item-content">
-											<img src="/icons/donuts/donut-blue.svg" alt="" class="product-comparison__stats-item-image" />
+                      <Chart
+                        type="doughnut"
+                        :data="chartDataHelpOne"
+                        :options="chartOptionsMin"
+                        class="product-comparison__stats-item-image w-full md:w-5rem "
+                      />
 											<div class="product-comparison__stats-item-info">
-												<p class="product-comparison__stats-item-percent">0.00%</p>
+												<p class="product-comparison__stats-item-percent">{{
+                          (
+                            this.products.status[5]?.count /
+                            (this.products.status.total / 100)
+                          ).toFixed(2)
+                        }} %</p>
 												<p class="product-comparison__stats-item-description">от общего сопоставления</p>
 											</div>
 										</div>
@@ -78,19 +110,33 @@
 										<div class="product-comparison__stats-item-header">
 											<div class="product-comparison__stats-item-header-left">
 												<p class="product-comparison__stats-item-title">Нет бренда</p>
-												<div class="d-badge2 d-badge2--fit product-comparison__stats-item-badge">3456</div>
+												<div class="d-badge2 d-badge2--fit product-comparison__stats-item-badge">{{
+                          products.status[1]?.count?.toLocaleString("ru")
+                        }}</div>
 											</div>
 
 											<div class="product-comparison__stats-item-value-container">
 												<p class="product-comparison__stats-item-value-label">на сумму</p>
-												<p class="product-comparison__stats-item-value">10 106 705 ₽</p>
+												<p class="product-comparison__stats-item-value">{{
+											Number(products.status[1]?.sum)?.toLocaleString("ru")
+										}} ₽</p>
 											</div>
 										</div>
 
 										<div class="product-comparison__stats-item-content">
-											<img src="/icons/donuts/donut-green.svg" alt="" class="product-comparison__stats-item-image" />
+                      <Chart
+                        type="doughnut"
+                        :data="chartDataHelpTwo"
+                        :options="chartOptionsMin"
+                        class="product-comparison__stats-item-image"
+                      />
 											<div class="product-comparison__stats-item-info">
-												<p class="product-comparison__stats-item-percent">0.00%</p>
+												<p class="product-comparison__stats-item-percent">{{
+											(
+												this.products.status[1]?.count /
+												(this.products.status.total / 100)
+											).toFixed(2)
+										}}%</p>
 												<p class="product-comparison__stats-item-description">от общего сопоставления</p>
 											</div>
 										</div>
@@ -99,19 +145,33 @@
 										<div class="product-comparison__stats-item-header">
 											<div class="product-comparison__stats-item-header-left">
 												<p class="product-comparison__stats-item-title">Нет артикула</p>
-												<div class="d-badge2 d-badge2--fit product-comparison__stats-item-badge">67</div>
+												<div class="d-badge2 d-badge2--fit product-comparison__stats-item-badge">{{
+                          products.status[2]?.count?.toLocaleString("ru")
+                        }}</div>
 											</div>
 
 											<div class="product-comparison__stats-item-value-container">
 												<p class="product-comparison__stats-item-value-label">на сумму</p>
-												<p class="product-comparison__stats-item-value">0 ₽</p>
+												<p class="product-comparison__stats-item-value">{{
+											Number(products.status[2]?.sum)?.toLocaleString("ru")
+										}} ₽</p>
 											</div>
 										</div>
 
 										<div class="product-comparison__stats-item-content">
-											<img src="/icons/donuts/donut-red.svg" alt="" class="product-comparison__stats-item-image" />
+											<Chart
+                        type="doughnut"
+                        :data="chartDataHelpThee"
+                        :options="chartOptionsMin"
+                        class="product-comparison__stats-item-image"
+                      />
 											<div class="product-comparison__stats-item-info">
-												<p class="product-comparison__stats-item-percent">0.00%</p>
+												<p class="product-comparison__stats-item-percent">{{
+											(
+												this.products.status[2]?.count /
+												(this.products.status.total / 100)
+											).toFixed(2)
+										}}%</p>
 												<p class="product-comparison__stats-item-description">от общего сопоставления</p>
 											</div>
 										</div>
@@ -120,25 +180,41 @@
 										<div class="product-comparison__stats-item-header">
 											<div class="product-comparison__stats-item-header-left">
 												<p class="product-comparison__stats-item-title">Нет карточки</p>
-												<div class="d-badge2 d-badge2--fit product-comparison__stats-item-badge">67</div>
+												<div class="d-badge2 d-badge2--fit product-comparison__stats-item-badge">{{
+										products.status[4]?.count?.toLocaleString("ru")
+									}}</div>
 											</div>
 
 											<div class="product-comparison__stats-item-value-container">
 												<p class="product-comparison__stats-item-value-label">на сумму</p>
-												<p class="product-comparison__stats-item-value">34 434 544 654 ₽</p>
+												<p class="product-comparison__stats-item-value">{{
+											Number(products.status[4]?.sum)?.toLocaleString("ru")
+										}} ₽</p>
 											</div>
 										</div>
 
 										<div class="product-comparison__stats-item-content">
-											<img src="/icons/donuts/donut-gray.svg" alt="" class="product-comparison__stats-item-image" />
+											<Chart
+                        type="doughnut"
+                        :data="chartDataHelpFour"
+                        :options="chartOptionsMin"
+                        class="product-comparison__stats-item-image"
+                      />
 											<div class="product-comparison__stats-item-info">
-												<p class="product-comparison__stats-item-percent">0.00%</p>
+												<p class="product-comparison__stats-item-percent">{{
+											(
+												this.products.status[4]?.count /
+												(this.products.status.total / 100)
+											).toFixed(2)
+										}}%</p>
 												<p class="product-comparison__stats-item-description">от общего сопоставления</p>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
+
+    <h2>Склады ({{ orgStores.total }})</h2>
     <div class="warehouse-analysis__table product-comparison__stores">
       <BaseTable
         :items_data="orgStores.items"
@@ -147,8 +223,22 @@
 
       />
     </div>
-
-
+    <h2>Сопоставление по брендам</h2>
+    <div class="product-comparison__brands">
+      <BaseTable
+              :items_data="report_copo.items"
+              :total="report_copo.total"
+              :pagination_items_per_page="this.pagination_items_per_page"
+              :pagination_offset="this.pagination_offset"
+              :page="this.page_brand"
+              :table_data="this.table_data_brand"
+              :filters="this.filtersbrand"
+              @filter="filterbrand"
+              @sort="filterbrand"
+              @paginate="paginatebrand"
+            >
+      </BaseTable>
+    </div>
   </section>
 </template>
 <script>
@@ -157,10 +247,11 @@ import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
 import customModal from '@/shared/ui/Modal.vue'
+import Chart from 'primevue/chart'
 
 export default {
   name: 'RetailCompareProducts',
-  components: { Breadcrumbs, Loader, customModal, BaseTable },
+  components: { Breadcrumbs, Loader, customModal, BaseTable, Chart },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -174,10 +265,52 @@ export default {
   data() {
     return {
       loading: true,
-      modalAddStore: false,
-      productsData: [],
-      productsTotal: 0,
-      color: '#757575',
+      addBrandForm: {
+				canCall: 1,
+			},
+			globalIsModal: [],
+			chartData: null,
+			chartDataMoney: null,
+			chartDataHelpOne: null,
+			chartDataHelpTwo: null,
+			chartDataHelpThee: null,
+			chartDataHelpFour: null,
+			isModal: false,
+			isModalBrand: false,
+      statuses: [],
+			chartOptions: {
+			cutout: "75%",
+			},
+      chartOptionsMin: {
+			cutout: "70%",
+			},
+			prods: {
+				copo_percent: 0,
+				all: 0,
+				copo: 0,
+				count_all: 0,
+				summ: 0,
+			},
+			orders: {
+				summ: 0,
+				count: 0,
+			},
+			dilers: {
+				summ: 0,
+				count: 0,
+			},
+			distr: {
+				summ: 0,
+				count: 0,
+			},
+			shipment: {
+				total: 0,
+				items: [],
+			},
+			page: 1,
+			page_brand: 1,
+			page_modal: 1,
+
 			table_stores: {
         name: {
           label: 'Название / Адрес',
@@ -204,142 +337,203 @@ export default {
 				//	type: "text",
 				//},
       },
-      form: {
-        name: '',
-        adres: '',
-      },
-      products_filters: {
-          name: {
-            name: 'Наименование, артикул',
-            placeholder: 'Наименование, артикул',
-            type: 'text'
-          },
-          no_motion: {
-            name: 'Дней без движения',
-            placeholder: 'Дней без движения',
-            type: 'number',
-            step: 10
-          },
-          vendor: {
-            name: 'Производитель',
-            placeholder: 'Выберите производителя',
-            type: 'dropdown',
-            values: this.getvendors
-          },
-          catalog: {
-            name: 'Категория товара',
-            placeholder: 'Выберите категорию',
-            type: 'tree',
-            values: this.getcatalog
-          },
-          minuses: {
-            name: 'Только отрицательные значения',
-            placeholder: 'Только отрицательные значения',
-            type: 'checkbox'
-          },
-          instock: {
-            name: 'Только в наличии',
-            placeholder: 'Только в наличии',
-            type: 'checkbox'
-          }
+      filters: {
+				name: {
+					name: "Наименование, артикул",
+					placeholder: "Наименование, артикул",
+					type: "text",
+				},
+				status: {
+					name: "Статус",
+					placeholder: "Статус",
+					type: "dropdown",
+					values: this.getcardstatus,
+				},
+			},
+      filtersbrand: {
+				instock: {
+					name: "В наличии",
+					placeholder: "В наличии",
+					type: "checkbox",
+					values: 1,
+				},
+        name: {
+					name: "Наименование товара, артикул",
+					placeholder: "Наименование товара, артикул",
+					type: "text",
+				},
+
+			},
+      table_data: {
+				image: {
+					label: "Фото",
+					type: "image",
+          class: 'cell_centeralign',
+				},
+				article: {
+					label: "Артикул",
+					type: "text",
+					sort: true,
+          class: 'cell_centeralign',
+				},
+				store_name: {
+					label: "Склад",
+					type: "text",
+					sort: true,
+          class: 'cell_centeralign',
+				},
+				name: {
+					label: "Наименование",
+					type: "link",
+					//link_to: "org_product",
+					//link_params: {
+					//	id: this.$route.params.id,
+					//	store_id: "store_id",
+					//	product_id: "id",
+					//},
+					description: {
+						type: "field",
+						key: "catalog",
+					},
+					sort: true,
+          class: 'cell_centeralign',
+				},
+				price: {
+					label: "Розничная цена",
+					type: "text",
+					sort: true,
+          class: 'cell_centeralign',
+				},
+				remains: {
+					label: "Фактическое наличие",
+					type: "text",
+					sort: true,
+          class: 'cell_centeralign',
+				},
+				reserved: {
+					label: "Резерв",
+					type: "text",
+					sort: true,
+          class: 'cell_centeralign',
+				},
+				available: {
+					label: "Доступно для продажи",
+					type: "text",
+					sort: true,
+          class: 'cell_centeralign',
+				},
+				sales: {
+					label: "Продаж за все время",
+					type: "text",
+					sort: true,
+          class: 'cell_centeralign',
+				},
+				/*
+        price_rrc: {
+          label: 'Цена, РРЦ',
+          type: 'text',
+          sort: true
         },
-      product_table_data: {
-          image: {
-            label: 'Фото',
-            type: 'image',
-            class: 'cell_centeralign',
-          },
-          article: {
-            label: 'Артикул',
-            type: 'text',
-            sort: true,
-            class: 'cell_centeralign',
-          },
-          name: {
-            label: 'Наименование',
-            type: 'text',
-            sort: true,
-            class: 'cell_centeralign',
-          },
-          price: {
-            label: 'Цена товара',
-            type: 'text',
-            sort: true,
-            class: 'cell_centeralign',
-          },
-          available: {
-            label: 'Остаток сейчас',
-            type: 'text',
-            sort: true,
-            class: 'cell_centeralign',
-          },
-          sales_30: {
-            label: 'Продаж за 30 дней',
-            type: 'text',
-            sort: true,
-            class: 'cell_centeralign',
-          },
-          purchase_speed: {
-            label: 'Скорость продажи шт/день',
-            type: 'text',
-            sort: true,
-            class: 'cell_centeralign',
-          },
-          out_of_stock_days: {
-            label: 'Дней с Out Of Stock',
-            type: 'text',
-            sort: true,
-            class: 'cell_centeralign',
-          },
-          remains_history: {
-            label: 'Изменение остатков',
-            type: 'gist',
-            sort: false,
-            class: 'cell_centeralign',
-          },
-          no_money: {
-            label: 'Упущенная выручка',
-            type: 'text',
-            sort: true,
-            class: 'cell_centeralign',
-          },
-          forecast_all: {
-            label: 'Прогноз остатков на завтра / 7 дней',
-            type: 'text',
-            sort: true,
-            class: 'cell_centeralign',
-          }
+        price_rrc_delta: {
+          label: 'РРЦ дельта',
+          type: 'text',
+          sort: true
         },
-        page: 1,
-        avg_info: {
-          remains: 0,
-          no_money: 0,
-          sales_speed: 0
-        },
+        */
+				summ: {
+					label: "Сумма товара, ₽",
+					type: "text",
+					sort: true,
+          class: 'cell_centeralign',
+				},
+			},
+      table_data_brand: {
+				name: {
+					label: "Наименование",
+					type: "link",
+					sort: true,
+          class: 'cell_centeralign',
+				},
+				find: {
+					label: "Найдено",
+					type: "text",
+					sort: true,
+          class: 'cell_centeralign',
+				},
+				identified: {
+					label: "Сопоставлено",
+					type: "text",
+					sort: true,
+          class: 'cell_centeralign',
+				},
+				cards: {
+					label: "Карточек создано",
+					type: "text",
+					sort: true,
+          class: 'cell_centeralign',
+				},
+				percent_identified: {
+					label: "% сопоставления",
+					type: "text",
+					sort: true,
+          class: 'cell_centeralign',
+				},
+				vendor_price: {
+					label: "Сумма товара, ₽",
+					type: "text",
+					sort: true,
+          class: 'cell_centeralign',
+				},
+			},
 		}
   },
+  unmounted() {
+		this.unsetReportCopo();
+	},
   mounted() {
-    this.getOrgStores().then(() => {
-      this.loading = false
-    })
-    this.getOrganization()
-    this.getReportCopo({
-      tabledata: '',
-			page: 1,
-			perpage: 1,
-    })
+    this.getOrgStores()
     this.getData({
-          page: this.page,
-          perpage: this.pagination_items_per_page,
-        }).then(() => {
-          this.getVendors()
-          this.getCatalogs()
-        })
-    this.getCardstatus()
-    this.getMSProducts({
-      tabledata: '',
-			page: 1,
-			perpage: 1,
+      page: this.page,
+			page_brand: this.page_brand,
+			perpage: this.pagination_items_per_page,
+    })
+    this.getReportCopo({
+      tabledata: this.table_data,
+			page: this.page,
+			perpage: this.pagination_items_per_page,
+    })
+    this.getOrganization().then(() => {
+      this.chartData = this.setChartData();
+			this.chartDataMoney = this.setChartDataMoney();
+			this.chartDataHelpOne = this.setChartDataHelpOne();
+			this.chartDataHelpTwo = this.setChartDataHelpTwo();
+			this.chartDataHelpThee = this.setChartDataHelpTree();
+			this.chartDataHelpFour = this.setChartDataHelpFour();
+			const num = this.organization.products.copo_percent;
+			this.prods.copo_percent = num;
+			this.prods.all = this.organization.products.count;
+			this.prods.copo = this.organization.products.copo_count;
+			this.prods.count_all = this.organization.products.count_all;
+			this.prods.summ = this.organization.products.summ;
+			this.prods.copo_money_percent = this.organization.products.copo_money_percent;
+			this.prods.no_copo_money_percent = this.organization.products.no_copo_money_percent;
+			this.prods.summ_copo = this.organization.products.summ_copo;
+			// orders.summ && orders.count
+			// this.dilers.summ = this.organization.dilers.summ
+			// this.dilers.count = this.organization.dilers.count
+			// this.distr.summ = this.organization.distr.summ
+			// this.distr.count = this.organization.distr.count
+			// this.shipment.total = this.organization.shipment.total
+			// this.shipment.items = this.organization.shipment.items
+      this.getCardstatus()
+      this.getVendors()
+      this.getCatalogs()
+      this.getMSProducts({
+        tabledata: '',
+        page: 1,
+        perpage: 1,
+      })
+      this.loading = false
     })
   },
   computed: {
@@ -352,7 +546,42 @@ export default {
       report_copo: 'retail/report_copo',
       cardstatus: 'retail/cardstatus',
       msproducts: 'retail/msproducts',
-    })
+    }),
+		date() {
+			const today = new Date();
+			return today.getDate();
+		},
+		month() {
+			const monthNames = [
+				"Январь",
+				"Февраль",
+				"Март",
+				"Апрель",
+				"Май",
+				"Июнь",
+				"Июль",
+				"Август",
+				"Сентябрь",
+				"Октябрь",
+				"Ноябрь",
+				"Декабрь",
+			];
+			const today = new Date();
+			return monthNames[today.getMonth()];
+		},
+		day() {
+			const dayNames = [
+				"Воскресенье",
+				"Понедельник",
+				"Вторник",
+				"Среда",
+				"Четверг",
+				"Пятница",
+				"Суббота",
+			];
+			const today = new Date();
+			return dayNames[today.getDay()];
+		},
   },
   methods: {
     ...mapActions({
@@ -364,59 +593,177 @@ export default {
       getReportCopo: 'retail/getReportCopo',
       getCardstatus: 'retail/getCardstatus',
       getMSProducts: 'retail/getMSProducts',
+      unsetReportCopo: 'retail/unsetReportCopo',
     }),
-    filter (data) {
-        this.page = 1
-        data.owner_id = this.$route.params.id
-        data.id = this.$route.params.id
-        this.loading = true
-        this.getData(data).then(() => {
-          this.avg_info.remains = this.products.avg_info?.remains
-          this.avg_info.no_money = this.products.avg_info.no_money
-          this.avg_info.sales_speed = this.products.avg_info.sales_speed
-          this.loading = false
-        })
-      },
-      paginate (data) {
-        this.page = data.page
-        data.owner_id = this.$route.params.id
-        data.id = this.$route.params.id
-        this.loading = true
-        this.getData(data).then(() => {
-          this.avg_info.remains = this.products.avg_info?.remains
-          this.avg_info.no_money = this.products.avg_info.no_money
-          this.avg_info.sales_speed = this.products.avg_info.sales_speed
-          this.loading = false
-        })
-      }
+    setChartData() {
+			return {
+				datasets: [
+					{
+						data: [
+              this.organization.products.no_copo_percent,
+							this.organization.products.copo_percent,
+						],
+						backgroundColor: ["#ededed", "#4759af"],
+            borderColor: ["#fbfbfb", "#4759af"],
+						hoverBackgroundColor: ["#ededed", "#4759af"],
+            borderWidth: 0.5,
+            spacing: 2,
+            rotation: 50,
+					},
+				],
+			};
+		},
+		setChartDataMoney() {
+			return {
+				datasets: [
+					{
+						data: [
+							this.organization.products.no_copo_money_percent,
+              this.organization.products.copo_money_percent,
+						],
+						backgroundColor: ["#ededed", "#c4cae5"],
+            borderColor: ["#fbfbfb", "#4759af"],
+						hoverBackgroundColor: ["#ededed", "#c4cae5"],
+            borderWidth: 0.5,
+            spacing: 2,
+            rotation: 50,
+					},
+
+				],
+
+			};
+		},
+		setChartDataHelpOne() {
+			return {
+				datasets: [
+					{
+						data:  [
+                100 -	(	this.statuses[5].count / (this.statuses.total / 100) ).toFixed(2),
+								(	this.statuses[5].count /	(this.statuses.total / 100)).toFixed(2)
+							  ],
+						backgroundColor: ["#ededed", "#c4cae5"],
+            borderColor: ["#fbfbfb", "#4759af"],
+						hoverBackgroundColor: ["#ededed", "#c4cae5"],
+            borderWidth: 0.5,
+            spacing: 2,
+            rotation: 50,
+					},
+				],
+			};
+		},
+		setChartDataHelpTwo() {
+			return {
+				datasets: [
+					{
+						data: [
+									100 -
+										(
+											this.statuses[1].count /
+											(this.statuses.total / 100)
+										).toFixed(2),
+                    (
+										this.statuses[1].count /
+										(this.statuses.total / 100)
+									).toFixed(2),
+							  ],
+						backgroundColor: ["#ededed", "#cdf0a9"],
+            borderColor: ["#fbfbfb", "#97bc71"],
+						hoverBackgroundColor: ["#ededed", "#cdf0a9"],
+            borderWidth: 0.5,
+            spacing: 2,
+            rotation: 50,
+					},
+				],
+			};
+		},
+		setChartDataHelpTree() {
+			return {
+				datasets: [
+					{
+						data: this.products?.status
+							? [
+									100 -
+										(
+											this.products?.status[2]?.count /
+											(this.products.status.total / 100)
+										).toFixed(2),
+                    (
+										this.products?.status[2]?.count /
+										(this.products.status.total / 100)
+									).toFixed(2),
+							  ]
+							: [100, 0],
+						backgroundColor: ["#ededed", "#ffcec7"],
+            borderColor: ["#fbfbfb", "#f92c0d"],
+						hoverBackgroundColor: ["#ededed", "#ffcec7"],
+            borderWidth: 0.5,
+            spacing: 2,
+            rotation: 50,
+					},
+				],
+			};
+		},
+		setChartDataHelpFour() {
+			return {
+				datasets: [
+					{
+						data: this.products?.status
+							? [
+									100 -
+										(
+											this.products?.status[4]?.count /
+											(this.products.status.total / 100)
+										).toFixed(2),
+                    (
+										this.products?.status[4]?.count /
+										(this.products.status.total / 100)
+									).toFixed(2),
+							  ]
+							: [100, 0],
+						backgroundColor: ["#ededed", "#e2e2e2"],
+            borderColor: ["#fbfbfb", "#757575"],
+						hoverBackgroundColor: ["#ededed", "#e2e2e2"],
+            borderWidth: 0.5,
+            spacing: 2,
+            rotation: 50,
+					},
+				],
+			};
+		},
+		filter(data) {
+			this.products.total = -1;
+			this.getData(data);
+		},
+		filterModal(data) {
+			this.msproducts.total = -1;
+			this.getMSProducts(data);
+		},
+		filterbrand(data) {
+			this.report_copo.total = -1;
+			this.getReportCopo(data);
+		},
+		paginateModal(data) {
+			this.msproducts.total = -1;
+			this.page_modal = data.page;
+			this.getMSProducts(data);
+		},
+		paginate(data) {
+			this.products.total = -1;
+			this.page = data.page;
+			this.getData(data);
+		},
+		paginatebrand(data) {
+			this.report_copo.total = -1;
+			this.page_brand = data.page;
+			this.getReportCopo(data);
+		},
   },
   watch: {
-    products: function(newVal){
-      this.productsData = newVal.products
-      this.productsTotal = newVal.total
-      if (typeof newVal === 'object') {
-          this.avg_info.remains = newVal.avg_info?.remains
-          if (Object.prototype.hasOwnProperty.call(newVal.avg_info, 'no_money')) {
-            this.avg_info.no_money = newVal.avg_info.no_money
-          } else {
-            this.avg_info.no_money = 0
-          }
-          if (Object.prototype.hasOwnProperty.call(newVal.avg_info, 'sales_speed')) {
-            this.avg_info.sales_speed = newVal.avg_info.sales_speed
-          } else {
-            this.avg_info.sales_speed = 0
-          }
-      } else {
-          this.avg_info.remains = 0
-          this.avg_info.no_money = 0
-          this.avg_info.sales_speed = 0
-      }
-    },
-    vendors: function(newVal) {
-      this.products_filters.vendor.values = newVal
-    },
-    catalogs: function(newVal) {
-      this.products_filters.catalog.values = newVal
+    getcardstatus: function (newVal) {
+			this.filters.status.values = newVal;
+		},
+    products: function (newVal) {
+      this.statuses = newVal.status
     }
   }
 }
@@ -572,5 +919,99 @@ export default {
 .product-comparison__stores.warehouse-analysis__table .d-table__head .d-table__head-col:nth-child(2),.product-comparison__stores.warehouse-analysis__table .d-table__row .d-table__col:nth-child(2){
   min-width: auto;
   width: auto;
+}
+.product-comparison__brands{
+  margin-top: 40px;
+}
+.product-comparison__brands .flex{
+  display: flex;
+}
+.product-comparison__brands .dart-form-group label{
+  font-size: 16px;
+  color: #757575;
+}
+.product-comparison__brands .p-floatlabel label, .product-comparison__brands .p-inputtext::placeholder, .product-comparison__brands .p-placeholder{
+  font-size: 14px;
+  color: #757575;
+}
+.product-comparison__brands .d-col-xl-6:first-child{
+  max-width: max-content;
+  padding-right: 24px;
+}
+.product-comparison__brands .p-inputtext{
+  width: 100%;
+}
+.product-comparison__brands .form_input_group:after {
+  content: '\e003';
+  font-family: 'Iconly' !important;
+  position: absolute;
+  font-size: 16.8px;
+  top: calc(50% - 8.4px);
+  right: 30px;
+}
+.product-comparison__brands .d-table__wrapper{
+  margin-top: 40px;
+}
+.product-comparison__brands .d-table__col {
+    padding: 20px 8px;
+}
+.product-comparison__brands .d-table__row:first-child > .d-table__col {
+    padding-top: 20px;
+}
+.product-comparison__stats-block-image{
+  height: 135px;
+  width: 135px;
+}
+.product-comparison__stats-block-progress-line:before{
+  display: none;
+}
+.product-comparison__stats-block-progress-line-pink,.product-comparison__stats-block-progress-line-red{
+  content: "";
+    background-color: var(--line-color);
+    border: 0.5px solid var(--line-border-color);
+    border-radius: 30px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    translate: 0 -50%;
+    width: 100%;
+    height: 8px;
+}
+.product-comparison__stats-block-progress-line-purple,.product-comparison__stats-block-progress-line-purple-dark{
+  content: "";
+    background-color: var(--line-color);
+    border: 0.5px solid var(--line-border-color);
+    border-radius: 30px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    translate: 0 -50%;
+    height: 8px;
+}
+.product-comparison__stats-item .product-comparison__stats-item-badge{
+    --d-badge2-size: 18px;
+    --d-badge2-bg-color: var(--stats-item-color) !important;
+    --d-badge2-color: #ededed;
+}
+.product-comparison__stats-item .d-badge2{
+  background: var(--d-badge2-bg-color);
+}
+.product-comparison__stats-item .d-badge2--fit {
+    border-radius: 24px;
+    aspect-ratio: unset;
+    width: -moz-fit-content;
+    width: fit-content;
+    min-width: -moz-fit-content;
+    min-width: fit-content;
+    height: -moz-fit-content;
+    height: fit-content;
+    padding: 3px 7px 2px;
+}
+.product-comparison__stats-item-image{
+  width: 100px;
+  height: 100px;
+}
+.product-comparison__stats-block-image canvas{
+  margin-top: -5px;
 }
 </style>
