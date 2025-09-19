@@ -6,7 +6,6 @@
     <h1 class="dart_mb-2">Оптовые заказы</h1>
     <Loader v-if="loading" />
     <BaseTable
-
       :items_data="orders.orders"
       :total="orders.total"
       :pagination_items_per_page="this.pagination_items_per_page"
@@ -72,6 +71,16 @@ export default {
           },
           class: 'cell_centeralign',
         },
+        buyer_store: {
+          label: 'Магазин/Склад покупателя',
+          type: 'link',
+          link_to: 'wholesaleOrder',
+          link_params: {
+            id: this.$route.params.id,
+            order_id: 'id',
+          },
+          class: 'cell_centeralign',
+        },
         date: {
           label: 'Дата',
           type: 'link',
@@ -117,7 +126,7 @@ export default {
           class: 'cell_centeralign',
         },
         seller_w_name: {
-          label: 'Магазин/Склад',
+          label: 'Магазин/Склад продавца',
           type: 'link',
           link_to: 'wholesaleOrder',
           link_params: {

@@ -33,9 +33,17 @@
         />
       </teleport>
 
-      <changeVendorsWindow :active="this.toggleVendors" @close="changeVendorsWindowClose()" />
+      <changeVendorsWindow
+        :active="this.toggleVendors"
+        @close="changeVendorsWindowClose()"
+        @catalogUpdate="catalogUpdate()"
+      />
       <teleport to="body">
-        <OrderWindow :active="this.toggleOrderWindow" @close="changeOrderWindowClose()" />
+        <OrderWindow
+          :active="this.toggleOrderWindow"
+          @close="changeOrderWindowClose()"
+          @catalogUpdate="catalogUpdate()"
+        />
       </teleport>
     </main>
   </div>
@@ -221,20 +229,7 @@ export default {
     '$route.params.id': {
       handler: function () {
         if (this.$route.params.id) {
-          this.getOrg().then(() => {
-            this.getOptVendorsAvailable({
-              filter: '',
-              page: 1,
-              perpage: this.cfg.vendors.perpage,
-            }).then(() => {
-              this.getOptVendorsSelected({
-                filter: '',
-                page: 1,
-                perpage: this.cfg.vendors.perpage,
-              }).then(() => {})
-            })
-            this.getBasket()
-          })
+          window.location.reload()
         }
       },
     },

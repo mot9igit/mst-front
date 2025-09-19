@@ -184,8 +184,8 @@ export default {
 }
 </script>
 <style lang="scss">
-.d-counter{
-  .d-counter__input{
+.d-counter {
+  .d-counter__input {
     color: #282828;
   }
 }

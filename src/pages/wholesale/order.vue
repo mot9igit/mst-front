@@ -59,6 +59,10 @@
           <div class="order-card__orderinfo-grid-text-down">
             {{ this.order?.seller_address != '' ? this.order?.seller_address : '' }}
           </div>
+          <div class="order-card__orderinfo-grid-text-down">
+            <b>Магазин/склад:</b>
+            {{ this.order?.seller_w_name != '' ? this.order?.seller_w_name : '-' }}
+          </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-5">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
@@ -71,11 +75,15 @@
           <div class="order-card__orderinfo-grid-text-down">
             {{ this.order?.buyer_address != '' ? this.order?.buyer_address : '' }}
           </div>
+          <div class="order-card__orderinfo-grid-text-down">
+            <b>Магазин/склад:</b>
+            {{ this.order?.buyer_store != '' ? this.order?.buyer_store : '-' }}
+          </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.delay != '' ? this.order?.delay : '-' }}
+            {{ this.order?.delay != '' ? Number.parseInt(this.order?.delay) : '-' }} дн.
           </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-3">
