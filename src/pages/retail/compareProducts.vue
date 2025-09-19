@@ -1014,4 +1014,14 @@ export default {
 .product-comparison__stats-block-image canvas{
   margin-top: -5px;
 }
+.product-comparison__stats-item-title, .product-comparison__stats-item-value{
+    width: max-content;
+}
+.product-comparison__stats-item-header {
+    min-height: 52px;
+    height: auto;
+}
+.product-comparison__stats-bottom {
+  align-items: end;
+}
 </style>
