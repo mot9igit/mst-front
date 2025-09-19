@@ -48,26 +48,40 @@
         <div class="order-card__orderinfo-grid d-col-md-5">
           <div class="order-card__orderinfo-grid-lable">Поставщик</div>
           <div class="order-card__orderinfo-grid-text">
-            <p>{{ this.order?.ur_persone?.name }}</p>
-            <p>ИНН: {{ this.order?.ur_persone?.inn }}</p>
+            {{ this.order?.seller_name != '' ? this.order?.seller_name : '' }}
+          </div>
+          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
+            ИНН: {{ this.order?.seller_inn != '' ? this.order?.seller_inn : '-' }}
           </div>
           <div class="order-card__orderinfo-grid-text-down">
-            {{ this.order?.ur_persone?.ur_address }}
+            {{ this.order?.seller_address != '' ? this.order?.seller_address : '' }}
+          </div>
+          <div class="order-card__orderinfo-grid-text-down">
+            <b>Магазин/склад:</b>
+            {{ this.order?.seller_w_name != '' ? this.order?.seller_w_name : '-' }}
           </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-5">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
-            <p>{{ this.order?.seller_name }}</p>
-            <p>ИНН: {{ this.order?.seller_inn ? this.order?.seller_inn : ' -' }}</p>
+            {{ this.order?.buyer_name != '' ? this.order?.buyer_name : '' }}
+          </div>
+          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
+            ИНН: {{ this.order?.ur_persone?.inn != '' ? this.order?.ur_persone?.inn : '' }}
           </div>
           <div class="order-card__orderinfo-grid-text-down">
-            {{ this.order?.seller_address }}
+            {{ this.order?.buyer_address != '' ? this.order?.buyer_address : '' }}
+          </div>
+          <div class="order-card__orderinfo-grid-text-down">
+            <b>Магазин/склад:</b>
+            {{ this.order?.buyer_store != '' ? this.order?.buyer_store : '-' }}
           </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
-          <div class="order-card__orderinfo-grid-text">{{ this.order?.delay }}</div>
+          <div class="order-card__orderinfo-grid-text">
+            {{ this.order?.delay != '' ? Number.parseInt(this.order?.delay) : '-' }} дн.
+          </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Оплата доставки</div>

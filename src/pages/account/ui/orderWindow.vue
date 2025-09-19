@@ -41,128 +41,101 @@
           </div>
           -->
           <!-- Список товаров -->
-          <div class="order__item-list" v-if="Object.keys(this.basket).length > 1">
-            <div v-for="(store, store_id) in this.basket.data" :key="store_id">
-              <div v-for="(org, org_id) in store.data" :key="org_id">
-                <div
-                  class="order__item"
-                  v-for="(warehouse, warehouse_id) in org.data"
-                  :key="warehouse_id"
-                >
-                  <div class="order__item-header">
-                    <div class="order__item-header-top">
-                      <div class="order__item-header-left">
-                        <div class="d-badge2 d-badge2--fit order__item-header-badge">
-                          <div class="order__item-header-badge-image-container">
-                            <img
-                              :src="org.org_data.image"
-                              :alt="org.org_data.name"
-                              class="order__item-header-badge-image"
-                            />
-                          </div>
-                          <p class="order__item-header-badge-text">{{ org.org_data.name }}</p>
+          <div class="order__item-list" v-if="Object.keys(basketStore).length > 1">
+            <div v-for="(org, org_id) in basketStore.data" :key="org_id">
+              <div
+                class="order__item"
+                v-for="(warehouse, warehouse_id) in org.data"
+                :key="warehouse_id"
+              >
+                <div class="order__item-header">
+                  <div class="order__item-header-top">
+                    <div class="order__item-header-left">
+                      <div class="d-badge2 d-badge2--fit order__item-header-badge">
+                        <div class="order__item-header-badge-image-container">
+                          <img
+                            :src="org.org_data.image"
+                            :alt="org.org_data.name"
+                            class="order__item-header-badge-image"
+                          />
                         </div>
-                        <div class="d-divider d-divider--vertical order__item-header-divider"></div>
-                        <div class="order__item-header-warehouse">
-                          <p class="order__item-header-warehouse-label">
-                            Склад #{{ warehouse_id }}
-                          </p>
-                          <p class="order__item-header-warehouse-value">
-                            {{
-                              warehouse.warehouse_data.address_short
-                                ? warehouse.warehouse_data.address_short
-                                : warehouse.warehouse_data.address
-                            }}
-                          </p>
-                        </div>
+                        <p class="order__item-header-badge-text">{{ org.org_data.name }}</p>
                       </div>
-                      <div class="order__item-header-right">
-                        <a
-                          href="#"
-                          class="order__item-header-delete"
-                          @click.prevent="
-                            () => {
-                              this.showClearBasketModal = true
-                              this.id_clear_org = org.org_data.id
-                            }
-                          "
-                        >
-                          <i class="d-icon-trash"></i>
-                        </a>
-                      </div>
-                    </div>
-                    <div class="order__item-header-bottom">
-                      <div class="order__item-header-address">
-                        <i class="d-icon-location-flat order__item-header-icon"></i>
-                        <p class="order__item-header-address-label">Адрес доставки&nbsp;</p>
-                        <p class="order__item-header-address-value">
+                      <div class="d-divider d-divider--vertical order__item-header-divider"></div>
+                      <div class="order__item-header-warehouse">
+                        <p class="order__item-header-warehouse-label">Склад #{{ warehouse_id }}</p>
+                        <p class="order__item-header-warehouse-value">
                           {{
-                            store.store_data.name_short
-                              ? store.store_data.name_short
-                              : store.store_data.name
-                          }},
-                          {{
-                            store.store_data.address_short
-                              ? store.store_data.address_short
-                              : store.store_data.address
+                            warehouse.warehouse_data.address_short
+                              ? warehouse.warehouse_data.address_short
+                              : warehouse.warehouse_data.address
                           }}
                         </p>
                       </div>
                     </div>
-                  </div>
-                  <div class="d-divider d-divider--full d-divider--big order__item-divider"></div>
-                  <div
-                    class="order__item-content"
-                    v-for="(product, product_key) in warehouse.data"
-                    :key="product_key"
-                  >
-                    <div class="order__item-content-top">
-                      <div class="order__item-product">
-                        <div class="order__item-product-image-container">
-                          <img
-                            :src="product.image"
-                            :alt="product.name"
-                            class="order__item-product-image"
-                          />
-                        </div>
-                        <div class="order__item-product-content">
-                          <p class="order__item-product-title">
-                            {{ product.name }}
-                          </p>
-                          <div class="order__item-product-additional">
-                            <p class="order__item-product-article">Арт: {{ product.article }}</p>
-                            <!-- <div class="order__item-product-discount">Скидка 27%</div> -->
-                          </div>
-                        </div>
-                      </div>
-                      <div class="order__item-content-top-right">
-                        <span class="order__item-product-price"
-                          >{{ product.price.toLocaleString('ru') }} ₽</span
-                        >
-                        <Counter
-                          :classPrefix="'order__item-product'"
-                          @ElemCount="ElemCount"
-                          :item="{ basket, product }"
-                          :mini="true"
-                          :min="0"
-                          :max="Number(product?.available)"
-                          :value="Number(product?.count)"
-                          :step="Number(product?.multiplicity ? product?.multiplicity : 1)"
-                          :id="Number(product?.remain_id)"
-                          :key="product?.key"
-                        />
-                      </div>
+                    <div class="order__item-header-right">
                       <a
                         href="#"
-                        class="cart__item-header-button"
-                        @click="
-                          clearBasketProduct(org.org_data.id, warehouse_id, product_key, product)
+                        class="order__item-header-delete"
+                        @click.prevent="
+                          () => {
+                            this.showClearBasketModal = true
+                            this.id_clear_org = org.org_data.id
+                          }
                         "
                       >
                         <i class="d-icon-trash"></i>
                       </a>
                     </div>
-                    <div class="order__item-price">
+                  </div>
+                  <div class="order__item-header-bottom">
+                    <div class="order__item-header-address">
+                      <i class="d-icon-location-flat order__item-header-icon"></i>
+                      <p class="order__item-header-address-label">Адрес доставки&nbsp;</p>
+                      <p class="order__item-header-address-value">
+                        {{
+                          basketStore.store_data.name_short
+                            ? basketStore.store_data.name_short
+                            : basketStore.store_data.name
+                        }},
+                        {{
+                          basketStore.store_data.address_short
+                            ? basketStore.store_data.address_short
+                            : basketStore.store_data.address
+                        }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-divider d-divider--full d-divider--big order__item-divider"></div>
+                <div
+                  class="order__item-content"
+                  v-for="(product, product_key) in warehouse.data"
+                  :key="product_key"
+                >
+                  <div class="order__item-content-top">
+                    <div class="order__item-product">
+                      <div class="order__item-product-image-container">
+                        <img
+                          :src="product.image"
+                          :alt="product.name"
+                          class="order__item-product-image"
+                        />
+                      </div>
+                      <div class="order__item-product-content">
+                        <p class="order__item-product-title">
+                          {{ product.name }}
+                        </p>
+                        <div class="order__item-product-additional">
+                          <p class="order__item-product-article">Арт: {{ product.article }}</p>
+                          <!-- <div class="order__item-product-discount">Скидка 27%</div> -->
+                        </div>
+                      </div>
+                    </div>
+                    <div class="order__item-content-top-right">
+                      <span class="order__item-product-price"
+                        >{{ product.price.toLocaleString('ru') }} ₽</span
+                      >
                       <Counter
                         :classPrefix="'order__item-product'"
                         @ElemCount="ElemCount"
@@ -175,64 +148,62 @@
                         :id="Number(product?.remain_id)"
                         :key="product?.key"
                       />
-                      <span class="order__item-product-price"
-                        >{{ product.price.toLocaleString('ru') }} ₽</span
-                      >
+                    </div>
+                    <a
+                      href="#"
+                      class="cart__item-header-button"
+                      @click="
+                        clearBasketProduct(org.org_data.id, warehouse_id, product_key, product)
+                      "
+                    >
+                      <i class="d-icon-trash"></i>
+                    </a>
+                  </div>
+                  <div class="order__item-price">
+                    <Counter
+                      :classPrefix="'order__item-product'"
+                      @ElemCount="ElemCount"
+                      :item="{ basket, product }"
+                      :mini="true"
+                      :min="0"
+                      :max="Number(product?.available)"
+                      :value="Number(product?.count)"
+                      :step="Number(product?.multiplicity ? product?.multiplicity : 1)"
+                      :id="Number(product?.remain_id)"
+                      :key="product?.key"
+                    />
+                    <span class="order__item-product-price"
+                      >{{ product.price.toLocaleString('ru') }} ₽</span
+                    >
+                  </div>
+                </div>
+                <div class="order__item-content-bottom">
+                  <div class="order__item-content-bottom-left">
+                    <div
+                      class="order__item-prop"
+                      v-if="org?.cart_data?.delay_type == 1 && org?.cart_data?.delay == 0"
+                    >
+                      <p class="order__item-prop-label">Предоплата</p>
+                    </div>
+                    <div class="order__item-prop" v-else>
+                      <p class="order__item-prop-label">
+                        {{
+                          org?.cart_data?.delay_type == 1
+                            ? 'Отсрочка:&nbsp;'
+                            : 'Под реализацию:&nbsp;'
+                        }}
+                      </p>
+                      <p class="order__item-prop-value">{{ org?.cart_data?.delay }} дней</p>
+                    </div>
+                    <div class="d-divider d-divider--vertical order__item-prop-divider"></div>
+                    <div class="order__item-prop">
+                      <p class="order__item-prop-label">Оплата доставки:&nbsp;</p>
+                      <p class="order__item-prop-value">
+                        {{ org?.cart_data?.payer == 1 ? 'Поставщик' : 'Покупатель' }}
+                      </p>
                     </div>
                   </div>
-                  <div class="order__item-content-bottom">
-                    <div class="order__item-content-bottom-left">
-                      <div
-                        class="order__item-prop"
-                        v-if="org?.cart_data?.delay_type == 1 && org?.cart_data?.delay == 0"
-                      >
-                        <p class="order__item-prop-label">Предоплата</p>
-                      </div>
-                      <div class="order__item-prop" v-else>
-                        <p class="order__item-prop-label">
-                          {{
-                            org?.cart_data?.delay_type == 1
-                              ? 'Отсрочка:&nbsp;'
-                              : 'Под реализацию:&nbsp;'
-                          }}
-                        </p>
-                        <p class="order__item-prop-value">{{ org?.cart_data?.delay }} дней</p>
-                      </div>
-                      <div class="d-divider d-divider--vertical order__item-prop-divider"></div>
-                      <div class="order__item-prop">
-                        <p class="order__item-prop-label">Оплата доставки:&nbsp;</p>
-                        <p class="order__item-prop-value">
-                          {{ org?.cart_data?.payer == 1 ? 'Поставщик' : 'Покупатель' }}
-                        </p>
-                      </div>
-                    </div>
-                    <div class="order__item-content-bottom-right">
-                      <button
-                        class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy"
-                        @click.prevent="
-                          () => {
-                            if (org?.cart_data?.not_available) {
-                              this.showChangedCount = true
-                              this.showChangedId = org.org_data.id
-                            } else {
-                              orderSubmit(org.org_data.id)
-                            }
-                          }
-                        "
-                      >
-                        Отправить заказ
-                      </button>
-                      <!--
-                      <div
-                        class="d-divider d-divider--vertical order__item-content-bottom-right-divider"
-                      ></div>
-                      <button class="order__item-upload">
-                        <i class="d-icon-upload2"></i>
-                      </button>
-                      -->
-                    </div>
-                  </div>
-                  <div class="order__item-footer">
+                  <div class="order__item-content-bottom-right">
                     <button
                       class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy"
                       @click.prevent="
@@ -247,12 +218,38 @@
                       "
                     >
                       Отправить заказ
-
-                      <span class="order__item-buy-value"
-                        >{{ org.cart_data.cost.toLocaleString('ru') }} ₽</span
-                      >
                     </button>
                     <!--
+                      <div
+                        class="d-divider d-divider--vertical order__item-content-bottom-right-divider"
+                      ></div>
+                      <button class="order__item-upload">
+                        <i class="d-icon-upload2"></i>
+                      </button>
+                      -->
+                  </div>
+                </div>
+                <div class="order__item-footer">
+                  <button
+                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy"
+                    @click.prevent="
+                      () => {
+                        if (org?.cart_data?.not_available) {
+                          this.showChangedCount = true
+                          this.showChangedId = org.org_data.id
+                        } else {
+                          orderSubmit(org.org_data.id)
+                        }
+                      }
+                    "
+                  >
+                    Отправить заказ
+
+                    <span class="order__item-buy-value"
+                      >{{ org.cart_data.cost.toLocaleString('ru') }} ₽</span
+                    >
+                  </button>
+                  <!--
                     <div
                       class="d-divider d-divider--vertical order__item-content-bottom-right-divider"
                     ></div>
@@ -260,14 +257,13 @@
                       <i class="d-icon-upload2"></i>
                     </button>
                     -->
-                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Итого -->
-          <div class="order__footer" v-if="Object.keys(this.basket).length > 1">
+          <div class="order__footer" v-if="Object.keys(this.basketStore).length > 1">
             <div class="d-divider d-divider--full order__footer-divider"></div>
 
             <div class="order__footer-content">
@@ -276,7 +272,7 @@
               </div>
               <div class="order__footer-right">
                 <p class="order__footer-value">
-                  {{ this.basket.cart_data.cost.toLocaleString('ru') }} ₽
+                  {{ this.basketStore.cart_data.cost.toLocaleString('ru') }} ₽
                 </p>
                 <div class="order__footer-actions">
                   <button
@@ -306,7 +302,7 @@
               <div class="order__footer-top">
                 <p class="order__footer-label">Итого</p>
                 <p class="order__footer-value">
-                  {{ this.basket.cart_data.cost.toLocaleString('ru') }} ₽
+                  {{ this.basketStore.cart_data.cost.toLocaleString('ru') }} ₽
                 </p>
               </div>
               <div class="order__footer-bottom">
@@ -315,7 +311,7 @@
                     class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy"
                     @click.prevent="
                       () => {
-                        if (this.basket?.cart_data?.not_available) {
+                        if (this.basketStore?.cart_data?.not_available) {
                           this.showChangedCount = true
                           this.showChangedId = 'all'
                         } else {
@@ -440,6 +436,7 @@ export default {
       showClearBasketModal: false,
       showChangedCount: false,
       showChangedId: '',
+      basketStore: {},
       fetchIds: [],
       id_clear_org: 0,
       order: '',
@@ -448,6 +445,7 @@ export default {
   computed: {
     ...mapGetters({
       basket: 'basket/basket',
+      basketWarehouse: 'basket/basketWarehouse',
     }),
   },
   methods: {
@@ -478,7 +476,6 @@ export default {
         key: key,
         product: product,
       }
-      console.log(data)
       this.basketProductRemove(data).then((response) => {
         this.$emit('catalogUpdate')
         this.loading = true
@@ -628,6 +625,62 @@ export default {
           })
         }
       })
+    },
+  },
+  mounted() {
+    this.getBasket().then(() => {
+      this.loading = false
+    })
+    if (Object.keys(this.basket).length > 1) {
+      if (
+        Object.prototype.hasOwnProperty.call(this.basket.data, this.basketWarehouse) &&
+        this.basketWarehouse
+      ) {
+        this.basketStore = this.basket[this.basketWarehouse]
+      } else {
+        this.basketStore = {}
+      }
+    } else {
+      this.basketStore = {}
+    }
+  },
+  watch: {
+    basketStore(newVal) {
+      if (Object.keys(newVal).length) {
+        this.loading = false
+      } else {
+        this.loading = false
+        if (!this.order) {
+          this.$emit('close')
+        }
+        this.$emit('catalogUpdate')
+      }
+    },
+    basket(newVal) {
+      if (Object.keys(this.basket).length > 1) {
+        if (
+          Object.prototype.hasOwnProperty.call(newVal.data, this.basketWarehouse) &&
+          this.basketWarehouse
+        ) {
+          this.basketStore = newVal.data[this.basketWarehouse]
+          this.order = ''
+        } else {
+          this.basketStore = {}
+        }
+      } else {
+        this.basketStore = {}
+      }
+    },
+    basketWarehouse(newVal) {
+      if (Object.keys(this.basket).length > 1 && newVal > 0) {
+        if (Object.prototype.hasOwnProperty.call(this.basket.data, newVal)) {
+          this.basketStore = this.basket.data[newVal]
+        } else {
+          this.basketStore = {}
+        }
+      } else {
+        this.basketStore = {}
+      }
     },
   },
 }

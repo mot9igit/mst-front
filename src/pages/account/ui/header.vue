@@ -65,7 +65,7 @@
             <a
               href="#"
               class="d-button d-button-tertiary shadow header__upload"
-              @click.prevent="this.modals.requirement = true, openRequirementsWindow()"
+              @click.prevent="((this.modals.requirement = true), openRequirementsWindow())"
             >
               <i class="d-icon-upload header__upload-icon"></i>
               <span class="header__upload-text">Потребность</span>
@@ -150,7 +150,11 @@
     @closeWindow="closeRequirementsWindow"
   />
   <teleport to="body">
-    <customModal v-model="showChangeAddressModal" @cancel="cancel" class="header__address-edit-modal">
+    <customModal
+      v-model="showChangeAddressModal"
+      @cancel="cancel"
+      class="header__address-edit-modal"
+    >
       <template v-slot:title>Выбрать склад доставки</template>
       <Loader v-if="loading.changeBasketStore"></Loader>
       <changeAddressWindow @setWarehouse="setWarehouse" />
@@ -180,7 +184,7 @@ export default {
       },
     }
   },
-  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart','showRequipments'],
+  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments'],
   components: { Loader, customModal, changeAddressWindow, SearchField, requirement },
   props: {
     active: {
@@ -190,7 +194,7 @@ export default {
     mobileRequipments: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   mounted() {
     this.getOrgStores().then(() => {
@@ -260,9 +264,10 @@ export default {
     setWarehouse(id) {
       this.loading.changeBasketStore = true
       this.setOrgBasketStore(id).then(() => {
-        this.getBasket()
+        // this.getBasket()
         this.loading.changeBasketStore = false
         this.showChangeAddressModal = false
+        window.location.reload()
       })
     },
     updateCart() {
@@ -287,10 +292,10 @@ export default {
     basketWarehouse() {
       this.updateCart()
     },
-    mobileRequipments: function(newVal){
+    mobileRequipments: function (newVal) {
       this.modals.requirement = newVal
     },
-    orgActive: function(){
+    orgActive: function () {
       this.getOrgStores().then(() => {
         this.getOrgBasketStore()
       })

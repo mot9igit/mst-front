@@ -274,6 +274,20 @@ export default {
         el.scrollIntoView({ behavior: 'smooth' })
       }
     },
+    updateCatalog() {
+      this.loading = true
+      const data = {
+        page: this.page,
+        perpage: this.per_page,
+      }
+      if (this.$route.name == 'purchasesCatalogSearch') {
+        data.search = this.$route.query.search
+      }
+      this.getOptProducts(data).then(() => {
+        this.opt_products = this.optProducts
+        this.loading = false
+      })
+    },
   },
   mounted() {
     const data = {
@@ -295,6 +309,7 @@ export default {
       optVendorsAvailable: 'org/optVendorsAvailable',
       optVendorsSelected: 'org/optVendorsSelected',
       basketWarehouse: 'basket/basketWarehouse',
+      basket: 'basket/basket',
     }),
     pagesCount() {
       let pages = Math.ceil(this.optProducts.total / this.per_page)
@@ -319,17 +334,7 @@ export default {
     },
     catalogUpdater: function (newVal) {
       if (newVal) {
-        const data = {
-          page: this.page,
-          perpage: this.per_page,
-        }
-        if (this.$route.name == 'purchasesCatalogSearch') {
-          data.search = this.$route.query.search
-        }
-        this.getOptProducts(data).then(() => {
-          this.opt_products = this.optProducts
-          this.loading = false
-        })
+        this.updateCatalog()
       }
     },
     $route() {

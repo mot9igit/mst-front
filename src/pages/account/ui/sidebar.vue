@@ -457,9 +457,9 @@ export default {
     //screenToggle(){
     //  this.isMobile = localStorage.getItem('global.isMobile')
     //  if((this.active === true || this.active === '1' || this.active === '0') && this.isMobile === 'false'){
-        // setTimeout(() => {
-        // this.sidebarToggle()
-        //}, 500)
+    // setTimeout(() => {
+    // this.sidebarToggle()
+    //}, 500)
     //  }
     //}
   },
@@ -502,7 +502,6 @@ export default {
       },
       true,
     )
-
   },
   watch: {
     orgs: function (newVal) {

@@ -144,12 +144,12 @@
           <Counter
             @ElemCount="ElemCount"
             :min="0"
-            :max="offer.max"
-            :id="offer.remain_id"
-            :store_id="offer.store_id"
-            :index="index"
-            :value="offer?.basket?.count"
-            :step="offer?.multiplicity ? offer?.multiplicity : 1"
+            :max="Number(offer.max)"
+            :id="Number(offer.remain_id)"
+            :store_id="Number(offer.store_id)"
+            :index="Number(offer.remain_id)"
+            :value="Number(offer?.basket?.count)"
+            :step="offer?.multiplicity ? Number(offer?.multiplicity) : 1"
             :item="offer"
           />
           <button
