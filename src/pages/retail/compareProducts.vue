@@ -236,8 +236,38 @@
               @filter="filterbrand"
               @sort="filterbrand"
               @paginate="paginatebrand"
+              @actionCell="brandClick"
             >
       </BaseTable>
+
+      <Teleport to="body">
+        <customModal class="product-comparison__brands-modal" v-model="this.modalBrand">
+          <div class="product-comparison__brands-modal-header-fixed">
+            <h3 class="product-comparison__brands-modal-header">Сопоставление по бренду {{ report_copo_details.vendor.name }} ({{report_copo_details.total}})</h3>
+            <div class="warehouse-analysis__description product-comparison__description">
+              <p>
+                На данной странице предоставлены товары бренда, найденые в вашем каталоге и статус сопоставления.
+              </p>
+            </div>
+          </div>
+          <div class="product-comparison__brands-modal-content">
+          <BaseTable
+              :items_data="report_copo_details.items"
+              :total="report_copo_details.total"
+              :pagination_items_per_page="this.pagination_items_per_page"
+              :pagination_offset="this.pagination_offset"
+              :page="this.page_modal"
+              :table_data="this.table_data_modal"
+              :filters="this.filters_modal"
+              @filter="filtermodal"
+              @sort="filtermodal"
+              @paginate="paginatemodal"
+            >
+            </BaseTable>
+          </div>
+        </customModal>
+      </Teleport>
+
     </div>
   </section>
 </template>
@@ -284,6 +314,8 @@ export default {
       chartOptionsMin: {
 			cutout: "70%",
 			},
+      brand_id: null,
+      modalBrand: false,
 			prods: {
 				copo_percent: 0,
 				all: 0,
@@ -337,19 +369,6 @@ export default {
 				//	type: "text",
 				//},
       },
-      filters: {
-				name: {
-					name: "Наименование, артикул",
-					placeholder: "Наименование, артикул",
-					type: "text",
-				},
-				status: {
-					name: "Статус",
-					placeholder: "Статус",
-					type: "dropdown",
-					values: this.getcardstatus,
-				},
-			},
       filtersbrand: {
 				instock: {
 					name: "В наличии",
@@ -450,9 +469,10 @@ export default {
       table_data_brand: {
 				name: {
 					label: "Наименование",
-					type: "link",
+					type: "link_onclick",
+          id: 'vendor_id',
 					sort: true,
-          class: 'cell_centeralign',
+          class: 'cell_centeralign table_link',
 				},
 				find: {
 					label: "Найдено",
@@ -485,13 +505,100 @@ export default {
           class: 'cell_centeralign',
 				},
 			},
+      table_data_modal: {
+        image: {
+          label: 'Фото',
+          type: 'image',
+          class: 'cell_centeralign',
+        },
+        article: {
+          label: 'Артикул',
+          type: 'text',
+          sort: true,
+          class: 'cell_centeralign',
+        },
+        name: {
+          label: 'Наименование',
+          type: 'text',
+          description: {
+            type: 'field',
+            key: 'catalog'
+          },
+          sort: true,
+          class: 'cell_centeralign',
+        },
+        price: {
+          label: 'Розничная цена',
+          type: 'text',
+          sort: true,
+          class: 'cell_centeralign',
+        },
+        remains: {
+          label: 'Фактическое наличие',
+          type: 'text',
+          sort: true,
+          class: 'cell_centeralign',
+        },
+        reserved: {
+          label: 'Резерв',
+          type: 'text',
+          sort: true,
+          class: 'cell_centeralign',
+        },
+        available: {
+          label: 'Доступно для продажи',
+          type: 'text',
+          sort: true,
+          class: 'cell_centeralign',
+        },
+        sales: {
+          label: 'Продаж за все время',
+          type: 'text',
+          sort: true,
+          class: 'cell_centeralign',
+        },
+        summ: {
+          label: 'Сумма',
+          type: 'text',
+          sort: true,
+          class: 'cell_centeralign',
+        },
+        status: {
+          label: 'Статус',
+          type: 'status',
+          sort: true,
+          class: 'cell_centeralign',
+        }
+      },
+      filters_modal: {
+        name: {
+          name: 'Наименование товара, артикул',
+          placeholder: 'Наименование товара, артикул',
+          type: 'text'
+        },
+        status: {
+          name: 'Статус',
+          placeholder: 'Статус',
+          type: 'dropdown',
+          values: this.cardstatus
+        },
+        instock: {
+          name: 'В наличии',
+          placeholder: 'В наличии',
+          type: 'checkbox',
+          values: 1
+        }
+      },
 		}
   },
+
   unmounted() {
 		this.unsetReportCopo();
+    this.unsetReportCopoDetails();
 	},
   mounted() {
     this.getOrgStores()
+    this.getCardstatus()
     this.getData({
       page: this.page,
 			page_brand: this.page_brand,
@@ -525,7 +632,7 @@ export default {
 			// this.distr.count = this.organization.distr.count
 			// this.shipment.total = this.organization.shipment.total
 			// this.shipment.items = this.organization.shipment.items
-      this.getCardstatus()
+
       this.getVendors()
       this.getCatalogs()
       this.getMSProducts({
@@ -546,6 +653,7 @@ export default {
       report_copo: 'retail/report_copo',
       cardstatus: 'retail/cardstatus',
       msproducts: 'retail/msproducts',
+      report_copo_details: 'retail/report_copo_details',
     }),
 		date() {
 			const today = new Date();
@@ -594,6 +702,8 @@ export default {
       getCardstatus: 'retail/getCardstatus',
       getMSProducts: 'retail/getMSProducts',
       unsetReportCopo: 'retail/unsetReportCopo',
+      getReportCopoDetails: 'retail/getReportCopoDetails',
+      unsetReportCopoDetails: 'retail/unsetReportCopoDetails',
     }),
     setChartData() {
 			return {
@@ -734,18 +844,9 @@ export default {
 			this.products.total = -1;
 			this.getData(data);
 		},
-		filterModal(data) {
-			this.msproducts.total = -1;
-			this.getMSProducts(data);
-		},
 		filterbrand(data) {
 			this.report_copo.total = -1;
 			this.getReportCopo(data);
-		},
-		paginateModal(data) {
-			this.msproducts.total = -1;
-			this.page_modal = data.page;
-			this.getMSProducts(data);
 		},
 		paginate(data) {
 			this.products.total = -1;
@@ -757,10 +858,35 @@ export default {
 			this.page_brand = data.page;
 			this.getReportCopo(data);
 		},
+    filtermodal(data) {
+      data.tabledata = this.table_data_modal,
+      data.brand_id = this.brand_id
+      this.getReportCopoDetails(data)
+    },
+    paginatemodal(data) {
+      this.page_modal = data.page
+      data.tabledata = this.table_data_modal
+      data.brand_id = this.brand_id
+      this.getReportCopoDetails(data)
+    },
+    brandClick(id){
+      this.loading = true
+      this.brand_id = id
+      this.page_modal = 1
+      this.getReportCopoDetails({
+        tabledata: this.table_data_modal,
+        page: this.page_modal,
+        perpage: this.pagination_items_per_page,
+        brand_id: this.brand_id
+      }).then(() => {
+      this.modalBrand = true
+      this.loading = false
+    })
+    }
   },
   watch: {
-    getcardstatus: function (newVal) {
-			this.filters.status.values = newVal;
+    cardstatus: function (newVal) {
+			this.filters_modal.status.values = newVal;
 		},
     products: function (newVal) {
       this.statuses = newVal.status
@@ -1023,5 +1149,48 @@ export default {
 }
 .product-comparison__stats-bottom {
   align-items: end;
+}
+.product-comparison__brands-modal .modal-content{
+  max-width: 85%;
+}
+.product-comparison__brands-modal .modal__content{
+  overflow-x: hidden;
+}
+.product-comparison__brands-modal-header h3{
+  font-size: 20px;
+}
+.product-comparison__description{
+  margin-top: 16px;
+}
+.product-comparison__brands-modal .p-inputtext, .product-comparison__brands-modal .p-select{
+  width:100%;
+}
+.product-comparison__brands-modal .p-checkbox{
+  margin-right:16px;
+}
+.product-comparison__brands-modal label{
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 21px;
+  color: #757575;
+}
+.product-comparison__brands-modal .p-floatlabel label, .product-comparison__brands-modal .p-inputtext::placeholder, .product-comparison__brands-modal .p-placeholder{
+  font-size: 14px;
+  color: #757575;
+}
+.product-comparison__brands-modal .d-col-xl-6:nth-child(2){
+  padding-left: 32px;
+  padding-right: 32px;
+}
+.product-comparison__brands-modal .d-table__wrapper{
+  margin-top: 40px;
+}
+.product-comparison__brands-modal .form_input_group:after {
+  content: '\e003';
+  font-family: 'Iconly' !important;
+  position: absolute;
+  font-size: 16.8px;
+  top: calc(50% - 8.4px);
+  right: 30px;
 }
 </style>

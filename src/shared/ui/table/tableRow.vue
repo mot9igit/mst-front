@@ -17,6 +17,7 @@
       @approveElem="approveElem"
       @disapproveElem="disapproveElem"
       @editNumber="editNumber"
+      @actionCell="actionCell"
     />
   </tr>
   <tr v-else class="d-table__row">
@@ -37,6 +38,7 @@
       @approveElem="approveElem"
       @disapproveElem="disapproveElem"
       @editNumber="editNumber"
+      @actionCell="actionCell"
       @click.prevent="
         $router.push({
           name: link_row.link_to,
@@ -65,6 +67,7 @@ export default {
     'approveElem',
     'disapproveElem',
     'editNumber',
+    'actionCell'
   ],
   props: {
     editMode: {
@@ -129,6 +132,9 @@ export default {
     editNumber(object) {
       this.$emit('editNumber', object)
       // console.log(object)
+    },
+    actionCell(data){
+      this.$emit('actionCell', data)
     },
     linkParams() {
       const linkparams = {}

@@ -71,6 +71,26 @@
         </div>
       </router-link>
     </div>
+    <div
+      class="cell_value"
+      :class="cell_data.class ? cell_data.class + ' link_onclick' : ' link_onclick'"
+      v-else-if="cell_data.type == 'link_onclick'"
+      @click.prevent="actionCell(value[cell_data.id])"
+    >
+
+        {{ value[cell_key] }}
+        <div v-if="cell_data.description" class="cell_description">
+          <span v-if="cell_data.description.type == 'field'">
+
+            {{ value[cell_data.description.key] }}
+          </span>
+          <span v-else-if="cell_data.description.type == 'text'">
+
+            {{ value[cell_key].description.text }}
+          </span>
+        </div>
+
+    </div>
     <div class="cell_value"
       v-if="cell_data.type == 'link' && cell_data.items_incl_img"
       :class="cell_key == 'name' ? 'name '+ cell_data.class : cell_data.class"
@@ -209,6 +229,7 @@ export default {
     'disapproveElem',
     'editNumber',
     'update:selectedItems',
+    'actionCell'
   ],
   props: {
     editMode: {
@@ -346,6 +367,9 @@ export default {
     editValue(number, name) {
       this.$emit('editNumber', { value: number, id: this.value.id, name: name })
     },
+    actionCell(id){
+      this.$emit('actionCell', id)
+    },
   },
   components: {
     Button,
@@ -455,5 +479,8 @@ export default {
     width: 18px;
     height: 18px;
     margin: 0 auto;
+}
+.table_link{
+  cursor: pointer;
 }
 </style>
