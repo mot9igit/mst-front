@@ -156,7 +156,7 @@
                 <a class="sort" href="#" v-if="row.sort" @click.prevent="sorting(index)">
                   {{ row.label }}
                   <span v-if="this.sort[index]">
-                    <mdicon name="sort-ascending" size="18" v-if="this.sort[index].dir == ASC" />
+                    <mdicon name="sort-ascending" size="18" v-if="this.sort[index].dir == 'ASC'" />
                     <mdicon name="sort-descending" size="18" v-else />
                   </span>
                   <span v-else>
@@ -512,7 +512,7 @@ export default {
     },
     sorting(key) {
       if (Object.prototype.hasOwnProperty.call(this.sort, key)) {
-        if (this.sort[key].dir === 'ASC') {
+        if (this.sort[key].dir == 'ASC') {
           this.sort[key] = {
             dir: 'DESC',
             sort_desc: true,
@@ -529,7 +529,6 @@ export default {
           active: true,
         }
       }
-      console.log(toRaw(this.sort))
       this.$emit('sort', {
         filter: this.filter,
         filtersdata: toRaw(this.filtersdata),
