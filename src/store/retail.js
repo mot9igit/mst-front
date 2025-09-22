@@ -13,6 +13,8 @@ export default {
     balance_request: {},
     organization: [],
     report_copo: [],
+    report_copo_details: [],
+    report_copo_all: [],
     cardstatus: [],
     msproducts: [],
   },
@@ -150,6 +152,43 @@ export default {
       }
       return response
     },
+    async getReportCopoDetails({ commit }, { tabledata, filter, filtersdata, page, sort, perpage, brand_id }) {
+      const data = {
+          id: router.currentRoute._value.params.id,
+          store_id: router.currentRoute._value.params.store_id,
+          brand_id: brand_id,
+          type: 'report_copo_details',
+          filter: filter,
+          filtersdata: filtersdata,
+          tabledata: tabledata,
+          sort: sort,
+          page: page,
+          perpage: perpage
+      }
+      const response = await api.retail.getReportCopoDetails(data)
+      if (response) {
+        commit('SET_REPORT_COPO_DETAILS', response.data)
+      }
+      return response
+    },
+    async getReportCopoAll({ commit }, { tabledata, filter, filtersdata, page, sort, perpage, vendor_id }) {
+      const data = {
+          id: router.currentRoute._value.params.id,
+          vendor_id: vendor_id,
+          type: 'report_copo_all_details',
+          filter: filter,
+          filtersdata: filtersdata,
+          tabledata: tabledata,
+          sort: sort,
+          page: page,
+          perpage: perpage
+      }
+      const response = await api.retail.getReportCopoAll(data)
+      if (response) {
+        commit('SET_REPORT_COPO_ALL', response.data)
+      }
+      return response
+    },
     async getCardstatus({ commit }) {
       const data = {
           type: 'cardstatus'
@@ -187,6 +226,12 @@ export default {
     },
     unsetReportCopo ({ commit }) {
       commit('UNSET_REPORT_COPO')
+    },
+    unsetReportCopoDetails ({ commit }) {
+      commit('UNSET_REPORT_COPO_DETAILS')
+    },
+    unsetReportCopoAll ({ commit }) {
+      commit('UNSET_REPORT_COPO_ALL')
     },
   },
 
@@ -227,6 +272,18 @@ export default {
     UNSET_REPORT_COPO: (state) => {
       state.report_copo = {}
     },
+    SET_REPORT_COPO_DETAILS: (state, data) => {
+      state.report_copo_details = data.data
+    },
+    UNSET_REPORT_COPO_DETAILS: (state) => {
+      state.report_copo_details = {}
+    },
+    SET_REPORT_COPO_ALL: (state, data) => {
+      state.report_copo_all = data.data
+    },
+    UNSET_REPORT_COPO_ALL: (state) => {
+      state.report_copo_all = {}
+    },
     SET_CARDSTATUS: (state, data) => {
       state.cardstatus = data.data.items
     },
@@ -255,6 +312,12 @@ export default {
     },
     report_copo (state) {
       return state.report_copo
+    },
+    report_copo_details (state) {
+      return state.report_copo_details
+    },
+    report_copo_all (state) {
+      return state.report_copo_all
     },
     cardstatus (state) {
       return state.cardstatus

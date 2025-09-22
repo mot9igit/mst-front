@@ -3,7 +3,16 @@
     <div class="d-top">
       <breadcrumbs />
     </div>
-    <h2>Сопоставление товаров</h2>
+    <h2>Сопоставление товаров склада</h2>
+    <div class="warehouse-analysis__header-storeinfo">
+        <div class="warehouse-analysis__header-storeinfo-logo">
+          <img :src="orgStore.image" />
+        </div>
+        <div class="warehouse-analysis__header-storeinfo-info">
+          <div class="warehouse-analysis__header-storeinfo-info-name">{{ orgStore.name_short }}</div>
+          <div class="warehouse-analysis__header-storeinfo-info-address"><i class="d-icon-location"></i><span>{{ orgStore.address_short }}</span></div>
+        </div>
+    </div>
     <Loader v-if="loading" />
     <div class="product-comparison__stats">
 								<div class="product-comparison__stats-top" v-if="prods.all">
@@ -213,16 +222,6 @@
 									</div>
 								</div>
 							</div>
-
-    <h2>Склады ({{ orgStores.total }})</h2>
-    <div class="warehouse-analysis__table product-comparison__stores">
-      <BaseTable
-        :items_data="orgStores.items"
-        :total="orgStores.total"
-        :table_data="this.table_stores"
-
-      />
-    </div>
     <h2>Сопоставление по брендам</h2>
     <div class="product-comparison__brands">
       <BaseTable
@@ -243,7 +242,17 @@
       <Teleport to="body">
         <customModal class="product-comparison__brands-modal" v-model="this.modalBrand">
           <div class="product-comparison__brands-modal-header-fixed">
-            <h3 class="product-comparison__brands-modal-header">Сопоставление по бренду {{ report_copo_details.vendor.name }} ({{report_copo_details.total}})</h3>
+            <h3 class="product-comparison__brands-modal-header">
+              Сопоставление по бренду {{ report_copo_details.vendor.name }} ({{report_copo_details.total}})</h3>
+              <div class="warehouse-analysis__header-storeinfo">
+                <div class="warehouse-analysis__header-storeinfo-logo">
+                  <img :src="orgStore.image" />
+                </div>
+                <div class="warehouse-analysis__header-storeinfo-info">
+                  <div class="warehouse-analysis__header-storeinfo-info-name">{{ orgStore.name_short }}</div>
+                  <div class="warehouse-analysis__header-storeinfo-info-address"><i class="d-icon-location"></i><span>{{ orgStore.address_short }}</span></div>
+                </div>
+              </div>
             <div class="warehouse-analysis__description product-comparison__description">
               <p>
                 На данной странице предоставлены товары бренда, найденые в вашем каталоге и статус сопоставления.
@@ -263,7 +272,11 @@
               @sort="filtermodal"
               @paginate="paginatemodal"
             >
+            <template v-slot:cell-slot>
+									Ghb
+						</template>
             </BaseTable>
+
           </div>
         </customModal>
       </Teleport>
@@ -280,7 +293,7 @@ import customModal from '@/shared/ui/Modal.vue'
 import Chart from 'primevue/chart'
 
 export default {
-  name: 'RetailCompareProducts',
+  name: 'RetailCompareStoreProducts',
   components: { Breadcrumbs, Loader, customModal, BaseTable, Chart },
   props: {
     pagination_items_per_page: {
@@ -295,12 +308,14 @@ export default {
   data() {
     return {
       loading: true,
+			globalIsModal: [],
 			chartData: null,
 			chartDataMoney: null,
 			chartDataHelpOne: null,
 			chartDataHelpTwo: null,
 			chartDataHelpThee: null,
 			chartDataHelpFour: null,
+			isModal: false,
 			isModalBrand: false,
       statuses: [],
 			chartOptions: {
@@ -321,37 +336,6 @@ export default {
 			page: 1,
 			page_brand: 1,
 			page_modal: 1,
-			table_stores: {
-        name: {
-          label: 'Название / Адрес',
-          type: 'link',
-          link_to: 'retailCompareStoreProducts',
-          link_params: {
-              id: this.$route.params.id,
-              store_id: 'id',
-          },
-          class: 'cell_comparison-stores-name',
-          items_incl_img: ['image','name_short','address'],
-        },
-				active: {
-					label: "Активно",
-					type: "boolean_active",
-          class: 'cell_centeralign cell_review-stores-active',
-				},
-				remains: {
-					label: "Кол-во товаров, шт.",
-					type: "text",
-          class: 'cell_centeralign',
-				},
-        //perc_summ: {
-				//	label: "% сопоставленных товаров по стоимости",
-				//	type: "text",
-				//},
-        //perc_col: {
-				//	label: "% сопоставленных товаров по количеству",
-				//	type: "text",
-				//},
-      },
       filtersbrand: {
 				instock: {
 					name: "В наличии",
@@ -580,60 +564,49 @@ export default {
     this.unsetReportCopoDetails();
 	},
   mounted() {
-    this.getOrgStores()
     this.getCardstatus()
     this.getData({
-			page: this.page,
+			page: this.page_brand,
 			perpage: this.pagination_items_per_page,
+      store_id: this.$route.params.store_id,
     })
     this.getReportCopo({
       tabledata: this.table_data,
-			page: this.page_brand,
+			page: this.page,
 			perpage: this.pagination_items_per_page,
     })
-    this.getOrganization().then(() => {
-      this.chartData = this.setChartData();
-			this.chartDataMoney = this.setChartDataMoney();
+    this.getOrgStore().then(() => {
 			this.chartDataHelpOne = this.setChartDataHelpOne();
 			this.chartDataHelpTwo = this.setChartDataHelpTwo();
 			this.chartDataHelpThee = this.setChartDataHelpTree();
 			this.chartDataHelpFour = this.setChartDataHelpFour();
-			const num = this.organization.products.copo_percent;
-			this.prods.copo_percent = num;
-			this.prods.all = this.organization.products.count;
-			this.prods.copo = this.organization.products.copo_count;
-			this.prods.count_all = this.organization.products.count_all;
-			this.prods.summ = this.organization.products.summ;
-			this.prods.copo_money_percent = this.organization.products.copo_money_percent;
-			this.prods.no_copo_money_percent = this.organization.products.no_copo_money_percent;
-			this.prods.summ_copo = this.organization.products.summ_copo;
-			// orders.summ && orders.count
-			// this.dilers.summ = this.organization.dilers.summ
-			// this.dilers.count = this.organization.dilers.count
-			// this.distr.summ = this.organization.distr.summ
-			// this.distr.count = this.organization.distr.count
-			// this.shipment.total = this.organization.shipment.total
-			// this.shipment.items = this.organization.shipment.items
+      this.getVendors()
       this.loading = false
     })
   },
   computed: {
     ...mapGetters({
-      orgStores: 'org/orgStores',
+      orgStore: 'org/orgStore',
+      vendors: 'addition/vendors',
+      catalogs: 'addition/catalogs',
       products: 'warehouse/products',
       organization: 'retail/organization',
       report_copo: 'retail/report_copo',
       cardstatus: 'retail/cardstatus',
+      msproducts: 'retail/msproducts',
       report_copo_details: 'retail/report_copo_details',
     }),
   },
   methods: {
     ...mapActions({
-      getOrgStores: 'org/getOrgStores',
+      getOrgStore: 'org/getOrgStore',
+      getVendors: 'addition/getVendors',
+      getCatalogs: 'addition/getCatalogs',
       getData: 'warehouse/getData',
       getOrganization: 'retail/getOrganization',
       getReportCopo: 'retail/getReportCopo',
       getCardstatus: 'retail/getCardstatus',
+      getMSProducts: 'retail/getMSProducts',
       unsetReportCopo: 'retail/unsetReportCopo',
       getReportCopoDetails: 'retail/getReportCopoDetails',
       unsetReportCopoDetails: 'retail/unsetReportCopoDetails',
@@ -643,8 +616,8 @@ export default {
 				datasets: [
 					{
 						data: [
-              this.organization.products.no_copo_percent,
-							this.organization.products.copo_percent,
+							this.orgStore?.products?.no_copo_percent,
+              this.orgStore?.products?.copo_percent,
 						],
 						backgroundColor: ["#ededed", "#4759af"],
             borderColor: ["#fbfbfb", "#4759af"],
@@ -661,8 +634,8 @@ export default {
 				datasets: [
 					{
 						data: [
-							this.organization.products.no_copo_money_percent,
-              this.organization.products.copo_money_percent,
+							this.orgStore?.products.no_copo_money_percent,
+              this.orgStore?.products.copo_money_percent,
 						],
 						backgroundColor: ["#ededed", "#c4cae5"],
             borderColor: ["#fbfbfb", "#4759af"],
@@ -773,18 +746,9 @@ export default {
 				],
 			};
 		},
-		filter(data) {
-			this.products.total = -1;
-			this.getData(data);
-		},
 		filterbrand(data) {
 			this.report_copo.total = -1;
 			this.getReportCopo(data);
-		},
-		paginate(data) {
-			this.products.total = -1;
-			this.page = data.page;
-			this.getData(data);
 		},
 		paginatebrand(data) {
 			this.report_copo.total = -1;
@@ -811,6 +775,7 @@ export default {
         page: this.page_modal,
         perpage: this.pagination_items_per_page,
         brand_id: this.brand_id
+
       }).then(() => {
       this.modalBrand = true
       this.loading = false
@@ -823,307 +788,25 @@ export default {
 		},
     products: function (newVal) {
       this.statuses = newVal.status
-    }
+    },
+    orgStore: function (newVal) {
+			const num = newVal.products.copo_percent;
+			this.prods.copo_percent = num;
+			this.chartData = this.setChartData();
+			this.chartDataMoney = this.setChartDataMoney();
+			this.prods.all = newVal.products.count;
+			this.prods.copo =newVal.products.copo_count;
+			this.prods.count_all = newVal.products.count_all;
+			this.prods.summ = newVal.products.summ;
+			this.prods.copo_money_percent = newVal.products.copo_money_percent;
+			this.prods.no_copo_money_percent = newVal.products.no_copo_money_percent;
+			this.prods.summ_copo = newVal.products.summ_copo;
+		},
   }
 }
 </script>
 <style lang="scss">
-.product-comparison__stats{
-  margin-top: 40px;
-}
-
-.d-table2 {
-  --d-table2-col-gap: 28px;
-
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-
-  &__header {
-    display: flex;
-    align-items: center;
-    gap: var(--d-table2-col-gap);
-
-    background-color: #282828;
-    border-radius: 30px;
-
-    padding: 4px 16px;
-    height: 48px;
-  }
-
-  &__th {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    color: #fbfbfb;
-    font-size: 14px;
-    font-weight: 400;
-    text-align: center;
-
-    position: relative;
-    width: 100%;
-
-    &:not(:last-child) {
-      padding-right: var(--d-table2-col-gap);
-
-      &::after {
-        content: '';
-
-        background-color: #ffffff;
-
-        position: absolute;
-        top: 50%;
-        right: 0;
-        translate: 0 -50%;
-        opacity: 0.5;
-
-        height: 20px;
-        width: 0.5px;
-      }
-    }
-  }
-
-  &__body {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  &__row {
-    display: flex;
-    align-items: center;
-    gap: var(--d-table2-col-gap);
-
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0px 4px 13.4px -5px #00000042;
-    padding: 16px;
-  }
-
-  &__col {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    position: relative;
-    width: 100%;
-
-    &:not(:last-child) {
-      padding-right: var(--d-table2-col-gap);
-
-      &::after {
-        content: '';
-
-        background-color: #757575;
-
-        position: absolute;
-        top: 50%;
-        right: 0;
-        translate: 0 -50%;
-        opacity: 0.5;
-
-        height: 20px;
-        width: 0.5px;
-      }
-    }
-  }
-
-  &__info {
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 6px;
-    width: 100%;
-
-    &-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-
-      &-image {
-        object-fit: contain;
-        width: 100%;
-        height: 100%;
-
-        &-wrapper {
-          width: 32px;
-          height: 32px;
-        }
-      }
-
-      &-title {
-        font-size: 16px;
-        font-weight: 600;
-      }
-    }
-
-    &-address {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-
-      color: #757575;
-      font-size: 14px;
-      font-weight: 400;
-
-      &-icon {
-        font-size: 13px;
-      }
-    }
-  }
-
-}
-.product-comparison__stores.warehouse-analysis__table .d-table__head .d-table__head-col:nth-child(2),.product-comparison__stores.warehouse-analysis__table .d-table__row .d-table__col:nth-child(2){
-  min-width: auto;
-  width: auto;
-}
-.product-comparison__brands{
-  margin-top: 40px;
-}
-.product-comparison__brands .flex{
-  display: flex;
-}
-.product-comparison__brands .dart-form-group label{
-  font-size: 16px;
-  color: #757575;
-}
-.product-comparison__brands .p-floatlabel label, .product-comparison__brands .p-inputtext::placeholder, .product-comparison__brands .p-placeholder{
-  font-size: 14px;
-  color: #757575;
-}
-.product-comparison__brands .d-col-xl-6:first-child{
-  max-width: max-content;
-  padding-right: 24px;
-}
-.product-comparison__brands .p-inputtext{
-  width: 100%;
-}
-.product-comparison__brands .form_input_group:after {
-  content: '\e003';
-  font-family: 'Iconly' !important;
-  position: absolute;
-  font-size: 16.8px;
-  top: calc(50% - 8.4px);
-  right: 30px;
-}
-.product-comparison__brands .d-table__wrapper{
-  margin-top: 40px;
-}
-.product-comparison__brands .d-table__col {
-    padding: 20px 8px;
-}
-.product-comparison__brands .d-table__row:first-child > .d-table__col {
-    padding-top: 20px;
-}
-.product-comparison__stats-block-image{
-  height: 135px;
-  width: 135px;
-}
-.product-comparison__stats-block-progress-line:before{
-  display: none;
-}
-.product-comparison__stats-block-progress-line-pink,.product-comparison__stats-block-progress-line-red{
-  content: "";
-    background-color: var(--line-color);
-    border: 0.5px solid var(--line-border-color);
-    border-radius: 30px;
-    position: absolute;
-    top: 50%;
-    left: 0;
-    translate: 0 -50%;
-    width: 100%;
-    height: 8px;
-}
-.product-comparison__stats-block-progress-line-purple,.product-comparison__stats-block-progress-line-purple-dark{
-  content: "";
-    background-color: var(--line-color);
-    border: 0.5px solid var(--line-border-color);
-    border-radius: 30px;
-    position: absolute;
-    top: 50%;
-    left: 0;
-    translate: 0 -50%;
-    height: 8px;
-}
-.product-comparison__stats-item .product-comparison__stats-item-badge{
-    --d-badge2-size: 18px;
-    --d-badge2-bg-color: var(--stats-item-color) !important;
-    --d-badge2-color: #ededed;
-}
-.product-comparison__stats-item .d-badge2{
-  background: var(--d-badge2-bg-color);
-}
-.product-comparison__stats-item .d-badge2--fit {
-    border-radius: 24px;
-    aspect-ratio: unset;
-    width: -moz-fit-content;
-    width: fit-content;
-    min-width: -moz-fit-content;
-    min-width: fit-content;
-    height: -moz-fit-content;
-    height: fit-content;
-    padding: 3px 7px 2px;
-}
-.product-comparison__stats-item-image{
-  width: 100px;
-  height: 100px;
-}
-.product-comparison__stats-block-image canvas{
-  margin-top: -5px;
-}
-.product-comparison__stats-item-title, .product-comparison__stats-item-value{
-    width: max-content;
-}
-.product-comparison__stats-item-header {
-    min-height: 52px;
-    height: auto;
-}
-.product-comparison__stats-bottom {
-  align-items: end;
-}
-.product-comparison__brands-modal .modal-content{
-  max-width: 85%;
-}
-.product-comparison__brands-modal .modal__content{
-  overflow-x: hidden;
-}
-.product-comparison__brands-modal-header h3{
-  font-size: 20px;
-}
-.product-comparison__description{
+.product-comparison .warehouse-analysis__header-storeinfo,.product-comparison__brands-modal .warehouse-analysis__header-storeinfo{
   margin-top: 16px;
-}
-.product-comparison__brands-modal .p-inputtext, .product-comparison__brands-modal .p-select{
-  width:100%;
-}
-.product-comparison__brands-modal .p-checkbox{
-  margin-right:16px;
-}
-.product-comparison__brands-modal label{
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 21px;
-  color: #757575;
-}
-.product-comparison__brands-modal .p-floatlabel label, .product-comparison__brands-modal .p-inputtext::placeholder, .product-comparison__brands-modal .p-placeholder{
-  font-size: 14px;
-  color: #757575;
-}
-.product-comparison__brands-modal .d-col-xl-6:nth-child(2){
-  padding-left: 32px;
-  padding-right: 32px;
-}
-.product-comparison__brands-modal .d-table__wrapper{
-  margin-top: 40px;
-}
-.product-comparison__brands-modal .form_input_group:after {
-  content: '\e003';
-  font-family: 'Iconly' !important;
-  position: absolute;
-  font-size: 16.8px;
-  top: calc(50% - 8.4px);
-  right: 30px;
 }
 </style>

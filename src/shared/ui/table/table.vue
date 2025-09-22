@@ -189,6 +189,7 @@
             @approveElem="approveElem"
             @disapproveElem="disapproveElem"
             @editNumber="editNumber"
+            @actionCell="actionCell"
             :link_row="link_row"
           />
         </tbody>
@@ -253,6 +254,7 @@ export default {
     'approveElem',
     'disapproveElem',
     'editNumber',
+    'actionCell',
   ],
   components: {
     vTableRow,
@@ -467,6 +469,9 @@ export default {
     },
     editNumber(object) {
       this.$emit('editNumber', object)
+    },
+    actionCell(data){
+      this.$emit('actionCell', data)
     },
     // filterglobalTable(checked) {
     // 	if (checked) {
