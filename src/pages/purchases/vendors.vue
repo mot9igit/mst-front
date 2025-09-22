@@ -18,7 +18,7 @@
     </div>
 
     <div class="clients__filters">
-      <div class="clients__filters-left">
+      <div class="clients__filters-left" v-if="Object.keys(opts.items).length">
         <div class="clients__filters-input-container" v-for="(ffilter, i) in filters" :key="i">
           <div class="d-input d-input--light clients__filters-input" v-if="ffilter.type == 'text'">
             <input
@@ -50,46 +50,47 @@
     </div>
     <Loader v-if="loading" />
     <div class="clients__card-container" v-else>
-      <div class="clients__card dart-row" v-for="(item, index) in opts.items" :key="index">
-        <div class="clients__card-left d-col-21">
-          <div class="clients__card-info d-col-7 clients__devider">
-            <div class="clients__card-info-image-container">
-              <img :src="item.image" alt="" class="clients__card-info-image" />
+      <template v-if="Object.keys(opts.items).length">
+        <div class="clients__card dart-row" v-for="(item, index) in opts.items" :key="index">
+          <div class="clients__card-left d-col-21">
+            <div class="clients__card-info d-col-7 clients__devider">
+              <div class="clients__card-info-image-container">
+                <img :src="item.image" alt="" class="clients__card-info-image" />
+              </div>
+              <div class="clients__card-info-content">
+                <p class="clients__card-info-title">{{ item.name }}</p>
+                <div class="clients__card-info-address">
+                  <i class="d-icon-location clients__card-info-address-icon"></i>
+                  <span>{{
+                    item.req?.fact_address != '' ? item.req?.fact_address : 'адрес не указан'
+                  }}</span>
+                </div>
+              </div>
             </div>
-            <div class="clients__card-info-content">
-              <p class="clients__card-info-title">{{ item.name }}</p>
-              <div class="clients__card-info-address">
-                <i class="d-icon-location clients__card-info-address-icon"></i>
-                <span>{{
-                  item.req?.fact_address != '' ? item.req?.fact_address : 'адрес не указан'
-                }}</span>
+
+            <div class="clients__card-data d-col-14">
+              <div class="clients__card-inn d-col-12 clients__devider">
+                <p class="clients__card-inn-label">ИНН:</p>
+                <p class="clients__card-inn-value">
+                  {{ item.req?.inn != '' ? item.req?.inn : 'не указан' }}
+                </p>
+              </div>
+
+              <div class="clients__card-contact-container d-col-12 clients__devider">
+                <a :href="'tel:' + item.phone.replace(/[^+\d]/g, '')" class="clients__card-contact">
+                  <i class="d-icon-telephone clients__card-contact-icon"></i>
+                  <span>{{ item.phone }}</span>
+                </a>
+                <a :href="'mailto:' + item.email" class="clients__card-contact">
+                  <i class="d-icon-mail2 clients__card-contact-icon"></i>
+                  <span>{{ item.email }}</span>
+                </a>
               </div>
             </div>
           </div>
 
-          <div class="clients__card-data d-col-14">
-            <div class="clients__card-inn d-col-12 clients__devider">
-              <p class="clients__card-inn-label">ИНН:</p>
-              <p class="clients__card-inn-value">
-                {{ item.req?.inn != '' ? item.req?.inn : 'не указан' }}
-              </p>
-            </div>
-
-            <div class="clients__card-contact-container d-col-12 clients__devider">
-              <a :href="'tel:' + item.phone.replace(/[^+\d]/g, '')" class="clients__card-contact">
-                <i class="d-icon-telephone clients__card-contact-icon"></i>
-                <span>{{ item.phone }}</span>
-              </a>
-              <a :href="'mailto:' + item.email" class="clients__card-contact">
-                <i class="d-icon-mail2 clients__card-contact-icon"></i>
-                <span>{{ item.email }}</span>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="clients__card-right d-col-3">
-          <!--  <div class="clients__card-right-left d-col-3">
+          <div class="clients__card-right d-col-3">
+            <!--  <div class="clients__card-right-left d-col-3">
              <div class="d-divider d-divider--vertical clients__card-divider"></div>
            <div class="clients__card-price-container">
               <div class="clients__card-price">
@@ -104,32 +105,92 @@
 
             <div class="clients__card-vendor" v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id">Создан поставщиком</div>
           </div>-->
-          <div class="clients__card-right-right d-col-24">
-            <div class="clients__card-action-container d-col-6">
-              <button class="clients__card-action" @click.prevent="changeOpts(item.id, 0)">
-                <i class="d-icon-trash"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="clients__card-top">
-          <div class="clients__card-info">
-            <div class="clients__card-info-image-container">
-              <img src="/icons/spo-logo.svg" alt="" class="clients__card-info-image" />
-            </div>
-            <div class="clients__card-info-content">
-              <p class="clients__card-info-title">{{ item.name }}</p>
-              <div class="clients__card-info-address">
-                <i class="d-icon-location clients__card-info-address-icon"></i>
-                <span>{{
-                  item.req?.fact_address != '' ? item.req?.fact_address : 'адрес не указан'
-                }}</span>
+            <div class="clients__card-right-right d-col-24">
+              <div class="clients__card-action-container d-col-6">
+                <button class="clients__card-action" @click.prevent="changeOpts(item.id, 0)">
+                  <i class="d-icon-trash"></i>
+                </button>
               </div>
             </div>
           </div>
 
-          <div class="clients__card-top-right">
+          <div class="clients__card-top">
+            <div class="clients__card-info">
+              <div class="clients__card-info-image-container">
+                <img src="/icons/spo-logo.svg" alt="" class="clients__card-info-image" />
+              </div>
+              <div class="clients__card-info-content">
+                <p class="clients__card-info-title">{{ item.name }}</p>
+                <div class="clients__card-info-address">
+                  <i class="d-icon-location clients__card-info-address-icon"></i>
+                  <span>{{
+                    item.req?.fact_address != '' ? item.req?.fact_address : 'адрес не указан'
+                  }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="clients__card-top-right">
+              <div class="clients__card-top-right-top">
+                <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
+                  <i class="d-icon-plus-flat clients__card-offer-icon"></i>
+                  Предложение
+                </button>
+                <div class="clients__card-action-container">
+                  <button class="clients__card-action">
+                    <i class="d-icon-pen2"></i>
+                  </button>
+                  <div
+                    class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
+                  ></div>
+                  <button class="clients__card-action" @click.prevent="changeOpts(item.id, 0)">
+                    <i class="d-icon-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="clients__card-vendor-wrapper">
+                <div
+                  class="clients__card-vendor"
+                  v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
+                >
+                  Создан поставщиком
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="clients__card-bottom">
+            <div class="clients__card-bottom-left">
+              <div class="clients__card-contact-container">
+                <a :href="'tel:' + item.phone.replace(/[^+\d]/g, '')" class="clients__card-contact">
+                  <i class="d-icon-telephone clients__card-contact-icon"></i>
+                  <span>{{ item.phone }}</span>
+                </a>
+                <a :href="'mailto:' + item.email" class="clients__card-contact">
+                  <i class="d-icon-mail2 clients__card-contact-icon"></i>
+                  <span>{{ item.email }}</span>
+                </a>
+              </div>
+              <div class="clients__card-inn">
+                <p class="clients__card-inn-label">ИНН:</p>
+                <p class="clients__card-inn-value">
+                  {{ item.req?.inn != '' ? item.req?.inn : 'не указан' }}
+                </p>
+              </div>
+            </div>
+
+            <!--<div class="clients__card-price-container">
+            <div class="clients__card-price">
+              <span class="clients__card-price-label">ДЗ:</span>
+              <span class="clients__card-price-value">5 500 000 ₽</span>
+            </div>
+            <div class="clients__card-price clients__card-price--secondary">
+              <span class="clients__card-price-label">ПЗД:</span>
+              <span class="clients__card-price-value">3 200 000 ₽</span>
+            </div>
+          </div>-->
+          </div>
+          <div class="clients__card-top-mobile">
             <div class="clients__card-top-right-top">
               <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
@@ -157,66 +218,10 @@
             </div>
           </div>
         </div>
-
-        <div class="clients__card-bottom">
-          <div class="clients__card-bottom-left">
-            <div class="clients__card-contact-container">
-              <a :href="'tel:' + item.phone.replace(/[^+\d]/g, '')" class="clients__card-contact">
-                <i class="d-icon-telephone clients__card-contact-icon"></i>
-                <span>{{ item.phone }}</span>
-              </a>
-              <a :href="'mailto:' + item.email" class="clients__card-contact">
-                <i class="d-icon-mail2 clients__card-contact-icon"></i>
-                <span>{{ item.email }}</span>
-              </a>
-            </div>
-            <div class="clients__card-inn">
-              <p class="clients__card-inn-label">ИНН:</p>
-              <p class="clients__card-inn-value">
-                {{ item.req?.inn != '' ? item.req?.inn : 'не указан' }}
-              </p>
-            </div>
-          </div>
-
-          <!--<div class="clients__card-price-container">
-            <div class="clients__card-price">
-              <span class="clients__card-price-label">ДЗ:</span>
-              <span class="clients__card-price-value">5 500 000 ₽</span>
-            </div>
-            <div class="clients__card-price clients__card-price--secondary">
-              <span class="clients__card-price-label">ПЗД:</span>
-              <span class="clients__card-price-value">3 200 000 ₽</span>
-            </div>
-          </div>-->
-        </div>
-        <div class="clients__card-top-mobile">
-          <div class="clients__card-top-right-top">
-            <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
-              <i class="d-icon-plus-flat clients__card-offer-icon"></i>
-              Предложение
-            </button>
-            <div class="clients__card-action-container">
-              <button class="clients__card-action">
-                <i class="d-icon-pen2"></i>
-              </button>
-              <div
-                class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
-              ></div>
-              <button class="clients__card-action" @click.prevent="changeOpts(item.id, 0)">
-                <i class="d-icon-trash"></i>
-              </button>
-            </div>
-          </div>
-          <div class="clients__card-vendor-wrapper">
-            <div
-              class="clients__card-vendor"
-              v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
-            >
-              Создан поставщиком
-            </div>
-          </div>
-        </div>
-      </div>
+      </template>
+      <template v-else>
+        <div class="dart-alert dart-alert-info">Подключенные Поставщики не найдены.</div>
+      </template>
       <div class="clients__paginate" v-if="this.countPages > 1">
         <paginate
           :page-count="this.countPages"
@@ -233,10 +238,10 @@
       </div>
     </div>
     <teleport to="body" v-if="this.modalAdd === true">
-        <customModal v-model="this.modalAdd" class="clients-form__modal-main">
-          <addVendorWindow @closeAddWindow="close()" @addVendor="addNewVendor()"/>
-        </customModal>
-      </teleport>
+      <customModal v-model="this.modalAdd" class="clients-form__modal-main">
+        <addVendorWindow @closeAddWindow="close()" @addVendor="addNewVendor()" />
+      </customModal>
+    </teleport>
   </section>
 </template>
 <script>
@@ -247,7 +252,6 @@ import Loader from '@/shared/ui/Loader.vue'
 import { toRaw } from 'vue'
 import customModal from '@/shared/ui/Modal.vue'
 import addVendorWindow from '../account/ui/addVendorWindow.vue'
-
 
 export default {
   name: 'purchasesVendors',
@@ -283,6 +287,8 @@ export default {
       getOpts: 'purchases/getOpts',
       toggleOpts: 'purchases/toggleOpts',
       unsetOpts: 'purchases/unsetOpts',
+      getOptVendorsAvailable: 'org/getOptVendorsAvailable',
+      getOptVendorsSelected: 'org/getOptVendorsSelected',
     }),
     setFilter(type = '0') {
       if (type === 'filter') {
@@ -317,6 +323,7 @@ export default {
         this.page = 1
         this.getOpts(data).then(() => {
           this.loading = false
+          this.updateVendors()
         })
       })
     },
@@ -349,18 +356,32 @@ export default {
         this.loading = false
       })
     },
-    close(){
+    close() {
       this.modalAdd = false
     },
-    addNewVendor(){
+    addNewVendor() {
       this.modalAdd = false
       this.getOpts({
-      page: this.page,
-      perpage: this.pagination_items_per_page,
-    }).then(() => {
-      this.loading = false
-    })
-    }
+        page: this.page,
+        perpage: this.pagination_items_per_page,
+      }).then(() => {
+        this.loading = false
+        this.updateVendors()
+      })
+    },
+    updateVendors() {
+      this.getOptVendorsAvailable({
+        filter: '',
+        page: 1,
+        perpage: this.cfg.vendors.perpage,
+      }).then(() => {
+        this.getOptVendorsSelected({
+          filter: '',
+          page: 1,
+          perpage: this.cfg.vendors.perpage,
+        }).then(() => {})
+      })
+    },
   },
   mounted() {
     this.getOpts({
@@ -383,7 +404,6 @@ export default {
       }
     },
   },
-
 }
 </script>
 <style lang="scss" scoped>

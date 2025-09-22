@@ -4,9 +4,7 @@
       <Breadcrumbs />
     </div>
     <h1>Розничные заказы</h1>
-    <Loader v-if="loading" />
     <BaseTable
-      v-else
       :items_data="orders.orders"
       :total="orders.total"
       :pagination_items_per_page="this.pagination_items_per_page"
@@ -24,11 +22,10 @@
 import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
-import Loader from '@/shared/ui/Loader.vue'
 
 export default {
   name: 'RetailOrders',
-  components: { Breadcrumbs, BaseTable, Loader },
+  components: { Breadcrumbs, BaseTable },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -174,7 +171,6 @@ export default {
 <style lang="scss">
 .retailorders__content .dart-row {
   justify-content: end;
-
 }
 .retailorders__content .dart-mb-1 {
   margin-bottom: 40px;

@@ -4,7 +4,10 @@ import router from '../router'
 export default {
   namespaced: true,
   state: {
-    opts: {},
+    opts: {
+      items: [],
+      total: -1,
+    },
     optorders: {
       orders: {},
       total: -1,
@@ -90,7 +93,10 @@ export default {
       state.opts = data.data
     },
     UNSET_OPTS: (state) => {
-      state.opts = {}
+      state.opts = {
+        items: [],
+        total: -1,
+      }
     },
     SET_OPT_ORDERS: (state, data) => {
       state.optorders = data.data

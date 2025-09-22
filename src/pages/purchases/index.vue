@@ -10,127 +10,126 @@
       -->
     </div>
     <div v-if="opts.total > 0">
-    <div class="promos__banners" v-if="salesBanners.count > 0">
-      <div class="dart-row promos__banners-row">
-        <div class="d-col-24">
-          <Swiper :slides-per-view="1" :space-between="10" :pagination="{ clickable: true }">
-            <template v-for="n in getCount" :key="n">
-              <SwiperSlide v-if="n < 4">
+      <div class="promos__banners" v-if="salesBanners.count > 0">
+        <div class="dart-row promos__banners-row">
+          <div class="d-col-24">
+            <Swiper :slides-per-view="1" :space-between="10" :pagination="{ clickable: true }">
+              <template v-for="n in getCount" :key="n">
+                <SwiperSlide v-if="n < 4">
+                  <router-link
+                    :to="{
+                      name: 'purchasesAction',
+                      params: { action_id: salesBanners.items[n - 1].action_id },
+                    }"
+                    v-if="n < 5"
+                    class="promos__banners-item promos__banners-item--primary promos__banners-item--big"
+                  >
+                    <img
+                      class="promos__banners-item-image"
+                      :src="salesBanners.items[n - 1].image.image"
+                      :srcset="
+                        salesBanners.items[n - 1].image.image +
+                        ' 2x, ' +
+                        salesBanners.items[n - 1].image.image +
+                        ' 1x'
+                      "
+                      alt=""
+                      loading="lazy"
+                    />
+                    <div class="promos__banners-item-badges">
+                      <div class="promos__banners-item-badges-item">Реклама</div>
+                      <span class="promos__banners-item-badges-text">0+</span>
+                    </div>
+                  </router-link>
+                </SwiperSlide>
+              </template>
+            </Swiper>
+          </div>
+        </div>
+        <div class="dart-row promos__banners-row" v-if="getCount > 4">
+          <template v-for="n in getCount" :key="n">
+            <div class="d-col-24 d-col-sm-12" v-if="n > 4 && n < 7">
+              <div class="promos__banners-item promos__banners-item--primary">
                 <router-link
                   :to="{
                     name: 'purchasesAction',
                     params: { action_id: salesBanners.items[n - 1].action_id },
                   }"
-                  v-if="n < 5"
-                  class="promos__banners-item promos__banners-item--primary promos__banners-item--big"
                 >
                   <img
                     class="promos__banners-item-image"
-                    :src="salesBanners.items[n - 1].image.image"
+                    :src="salesBanners.items[n - 1].image.thumb_medium"
                     :srcset="
                       salesBanners.items[n - 1].image.image +
                       ' 2x, ' +
-                      salesBanners.items[n - 1].image.image +
+                      salesBanners.items[n - 1].image.thumb_medium +
                       ' 1x'
                     "
                     alt=""
                     loading="lazy"
                   />
-                  <div class="promos__banners-item-badges">
-                    <div class="promos__banners-item-badges-item">Реклама</div>
-                    <span class="promos__banners-item-badges-text">0+</span>
+                  <!--
+                <div class="promos__banners-item-badges">
+                  <div class="promos__banners-item-badges-item">
+                    Реклама
                   </div>
+                  <span class="promos__banners-item-badges-text">0+</span>
+                </div>
+                -->
                 </router-link>
-              </SwiperSlide>
-            </template>
-          </Swiper>
+              </div>
+            </div>
+          </template>
+        </div>
+        <div class="dart-row promos__banners-row promos__banners-row--small" v-if="getCount > 6">
+          <template v-for="n in getCount" :key="n">
+            <div class="d-col-8">
+              <div
+                class="promos__banners-item promos__banners-item--primary promos__banners-item--small"
+              >
+                <router-link
+                  :to="{
+                    name: 'purchasesAction',
+                    params: { action_id: salesBanners.items[n - 1].action_id },
+                  }"
+                >
+                  <img
+                    class="promos__banners-item-image"
+                    :src="salesBanners.items[n - 1].image.thumb_medium"
+                    :srcset="
+                      salesBanners.items[n - 1].image.image +
+                      ' 2x, ' +
+                      salesBanners.items[n - 1].image.thumb_medium +
+                      ' 1x'
+                    "
+                    alt=""
+                    loading="lazy"
+                  />
+                  <!--
+                <div class="promos__banners-item-badges">
+                  <div class="promos__banners-item-badges-item">
+                    Реклама
+                  </div>
+                  <span class="promos__banners-item-badges-text">0+</span>
+                </div>
+                -->
+                </router-link>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
-      <div class="dart-row promos__banners-row" v-if="getCount > 4">
-        <template v-for="n in getCount" :key="n">
-          <div class="d-col-24 d-col-sm-12" v-if="n > 4 && n < 7">
-            <div class="promos__banners-item promos__banners-item--primary">
-              <router-link
-                :to="{
-                  name: 'purchasesAction',
-                  params: { action_id: salesBanners.items[n - 1].action_id },
-                }"
-              >
-                <img
-                  class="promos__banners-item-image"
-                  :src="salesBanners.items[n - 1].image.thumb_medium"
-                  :srcset="
-                    salesBanners.items[n - 1].image.image +
-                    ' 2x, ' +
-                    salesBanners.items[n - 1].image.thumb_medium +
-                    ' 1x'
-                  "
-                  alt=""
-                  loading="lazy"
-                />
-                <!--
-                <div class="promos__banners-item-badges">
-                  <div class="promos__banners-item-badges-item">
-                    Реклама
-                  </div>
-                  <span class="promos__banners-item-badges-text">0+</span>
-                </div>
-                -->
-              </router-link>
-            </div>
-          </div>
-        </template>
-      </div>
-      <div class="dart-row promos__banners-row promos__banners-row--small" v-if="getCount > 6">
-        <template v-for="n in getCount" :key="n">
-          <div class="d-col-8">
-            <div
-              class="promos__banners-item promos__banners-item--primary promos__banners-item--small"
-            >
-              <router-link
-                :to="{
-                  name: 'purchasesAction',
-                  params: { action_id: salesBanners.items[n - 1].action_id },
-                }"
-              >
-                <img
-                  class="promos__banners-item-image"
-                  :src="salesBanners.items[n - 1].image.thumb_medium"
-                  :srcset="
-                    salesBanners.items[n - 1].image.image +
-                    ' 2x, ' +
-                    salesBanners.items[n - 1].image.thumb_medium +
-                    ' 1x'
-                  "
-                  alt=""
-                  loading="lazy"
-                />
-                <!--
-                <div class="promos__banners-item-badges">
-                  <div class="promos__banners-item-badges-item">
-                    Реклама
-                  </div>
-                  <span class="promos__banners-item-badges-text">0+</span>
-                </div>
-                -->
-              </router-link>
-            </div>
-          </div>
-        </template>
-      </div>
-    </div>
     </div>
     <div v-else class="promos__novendors">
       <div class="promos__novendors-text">
         <p>Вы пока не добавили ни одного поставщика.</p>
-        <p>Подключить поставщика можно в разделе
-          <router-link
-              :to="{name: 'purchasesVendors', params: { id: this.$route.params.id }}"
-            >
+        <p>
+          Подключить поставщика можно в разделе
+          <router-link :to="{ name: 'purchasesVendors', params: { id: this.$route.params.id } }">
             Закупки - Мои поставщики
           </router-link>
-          или</p>
-
+          или
+        </p>
       </div>
       <button
         type="button"
@@ -142,7 +141,7 @@
       </button>
       <teleport to="body" v-if="this.modalAdd === true">
         <customModal v-model="this.modalAdd" class="clients-form__modal-main">
-          <addVendorWindow @closeAddWindow="close()" @addVendor="addNewVendor()"/>
+          <addVendorWindow @closeAddWindow="close()" @addVendor="addNewVendor()" />
         </customModal>
       </teleport>
     </div>
@@ -160,9 +159,11 @@ SwiperCore.use([Pagination])
 
 export default {
   name: 'purchasesMain',
-  data(){
-    return{
+  inject: ['catalogUpdater'],
+  data() {
+    return {
       modalAdd: false,
+      loading: false,
     }
   },
   components: { Swiper, SwiperSlide, customModal, addVendorWindow },
@@ -180,20 +181,20 @@ export default {
       getSalesBanners: 'sales/getSalesBanners',
       getOpts: 'purchases/getOpts',
     }),
-    close(){
+    close() {
       this.modalAdd = false
     },
-    addNewVendor(){
+    addNewVendor() {
       this.modalAdd = false
       this.getOpts({
-      page: 0,
-      perpage: 0,
-      filter: 0,
-      filtersdata: 0,
-    }).then(() => {
-      this.loading = false
-    })
-    }
+        page: 0,
+        perpage: 0,
+        filter: 0,
+        filtersdata: 0,
+      }).then(() => {
+        this.loading = false
+      })
+    },
   },
   computed: {
     ...mapGetters({
@@ -218,8 +219,16 @@ export default {
         }
       },
     },
+    catalogUpdater: function (newVal) {
+      console.log(newVal)
+      if (newVal) {
+        this.loading = true
+        this.getSalesBanners().then(() => {
+          this.loading = false
+        })
+      }
+    },
   },
-
 }
 </script>
 <style lang="scss">
@@ -270,43 +279,193 @@ export default {
   }
 }
 
-  .promos__novendors{
-    width:100%;
-    height: calc(100vh - var(--header-height) - 250px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-  }
-  .promos__novendors-text{
-    font-weight: 400;
-    font-size: 24px;
-    line-height: 31px;
-    text-align: center;
-    color: #757575;
-    opacity: 0.92;
-  }
-  .promos__novendors-text a:hover{
-    color: #F92C0D;
-  }
-  .clients-form__modal-main .clients-info__value-container{
-    margin-top: -20px;
-  }
-  .clients-form__modal-main .clients-info__value-container h2{
+.promos__novendors {
+  width: 100%;
+  height: calc(100vh - var(--header-height) - 250px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+.promos__novendors-text {
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 31px;
+  text-align: center;
+  color: #757575;
+  opacity: 0.92;
+}
+.promos__novendors-text a:hover {
+  color: #f92c0d;
+}
+.clients-form__modal-main .clients-info__value-container {
+  margin-top: -20px;
+}
+.clients-form__modal-main .clients-info__value-container h2 {
+  font-size: 20px;
+}
+.clients-form__modal-main .modal-content {
+  max-width: 660px;
+}
+.clients-form__modal-main .clients-info__label {
+  margin: 8px 0 34px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  color: #757575;
+}
+.clients-form__modal-main .clients-form__modal {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 34px;
+}
+.clients-form__modal-main .p-inputotp {
+  gap: 24px;
+}
+.clients-form__modal-main .p-inputotp-input {
+  width: 50px;
+  height: 60px;
+}
+.clients-form__modal-main .p-inputtext {
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 31px;
+  color: #28282894;
+}
+.clients-form__modal-main .d-input-error {
+  justify-content: center;
+  margin-top: -24px;
+}
+.clients-form__modal-main .clients__filters-cansel {
+  background-color: transparent;
+  border: 1px solid #282828;
+  color: #282828;
+}
+.clients-form__modal-main .clients__filters-cansel:hover {
+  background-color: #282828;
+  border: 1px solid #282828;
+  color: #ededed;
+}
+.clients-form__modal-main .clients-form__modal-buttons {
+  display: flex;
+  gap: 16px;
+}
+.clients-form__modal-main .clients__filters-create {
+  min-width: 112px;
+}
+@media (width <=1536px) {
+  .promos__novendors-text {
     font-size: 20px;
+    line-height: 26px;
+  }
+}
+@media (width <=1280px) {
+  .promos__novendors {
+    gap: 16px;
+    height: calc(100vh - var(--header-height) - 150px);
+  }
+  .promos__novendors-text {
+    font-size: 18px;
+    line-height: 22px;
+  }
+}
+@media (width <=1024px) {
+  .promos__novendors {
+    gap: 8px;
+  }
+  .promos__novendors-text {
+    font-size: 10px;
+    line-height: 12px;
+  }
+  .clients-form__modal-main .clients-info__label {
+    margin: 8px 0 16px;
+  }
+  .clients-form__modal-main .clients-info__value-container h2 {
+    font-size: 12px;
+  }
+  .clients-form__modal-main .clients-info__label {
+    font-size: 10px;
+  }
+  .clients-form__modal-main .clients-form__modal {
+    gap: 16px;
+  }
+  .clients-form__modal-main .p-inputotp {
+    gap: 16px;
+  }
+  .clients-form__modal-main .p-inputotp-input {
+    width: 40px;
+    height: 50px;
+  }
+  .clients-form__modal-main .p-inputtext {
+    font-size: 20px;
+    line-height: 24px;
+  }
+  .clients-form__modal-main .d-input-error {
+    margin-top: -8px;
+  }
+}
+@media (width <=800px) {
+  .promos__novendors-text {
+    font-size: 8px;
+    line-height: 12px;
   }
   .clients-form__modal-main .modal-content {
-    max-width: 660px;
+    max-width: 80%;
   }
-  .clients-form__modal-main .clients-info__label{
+  .clients-form__modal-main .clients-info__label {
+    margin: 8px 0 8px;
+  }
+  .clients-form__modal-main .clients-info__value-container h2 {
+    font-size: 9px;
+  }
+  .clients-form__modal-main .clients-info__label {
+    font-size: 8px;
+  }
+  .clients-form__modal-main .clients-form__modal {
+    gap: 8px;
+  }
+  .clients-form__modal-main .p-inputotp {
+    gap: 8px;
+  }
+  .clients-form__modal-main .p-inputotp-input {
+    width: 30px;
+    height: 40px;
+  }
+  .clients-form__modal-main .p-inputtext {
+    font-size: 10px;
+    line-height: 14px;
+  }
+  .clients-form__modal-main .d-input-error {
+    margin-top: 0px;
+  }
+}
+@media (width <=600px) {
+  .promos__novendors {
+    gap: 16px;
+    padding: 0 44px;
+    height: calc(100vh - var(--header-height) - 75px - var(--sidebar-height));
+  }
+  .promos__novendors-text {
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .clients-form__modal-main .clients-info__value-container h2 {
+    font-size: 16px;
+  }
+  .clients-form__modal-main .modal-content {
+    max-width: 100%;
+  }
+  .clients-form__modal-main .clients-info__label {
     margin: 8px 0 34px;
     font-weight: 500;
     font-size: 14px;
     line-height: 18px;
     color: #757575;
   }
-  .clients-form__modal-main .clients-form__modal{
+  .clients-form__modal-main .clients-form__modal {
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -314,202 +473,49 @@ export default {
     gap: 34px;
   }
   .clients-form__modal-main .p-inputotp {
-    gap: 24px;
+    gap: 16x;
   }
-  .clients-form__modal-main .p-inputotp-input{
+  .clients-form__modal-main .p-inputotp-input {
     width: 50px;
     height: 60px;
   }
-  .clients-form__modal-main .p-inputtext{
-    font-weight: 600;
+  .clients-form__modal-main .p-inputtext {
     font-size: 24px;
     line-height: 31px;
-    color: #28282894;
-  }
-  .clients-form__modal-main .d-input-error{
-    justify-content: center;
-    margin-top:-24px
-  }
-  .clients-form__modal-main .clients__filters-cansel{
-    background-color: transparent;
-    border: 1px solid #282828;
-    color:#282828;
-  }
-  .clients-form__modal-main .clients__filters-cansel:hover{
-    background-color: #282828;
-    border: 1px solid #282828;
-    color:#ededed;
-  }
-  .clients-form__modal-main .clients-form__modal-buttons{
-    display: flex;
-    gap: 16px;
-  }
-  .clients-form__modal-main .clients__filters-create{
-    min-width: 112px;
-  }
-  @media (width <=1536px){
-    .promos__novendors-text{
-      font-size: 20px;
-      line-height: 26px;
-    }
-  }
-  @media (width <=1280px){
-    .promos__novendors{
-      gap: 16px;
-      height: calc(100vh - var(--header-height) - 150px);
-
-    }
-    .promos__novendors-text{
-      font-size: 18px;
-      line-height: 22px;
-    }
-  }
-  @media (width <=1024px){
-    .promos__novendors{
-      gap: 8px;
-    }
-    .promos__novendors-text{
-      font-size: 10px;
-      line-height: 12px;
-    }
-    .clients-form__modal-main .clients-info__label{
-      margin: 8px 0 16px;
-    }
-    .clients-form__modal-main .clients-info__value-container h2{
-      font-size: 12px;
-    }
-    .clients-form__modal-main .clients-info__label{
-      font-size: 10px;
-    }
-    .clients-form__modal-main .clients-form__modal{
-      gap: 16px;
-    }
-    .clients-form__modal-main .p-inputotp {
-      gap: 16px;
-    }
-    .clients-form__modal-main .p-inputotp-input{
-      width: 40px;
-      height: 50px;
-    }
-    .clients-form__modal-main .p-inputtext{
-      font-size: 20px;
-      line-height: 24px;
-    }
-    .clients-form__modal-main .d-input-error{
-      margin-top:-8px
-    }
-  }
-  @media (width <=800px){
-    .promos__novendors-text{
-      font-size: 8px;
-      line-height: 12px;
-    }
-    .clients-form__modal-main .modal-content {
-      max-width:80%;
-    }
-    .clients-form__modal-main .clients-info__label{
-      margin: 8px 0 8px;
-    }
-    .clients-form__modal-main .clients-info__value-container h2{
-      font-size: 9px;
-    }
-    .clients-form__modal-main .clients-info__label{
-      font-size: 8px;
-    }
-    .clients-form__modal-main .clients-form__modal{
-      gap: 8px;
-    }
-    .clients-form__modal-main .p-inputotp {
-      gap: 8px;
-    }
-    .clients-form__modal-main .p-inputotp-input{
-      width: 30px;
-      height: 40px;
-    }
-    .clients-form__modal-main .p-inputtext{
-      font-size: 10px;
-      line-height: 14px;
-    }
-    .clients-form__modal-main .d-input-error{
-      margin-top:0px
-    }
-  }
-  @media (width <=600px){
-    .promos__novendors{
-      gap: 16px;
-      padding: 0 44px;
-      height: calc(100vh - var(--header-height) - 75px - var(--sidebar-height));
-    }
-    .promos__novendors-text{
-      font-size: 14px;
-      line-height: 20px;
-    }
-    .clients-form__modal-main .clients-info__value-container h2{
-      font-size: 16px;
-    }
-    .clients-form__modal-main .modal-content {
-      max-width: 100%;
-    }
-    .clients-form__modal-main .clients-info__label{
-      margin: 8px 0 34px;
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 18px;
-      color: #757575;
-    }
-    .clients-form__modal-main .clients-form__modal{
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-      align-items: center;
-      gap: 34px;
-    }
-    .clients-form__modal-main .p-inputotp {
-      gap: 16x;
-    }
-    .clients-form__modal-main .p-inputotp-input{
-      width: 50px;
-      height: 60px;
-    }
-    .clients-form__modal-main .p-inputtext{
-      font-size: 24px;
-      line-height: 31px;
-    }
-
-    .clients-form__modal-main .clients-form__modal{
-      height: calc(100vh - 190px);
-    }
-    .clients-form__modal-main .p-inputotp, .clients-form__modal-main .clients-form__modal-buttons {
-      justify-content: space-between;
-      width:100%;
-    }
-    .clients-form__modal-main .d-input-error{
-      margin-top:-24px
-    }
-    .clients-form__modal-main .clients-form__modal-buttons{
-      flex-direction:column-reverse;
-    }
-    .clients-form__modal-main .clients__filters-create {
-        min-width: 100%;
-    }
-  }
-  @media (width <=440px){
-    .clients-form__modal-main .p-inputotp-input{
-      width: 33px;
-      height: 43px;
-    }
-
-  }
-  @media (width <=320px){
-    .promos__novendors{
-      padding: 0 30px;
-      width: 100%;
-    }
-    .clients-form__modal-main .p-inputotp-input{
-      width: 23px;
-      height: 33px;
-    }
-
   }
 
+  .clients-form__modal-main .clients-form__modal {
+    height: calc(100vh - 190px);
+  }
+  .clients-form__modal-main .p-inputotp,
+  .clients-form__modal-main .clients-form__modal-buttons {
+    justify-content: space-between;
+    width: 100%;
+  }
+  .clients-form__modal-main .d-input-error {
+    margin-top: -24px;
+  }
+  .clients-form__modal-main .clients-form__modal-buttons {
+    flex-direction: column-reverse;
+  }
+  .clients-form__modal-main .clients__filters-create {
+    min-width: 100%;
+  }
+}
+@media (width <=440px) {
+  .clients-form__modal-main .p-inputotp-input {
+    width: 33px;
+    height: 43px;
+  }
+}
+@media (width <=320px) {
+  .promos__novendors {
+    padding: 0 30px;
+    width: 100%;
+  }
+  .clients-form__modal-main .p-inputotp-input {
+    width: 23px;
+    height: 33px;
+  }
+}
 </style>

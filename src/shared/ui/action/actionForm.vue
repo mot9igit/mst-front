@@ -872,7 +872,7 @@
                       </div>
                     </div>
                   </div>
-
+                  <!--
                   <button
                     class="d-button d-button-tertiary promotions__card-block-button"
                     @click.prevent="openStep(7)"
@@ -880,7 +880,7 @@
                     <i class="d-icon-trade promotions__card-block-button-icon"></i>
                     Совместимость акций
                   </button>
-                </div>
+                --></div>
               </div>
             </div>
           </div>
@@ -4175,8 +4175,14 @@ export default {
     },
     allActions: function (newVal) {
       this.allAction = []
-      this.allAction = newVal.items.map(function (el) {
-        return { name: el.name, code: el.id }
+      this.allAction = newVal.items.map((el) => {
+        if (this.$route.params.action) {
+          if (this.$route.params.action != el.id) {
+            return { name: el.name, code: el.id }
+          }
+        } else {
+          return { name: el.name, code: el.id }
+        }
       })
     },
     regions: function (newVal) {

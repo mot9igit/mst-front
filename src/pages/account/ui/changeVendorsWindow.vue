@@ -392,7 +392,6 @@ export default {
         action: action,
       }
       this.toggleOpts(data).then(() => {
-        this.$emit('updateCatalog')
         this.getOptVendorsAvailable({
           filter: '',
           page: this.pageAvailable,
@@ -404,6 +403,7 @@ export default {
             perpage: this.cfg.vendors.perpage,
           }).then(() => {
             this.loading = false
+            this.$emit('catalogUpdate')
           })
         })
       })
