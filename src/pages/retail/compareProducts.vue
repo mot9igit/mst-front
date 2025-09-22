@@ -10,12 +10,15 @@
 									<div class="product-comparison__stats-block">
 										<p class="product-comparison__stats-block-title">Сопоставление товаров по стоимости</p>
 										<div class="product-comparison__stats-block-content">
-											<Chart
+											<div>
+                      <Chart
                         type="doughnut"
                         :data="chartDataMoney"
                         :options="chartOptions"
                         class="product-comparison__stats-block-image"
                       />
+                        <p class="product-comparison__stats-block-percent-mobile">{{ $filters.round(prods.copo_money_percent) }}%</p>
+                      </div>
 											<div class="product-comparison__stats-block-info">
 												<p class="product-comparison__stats-block-percent">{{ $filters.round(prods.copo_money_percent) }}%</p>
 												<div class="product-comparison__stats-block-progress product-comparison__stats-block-progress--primary">
@@ -43,12 +46,15 @@
 									<div class="product-comparison__stats-block">
 										<p class="product-comparison__stats-block-title">Сопоставленных товаров</p>
 										<div class="product-comparison__stats-block-content">
+                      <div>
                       <Chart
                         type="doughnut"
                         :data="chartData"
                         :options="chartOptions"
                         class="product-comparison__stats-block-image"
                       />
+                      <p class="product-comparison__stats-block-percent-mobile">{{ $filters.round(prods.copo_percent) }}%</p>
+                      </div>
 											<div class="product-comparison__stats-block-info">
 												<p class="product-comparison__stats-block-percent">{{ $filters.round(prods.copo_percent) }}%</p>
 												<div class="product-comparison__stats-block-progress product-comparison__stats-block-progress--solid product-comparison__stats-block-progress--primary">
@@ -103,6 +109,9 @@
                           ).toFixed(2)
                         }} %</p>
 												<p class="product-comparison__stats-item-description">от общего сопоставления</p>
+                        <div class="product-comparison__stats-item-value-container-mobile">
+
+                        </div>
 											</div>
 										</div>
 									</div>
@@ -138,6 +147,12 @@
 											).toFixed(2)
 										}}%</p>
 												<p class="product-comparison__stats-item-description">от общего сопоставления</p>
+                        <div class="product-comparison__stats-item-value-container-mobile">
+                          <p class="product-comparison__stats-item-value-label">на сумму</p>
+                          <p class="product-comparison__stats-item-value">{{
+                            Number(products.status[1]?.sum)?.toLocaleString("ru")
+                          }} ₽</p>
+                        </div>
 											</div>
 										</div>
 									</div>
@@ -173,6 +188,12 @@
 											).toFixed(2)
 										}}%</p>
 												<p class="product-comparison__stats-item-description">от общего сопоставления</p>
+                        <div class="product-comparison__stats-item-value-container-mobile">
+                          <p class="product-comparison__stats-item-value-label">на сумму</p>
+                          <p class="product-comparison__stats-item-value">{{
+                            Number(products.status[2]?.sum)?.toLocaleString("ru")
+                          }} ₽</p>
+                        </div>
 											</div>
 										</div>
 									</div>
@@ -202,12 +223,18 @@
                       />
 											<div class="product-comparison__stats-item-info">
 												<p class="product-comparison__stats-item-percent">{{
-											(
-												this.products.status[4]?.count /
-												(this.products.status.total / 100)
-											).toFixed(2)
-										}}%</p>
+                          (
+                            this.products.status[4]?.count /
+                            (this.products.status.total / 100)
+                          ).toFixed(2)
+                        }}%</p>
 												<p class="product-comparison__stats-item-description">от общего сопоставления</p>
+                        <div class="product-comparison__stats-item-value-container-mobile" v-if="Number(products.status[4]?.sum)>0">
+                          <p class="product-comparison__stats-item-value-label">на сумму</p>
+                          <p class="product-comparison__stats-item-value">{{
+                            Number(products.status[4]?.sum)?.toLocaleString("ru")
+                          }} ₽</p>
+                        </div>
 											</div>
 										</div>
 									</div>
@@ -1125,5 +1152,409 @@ export default {
   font-size: 16.8px;
   top: calc(50% - 8.4px);
   right: 30px;
+}
+.product-comparison__stats-block-percent-mobile{
+  display:none;
+}
+@media (width >1536px) {
+  .product-comparison__stats-item-value-container-mobile{
+    display: none;
+  }
+}
+@media (width <=1536px) {
+  .product-comparison h2{
+    font-size: 20px;
+  }
+  .product-comparison__stats-item-value-container{
+    display: none;
+  }
+  .product-comparison__stats-bottom {
+      align-items: start;
+  }
+  .product-comparison__stats-item-content {
+    align-items: start;
+    padding: 16px 16px;
+    gap:12px;
+  }
+  .product-comparison__stats-item-image {
+    width: 70px;
+    height: 70px;
+  }
+  .product-comparison__stats-item-percent {
+    font-size: 20px;
+  }
+  .product-comparison__stats-item-description, .product-comparison__stats-item-title {
+    font-size: 14px;
+    line-height: 18px;
+  }
+  .product-comparison__stats-item-value-container-mobile{
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    min-height: 21px;
+    margin-left: -78px;
+    margin-top: 18px;
+  }
+  .product-comparison__stats-item-value{
+    color:#757575;
+  }
+  .product-comparison__stats-item-header {
+    padding: 6px 16px;
+    height: 30px;
+    min-height: 30px;
+  }
+  .product-comparison__stats-item .d-badge2--fit {
+    padding: 0px 5px;
+    height: 24px;
+  }
+  .product-comparison__stats-item .d-badge2 {
+    font-size: 12px;
+    min-width: 24px;
+  }
+  .product-comparison__stats-item-image canvas{
+    margin-top:-10px;
+  }
+}
+@media (width <=1280px) {
+  .product-comparison__stats-block-content {
+    gap: 24px;
+  }
+  .product-comparison__stats-block-title {
+    font-size: 14px;
+  }
+  .product-comparison__stats-block {
+    padding: 24px;
+  }
+  .product-comparison__stats-block-image {
+    height: 95px;
+    width: 95px;
+  }
+  .product-comparison__stats-block-percent {
+    font-size: 16px;
+  }
+  .product-comparison__stats-block-info {
+    gap: 8px;
+  }
+  .product-comparison__stats-block-progress--secondary{
+    margin-top:8px;
+  }
+  .product-comparison__stats-item-title {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .product-comparison__stats-item .d-badge2--fit {
+    padding: 0px 6px;
+    height:18px;
+  }
+  .product-comparison__stats-item .d-badge2 {
+    font-size: 10px;
+    min-width: 18px;
+    min-height:18px;
+  }
+  .product-comparison__stats-item-image {
+    width: 55px;
+    height: 55px;
+  }
+  .product-comparison__stats-item-image canvas{
+    margin-top:-10px;
+  }
+  .product-comparison__stats-item-percent {
+    font-size: 16px;
+  }
+  .product-comparison__stats-item-description {
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .product-comparison__stats-item-value-label {
+    font-size: 10px;
+  }
+ .product-comparison__stats-item-value-container-mobile {
+    min-height: 16px;
+    margin-left: -73px;
+    margin-top: 18px;
+  }
+  .product-comparison__stats-item-value {
+    font-size: 12px;
+  }
+  .product-comparison__stats-item-percent{
+    margin-top:4px;
+  }
+  .product-comparison h2 {
+    font-size: 16px;
+  }
+}
+@media (width <=1024px) {
+  .product-comparison__stats-item-percent{
+    margin-top:0px;
+  }
+  .product-comparison__stats-item-value-container-mobile {
+    margin-left: -62px;
+    margin-top: 10px;
+  }
+}
+@media (width <=890px) {
+  .product-comparison__stats-top {
+    gap: 8px;
+  }
+  .product-comparison__stats-block {
+    padding: 16px;
+  }
+  .product-comparison__stats {
+    margin-top: 24px;
+  }
+  .product-comparison__stats {
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  .product-comparison__stats-top{
+    align-items: start;
+  }
+  .product-comparison__stats-block {
+    min-width:calc(50% - 4px);
+    min-height:100%;
+  }
+  .product-comparison__stats-block-title {
+    font-size: 9px;
+  }
+  .product-comparison__stats-block-image {
+    height: 60px;
+    width: 60px;
+  }
+  .product-comparison__stats-block-percent {
+    font-size: 9px;
+  }
+  .product-comparison__stats-block-progress-title, .product-comparison__stats-block-progress-value {
+    font-size: 7px;
+  }
+  .product-comparison__stats-block-progress-line-purple, .product-comparison__stats-block-progress-line-purple-dark,.product-comparison__stats-block-progress-line-pink, .product-comparison__stats-block-progress-line-red{
+    height:4px;
+  }
+  .product-comparison__stats-block-progress--secondary {
+    margin-top: 2px;
+  }
+  .product-comparison__stats-bottom{
+    display: block;
+  }
+  .product-comparison__stats-item{
+    width: calc(50% - 4px);
+    float: left;
+    margin-bottom: 8px;
+  }
+  .product-comparison__stats-item:nth-child(odd){
+    margin-right: 8px;
+  }
+  .product-comparison__stats-item-value-container-mobile{
+    display: none;
+  }
+  .product-comparison__stats-item-value-container{
+    display: flex;
+  }
+  .product-comparison__stats-item-title {
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .product-comparison__stats-item .d-badge2 {
+    font-size: 9px;
+  }
+  .product-comparison__stats-item .d-badge2--fit {
+    padding: 0px 3px;
+    height:14px;
+  }
+  .product-comparison__stats-item .d-badge2 {
+    min-width: 14px;
+    min-height: 14px;
+  }
+  .product-comparison__stats-item-value-container{
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+  .product-comparison__stats-item-value-label {
+    font-size: 8px;
+  }
+  .product-comparison__stats-item-value {
+    font-size: 9px;
+  }
+  .product-comparison__stats-item-header {
+    padding: 6px 16px;
+    height: 22px;
+    min-height: 22px;
+  }
+  .product-comparison__stats-item-content {
+    align-items: start;
+    justify-content: start;
+    padding: 16px 16px;
+    gap: 16px;
+  }
+  .product-comparison__stats-item-info{
+    margin-top: 4px;
+  }
+  .product-comparison__stats-block-content {
+    gap: 12px;
+  }
+  .product-comparison__stats-block-progress-value{
+    text-align: right;
+  }
+  .product-comparison__stats-item-content {
+    padding: 8px 16px 0px;
+  }
+  .product-comparison h2 {
+    font-size: 14px;
+  }
+}
+@media (width <=600px) {
+  .product-comparison{
+    margin-top: 130px;
+  }
+  .product-comparison h2 {
+    font-size: 16px;
+  }
+  .product-comparison__stats{
+    width: calc(44px + 100% + 44px);
+    margin-left: -44px;
+  }
+  .product-comparison__stats-top{
+    flex-direction: column;
+    gap:24px;
+  }
+  .product-comparison__stats-block{
+    width:100%;
+    background: #FBFBFB;
+    box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
+    border-radius: 6px;
+    padding:0;
+  }
+  .product-comparison__stats-block-title{
+    padding:7px 44px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    border-bottom: 0.5px solid #75757575;
+  }
+  .product-comparison__stats-block-content{
+    padding-left: 44px;
+    padding-right: 44px;
+    padding-bottom: 24px;
+    align-items: center;
+  }
+  .product-comparison__stats-block-percent-mobile{
+    display:block;
+    width:100%;
+    text-align: center;
+    margin-top: 8px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 21px;
+    color: #282828;
+  }
+  .product-comparison__stats-block-percent{
+    display:none;
+  }
+  .product-comparison__stats-block-image {
+    height: 74px;
+    width: 74px;
+    margin-top:-10px;
+  }
+  .product-comparison__stats-block-progress-header {
+    flex-direction: column;
+    align-items: start;
+    gap:4px;
+  }
+  .product-comparison__stats-block-progress-title{
+    font-size: 10px;
+  }
+  .product-comparison__stats-block-progress-value {
+    font-size: 12px;
+  }
+  .product-comparison__stats-item:nth-child(odd) {
+    margin-right: 0px;
+  }
+  .product-comparison__stats-item {
+    width: 100%;
+    float: none;
+    margin-bottom: 0px;
+  }
+  .product-comparison__stats-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  .product-comparison__stats-item-header {
+    padding: 7px 44px;
+    height: 32px;
+    min-height: 32px;
+  }
+  .product-comparison__stats-item-title {
+    font-size: 14px;
+    line-height: 18px;
+  }
+  .product-comparison__stats-item .d-badge2--fit {
+    padding: 2px 3px 0;
+    height:18px;
+  }
+  .product-comparison__stats-item .d-badge2 {
+    min-width: 18px;
+    min-height: 18px;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  .product-comparison__stats-item-content {
+    padding: 8px 44px 0px;
+  }
+  .product-comparison__stats-block-image, .product-comparison__stats-item-image {
+    height: 74px;
+    width: 74px;
+  }
+  .product-comparison__stats-item-value-container{
+    display:none;
+  }
+  .product-comparison__stats-item-value-container-mobile{
+    display:flex;
+    margin-left: 0;
+  }
+  .product-comparison__stats-item-percent {
+    font-size: 12px;
+  }
+  .product-comparison__stats-item-description {
+    font-size: 10px;
+    line-height: 11px;
+  }
+  .product-comparison__stats-item-value-label {
+    font-size: 10px;
+    font-weight:600;
+  }
+  .product-comparison__stats-item-value-label::after {
+    content:':';
+  }
+  .product-comparison__stats-item-value{
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 13px;
+    color: #757575;
+  }
+  .product-comparison__stats-item-value-container-mobile {
+    margin-top: 6px;
+  }
+}
+@media (width <=320px) {
+  .product-comparison__stats{
+    width: calc(28px + 100% + 28px);
+    margin-left: -28px;
+  }
+  .product-comparison__stats-block-title{
+    padding:7px 28px;
+  }
+  .product-comparison__stats-block-content{
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+  .product-comparison__stats-item-header {
+    padding: 7px 28px;
+  }
+.product-comparison__stats-item-content {
+    padding: 8px 28px 0px;
+  }
 }
 </style>
