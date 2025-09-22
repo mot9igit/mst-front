@@ -24,6 +24,7 @@ import RetailActions from '../pages/retail/actions.vue'
 import retailSaleNew from '../pages/retail/saleNew.vue'
 import RetailBalance from '../pages/retail/balance.vue'
 import RetailCompareProducts from '../pages/retail/compareProducts.vue'
+import RetailCompareStoreProducts from '../pages/retail/compareStoreProducts.vue'
 import Warehouse from '../pages/warehouse/index.vue'
 import WarehouseReview from '../pages/warehouse/review.vue'
 import WarehouseReviewStore from '../pages/warehouse/reviewStore.vue'
@@ -469,15 +470,32 @@ const router = createRouter({
                     },
                     {
                       path: 'compareProducts',
-                      name: 'retailCompareProducts',
-                      props: true,
-                      label: 'Сопоставление товаров',
-                      component: RetailCompareProducts,
                       meta: {
                         breadcrumb: {
                           label: 'Сопоставление товаров',
                         },
                       },
+                      children: [
+                        {
+                          path: '',
+                          name: 'retailCompareProducts',
+                        props: true,
+                        label: 'Сопоставление товаров',
+                        component: RetailCompareProducts,
+                        },
+                        {
+                          path: ':store_id',
+                          name: 'retailCompareStoreProducts',
+                          props: true,
+                          label: 'Сопоставление товаров на складе',
+                          component: RetailCompareStoreProducts,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Сопоставление товаров на складе',
+                            },
+                          },
+                        },
+                      ],
                     },
                   ],
                 },
