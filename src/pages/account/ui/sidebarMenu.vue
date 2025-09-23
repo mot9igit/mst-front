@@ -175,11 +175,11 @@ export default {
             icon: 'd-icon-wallet',
             to: { name: 'retailBalance', params: { id: this.$route.params.id } },
           },
-          // {
-          //   name: 'Сопоставление товаров',
-          //   icon: 'd-icon-shuffle',
-          //   to: { name: 'retailCompareProducts', params: { id: this.$route.params.id } },
-          // },
+          {
+             name: 'Сопоставление товаров',
+             icon: 'd-icon-shuffle',
+             to: { name: 'retailCompareProducts', params: { id: this.$route.params.id } },
+          },
         ],
       })
       punkts.push({

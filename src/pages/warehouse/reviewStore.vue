@@ -297,6 +297,7 @@ components: { Breadcrumbs, Loader, BaseTable },
   flex-direction: column;
   gap: 8px;
 }
+@media (width >1280px) {
 .warehouse-analysis__header-storeinfo-info-name{
   font-weight: 600;
   font-size: 24px;
@@ -313,5 +314,25 @@ components: { Breadcrumbs, Loader, BaseTable },
   letter-spacing: -0.01em;
   color: #757575;
 }
-
+}
+@media (width <=1280px) {
+  .warehouse-analysis__header-storeinfo-info-name {
+    font-size: 14px;
+    line-height: 15px;
+  }
+  .warehouse-analysis__header-storeinfo-info-address {
+    font-size: 12px;
+    line-height: 14px;
+  }
+}
+@media (width <=1024px) {
+  .warehouse-analysis__header-storeinfo-info-name {
+    font-size: 12px;
+    line-height: 14px;
+  }
+  .warehouse-analysis__header-storeinfo-info-address {
+    font-size: 10px;
+    line-height: 12px;
+  }
+}
 </style>

@@ -14,17 +14,20 @@
         </div>
     </div>
     <Loader v-if="loading" />
-    <div class="product-comparison__stats">
+  <!--  <div class="product-comparison__stats">
 								<div class="product-comparison__stats-top" v-if="prods.all">
 									<div class="product-comparison__stats-block">
 										<p class="product-comparison__stats-block-title">Сопоставление товаров по стоимости</p>
 										<div class="product-comparison__stats-block-content">
+                      <div>
 											<Chart
                         type="doughnut"
                         :data="chartDataMoney"
                         :options="chartOptions"
                         class="product-comparison__stats-block-image"
                       />
+                      <p class="product-comparison__stats-block-percent-mobile">{{ $filters.round(prods.copo_money_percent) }}%</p>
+                      </div>
 											<div class="product-comparison__stats-block-info">
 												<p class="product-comparison__stats-block-percent">{{ $filters.round(prods.copo_money_percent) }}%</p>
 												<div class="product-comparison__stats-block-progress product-comparison__stats-block-progress--primary">
@@ -52,12 +55,15 @@
 									<div class="product-comparison__stats-block">
 										<p class="product-comparison__stats-block-title">Сопоставленных товаров</p>
 										<div class="product-comparison__stats-block-content">
+                      <div>
                       <Chart
                         type="doughnut"
                         :data="chartData"
                         :options="chartOptions"
                         class="product-comparison__stats-block-image"
                       />
+                      <p class="product-comparison__stats-block-percent-mobile">{{ $filters.round(prods.copo_percent) }}%</p>
+                      </div>
 											<div class="product-comparison__stats-block-info">
 												<p class="product-comparison__stats-block-percent">{{ $filters.round(prods.copo_percent) }}%</p>
 												<div class="product-comparison__stats-block-progress product-comparison__stats-block-progress--solid product-comparison__stats-block-progress--primary">
@@ -112,6 +118,9 @@
                           ).toFixed(2)
                         }} %</p>
 												<p class="product-comparison__stats-item-description">от общего сопоставления</p>
+                        <div class="product-comparison__stats-item-value-container-mobile">
+
+                        </div>
 											</div>
 										</div>
 									</div>
@@ -147,6 +156,12 @@
 											).toFixed(2)
 										}}%</p>
 												<p class="product-comparison__stats-item-description">от общего сопоставления</p>
+                        <div class="product-comparison__stats-item-value-container-mobile">
+                          <p class="product-comparison__stats-item-value-label">на сумму</p>
+                          <p class="product-comparison__stats-item-value">{{
+                            Number(products.status[1]?.sum)?.toLocaleString("ru")
+                          }} ₽</p>
+                        </div>
 											</div>
 										</div>
 									</div>
@@ -182,6 +197,12 @@
 											).toFixed(2)
 										}}%</p>
 												<p class="product-comparison__stats-item-description">от общего сопоставления</p>
+                        <div class="product-comparison__stats-item-value-container-mobile">
+                          <p class="product-comparison__stats-item-value-label">на сумму</p>
+                          <p class="product-comparison__stats-item-value">{{
+                            Number(products.status[2]?.sum)?.toLocaleString("ru")
+                          }} ₽</p>
+                        </div>
 											</div>
 										</div>
 									</div>
@@ -217,11 +238,17 @@
 											).toFixed(2)
 										}}%</p>
 												<p class="product-comparison__stats-item-description">от общего сопоставления</p>
+                        <div class="product-comparison__stats-item-value-container-mobile">
+                          <p class="product-comparison__stats-item-value-label">на сумму</p>
+                          <p class="product-comparison__stats-item-value">{{
+                            Number(products.status[4]?.sum)?.toLocaleString("ru")
+                          }} ₽</p>
+                        </div>
 											</div>
 										</div>
 									</div>
 								</div>
-							</div>
+							</div>-->
     <h2>Сопоставление по брендам</h2>
     <div class="product-comparison__brands">
       <BaseTable
@@ -371,12 +398,6 @@ export default {
 				name: {
 					label: "Наименование",
 					type: "link",
-					//link_to: "org_product",
-					//link_params: {
-					//	id: this.$route.params.id,
-					//	store_id: "store_id",
-					//	product_id: "id",
-					//},
 					description: {
 						type: "field",
 						key: "catalog",
@@ -568,18 +589,18 @@ export default {
     this.getData({
 			page: this.page_brand,
 			perpage: this.pagination_items_per_page,
-      store_id: this.$route.params.store_id,
     })
     this.getReportCopo({
       tabledata: this.table_data,
 			page: this.page,
 			perpage: this.pagination_items_per_page,
+      store_id: this.$route.params.store_id
     })
     this.getOrgStore().then(() => {
-			this.chartDataHelpOne = this.setChartDataHelpOne();
-			this.chartDataHelpTwo = this.setChartDataHelpTwo();
-			this.chartDataHelpThee = this.setChartDataHelpTree();
-			this.chartDataHelpFour = this.setChartDataHelpFour();
+    //  this.chartDataHelpOne = this.setChartDataHelpOne();
+		//	this.chartDataHelpTwo = this.setChartDataHelpTwo();
+		//	this.chartDataHelpThee = this.setChartDataHelpTree();
+		//	this.chartDataHelpFour = this.setChartDataHelpFour();
       this.getVendors()
       this.loading = false
     })
@@ -588,12 +609,9 @@ export default {
     ...mapGetters({
       orgStore: 'org/orgStore',
       vendors: 'addition/vendors',
-      catalogs: 'addition/catalogs',
       products: 'warehouse/products',
-      organization: 'retail/organization',
       report_copo: 'retail/report_copo',
       cardstatus: 'retail/cardstatus',
-      msproducts: 'retail/msproducts',
       report_copo_details: 'retail/report_copo_details',
     }),
   },
@@ -601,12 +619,9 @@ export default {
     ...mapActions({
       getOrgStore: 'org/getOrgStore',
       getVendors: 'addition/getVendors',
-      getCatalogs: 'addition/getCatalogs',
       getData: 'warehouse/getData',
-      getOrganization: 'retail/getOrganization',
       getReportCopo: 'retail/getReportCopo',
       getCardstatus: 'retail/getCardstatus',
-      getMSProducts: 'retail/getMSProducts',
       unsetReportCopo: 'retail/unsetReportCopo',
       getReportCopoDetails: 'retail/getReportCopoDetails',
       unsetReportCopoDetails: 'retail/unsetReportCopoDetails',
@@ -653,10 +668,10 @@ export default {
 			return {
 				datasets: [
 					{
-						data:  [
+						data: this.products?.status ? [
                 100 -	(	this.statuses[5].count / (this.statuses.total / 100) ).toFixed(2),
 								(	this.statuses[5].count /	(this.statuses.total / 100)).toFixed(2)
-							  ],
+							  ] : [100, 0],
 						backgroundColor: ["#ededed", "#c4cae5"],
             borderColor: ["#fbfbfb", "#4759af"],
 						hoverBackgroundColor: ["#ededed", "#c4cae5"],
@@ -671,7 +686,7 @@ export default {
 			return {
 				datasets: [
 					{
-						data: [
+						data: this.products?.status ? [
 									100 -
 										(
 											this.statuses[1].count /
@@ -681,7 +696,7 @@ export default {
 										this.statuses[1].count /
 										(this.statuses.total / 100)
 									).toFixed(2),
-							  ],
+							  ] : [100, 0],
 						backgroundColor: ["#ededed", "#cdf0a9"],
             borderColor: ["#fbfbfb", "#97bc71"],
 						hoverBackgroundColor: ["#ededed", "#cdf0a9"],
@@ -774,7 +789,8 @@ export default {
         tabledata: this.table_data_modal,
         page: this.page_modal,
         perpage: this.pagination_items_per_page,
-        brand_id: this.brand_id
+        brand_id: this.brand_id,
+        store_id: this.$route.params.store_id
 
       }).then(() => {
       this.modalBrand = true
@@ -790,17 +806,21 @@ export default {
       this.statuses = newVal.status
     },
     orgStore: function (newVal) {
-			const num = newVal.products.copo_percent;
-			this.prods.copo_percent = num;
-			this.chartData = this.setChartData();
-			this.chartDataMoney = this.setChartDataMoney();
-			this.prods.all = newVal.products.count;
-			this.prods.copo =newVal.products.copo_count;
-			this.prods.count_all = newVal.products.count_all;
-			this.prods.summ = newVal.products.summ;
-			this.prods.copo_money_percent = newVal.products.copo_money_percent;
-			this.prods.no_copo_money_percent = newVal.products.no_copo_money_percent;
-			this.prods.summ_copo = newVal.products.summ_copo;
+		//	const num = newVal.products.copo_percent;
+		//	this.prods.copo_percent = num;
+		//	this.chartData = this.setChartData();
+		//	this.chartDataMoney = this.setChartDataMoney();
+		//	this.prods.all = newVal.products.count;
+		//	this.prods.copo =newVal.products.copo_count;
+		//	this.prods.count_all = newVal.products.count_all;
+		//	this.prods.summ = newVal.products.summ;
+		//	this.prods.copo_money_percent = newVal.products.copo_money_percent;
+		//	this.prods.no_copo_money_percent = newVal.products.no_copo_money_percent;
+		//	this.prods.summ_copo = newVal.products.summ_copo;
+    // this.chartDataHelpOne = this.setChartDataHelpOne();
+		//	this.chartDataHelpTwo = this.setChartDataHelpTwo();
+		//	this.chartDataHelpThee = this.setChartDataHelpTree();
+		//	this.chartDataHelpFour = this.setChartDataHelpFour();
 		},
   }
 }

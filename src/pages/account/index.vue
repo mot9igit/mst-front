@@ -95,6 +95,10 @@ export default {
       type: String,
       default: '',
     },
+    store_id: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {

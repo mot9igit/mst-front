@@ -3,6 +3,7 @@
     <div class="d-top">
       <Breadcrumbs />
     </div>
+    <Loader v-if="loading" />
     <div class="d-top-order-container">
       <div class="d-top-order-container-left">
         <div>
@@ -17,17 +18,17 @@
       >
         {{ order.status_name }}</div>-->
       </div>
-      <div class="d-top-order-container-right">
-        <!-- <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>
+     <div class="d-top-order-container-right">
+        <!-- <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>-->
     <div class="d-top-order-container-buttons">
-    <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs">
+    <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs" @click.prevent="modalDocs = true"  v-if="docs.length">
       <i class="item-list-item-icon d-icon-doc"></i>
-      <span class="catalog__head-item-text">Место под кнопку Документы или статус</span>
+      <span class="catalog__head-item-text">Документы <span v-if="docs.length">({{ docs.length }})</span></span>
 		</button>
-    <button  class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action">
+    <!--<button  class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action">
       <span class="catalog__head-item-text">Подтвердить заказ</span>
-		</button>
-    </div>-->
+		</button>-->
+    </div>
       </div>
     </div>
     <div class="d-top-order-container-info">
@@ -83,7 +84,7 @@
         <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.delay != '' ? Number.parseInt(this.order?.delay) : '-' }} дн.
+            {{ this.order?.delay != '' ? (Number.parseInt(this.order?.delay) ? this.order?.delay + ' дн.' : this.order?.delay) : '0 дн.' }}
           </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-3">
@@ -116,6 +117,20 @@
         @paginate="paginate"
       />
     </div>
+        <Teleport to="body">
+      <customModal v-model="modalDocs" class="order-card__modal">
+        <h3>Документы <span v-if="docs.length">({{ docs.length }})</span></h3>
+        <BaseTable
+        :items_data="docs"
+        :total="docs.length"
+        :table_data="table_docs"
+      />
+      <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow" @click.prevent="modalDocs = false">
+        Ok
+      </button>
+      </customModal>
+
+    </Teleport>
   </section>
 </template>
 
@@ -124,14 +139,17 @@ import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
+import customModal from '@/shared/ui/Modal.vue'
 
 export default {
   name: 'WholesaleOrder',
-  components: { Breadcrumbs, BaseTable, Loader },
+  components: { Breadcrumbs, BaseTable, Loader, customModal },
   data() {
     return {
       loading: true,
       page: 1,
+      page_docs: 1,
+      modalDocs: false,
       table_data: {
         image: {
           label: 'Фото',
@@ -164,11 +182,47 @@ export default {
           class: 'cell_centeralign',
         },
       },
+      docs: [
+      //  {
+      //    name: 'Файл 1',
+      //    date: '23.07.2035',
+      //    href: '',
+      //  },
+      //  {
+      //    name: 'Файл 2',
+      //    date: '25.07.2035',
+      //    href: '',
+      //  },
+      ],
+      table_docs: {
+        name: {
+          label: 'Название',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        date: {
+          label: 'Дата',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+         actions: {
+          label: 'Скачать',
+          type: 'actions',
+          sort: false,
+          class: 'cell_centeralign',
+          available: {
+            view: {
+              icon: 'pi pi-upload',
+              label: 'Загрузить',
+            },
+          },
+        },
+      },
     }
   },
 
   methods: {
-    ...mapActions({
+  ...mapActions({
       getOrder: 'wholesale/getOrder',
       unsetOrder: 'wholesale/unsetOrder',
     }),
