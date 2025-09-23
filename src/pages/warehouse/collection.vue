@@ -1129,6 +1129,7 @@ export default {
   },
   watch: {
     collection: function (newVal) {
+      // console.log(newVal)
       this.collectionData.name = newVal.name
       this.collectionData.description = newVal.description
       this.collectionData.store_id = newVal.store_id
@@ -1140,14 +1141,24 @@ export default {
         this.files = newVal.file
         this.collectionData.file = newVal.file.name
       }
-      if (newVal.fileExclude) {
-        this.filesExclude = newVal.fileExclude
+      if (newVal.file_exclude) {
+        this.filesExclude = newVal.file_exclude
         this.collectionData.fileExclude = newVal.file_exclude.name
       }
     },
     'collectionData.store_id': function (newVal) {
       if (newVal) {
         this.updateStore()
+      }
+    },
+    'collectionData.type': function (newVal) {
+      if (newVal == 1) {
+        this.deleteFile()
+      }
+    },
+    'collectionData.typeExclude': function (newVal) {
+      if (newVal == 1) {
+        this.deleteFileExclude()
       }
     },
     orgStores: function (newVal) {
