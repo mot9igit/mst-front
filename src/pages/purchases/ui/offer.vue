@@ -151,6 +151,7 @@
             :value="Number(offer?.basket?.count)"
             :step="offer?.multiplicity ? Number(offer?.multiplicity) : 1"
             :item="offer"
+            :key="new Date().getTime() + '_' + Number(offer.remain_id)"
           />
           <button
             class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card__buy"
@@ -429,7 +430,7 @@ export default {
     }
   },
   components: { customModal, Counter },
-  emits: ['updateBasket'],
+  emits: ['updateBasket', 'updateCatalog'],
   props: {
     offer: {
       type: Object,
@@ -529,6 +530,7 @@ export default {
               life: 3000,
             })
           }
+          this.$emit('updateCatalog')
           this.$emit('updateBasket')
         })
         if (Number(object.value) != object.old_value) {

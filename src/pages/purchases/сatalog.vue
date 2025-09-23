@@ -123,6 +123,7 @@
       :key="item.id"
       :product="item"
       @updateBasket="updateBasket()"
+      @updateCatalog="updateCatalog()"
     />
     <div class="d-pagination-wrap" v-if="pagesCount > 1">
       <paginate

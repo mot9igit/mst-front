@@ -1800,6 +1800,7 @@
                       />
                     </div>
                   </div>
+                  <!--
                   <div
                     class="d-radio__container d-radio__container d-radio__container--1200-vertical d-radio__container--1200-small"
                   >
@@ -1829,7 +1830,7 @@
                         </p>
                       </div>
                     </div>
-                    <!--<div
+                    <div
                       class="d-radio__wrapper d-radio__wrapper--1200-start promo-master__radio-wrapper"
                     >
                       <label class="d-switch" for="negative-promo2">
@@ -1853,8 +1854,8 @@
                           в разделе «Акции поставщиков» выводиться не будет.
                         </p>
                       </div>
-                    </div>-->
-                  </div>
+                    </div>
+                  </div>-->
                 </div>
                 <!-- 7 ЭТАП - Условия участия в акции: Совместимость -->
                 <div class="contents" id="promoConditionsCompatibility" v-if="masterStep == 7">
@@ -4429,7 +4430,7 @@ body {
     .d-search {
       z-index: 1;
       .d-search__field {
-        padding: 7px 100px 7px 45px;
+        padding: 7px 100px 7px 45px !important;
       }
     }
     .d-search--alt .d-search__icon {

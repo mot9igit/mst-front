@@ -87,7 +87,7 @@
                   type="text"
                   placeholder="Наименование или артикул"
                   class="d-search__field"
-                  v-model="search"
+                  v-model="searchProducts"
                 />
               </form>
             </div>
@@ -675,7 +675,11 @@ export default {
         return
       }
       this.debounce(() => {
-        this.$emit('filterGroupProduct', { filter: this.search, group_id: this.value, page: 1 })
+        this.$emit('filterGroupProduct', {
+          filter: this.searchProducts,
+          group_id: this.value,
+          page: 1,
+        })
       }, 300)
     },
   },

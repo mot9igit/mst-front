@@ -9,7 +9,11 @@
         <img :src="site_url_prefix + 'assets/files/img/nopic.png'" alt="" />
       </div>
     </div>
-    <div class="cell_value" v-else-if="cell_data.type == 'editmode' && editMode" :class="cell_data.class">
+    <div
+      class="cell_value"
+      v-else-if="cell_data.type == 'editmode' && editMode"
+      :class="cell_data.class"
+    >
       <Checkbox v-model="isChecked" :binary="true" @change="toggleSelection(value.id)" />
     </div>
     <div class="cell_value" v-else-if="cell_data.type == 'text'" :class="cell_data.class">
@@ -43,18 +47,21 @@
     </div>
     <div class="cell_value" v-else-if="cell_data.type == 'boolean_active'" :class="cell_data.class">
       <div v-if="value[cell_key] == 0">
-        <span class="cell__error-active" v-if="cell_data.calc == 'positive'"><i class="d-icon-minus"></i></span>
+        <span class="cell__error-active" v-if="cell_data.calc == 'positive'"
+          ><i class="d-icon-minus"></i
+        ></span>
         <span class="cell__error-active" v-else><i class="d-icon-minus"></i></span>
       </div>
       <div v-else>
-        <span class="cell__success-active" v-if="cell_data.calc == 'negative'"><i class="d-icon-check"></i></span>
+        <span class="cell__success-active" v-if="cell_data.calc == 'negative'"
+          ><i class="d-icon-check"></i
+        ></span>
         <span class="cell__success-active" v-else><i class="d-icon-check"></i></span>
       </div>
     </div>
     <div
       class="cell_value"
-      :class="cell_key == 'name' ? 'name '+ cell_data.class : cell_data.class"
-
+      :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'link' && !cell_data.items && !cell_data.items_incl_img"
     >
       <router-link
@@ -77,57 +84,63 @@
       v-else-if="cell_data.type == 'link_onclick'"
       @click.prevent="actionCell(value[cell_data.id])"
     >
-
-        {{ value[cell_key] }}
-        <div v-if="cell_data.description" class="cell_description">
-          <span v-if="cell_data.description.type == 'field'">
-
-            {{ value[cell_data.description.key] }}
-          </span>
-          <span v-else-if="cell_data.description.type == 'text'">
-
-            {{ value[cell_key].description.text }}
-          </span>
-        </div>
-
-    </div>
-    <div class="cell_value"
-      v-if="cell_data.type == 'link' && cell_data.items_incl_img"
-      :class="cell_key == 'name' ? 'name '+ cell_data.class : cell_data.class"
-      >
-      <router-link
-        :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
-      >
-      <div class="d-table2__info">
-        <div class="d-table2__info-header">
-          <div class="d-table2__info-header-image-wrapper">
-            <img :src="value[cell_data.items_incl_img[0]]"  class="cell-flex-d-table2__info-header-image-item"/>
-          </div>
-
-          <p class="d-table2__info-header-title">{{ value[cell_data.items_incl_img[1]] }}</p>
-        </div>
-        <div  class="d-table2__info-address">
-          <i class="d-icon-location d-table2__info-address-icon"></i><span>{{ value[cell_data.items_incl_img[2]] }}</span>
-        </div>
-    </div>
-      </router-link>
-    </div>
-    <div class="cell_value"
-      v-if="cell_data.type == 'link' && cell_data.items"
-      :class="cell_key == 'name' ? 'name '+ cell_data.class : cell_data.class"
-      >
-      <router-link
-        :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
-      >
-      <div v-for="item in cell_data.items" :key="item" class="multyitem_cell">
-        <span v-if="value[item] && item.includes('inn')">ИНН: {{ value[item] ? value[item] : '-' }}</span>
-        <span v-if="value[item]  && !item.includes('inn')" class="cell_value-inn">{{ value[item] }}</span>
+      {{ value[cell_key] }}
+      <div v-if="cell_data.description" class="cell_description">
+        <span v-if="cell_data.description.type == 'field'">
+          {{ value[cell_data.description.key] }}
+        </span>
+        <span v-else-if="cell_data.description.type == 'text'">
+          {{ value[cell_key].description.text }}
+        </span>
       </div>
+    </div>
+    <div
+      class="cell_value"
+      v-if="cell_data.type == 'link' && cell_data.items_incl_img"
+      :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
+    >
+      <router-link
+        :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
+      >
+        <div class="d-table2__info">
+          <div class="d-table2__info-header">
+            <div class="d-table2__info-header-image-wrapper">
+              <img
+                :src="value[cell_data.items_incl_img[0]]"
+                class="cell-flex-d-table2__info-header-image-item"
+              />
+            </div>
+
+            <p class="d-table2__info-header-title">{{ value[cell_data.items_incl_img[1]] }}</p>
+          </div>
+          <div class="d-table2__info-address">
+            <i class="d-icon-location d-table2__info-address-icon"></i
+            ><span>{{ value[cell_data.items_incl_img[2]] }}</span>
+          </div>
+        </div>
       </router-link>
     </div>
     <div
       class="cell_value"
-      :class="cell_key == 'name' ? 'name '+ cell_data.class : cell_data.class"
+      v-if="cell_data.type == 'link' && cell_data.items"
+      :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
+    >
+      <router-link
+        :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
+      >
+        <div v-for="item in cell_data.items" :key="item" class="multyitem_cell">
+          <span v-if="value[item] && item.includes('inn')"
+            >ИНН: {{ value[item] ? value[item] : '-' }}</span
+          >
+          <span v-if="value[item] && !item.includes('inn')" class="cell_value-inn">{{
+            value[item]
+          }}</span>
+        </div>
+      </router-link>
+    </div>
+    <div
+      class="cell_value"
+      :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'clickevent'"
     >
       <a href="#" @click.prevent="actionElem('click')">
@@ -136,7 +149,7 @@
     </div>
     <div
       class="cell_value"
-      :class="cell_key == 'name' ? 'name '+cell_data.class : cell_data.class"
+      :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'downloadhref'"
     >
       <a :href="value[cell_key]" download target="_blank" v-if="value[cell_key]"> Скачать </a>
@@ -144,7 +157,7 @@
     </div>
     <div
       class="cell_value text-center"
-      :class="cell_key == 'cell_status' ? 'cell_status'+cell_data.class : cell_data.class"
+      :class="cell_key == 'cell_status' ? 'cell_status' + cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'status'"
     >
       <span
@@ -158,7 +171,7 @@
     </div>
     <div
       class="cell_value"
-      :class="cell_key == 'actions' ? 'actions '+cell_data.class : cell_data.class"
+      :class="cell_key == 'actions' ? 'actions ' + cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'actions'"
     >
       <span class="p-buttonset">
@@ -179,7 +192,7 @@
     </div>
     <div
       class="cell_value"
-      :class="cell_key == 'actions_order' ? 'actions_order '+cell_data.class : cell_data.class"
+      :class="cell_key == 'actions_order' ? 'actions_order ' + cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'actions_order'"
     >
       <span class="p-buttonset">
@@ -229,7 +242,7 @@ export default {
     'disapproveElem',
     'editNumber',
     'update:selectedItems',
-    'actionCell'
+    'actionCell',
   ],
   props: {
     editMode: {
@@ -367,7 +380,7 @@ export default {
     editValue(number, name) {
       this.$emit('editNumber', { value: number, id: this.value.id, name: name })
     },
-    actionCell(id){
+    actionCell(id) {
       this.$emit('actionCell', id)
     },
   },
@@ -454,33 +467,33 @@ export default {
   font-weight: bold;
   color: #666666;
 }
-.cell_centeralign{
-  text-align:center;
+.cell_centeralign {
+  text-align: center;
 }
-.cell__error-active{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #ff715b;
-    border-radius: 50%;
-    font-size: 8px;
-    font-weight: 600;
-    width: 18px;
-    height: 18px;
-    margin: 0 auto;
+.cell__error-active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ff715b;
+  border-radius: 50%;
+  font-size: 8px;
+  font-weight: 600;
+  width: 18px;
+  height: 18px;
+  margin: 0 auto;
 }
-.cell__success-active{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #cdf0a9;
-    border-radius: 50%;
-    font-size: 8px;
-    width: 18px;
-    height: 18px;
-    margin: 0 auto;
+.cell__success-active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #cdf0a9;
+  border-radius: 50%;
+  font-size: 8px;
+  width: 18px;
+  height: 18px;
+  margin: 0 auto;
 }
-.table_link{
+.table_link {
   cursor: pointer;
 }
 </style>

@@ -42,6 +42,7 @@
           :offer="item"
           :offerData="product"
           @updateBasket="updateBasket()"
+          @updateCatalog="updateCatalog()"
         />
       </div>
     </div>
@@ -52,7 +53,7 @@ import offer from './offer.vue'
 
 export default {
   name: 'productComponent',
-  emits: ['updateBasket'],
+  emits: ['updateBasket', 'updateCatalog'],
   props: {
     product: {
       type: Object,
@@ -65,6 +66,9 @@ export default {
   methods: {
     updateBasket() {
       this.$emit('updateBasket')
+    },
+    updateCatalog() {
+      this.$emit('updateCatalog')
     },
   },
 }

@@ -44,8 +44,8 @@ export default {
       page: 1,
       filters: {
         name: {
-          name: 'Наименование, артикул',
-          placeholder: 'Наименование, артикул',
+          name: 'Искать в заказах',
+          placeholder: 'Искать в заказах',
           type: 'text',
         },
       },
