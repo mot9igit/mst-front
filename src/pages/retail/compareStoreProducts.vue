@@ -14,7 +14,7 @@
         </div>
     </div>
     <Loader v-if="loading" />
-    <div class="product-comparison__stats">
+  <!--  <div class="product-comparison__stats">
 								<div class="product-comparison__stats-top" v-if="prods.all">
 									<div class="product-comparison__stats-block">
 										<p class="product-comparison__stats-block-title">Сопоставление товаров по стоимости</p>
@@ -248,7 +248,7 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div>-->
     <h2>Сопоставление по брендам</h2>
     <div class="product-comparison__brands">
       <BaseTable
@@ -594,12 +594,13 @@ export default {
       tabledata: this.table_data,
 			page: this.page,
 			perpage: this.pagination_items_per_page,
+      store_id: this.$route.params.store_id
     })
     this.getOrgStore().then(() => {
-			this.chartDataHelpOne = this.setChartDataHelpOne();
-			this.chartDataHelpTwo = this.setChartDataHelpTwo();
-			this.chartDataHelpThee = this.setChartDataHelpTree();
-			this.chartDataHelpFour = this.setChartDataHelpFour();
+    //  this.chartDataHelpOne = this.setChartDataHelpOne();
+		//	this.chartDataHelpTwo = this.setChartDataHelpTwo();
+		//	this.chartDataHelpThee = this.setChartDataHelpTree();
+		//	this.chartDataHelpFour = this.setChartDataHelpFour();
       this.getVendors()
       this.loading = false
     })
@@ -667,10 +668,10 @@ export default {
 			return {
 				datasets: [
 					{
-						data:  [
+						data: this.products?.status ? [
                 100 -	(	this.statuses[5].count / (this.statuses.total / 100) ).toFixed(2),
 								(	this.statuses[5].count /	(this.statuses.total / 100)).toFixed(2)
-							  ],
+							  ] : [100, 0],
 						backgroundColor: ["#ededed", "#c4cae5"],
             borderColor: ["#fbfbfb", "#4759af"],
 						hoverBackgroundColor: ["#ededed", "#c4cae5"],
@@ -685,7 +686,7 @@ export default {
 			return {
 				datasets: [
 					{
-						data: [
+						data: this.products?.status ? [
 									100 -
 										(
 											this.statuses[1].count /
@@ -695,7 +696,7 @@ export default {
 										this.statuses[1].count /
 										(this.statuses.total / 100)
 									).toFixed(2),
-							  ],
+							  ] : [100, 0],
 						backgroundColor: ["#ededed", "#cdf0a9"],
             borderColor: ["#fbfbfb", "#97bc71"],
 						hoverBackgroundColor: ["#ededed", "#cdf0a9"],
@@ -788,7 +789,8 @@ export default {
         tabledata: this.table_data_modal,
         page: this.page_modal,
         perpage: this.pagination_items_per_page,
-        brand_id: this.brand_id
+        brand_id: this.brand_id,
+        store_id: this.$route.params.store_id
 
       }).then(() => {
       this.modalBrand = true
@@ -804,17 +806,21 @@ export default {
       this.statuses = newVal.status
     },
     orgStore: function (newVal) {
-			const num = newVal.products.copo_percent;
-			this.prods.copo_percent = num;
-			this.chartData = this.setChartData();
-			this.chartDataMoney = this.setChartDataMoney();
-			this.prods.all = newVal.products.count;
-			this.prods.copo =newVal.products.copo_count;
-			this.prods.count_all = newVal.products.count_all;
-			this.prods.summ = newVal.products.summ;
-			this.prods.copo_money_percent = newVal.products.copo_money_percent;
-			this.prods.no_copo_money_percent = newVal.products.no_copo_money_percent;
-			this.prods.summ_copo = newVal.products.summ_copo;
+		//	const num = newVal.products.copo_percent;
+		//	this.prods.copo_percent = num;
+		//	this.chartData = this.setChartData();
+		//	this.chartDataMoney = this.setChartDataMoney();
+		//	this.prods.all = newVal.products.count;
+		//	this.prods.copo =newVal.products.copo_count;
+		//	this.prods.count_all = newVal.products.count_all;
+		//	this.prods.summ = newVal.products.summ;
+		//	this.prods.copo_money_percent = newVal.products.copo_money_percent;
+		//	this.prods.no_copo_money_percent = newVal.products.no_copo_money_percent;
+		//	this.prods.summ_copo = newVal.products.summ_copo;
+    // this.chartDataHelpOne = this.setChartDataHelpOne();
+		//	this.chartDataHelpTwo = this.setChartDataHelpTwo();
+		//	this.chartDataHelpThee = this.setChartDataHelpTree();
+		//	this.chartDataHelpFour = this.setChartDataHelpFour();
 		},
   }
 }

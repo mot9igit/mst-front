@@ -5,7 +5,7 @@
     </div>
     <h2>Сопоставление товаров</h2>
     <Loader v-if="loading" />
-    <div class="product-comparison__stats">
+  <!--  <div class="product-comparison__stats">
 								<div class="product-comparison__stats-top" v-if="prods.all">
 									<div class="product-comparison__stats-block">
 										<p class="product-comparison__stats-block-title">Сопоставление товаров по стоимости</p>
@@ -239,7 +239,7 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div>-->
 
     <h2>Склады ({{ orgStores.total }})</h2>
     <div class="warehouse-analysis__table product-comparison__stores">
@@ -619,29 +619,22 @@ export default {
 			perpage: this.pagination_items_per_page,
     })
     this.getOrganization().then(() => {
-      this.chartData = this.setChartData();
-			this.chartDataMoney = this.setChartDataMoney();
-			this.chartDataHelpOne = this.setChartDataHelpOne();
-			this.chartDataHelpTwo = this.setChartDataHelpTwo();
-			this.chartDataHelpThee = this.setChartDataHelpTree();
-			this.chartDataHelpFour = this.setChartDataHelpFour();
-			const num = this.organization.products.copo_percent;
-			this.prods.copo_percent = num;
-			this.prods.all = this.organization.products.count;
-			this.prods.copo = this.organization.products.copo_count;
-			this.prods.count_all = this.organization.products.count_all;
-			this.prods.summ = this.organization.products.summ;
-			this.prods.copo_money_percent = this.organization.products.copo_money_percent;
-			this.prods.no_copo_money_percent = this.organization.products.no_copo_money_percent;
-			this.prods.summ_copo = this.organization.products.summ_copo;
-			// orders.summ && orders.count
-			// this.dilers.summ = this.organization.dilers.summ
-			// this.dilers.count = this.organization.dilers.count
-			// this.distr.summ = this.organization.distr.summ
-			// this.distr.count = this.organization.distr.count
-			// this.shipment.total = this.organization.shipment.total
-			// this.shipment.items = this.organization.shipment.items
-      this.loading = false
+    //  this.chartData = this.setChartData();
+		//	this.chartDataMoney = this.setChartDataMoney();
+		//	this.chartDataHelpOne = this.setChartDataHelpOne();
+		//	this.chartDataHelpTwo = this.setChartDataHelpTwo();
+		//	this.chartDataHelpThee = this.setChartDataHelpTree();
+		//	this.chartDataHelpFour = this.setChartDataHelpFour();
+		//	const num = this.organization.products.copo_percent;
+		//	this.prods.copo_percent = num;
+		//	this.prods.all = this.organization.products.count;
+		//	this.prods.copo = this.organization.products.copo_count;
+		//	this.prods.count_all = this.organization.products.count_all;
+		//	this.prods.summ = this.organization.products.summ;
+		//	this.prods.copo_money_percent = this.organization.products.copo_money_percent;
+		//	this.prods.no_copo_money_percent = this.organization.products.no_copo_money_percent;
+		//	this.prods.summ_copo = this.organization.products.summ_copo;
+     this.loading = false
     })
   },
   computed: {
@@ -707,10 +700,10 @@ export default {
 			return {
 				datasets: [
 					{
-						data:  [
+						data: this.products?.status ? [
                 100 -	(	this.statuses[5].count / (this.statuses.total / 100) ).toFixed(2),
 								(	this.statuses[5].count /	(this.statuses.total / 100)).toFixed(2)
-							  ],
+							  ] : [100,0],
 						backgroundColor: ["#ededed", "#c4cae5"],
             borderColor: ["#fbfbfb", "#4759af"],
 						hoverBackgroundColor: ["#ededed", "#c4cae5"],
@@ -725,7 +718,7 @@ export default {
 			return {
 				datasets: [
 					{
-						data: [
+						data: this.products?.status ? [
 									100 -
 										(
 											this.statuses[1].count /
@@ -735,7 +728,7 @@ export default {
 										this.statuses[1].count /
 										(this.statuses.total / 100)
 									).toFixed(2),
-							  ],
+							  ] : [100, 1],
 						backgroundColor: ["#ededed", "#cdf0a9"],
             borderColor: ["#fbfbfb", "#97bc71"],
 						hoverBackgroundColor: ["#ededed", "#cdf0a9"],
@@ -850,7 +843,9 @@ export default {
 		},
     products: function (newVal) {
       this.statuses = newVal.status
-    }
+
+    },
+
   }
 }
 </script>
@@ -1139,8 +1134,8 @@ export default {
   color: #757575;
 }
 .product-comparison__brands-modal .d-col-xl-6:nth-child(2){
-  padding-left: 32px;
-  padding-right: 32px;
+  margin-left: 32px;
+  margin-right: 32px;
 }
 .product-comparison__brands-modal .d-table__wrapper{
   margin-top: 40px;
@@ -1152,6 +1147,9 @@ export default {
   font-size: 16.8px;
   top: calc(50% - 8.4px);
   right: 30px;
+}
+.product-comparison__brands-modal .p-inputtext,.product-comparison__brands .p-inputtext{
+  padding-right:40px;
 }
 .product-comparison__stats-block-percent-mobile{
   display:none;
@@ -1282,6 +1280,14 @@ export default {
   .product-comparison h2 {
     font-size: 16px;
   }
+  .product-comparison__brands .p-inputtext,.product-comparison__brands .form_input_group, .product-comparison__brands .d-col-xl-6:nth-child(2),
+  .product-comparison__brands-modal .p-inputtext,.product-comparison__brands-modal .form_input_group, .product-comparison__brands-modal .d-col-xl-6,
+  .product-comparison__brands-modal .p-select{
+    min-width:250px;
+  }
+  .product-comparison__brands .form_input_group:after,.product-comparison__brands-modal .form_input_group:after {
+    right: 6px;
+  }
 }
 @media (width <=1024px) {
   .product-comparison__stats-item-percent{
@@ -1290,6 +1296,12 @@ export default {
   .product-comparison__stats-item-value-container-mobile {
     margin-left: -62px;
     margin-top: 10px;
+  }
+  .product-comparison__brands .d-col-xl-6{
+    min-width: 150px;
+  }
+  .product-comparison__brands-modal .d-col-xl-6:nth-child(3){
+    margin-top: 16px;
   }
 }
 @media (width <=890px) {
@@ -1400,6 +1412,35 @@ export default {
   }
   .product-comparison h2 {
     font-size: 14px;
+  }
+  .product-comparison__brands .dart-form-group label {
+    font-size: 12px;
+  }
+  .product-comparison__brands .dart-row {
+    flex-direction: column-reverse;
+    align-items: start !important;
+    justify-content: start;
+  }
+  .product-comparison__brands .d-col-xl-6{
+    min-width:100%;
+    margin-bottom: 8px;
+  }
+  .warehouse-analysis__description {
+    font-size: 8px;
+    margin: 16px 0;
+  }
+  .product-comparison__brands .p-inputtext,.product-comparison__brands .form_input_group, .product-comparison__brands .d-col-xl-6:nth-child(2),
+  .product-comparison__brands-modal .p-inputtext,.product-comparison__brands-modal .form_input_group, .product-comparison__brands-modal .d-col-xl-6,
+  .product-comparison__brands-modal .p-select{
+    min-width:100%;
+    margin:4px 0;
+  }
+  .product-comparison__brands .form_input_group:after,.product-comparison__brands-modal .form_input_group:after {
+    right: 16px;
+  }
+  .product-comparison__brands-modal .d-col-xl-6:nth-child(2) {
+    margin-left: 0px;
+    margin-right: 0px;
   }
 }
 @media (width <=600px) {
@@ -1537,6 +1578,23 @@ export default {
   .product-comparison__stats-item-value-container-mobile {
     margin-top: 6px;
   }
+  .product-comparison__brands .p-inputtext,.product-comparison__brands .form_input_group, .product-comparison__brands .d-col-xl-6:nth-child(2),
+  .product-comparison__brands-modal .p-inputtext,.product-comparison__brands-modal .form_input_group, .product-comparison__brands-modal .d-col-xl-6,
+  .product-comparison__brands-modal .p-select{
+    min-width:calc(100vw - 88px);
+    max-width:calc(100vw - 88px);
+    width:calc(100vw - 88px);
+    margin:4px 0;
+  }
+  .product-comparison__brands .form_input_group:after,.product-comparison__brands-modal .form_input_group:after {
+    right: 6px;
+  }
+  .product-comparison__brands .v-table {
+    margin-bottom: 50px;
+  }
+  .product-comparison__brands-modal .modal-content {
+    max-width: 100%;
+  }
 }
 @media (width <=320px) {
   .product-comparison__stats{
@@ -1555,6 +1613,14 @@ export default {
   }
 .product-comparison__stats-item-content {
     padding: 8px 28px 0px;
+  }
+  .product-comparison__brands .p-inputtext,.product-comparison__brands .form_input_group, .product-comparison__brands .d-col-xl-6:nth-child(2),
+  .product-comparison__brands-modal .p-inputtext,.product-comparison__brands-modal .form_input_group, .product-comparison__brands-modal .d-col-xl-6,
+  .product-comparison__brands-modal .p-select{
+    min-width:calc(100vw - 56px);
+    max-width:calc(100vw - 56px);
+    width:calc(100vw - 56px);
+
   }
 }
 </style>
