@@ -40,7 +40,7 @@
         <div class="d-input d-input--light collection__block-input">
           <input
             type="text"
-            placeholder="Основная продукция Интерскол"
+            placeholder=""
             name="date"
             class="d-input__field collection__block-input-field"
             v-model="collectionData.name"
@@ -57,7 +57,7 @@
         <div class="d-input d-input--light collection__block-input">
           <input
             type="text"
-            placeholder="Основная продукция Интерскол"
+            placeholder=""
             name="date"
             class="d-input__field collection__block-input-field"
             v-model="collectionData.description"
@@ -288,6 +288,17 @@
               </TabPanel>
 
               <TabPanel v-if="this.collectionData.type == 2">
+                <div class="warehouse-analysis__description">
+                  <p>Обратите внимание, что первая строка в файле игнорируется.</p>
+                </div>
+                <div class="dart-mb-2 dart-mt-2">
+                  <a
+                    href="https://mst.tools/assets/files/files/examples/ExampleGroups.xlsx"
+                    class="d-button d-button-tertiary d-button-tertiary-small d-button--no-shadow"
+                    target="_blank"
+                    ><i class="d-icon-download"></i> Скачать шаблон файла</a
+                  >
+                </div>
                 <div class="collection__files" v-if="files && !showDropZone">
                   <div class="collection__files-header">
                     <p class="collection__files-header-title">Загруженные файлы:</p>
@@ -546,6 +557,17 @@
               </TabPanel>
 
               <TabPanel v-if="this.collectionData.typeExclude == 2">
+                <div class="warehouse-analysis__description">
+                  <p>Обратите внимание, что первая строка в файле игнорируется.</p>
+                </div>
+                <div class="dart-mb-2 dart-mt-2">
+                  <a
+                    href="https://mst.tools/assets/files/files/examples/ExampleGroups.xlsx"
+                    class="d-button d-button-tertiary d-button-tertiary-small d-button--no-shadow"
+                    target="_blank"
+                    ><i class="d-icon-download"></i> Скачать шаблон файла</a
+                  >
+                </div>
                 <div class="collection__files" v-if="filesExclude && !showDropZoneExclude">
                   <div class="collection__files-header">
                     <p class="collection__files-header-title">Загруженные файлы:</p>
