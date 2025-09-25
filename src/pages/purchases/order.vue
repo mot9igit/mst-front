@@ -117,6 +117,7 @@
         :items_data="docs"
         :total="docs.length"
         :table_data="table_docs"
+        @download="downloadDoc"
       />
       <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow" @click.prevent="modalDocs = false">
         Ok
@@ -177,7 +178,16 @@ export default {
         },
       },
       docs: [
-
+      //  {
+      //    name: 'Файл 1',
+      //    date: '23.07.2035',
+      //    href: '/',
+      //  },
+      //  {
+      //    name: 'Файл 2',
+      //    date: '25.07.2035',
+      //    href: '/',
+      //  },
       ],
       table_docs: {
         name: {
@@ -196,9 +206,10 @@ export default {
           sort: false,
           class: 'cell_centeralign',
           available: {
-            view: {
+            download: {
               icon: 'pi pi-upload',
               label: 'Загрузить',
+              url: 'href',
             },
           },
         },
@@ -219,6 +230,9 @@ export default {
       this.getOptOrder(data).then(() => {
         this.loading = false
       })
+    },
+    downloadDoc(){
+
     },
   },
   mounted() {
