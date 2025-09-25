@@ -121,10 +121,11 @@
       <customModal v-model="modalDocs" class="order-card__modal">
         <h3>Документы <span v-if="docs.length">({{ docs.length }})</span></h3>
         <BaseTable
-        :items_data="docs"
-        :total="docs.length"
-        :table_data="table_docs"
-      />
+          :items_data="docs"
+          :total="docs.length"
+          :table_data="table_docs"
+          @clickElem="docClick"
+        />
       <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow" @click.prevent="modalDocs = false">
         Ok
       </button>
@@ -182,25 +183,14 @@ export default {
           class: 'cell_centeralign',
         },
       },
-      docs: [
-      //  {
-      //    name: 'Файл 1',
-      //    date: '23.07.2035',
-      //    href: '',
-      //  },
-      //  {
-      //    name: 'Файл 2',
-      //    date: '25.07.2035',
-      //    href: '',
-      //  },
-      ],
+      docs: [],
       table_docs: {
         name: {
           label: 'Название',
           type: 'text',
           class: 'cell_centeralign',
         },
-        date: {
+        createdon: {
           label: 'Дата',
           type: 'text',
           class: 'cell_centeralign',
@@ -211,8 +201,8 @@ export default {
           sort: false,
           class: 'cell_centeralign',
           available: {
-            view: {
-              icon: 'pi pi-upload',
+            click: {
+              icon: 'pi pi-download',
               label: 'Загрузить',
             },
           },
@@ -226,6 +216,15 @@ export default {
       getOrder: 'wholesale/getOrder',
       unsetOrder: 'wholesale/unsetOrder',
     }),
+    docClick(data){
+      let loc = data.href
+      var downloadLink = document.createElement("a")
+      downloadLink.href = loc
+      downloadLink.setAttribute('download', loc)
+      downloadLink.setAttribute('target','_blank')
+      console.log(downloadLink)
+      downloadLink.click();
+    }
   },
   mounted() {
     this.getOrder({
@@ -240,6 +239,7 @@ export default {
   watch: {
     order: function (newVal) {
       console.log(newVal)
+      this.docs = newVal.docs
     },
   },
 }
