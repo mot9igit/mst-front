@@ -27,19 +27,17 @@ export default {
     window.setInterval(() => {
       this.pollPerson()
     }, 2500)
-
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.main__content-wrapper .preloader{
+.main__content-wrapper .preloader {
   position: fixed;
   border-top-left-radius: 40px;
   top: var(--header-height);
   left: var(--sidebar-width);
 }
-
 
 .preloader {
   width: 100%;
@@ -51,11 +49,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 1003;
   -webkit-backdrop-filter: blur(22.8px);
   backdrop-filter: blur(22.8px);
   will-change: transform;
-  transition-duration: .3s;
+  transition-duration: 0.3s;
   &__content {
     align-items: center;
     display: flex;
@@ -102,6 +100,5 @@ export default {
       z-index: 9;
     }
   }
-
 }
 </style>

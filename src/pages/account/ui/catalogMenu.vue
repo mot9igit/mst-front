@@ -76,9 +76,8 @@
                 <img :src="item.image" class="catalog__item-img" v-if="item.image != ''" />
                 <p class="catalog__item-title">{{ item.pagetitle }}</p>
               </div>
-
             </button>
-<!--           <router-link
+            <!--           <router-link
               class="catalog__item-button"
               :to="{
                 name: 'purchasesCatalogWarehouseCategory',
@@ -110,37 +109,39 @@
           <i class="d-icon-angle-rounded catalog__head-item-icon"></i
           ><span class="catalog__head-item-text">{{ catalogListPrevios }}</span>
         </button>
-     <router-link
-              :to="{
-                name: 'purchasesCatalog',
-                params: {
-                  id: this.$route.params.id,
-                  category_id: catalogListIndex,
-                },
-              }"
-              v-if="activeShowCatalog === 1 && stepmenu > 1"
-              @click.prevent="headerDesignOff">
-              <div class="catalog__head-item catalog__head-item--sub">
-                <span class="catalog__head-item-text">{{ catalogListName }}</span>
-              </div>
-      </router-link>
+        <router-link
+          :to="{
+            name: 'purchasesCatalog',
+            params: {
+              id: this.$route.params.id,
+              category_id: catalogListIndex,
+            },
+          }"
+          v-if="activeShowCatalog === 1 && stepmenu > 1"
+          @click.prevent="headerDesignOff"
+        >
+          <div class="catalog__head-item catalog__head-item--sub">
+            <span class="catalog__head-item-text">{{ catalogListName }}</span>
+          </div>
+        </router-link>
 
-      <router-link
-              :to="{
-                name: 'purchasesCatalogWarehouseCategory',
-                params: {
-                  id: this.$route.params.id,
-                  org_w_id: breadcrumbs[1].category_id,
-                  warehouse_id: breadcrumbs[2].category_id,
-                  warehouse_cat_id: catalogListIndex,
-                },
-              }"
-              v-else-if="activeShowCatalog === 0 && stepmenu > 3"
-              @click.prevent="headerDesignOff">
-              <div class="catalog__head-item catalog__head-item--sub">
-                <span class="catalog__head-item-text">{{ catalogListName }}</span>
-              </div>
-      </router-link>
+        <router-link
+          :to="{
+            name: 'purchasesCatalogWarehouseCategory',
+            params: {
+              id: this.$route.params.id,
+              org_w_id: breadcrumbs[1].category_id,
+              warehouse_id: breadcrumbs[2].category_id,
+              warehouse_cat_id: catalogListIndex,
+            },
+          }"
+          v-else-if="activeShowCatalog === 0 && stepmenu > 3"
+          @click.prevent="headerDesignOff"
+        >
+          <div class="catalog__head-item catalog__head-item--sub">
+            <span class="catalog__head-item-text">{{ catalogListName }}</span>
+          </div>
+        </router-link>
 
         <div class="catalog__head-item catalog__head-item--sub" v-else>
           <span class="catalog__head-item-text">{{ catalogListName }}</span>
@@ -156,7 +157,11 @@
           >
             <button
               class="catalog__item-button"
-              @click.prevent="activeShowCatalog === 0 && stepmenu === 2 ? ShowPodcatalogList(subindex, subitem.pagetitle, subitem.warehouse_id) : ShowPodcatalogList(subindex, subitem.pagetitle, subitem.id)"
+              @click.prevent="
+                activeShowCatalog === 0 && stepmenu === 2
+                  ? ShowPodcatalogList(subindex, subitem.pagetitle, subitem.warehouse_id)
+                  : ShowPodcatalogList(subindex, subitem.pagetitle, subitem.id)
+              "
               v-if="subitem.children != undefined"
             >
               <div class="catalog__item-content">
@@ -214,7 +219,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 
-
 export default {
   name: 'catalogMenu',
   data() {
@@ -226,7 +230,7 @@ export default {
       activeShowCatalog: 1,
       cataloglistShow: false,
       breadcrumbs: [
-        { id: 0, name: 'Единый каталог', child: 1,  category_id: 0},
+        { id: 0, name: 'Единый каталог', child: 1, category_id: 0 },
         { id: 1, name: '', child: 0, category_id: 0 },
       ],
       stepmenu: 1,
@@ -249,27 +253,28 @@ export default {
       type: Boolean,
       default: false,
     },
-
   },
 
   mounted() {
     this.getOptWarehouseCatalog()
     this.getOptCatalog()
     this.menu = this.getMenu()
-    document.addEventListener('click', event => {
+    document.addEventListener('click', (event) => {
       //console.log(event)
       // let catalog = document.getElementById('catalogMenu')
       // let catalogBtn = document.getElementById('catalogBtn')
       //console.log(event.target.closest('#catalogMenu'))
       //console.log(event.target.closest('#catalogBtn'))
       //
-      if (!event.target.closest('#catalogMenu')
-          && !event.target.closest('#catalogBtn')
-          && !event.target.closest('.catalog__item-button') && this.mobileCatalog === false) {
-        this.$emit("menuClose")
-
+      if (
+        !event.target.closest('#catalogMenu') &&
+        !event.target.closest('#catalogBtn') &&
+        !event.target.closest('.catalog__item-button') &&
+        this.mobileCatalog === false
+      ) {
+        this.$emit('menuClose')
       }
-     })
+    })
   },
   methods: {
     ...mapActions({
@@ -279,7 +284,7 @@ export default {
     toggleMenu() {
       this.$emit('toggleCatalog')
     },
-    headerDesignOff(){
+    headerDesignOff() {
       this.headerDesign = !this.headerDesign
       this.$emit('headerDesignOff')
     },
@@ -337,7 +342,12 @@ export default {
       this.catalogListIndex = categoryId
       this.childrens = this.childrens[index].children
       this.breadcrumbs.splice(thisnumber)
-      this.breadcrumbs.push({ id: thisnumber, name: pagetitle, child: index, category_id: categoryId })
+      this.breadcrumbs.push({
+        id: thisnumber,
+        name: pagetitle,
+        child: index,
+        category_id: categoryId,
+      })
       this.stepmenu++
     },
     catalogNavigation() {
@@ -375,7 +385,6 @@ export default {
       optCatalog: 'catalog/optCatalog',
       optCatalogWarehouse: 'catalog/optCatalogWarehouse',
     }),
-
   },
   watch: {
     optCatalog: function (newVal) {
@@ -387,13 +396,13 @@ export default {
     },
     active: function (newVal) {
       this.headerDesign = newVal
-    //  if(newVal === true){
-    //    this.clickAroundActive = newVal
-    //  }
+      //  if(newVal === true){
+      //    this.clickAroundActive = newVal
+      //  }
     },
-    isMobile: function(newVal){
+    isMobile: function (newVal) {
       this.mobileCatalog = newVal
-    }
+    },
   },
 }
 </script>
@@ -410,13 +419,15 @@ export default {
 }
 .catalog__item-title,
 .catalog__head-item,
-.catalog__head-item--back{
+.catalog__head-item--back {
   color: #282828;
 }
-.catalog__head-item--active{
+.catalog__head-item--active {
   color: #fff;
 }
+/*
 .catalog {
-    margin-top: 3px;
+  margin-top: 3px;
 }
+*/
 </style>

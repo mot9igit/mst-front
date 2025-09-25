@@ -12,6 +12,9 @@ export default {
 </script>
 
 <style lang="scss">
+.p-treeselect-label {
+  max-width: 100%;
+}
 #app {
   width: 100%;
 }

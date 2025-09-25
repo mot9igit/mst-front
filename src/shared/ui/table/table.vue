@@ -38,7 +38,7 @@
           </select>
         </div>
         <div class="dart-form-group" v-if="ffilter.type == 'dropdown'">
-          <Dropdown
+          <SelectInput
             v-model="filtersdata[i]"
             :options="ffilter.values"
             filter
@@ -47,7 +47,7 @@
             :optionValue="ffilter.optionValue ? ffilter.optionValue : 'id'"
             :placeholder="ffilter.placeholder"
             @change="setFilter"
-          ></Dropdown>
+          ></SelectInput>
         </div>
         <div class="dart-form-group" v-if="ffilter.type == 'number'">
           <InputNumber
@@ -110,13 +110,27 @@
           />
         </div>
         <div class="dart-form-group" v-if="ffilter.type == 'tree'">
-          <TreeSelect
+          <!-- <TreeSelect
             v-model="filtersdata[i]"
+            appendTo="self"
             :options="ffilter.values"
-            selectionMode="checkbox"
+            :maxSelectedLabels="3"
+            selectionMode="single"
             :placeholder="ffilter.placeholder"
             class="w-full"
-            @change="setFilter"
+            :fluid="true"
+            @select="setFilter"
+          /> -->
+          <TreeSelect
+            v-model="filtersdata[i]"
+            :multiple="true"
+            :options="ffilter.values"
+            :placeholder="ffilter.placeholder"
+            valueFormat="id"
+            :limit="1"
+            :limitText="(count) => `и еще ${count}`"
+            @select="setFilter"
+            @deselect="setFilter"
           />
         </div>
         <div class="dart-form-group" v-if="ffilter.type == 'checkbox'">
@@ -231,8 +245,11 @@ import Paginate from 'vuejs-paginate-next'
 import Calendar from 'primevue/calendar'
 import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
-import TreeSelect from 'primevue/treeselect'
-import Dropdown from 'primevue/dropdown'
+// import the component
+import TreeSelect from '@zanmato/vue3-treeselect'
+// import the styles
+import '@zanmato/vue3-treeselect/dist/vue3-treeselect.min.css'
+import SelectInput from 'primevue/select'
 import AutoComplete from 'primevue/autocomplete'
 import Checkbox from 'primevue/checkbox'
 import InputNumber from 'primevue/inputnumber'
@@ -263,7 +280,7 @@ export default {
     TreeSelect,
     Calendar,
     AutoComplete,
-    Dropdown,
+    SelectInput,
     InputNumber,
     Skeleton,
     Checkbox,
@@ -470,7 +487,7 @@ export default {
     editNumber(object) {
       this.$emit('editNumber', object)
     },
-    actionCell(data){
+    actionCell(data) {
       this.$emit('actionCell', data)
     },
     // filterglobalTable(checked) {
@@ -492,7 +509,7 @@ export default {
     // 	}));
     // },
     setFilter(type = '0') {
-      console.log(type)
+      // console.log(type)
       if (type === 'filter') {
         if (this.filter.length >= 3 || this.filter.length === 0) {
           setTimeout(() => {
@@ -506,13 +523,15 @@ export default {
           })
         }
       } else {
-        this.$emit('filter', {
-          filter: this.filter,
-          filtersdata: toRaw(this.filtersdata),
-          sort: this.sort,
-          page: 1,
-          perpage: this.pagination_items_per_page,
-        })
+        setTimeout(() => {
+          this.$emit('filter', {
+            filter: this.filter,
+            filtersdata: toRaw(this.filtersdata),
+            sort: this.sort,
+            page: 1,
+            perpage: this.pagination_items_per_page,
+          })
+        }, 500)
       }
     },
     sorting(key) {
@@ -634,7 +653,7 @@ export default {
               storesall.push({ name: stores.items[i].name, id: stores.items[i].id })
             }
 
-            this.filters.store.values = storesall
+            // this.filters.store.values = storesall
           })
         }
         if (newVal !== oldVal) {
@@ -643,6 +662,9 @@ export default {
       },
       deep: true,
       immediate: true, // Сразу выполнить при создании компонента
+    },
+    filtersdata: function (newVal) {
+      console.log(newVal)
     },
     // allChecked(val) {
     // 	if (!Array.isArray(this.localItems)) return;
