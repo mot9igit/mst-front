@@ -11,12 +11,12 @@
 
           <div class="d-top-order-container-date-created">от {{ order.date }}</div>
         </div>
-        <!--<div class="d-badge2 d-badge2--fit d-button--sm-shadow order-card__status" :style="
+        <div class="d-badge2 d-badge2--fit d-button--sm-shadow order-card__status" :style="
           'background-color: #' +
-          order.status_color
+          status.color
         "
       >
-        {{ order.status_name }}</div>-->
+        {{ status.name }}</div>
       </div>
      <div class="d-top-order-container-right">
         <!-- <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>-->
@@ -151,6 +151,7 @@ export default {
       page: 1,
       page_docs: 1,
       modalDocs: false,
+      status: [],
       table_data: {
         image: {
           label: 'Фото',
@@ -238,7 +239,7 @@ export default {
   },
   watch: {
     order: function (newVal) {
-      console.log(newVal)
+      this.status = newVal.status
       this.docs = newVal.docs
     },
   },
