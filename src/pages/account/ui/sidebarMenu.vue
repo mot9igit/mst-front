@@ -94,6 +94,9 @@ export default {
     toogle: function (Newval) {
       this.sidebarToggle = Newval
     },
+    orgs: function () {
+      this.menu = this.getMenu()
+    },
     $route() {
       this.menu = this.getMenu()
     },
@@ -176,9 +179,9 @@ export default {
             to: { name: 'retailBalance', params: { id: this.$route.params.id } },
           },
           {
-             name: 'Сопоставление товаров',
-             icon: 'd-icon-shuffle',
-             to: { name: 'retailCompareProducts', params: { id: this.$route.params.id } },
+            name: 'Сопоставление товаров',
+            icon: 'd-icon-shuffle',
+            to: { name: 'retailCompareProducts', params: { id: this.$route.params.id } },
           },
         ],
       })
@@ -188,11 +191,11 @@ export default {
         collapse: this.collapsed('warehouse'),
         to: { name: 'WarehouseCollections', params: { id: this.$route.params.id } },
         children: [
-           {
-             name: 'Анализ склада',
-             icon: 'd-icon-line-chart',
-             to: { name: 'warehouseReview', params: { id: this.$route.params.id } },
-           },
+          {
+            name: 'Анализ склада',
+            icon: 'd-icon-line-chart',
+            to: { name: 'warehouseReview', params: { id: this.$route.params.id } },
+          },
           {
             name: 'Коллекции товара',
             icon: 'd-icon-layers',
