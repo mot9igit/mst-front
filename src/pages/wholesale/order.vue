@@ -15,6 +15,7 @@
           'background-color: #' +
           status.color
         "
+        v-if="(Object.keys(status).length != 0)"
       >
         {{ status.name }}</div>
       </div>
