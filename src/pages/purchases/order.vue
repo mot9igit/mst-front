@@ -11,9 +11,13 @@
 
           <div class="d-top-order-container-date-created">от {{ this.order.date }}</div>
         </div>
-        <div class="d-badge2 d-badge2--fit d-button--sm-shadow order-card__status">
-          {{ order.status_name }}
-        </div>
+        <div class="d-badge2 d-badge2--fit d-button--sm-shadow order-card__status" :style="
+          'background-color: #' +
+          status.color
+        "
+        v-if="(Object.keys(status).length != 0)"
+      >
+        {{ status.name }}</div>
       </div>
       <div class="d-top-order-container-right">
         <!-- <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>-->
@@ -22,9 +26,12 @@
       <i class="item-list-item-icon d-icon-doc"></i>
       <span class="catalog__head-item-text">Документы <span v-if="docs.length">({{ docs.length }})</span></span>
 		</button>
-    <!--<button  class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action">
-      <span class="catalog__head-item-text">Подтвердить заказ</span>
-		</button>-->
+    <button
+    class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action"
+    @click.prevent="modalCancel = true"
+    v-if="status.cancelable">
+      <span class="catalog__head-item-text">Отменить заказ</span>
+		</button>
     </div>
       </div>
     </div>
@@ -117,13 +124,36 @@
         :items_data="docs"
         :total="docs.length"
         :table_data="table_docs"
-        @download="downloadDoc"
+        @clickElem="docClick"
       />
       <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow" @click.prevent="modalDocs = false">
         Ok
       </button>
       </customModal>
-
+      <Teleport to="body">
+        <customModal v-model="modalCancel" class="order-card__modal order-card__modal-cansel">
+          <h3>Отмена заказа № {{ this.$route.params.order_id }}</h3>
+          Вы уверены, что хотите отменить заказ № {{ this.$route.params.order_id }}?
+          <div class="collection__modal-buttons">
+          <button
+            type="button"
+            href="#"
+            class="d-button d-button-primary d-button--sm-shadow collection__modal-cansel"
+            @click.prevent="this.modalCancel = false"
+          >
+            Отмена
+          </button>
+          <button
+            type="button"
+            href="#"
+            class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
+            @click.prevent="cancelOrder()"
+          >
+            Ok
+          </button>
+        </div>
+        </customModal>
+       </Teleport>
     </Teleport>
   </section>
 </template>
@@ -145,6 +175,7 @@ export default {
       page_docs: 1,
       order: [],
       modalDocs: false,
+      modalCancel: false,
       table_data: {
         image: {
           label: 'Фото',
@@ -177,25 +208,15 @@ export default {
           class: 'cell_centeralign',
         },
       },
-      docs: [
-      //  {
-      //    name: 'Файл 1',
-      //    date: '23.07.2035',
-      //    href: '/',
-      //  },
-      //  {
-      //    name: 'Файл 2',
-      //    date: '25.07.2035',
-      //    href: '/',
-      //  },
-      ],
+      docs: [],
+      status: [],
       table_docs: {
         name: {
           label: 'Название',
           type: 'text',
           class: 'cell_centeralign',
         },
-        date: {
+        createdon: {
           label: 'Дата',
           type: 'text',
           class: 'cell_centeralign',
@@ -206,8 +227,8 @@ export default {
           sort: false,
           class: 'cell_centeralign',
           available: {
-            download: {
-              icon: 'pi pi-upload',
+            click: {
+              icon: 'pi pi-download',
               label: 'Загрузить',
               url: 'href',
             },
@@ -221,6 +242,7 @@ export default {
   ...mapActions({
       getOptOrder: 'purchases/getOptOrder',
       unsetOptOrder: 'purchases/unsetOptOrder',
+      canselOptOrder: 'purchases/canselOptOrder',
     }),
     paginate(data){
       this.loading = true
@@ -231,9 +253,31 @@ export default {
         this.loading = false
       })
     },
-    downloadDoc(){
-
+    docClick(data){
+      let loc = data.href
+      var downloadLink = document.createElement("a")
+      downloadLink.href = loc
+      downloadLink.setAttribute('download', loc)
+      downloadLink.setAttribute('target','_blank')
+      console.log(downloadLink)
+      downloadLink.click();
     },
+    cancelOrder(){
+      this.loading = true
+      let data = {}
+      data.order_id = this.$route.params.order_id,
+      data.action = 'order/opt/cancel',
+      console.log(data)
+      this.canselOptOrder(data).then(() => {
+        this.loading = false
+        data.page = this.page
+        data.order_id = this.$route.params.order_id,
+        this.getOptOrder(data).then(() => {
+        this.loading = false
+        this.modalCancel = false
+      })
+      })
+    }
   },
   mounted() {
     this.getOptOrder({
@@ -248,6 +292,8 @@ export default {
   watch: {
     optorder: function (newVal) {
       this.order = newVal
+      this.docs = newVal.docs
+      this.status = newVal.status
     },
   },
 }
@@ -260,5 +306,8 @@ export default {
 .order-card__modal h3{
   margin-bottom: 40px;
   margin-top: -5px;
+}
+.order-card__modal-cansel .modal-content{
+  max-width: 600px;
 }
 </style>

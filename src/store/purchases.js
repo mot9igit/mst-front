@@ -43,6 +43,14 @@ export default {
       }
       return response
     },
+    async canselOptOrder(store, { order_id }) {
+      const data = {
+        action: 'order/opt/cancel',
+        order_id: order_id,
+      }
+      const response = await api.purchases.canselOptOrder(data)
+      return response
+    },
     async getOpts({ commit }, { filter, filtersdata, page, perpage }) {
       const data = {
         id: router.currentRoute._value.params.id,
