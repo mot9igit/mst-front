@@ -121,7 +121,7 @@
             </div>
           </div>
 
-          <div class="clients__card-data d-col-9">
+          <div class="clients__card-data d-col-9  clients__devider">
             <div class="clients__card-inn d-col-10 clients__devider">
               <p class="clients__card-inn-label">ИНН:</p>
               <p class="clients__card-inn-value">
@@ -131,11 +131,6 @@
 
             <div
               class="clients__card-contact-container d-col-14"
-              :class="
-                item.owner_id > 0 && item.owner_id == this.$route.params.id
-                  ? 'clients__devider'
-                  : ''
-              "
             >
               <a :href="'tel:' + item.phone.replace(/[^+\d]/g, '')" class="clients__card-contact">
                 <i class="d-icon-telephone clients__card-contact-icon"></i>
@@ -218,60 +213,54 @@
             </div>
           </div>
 
-          <!--<div class="clients__card-price-container">
-            <div class="clients__card-price">
+          <div class="clients__card-price-container" v-if="(Object.keys(item.debts).length != 0)">
+            <div class="clients__card-price" v-if="item.debts?.debet != null">
               <span class="clients__card-price-label">ДЗ:</span>
-              <span class="clients__card-price-value">5 500 000 ₽</span>
+              <span class="clients__card-price-value">{{ item.debts?.debet }} ₽</span>
             </div>
-            <div class="clients__card-price clients__card-price--secondary">
+            <div class="clients__card-price" v-if="item.debts?.credit != null">
+              <span class="clients__card-price-label">КЗ:</span>
+              <span class="clients__card-price-value">{{ item.debts?.credit }} ₽</span>
+            </div>
+            <!--<div class="clients__card-price clients__card-price--secondary">
               <span class="clients__card-price-label">ПЗД:</span>
               <span class="clients__card-price-value">3 200 000 ₽</span>
-            </div>
-          </div>-->
+            </div>-->
+          </div>
         </div>
         <div class="clients__card-right d-col-9">
-          <div
-            class="clients__card-right-left d-col-3"
-            :class="
-              item.owner_id > 0 && item.owner_id == this.$route.params.id ? 'clients__devider' : ''
-            "
-          >
-            <!--<div class="d-divider d-divider--vertical clients__card-divider"></div>
-           <div class="clients__card-price-container">
-              <div class="clients__card-price">
-                <span class="clients__card-price-label">ДЗ:</span>
-                <span class="clients__card-price-value">5 500 000 ₽</span>
-              </div>
-              <div class="clients__card-price clients__card-price--secondary">
-                <span class="clients__card-price-label">ПЗД:</span>
-                <span class="clients__card-price-value">3 200 000 ₽</span>
-              </div>
+          <div class="clients__card-right-left d-col-22 clients__devider">
+           <div class="clients__card-price-container d-col-12 clients__devider" v-if="(Object.keys(item.debts).length != 0)">
+            <div class="clients__card-price" v-if="item.debts?.debet != null">
+              <span class="clients__card-price-label">ДЗ:</span>
+              <span class="clients__card-price-value">{{ item.debts?.debet }} ₽</span>
+            </div>
+            <div class="clients__card-price"  v-if="item.debts?.credit != null">
+              <span class="clients__card-price-label">КЗ:</span>
+              <span class="clients__card-price-value">{{ item.debts?.credit }} ₽</span>
+            </div>
+            <!--<div class="clients__card-price clients__card-price--secondary">
+              <span class="clients__card-price-label">ПЗД:</span>
+              <span class="clients__card-price-value">3 200 000 ₽</span>
             </div>-->
+          </div>
 
-            <div
-              class="clients__card-vendor"
-              v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
-            >
-              Создан поставщиком
+            <div class="d-col-12 clients__card-vendor-container">
+              <span class="clients__card-vendor" v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id">Создан поставщиком</span>
             </div>
           </div>
-          <div class="clients__card-right-right d-col-7">
-            <div
-              class="d-col-18"
-              :class="
-                item.owner_id > 0 && item.owner_id == this.$route.params.id
-                  ? 'clients__devider'
-                  : ''
-              "
+          <div class="clients__card-right-right d-col-2">
+            <!--<div
+              class="d-col-18 clients__devider"
             >
-              <!--
+
               <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
-              -->
-            </div>
-            <div class="clients__card-action-container d-col-6">
+
+            </div> -->
+            <div class="clients__card-action-container d-col-24">
               <!--<button class="clients__card-action" v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id">
                 <i class="d-icon-pen2"></i>
               </button>
@@ -526,9 +515,9 @@ export default {
     }),
   },
   watch: {
-    managers: function (newVal, oldVal) {
-      this.filters.manager.values = newVal
-    },
+    //managers: function (newVal, oldVal) {
+    //  this.filters.manager.values = newVal
+    //},
     dilers: function (newVal, oldVal) {
       this.countPages = Math.ceil(this.dilers.total / this.pagination_items_per_page)
       if (this.countPages === 0) {
@@ -639,6 +628,12 @@ export default {
 .clients-button__container .clients-info__button {
   min-width: 150px;
 }
+.clients__card-price{
+  margin-left: -8px;
+}
+.clients__card-vendor{
+  margin-left:12px;
+}
 @media (width <= 1536px) {
   .clients__card .clients__card-inn:first-child::before {
     display: none;
@@ -648,5 +643,56 @@ export default {
   .clients__devider:before {
     display: none;
   }
+  .clients__card-vendor{
+    margin-left:170px;
+  }
+  .clients__card-price-container .clients__card-price:nth-child(2){
+    margin-left: 8px;;
+  }
+}
+@media (width <= 1024px) {
+    .clients__card-top-right-top {
+        justify-content: end;
+    }
+    .clients__card-vendor {
+        margin-left: 0px;
+    }
+}
+@media (width <= 600px) {
+    .clients__card-bottom .clients__card-price-container{
+      display:none;
+    }
+    .clients__card-right-left{
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      padding-right: 0px;
+      padding-left: 0px;
+    }
+    .clients__card-right-left .d-col-12{
+      width: 100%;
+      padding-right: 0px;
+      padding-left: 0px;
+    }
+    .clients__card-price {
+        font-size: 10px;
+        padding: 4px 8px;
+        height: 24px;
+    }
+    .clients__card-price-container{
+      justify-content: space-between;
+    }
+    .clients__card-price {
+      margin-left: 0px;
+      margin-right: 0px;
+      min-width: calc(50% - 4px);
+      justify-content: center;
+    }
+    .clients__card-price-container .clients__card-price:nth-child(2) {
+        margin-left: 0px;
+    }
+    .clients__card-right-right{
+      width: 100%;
+    }
 }
 </style>
