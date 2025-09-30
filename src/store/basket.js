@@ -24,7 +24,7 @@ export default {
       }
       return response
     },
-    async basketClear({ commit }, { org_id }) {
+    async basketClear(store, { org_id }) {
       const data = {
         action: 'basket/clear',
         extended_name:
@@ -38,7 +38,7 @@ export default {
       const response = await api.basket.basketClear(data)
       return response
     },
-    async basketProductRemove({ commit }, { org_id, store_id, key, product }) {
+    async basketProductRemove(store, { org_id, store_id, key, product }) {
       const data = {
         action: 'basket/remove',
         extended_name:
@@ -55,7 +55,7 @@ export default {
       const response = await api.basket.basketProductRemove(data)
       return response
     },
-    async basketProductAdd({ commit }, { org_id, store_id, id_remain, count, actions }) {
+    async basketProductAdd(store, { org_id, store_id, id_remain, count, actions }) {
       const data = {
         action: 'basket/add',
         extended_name:
@@ -74,7 +74,7 @@ export default {
       const response = await api.basket.basketProductAdd(data)
       return response
     },
-    async basketProductUpdate({ commit }, { org_id, store_id, key, id_remain, count, actions }) {
+    async basketProductUpdate(store, { org_id, store_id, key, id_remain, count, actions }) {
       const data = {
         action: 'basket/update',
         extended_name:
@@ -119,7 +119,7 @@ export default {
       }
       return response
     },
-    async orderSubmit({ commit }, { orgId }) {
+    async orderSubmit(store, { orgId }) {
       const data = {
         action: 'order/opt/submit',
         id: router.currentRoute._value.params.id,

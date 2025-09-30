@@ -4,6 +4,7 @@ import SignIn from '../pages/sign-in/index.vue'
 import Account from '../pages/account/index.vue'
 import Organization from '../pages/org/index.vue'
 import userProfile from '../pages/profile/index.vue'
+import OrgAdd from '../pages/org/add.vue'
 import Purchases from '../pages/purchases/index.vue'
 import PurchasesOrders from '../pages/purchases/orders.vue'
 import PurchasesOrder from '../pages/purchases/order.vue'
@@ -92,6 +93,13 @@ const router = createRouter({
                   props: true,
                   label: 'Профиль изменения данных',
                   component: ProfileHash,
+                },
+                {
+                  path: 'orgAdd',
+                  name: 'OrgAdd',
+                  props: true,
+                  label: 'Создание Организации',
+                  component: OrgAdd,
                 },
               ],
             },
@@ -479,9 +487,9 @@ const router = createRouter({
                         {
                           path: '',
                           name: 'retailCompareProducts',
-                        props: true,
-                        label: 'Сопоставление товаров',
-                        component: RetailCompareProducts,
+                          props: true,
+                          label: 'Сопоставление товаров',
+                          component: RetailCompareProducts,
                         },
                         {
                           path: ':store_id',

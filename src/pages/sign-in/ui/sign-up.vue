@@ -1,5 +1,6 @@
 <template>
   <Toast />
+  <PreLoader v-if="loading"></PreLoader>
   <section class="dart_wrapper auth registration">
     <form class="auth__form registration__form" @submit.prevent="formSubmit" autocomplete="false">
       <a href="/" class="d-back registration__back" @click.prevent="this.setRegForm">
@@ -55,7 +56,7 @@
           <div class="d-input__wrapper">
             <div class="d-input" :class="{ 'd-input--error': v$.form.password.$error }">
               <input
-                :type="showPassword1 ? 'text' : 'password'"
+                :type="showPassword ? 'text' : 'password'"
                 ref="passwordInput"
                 placeholder="Пароль"
                 name="password"
@@ -67,19 +68,22 @@
               />
               <button
                 type="button"
+                tabindex="-1"
                 class="d-show-alt d-input__button"
-                data-input="show"
-                data-for-input="password"
+                @click="togglePasswordVisibility"
               >
-                <i class="d-icon-eye d-show-alt__icon"></i>
+                <mdicon v-if="showPassword" name="eye-closed" />
+                <mdicon v-else name="eye" />
               </button>
-              <div
-                class="d-show__wrapper d-input__button"
-                data-input="hide"
-                data-for-input="password"
-              >
-                <button type="button" class="d-show d-input__show">
-                  <i class="d-icon-eye d-show__icon"></i>
+              <div class="d-show__wrapper d-input__button">
+                <button
+                  tabindex="-1"
+                  type="button"
+                  class="d-show d-input__show"
+                  @click="togglePasswordVisibility"
+                >
+                  <mdicon v-if="showPassword" name="eye-closed" />
+                  <mdicon v-else name="eye" />
                 </button>
               </div>
             </div>
@@ -96,7 +100,7 @@
           <div class="d-input__wrapper">
             <div class="d-input" :class="{ 'd-input--error': v$.form.passwordConfirm.$error }">
               <input
-                :type="showPassword2 ? 'text' : 'password'"
+                :type="showPassword ? 'text' : 'password'"
                 placeholder="Подтверждение пароля"
                 class="d-input__field"
                 v-model="form.passwordConfirm"
@@ -105,19 +109,22 @@
               />
               <button
                 type="button"
+                tabindex="-1"
                 class="d-show-alt d-input__button"
-                data-input="show"
-                data-for-input="password"
+                @click="togglePasswordVisibility"
               >
-                <i class="d-icon-eye d-show-alt__icon"></i>
+                <mdicon v-if="showPassword" name="eye-closed" />
+                <mdicon v-else name="eye" />
               </button>
-              <div
-                class="d-show__wrapper d-input__button"
-                data-input="hide"
-                data-for-input="password"
-              >
-                <button type="button" class="d-show d-input__show">
-                  <i class="d-icon-eye d-show__icon"></i>
+              <div class="d-show__wrapper d-input__button">
+                <button
+                  tabindex="-1"
+                  type="button"
+                  class="d-show d-input__show"
+                  @click="togglePasswordVisibility"
+                >
+                  <mdicon v-if="showPassword" name="eye-closed" />
+                  <mdicon v-else name="eye" />
                 </button>
               </div>
             </div>
@@ -131,16 +138,15 @@
         </div>
 
         <fieldset class="d-input__group">
-          <legend class="d-input__label">Данные контактного лица:</legend>
+          <legend class="d-input__label">Контактные данные:</legend>
           <div class="d-input__wrapper">
             <div class="d-input" :class="{ 'd-input--error': v$.form.name.$error }">
               <input
                 type="text"
                 placeholder="ФИО контактного лица"
-                name="contact_fio"
+                name="name"
                 v-model="form.name"
                 class="d-input__field"
-                data-input-id="contact_fio"
                 required
               />
               <button
@@ -163,24 +169,23 @@
             </div>
           </div>
           <div class="d-input__wrapper">
-            <div class="d-input" :class="{ 'd-input--error': v$.form.telephone.$error }">
+            <div class="d-input" :class="{ 'd-input--error': v$.form.phone.$error }">
               <input
-                v-imask="mask"
                 type="tel"
                 placeholder="Телефон"
                 name="phone"
                 class="d-input__field"
-                v-model="form.telephone"
-                @input="form.telephone = normalizePhone(form.telephone)"
+                v-model="form.phone"
+                @input="form.phone = normalizePhone(form.phone)"
                 required
               />
             </div>
-            <div v-if="v$.form.telephone.$error" class="d-input-error">
+            <div v-if="v$.form.phone.$error" class="d-input-error">
               <i class="d-icon-warning d-input-error__icon"></i>
-              <span v-if="!v$.form.telephone.required" class="d-input-error__text"
+              <span v-if="!v$.form.phone.required" class="d-input-error__text"
                 >Пожалуйста, введите номер телефона.</span
               >
-              <span v-else-if="v$.form.telephone.minLength" class="d-input-error__text"
+              <span v-else-if="v$.form.phone.minLength" class="d-input-error__text"
                 >Введите корректный номер телефона.</span
               >
             </div>
@@ -216,12 +221,28 @@
           </div>
         </fieldset>
       </div>
-      <button type="submit" class="d-button d-button-primary box-shadow-none">
-        Зарегистрироваться
-      </button>
+      <div v-else>
+        <div class="auth-message">
+          <mdicon name="check-circle-outline" />
+          <span class="auth__span">Вы успешно зарегистрировались!</span>
+        </div>
+      </div>
+      <div class="auth__buttons">
+        <button
+          type="submit"
+          class="d-button d-button-primary box-shadow-none"
+          v-if="!regIsSuccess"
+        >
+          Зарегистрироваться
+        </button>
+        <button type="button" class="d-button d-button-secondary" @click="this.setRegForm">
+          Войти
+        </button>
+      </div>
     </form>
 
     <div class="auth__footer">
+      <!--
       <div class="feedback visible-800">
         <div class="feedback__content">
           <p class="feedback__title">Не получается войти в ЛК?</p>
@@ -233,6 +254,7 @@
           </p>
         </div>
       </div>
+      -->
       <div class="copyright visible-800">
         <span class="copyright__text">© МСТ, {{ getYear }}</span>
       </div>
@@ -241,7 +263,7 @@
     <div class="copyright hidden-800">
       <span class="copyright__text">© МСТ, {{ getYear }}</span>
     </div>
-
+    <!--
     <div class="feedback hidden-800">
       <div class="feedback__content">
         <p class="feedback__title">Не получается войти в ЛК?</p>
@@ -256,38 +278,33 @@
         </button>
       </div>
     </div>
+    -->
   </section>
 </template>
 
 <script>
-import InputText from 'primevue/inputtext'
+import { mapActions } from 'vuex'
+import { sendMetrik } from '@/shared/model/metrika'
 import Toast from 'primevue/toast'
-import FloatLabel from 'primevue/floatlabel'
+import PreLoader from '@/shared/ui/Loader.vue'
 import { required, minLength, maxLength, email } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 
 export default {
-  name: 'reg-form',
+  name: 'regForm',
+  emits: ['setRegForm'],
   data() {
     return {
-      showPassword1: false,
-      showPassword2: false,
+      showPassword: false,
       regIsSuccess: false,
       loading: false,
       form: {
         login: null,
         password: '',
         passwordConfirm: '',
-        telephone: '',
+        phone: '',
         email: '',
-        org: {
-          name: '',
-          inn: '',
-          ogrn: '',
-          opf: '',
-        },
-        contact: {},
-        delivery_addresses: [{ value: '' }],
+        name: '',
       },
       mask: {
         mask: '+{7} (000) 000-00-00',
@@ -313,7 +330,7 @@ export default {
         passwordConfirm: {
           required,
         },
-        telephone: {
+        phone: {
           required,
           minLength: minLength(11), // Длина с кодом +7 (XXX) XXX-XX-XX
         },
@@ -330,10 +347,16 @@ export default {
   },
   components: {
     Toast,
-    FloatLabel,
-    InputText,
+    PreLoader,
   },
   methods: {
+    sendMetrik: sendMetrik,
+    ...mapActions({
+      signUp: 'user/signUp',
+    }),
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword
+    },
     formSubmit() {
       this.v$.$touch() // Отмечаем все поля как проверенные
       if (this.v$.$invalid) {
@@ -348,8 +371,7 @@ export default {
       }
       if (this.form.password === this.form.passwordConfirm) {
         this.loading = true
-        this.$load(async () => {
-          const data = await this.$api.auth.register(this.form)
+        this.signUp(this.form).then((data) => {
           if (data) {
             if (data === 'technical error') {
               this.$toast.add({
@@ -403,9 +425,9 @@ export default {
       if (this.v$.form.passwordConfirm.$error) {
         return 'Пожалуйста, подтвердите пароль. Пароли должны совпадать.'
       }
-      if (this.v$.form.telephone.$error) {
-        if (!this.v$.form.telephone.required) return 'Пожалуйста, введите номер телефона.'
-        if (this.v$.form.telephone.minLength) return 'Введите корректный номер телефона.'
+      if (this.v$.form.phone.$error) {
+        if (!this.v$.form.phone.required) return 'Пожалуйста, введите номер телефона.'
+        if (this.v$.form.phone.minLength) return 'Введите корректный номер телефона.'
       }
       if (this.v$.form.email.$error) {
         if (!this.v$.form.email.required) return 'Пожалуйста, введите email.'
@@ -417,17 +439,9 @@ export default {
       }
       return ''
     },
-    togglePasswordVisibility1() {
-      this.showPassword1 = !this.showPassword1
-    },
-    togglePasswordVisibility2() {
-      this.showPassword2 = !this.showPassword2
-    },
     setRegForm() {
+      this.regIsSuccess = false
       this.$emit('setRegForm', false)
-    },
-    setName(name) {
-      this.form.name = name.value
     },
     goToErrorInput(errorMessage) {
       if (errorMessage.includes('логин')) {
@@ -446,3 +460,25 @@ export default {
   },
 }
 </script>
+<style lang="scss">
+.auth-message {
+  padding: 30px 0;
+  span.mdi {
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+    svg {
+      fill: #00cc00;
+      width: 64px;
+      height: 64px;
+    }
+  }
+  .auth__span {
+    color: #fff;
+    font-size: 28px;
+    text-align: center;
+    margin: 30px 0;
+    display: block;
+  }
+}
+</style>
