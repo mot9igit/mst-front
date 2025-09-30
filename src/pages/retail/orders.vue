@@ -94,7 +94,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
-          class: 'cell_centeralign',
+          class: 'cell_centeralign nowrap',
         },
         delivery: {
           label: 'Доставка',
@@ -203,5 +203,8 @@ export default {
 .retailorders__content .d-table__col,
 .retailorders__content .d-table__row:first-child > .d-table__col {
   padding: 16px;
+}
+.nowrap a{
+  white-space: nowrap;
 }
 </style>

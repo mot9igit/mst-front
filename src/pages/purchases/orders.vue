@@ -139,7 +139,7 @@ export default {
             order_id: 'id',
           },
           sort: true,
-          class: 'cell_centeralign',
+          class: 'cell_centeralign nowrap',
         },
         status: {
           label: 'Статус',
