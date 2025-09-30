@@ -117,7 +117,9 @@
                 </div>
               </div>
             </div>
-            <button
+            <router-link
+              :to="{ name: 'OrgAdd' }"
+              @click.prevent="sidebarToggle()"
               class="d-button d-button-secondary d-button--sm-shadow sidebar__new-organization"
               v-else
             >
@@ -129,7 +131,7 @@
                 ><a href="#" title="Зарегистрировать компанию"
                   ><i class="d-icon-plus sidebar__new-organization-icon"></i></a
               ></span>
-            </button>
+            </router-link>
 
             <router-link
               :to="{ name: 'profile' }"

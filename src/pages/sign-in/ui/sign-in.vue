@@ -62,10 +62,8 @@
               class="d-input__button d-show-alt"
               @click="togglePasswordVisibility"
             >
-              <i
-                :class="showPassword ? 'd-icon-eye d-show-alt__icon' : 'd-icon-eye d-show__icon'"
-                class=""
-              ></i>
+              <mdicon v-if="showPassword" name="eye-closed" />
+              <mdicon v-else name="eye" />
             </button>
           </div>
           <div v-if="v$.form.password.$error" class="d-input-error">
@@ -79,9 +77,9 @@
 
       <div class="auth__buttons">
         <button class="d-button d-button-primary">Войти</button>
-        <!--<button type="button" class="d-button d-button-secondary" @click="this.setRegForm">
+        <button type="button" class="d-button d-button-secondary" @click="this.setRegForm">
           Зарегистрироваться
-        </button> -->
+        </button>
         <button
           type="button"
           class="d-button d-button-link"

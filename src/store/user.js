@@ -1,4 +1,5 @@
 import Axios from 'axios'
+import api from '@/shared/api/api'
 import router from '@/router'
 
 export default {
@@ -47,7 +48,11 @@ export default {
           }
         })
     },
-    edit_profile({ commit }, data) {
+    async signUp(store, data) {
+      const response = await api.auth.signUp(data)
+      return response
+    },
+    edit_profile(store, data) {
       return Axios('/rest/front_profile', {
         method: 'POST',
         data: data,
