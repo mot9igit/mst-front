@@ -13,7 +13,7 @@
       <span v-if="!$v.address.value.required">Пожалуйста, введите адрес.</span>
       <span v-else-if="$v.address.value.minLength">Пожалуйста, введите адрес.</span>
     </div>
-    <Map
+    <MapObject
       ref="mapRef"
       class="std-auth__map"
       v-model="address.value"
@@ -26,7 +26,7 @@
 <script>
 import axios from 'axios'
 import Autocomplete from '@/shared/ui/Autocomplete.vue'
-import Map from '@/shared/ui/map/Map.vue'
+import MapObject from '@/shared/ui/map/Map.vue'
 import { required, minLength } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 
@@ -67,7 +67,7 @@ export default {
   },
   components: {
     Autocomplete,
-    Map,
+    MapObject,
   },
   methods: {
     setSelection(address) {
