@@ -1,4 +1,7 @@
 <template>
+  <CreateOrgForm>
+    <template #title> Создание организации </template>
+  </CreateOrgForm>
   <div class="org-register">
     <div class="warehouse-analysis__description">
       <p>
@@ -9,8 +12,10 @@
   </div>
 </template>
 <script>
+import CreateOrgForm from './ui/CreateOrgForm.vue'
 export default {
   name: 'OrgAdd',
+  components: { CreateOrgForm },
 }
 </script>
 <style lang="scss">
