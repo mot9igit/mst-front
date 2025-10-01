@@ -99,6 +99,15 @@ export default {
       }
       return response
     },
+    async setOrderEdit(store, { orderEdit }) {
+      const data = {
+        action: 'order/edit',
+        orderEdit: orderEdit,
+      }
+      const response = await api.purchases.setOrderEdit(data)
+
+      return response
+    },
     unsetOpts({ commit }) {
       commit('UNSET_OPTS')
     },

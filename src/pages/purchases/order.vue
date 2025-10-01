@@ -350,7 +350,7 @@ export default {
   margin-bottom: 40px;
   margin-top: -5px;
 }
-.order-card__modal-cansel .modal-content{
+.order-card__modal-cansel .modal-content, .order__edit-modal .modal-content{
   max-width: 600px;
 }
 </style>

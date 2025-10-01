@@ -2,6 +2,7 @@
   <div class="d-sheet__overlay order__sheet-overlay" :class="{ active: active }">
     <div class="d-sheet__wrapper order__sheet-wrapper">
       <div class="d-sheet d-sheet--active order__sheet">
+        <Toast />
         <Loader v-if="this.loading"></Loader>
         <div class="d-sheet__content order">
           <!-- Шапка -->
@@ -192,12 +193,36 @@
                 <div class="order__footer-actions">
                   <button
                     class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy"
-                    @click.prevent="editOrder()"
+                    @click.prevent="modalEditSubmit = true"
                   >
                     Изменить заказ
                   </button>
                 </div>
               </div>
+              <Teleport to="body">
+                <customModal v-model="modalEditSubmit" class="order__edit-modal">
+                  <h3>Подтверждение редактирование заказа</h3>
+                  Вы уверены, что хотите изменить заказ № {{ this.$route.params.order_id }}?
+                  <div class="collection__modal-buttons">
+                    <button
+                      type="button"
+                      href="#"
+                      class="d-button d-button-primary d-button--sm-shadow collection__modal-cansel"
+                      @click.prevent="this.modalEditSubmit = false"
+                    >
+                      Отмена
+                    </button>
+                    <button
+                      type="button"
+                      href="#"
+                      class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
+                      @click.prevent="editOrder()"
+                    >
+                      Ok
+                    </button>
+                  </div>
+                </customModal>
+              </Teleport>
             </div>
           </div>
         </div>
@@ -209,12 +234,13 @@
 import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import Counter from '@/shared/ui/Counter.vue'
-import { TimeScale } from 'chart.js'
+import customModal from '@/shared/ui/Modal.vue'
+import Toast from 'primevue/toast'
 
 export default {
   name: 'orderWindow',
   emits: ['close', 'orderCancel'],
-  components: { Loader, Counter },
+  components: { Loader, Counter, customModal, Toast },
   props: {
     active: {
       type: Boolean,
@@ -226,6 +252,7 @@ export default {
       loading: false,
       fetchIds: [],
       editOrderProducts: [],
+      modalEditSubmit: false,
     }
   },
   computed: {
@@ -238,6 +265,7 @@ export default {
     ...mapActions({
       getOptOrder: 'purchases/getOptOrder',
       getOrderCalc: 'purchases/getOrderCalc',
+      setOrderEdit: 'purchases/setOrderEdit',
     }),
     close() {
       this.loading = true
@@ -272,12 +300,10 @@ export default {
     },
 
     ElemCount(object) {
-      //console.log(object)
       this.loading = true
       let index = this.fetchIds.indexOf(object.item.product.remain_id)
       if (object.value == object.min) {
         if (this.editOrderProducts.length > 1) {
-          console.log('1')
           this.editOrderProducts.splice(index, 1)
           this.fetchIds.splice(index, 1)
           this.getOrderCalc({
@@ -289,7 +315,6 @@ export default {
           this.loading = false
           this.close()
           this.$emit('orderCancel')
-          //console.log('2')
         }
         return
       } else {
@@ -297,22 +322,40 @@ export default {
         if (object.value > Number(object.max)) {
           this.loading = false
           this.modal_remain = true
-          console.log('3')
         } else {
-          if (object.old_value != object.value) {
-            this.editOrderProducts[index].count = Number(object.value)
-            this.getOrderCalc({
-              orderEdit: this.editOrderProducts,
-            }).then(() => {
-              this.loading = false
-            })
-            console.log('4')
-          } else {
+          this.editOrderProducts[index].count = Number(object.value)
+          this.getOrderCalc({
+            orderEdit: this.editOrderProducts,
+          }).then(() => {
             this.loading = false
-            console.log('5')
-          }
+          })
         }
       }
+    },
+    editOrder() {
+      this.loading = true
+      this.setOrderEdit({
+        orderEdit: this.ordercalc,
+      }).then((res) => {
+        if (res.data.success) {
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Заказ успешно отредактирован!',
+            detail: res.data.message,
+            life: 3000,
+          })
+        } else {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: res.data.message,
+            life: 3000,
+          })
+        }
+        this.loading = false
+        this.modalEditSubmit = false
+        this.close()
+      })
     },
   },
   mounted() {
