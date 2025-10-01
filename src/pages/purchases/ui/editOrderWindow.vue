@@ -112,7 +112,7 @@
                         :value="Number(product?.count)"
                         :step="Number(product?.multiplicity ? product?.multiplicity : 1)"
                         :id="Number(product?.remain_id)"
-                        :key="product?.key"
+                        :key="new Date().getTime() + '_' + product?.remain_id"
                       />
                     </div>
                     <a
@@ -125,23 +125,7 @@
                       <i class="d-icon-trash"></i>
                     </a>
                   </div>
-                  <div class="order__item-price">
-                    <Counter
-                      :classPrefix="'order__item-product'"
-                      @ElemCount="ElemCount"
-                      :item="product.count"
-                      :mini="true"
-                      :min="0"
-                      :max="Number(product?.available)"
-                      :value="Number(product?.count)"
-                      :step="Number(product?.multiplicity ? product?.multiplicity : 1)"
-                      :id="Number(product?.remain_id)"
-                      :key="product?.key"
-                    />
-                    <span class="order__item-product-price"
-                      >{{ product.price.toLocaleString('ru') }} ₽</span
-                    >
-                  </div>
+
                 </div>
                 <div class="order__item-content-bottom">
                   <div class="order__item-content-bottom-left">
@@ -200,7 +184,7 @@
               </div>
               <div class="order__footer-right">
                 <p class="order__footer-value">
-                  {{ (summ.toFixed(2)).toLocaleString('ru') }} ₽
+                  {{ ordercalc?.new_cost ? ordercalc?.new_cost.toFixed(2) : optorder.cost }} ₽
                 </p>
                 <div class="order__footer-actions">
                   <button
@@ -227,6 +211,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import Counter from '@/shared/ui/Counter.vue'
+import { TimeScale } from 'chart.js';
 
 export default {
   name: 'orderWindow',
@@ -241,7 +226,7 @@ export default {
   data() {
     return {
       loading: false,
-      summ: 0,
+      fetchIds: [],
       editOrderProducts: [],
 
 
@@ -257,24 +242,39 @@ export default {
   methods: {
     ...mapActions({
       getOptOrder: 'purchases/getOptOrder',
-      orderCalc: 'purchases/orderCalc',
+      getOrderCalc: 'purchases/getOrderCalc',
+
 
     }),
     close() {
+      this.loading = true
       this.$emit('close')
-      this.editOrderProducts = []
-      this.summ = 0
+      this.getOrderCalc({
+            orderEdit: this.optorder.products
+          }).then(() => {
+            this.editOrderProducts = this.ordercalc.orderEdit
+            this.fetchIds = []
+            for (let i = 0; i < this.editOrderProducts.length; i++) {
+                this.fetchIds.push(this.editOrderProducts[i].remain_id)
+            }
+            this.loading = false
+          })
+
+
     },
 
     clearBasketProduct(index) {
       this.loading = true
       if(this.editOrderProducts.length > 1){
          this.editOrderProducts.splice(index, 1)
+         this.fetchIds.splice(index, 1)
+         this.getOrderCalc({
+            orderEdit: this.editOrderProducts
+          }).then(() => {
          this.loading = false
+          })
       }else{
-        this.$emit('close')
-        this.editOrderProducts = []
-        this.summ = 0
+        this.close()
         this.$emit('orderCancel')
         this.loading = false
       }
@@ -282,52 +282,67 @@ export default {
     },
 
     ElemCount(object) {
-      this.loading = false
-      const index = object.index
-      console.log(object)
+      //console.log(object)
+      this.loading = true
+      let index = this.fetchIds.indexOf(object.item.product.remain_id)
       if (object.value == object.min) {
         if(this.editOrderProducts.length > 1){
-          this.summ = this.summ - this.editOrderProducts[index].cost
+          console.log('1')
           this.editOrderProducts.splice(index, 1)
-        }else{
-          this.$emit('close')
-          this.editOrderProducts = []
-          this.summ = 0
-          this.$emit('orderCancel')
-        }
-
-        return
-      }
-      if (object.value > Number(object.max)) {
-        this.editOrderProducts[index].count = Number(object.value)
-        this.modal_remain = true
-        this.editOrderProducts[index].count --
-      } else {
-          console.log(object.value)
-          this.editOrderProducts[index].count = Number(object.value)
-          this.summ = Number(this.summ) - Number(this.editOrderProducts[index].cost)
-          this.editOrderProducts[index].cost = Number(this.editOrderProducts[index].price) * Number(object.value)
-          this.summ = Number(this.summ) + Number(this.editOrderProducts[index].cost)
-          this.orderCalc({
+          this.fetchIds.splice(index, 1)
+          this.getOrderCalc({
             orderEdit: this.editOrderProducts
+          }).then(() => {
+         this.loading = false
           })
+        }else{
+          this.loading = false
+          this.close()
+          this.$emit('orderCancel')
+          //console.log('2')
+        }
+        return
+      }else{
+        if (object.value > Number(object.max)) {
+          this.loading = false
+          this.modal_remain = true
+          //console.log('3')
+      } else {
+          this.editOrderProducts[index].count = Number(object.value)
+          this.getOrderCalc({
+            orderEdit: this.editOrderProducts
+          }).then(() => {
+          this.loading = false
+          })
+          //console.log('4')
+      }
       }
     },
-
   },
   mounted() {
     this.getOptOrder({
       order_id: this.$route.params.order_id
     }).then(() => {
-      this.loading = false
+      this.getOrderCalc({
+            orderEdit: this.optorder.products
+          }).then(() => {
+          this.editOrderProducts = this.ordercalc.orderEdit
+          this.fetchIds = []
+          for (let i = 0; i < this.editOrderProducts.length; i++) {
+              this.fetchIds.push(this.editOrderProducts[i].remain_id)
+          }
+          this.loading = false
+        })
+
     })
-
-
   },
   watch: {
-    optorder: function(newVal){
-      this.editOrderProducts = newVal.products
-      this.summ = Number(newVal.cart_cost)
+    ordercalc: function(newVal){
+      this.editOrderProducts = newVal.orderEdit
+      this.fetchIds = []
+      for (let i = 0; i < this.editOrderProducts.length; i++) {
+            this.fetchIds.push(this.editOrderProducts[i].remain_id)
+        }
     }
   },
 }

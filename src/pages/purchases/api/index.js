@@ -162,7 +162,7 @@ export default function (instance) {
         })
       return data
     },
-    orderCalc(payload) {
+    getOrderCalc(payload) {
       const data = instance
         .post('front_order/', payload)
         .then(function (res) {

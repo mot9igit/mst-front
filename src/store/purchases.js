@@ -87,13 +87,13 @@ export default {
 
       return response
     },
-    async orderCalc({ commit }, { orderEdit }) {
+    async getOrderCalc({ commit }, { orderEdit }) {
       const data = {
         id: router.currentRoute._value.params.order_id,
         action: 'order/calc',
         orderEdit: orderEdit
       }
-      const response = await api.purchases.orderCalc(data)
+      const response = await api.purchases.getOrderCalc(data)
       if (response) {
         commit('SET_ORDER_CALC', response.data)
       }
@@ -132,7 +132,7 @@ export default {
       state.optorder = {}
     },
     SET_ORDER_CALC: (state, data) => {
-      state.ordercalc = data.data.order
+      state.ordercalc = data.data
     },
   },
   getters: {
