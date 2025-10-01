@@ -189,13 +189,38 @@
                 <div class="order__footer-actions">
                   <button
                     class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy"
-                    @click.prevent="editOrder()"
+                    @click.prevent="modalEditSubmit = true"
                   >
                     Изменить заказ
                   </button>
                 </div>
               </div>
+              <Teleport to="body">
+                <customModal v-model="modalEditSubmit" class="order__edit-modal">
 
+                    <h3>Подтверждение редактирование заказа</h3>
+                      Вы уверены, что хотите изменить заказ № {{ this.$route.params.order_id }}?
+                      <div class="collection__modal-buttons">
+                      <button
+                        type="button"
+                        href="#"
+                        class="d-button d-button-primary d-button--sm-shadow collection__modal-cansel"
+                        @click.prevent="this.modalEditSubmit = false"
+                      >
+                        Отмена
+                      </button>
+                      <button
+                        type="button"
+                        href="#"
+                        class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
+                        @click.prevent="editOrder()"
+                      >
+                        Ok
+                      </button>
+                    </div>
+
+                </customModal>
+              </Teleport>
 
             </div>
           </div>
@@ -211,12 +236,13 @@
 import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import Counter from '@/shared/ui/Counter.vue'
-import { TimeScale } from 'chart.js';
+import customModal from '@/shared/ui/Modal.vue'
+
 
 export default {
   name: 'orderWindow',
   emits: ['close', 'orderCancel'],
-  components: { Loader, Counter },
+  components: { Loader, Counter, customModal },
   props: {
     active: {
       type: Boolean,
@@ -228,23 +254,20 @@ export default {
       loading: false,
       fetchIds: [],
       editOrderProducts: [],
-
-
+      modalEditSubmit: false,
     }
   },
   computed: {
     ...mapGetters({
       optorder: 'purchases/optorder',
       ordercalc: 'purchases/ordercalc',
-
     }),
   },
   methods: {
     ...mapActions({
       getOptOrder: 'purchases/getOptOrder',
       getOrderCalc: 'purchases/getOrderCalc',
-
-
+      setOrderEdit: 'purchases/setOrderEdit',
     }),
     close() {
       this.loading = true
@@ -259,8 +282,6 @@ export default {
             }
             this.loading = false
           })
-
-
     },
 
     clearBasketProduct(index) {
@@ -278,16 +299,15 @@ export default {
         this.$emit('orderCancel')
         this.loading = false
       }
-
     },
 
     ElemCount(object) {
-      //console.log(object)
+
       this.loading = true
       let index = this.fetchIds.indexOf(object.item.product.remain_id)
       if (object.value == object.min) {
         if(this.editOrderProducts.length > 1){
-          console.log('1')
+
           this.editOrderProducts.splice(index, 1)
           this.fetchIds.splice(index, 1)
           this.getOrderCalc({
@@ -299,14 +319,14 @@ export default {
           this.loading = false
           this.close()
           this.$emit('orderCancel')
-          //console.log('2')
+
         }
         return
       }else{
         if (object.value > Number(object.max)) {
           this.loading = false
           this.modal_remain = true
-          //console.log('3')
+
       } else {
           this.editOrderProducts[index].count = Number(object.value)
           this.getOrderCalc({
@@ -314,9 +334,19 @@ export default {
           }).then(() => {
           this.loading = false
           })
-          //console.log('4')
+
       }
       }
+    },
+    editOrder(){
+      this.loading = true
+      this.setOrderEdit({
+        orderEdit: this.ordercalc
+      }).then(() => {
+        this.loading = false
+        this.modalEditSubmit = false
+        this.close()
+      })
     },
   },
   mounted() {
