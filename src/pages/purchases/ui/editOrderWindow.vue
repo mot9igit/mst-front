@@ -4,6 +4,7 @@
       <div
         class="d-sheet d-sheet--active order__sheet"
       >
+        <Toast/>
         <Loader v-if="this.loading"></Loader>
         <div class="d-sheet__content order">
           <!-- Шапка -->
@@ -237,12 +238,13 @@ import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import Counter from '@/shared/ui/Counter.vue'
 import customModal from '@/shared/ui/Modal.vue'
+import Toast from 'primevue/toast'
 
 
 export default {
   name: 'orderWindow',
   emits: ['close', 'orderCancel'],
-  components: { Loader, Counter, customModal },
+  components: { Loader, Counter, customModal, Toast },
   props: {
     active: {
       type: Boolean,
@@ -342,7 +344,22 @@ export default {
       this.loading = true
       this.setOrderEdit({
         orderEdit: this.ordercalc
-      }).then(() => {
+      }).then((res) => {
+        if (res.data.success) {
+            this.$toast.add({
+              severity: 'success',
+              summary: 'Заказ успешно отредактирован!',
+              detail: res.data.message,
+              life: 3000,
+            })
+          } else {
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: res.data.message,
+              life: 3000,
+            })
+          }
         this.loading = false
         this.modalEditSubmit = false
         this.close()
