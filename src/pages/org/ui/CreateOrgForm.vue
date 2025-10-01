@@ -1,7 +1,7 @@
 <template>
   <div class="create-org-form">
     <PreLoader v-if="loading"></PreLoader>
-    <form action="#" @submit.prevent="formChangeSimple" autocomplete="off">
+    <form action="#" @submit.prevent="formSubmit" autocomplete="off">
       <div class="profile-content__title sticky-element">
         <h1 class="title-h1"><slot name="title">Создание Организации</slot></h1>
         <div class="buttons_container">
@@ -14,49 +14,68 @@
           </button>
         </div>
       </div>
-      <!-- <div class="dart-alert dart-alert-info">Вы можете изменить только данные контактного лица и логотип организации.</div> -->
-      <div class="dart-form-group mb-5 std-create-clients__logo-container">
-        <span class="ktitle">Логотип</span>
-        <DropZone
-          v-if="!this.orgprofile.image"
-          class="kenost-dropzone"
-          :maxFiles="Number(1)"
-          url="/rest/file_upload.php?upload_org_avatar=avatar"
-          :uploadOnDrop="true"
-          :multipleUpload="true"
-          :acceptedFiles="['image/*']"
-          :parallelUpload="1"
-          @sending="parseFile"
-          v-bind="args"
-        >
-          <template v-slot:message>
-            <div class="kenost-dropzone__custom hidden-mobile-l">
-              <i class="pi pi-cloud-upload"></i>
-              <b>Перетащите файл в эту область</b>
-              <p>Вы также можете загрузить файл, <span>нажав сюда</span></p>
-            </div>
-
-            <div class="kenost-dropzone__custom visible-mobile-l">
-              <i class="pi pi-cloud-upload"></i>
-              <b>Загрузите файл сюда</b>
-              <span class="kenost-dropzone__link">Открыть</span>
-            </div>
-          </template>
-        </DropZone>
-      </div>
-      <div class="dart-form-group mb-4 std-create-clients__data-container">
-        <span class="ktitle mb-3">Данные контактного лица</span>
-        <div class="kenost-form-grid">
-          <div
-            class="dart-form-group w-50"
-            v-for="(field, index) in form.fields.contacts"
-            :key="index"
+      <div class="create-org-form__wrap">
+        <!-- <div class="dart-alert dart-alert-info">Вы можете изменить только данные контактного лица и логотип организации.</div> -->
+        <div class="dart-form-group">
+          <span>Логотип</span>
+          <DropZone
+            v-if="!this.orgprofile.image"
+            class="d-upload collection__upload"
+            :maxFiles="Number(1)"
+            url="/rest/file_upload.php?upload_org_avatar=avatar"
+            :uploadOnDrop="true"
+            :multipleUpload="true"
+            :acceptedFiles="['image/*']"
+            :parallelUpload="1"
+            @sending="parseFile"
+            v-bind="args"
           >
+            <template v-slot:message>
+              <div class="collection__upload-title-wrapper">
+                <i class="pi pi-cloud-upload"></i>
+                <b class="d-upload__title collection__upload-title"
+                  >Перетащите файл в эту область</b
+                >
+                <p class="d-upload__description collection__upload-description">
+                  Вы также можете загрузить файл,
+                  <span class="d-link d-upload__link collection__upload-link">нажав сюда</span>
+                </p>
+              </div>
+            </template>
+          </DropZone>
+          <div class="lk-about__info-image-wrapper" v-else>
+            <FileUpload
+              name="avatar[]"
+              url="/rest/file_upload.php?upload_org_avatar=avatar"
+              @upload="onUpload"
+              :auto="true"
+              :multiple="false"
+              accept="image/*"
+              :maxFileSize="1000000"
+            >
+              <template #header="{ chooseCallback }">
+                <img
+                  :src="
+                    orgprofile.upload_image
+                      ? this.orgprofile.image.original_href
+                      : this.orgprofile.image
+                  "
+                  alt=""
+                  class="lk-about__info-image"
+                />
+                <i class="d-icon-pen2" @click.prevent="chooseCallback()"></i>
+              </template>
+            </FileUpload>
+          </div>
+        </div>
+        <div class="dart-form-group">
+          <span>Данные контактного лица</span>
+          <div class="dart-input-group" v-for="(field, index) in form.fields.contacts" :key="index">
             <!-- <label for="">{{ field.label }}</label> -->
             <input
               type="text"
               v-model="this.orgprofile[field.name]"
-              class="dart-form-control std-create-clients__input"
+              class="dart-form-control"
               :name="field.name"
               :placeholder="field.placeholder"
             />
@@ -69,39 +88,17 @@
                         </span> -->
           </div>
         </div>
-      </div>
-      <div class="dart-form-group mb-4 std-create-clients__data">
-        <span class="ktitle mb-3">Данные компании</span>
-        <div class="kenost-form-grid">
+        <div class="dart-form-group">
+          <span>Данные компании</span>
           <div
-            class="form_input_group dart-form-group w-50"
-            :class="{
-              error: v$.form.company.data.value.$errors.length,
-            }"
-          >
-            <input
-              type="text"
-              v-model="this.form.company.data.value"
-              class="dart-form-control std-create-clients__input"
-              placeholder="Наименование организации"
-            />
-            <span
-              class="error_desc"
-              v-for="error of v$.form.company.data.value.$errors"
-              :key="error.$uid"
-            >
-              {{ error.$message }}
-            </span>
-          </div>
-          <div
-            class="form_input_group dart-form-group w-50"
+            class="dart-input-group"
             :class="{
               error: v$.form.company.inn.$errors.length,
             }"
           >
             <Autocomplete
               name="inn"
-              class="dart-form-control std-create-clients__input"
+              class="dart-form-control"
               type="company"
               selectionType="single"
               placeholder="ИНН"
@@ -113,50 +110,70 @@
               {{ error.$message }}
             </span>
           </div>
-        </div>
+          <div
+            class="dart-input-group"
+            :class="{
+              error: v$.form.company.data.value.$errors.length,
+            }"
+          >
+            <input
+              type="text"
+              v-model="this.form.company.data.value"
+              class="dart-form-control"
+              placeholder="Наименование организации"
+            />
+            <span
+              class="error_desc"
+              v-for="error of v$.form.company.data.value.$errors"
+              :key="error.$uid"
+            >
+              {{ error.$message }}
+            </span>
+          </div>
 
-        <div
-          class="form_input_group dart-form-group w-50"
-          v-for="(warehouse, index) in this.form.company.warehouses"
-          :key="index"
-          :class="{
-            error: v$.form.company.warehouses.$errors.length,
-          }"
-        >
-          <AddAddress
+          <div
+            class="dart-input-group"
+            v-for="(warehouse, index) in this.form.company.warehouses"
             :key="index"
-            :index="index"
-            :value="this.form.company.warehouses[index].address"
-            v-model="this.form.company.warehouses[index].address"
-            class="std-create-clients__add-address"
-          />
-          <span
-            class="error_desc"
-            v-for="error of v$.form.company.warehouses.$errors"
-            :key="error.$uid"
+            :class="{
+              error: v$.form.company.warehouses.$errors.length,
+            }"
           >
-            {{ error.$message }}
-          </span>
-        </div>
-        <div class="std-auth__actions-container">
-          <button
-            v-if="this.form.company.warehouses.length > 1"
-            class="d-button d-button-secondary d-button--no-shadow"
-            type="button"
-            @click="() => this.form.company.warehouses.pop()"
-          >
-            <span>Удалить</span>
-          </button>
-          <button
-            class="d-button d-button-primary d-button--no-shadow"
-            :disabled="this.loading"
-            type="button"
-            @click="() => this.form.company.warehouses.push({ value: '' })"
-          >
-            <i v-if="this.loading" class="pi pi-spin pi-spinner" style="font-size: 14px"></i>
-            <span>Добавить адрес</span>
-            <i class="pi pi-plus"></i>
-          </button>
+            <AddAddress
+              :key="index"
+              :index="index"
+              :value="this.form.company.warehouses[index].address"
+              v-model="this.form.company.warehouses[index].address"
+              class="std-create-clients__add-address"
+            />
+            <span
+              class="error_desc"
+              v-for="error of v$.form.company.warehouses.$errors"
+              :key="error.$uid"
+            >
+              {{ error.$message }}
+            </span>
+          </div>
+          <div class="create-org-form__actions-container">
+            <button
+              v-if="this.form.company.warehouses.length > 1"
+              class="d-button d-button-secondary d-button--no-shadow"
+              type="button"
+              @click="() => this.form.company.warehouses.pop()"
+            >
+              <span>Удалить</span>
+            </button>
+            <button
+              class="d-button d-button-primary d-button--no-shadow"
+              :disabled="this.loading"
+              type="button"
+              @click="() => this.form.company.warehouses.push({ value: '' })"
+            >
+              <i v-if="this.loading" class="pi pi-spin pi-spinner" style="font-size: 14px"></i>
+              <span>Добавить адрес</span>
+              <i class="pi pi-plus"></i>
+            </button>
+          </div>
         </div>
       </div>
     </form>
@@ -170,15 +187,26 @@ import { required } from '@vuelidate/validators'
 import { helpers } from '@vuelidate/validators'
 import AddAddress from './AddAddress.vue'
 import Autocomplete from '@/shared/ui/Autocomplete.vue'
+import FileUpload from 'primevue/fileupload'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'CreateOrgForm',
-  components: { PreLoader, DropZone, AddAddress, Autocomplete },
+  components: { PreLoader, DropZone, AddAddress, Autocomplete, FileUpload },
+  props: {
+    type: {
+      type: String,
+      default: '1', // 1 - своя, 2 - виртуальная
+    },
+  },
   data() {
     return {
       loading: false,
       orgprofile: {
         image: '',
+        contact: '',
+        phone: '',
+        email: '',
       },
       form: {
         fields: {
@@ -222,6 +250,10 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      createOrg: 'org/create',
+      editOrg: 'org/edit',
+    }),
     onUpload(data) {
       if (data.xhr.response) {
         const response = JSON.parse(data.xhr.response)
@@ -258,6 +290,28 @@ export default {
         }
       }
     },
+    async formSubmit() {
+      const sendData = {
+        form: this.form,
+        orgprofile: this.orgprofile,
+      }
+      const response = await this.createOrg(sendData)
+      if (response.data.success) {
+        this.$toast.add({
+          severity: 'success',
+          summary: 'Организация успешно сохранена!',
+          detail: 'Сейчас Вы будете перенаправлены в личный кабинет Организации',
+          life: 3000,
+        })
+      } else {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Ошибка!',
+          detail: response.data.message,
+          life: 3000,
+        })
+      }
+    },
   },
   mounted() {},
   setup() {
@@ -290,12 +344,43 @@ export default {
 }
 </script>
 <style lang="scss">
+.sticky-element {
+  position: sticky;
+  z-index: 10;
+  top: 0;
+  padding: 12px 0;
+  background: #fafafa;
+}
 .create-org-form {
   position: relative;
   padding: 64px 0;
+  .create-org-form__wrap {
+    margin-top: 24px;
+    max-width: 600px;
+  }
+  .create-org-form__actions-container {
+    display: flex;
+    gap: 12px;
+  }
 }
 .title-h1 {
   font-size: 32px;
   font-weight: 600;
+}
+.dart-form-group {
+  margin-bottom: 24px;
+  & > span {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+}
+.dart-input-group {
+  margin-bottom: 12px;
+}
+.std-auth__map {
+  margin-top: 12px;
+  border-radius: 5px;
+  overflow: hidden;
 }
 </style>

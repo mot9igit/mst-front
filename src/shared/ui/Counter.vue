@@ -124,6 +124,7 @@ export default {
       }
       this.d_value = newValue
       this.debouncedSend()
+      console.log('minus')
     },
     onPlus() {
       let newValue = Number(this.d_value) + Number(this.d_step)
@@ -135,6 +136,7 @@ export default {
         newValue = Math.floor(newValue / this.d_step) * this.d_step
       }
       this.d_value = newValue
+      console.log('plus')
       this.debouncedSend()
     },
     onEmit() {
@@ -150,6 +152,7 @@ export default {
       if (this.d_value % this.d_step !== 0) {
         this.d_value = Math.floor(this.d_value / this.d_step) * Number(this.d_step)
       }
+      console.log('input')
       this.debouncedSend()
     },
     send() {

@@ -7,14 +7,12 @@
 </template>
 
 <script lang="ts">
-import { Ref, defineComponent, ref } from 'vue'
+import { ref, defineComponent } from 'vue'
 
 export default defineComponent({
   setup() {
-    let isClicked: Ref<boolean> = ref(false)
-
     return {
-      isClicked,
+      isClicked: ref(false),
     }
   },
   name: 'MapMarker',
@@ -34,7 +32,7 @@ export default defineComponent({
 
   position: relative;
   height: 53px;
-  width: 42px;
+  width: 47px;
 
   translate: -50% -75%;
   cursor: pointer;
@@ -44,7 +42,7 @@ export default defineComponent({
   }
 
   &::before {
-    content: url('/images/icons/marker.svg');
+    content: url('/icons/marker.svg');
 
     position: absolute;
     left: 0;
@@ -54,7 +52,7 @@ export default defineComponent({
   &:active,
   &:focus {
     &::before {
-      content: url('/images/icons/marker-active.svg');
+      content: url('/icons/marker-active.svg');
     }
   }
 

@@ -52,7 +52,7 @@ import MapMarker from './MapMarker.vue'
 const props = defineProps({
   modelValue: Object,
   companyIndex: Number,
-  coordinates: Object,
+  coordinates: String,
 })
 
 const emit = defineEmits(['updateStoreData', 'refreshStoreData', 'update:modelValue'])

@@ -53,12 +53,30 @@ export default {
       const data = {
         id: router.currentRoute._value.params.id,
         store_id: router.currentRoute._value.params.store_id,
-        action: 'get/org/store'
+        action: 'get/org/store',
       }
       const response = await api.org.getOrg(data)
       if (response) {
         commit('SET_ORG_STORE', response.data)
       }
+      return response
+    },
+    async create(store, data) {
+      const sendData = {
+        id: router.currentRoute._value.params.id,
+        action: 'org/create',
+        data: data,
+      }
+      const response = await api.org.create(sendData)
+      return response
+    },
+    async edit(store, data) {
+      const sendData = {
+        id: router.currentRoute._value.params.id,
+        action: 'org/edit',
+        data: data,
+      }
+      const response = await api.org.edit(sendData)
       return response
     },
     async getOptVendorsAvailable({ commit }, { filter, page, perpage }) {

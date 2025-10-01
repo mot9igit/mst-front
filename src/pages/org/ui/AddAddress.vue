@@ -80,7 +80,7 @@ export default {
       const addressForSearch = this.address?.value?.split(' ').join('+')
 
       const response = await axios.get(
-        `https://geocode-maps.yandex.ru/1.x/?apikey=9cc9371c-b0ef-422b-b0be-2b1d49e32386&geocode=${addressForSearch}&format=json`,
+        `https://geocode-maps.yandex.ru/1.x/?apikey=49c7c097-7e8d-4926-9f6b-5b9fe5bca22c&geocode=${addressForSearch}&format=json`,
       )
 
       if (response.status !== 200) return

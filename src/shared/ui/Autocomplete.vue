@@ -358,7 +358,7 @@ export default {
     border: none;
     outline: none;
     color: #495057;
-    font-size: 16px;
+    font-size: 14px;
 
     margin: 0;
     padding: 0;
@@ -370,7 +370,7 @@ export default {
 
   &__suggestions {
     display: flex;
-
+    flex-direction: column;
     & {
       background-color: #fff;
       border-radius: 5px;
