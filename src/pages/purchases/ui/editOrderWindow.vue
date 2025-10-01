@@ -1,14 +1,14 @@
 <template>
   <div class="d-sheet__overlay order__sheet-overlay" :class="{ active: active }">
     <div class="d-sheet__wrapper order__sheet-wrapper">
-      <div
-        class="d-sheet d-sheet--active order__sheet"
-      >
+      <div class="d-sheet d-sheet--active order__sheet">
         <Loader v-if="this.loading"></Loader>
         <div class="d-sheet__content order">
           <!-- Шапка -->
           <div class="order__header">
-            <h3 class="order__header-title">Изменение заказа № {{ this.$route.params.order_id }}</h3>
+            <h3 class="order__header-title">
+              Изменение заказа № {{ this.$route.params.order_id }}
+            </h3>
             <button class="order__header-close" @click.prevent="close()">
               <i class="d-icon-times-flat"></i>
             </button>
@@ -57,7 +57,9 @@
                       </div>
                       <div class="d-divider d-divider--vertical order__item-header-divider"></div>
                       <div class="order__item-header-warehouse">
-                        <p class="order__item-header-warehouse-label">Склад #{{ optorder.warehouse_id }}</p>
+                        <p class="order__item-header-warehouse-label">
+                          Склад #{{ optorder.warehouse_id }}
+                        </p>
                         <p class="order__item-header-warehouse-value">
                           {{
                             optorder.seller_w_name
@@ -67,11 +69,8 @@
                         </p>
                       </div>
                     </div>
-                    <div class="order__item-header-right">
-
-                    </div>
+                    <div class="order__item-header-right"></div>
                   </div>
-
                 </div>
                 <div class="d-divider d-divider--full d-divider--big order__item-divider"></div>
                 <div
@@ -112,28 +111,33 @@
                         :value="Number(product?.count)"
                         :step="Number(product?.multiplicity ? product?.multiplicity : 1)"
                         :id="Number(product?.remain_id)"
-                        :key="new Date().getTime() + '_' + product?.remain_id"
+                        :key="new Date().getTime() + '_' + Number(product?.remain_id)"
                       />
                     </div>
                     <a
                       href="#"
                       class="cart__item-header-button"
-                      @click="
-                        clearBasketProduct(product_key)
-                      "
+                      @click="clearBasketProduct(product_key)"
                     >
                       <i class="d-icon-trash"></i>
                     </a>
                   </div>
-
                 </div>
                 <div class="order__item-content-bottom">
                   <div class="order__item-content-bottom-left">
                     <div class="order__item-prop">
                       <p class="order__item-prop-label">
-                        {{ optorder?.delay_tupe != 2 ? (Number.parseInt(optorder?.delay) ? 'Отсрочка' : optorder?.delay) : 'Рассрочка' }}
+                        {{
+                          optorder?.delay_tupe != 2
+                            ? Number.parseInt(optorder?.delay)
+                              ? 'Отсрочка'
+                              : optorder?.delay
+                            : 'Рассрочка'
+                        }}
                       </p>
-                      <p class="order__item-prop-value" v-if="Number.parseInt(optorder?.delay)">{{ optorder?.delay + ' дн.' }}</p>
+                      <p class="order__item-prop-value" v-if="Number.parseInt(optorder?.delay)">
+                        {{ optorder?.delay + ' дн.' }}
+                      </p>
                     </div>
                     <div class="d-divider d-divider--vertical order__item-prop-divider"></div>
                     <div class="order__item-prop">
@@ -169,13 +173,12 @@
                       -->
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
 
           <!-- Итого -->
-           <div class="order__footer" v-if="Object.keys(optorder).length > 1">
+          <div class="order__footer" v-if="Object.keys(optorder).length > 1">
             <div class="d-divider d-divider--full order__footer-divider"></div>
 
             <div class="order__footer-content">
@@ -195,23 +198,18 @@
                   </button>
                 </div>
               </div>
-
-
             </div>
           </div>
-
         </div>
-
       </div>
     </div>
   </div>
-
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import Counter from '@/shared/ui/Counter.vue'
-import { TimeScale } from 'chart.js';
+import { TimeScale } from 'chart.js'
 
 export default {
   name: 'orderWindow',
@@ -228,57 +226,49 @@ export default {
       loading: false,
       fetchIds: [],
       editOrderProducts: [],
-
-
     }
   },
   computed: {
     ...mapGetters({
       optorder: 'purchases/optorder',
       ordercalc: 'purchases/ordercalc',
-
     }),
   },
   methods: {
     ...mapActions({
       getOptOrder: 'purchases/getOptOrder',
       getOrderCalc: 'purchases/getOrderCalc',
-
-
     }),
     close() {
       this.loading = true
       this.$emit('close')
       this.getOrderCalc({
-            orderEdit: this.optorder.products
-          }).then(() => {
-            this.editOrderProducts = this.ordercalc.orderEdit
-            this.fetchIds = []
-            for (let i = 0; i < this.editOrderProducts.length; i++) {
-                this.fetchIds.push(this.editOrderProducts[i].remain_id)
-            }
-            this.loading = false
-          })
-
-
+        orderEdit: this.optorder.products,
+      }).then(() => {
+        this.editOrderProducts = this.ordercalc.orderEdit
+        this.fetchIds = []
+        for (let i = 0; i < this.editOrderProducts.length; i++) {
+          this.fetchIds.push(this.editOrderProducts[i].remain_id)
+        }
+        this.loading = false
+      })
     },
 
     clearBasketProduct(index) {
       this.loading = true
-      if(this.editOrderProducts.length > 1){
-         this.editOrderProducts.splice(index, 1)
-         this.fetchIds.splice(index, 1)
-         this.getOrderCalc({
-            orderEdit: this.editOrderProducts
-          }).then(() => {
-         this.loading = false
-          })
-      }else{
+      if (this.editOrderProducts.length > 1) {
+        this.editOrderProducts.splice(index, 1)
+        this.fetchIds.splice(index, 1)
+        this.getOrderCalc({
+          orderEdit: this.editOrderProducts,
+        }).then(() => {
+          this.loading = false
+        })
+      } else {
         this.close()
         this.$emit('orderCancel')
         this.loading = false
       }
-
     },
 
     ElemCount(object) {
@@ -286,64 +276,69 @@ export default {
       this.loading = true
       let index = this.fetchIds.indexOf(object.item.product.remain_id)
       if (object.value == object.min) {
-        if(this.editOrderProducts.length > 1){
+        if (this.editOrderProducts.length > 1) {
           console.log('1')
           this.editOrderProducts.splice(index, 1)
           this.fetchIds.splice(index, 1)
           this.getOrderCalc({
-            orderEdit: this.editOrderProducts
+            orderEdit: this.editOrderProducts,
           }).then(() => {
-         this.loading = false
+            this.loading = false
           })
-        }else{
+        } else {
           this.loading = false
           this.close()
           this.$emit('orderCancel')
           //console.log('2')
         }
         return
-      }else{
+      } else {
+        console.log(object)
         if (object.value > Number(object.max)) {
           this.loading = false
           this.modal_remain = true
-          //console.log('3')
-      } else {
-          this.editOrderProducts[index].count = Number(object.value)
-          this.getOrderCalc({
-            orderEdit: this.editOrderProducts
-          }).then(() => {
-          this.loading = false
-          })
-          //console.log('4')
-      }
+          console.log('3')
+        } else {
+          if (object.old_value != object.value) {
+            this.editOrderProducts[index].count = Number(object.value)
+            this.getOrderCalc({
+              orderEdit: this.editOrderProducts,
+            }).then(() => {
+              this.loading = false
+            })
+            console.log('4')
+          } else {
+            this.loading = false
+            console.log('5')
+          }
+        }
       }
     },
   },
   mounted() {
     this.getOptOrder({
-      order_id: this.$route.params.order_id
+      order_id: this.$route.params.order_id,
     }).then(() => {
       this.getOrderCalc({
-            orderEdit: this.optorder.products
-          }).then(() => {
-          this.editOrderProducts = this.ordercalc.orderEdit
-          this.fetchIds = []
-          for (let i = 0; i < this.editOrderProducts.length; i++) {
-              this.fetchIds.push(this.editOrderProducts[i].remain_id)
-          }
-          this.loading = false
-        })
-
+        orderEdit: this.optorder.products,
+      }).then(() => {
+        this.editOrderProducts = this.ordercalc.orderEdit
+        this.fetchIds = []
+        for (let i = 0; i < this.editOrderProducts.length; i++) {
+          this.fetchIds.push(this.editOrderProducts[i].remain_id)
+        }
+        this.loading = false
+      })
     })
   },
   watch: {
-    ordercalc: function(newVal){
+    ordercalc: function (newVal) {
       this.editOrderProducts = newVal.orderEdit
       this.fetchIds = []
       for (let i = 0; i < this.editOrderProducts.length; i++) {
-            this.fetchIds.push(this.editOrderProducts[i].remain_id)
-        }
-    }
+        this.fetchIds.push(this.editOrderProducts[i].remain_id)
+      }
+    },
   },
 }
 </script>

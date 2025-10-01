@@ -167,6 +167,7 @@ export default {
         index: this.index,
         item: this.item,
       }
+      console.log('emit')
       this.$emit('ElemCount', data)
     },
   },
