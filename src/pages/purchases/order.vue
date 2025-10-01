@@ -3,6 +3,7 @@
     <div class="d-top">
       <Breadcrumbs />
     </div>
+    <Toast />
     <Loader v-if="loading" />
     <div class="d-top-order-container">
       <div class="d-top-order-container-left">
@@ -28,6 +29,12 @@
 		</button>
     <button
     class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action"
+    @click.prevent="modalEdit = true"
+    v-if="status.editable">
+      <span class="catalog__head-item-text">Редактировать заказ</span>
+		</button>
+    <button
+    class="d-button d-button-tertiary d-button-tertiary-small d-button--sm-shadow  order-card__action"
     @click.prevent="modalCancel = true"
     v-if="status.cancelable">
       <span class="catalog__head-item-text">Отменить заказ</span>
@@ -155,6 +162,13 @@
         </customModal>
        </Teleport>
     </Teleport>
+    <teleport to="body">
+      <editOrderWindow
+        :active="this.modalEdit"
+        @close="modalEditClose()"
+        @orderCancel="modalCancel = true"
+      />
+    </teleport>
   </section>
 </template>
 
@@ -164,10 +178,13 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
+import Toast from 'primevue/toast'
+import editOrderWindow from './ui/editOrderWindow.vue'
+
 
 export default {
   name: 'purchasesOrder',
-  components: { Breadcrumbs, BaseTable, Loader, customModal },
+  components: { Breadcrumbs, BaseTable, Loader, customModal, Toast, editOrderWindow },
   data() {
     return {
       loading: true,
@@ -176,6 +193,8 @@ export default {
       order: [],
       modalDocs: false,
       modalCancel: false,
+      modalEdit: false,
+
       table_data: {
         image: {
           label: 'Фото',
@@ -268,8 +287,23 @@ export default {
       data.order_id = this.$route.params.order_id,
       data.action = 'order/opt/cancel',
       console.log(data)
-      this.canselOptOrder(data).then(() => {
+      this.canselOptOrder(data).then((res) => {
         this.loading = false
+        if (res.data.data.success) {
+            this.$toast.add({
+              severity: 'success',
+              summary: 'Заказ успешно отменен!',
+              detail: res.data.data.message,
+              life: 3000,
+            })
+          } else {
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: res.data.data.message,
+              life: 3000,
+            })
+          }
         data.page = this.page
         data.order_id = this.$route.params.order_id,
         this.getOptOrder(data).then(() => {
@@ -277,6 +311,15 @@ export default {
         this.modalCancel = false
       })
       })
+    },
+    modalEditClose(){
+      this.modalEdit = false
+      this.getOptOrder({
+        order_id: this.$route.params.order_id,
+      })
+    },
+    catalogUpdate(){
+      console.log('1')
     }
   },
   mounted() {

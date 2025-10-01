@@ -252,9 +252,11 @@ export default {
       }
       if (object.value > Number(object.max)) {
         this.modal_remain = true
+
         const index = this.fetchIds.indexOf(object.item.product.key)
         if (index !== -1) {
           this.fetchIds.splice(index, 1) // Удаляем один элемент по индексу
+          console.log(object)
         }
       } else {
         this.loading = true

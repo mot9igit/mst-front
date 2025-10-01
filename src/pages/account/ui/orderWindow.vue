@@ -512,6 +512,7 @@ export default {
       })
     },
     ElemCount(object) {
+
       if (!this.fetchIds.includes(object.item.product.key)) {
         this.fetchIds.push(object.item.product.key)
       }

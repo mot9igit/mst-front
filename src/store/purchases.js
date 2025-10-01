@@ -13,6 +13,7 @@ export default {
       total: -1,
     },
     optorder: {},
+    ordercalc: {},
   },
   actions: {
     async getOptOrders({ commit }, { sort, filter, filtersdata, page, perpage }) {
@@ -86,6 +87,18 @@ export default {
 
       return response
     },
+    async getOrderCalc({ commit }, { orderEdit }) {
+      const data = {
+        id: router.currentRoute._value.params.order_id,
+        action: 'order/calc',
+        orderEdit: orderEdit
+      }
+      const response = await api.purchases.getOrderCalc(data)
+      if (response) {
+        commit('SET_ORDER_CALC', response.data)
+      }
+      return response
+    },
     unsetOpts({ commit }) {
       commit('UNSET_OPTS')
     },
@@ -118,6 +131,9 @@ export default {
     UNSET_OPT_ORDER: (state) => {
       state.optorder = {}
     },
+    SET_ORDER_CALC: (state, data) => {
+      state.ordercalc = data.data
+    },
   },
   getters: {
     opts(state) {
@@ -129,5 +145,8 @@ export default {
     optorder(state) {
       return state.optorder
     },
+    ordercalc(state) {
+      return state.ordercalc
+    }
   },
 }
