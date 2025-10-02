@@ -22,7 +22,7 @@
             v-if="!this.orgprofile.image"
             class="d-upload collection__upload"
             :maxFiles="Number(1)"
-            url="/rest/file_upload.php?upload_org_avatar=avatar"
+            :url="'/rest/file_upload.php?upload_org_avatar=avatar'"
             :uploadOnDrop="true"
             :multipleUpload="true"
             :acceptedFiles="['image/*']"
@@ -46,7 +46,7 @@
           <div class="lk-about__info-image-wrapper" v-else>
             <FileUpload
               name="avatar[]"
-              url="/rest/file_upload.php?upload_org_avatar=avatar"
+              :url="'/rest/file_upload.php?upload_org_avatar=avatar'"
               @upload="onUpload"
               :auto="true"
               :multiple="false"
@@ -78,14 +78,17 @@
               class="dart-form-control"
               :name="field.name"
               :placeholder="field.placeholder"
+              :class="{
+                error: v$.orgprofile[field.name].$errors.length,
+              }"
             />
-            <!-- <span
-                            class="error_desc"
-                            v-for="error of v$.orgprofile[field.name].$errors"
-                            :key="error.$uid"
-                        >
-                            {{ error.$message }}
-                        </span> -->
+            <span
+              class="error_desc"
+              v-for="error of v$.orgprofile[field.name].$errors"
+              :key="error.$uid"
+            >
+              {{ error.$message }}
+            </span>
           </div>
         </div>
         <div class="dart-form-group">
@@ -201,6 +204,7 @@ export default {
   },
   data() {
     return {
+      args: {},
       loading: false,
       orgprofile: {
         image: '',
@@ -291,25 +295,34 @@ export default {
       }
     },
     async formSubmit() {
-      const sendData = {
-        form: this.form,
-        orgprofile: this.orgprofile,
-      }
-      const response = await this.createOrg(sendData)
-      if (response.data.success) {
-        this.$toast.add({
-          severity: 'success',
-          summary: 'Организация успешно сохранена!',
-          detail: 'Сейчас Вы будете перенаправлены в личный кабинет Организации',
-          life: 3000,
-        })
+      const result = await this.v$.$validate()
+      // const result = true;
+      if (!result) {
+        console.log(result)
       } else {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Ошибка!',
-          detail: response.data.message,
-          life: 3000,
-        })
+        this.loading = true
+        const sendData = {
+          form: this.form,
+          orgprofile: this.orgprofile,
+        }
+        const response = await this.createOrg(sendData)
+        console.log(response)
+        this.loading = false
+        if (response.data.data.success) {
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Организация успешно сохранена!',
+            detail: 'Сейчас Вы будете перенаправлены в личный кабинет Организации',
+            life: 3000,
+          })
+        } else {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка!',
+            detail: response.data.data.message,
+            life: 3000,
+          })
+        }
       }
     },
   },
@@ -319,10 +332,29 @@ export default {
   },
   validations() {
     return {
+      orgprofile: {
+        contact: {
+          required: helpers.withMessage('Поле обязательно для заполнения', () => {
+            return this.orgprofile.contact
+          }),
+        },
+        email: {
+          required: helpers.withMessage('Поле обязательно для заполнения', () => {
+            return this.orgprofile.email
+          }),
+        },
+        phone: {
+          required: helpers.withMessage('Поле обязательно для заполнения', () => {
+            return this.orgprofile.phone
+          }),
+        },
+      },
       form: {
         company: {
           inn: {
-            required,
+            required: helpers.withMessage('Поле обязательно для заполнения', () => {
+              return this.form.company.inn
+            }),
           },
           data: {
             value: {
@@ -382,5 +414,12 @@ export default {
   margin-top: 12px;
   border-radius: 5px;
   overflow: hidden;
+}
+.error-message,
+.error_desc {
+  display: block;
+  padding: 5px 0;
+  color: #f00;
+  font-size: 12px;
 }
 </style>
