@@ -39,6 +39,10 @@
     v-if="status.cancelable">
       <span class="catalog__head-item-text">Отменить заказ</span>
 		</button>
+    <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__repeat" @click.prevent="showReq()">
+      <i class="item-list-item-icon d-icon-refresh"></i>
+      <span class="catalog__head-item-text">Повторить заказ</span>
+		</button>
     </div>
       </div>
     </div>
@@ -254,6 +258,8 @@ export default {
           },
         },
       },
+      requirement: {},
+      requirement_id: 0,
     }
   },
 
@@ -262,7 +268,39 @@ export default {
       getOptOrder: 'purchases/getOptOrder',
       unsetOptOrder: 'purchases/unsetOptOrder',
       canselOptOrder: 'purchases/canselOptOrder',
+      repeatOrder: 'purchases/repeatOrder',
     }),
+    showReq(){
+      this.loading = true
+      this.repeatOrder({
+        data: this.requirement
+      }).then((data) => {
+        if (data.data.success) {
+          this.$toast.add({
+                severity: 'success',
+                summary: 'Потребность по вашему заказу успешно создана!',
+                detail: data.data.message,
+                life: 3000,
+          })
+          this.requirement_id = data.data.data
+          this.loading = false
+          this.$router.push({
+                name: 'purchasesCatalogRequirement',
+                params: { requirement_id: this.requirement_id + '_req' },
+                query: { timestamp: Date.now() },
+              })
+          }else{
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Ошибка повторения заказа!',
+              detail: data.data.message,
+              life: 3000,
+          })
+          }
+
+      })
+
+    },
     paginate(data){
       this.loading = true
       this.unsetOptOrder()
@@ -335,6 +373,7 @@ export default {
       this.order = newVal
       this.docs = newVal.docs
       this.status = newVal.status
+      this.requirement = newVal
     },
   },
 }
@@ -350,5 +389,13 @@ export default {
 }
 .order-card__modal-cansel .modal-content, .order__edit-modal .modal-content{
   max-width: 600px;
+}
+.order-card__repeat{
+  padding: 8px 23px;
+  gap: 8px;
+}
+.order-card__repeat .item-list-item-icon{
+  font-size: 18px;
+  font-weight: 600;
 }
 </style>

@@ -108,6 +108,15 @@ export default {
 
       return response
     },
+    async repeatOrder(store, data) {
+          const sendData = {
+            action: 'set/order/repeat',
+            id: router.currentRoute._value.params.id,
+            data: data,
+          }
+          const response = await api.purchases.repeatOrder(sendData)
+          return response
+    },
     unsetOpts({ commit }) {
       commit('UNSET_OPTS')
     },
