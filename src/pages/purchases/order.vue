@@ -318,9 +318,7 @@ export default {
         order_id: this.$route.params.order_id,
       })
     },
-    catalogUpdate(){
-      console.log('1')
-    }
+
   },
   mounted() {
     this.getOptOrder({
