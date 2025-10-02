@@ -116,11 +116,12 @@ export default {
   mounted() {
     this.getSessionUser()
     this.getOrg().then((response) => {
+      console.log(response)
       if (response != undefined) {
+        const orgs = response.data.data
         const org = localStorage.getItem('global.organization')
         let i = 0
         if (org) {
-          const orgs = response.data.data
           orgs.forEach((element, index) => {
             if (element.id == org) {
               i = index
@@ -141,7 +142,11 @@ export default {
           })
         }
         if (this.$route.name == 'account') {
-          this.$router.push({ name: 'purchases', params: { id: response.data.data[i].id } })
+          if (orgs.length) {
+            this.$router.push({ name: 'purchases', params: { id: response.data.data[i].id } })
+          } else {
+            this.$router.push({ name: 'OrgAdd' })
+          }
         }
       }
     })

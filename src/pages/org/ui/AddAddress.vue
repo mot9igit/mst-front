@@ -72,6 +72,7 @@ export default {
   methods: {
     setSelection(address) {
       this.$emit('update:modelValue', address)
+      this.address.value = address.value
       this.setCoordinates()
     },
     async setCoordinates() {

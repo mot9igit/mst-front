@@ -306,15 +306,27 @@ export default {
           orgprofile: this.orgprofile,
         }
         const response = await this.createOrg(sendData)
-        console.log(response)
         this.loading = false
         if (response.data.data.success) {
-          this.$toast.add({
-            severity: 'success',
-            summary: 'Организация успешно сохранена!',
-            detail: 'Сейчас Вы будете перенаправлены в личный кабинет Организации',
-            life: 3000,
-          })
+          if (response.data.data.data?.org?.id) {
+            this.$toast.add({
+              severity: 'success',
+              summary: 'Организация успешно сохранена!',
+              detail: 'Сейчас Вы будете перенаправлены в личный кабинет Организации',
+              life: 3000,
+            })
+            this.$router.push({
+              name: 'organizationIndexPage',
+              params: { id: response.data.data.data?.org?.id },
+            })
+          } else {
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Ошибка при создании Организации!',
+              detail: 'Непредвиденная ошибка при создании Организации',
+              life: 3000,
+            })
+          }
         } else {
           this.$toast.add({
             severity: 'error',
