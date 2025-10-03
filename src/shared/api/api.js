@@ -11,6 +11,7 @@ import actionModule from '@/shared/api/action'
 import purchasesModule from '@/pages/purchases/api'
 import requirementsModule from '@/pages/account/api/requirements'
 import warehouseModule from '@/pages/warehouse/api/index'
+import notificationsModule from '@/pages/account/api/notifications'
 
 export default {
   auth: authModule(instance),
@@ -25,4 +26,5 @@ export default {
   purchases: purchasesModule(instance),
   requirements: requirementsModule(instance),
   warehouse: warehouseModule(instance),
+  notifications: notificationsModule(instance),
 }

@@ -1,6 +1,7 @@
 <template>
   <div class="header__wrapper">
     <header class="content-wrapper header" id="header">
+      <Toast />
       <div class="header__catalog-content">
         <a href="/" class="header__logo-container">
           <img src="/icons/logo_light.svg" alt="MST" width="40" height="40" class="header__logo" />
@@ -168,6 +169,7 @@ import customModal from '@/shared/ui/Modal.vue'
 import SearchField from './search.vue'
 import changeAddressWindow from './changeAddressWindow.vue'
 import requirement from './requirement.vue'
+import { Toast } from 'primevue'
 
 export default {
   name: 'ProfileHeader',
@@ -182,10 +184,11 @@ export default {
       modals: {
         requirement: false,
       },
+      data_start: new Date(),
     }
   },
   emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments'],
-  components: { Loader, customModal, changeAddressWindow, SearchField, requirement },
+  components: { Loader, customModal, changeAddressWindow, SearchField, requirement, Toast },
   props: {
     active: {
       type: Boolean,
@@ -213,6 +216,13 @@ export default {
         }
       }
     })
+    // уведомления
+    if (this.$route.params.id) {
+      this.intervalId = setInterval(() => {
+        this.fetchNotification();
+      }, 40000);
+      this.fetchNotification();
+    }
   },
   computed: {
     ...mapGetters({
@@ -223,6 +233,7 @@ export default {
       basketWarehouse: 'basket/basketWarehouse',
       optVendorsAvailable: 'org/optVendorsAvailable',
       optVendorsSelected: 'org/optVendorsSelected',
+      newNotification: 'notifications/newNotification'
     }),
     orgBasketWarehouse() {
       return this.orgStores?.items?.find((el) => el.id == this.basketWarehouse)
@@ -234,6 +245,8 @@ export default {
       getOrgBasketStore: 'basket/getOrgBasketStore',
       setOrgBasketStore: 'basket/setOrgBasketStore',
       getBasket: 'basket/getBasket',
+      getNewNotification: 'notifications/getNewNotification',
+      setViewNotification: 'notifications/setViewNotification',
     }),
     toggleMenu() {
       if (this.active === true) {
@@ -284,6 +297,72 @@ export default {
         this.basketStore = {}
       }
     },
+    fetchNotification(){
+      this.getNewNotification({
+        data_start: this.data_start
+      }).then((res) => {
+                for (let i = 0; i < res.data.data?.total; i++) {
+                    setTimeout(() => {
+                        let title = '';
+                        switch (res.data.data.items[i].namespace) {
+                            case '1':
+                                title = 'Изменение статуса заказа в маркетплейсе';
+                                break;
+                            case '2':
+                                title = 'Поступил новый оптовый заказ';
+                                break;
+                            case '3':
+                                title = 'Ваша компания отключена';
+                                break;
+                            case '4':
+                                title = 'Ваша компания подключена';
+                                break;
+                            case '5':
+                                title = 'Появился новый поставщик';
+                                break;
+                            case '6':
+                                title = 'Появился новый поставщик';
+                                break;
+                            case '7':
+                                title = 'Вас добавили в поставщики';
+                                break;
+                            case '8':
+                                title = 'Вас удалили из поставщиков';
+                                break;
+                            case '9':
+                                title = 'Ваш склад отключен';
+                                break;
+                            case '10':
+                                title = 'Ваш склад подключен';
+                                break;
+                            case '11':
+                                title = 'Вам отправлено предложение оформить заказ';
+                                break;
+                            case '12':
+                                title = 'Ваше предложение было отклонено';
+                                break;
+                            case '13':
+                                title = 'Ваше предложение было принято';
+                                break;
+                        }
+                        this.setViewNotification({
+                          item: res.data.data.items[i].id
+                        })
+                        this.$toast.add({ severity: 'secondary', summary: title, detail: 'Чтобы узнать подробнее, нажмите ', info: res.data.data.items[i], life: 7000 });
+                    }, i * 500);
+
+                }
+                // if (res.data.data.items.length > 0) {
+                //     if (this.$route.params.id) {
+                //         this.get_notification_api({
+                //             action: 'get',
+                //             id: this.$route.params.id
+                //         });
+                //     }
+                // }
+            });
+      this.data_start = new Date();
+    }
   },
   watch: {
     basket() {

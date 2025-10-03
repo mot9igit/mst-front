@@ -6,11 +6,16 @@ export default {
   namespaced: true,
   state: {
     user: null,
+    newNotification: {},
   },
   getters: {
     getUser(state) {
       return state.user
     },
+    newNotification(state) {
+      return state.newNotification
+    }
+
   },
   mutations: {
     SET_USER(state, payload) {
@@ -18,6 +23,9 @@ export default {
     },
     DELETE_USER(state) {
       state.user = null
+    },
+    SET_NEW_NOTIFICATIONS(state, data) {
+      state.newnotification = data.data
     },
   },
   actions: {
@@ -69,6 +77,6 @@ export default {
             router.push({ name: 'main' })
           }
         })
-    },
+    }
   },
 }
