@@ -205,6 +205,7 @@
           <li class="sidebar__block sidebar__item">
             <button class="sidebar__item-button">
               <i class="d-icon-bell-solid sidebar__item-icon"></i>
+              <div class="status" v-if="notificationsNoRead != 0">+{{ notificationsNoRead ? notificationsNoRead : 0 }}</div>
             </button>
           </li>
           <li class="sidebar__block sidebar__item">
@@ -322,6 +323,10 @@ export default {
     mobileRequipments: {
       type: Boolean,
       default: false,
+    },
+     notificationsNoRead: {
+      type: Number,
+      default: 0
     },
   },
   emits: ['showCart', 'showCatalog', 'isMobile', 'showRequipment'],

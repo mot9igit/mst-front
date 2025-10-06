@@ -199,7 +199,7 @@ export default {
       data_start: new Date(),
     }
   },
-  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments'],
+  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments', 'notifications'],
   components: { Loader, customModal, changeAddressWindow, SearchField, requirement, Toast, notificationsWindow },
   props: {
     active: {
@@ -404,6 +404,9 @@ export default {
           this.getNotifications()
         }
     },
+    notifications: function(newVal){
+      this.$emit('notifications', newVal.no_read)
+    }
   }
 }
 </script>

@@ -4,6 +4,7 @@
     :toggleShoppingCart="toggleShoppingCart"
     :cartBadge="cartCount"
     :mobileRequipments="mobileRequipments"
+    :notificationsNoRead="notificationsNoRead"
     @showCart="toggleCart()"
     @showCatalog="toggleCatalog()"
     @isMobile="mobileCatalog()"
@@ -16,6 +17,7 @@
       @toggleVendor="toggleVendor"
       @toggleCart="toggleCart"
       @showRequipments="showRequip()"
+      @notifications="notificationsCol"
       :mobileRequipments="mobileRequipments"
       :active="toggleMenu"
     ></ProfileHeader>
@@ -64,6 +66,7 @@ import ProfileCart from './ui/cart.vue'
 import changeVendorsWindow from './ui/changeVendorsWindow.vue'
 import OrderWindow from './ui/orderWindow.vue'
 
+
 export default {
   name: 'UserAccount',
   props: {
@@ -111,6 +114,7 @@ export default {
       cartCount: 0,
       mobileCatalogShow: false,
       mobileRequipments: false,
+      notificationsNoRead: 0,
     }
   },
   mounted() {
@@ -219,6 +223,9 @@ export default {
       window.getSelection().addRange(range)
       document.execCommand('copy')
       window.getSelection().removeAllRanges()
+    },
+    notificationsCol(data){
+      this.notificationsNoRead = data
     },
   },
   provide() {
