@@ -6,6 +6,7 @@ export default {
   namespaced: true,
   state: {
     newNotification: {},
+    notificationsAll: {},
     notifications: {},
   },
 
@@ -31,9 +32,11 @@ export default {
       const response = await api.notifications.setViewNotification(senddata)
       return response
     },
-    async getNotifications ({ commit }, data) {
+    async getNotifications ({ commit }, { page, perpage, read }) {
       const senddata = {
-        data: data,
+        page: page,
+        perpage: perpage,
+        read: read,
         action: 'get',
         id: router.currentRoute._value.params.id,
       }
@@ -43,15 +46,27 @@ export default {
       }
       return response
     },
+    async getAllNotifications ({ commit }, data) {
+      const senddata = {
+        data: data,
+        action: 'get',
+        id: router.currentRoute._value.params.id,
+      }
+      const response = await api.notifications.getAllNotifications(senddata)
+      if (response) {
+        commit('SET_ALL_NOTIFICATIONS', response.data)
+      }
+      return response
+    },
     async readAllNotifications ({ commit }) {
       const senddata = {
         ids: 'all',
         action: 'read',
         id: router.currentRoute._value.params.id,
       }
-      const response = await api.notifications.getNotifications(senddata)
+      const response = await api.notifications.getAllNotifications(senddata)
       if (response) {
-        commit('READ_NOTIFICATIONS', response.data)
+        commit('SET_ALL_NOTIFICATIONS', response.data)
       }
       return response
     },
@@ -63,7 +78,7 @@ export default {
       }
       const response = await api.notifications.getNotifications(senddata)
       if (response) {
-        commit('DELETE_NOTIFICATIONS', response.data)
+        commit('SET_NOTIFICATIONS', response.data)
       }
       return response
     },
@@ -75,6 +90,9 @@ export default {
     SET_NOTIFICATIONS(state, data) {
       state.notifications = data.data
     },
+    SET_ALL_NOTIFICATIONS(state, data) {
+      state.notificationsAll = data.data
+    },
   },
   getters: {
     newNotification(state) {
@@ -82,6 +100,9 @@ export default {
     },
     notifications(state) {
       return state.notifications
+    },
+    notificationsAll(state) {
+      return state.notificationsAll
     },
 
   },

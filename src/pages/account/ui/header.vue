@@ -86,7 +86,7 @@
             <button class="d-button d-button-secondary d-button-rounded header__notification"
             @click.prevent="showNotificationsModal = true">
               <i class="d-icon-bell header__notification-icon"></i>
-              <div class="status" v-if="notifications.no_read != 0">+{{ notifications.no_read ? notifications.no_read : 0 }}</div>
+              <div class="status" v-if="notificationsAll.no_read != 0">+{{ notificationsAll.no_read ? notificationsAll.no_read : 0 }}</div>
             </button>
 
           </div>
@@ -161,6 +161,7 @@
       <Loader v-if="loading.changeBasketStore"></Loader>
       <changeAddressWindow @setWarehouse="setWarehouse" />
     </customModal>
+  </teleport>
 
     <customModal
           v-model="showNotificationsModal"
@@ -168,7 +169,7 @@
         >
         <notificationsWindow :reload="reloadNotificationsModal" @reloadSuccess="this.reloadNotificationsModal = false"/>
     </customModal>
-  </teleport>
+
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -199,7 +200,7 @@ export default {
       data_start: new Date(),
     }
   },
-  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments', 'notifications'],
+  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments', 'notifications', 'notificationsMobile'],
   components: { Loader, customModal, changeAddressWindow, SearchField, requirement, Toast, notificationsWindow },
   props: {
     active: {
@@ -210,13 +211,18 @@ export default {
       type: Boolean,
       default: false,
     },
+    mobileNotificationsShow: {
+      type: Boolean,
+      default: false,
+    },
   },
   mounted() {
     this.getOrgStores().then(() => {
       this.getOrgBasketStore()
       this.getBasket()
-      this.getNotifications()
+      this.getAllNotifications()
     })
+
     // mobile header
     let elem = document.querySelector('.main')
     elem.addEventListener('scroll', function () {
@@ -248,7 +254,7 @@ export default {
       optVendorsAvailable: 'org/optVendorsAvailable',
       optVendorsSelected: 'org/optVendorsSelected',
       newNotification: 'notifications/newNotification',
-      notifications: 'notifications/notifications',
+      notificationsAll: 'notifications/notificationsAll',
     }),
     orgBasketWarehouse() {
       return this.orgStores?.items?.find((el) => el.id == this.basketWarehouse)
@@ -262,7 +268,7 @@ export default {
       getBasket: 'basket/getBasket',
       getNewNotification: 'notifications/getNewNotification',
       setViewNotification: 'notifications/setViewNotification',
-      getNotifications: 'notifications/getNotifications',
+      getAllNotifications: 'notifications/getAllNotifications',
       readAllNotifications: 'notifications/readAllNotifications',
     }),
     toggleMenu() {
@@ -375,7 +381,7 @@ export default {
                     if(this.showNotificationsModal == true){
                       this.reloadNotificationsModal = true
                     }
-                    this.getNotifications()
+                    this.getAllNotifications()
                 }
             });
 
@@ -401,12 +407,21 @@ export default {
     'showNotificationsModal': function(newVal){
       if(newVal == false){
           this.readAllNotifications()
-          this.getNotifications()
+          this.getAllNotifications()
         }
+      if(newVal != this.mobileNotificationsShow){
+        this.$emit('notificationsMobile', this.showNotificationsModal)
+      }
     },
-    notifications: function(newVal){
+    notificationsAll: function(newVal){
       this.$emit('notifications', newVal.no_read)
-    }
+    },
+    mobileNotificationsShow: function(newVal){
+      if(this.showNotificationsModal != newVal){
+        this.showNotificationsModal = newVal
+      }
+
+    },
   }
 }
 </script>

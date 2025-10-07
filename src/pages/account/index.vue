@@ -5,7 +5,9 @@
     :cartBadge="cartCount"
     :mobileRequipments="mobileRequipments"
     :notificationsNoRead="notificationsNoRead"
+    :mobileNotificationsShow="mobileNotificationsShow"
     @showCart="toggleCart()"
+    @showNotifications="mobileNotifications()"
     @showCatalog="toggleCatalog()"
     @isMobile="mobileCatalog()"
     @showRequipment="showRequip()"
@@ -18,8 +20,10 @@
       @toggleCart="toggleCart"
       @showRequipments="showRequip()"
       @notifications="notificationsCol"
+      @notificationsMobile="mobileNotifications()"
       :mobileRequipments="mobileRequipments"
       :active="toggleMenu"
+      :mobileNotificationsShow="mobileNotificationsShow"
     ></ProfileHeader>
 
     <main class="main">
@@ -114,6 +118,7 @@ export default {
       cartCount: 0,
       mobileCatalogShow: false,
       mobileRequipments: false,
+      mobileNotificationsShow: false,
       notificationsNoRead: 0,
     }
   },
@@ -196,6 +201,9 @@ export default {
     },
     mobileCatalog() {
       this.mobileCatalogShow = true
+    },
+    mobileNotifications(){
+      this.mobileNotificationsShow = !this.mobileNotificationsShow
     },
     showRequip() {
       this.mobileRequipments = !this.mobileRequipments

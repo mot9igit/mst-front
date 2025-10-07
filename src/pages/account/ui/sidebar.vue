@@ -203,7 +203,7 @@
             </button>
           </li>
           <li class="sidebar__block sidebar__item">
-            <button class="sidebar__item-button">
+            <button class="sidebar__item-button" @click.prevent="notificationsOpen()">
               <i class="d-icon-bell-solid sidebar__item-icon"></i>
               <div class="status" v-if="notificationsNoRead != 0">+{{ notificationsNoRead ? notificationsNoRead : 0 }}</div>
             </button>
@@ -305,6 +305,7 @@ export default {
       showRequipment: false,
       showCatalog: false,
       showCart: false,
+      showNotifications: false,
     }
   },
   props: {
@@ -328,8 +329,12 @@ export default {
       type: Number,
       default: 0
     },
+    mobileNotificationsShow: {
+      type: Boolean,
+      default: false,
+    },
   },
-  emits: ['showCart', 'showCatalog', 'isMobile', 'showRequipment'],
+  emits: ['showCart', 'showCatalog', 'isMobile', 'showRequipment', 'showNotifications'],
   components: { customModal, ChangeOrgWindow, sidebarMenu, Toast },
   computed: {
     ...mapGetters({
@@ -344,6 +349,18 @@ export default {
       deleteUser: 'user/deleteUser',
       getSessionUser: 'user/getSessionUser',
     }),
+    notificationsOpen(){
+      this.showNotifications = !this.showNotifications
+      this.$emit('showNotifications')
+      if (this.showCatalog === true) {
+        this.showCatalog = false
+        this.$emit('showCatalog')
+      }
+      if (this.showCart === true) {
+        this.showCart = false
+        this.$emit('showCart')
+      }
+    },
     requirementOpen() {
       this.showRequipment = !this.showRequipment
       this.$emit('showRequipment')
@@ -355,22 +372,20 @@ export default {
         this.showCart = false
         this.$emit('showCart')
       }
-      this.showChangeOrgModal = false
+
     },
     catalogOpen() {
       this.isMobile = localStorage.getItem('global.isMobile')
       this.$emit('isMobile')
       this.showCatalog = !this.showCatalog
       this.$emit('showCatalog')
-      if (this.showRequipment === true) {
-        this.showRequipment = !this.showRequipment
-        this.$emit('showRequipment')
-      }
+
       if (this.showCart === true) {
         this.showCart = false
         this.$emit('showCart')
       }
-      this.showChangeOrgModal = false
+
+
     },
     cartOpen() {
       this.showCart = !this.showCart
@@ -379,11 +394,7 @@ export default {
         this.showCatalog = false
         this.$emit('showCatalog')
       }
-      if (this.showRequipment === true) {
-        this.showRequipment = !this.showRequipment
-        this.$emit('showRequipment')
-      }
-      this.showChangeOrgModal = false
+
     },
     showOrgs() {
       this.showChangeOrgModal = !this.showChangeOrgModal
@@ -528,6 +539,9 @@ export default {
     },
     mobileRequipments: function (newVal) {
       this.showRequipment = newVal
+    },
+    mobileNotificationsShow: function (newVal) {
+      this.showNotifications = newVal
     },
     active: function (newVal) {
       this.isMobile = localStorage.getItem('global.isMobile')

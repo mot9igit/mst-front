@@ -5,7 +5,7 @@
 
 
     <div class="notifications__modal-header">
-      <h3>Уведомления ({{ notifications.total }})</h3>
+      <h3>Уведомления ({{ notificationsAll.total }})</h3>
       <div class="notifications__modal-header-buttons">
         <button
           type="button"
@@ -21,14 +21,14 @@
           href="#"
           class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small notifications__modal-cansel"
           @click.prevent="deleteNotification()"
-           v-if="notifications.total != 0"
+           v-if="notificationsAll.total != 0"
           >
           Удалить все
         </button>
       </div>
     </div>
-    <div class="notifications__modal-container" v-if="notifications.total != 0">
-        <h4 v-if="new_notes.length">Новые  уведомления ({{ new_notes.length }})</h4>
+    <div class="notifications__modal-container" v-if="notificationsAll.total != 0">
+        <h4 v-if="new_notes.length">Новые  уведомления ({{ notificationsAll?.no_read }})</h4>
         <div class="notifications__modal-list notifications__modal-list-new"  v-if="new_notes.length">
           <div class="notifications__modal-item" v-for="(item, index) in new_notes" :key="index">
             <div v-if="item.read == 0">
@@ -50,7 +50,21 @@
             </div>
           </div>
         </div>
-        <h4 v-if="old_notes.length">Старые  уведомления ({{ old_notes.length }})</h4>
+        <div class="d-pagination-wrap" v-if="pagesCountNew > 1">
+              <Paginate
+                :page-count="pagesCountNew"
+                :click-handler="pageClickNew"
+                :prev-text="'Пред'"
+                :next-text="'След'"
+                :container-class="'d-pagination d-table__footer-right-pagination'"
+                :page-class="'d-pagination__item'"
+                :active-class="'d-pagination__item--active'"
+                :initialPage="this.pageNew"
+                :forcePage="this.pageNew"
+              >
+              </Paginate>
+        </div>
+        <h4 v-if="old_notes.length">Старые  уведомления ({{ countOld }})</h4>
         <div class="notifications__modal-list notifications__modal-list-old"  v-if="old_notes.length">
           <div class="notifications__modal-item" v-for="(item, index) in old_notes" :key="index">
             <div v-if="item.read != 0">
@@ -72,6 +86,21 @@
             </div>
           </div>
         </div>
+          <div class="d-pagination-wrap" v-if="pagesCountOld > 1">
+              <Paginate
+                :page-count="pagesCountOld"
+                :click-handler="pageClickOld"
+                :prev-text="'Пред'"
+                :next-text="'След'"
+                :container-class="'d-pagination d-table__footer-right-pagination'"
+                :page-class="'d-pagination__item'"
+                :active-class="'d-pagination__item--active'"
+                :initialPage="this.pageOld"
+                :forcePage="this.pageOld"
+              >
+              </Paginate>
+          </div>
+
 
     </div>
     <div  class="notifications__modal-container-empty" v-else>
@@ -86,15 +115,23 @@ import Loader from '@/shared/ui/Loader.vue'
 import Toast from 'primevue/toast'
 import Paginate from 'vuejs-paginate-next'
 
+
+
 export default {
-  name: 'ProfileHeader',
+  name: 'notificationsWindow',
   data() {
     return {
       loading: true,
       showNotificationsModal: false,
       new_notes: [],
       old_notes: [],
-      page: 1,
+      test: [],
+      pageNew: 1,
+      pageOld: 1,
+      pagesCountOld: 1,
+      pagesCountNew: 1,
+      countOld: 0,
+      perpage: 0,
     }
   },
   emits: ['reloadSuccess'],
@@ -104,9 +141,13 @@ export default {
       type: Boolean,
       default: false,
     },
-     pagination_items_per_page: {
+     pagination_items_per_page_new: {
       type: Number,
-      default: 5,
+      default: 10,
+    },
+    pagination_items_per_page_old: {
+      type: Number,
+      default: 10,
     },
     pagination_offset: {
       type: Number,
@@ -114,20 +155,23 @@ export default {
     },
   },
   mounted() {
-    this.getNotifications().then(() => {
-      this.loading = false
+    this.getAllNotifications().then(() => {
+        this.loading = false
     })
+
 
   },
   computed: {
     ...mapGetters({
       notifications: 'notifications/notifications',
+      notificationsAll: 'notifications/notificationsAll',
     }),
 
   },
   methods: {
     ...mapActions({
       getNotifications: 'notifications/getNotifications',
+      getAllNotifications: 'notifications/getAllNotifications',
       readAllNotifications: 'notifications/readAllNotifications',
       deleteNotifications: 'notifications/deleteNotifications',
     }),
@@ -177,24 +221,6 @@ export default {
       }
       return title
     },
-    fetchNotification(){
-      this.getNewNotification({
-        data_start: this.data_start
-      }).then((res) => {
-                for (let i = 0; i < res.data.data?.total; i++) {
-                    setTimeout(() => {
-                        let title = this.notificationTitle(res.data.data.items[i].namespace);
-                        this.setViewNotification({
-                          item: res.data.data.items[i].id
-                        })
-                        this.$toast.add({ severity: 'secondary', summary: title, detail: 'Чтобы узнать подробнее, нажмите ', info: res.data.data.items[i], life: 7000 });
-                    }, i * 500);
-                    this.getNotifications()
-
-                }
-            });
-      this.data_start = new Date();
-    },
     deleteNotification(id){
       this.deleteNotifications({
         notification_id: id
@@ -220,32 +246,96 @@ export default {
                 detail: 'Произошла ошибка',
                 life: 3000 });
         }
-        this.getNotifications()
+         this.getAllNotifications()
+       })
+    },
+    pageClickOld(pageNum) {
+      this.loading = true
+      this.pageOld = pageNum
+      this.getNotifications({
+        page: this.pageOld,
+        perpage: this.pagination_items_per_page_old,
+        read: 1
+      }).then(() => {
+        this.old_notes = this.notifications.items
+        this.loading = false
+      })
+    },
+    pageClickNew(pageNum) {
+      this.loading = true
+      this.pageNew = pageNum
+      this.getNotifications({
+        page: this.pageNew,
+        perpage: this.pagination_items_per_page_new,
+        read: 0
+      }).then(() => {
+        this.new_notes = this.notifications.items
+        this.loading = false
       })
     },
 
-
   },
   watch: {
-    notifications: function(newVal){
+    notificationsAll: function(newVal){
+      this.loading = true
       this.new_notes = []
       this.old_notes = []
-     if(newVal.items.length){
-      for (let i = 0; i < newVal.items.length; i++) {
-        if(newVal.items[i].read == 0){
-          this.new_notes.push(newVal.items[i])
+      this.pagesCountOld = 1
+      this.pagesCountNew = 1
+      this.countOld = 0
+      this.perpage = 0
+      if(newVal.no_read != 0){
+        this.pagesCountNew = Math.ceil(newVal.no_read / this.pagination_items_per_page_new)
+        if(newVal.no_read < this.pagination_items_per_page_new){
+          this.perpage = newVal.no_read
         }else{
-          this.old_notes.push(newVal.items[i])
+            this.perpage = this.pagination_items_per_page_new
+          }
+        this.getNotifications({
+          page: this.pageNew,
+          perpage: this.perpage,
+          read: 0
+        }).then(() => {
+          this.new_notes = this.notifications.items
+          this.perpage = 0
+          if((newVal.items.length - newVal.no_read) < this.pagination_items_per_page_old){
+            this.perpage = newVal.items.length - newVal.no_read
+          }else{
+            this.perpage = this.pagination_items_per_page_old
+          }
+          this.getNotifications({
+            page: this.pageOld,
+            perpage: this.perpage,
+            read: 1
+          }).then(() => {
+            this.old_notes = this.notifications.items
+            this.loading = false
+          })
+        })
+      }else{
+        if(newVal.items.length < this.pagination_items_per_page_old){
+            this.perpage = newVal.items.length
+        }else{
+          this.perpage = this.pagination_items_per_page_old
         }
+        this.getNotifications({
+            page: this.pageOld,
+            perpage: this.perpage,
+            read: 1
+          }).then(() => {
+            this.old_notes = this.notifications.items
+            this.loading = false
+          })
       }
-    }else{
-      this.new_notes = []
-      this.old_notes = []
-    }
+      if(newVal.total != 0){
+        this.countOld = 0
+        this.countOld = newVal.total - newVal.no_read
+        this.pagesCountOld = Math.ceil(this.countOld / this.pagination_items_per_page_old)
+      }
     },
     reload: function(newVal){
       if(newVal == true){
-        this.getNotifications().then(() => {
+        this.getAllNotifications().then(() => {
           this.$emit('reloadSuccess')
         })
       }
