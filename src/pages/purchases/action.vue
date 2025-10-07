@@ -443,7 +443,7 @@ export default {
       this.$router.push({
         name: 'purchasesCatalogSearch',
         params: { id: this.$route.params.id },
-        query: { search: item.pagetitle },
+        query: { search: item.article },
       })
     },
   },

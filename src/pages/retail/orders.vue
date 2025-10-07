@@ -42,8 +42,8 @@ export default {
       page: 1,
       filters: {
         name: {
-          name: 'Наименование, артикул',
-          placeholder: 'Наименование, артикул',
+          name: 'Поиск',
+          placeholder: 'Поиск',
           type: 'text',
         },
       },
@@ -204,7 +204,7 @@ export default {
 .retailorders__content .d-table__row:first-child > .d-table__col {
   padding: 16px;
 }
-.nowrap a{
+.nowrap a {
   white-space: nowrap;
 }
 </style>

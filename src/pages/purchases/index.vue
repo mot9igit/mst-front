@@ -13,7 +13,12 @@
       <div class="promos__banners" v-if="salesBanners.count > 0">
         <div class="dart-row promos__banners-row">
           <div class="d-col-24">
-            <Swiper :slides-per-view="1" :space-between="10" :pagination="{ clickable: true }">
+            <Swiper
+              :slides-per-view="1"
+              :space-between="10"
+              :pagination="{ clickable: true }"
+              :autoplay="{ delay: 10000, disableOnInteraction: false }"
+            >
               <template v-for="n in getCount" :key="n">
                 <SwiperSlide v-if="n < 4">
                   <router-link
@@ -149,13 +154,13 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import SwiperCore, { Pagination } from 'swiper'
+import SwiperCore, { Autoplay, Pagination } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/swiper.scss'
 import customModal from '@/shared/ui/Modal.vue'
 import addVendorWindow from '../account/ui/addVendorWindow.vue'
 
-SwiperCore.use([Pagination])
+SwiperCore.use([Autoplay, Pagination])
 
 export default {
   name: 'purchasesMain',

@@ -310,7 +310,7 @@
                 class="product-card-actions__modal-actions-content-item"
                 v-if="item.condition_min_count > 0"
               >
-                Минимальное количество SKU акции - {{ item.condition_min_count }} шт
+                Минимальное общее количество товаров - {{ item.condition_min_count }} шт
               </div>
               <div
                 class="product-card-actions__modal-actions-content-item"
@@ -388,7 +388,7 @@
                 class="product-card-actions__modal-actions-content-item"
                 v-if="item.condition_min_count > 0"
               >
-                Минимальное количество SKU акции - {{ item.condition_min_count }} шт
+                Минимальное общее количество товаров - {{ item.condition_min_count }} шт
               </div>
               <div
                 class="product-card-actions__modal-actions-content-item"
