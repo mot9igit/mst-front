@@ -97,13 +97,21 @@
         </div>
       </div>
 
-      <!--<button class="d-button d-button-primary d-button--sm-shadow clients__filters-create">
+      <router-link
+        :to="{
+          name: 'WholesaleClientsAdd',
+          params: {
+            id: this.$route.params.id,
+          },
+        }"
+        class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
+      >
         <i class="d-icon-plus-flat clients__filters-create-icon"></i>
         Новый клиент
-      </button>-->
+      </router-link>
     </div>
     <Loader v-if="loading" />
-    <div class="clients__card-container" v-else>
+    <div class="clients__card-container">
       <div class="clients__card dart-row" v-for="(item, index) in dilers.items" :key="index">
         <div class="clients__card-left d-col-15">
           <div class="clients__card-info d-col-6 clients__devider">
@@ -121,7 +129,7 @@
             </div>
           </div>
 
-          <div class="clients__card-data d-col-9  clients__devider">
+          <div class="clients__card-data d-col-9 clients__devider">
             <div class="clients__card-inn d-col-10 clients__devider">
               <p class="clients__card-inn-label">ИНН:</p>
               <p class="clients__card-inn-value">
@@ -129,9 +137,7 @@
               </p>
             </div>
 
-            <div
-              class="clients__card-contact-container d-col-14"
-            >
+            <div class="clients__card-contact-container d-col-14">
               <a :href="'tel:' + item.phone.replace(/[^+\d]/g, '')" class="clients__card-contact">
                 <i class="d-icon-telephone clients__card-contact-icon"></i>
                 <span>{{ item.phone }}</span>
@@ -168,12 +174,17 @@
               </button>
               -->
               <div class="clients__card-action-container">
-                <!--<button class="clients__card-action"   v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id">
+                <button
+                  class="clients__card-action"
+                  @click.prevent="editClient(item)"
+                  v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
+                >
                   <i class="d-icon-pen2"></i>
                 </button>
                 <div
-                  class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider" v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
-                ></div>-->
+                  class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
+                  v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
+                ></div>
                 <button
                   class="clients__card-action"
                   v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
@@ -213,7 +224,7 @@
             </div>
           </div>
 
-          <div class="clients__card-price-container" v-if="(Object.keys(item.debts).length != 0)">
+          <div class="clients__card-price-container" v-if="Object.keys(item.debts).length != 0">
             <div class="clients__card-price" v-if="item.debts?.debet != null">
               <span class="clients__card-price-label">ДЗ:</span>
               <span class="clients__card-price-value">{{ item.debts?.debet }} ₽</span>
@@ -229,27 +240,34 @@
           </div>
         </div>
         <div class="clients__card-right d-col-9">
-          <div class="clients__card-right-left d-col-22 clients__devider">
-           <div class="clients__card-price-container d-col-12 clients__devider" v-if="(Object.keys(item.debts).length != 0)">
-            <div class="clients__card-price" v-if="item.debts?.debet != null">
-              <span class="clients__card-price-label">ДЗ:</span>
-              <span class="clients__card-price-value">{{ item.debts?.debet }} ₽</span>
-            </div>
-            <div class="clients__card-price"  v-if="item.debts?.credit != null">
-              <span class="clients__card-price-label">КЗ:</span>
-              <span class="clients__card-price-value">{{ item.debts?.credit }} ₽</span>
-            </div>
-            <!--<div class="clients__card-price clients__card-price--secondary">
+          <div class="clients__card-right-left d-col-21 clients__devider">
+            <div
+              class="clients__card-price-container d-col-12 clients__devider"
+              v-if="Object.keys(item.debts).length != 0"
+            >
+              <div class="clients__card-price" v-if="item.debts?.debet != null">
+                <span class="clients__card-price-label">ДЗ:</span>
+                <span class="clients__card-price-value">{{ item.debts?.debet }} ₽</span>
+              </div>
+              <div class="clients__card-price" v-if="item.debts?.credit != null">
+                <span class="clients__card-price-label">КЗ:</span>
+                <span class="clients__card-price-value">{{ item.debts?.credit }} ₽</span>
+              </div>
+              <!--<div class="clients__card-price clients__card-price--secondary">
               <span class="clients__card-price-label">ПЗД:</span>
               <span class="clients__card-price-value">3 200 000 ₽</span>
             </div>-->
-          </div>
+            </div>
 
             <div class="d-col-12 clients__card-vendor-container">
-              <span class="clients__card-vendor" v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id">Создан поставщиком</span>
+              <span
+                class="clients__card-vendor"
+                v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
+                >Создан поставщиком</span
+              >
             </div>
           </div>
-          <div class="clients__card-right-right d-col-2">
+          <div class="clients__card-right-right d-col-3">
             <!--<div
               class="d-col-18 clients__devider"
             >
@@ -260,13 +278,18 @@
               </button>
 
             </div> -->
-            <div class="clients__card-action-container d-col-24">
-              <!--<button class="clients__card-action" v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id">
+            <div class="clients__card-action-container">
+              <button
+                class="clients__card-action"
+                @click.prevent="editClient(item)"
+                v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
+              >
                 <i class="d-icon-pen2"></i>
               </button>
               <div
-                class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"  v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
-              ></div>-->
+                class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
+                v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
+              ></div>
               <button
                 class="clients__card-action"
                 v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
@@ -291,37 +314,39 @@
           :forcePage="this.page"
         >
         </paginate>
-        <teleport to="body" v-if="this.modalDelete === true">
-          <customModal v-model="this.modalDelete" class="clients-form__modal">
-            <div class="clients-info__value-container">
-              <h2>Подтверждение удаления клиента</h2>
-              <div class="clients-info__label">
-                <i class="d-icon-warning"></i>Вы уверены, что хотите удалить клиента
-                {{ modalDeleteObj.name }} с ID {{ modalDeleteObj.id }}?
-              </div>
-              <div class="clients-button__container">
-                <button
-                  type="button"
-                  href="#"
-                  class="d-button d-button d-button-primary d-button-primary-small d-button--sm-shadow clients-info__button"
-                  @click.prevent="deleteClient(modalDeleteObj)"
-                >
-                  Да
-                </button>
-                <button
-                  type="button"
-                  href="#"
-                  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs clients-info__button"
-                  @click.prevent="this.modalDelete = false"
-                >
-                  Нет
-                </button>
-              </div>
-            </div>
-          </customModal>
-        </teleport>
       </div>
     </div>
+    <teleport to="body">
+      <customModal v-model="this.modalDelete">
+        <div class="clients-form__modal">
+          <div class="clients-info__value-container">
+            <h2>Подтверждение удаления клиента</h2>
+            <div class="clients-info__label">
+              <i class="d-icon-warning"></i>Вы уверены, что хотите удалить клиента
+              {{ modalDeleteObj.name }} с ID {{ modalDeleteObj.id }}?
+            </div>
+            <div class="clients-button__container">
+              <button
+                type="button"
+                href="#"
+                class="d-button d-button d-button-primary d-button-primary-small d-button--sm-shadow clients-info__button"
+                @click.prevent="deleteClient(modalDeleteObj)"
+              >
+                Да
+              </button>
+              <button
+                type="button"
+                href="#"
+                class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs clients-info__button"
+                @click.prevent="this.modalDelete = false"
+              >
+                Нет
+              </button>
+            </div>
+          </div>
+        </div>
+      </customModal>
+    </teleport>
   </section>
 </template>
 <script>
@@ -387,7 +412,7 @@ export default {
       unsetDilers: 'wholesale/unsetDilers',
       getManagers: 'wholesale/getManagers',
       getStores: 'wholesale/getStores',
-      setOrgProfile: 'wholesale/setOrgProfile',
+      deleteOrgProfile: 'wholesale/deleteOrgProfile',
     }),
     setFilter(type = '0') {
       if (type === 'filter') {
@@ -443,6 +468,12 @@ export default {
       this.modalDeleteObj = obj
       this.modalDelete = true
     },
+    editClient(data) {
+      this.$router.push({
+        name: 'WholesaleClientsEdit',
+        params: { id: this.$route.params.id, client_id: data.id },
+      })
+    },
     deleteClient(data) {
       this.loading = true
       this.unsetDilers()
@@ -450,10 +481,9 @@ export default {
         const requestdata = {
           client_id: data.id,
         }
-        console.log(requestdata)
-        await this.setOrgProfile(requestdata)
+        await this.deleteOrgProfile(requestdata)
           .then((result) => {
-            console.log(result)
+            this.filterText = ''
             if (result.data.success === false) {
               this.$toast.add({
                 severity: 'error',
@@ -518,7 +548,7 @@ export default {
     //managers: function (newVal, oldVal) {
     //  this.filters.manager.values = newVal
     //},
-    dilers: function (newVal, oldVal) {
+    dilers: function () {
       this.countPages = Math.ceil(this.dilers.total / this.pagination_items_per_page)
       if (this.countPages === 0) {
         this.countPages = 1
@@ -628,11 +658,11 @@ export default {
 .clients-button__container .clients-info__button {
   min-width: 150px;
 }
-.clients__card-price{
+.clients__card-price {
   margin-left: -8px;
 }
-.clients__card-vendor{
-  margin-left:12px;
+.clients__card-vendor {
+  margin-left: 12px;
 }
 @media (width <= 1536px) {
   .clients__card .clients__card-inn:first-child::before {
@@ -643,56 +673,56 @@ export default {
   .clients__devider:before {
     display: none;
   }
-  .clients__card-vendor{
-    margin-left:170px;
+  .clients__card-vendor {
+    margin-left: 170px;
   }
-  .clients__card-price-container .clients__card-price:nth-child(2){
-    margin-left: 8px;;
+  .clients__card-price-container .clients__card-price:nth-child(2) {
+    margin-left: 8px;
   }
 }
 @media (width <= 1024px) {
-    .clients__card-top-right-top {
-        justify-content: end;
-    }
-    .clients__card-vendor {
-        margin-left: 0px;
-    }
+  .clients__card-top-right-top {
+    justify-content: end;
+  }
+  .clients__card-vendor {
+    margin-left: 0px;
+  }
 }
 @media (width <= 600px) {
-    .clients__card-bottom .clients__card-price-container{
-      display:none;
-    }
-    .clients__card-right-left{
-      flex-direction: column;
-      gap: 16px;
-      width: 100%;
-      padding-right: 0px;
-      padding-left: 0px;
-    }
-    .clients__card-right-left .d-col-12{
-      width: 100%;
-      padding-right: 0px;
-      padding-left: 0px;
-    }
-    .clients__card-price {
-        font-size: 10px;
-        padding: 4px 8px;
-        height: 24px;
-    }
-    .clients__card-price-container{
-      justify-content: space-between;
-    }
-    .clients__card-price {
-      margin-left: 0px;
-      margin-right: 0px;
-      min-width: calc(50% - 4px);
-      justify-content: center;
-    }
-    .clients__card-price-container .clients__card-price:nth-child(2) {
-        margin-left: 0px;
-    }
-    .clients__card-right-right{
-      width: 100%;
-    }
+  .clients__card-bottom .clients__card-price-container {
+    display: none;
+  }
+  .clients__card-right-left {
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+  .clients__card-right-left .d-col-12 {
+    width: 100%;
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+  .clients__card-price {
+    font-size: 10px;
+    padding: 4px 8px;
+    height: 24px;
+  }
+  .clients__card-price-container {
+    justify-content: space-between;
+  }
+  .clients__card-price {
+    margin-left: 0px;
+    margin-right: 0px;
+    min-width: calc(50% - 4px);
+    justify-content: center;
+  }
+  .clients__card-price-container .clients__card-price:nth-child(2) {
+    margin-left: 0px;
+  }
+  .clients__card-right-right {
+    width: 100%;
+  }
 }
 </style>

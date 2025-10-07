@@ -191,7 +191,7 @@ import { helpers } from '@vuelidate/validators'
 import AddAddress from './AddAddress.vue'
 import Autocomplete from '@/shared/ui/Autocomplete.vue'
 import FileUpload from 'primevue/fileupload'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'CreateOrgForm',
@@ -206,6 +206,7 @@ export default {
     return {
       args: {},
       loading: false,
+      client_id: 0,
       orgprofile: {
         image: '',
         contact: '',
@@ -253,10 +254,17 @@ export default {
       },
     }
   },
+  computed: {
+    ...mapGetters({
+      virtOrg: 'wholesale/virtOrg',
+    }),
+  },
   methods: {
     ...mapActions({
       createOrg: 'org/create',
       editOrg: 'org/edit',
+      orgVirtualProfile: 'wholesale/orgVirtualProfile',
+      unsetVirtualProfile: 'wholesale/unsetVirtualProfile',
     }),
     onUpload(data) {
       if (data.xhr.response) {
@@ -304,21 +312,36 @@ export default {
         const sendData = {
           form: this.form,
           orgprofile: this.orgprofile,
+          type: this.type,
+          client_id: this.client_id,
         }
         const response = await this.createOrg(sendData)
         this.loading = false
         if (response.data.data.success) {
-          if (response.data.data.data?.org?.id) {
-            this.$toast.add({
-              severity: 'success',
-              summary: 'Организация успешно сохранена!',
-              detail: 'Сейчас Вы будете перенаправлены в личный кабинет Организации',
-              life: 3000,
-            })
-            this.$router.push({
-              name: 'organizationIndexPage',
-              params: { id: response.data.data.data?.org?.id },
-            })
+          if (response.data.data.data?.org?.id || response.data.data.data.organization?.id) {
+            if (response.data.data.data?.org?.id) {
+              this.$toast.add({
+                severity: 'success',
+                summary: 'Организация успешно сохранена!',
+                detail: 'Сейчас Вы будете перенаправлены в личный кабинет Организации',
+                life: 3000,
+              })
+              this.$router.push({
+                name: 'organizationIndexPage',
+                params: { id: response.data.data.data?.org?.id },
+              })
+            } else {
+              this.$toast.add({
+                severity: 'success',
+                summary: 'Организация успешно сохранена!',
+                detail: 'Сейчас Вы будете перенаправлены на страницу Клиентов',
+                life: 3000,
+              })
+              this.$router.push({
+                name: 'wholesaleClients',
+                params: { id: this.$route.params.id },
+              })
+            }
           } else {
             this.$toast.add({
               severity: 'error',
@@ -338,7 +361,41 @@ export default {
       }
     },
   },
-  mounted() {},
+  mounted() {
+    if (this.$route.params.client_id) {
+      this.client_id = this.$route.params.client_id
+      this.orgVirtualProfile({
+        client_id: this.client_id,
+      })
+    }
+  },
+  watch: {
+    virtOrg: function (newVal) {
+      console.log(newVal)
+      this.orgprofile = newVal
+      this.form.company.inn = newVal.requisites['0'].inn
+      this.form.company.data.value = newVal.requisites['0'].name
+      if (newVal.warehouses) {
+        const array1 = newVal.warehouses
+        array1.forEach((element, index) => {
+          if (index == 0) {
+            this.form.company.warehouses[0].address.value = element.address
+            this.form.company.warehouses[0].address.coordinats = element.coordinats
+            this.form.company.warehouses[0].id = element.id
+          } else {
+            const newWarehouse = {
+              address: {
+                value: element.address,
+                coordinats: element.coordinats,
+              },
+              id: element.id,
+            }
+            this.form.company.warehouses.push(newWarehouse)
+          }
+        })
+      }
+    },
+  },
   setup() {
     return { v$: useVuelidate() }
   },

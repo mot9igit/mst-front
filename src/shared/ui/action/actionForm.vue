@@ -594,9 +594,9 @@
                     v-for="company in this.form.all_organizations_selected"
                     :key="company.code"
                   >
-                    <div
-                      class="d-badge__img-fallback promotions__card-audience-badge-fallback"
-                    ></div>
+                    <div class="d-badge__img-fallback promotions__card-audience-badge-fallback">
+                      <img :src="company.image" alt="" />
+                    </div>
                     {{ company.name }}
                   </div>
                 </div>
@@ -3268,6 +3268,7 @@ export default {
       setDeselectedProduct: 'action/setDeselectedProduct',
       uploadProductsFile: 'action/uploadProductsFile',
       setSelectedProductData: 'action/setSelectedProductData',
+      toggleAction: 'action/toggleAction',
     }),
     addDelayItem() {
       this.form.delay.push({ percent: 0, day: 0 })
@@ -4019,6 +4020,58 @@ export default {
     }
   },
   watch: {
+    'form.active': function (newVal) {
+      let header = ''
+      let message = ''
+      // console.log(newVal)
+      // console.log(this.form.activeInitial)
+      if (this.form.activeInitial !== undefined) {
+        if (newVal != this.form.activeInitial) {
+          if (newVal == false) {
+            header = 'Подтверждение отключения'
+            message =
+              'Вы уверены, что хотите отключить Акцию с ID ' + this.$route.params.action + '?'
+          } else {
+            header = 'Подтверждение включения'
+            message =
+              'Вы уверены, что хотите включить Акцию с ID ' + this.$route.params.action + '?'
+          }
+          // console.log(header)
+          this.$confirm.require({
+            message: message,
+            header: header,
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+              this.toggleAction({ action_id: this.$route.params.action }).then((response) => {
+                if (response.data.data.status) {
+                  this.$toast.add({
+                    severity: 'success',
+                    summary: 'Действие произведено успешно',
+                    life: 3000,
+                  })
+                  this.form.activeInitial = newVal
+                } else {
+                  this.$toast.add({
+                    severity: 'error',
+                    summary: 'Ошибка',
+                    detail: response.data.data.message,
+                    life: 3000,
+                  })
+                }
+              })
+            },
+            reject: () => {
+              this.$toast.add({
+                severity: 'error',
+                summary: header,
+                detail: 'Действие отклонено',
+                life: 3000,
+              })
+            },
+          })
+        }
+      }
+    },
     'form.start_date': function (newVal) {
       // console.log(newVal + ' ' + this.form.start_date + ' ' + this.form.end_date)
       // console.log(this.form.dates)
@@ -4082,6 +4135,7 @@ export default {
         this.form.action_id = newVal.id
         this.form.name = newVal.name
         this.form.active = newVal.active
+        this.form.activeInitial = newVal.active
         this.form.description = newVal.description
         this.form.store_id = newVal.store_ids
         this.form.client_id = String(newVal.client_id)
@@ -4491,7 +4545,11 @@ body {
     }
   }
 }
-
+.promotions__card-audience-badge-fallback {
+  img {
+    border-radius: 50%;
+  }
+}
 .d-modal2__actions-start {
   justify-content: flex-start;
   margin-bottom: 15px;

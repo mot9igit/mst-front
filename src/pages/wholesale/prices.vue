@@ -20,7 +20,6 @@
 
     <Loader v-if="loading" />
     <BaseTable
-      v-else
       :items_data="sales.items"
       :total="sales.total"
       :pagination_items_per_page="this.pagination_items_per_page"

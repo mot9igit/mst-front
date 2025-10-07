@@ -17,6 +17,7 @@ import WholesaleOrder from '../pages/wholesale/order.vue'
 import WholesalePrices from '../pages/wholesale/prices.vue'
 import WholesaleSaleNew from '../pages/wholesale/saleNew.vue'
 import WholesaleClients from '../pages/wholesale/clients.vue'
+import WholesaleClientsAdd from '../pages/wholesale/clientsAdd.vue'
 import WholesaleShipments from '../pages/wholesale/shipments.vue'
 import Retail from '../pages/retail/index.vue'
 import RetailOrders from '../pages/retail/orders.vue'
@@ -355,15 +356,34 @@ const router = createRouter({
                     },
                     {
                       path: 'clients',
-                      name: 'wholesaleClients',
-                      props: true,
-                      label: 'Клиенты',
-                      component: WholesaleClients,
                       meta: {
                         breadcrumb: {
                           label: 'Мои клиенты',
                         },
                       },
+                      children: [
+                        {
+                          path: '',
+                          props: true,
+                          name: 'wholesaleClients',
+                          label: 'Клиенты',
+                          component: WholesaleClients,
+                        },
+                        {
+                          path: 'add',
+                          props: true,
+                          name: 'WholesaleClientsAdd',
+                          label: 'Клиенты',
+                          component: WholesaleClientsAdd,
+                        },
+                        {
+                          path: ':client_id',
+                          props: true,
+                          name: 'WholesaleClientsEdit',
+                          label: 'Клиенты',
+                          component: WholesaleClientsAdd,
+                        },
+                      ],
                     },
                     {
                       path: 'shipments',
