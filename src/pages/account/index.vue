@@ -4,7 +4,10 @@
     :toggleShoppingCart="toggleShoppingCart"
     :cartBadge="cartCount"
     :mobileRequipments="mobileRequipments"
+    :notificationsNoRead="notificationsNoRead"
+    :mobileNotificationsShow="mobileNotificationsShow"
     @showCart="toggleCart()"
+    @showNotifications="mobileNotifications()"
     @showCatalog="toggleCatalog()"
     @isMobile="mobileCatalog()"
     @showRequipment="showRequip()"
@@ -16,8 +19,11 @@
       @toggleVendor="toggleVendor"
       @toggleCart="toggleCart"
       @showRequipments="showRequip()"
+      @notifications="notificationsCol"
+      @notificationsMobile="mobileNotifications()"
       :mobileRequipments="mobileRequipments"
       :active="toggleMenu"
+      :mobileNotificationsShow="mobileNotificationsShow"
     ></ProfileHeader>
 
     <main class="main">
@@ -63,6 +69,7 @@ import ProfileCatalogMenu from './ui/catalogMenu.vue'
 import ProfileCart from './ui/cart.vue'
 import changeVendorsWindow from './ui/changeVendorsWindow.vue'
 import OrderWindow from './ui/orderWindow.vue'
+
 
 export default {
   name: 'UserAccount',
@@ -111,6 +118,8 @@ export default {
       cartCount: 0,
       mobileCatalogShow: false,
       mobileRequipments: false,
+      mobileNotificationsShow: false,
+      notificationsNoRead: 0,
     }
   },
   mounted() {
@@ -193,6 +202,9 @@ export default {
     mobileCatalog() {
       this.mobileCatalogShow = true
     },
+    mobileNotifications(){
+      this.mobileNotificationsShow = !this.mobileNotificationsShow
+    },
     showRequip() {
       this.mobileRequipments = !this.mobileRequipments
     },
@@ -219,6 +231,9 @@ export default {
       window.getSelection().addRange(range)
       document.execCommand('copy')
       window.getSelection().removeAllRanges()
+    },
+    notificationsCol(data){
+      this.notificationsNoRead = data
     },
   },
   provide() {

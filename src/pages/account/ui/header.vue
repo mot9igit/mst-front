@@ -82,12 +82,13 @@
                 basketStore.cart_data?.sku_count ? basketStore.cart_data?.sku_count : 0
               }}</span>
             </button>
-            <!--
-            <button class="d-button d-button-secondary d-button-rounded header__notification">
+
+            <button class="d-button d-button-secondary d-button-rounded header__notification"
+            @click.prevent="showNotificationsModal = true">
               <i class="d-icon-bell header__notification-icon"></i>
-              <div class="status">+100</div>
+              <div class="status" v-if="notificationsAll.no_read != 0">+{{ notificationsAll.no_read ? notificationsAll.no_read : 0 }}</div>
             </button>
-            -->
+
           </div>
         </div>
       </div>
@@ -161,6 +162,14 @@
       <changeAddressWindow @setWarehouse="setWarehouse" />
     </customModal>
   </teleport>
+
+    <customModal
+          v-model="showNotificationsModal"
+          class="notifications__modal"
+        >
+        <notificationsWindow :reload="reloadNotificationsModal" @reloadSuccess="this.reloadNotificationsModal = false"/>
+    </customModal>
+
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -169,7 +178,9 @@ import customModal from '@/shared/ui/Modal.vue'
 import SearchField from './search.vue'
 import changeAddressWindow from './changeAddressWindow.vue'
 import requirement from './requirement.vue'
-import { Toast } from 'primevue'
+import notificationsWindow from './notificationsWindow.vue'
+import Toast from 'primevue/toast'
+
 
 export default {
   name: 'ProfileHeader',
@@ -179,16 +190,18 @@ export default {
         changeBasketStore: false,
       },
       showChangeAddressModal: false,
+      showNotificationsModal: false,
       designMenuActive: false,
       basketStore: {},
+      reloadNotificationsModal: false,
       modals: {
         requirement: false,
       },
       data_start: new Date(),
     }
   },
-  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments'],
-  components: { Loader, customModal, changeAddressWindow, SearchField, requirement, Toast },
+  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments', 'notifications', 'notificationsMobile'],
+  components: { Loader, customModal, changeAddressWindow, SearchField, requirement, Toast, notificationsWindow },
   props: {
     active: {
       type: Boolean,
@@ -198,12 +211,18 @@ export default {
       type: Boolean,
       default: false,
     },
+    mobileNotificationsShow: {
+      type: Boolean,
+      default: false,
+    },
   },
   mounted() {
     this.getOrgStores().then(() => {
       this.getOrgBasketStore()
       this.getBasket()
+      this.getAllNotifications()
     })
+
     // mobile header
     let elem = document.querySelector('.main')
     elem.addEventListener('scroll', function () {
@@ -216,6 +235,7 @@ export default {
         }
       }
     })
+
     // уведомления
     if (this.$route.params.id) {
       this.intervalId = setInterval(() => {
@@ -233,7 +253,8 @@ export default {
       basketWarehouse: 'basket/basketWarehouse',
       optVendorsAvailable: 'org/optVendorsAvailable',
       optVendorsSelected: 'org/optVendorsSelected',
-      newNotification: 'notifications/newNotification'
+      newNotification: 'notifications/newNotification',
+      notificationsAll: 'notifications/notificationsAll',
     }),
     orgBasketWarehouse() {
       return this.orgStores?.items?.find((el) => el.id == this.basketWarehouse)
@@ -247,6 +268,8 @@ export default {
       getBasket: 'basket/getBasket',
       getNewNotification: 'notifications/getNewNotification',
       setViewNotification: 'notifications/setViewNotification',
+      getAllNotifications: 'notifications/getAllNotifications',
+      readAllNotifications: 'notifications/readAllNotifications',
     }),
     toggleMenu() {
       if (this.active === true) {
@@ -297,20 +320,15 @@ export default {
         this.basketStore = {}
       }
     },
-    fetchNotification(){
-      this.getNewNotification({
-        data_start: this.data_start
-      }).then((res) => {
-                for (let i = 0; i < res.data.data?.total; i++) {
-                    setTimeout(() => {
-                        let title = '';
-                        switch (res.data.data.items[i].namespace) {
-                            case '1':
-                                title = 'Изменение статуса заказа в маркетплейсе';
-                                break;
-                            case '2':
-                                title = 'Поступил новый оптовый заказ';
-                                break;
+    notificationTitle(num){
+      let title = ''
+      switch (num) {
+        case '1':
+          title = 'Изменение статуса заказа в маркетплейсе';
+          break;
+        case '2':
+          title = 'Поступил новый оптовый заказ';
+          break;
                             case '3':
                                 title = 'Ваша компания отключена';
                                 break;
@@ -345,24 +363,31 @@ export default {
                                 title = 'Ваше предложение было принято';
                                 break;
                         }
+                        return title
+    },
+    fetchNotification(){
+      this.getNewNotification({
+        data_start: this.data_start
+      }).then((res) => {
+                for (let i = 0; i < res.data.data?.total; i++) {
+                    setTimeout(() => {
+                        let title = this.notificationTitle(res.data.data.items[i].namespace);
                         this.setViewNotification({
                           item: res.data.data.items[i].id
                         })
+
                         this.$toast.add({ severity: 'secondary', summary: title, detail: 'Чтобы узнать подробнее, нажмите ', info: res.data.data.items[i], life: 7000 });
                     }, i * 500);
-
+                    if(this.showNotificationsModal == true){
+                      this.reloadNotificationsModal = true
+                    }
+                    this.getAllNotifications()
                 }
-                // if (res.data.data.items.length > 0) {
-                //     if (this.$route.params.id) {
-                //         this.get_notification_api({
-                //             action: 'get',
-                //             id: this.$route.params.id
-                //         });
-                //     }
-                // }
             });
+
       this.data_start = new Date();
-    }
+    },
+
   },
   watch: {
     basket() {
@@ -379,7 +404,25 @@ export default {
         this.getOrgBasketStore()
       })
     },
-  },
+    'showNotificationsModal': function(newVal){
+      if(newVal == false){
+          this.readAllNotifications()
+          this.getAllNotifications()
+        }
+      if(newVal != this.mobileNotificationsShow){
+        this.$emit('notificationsMobile', this.showNotificationsModal)
+      }
+    },
+    notificationsAll: function(newVal){
+      this.$emit('notifications', newVal.no_read)
+    },
+    mobileNotificationsShow: function(newVal){
+      if(this.showNotificationsModal != newVal){
+        this.showNotificationsModal = newVal
+      }
+
+    },
+  }
 }
 </script>
 <style lang="scss">
@@ -402,5 +445,100 @@ export default {
       border-radius: 50%;
     }
   }
+}
+.notifications__modal-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: -24px;
+}
+.notifications__modal-header-buttons{
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 8px;
+  max-width: 350px;
+  width:320px;
+  margin-right: 42px;
+}
+.notifications__modal-header-buttons button{
+  min-width: calc(50% - 4px);
+  max-width: calc(50% - 4px);
+  width: calc(50% - 4px);
+  font-size: 16px;
+  font-weight: 500;
+}
+.notifications__modal-cansel{
+  color: #757575;
+}
+.notifications__modal-container{
+  width: 100%;
+  padding-right: 20px;
+}
+.notifications__modal-container h4{
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 18px;
+  color: #757575;
+  margin: 20px 0;
+
+}
+.notifications__modal-list{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.notifications__modal-item{
+  width: 100%;
+  height: auto;
+  min-height: 115px;
+  background-color: #ffffff85;
+  box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
+  border-radius: 12px;
+  padding: 16px 16px 16px 19px;
+  position: relative;
+}
+.notifications__modal-list-new .notifications__modal-item:after{
+  content: '';
+  position:absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 8px;
+  top: 5px;
+  left: 5px;
+  background-color:#f92c0d;
+
+}
+.notifications__modal-item-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.notifications__modal-list .header__notification-icon{
+  width:20px;
+  height:20px;
+  font-size: 14px;
+}
+.notifications__modal-list-new .header__notification-icon{
+   color:#f92c0d
+}
+.notifications__modal-list-old .header__notification-icon{
+   color:#757575;
+}
+.notifications__modal-item-header-left{
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 123%;
+  color: #757575;
+}
+.notifications__modal-item .std-notification__header,.notifications__modal-item h6,.notifications__modal-item .std-notification__span{
+  display:none;
+}
+.notifications__modal-item .std-notification__content{
+  margin-top: 8px;
+  color: #757575;
+}
+.notifications__modal-container-empty{
+  margin-top:30px;
 }
 </style>
