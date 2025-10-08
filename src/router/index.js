@@ -35,6 +35,8 @@ import WarehouseCollection from '../pages/warehouse/collection.vue'
 import WarehouseCustomization from '../pages/warehouse/customization.vue'
 import ProfileCard from '../pages/org/card.vue'
 import ProfileStuff from '../pages/org/staff.vue'
+import ProfileStuffEdit from '../pages/org/staffEdit.vue'
+import ProfileStuffCreate from '../pages/org/staffCreate.vue'
 import ProfileAccess from '../pages/org/access.vue'
 import ProfileHash from '../pages/profile/profileHash.vue'
 
@@ -670,15 +672,44 @@ const router = createRouter({
                     },
                     {
                       path: 'stuff',
-                      name: 'profileStuff',
-                      props: true,
-                      label: 'Сотрудники',
-                      component: ProfileStuff,
                       meta: {
                         breadcrumb: {
                           label: 'Сотрудники',
                         },
                       },
+                      children: [
+                        {
+                          path: '',
+                          name: 'profileStuff',
+                          props: true,
+                          label: 'Сотрудники',
+                          component: ProfileStuff,
+                        },
+                        {
+                          path: ':manager_id',
+                          name: 'profileStuffEdit',
+                          props: true,
+                          label: 'Редактирование сотрудника',
+                          component: ProfileStuffEdit,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Редактирование сотрудника',
+                            },
+                          },
+                        },
+                        {
+                          path: 'create',
+                          name: 'profileStuffCreate',
+                          props: true,
+                          label: 'Создание сотрудника',
+                          component: ProfileStuffCreate,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Создание сотрудника',
+                            },
+                          },
+                        },
+                      ],
                     },
                     {
                       path: 'access',
