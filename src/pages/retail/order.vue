@@ -93,10 +93,10 @@
     <customModal v-model="this.modals.code" class="codeWindow">
       <template v-slot:title>Введите код</template>
       <form action="#" @submit.prevent="formSubmit">
-        <InputOtp v-model="code" integerOnly />
+        <InputOtp v-model="code" :length="6" integerOnly />
         <div class="buttons-container">
           <button class="d-button d-button-primary d-button-primary-small" type="submit">
-            Ок!
+            Проверить
           </button>
         </div>
       </form>

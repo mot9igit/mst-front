@@ -196,11 +196,11 @@
     <div class="product-card__footer" v-if="offer.actions && offer.actions.length">
       <!-- Список акций -->
       <div class="product-card__promo-list">
-        <div class="product-card__promo">
+        <div class="product-card__promo" v-if="activeActions > 0">
           Активные акции
           <div class="d-badge2 product-card__promo-badge">{{ activeActions }}</div>
         </div>
-        <div class="product-card__promo">
+        <div class="product-card__promo" v-if="otherActions > 0">
           Акции без выполненных условий
           <div class="d-badge2 product-card__promo-badge">{{ otherActions }}</div>
         </div>
@@ -213,6 +213,7 @@
 
       <!-- Кнопка: "Все акции" -->
       <button
+        v-if="offer.actions"
         class="d-button d-button--sm-shadow d-button-tertiary d-button-tertiary-small product-card__promo-all"
         @click.prevent="showModal()"
       >
@@ -221,6 +222,23 @@
     </div>
   </div>
   <teleport to="body">
+    <customModal
+      v-model="this.modalMultiplicityRemain"
+      class="product-not-available product-multiplicity-not-available"
+    >
+      <img src="/images/icons_milen/outOfStock2.png" alt="" />
+      <b>У нас нет столько товаров :(</b>
+      <p>
+        Извините, но количество данного товара меньше, чем заявленная кратность по Акции. Если вы
+        все же хотите купить этот товар, воспользуйтесь одним из соседних предложений.
+      </p>
+      <button
+        class="d-button d-button-primary d-button-primary-small"
+        @click="this.modalMultiplicityRemain = false"
+      >
+        Понятно
+      </button>
+    </customModal>
     <customModal v-model="this.modalActions" class="product-card-actions__modal">
       <div class="product-card-actions__modal-container">
         <div class="product-card-actions__modal-buttons">
@@ -424,6 +442,7 @@ export default {
       modalActions: false,
       modalActiveActions: false,
       modalOtherActions: false,
+      modalMultiplicityRemain: false,
       activeActionsData: [],
       otherActionsData: [],
       fetchIds: [],
@@ -565,6 +584,13 @@ export default {
     },
     addBasket(item) {
       this.loading = true
+      if (Number(item?.multiplicity) > 1) {
+        if (Number(item?.multiplicity) > Number(item.available)) {
+          this.modalMultiplicityRemain = true
+          this.loading = false
+          return false
+        }
+      }
       const data = {
         org_id: item.org_id,
         store_id: item.store_id,
@@ -622,7 +648,10 @@ export default {
     transform: rotate(1turn);
   }
 }
-
+.product-multiplicity-not-available .modal-content {
+  width: 100%;
+  max-width: 500px;
+}
 .product-card__basket-button:not(.basket-true) form {
   display: none;
 }
