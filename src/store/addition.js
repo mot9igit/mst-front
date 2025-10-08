@@ -8,6 +8,7 @@ export default {
     catalogs: [],
     out_catalogs: [],
     regions: [],
+    cities: [],
     organizations: [],
     tags: [],
   },
@@ -76,6 +77,19 @@ export default {
       }
       return response
     },
+    async getCities({ commit }, { exclude, filter }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        get_type: 'cities',
+        exclude: exclude,
+        filter: filter,
+      }
+      const response = await api.addition.getCities(data)
+      if (response) {
+        commit('SET_CITIES', response.data)
+      }
+      return response
+    },
     async getOrganizations({ commit }, { exclude, filter }) {
       const data = {
         id: router.currentRoute._value.params.id,
@@ -118,6 +132,9 @@ export default {
     SET_REGIONS: (state, data) => {
       state.regions = data.data
     },
+    SET_CITIES: (state, data) => {
+      state.cities = data.data
+    },
     SET_ORGANIZATIONS: (state, data) => {
       state.organizations = data.data
     },
@@ -140,6 +157,9 @@ export default {
     },
     regions(state) {
       return state.regions
+    },
+    cities(state) {
+      return state.cities
     },
     organizations(state) {
       return state.organizations
