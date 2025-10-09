@@ -532,6 +532,9 @@ export default {
     })
     this.getManagers({
       id: this.$route.params.id,
+      filter: '',
+      page: '',
+      perpage: ''
     })
     this.getStores({
       id: this.$route.params.id,

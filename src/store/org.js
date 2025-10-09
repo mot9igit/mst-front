@@ -19,6 +19,7 @@ export default {
       total: -1,
       totalAll: 0,
     },
+    manager: {},
   },
   actions: {
     async getOrg({ commit }) {
@@ -207,6 +208,27 @@ export default {
       const response = await api.org.setManager(sendData)
       return response
     },
+    async deleteManager(store, { manager_id }) {
+      const sendData = {
+        action: 'delete/org/manager',
+        id: router.currentRoute._value.params.id,
+        manager_id: manager_id,
+      }
+      const response = await api.org.deleteManager(sendData)
+      return response
+    },
+    async getManager({ commit }, { manager_id }) {
+      const data = {
+        action: 'get/org/manager',
+        id: router.currentRoute._value.params.id,
+        manager_id: manager_id
+      }
+      const response = await api.org.getManager(data)
+      if (response) {
+        commit('SET_MANAGER', response.data)
+      }
+      return response
+    },
   },
   mutations: {
     SET_ORG: (state, data) => {
@@ -230,6 +252,9 @@ export default {
     SET_ORG_PROFILE: (state, data) => {
       state.orgprofile = data.data
     },
+    SET_MANAGER: (state, data) => {
+      state.manager = data.data
+    },
   },
   getters: {
     orgActive(state) {
@@ -252,6 +277,9 @@ export default {
     },
     orgprofile(state) {
       return state.orgprofile
+    },
+    manager(state) {
+      return state.manager
     },
   },
 }

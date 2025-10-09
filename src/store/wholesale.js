@@ -57,11 +57,13 @@ export default {
       }
       return response
     },
-    async getManagers({ commit }, { value }) {
+    async getManagers({ commit }, { filter, page, perpage }) {
       const data = {
         action: 'get/org/managers',
         id: router.currentRoute._value.params.id,
-        value: value,
+        filter: filter,
+        page: page,
+        perpage: perpage,
       }
       const response = await api.wholesale.getManagers(data)
       if (response) {

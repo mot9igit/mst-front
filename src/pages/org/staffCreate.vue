@@ -450,7 +450,7 @@ export default {
     },
     createStaff(){
       let error = 0
-      let phone = this.formatPhoneInput(this.form.phone)
+      //let phone = this.formatPhoneInput(this.form.phone)
       if (!this.validatePhone(this.form.phone)) {
         this.$toast.add({ severity: 'error', summary: 'Ошибка', detail: 'Некорректный номер телефона', life: 3000 });
         this.errors.phone = 'Введите корректный номер телефона'
@@ -474,6 +474,7 @@ export default {
             }).then(() => {
 
               this.$toast.add({ severity: 'success', summary: 'Сотрудник создан!', detail: 'Вы успешно добавили нового сотрудника', life: 3000 });
+              this.$router.push({ name: 'profileStuff', params: { id: this.$route.params.id } })
 
             })
           }
