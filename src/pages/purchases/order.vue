@@ -27,21 +27,30 @@
       <i class="item-list-item-icon d-icon-doc"></i>
       <span class="catalog__head-item-text">Документы <span v-if="docs.length">({{ docs.length }})</span></span>
 		</button>
-    <button
+    </div>
+    <div class="d-top-order-container-buttons">
+      <button
     class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action"
+    @click.prevent="changeStatus"
+    v-if="status.id == 13">
+      <span class="catalog__head-item-text">Подтвердить заказ</span>
+		</button>
+    <button
+    class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__action"
     @click.prevent="modalEdit = true"
     v-if="status.editable">
       <span class="catalog__head-item-text">Редактировать заказ</span>
+		</button>
+
+    <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__repeat" @click.prevent="showReq()">
+      <i class="item-list-item-icon d-icon-refresh"></i>
+      <span class="catalog__head-item-text">Повторить заказ</span>
 		</button>
     <button
     class="d-button d-button-tertiary d-button-tertiary-small d-button--sm-shadow  order-card__action"
     @click.prevent="modalCancel = true"
     v-if="status.cancelable">
       <span class="catalog__head-item-text">Отменить заказ</span>
-		</button>
-    <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__repeat" @click.prevent="showReq()">
-      <i class="item-list-item-icon d-icon-refresh"></i>
-      <span class="catalog__head-item-text">Повторить заказ</span>
 		</button>
     </div>
       </div>
@@ -88,7 +97,10 @@
           <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
             ИНН: {{ this.order?.ur_persone?.inn != '' ? this.order?.ur_persone?.inn : '' }}
           </div>
-          <div class="order-card__orderinfo-grid-text-down">
+          <div class="order-card__orderinfo-grid-text-down" v-if="this.order?.delivery_address">
+            {{ this.order?.delivery_address }}
+          </div>
+          <div class="order-card__orderinfo-grid-text-down" v-else>
             {{ this.order?.buyer_address != '' ? this.order?.buyer_address : '' }}
           </div>
           <div class="order-card__orderinfo-grid-text-down">
@@ -98,7 +110,10 @@
         </div>
         <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
-          <div class="order-card__orderinfo-grid-text">
+          <div class="order-card__orderinfo-grid-text" v-if="this.order?.delay_text">
+            {{ this.order?.delay_text }}
+          </div>
+          <div class="order-card__orderinfo-grid-text" v-else>
             {{ this.order?.delay != '' ? (Number.parseInt(this.order?.delay) ? this.order?.delay + ' дн.' : this.order?.delay) : '0 дн.' }}
           </div>
         </div>
@@ -109,7 +124,7 @@
         <div class="order-card__orderinfo-grid d-col-md-2">
           <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.day_delivery }} дн. ({{ this.order?.delivery_date }})
+            {{ this.order?.day_delivery }}  ({{ this.order?.delivery_date }})
           </div>
         </div>
       </div>
@@ -269,7 +284,18 @@ export default {
       unsetOptOrder: 'purchases/unsetOptOrder',
       canselOptOrder: 'purchases/canselOptOrder',
       repeatOrder: 'purchases/repeatOrder',
+      setStatusAccept: 'purchases/setStatusAccept'
     }),
+    changeStatus(){
+      this.loading = true
+      this.setStatusAccept({
+          order_id: this.$route.params.order_id,
+        }).then(() => {
+        this.getOptOrder({
+          order_id: this.$route.params.order_id,
+        }).then(() => (this.loading = false))
+      })
+    },
     showReq(){
       this.loading = true
       this.repeatOrder({
@@ -397,5 +423,8 @@ export default {
 .order-card__repeat .item-list-item-icon{
   font-size: 18px;
   font-weight: 600;
+}
+.order-card__docs{
+  margin-bottom:16px;
 }
 </style>

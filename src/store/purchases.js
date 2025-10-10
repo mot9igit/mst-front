@@ -117,6 +117,15 @@ export default {
           const response = await api.purchases.repeatOrder(sendData)
           return response
     },
+    async setStatusAccept(store, { order_id }) {
+      const senddata = {
+        action: 'status/edit',
+        order_id: order_id,
+      }
+      const response = await api.purchases.setStatusAccept(senddata)
+
+      return response
+    },
     unsetOpts({ commit }) {
       commit('UNSET_OPTS')
     },
