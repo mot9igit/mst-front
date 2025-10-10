@@ -7,12 +7,9 @@
       <breadcrumbs />
     </div>
 
-
-
     <Loader v-if="loading" />
 
-
-    <form  @submit.prevent="createStaff()">
+    <form  @submit.prevent="editStaff()">
     <div class="lk-staff-create__header">
 			<div class="lk-staff-edit__header-left">
         <h1>Редактирование сотрудника</h1>
@@ -25,7 +22,7 @@
             type="submit"
 					>
 						<i class="d-icon-plus-flat lk-staff__header-button-icon"></i>
-						Сохранить
+						Сохранить изменения
 					</button>
 				</div>
 			</div>
@@ -281,7 +278,7 @@ export default {
       organizations_all: [],
       tableData: [
           {
-            name: 'receiver',
+            name: 'name',
             label: 'ФИО сотрудника',
             placeholder: 'Введите ФИО сотрудника',
           },
@@ -321,26 +318,27 @@ export default {
     }
   },
   mounted() {
-    this.getRegions({ exclude: [], filter: '' }).then(() => {
+
+    this.getManager({
+      manager_id: this.$route.params.manager_id
+    }).then(() => {
+      this.form = this.manager
+      this.getRegions({ exclude: this.form.region, filter: '' }).then(() => {
       this.regions_all = this.regions.map(function (el) {
         return { name: el.label, code: el.key }
       })
     })
-    this.getCities({ exclude: [], filter: '' }).then(() => {
+    this.getCities({ exclude: this.form.city, filter: '' }).then(() => {
       this.cities_all = this.cities.map(function (el) {
         return { name: el.label, code: el.key }
       })
       this.loading = false
     })
-    this.getOrganizations({ exclude: [], filter: '' }).then(() => {
+    this.getOrganizations({ exclude: this.form.org, filter: '' }).then(() => {
       this.organizations_all = this.organizations.map(function (el) {
         return { name: el.name, code: el.id }
       })
     })
-    this.getManager({
-      manager_id: this.$route.params.manager_id
-    }).then(() => {
-      this.form = this.manager
     })
 
 
@@ -455,7 +453,7 @@ export default {
       const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       return regex.test(email);
     },
-    createStaff(){
+    editStaff(){
       let error = 0
       //let phone = this.formatPhoneInput(this.form.phone)
       if (!this.validatePhone(this.form.phone)) {
@@ -473,14 +471,22 @@ export default {
             this.errors.email = 'Введите корректный Email сотрудника'
             error++
       }
+
       if(error > 0){
         return
       }else{
+            if(this.form.global == 1){
+              this.form.city = []
+              this.form.region = []
+              this.form.org = []
+            }
             this.setManager({
-              data: this.form
+              data: this.form,
             }).then(() => {
-
-              this.$toast.add({ severity: 'success', summary: 'Сотрудник создан!', detail: 'Вы успешно добавили нового сотрудника', life: 3000 });
+              this.getManager({
+                manager_id: this.$route.params.manager_id
+              })
+              this.$toast.add({ severity: 'success', summary: 'Данные сотрудника отредактированы!', detail: 'Вы успешно отредактировали карточку сотрудника', life: 3000 });
               this.$router.push({ name: 'profileStuff', params: { id: this.$route.params.id } })
 
             })
@@ -501,6 +507,25 @@ export default {
     })
   },
   watch: {
+    manager: function(newVal){
+      this.form = this.newVal
+      this.getRegions({ exclude: this.form.region, filter: '' }).then(() => {
+      this.regions_all = this.regions.map(function (el) {
+        return { name: el.label, code: el.key }
+      })
+    })
+    this.getCities({ exclude: this.form.city, filter: '' }).then(() => {
+      this.cities_all = this.cities.map(function (el) {
+        return { name: el.label, code: el.key }
+      })
+      this.loading = false
+    })
+    this.getOrganizations({ exclude: this.form.org, filter: '' }).then(() => {
+      this.organizations_all = this.organizations.map(function (el) {
+        return { name: el.name, code: el.id }
+      })
+    })
+    },
     regions: function (newVal) {
       this.regions_all = newVal.map(function (el) {
         return { name: el.label, code: el.key }
