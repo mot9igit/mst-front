@@ -259,6 +259,26 @@
       </div>
 		</div>
 
+          <div class="lk-staff-edit__operator-notifications-wrapper">
+          <p class="lk-staff-edit__operator-title">Подписка на уведомления:</p>
+          <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper" v-for="(type,index) in notifications_types.items" :key="index">
+            <Checkbox
+              v-model="form.notifications_types"
+              :binary="false"
+              :inputId="type.id"
+              :name="type.id"
+              :value="type.id"
+              checked = "true"
+              />
+            <label
+              :for="type.id"
+              class="d-radio__label vendor-change__selected-item-radio-label"
+              >
+              {{ type.name }}
+            </label>
+          </div>
+      </div>
+
     </form>
 	</section>
 </template>
@@ -268,11 +288,11 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import { mapActions, mapGetters } from 'vuex'
 import Toast from 'primevue/toast'
-
+import { Checkbox } from 'primevue'
 
 export default {
   name: 'ProfileStaffCreate',
-  components: { Breadcrumbs, Loader, Toast },
+  components: { Breadcrumbs, Loader, Toast, Checkbox },
   data(){
     return {
       loading: true,
@@ -303,7 +323,8 @@ export default {
         region: [],
         city: [],
         org: [],
-        global: false
+        global: false,
+        notifications_types: []
       },
       search: {
         city: '',
@@ -320,7 +341,7 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
     this.getRegions({ exclude: [], filter: '' }).then(() => {
       this.regions_all = this.regions.map(function (el) {
         return { name: el.label, code: el.key }
@@ -337,6 +358,7 @@ export default {
         return { name: el.name, code: el.id }
       })
     })
+    this.getNotificationsTypes()
 
 
   },
@@ -346,6 +368,7 @@ export default {
     getCities: 'addition/getCities',
     getOrganizations: 'addition/getOrganizations',
     setManager: 'org/setManager',
+    getNotificationsTypes: 'notifications/getNotificationsTypes',
   }),
   regionSelect(item) {
       this.form.region.push(item)
@@ -490,6 +513,7 @@ export default {
       regions: 'addition/regions',
       cities: 'addition/cities',
       organizations: 'addition/organizations',
+      notifications_types: 'notifications/notifications_types',
     })
   },
   watch: {
@@ -507,6 +531,13 @@ export default {
       this.organizations_all = newVal.map(function (el) {
         return { name: el.name, code: el.id, image: el.image }
       })
+    },
+    notifications_types: function(newVal){
+
+      for(let i=0;i<newVal.items.length;i++){
+        this.form.notifications_types.push(newVal.items[i].id)
+      }
+
     },
     'search.region': function (newVal, oldVal) {
       if (newVal.length < 3 && oldVal.length < newVal.length) {
@@ -559,62 +590,5 @@ export default {
 </script>
 
 <style lang="scss">
-  .lk-staff-create__header{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 40px;
-  }
-  .lk-staff-edit__operator-search:after{
-    content: "\e01d";
-    font-family: 'Iconly';
-    position: relative;
-    display: block;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    margin-left: 0px;
-    margin-right: 9px;
-    font-size: 18px;
-  }
 
-  .lk-staff-edit__regions .d-search .d-search__suggestions {
-    top: 36px;
-    left: 2px;
-    padding: 20px 4px 10px 4px !important;
-    //z-index: 0;
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
-    background: #ededed;
-    max-height: 500px;
-    overflow-y: scroll;
-    width: fit-content;
-    min-width: 560px;
-}
-.lk-staff-edit__regions:first-child .lk-staff-edit__operator-search{
-    z-index:6;
-}
-.lk-staff-edit__regions:first-child .d-search .d-search__suggestions{
-    z-index:5;
-}
-.lk-staff-edit__regions:nth-child(2) .lk-staff-edit__operator-search{
-    z-index:4;
-}
-.lk-staff-edit__regions:nth-child(2) .d-search .d-search__suggestions{
-    z-index:3;
-}
-.lk-staff-edit__regions:last-child .lk-staff-edit__operator-search{
-    z-index:2;
-}
-.lk-staff-edit__regions:last-child .d-search .d-search__suggestions{
-    z-index:1;
-}
-.lk-staff-edit__regions .chips{
-  margin: 20px 0 16px;
-}
-.lk-staff-edit__regions-cont{
-  padding-bottom: 200px;
-}
 </style>

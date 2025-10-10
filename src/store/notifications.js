@@ -8,6 +8,7 @@ export default {
     newNotification: {},
     notificationsAll: {},
     notifications: {},
+    notifications_types: {},
   },
 
   actions: {
@@ -82,6 +83,17 @@ export default {
       }
       return response
     },
+    async getNotificationsTypes ({ commit }) {
+      const senddata = {
+        action: 'get/types',
+        id: router.currentRoute._value.params.id,
+      }
+      const response = await api.notifications.getNotificationsTypes(senddata)
+      if (response) {
+        commit('SET_NOTIFICATIONS_TYPES', response.data)
+      }
+      return response
+    },
   },
   mutations: {
     SET_NEW_NOTIFICATIONS(state, data) {
@@ -93,6 +105,9 @@ export default {
     SET_ALL_NOTIFICATIONS(state, data) {
       state.notificationsAll = data.data
     },
+    SET_NOTIFICATIONS_TYPES(state, data) {
+      state.notifications_types = data.data
+    },
   },
   getters: {
     newNotification(state) {
@@ -103,6 +118,9 @@ export default {
     },
     notificationsAll(state) {
       return state.notificationsAll
+    },
+    notifications_types(state) {
+      return state.notifications_types
     },
 
   },

@@ -236,23 +236,24 @@
               </ul>
             </form>
           </div>
-
-        <!--<div class="lk-staff-edit__operator-address-wrapper">
-          <p class="lk-staff-edit__operator-address">
-            <i
-            class="d-icon-location lk-staff-edit__operator-address-icon"
-            ></i>
-            <span>УрФО, Москва, ООО “Стин”, Пром хрень снаб</span>
-          </p>
-          <div class="lk-staff-edit__operator-address-actions">
-            <div class="d-divider d-divider--vertical lk-staff-edit__operator-address-actions-divider"></div>
-              <button class="lk-staff-edit__operator-address-actions-button">
-              <i class="d-icon-pen2"></i>
-              </button>
-            </div>
-        </div>-->
-
-
+      </div>
+      <div class="lk-staff-edit__operator-notifications-wrapper">
+          <p class="lk-staff-edit__operator-title">Подписка на уведомления:</p>
+          <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper" v-for="(type,index) in notifications_types.items" :key="index">
+            <Checkbox
+              v-model="form.notifications_types"
+              :binary="false"
+              :inputId="type.id"
+              :name="type.id"
+              :value="type.id"
+              />
+            <label
+              :for="type.id"
+              class="d-radio__label vendor-change__selected-item-radio-label"
+              >
+              {{ type.name }}
+            </label>
+          </div>
       </div>
 		</div>
 
@@ -265,11 +266,12 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import { mapActions, mapGetters } from 'vuex'
 import Toast from 'primevue/toast'
+import { Checkbox } from 'primevue'
 
 
 export default {
   name: 'ProfileStaffEdit',
-  components: { Breadcrumbs, Loader, Toast },
+  components: { Breadcrumbs, Loader, Toast, Checkbox },
   data(){
     return {
       loading: true,
@@ -300,7 +302,8 @@ export default {
         region: [],
         city: [],
         org: [],
-        global: false
+        global: false,
+        notifications_types: []
       },
       search: {
         city: '',
@@ -339,6 +342,7 @@ export default {
         return { name: el.name, code: el.id }
       })
     })
+    this.getNotificationsTypes()
     })
 
 
@@ -351,6 +355,7 @@ export default {
     getOrganizations: 'addition/getOrganizations',
     setManager: 'org/setManager',
     getManager: 'org/getManager',
+    getNotificationsTypes: 'notifications/getNotificationsTypes',
   }),
   regionSelect(item) {
       this.form.region.push(item)
@@ -504,6 +509,7 @@ export default {
       cities: 'addition/cities',
       organizations: 'addition/organizations',
       manager: 'org/manager',
+      notifications_types: 'notifications/notifications_types',
     })
   },
   watch: {
@@ -648,6 +654,10 @@ export default {
   margin: 20px 0 16px;
 }
 .lk-staff-edit__regions-cont{
-  padding-bottom: 200px;
+  padding-bottom: 40px;
+  border-bottom: 0.5px solid rgba(117, 117, 117, 0.4588235294);
+}
+.lk-staff-edit__operator-notifications-wrapper{
+  padding-top: 32px;
 }
 </style>
