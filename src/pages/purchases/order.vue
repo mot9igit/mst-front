@@ -32,7 +32,7 @@
       <button
     class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action"
     @click.prevent="changeStatus"
-    v-if="status.id == 13">
+    v-if="status.api_key == 'seller_accepted'">
       <span class="catalog__head-item-text">Подтвердить заказ</span>
 		</button>
     <button
