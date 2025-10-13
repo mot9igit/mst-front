@@ -266,7 +266,7 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import { mapActions, mapGetters } from 'vuex'
 import Toast from 'primevue/toast'
-import { Checkbox } from 'primevue'
+import Checkbox from 'primevue/checkbox'
 
 
 export default {
@@ -496,11 +496,6 @@ export default {
 
             })
           }
-
-
-
-
-
     },
   },
   computed: {
@@ -514,39 +509,39 @@ export default {
   },
   watch: {
     manager: function(newVal){
-      this.form = this.newVal
+      this.form = newVal
       this.getRegions({ exclude: this.form.region, filter: '' }).then(() => {
-      this.regions_all = this.regions.map(function (el) {
-        return { name: el.label, code: el.key }
+        this.regions_all = this.regions.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
       })
-    })
-    this.getCities({ exclude: this.form.city, filter: '' }).then(() => {
-      this.cities_all = this.cities.map(function (el) {
-        return { name: el.label, code: el.key }
+      this.getCities({ exclude: this.form.city, filter: '' }).then(() => {
+        this.cities_all = this.cities.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
+        this.loading = false
       })
-      this.loading = false
-    })
-    this.getOrganizations({ exclude: this.form.org, filter: '' }).then(() => {
-      this.organizations_all = this.organizations.map(function (el) {
-        return { name: el.name, code: el.id }
+      this.getOrganizations({ exclude: this.form.org, filter: '' }).then(() => {
+        this.organizations_all = this.organizations.map(function (el) {
+          return { name: el.name, code: el.id }
+        })
       })
-    })
-    },
-    regions: function (newVal) {
-      this.regions_all = newVal.map(function (el) {
-        return { name: el.label, code: el.key }
-      })
-    },
-    cities: function (newVal) {
-      this.city_all = newVal.map(function (el) {
-        return { name: el.label, code: el.key }
-      })
-    },
-    organizations: function (newVal) {
-      this.organizations_all = newVal.map(function (el) {
-        return { name: el.name, code: el.id, image: el.image }
-      })
-    },
+      },
+      regions: function (newVal) {
+        this.regions_all = newVal.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
+      },
+      cities: function (newVal) {
+        this.city_all = newVal.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
+      },
+      organizations: function (newVal) {
+        this.organizations_all = newVal.map(function (el) {
+          return { name: el.name, code: el.id, image: el.image }
+        })
+      },
     'search.region': function (newVal, oldVal) {
       if (newVal.length < 3 && oldVal.length < newVal.length) {
         return

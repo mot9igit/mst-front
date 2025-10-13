@@ -106,6 +106,10 @@ export default {
       type: String,
       default: '',
     },
+    manager_id: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {

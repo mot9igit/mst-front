@@ -268,7 +268,7 @@
               :inputId="type.id"
               :name="type.id"
               :value="type.id"
-              checked = "true"
+              
               />
             <label
               :for="type.id"
@@ -288,7 +288,7 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import { mapActions, mapGetters } from 'vuex'
 import Toast from 'primevue/toast'
-import { Checkbox } from 'primevue'
+import Checkbox from 'primevue/checkbox'
 
 export default {
   name: 'ProfileStaffCreate',
@@ -358,7 +358,12 @@ export default {
         return { name: el.name, code: el.id }
       })
     })
-    this.getNotificationsTypes()
+    this.getNotificationsTypes().then(() => {
+      this.form.notifications_types = []
+      for(let i=0;i<this.notifications_types.items.length;i++){
+        this.form.notifications_types.push(this.notifications_types.items[i].id)
+      }
+    })
 
 
   },
@@ -533,7 +538,7 @@ export default {
       })
     },
     notifications_types: function(newVal){
-
+      this.form.notifications_types = []
       for(let i=0;i<newVal.items.length;i++){
         this.form.notifications_types.push(newVal.items[i].id)
       }

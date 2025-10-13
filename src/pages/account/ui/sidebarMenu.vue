@@ -219,11 +219,11 @@ export default {
             icon: 'd-icon-focus',
             to: { name: 'organization', params: { id: this.$route.params.id } },
           },
-          // {
-          //   name: 'Сотрудники',
-          //   icon: 'd-icon-user',
-          //   to: { name: 'profileStuff', params: { id: this.$route.params.id } },
-          // },
+           {
+             name: 'Сотрудники',
+             icon: 'd-icon-user',
+             to: { name: 'profileStuff', params: { id: this.$route.params.id } },
+           },
           // {
           //   name: 'Политики доступа',
           //   icon: 'd-icon-lock-open',

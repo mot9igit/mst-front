@@ -51,11 +51,11 @@ import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import BoxTable from '@/shared/ui/boxtable/table.vue'
-
+import Toast from 'primevue/toast'
 
 export default {
   name: 'ProfileStaff',
-  components: { Breadcrumbs, Loader, BoxTable },
+  components: { Breadcrumbs, Loader, BoxTable, Toast },
   data(){
     return{
       page: 1,
