@@ -265,4 +265,205 @@ export default {
 .lk-staff__all .v-box-table{
   margin-top: -80px;
 }
+@media (width <= 1280px) {
+    .lk-staff .clients__card {
+      flex-direction: row;
+      align-items: center;
+    }
+    .clients__card {
+      position:relative;
+    }
+    .lk-staff .d-col-xl-6.d-col-md-4{
+      min-width:25%;
+      width:25%;
+    }
+    .lk-staff__card-contact-container{
+      font-size:14px;
+    }
+    .lk-staff .p-button-text.p-button-secondary i {
+        font-size: 14px;
+    }
+    .lk-staff .p-button-text.p-button-secondary {
+      width: 30px;
+    }
+}
+@media (width <= 1024px) {
+     
+    .lk-staff .d-col-xl-6.d-col-md-4{
+      min-width:30%;
+      width:30%;
+    }
+    .lk-staff__card-contact-container{
+      font-size:10px;
+    }
+    .lk-staff .p-button-text.p-button-secondary i {
+        font-size: 10px;
+    }
+    .lk-staff .p-button-text.p-button-secondary {
+      width: 20px;
+    }
+    .lk-staff__card-contact-label {
+      font-size: 11px;
+    }
+    .lk-staff .p-floatlabel label {
+      font-size: 11px;
+    }
+    .organization h1
+    {
+        font-size: 16px;
+    }
+    .lk-staff__header-button {
+      font-size: 14px;
+      font-weight: 500;
+      padding: 6px 12px;
+      height: 32px;
+      width: fit-content;
+    }
+    .lk-staff__card-contact-icon {
+        font-size: 12px;
+    }
+}
+@media (width <= 800px) {
+     
+    .lk-staff .d-col-xl-6.d-col-md-4{
+      min-width:30%;
+      width:30%;
+    }
+    .lk-staff__card-contact-container{
+      font-size:8px;
+    }
+    .lk-staff .p-button-text.p-button-secondary i {
+        font-size: 8px;
+    }
+    .lk-staff .p-button-text.p-button-secondary {
+      width: 10px;
+    }
+    .lk-staff__card-contact-label {
+      font-size: 9px;
+    }
+    .lk-staff .p-floatlabel label {
+      font-size: 9px;
+    }
+    .organization h1
+    {
+        font-size: 12px;
+    }
+    .lk-staff__header-button {
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 8px;
+      height: 24px;
+      width: fit-content;
+    }
+    .lk-staff__card-contact-icon {
+        font-size: 9px;
+    }
+    .lk-staff__card-contact-container.d-col-5:first-child{
+      width:15%;
+    }
+    .lk-staff__card-contact-container.d-col-5{
+      width:21%;
+    }
+    .lk-staff__card-contact-container.d-col-2{
+      width:12%;
+    }
+    .lk-staff .p-inputtext {
+      padding-block: 2px;
+    }
+    .lk-staff__all .form_input_group:after {
+      top: calc(50% - 5.5px);
+      font-size: 11px;
+    }
+    .lk-staff__all .v-box-table {
+        margin-top: -65px;
+    }
+    .lk-staff__header-button-icon {
+        font-size: 10px;
+        width: 12px;
+        height:12px;
+    }  
+}
+@media (width <= 600px) {
+  .lk-staff{
+    margin-top:140px;
+  }
+  .organization h1{
+    font-size: 16px;
+  }
+  .lk-staff__all .lk-staff__header {
+    justify-content: start !important;
+    width: 100%;
+  }
+  .lk-staff__header-button{
+    width:100%;
+  }
+  .lk-staff__header-button-icon {
+    font-size: 16px;
+    width: 16px;
+    height:16px;
+  } 
+  .lk-staff__header-button {
+    font-size: 16px;
+    font-weight: 500;
+    padding: 6px 8px;
+    height: 32px;
+    width: 100%;
+  }
+  .lk-staff__all .v-box-table {
+    margin-top: 0px;
+  }
+  .lk-staff .d-col-xl-6.d-col-md-4{
+    min-width:100%;
+    width:100%;
+  }
+  .lk-staff .p-inputtext {
+    padding-block: 8px;
+  }
+  .lk-staff .p-floatlabel label {
+    font-size: 14px;
+  }
+  .lk-staff__all .form_input_group:after {
+    top: calc(50% - 7px);
+    font-size: 14px;
+  }
+  .lk-staff .d-table__wrapper{
+    width: calc(100% + 88px);
+    margin-left: - 44px;
+    padding-bottom: 40px;
+  }
+  .lk-staff .clients__card{
+    flex-direction: column;
+    gap:8px;
+    align-items: start;
+  }
+  .lk-staff__card-contact-container{
+    width: 100%;
+    padding: 0 44px !important;
+  }
+  .lk-staff__card-contact-container.d-col-5:first-child{
+    width:100%;
+  }
+  .lk-staff__card-contact-container.d-col-5{
+    width:100%;
+  }
+  .lk-staff__card-contact-container.d-col-2{
+    width:100%;
+  }
+  .lk-staff__card-contact-container{
+    font-size:14px;
+  }
+  .lk-staff__card-contact-icon {
+    font-size: 14px;
+  }
+  .lk-staff__card-contact-label {
+    font-size: 14px;
+  } 
+  .lk-staff .p-button-text.p-button-secondary i {
+    font-size: 14px;
+  }
+  .lk-staff .p-button-text.p-button-secondary {
+    width: 30px;
+  }
+
+}
 </style>
