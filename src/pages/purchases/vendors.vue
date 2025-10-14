@@ -107,7 +107,7 @@
           </div>-->
             <div class="clients__card-right-right d-col-24">
               <div class="clients__card-action-container d-col-6">
-                <button class="clients__card-action" @click.prevent="changeOpts(item.id, 0)">
+                <button class="clients__card-action" @click.prevent="changeOpts(item.id, '')">
                   <i class="d-icon-trash"></i>
                 </button>
               </div>
@@ -143,7 +143,7 @@
                   <div
                     class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
                   ></div>
-                  <button class="clients__card-action" @click.prevent="changeOpts(item.id, 0)">
+                  <button class="clients__card-action" @click.prevent="changeOpts(item.id, '')">
                     <i class="d-icon-trash"></i>
                   </button>
                 </div>
@@ -203,7 +203,7 @@
                 <div
                   class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
                 ></div>
-                <button class="clients__card-action" @click.prevent="changeOpts(item.id, 0)">
+                <button class="clients__card-action" @click.prevent="changeOpts(item.id, '')">
                   <i class="d-icon-trash"></i>
                 </button>
               </div>
