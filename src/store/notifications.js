@@ -24,15 +24,7 @@ export default {
       }
       return response
     },
-    async setViewNotification (store, { item }) {
-      const senddata = {
-        item: item,
-        action: 'set/view',
-        id: router.currentRoute._value.params.id,
-      }
-      const response = await api.notifications.setViewNotification(senddata)
-      return response
-    },
+
     async getNotifications ({ commit }, { page, perpage, read }) {
       const senddata = {
         page: page,

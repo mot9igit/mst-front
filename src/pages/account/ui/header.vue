@@ -267,7 +267,6 @@ export default {
       setOrgBasketStore: 'basket/setOrgBasketStore',
       getBasket: 'basket/getBasket',
       getNewNotification: 'notifications/getNewNotification',
-      setViewNotification: 'notifications/setViewNotification',
       getAllNotifications: 'notifications/getAllNotifications',
       readAllNotifications: 'notifications/readAllNotifications',
     }),
@@ -372,10 +371,6 @@ export default {
                 for (let i = 0; i < res.data.data?.total; i++) {
                     setTimeout(() => {
                         let title = this.notificationTitle(res.data.data.items[i].namespace);
-                        this.setViewNotification({
-                          item: res.data.data.items[i].id
-                        })
-
                         this.$toast.add({ severity: 'secondary', summary: title, detail: 'Чтобы узнать подробнее, нажмите ', info: res.data.data.items[i], life: 7000 });
                     }, i * 500);
                     if(this.showNotificationsModal == true){
