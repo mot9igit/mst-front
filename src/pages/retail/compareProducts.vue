@@ -5,7 +5,7 @@
     </div>
     <h2>Сопоставление товаров</h2>
     <Loader v-if="loading" />
-  <!--  <div class="product-comparison__stats">
+    <!--  <div class="product-comparison__stats">
 								<div class="product-comparison__stats-top" v-if="prods.all">
 									<div class="product-comparison__stats-block">
 										<p class="product-comparison__stats-block-title">Сопоставление товаров по стоимости</p>
@@ -247,38 +247,42 @@
         :items_data="orgStores.items"
         :total="orgStores.total"
         :table_data="this.table_stores"
-
       />
     </div>
     <h2>Сопоставление по брендам</h2>
     <div class="product-comparison__brands">
       <BaseTable
-              :items_data="report_copo.items"
-              :total="report_copo.total"
-              :pagination_items_per_page="this.pagination_items_per_page"
-              :pagination_offset="this.pagination_offset"
-              :page="this.page_brand"
-              :table_data="this.table_data_brand"
-              :filters="this.filtersbrand"
-              @filter="filterbrand"
-              @sort="filterbrand"
-              @paginate="paginatebrand"
-              @actionCell="brandClick"
-            >
+        :items_data="report_copo.items"
+        :total="report_copo.total"
+        :pagination_items_per_page="this.pagination_items_per_page"
+        :pagination_offset="this.pagination_offset"
+        :page="this.page_brand"
+        :table_data="this.table_data_brand"
+        :filters="this.filtersbrand"
+        @filter="filterbrand"
+        @sort="filterbrand"
+        @paginate="paginatebrand"
+        @actionCell="brandClick"
+      >
       </BaseTable>
 
       <Teleport to="body">
         <customModal class="product-comparison__brands-modal" v-model="this.modalBrand">
           <div class="product-comparison__brands-modal-header-fixed">
-            <h3 class="product-comparison__brands-modal-header">Сопоставление по бренду {{ report_copo_details.vendor.name }} ({{report_copo_details.total}})</h3>
+            <h3 class="product-comparison__brands-modal-header">
+              Сопоставление по бренду {{ report_copo_details.vendor.name }} ({{
+                report_copo_details.total
+              }})
+            </h3>
             <div class="warehouse-analysis__description product-comparison__description">
               <p>
-                На данной странице предоставлены товары бренда, найденые в вашем каталоге и статус сопоставления.
+                На данной странице предоставлены товары бренда, найденые в вашем каталоге и статус
+                сопоставления.
               </p>
             </div>
           </div>
           <div class="product-comparison__brands-modal-content">
-          <BaseTable
+            <BaseTable
               :items_data="report_copo_details.items"
               :total="report_copo_details.total"
               :pagination_items_per_page="this.pagination_items_per_page"
@@ -294,7 +298,6 @@
           </div>
         </customModal>
       </Teleport>
-
     </div>
   </section>
 </template>
@@ -322,142 +325,141 @@ export default {
   data() {
     return {
       loading: true,
-			chartData: null,
-			chartDataMoney: null,
-			chartDataHelpOne: null,
-			chartDataHelpTwo: null,
-			chartDataHelpThee: null,
-			chartDataHelpFour: null,
-			isModalBrand: false,
+      chartData: null,
+      chartDataMoney: null,
+      chartDataHelpOne: null,
+      chartDataHelpTwo: null,
+      chartDataHelpThee: null,
+      chartDataHelpFour: null,
+      isModalBrand: false,
       statuses: [],
-			chartOptions: {
-			cutout: "75%",
-			},
+      chartOptions: {
+        cutout: '75%',
+      },
       chartOptionsMin: {
-			cutout: "70%",
-			},
+        cutout: '70%',
+      },
       brand_id: null,
       modalBrand: false,
-			prods: {
-				copo_percent: 0,
-				all: 0,
-				copo: 0,
-				count_all: 0,
-				summ: 0,
-			},
-			page: 1,
-			page_brand: 1,
-			page_modal: 1,
-			table_stores: {
+      prods: {
+        copo_percent: 0,
+        all: 0,
+        copo: 0,
+        count_all: 0,
+        summ: 0,
+      },
+      page: 1,
+      page_brand: 1,
+      page_modal: 1,
+      table_stores: {
         name: {
           label: 'Название / Адрес',
           type: 'link',
           link_to: 'retailCompareStoreProducts',
           link_params: {
-              id: this.$route.params.id,
-              store_id: 'id',
+            id: this.$route.params.id,
+            store_id: 'id',
           },
           class: 'cell_comparison-stores-name',
-          items_incl_img: ['image','name_short','address'],
+          items_incl_img: ['image', 'name_short', 'address'],
         },
-				active: {
-					label: "Активно",
-					type: "boolean_active",
+        active: {
+          label: 'Активно',
+          type: 'boolean_active',
           class: 'cell_centeralign cell_review-stores-active',
-				},
-				remains: {
-					label: "Кол-во товаров, шт.",
-					type: "text",
+        },
+        remains: {
+          label: 'Кол-во товаров, шт.',
+          type: 'text',
           class: 'cell_centeralign',
-				},
+        },
         //perc_summ: {
-				//	label: "% сопоставленных товаров по стоимости",
-				//	type: "text",
-				//},
+        //	label: "% сопоставленных товаров по стоимости",
+        //	type: "text",
+        //},
         //perc_col: {
-				//	label: "% сопоставленных товаров по количеству",
-				//	type: "text",
-				//},
+        //	label: "% сопоставленных товаров по количеству",
+        //	type: "text",
+        //},
       },
       filtersbrand: {
-				instock: {
-					name: "В наличии",
-					placeholder: "В наличии",
-					type: "checkbox",
-					values: 1,
-				},
+        instock: {
+          name: 'В наличии',
+          placeholder: 'В наличии',
+          type: 'checkbox',
+          values: 1,
+        },
         name: {
-					name: "Наименование товара, артикул",
-					placeholder: "Наименование товара, артикул",
-					type: "text",
-				},
-
-			},
+          name: 'Бренд',
+          placeholder: 'Бренд',
+          type: 'text',
+        },
+      },
       table_data: {
-				image: {
-					label: "Фото",
-					type: "image",
+        image: {
+          label: 'Фото',
+          type: 'image',
           class: 'cell_centeralign',
-				},
-				article: {
-					label: "Артикул",
-					type: "text",
-					sort: true,
+        },
+        article: {
+          label: 'Артикул',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				store_name: {
-					label: "Склад",
-					type: "text",
-					sort: true,
+        },
+        store_name: {
+          label: 'Склад',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				name: {
-					label: "Наименование",
-					type: "link",
-					//link_to: "org_product",
-					//link_params: {
-					//	id: this.$route.params.id,
-					//	store_id: "store_id",
-					//	product_id: "id",
-					//},
-					description: {
-						type: "field",
-						key: "catalog",
-					},
-					sort: true,
+        },
+        name: {
+          label: 'Наименование',
+          type: 'link',
+          //link_to: "org_product",
+          //link_params: {
+          //	id: this.$route.params.id,
+          //	store_id: "store_id",
+          //	product_id: "id",
+          //},
+          description: {
+            type: 'field',
+            key: 'catalog',
+          },
+          sort: true,
           class: 'cell_centeralign',
-				},
-				price: {
-					label: "Розничная цена",
-					type: "text",
-					sort: true,
+        },
+        price: {
+          label: 'Розничная цена',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				remains: {
-					label: "Фактическое наличие",
-					type: "text",
-					sort: true,
+        },
+        remains: {
+          label: 'Фактическое наличие',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				reserved: {
-					label: "Резерв",
-					type: "text",
-					sort: true,
+        },
+        reserved: {
+          label: 'Резерв',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				available: {
-					label: "Доступно для продажи",
-					type: "text",
-					sort: true,
+        },
+        available: {
+          label: 'Доступно для продажи',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				sales: {
-					label: "Продаж за все время",
-					type: "text",
-					sort: true,
+        },
+        sales: {
+          label: 'Продаж за все время',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				/*
+        },
+        /*
         price_rrc: {
           label: 'Цена, РРЦ',
           type: 'text',
@@ -469,52 +471,52 @@ export default {
           sort: true
         },
         */
-				summ: {
-					label: "Сумма товара, ₽",
-					type: "text",
-					sort: true,
+        summ: {
+          label: 'Сумма товара, ₽',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-			},
+        },
+      },
       table_data_brand: {
-				name: {
-					label: "Наименование",
-					type: "link_onclick",
+        name: {
+          label: 'Наименование',
+          type: 'link_onclick',
           id: 'vendor_id',
-					sort: true,
+          sort: true,
           class: 'cell_centeralign table_link',
-				},
-				find: {
-					label: "Найдено",
-					type: "text",
-					sort: true,
+        },
+        find: {
+          label: 'Найдено',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				identified: {
-					label: "Сопоставлено",
-					type: "text",
-					sort: true,
+        },
+        identified: {
+          label: 'Сопоставлено',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				cards: {
-					label: "Карточек создано",
-					type: "text",
-					sort: true,
+        },
+        cards: {
+          label: 'Карточек создано',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				percent_identified: {
-					label: "% сопоставления",
-					type: "text",
-					sort: true,
+        },
+        percent_identified: {
+          label: '% сопоставления',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				vendor_price: {
-					label: "Сумма товара, ₽",
-					type: "text",
-					sort: true,
+        },
+        vendor_price: {
+          label: 'Сумма товара, ₽',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-			},
+        },
+      },
       table_data_modal: {
         image: {
           label: 'Фото',
@@ -532,7 +534,7 @@ export default {
           type: 'text',
           description: {
             type: 'field',
-            key: 'catalog'
+            key: 'catalog',
           },
           sort: true,
           class: 'cell_centeralign',
@@ -578,63 +580,63 @@ export default {
           type: 'status',
           sort: true,
           class: 'cell_centeralign',
-        }
+        },
       },
       filters_modal: {
         name: {
           name: 'Наименование товара, артикул',
           placeholder: 'Наименование товара, артикул',
-          type: 'text'
+          type: 'text',
         },
         status: {
           name: 'Статус',
           placeholder: 'Статус',
           type: 'dropdown',
-          values: this.cardstatus
+          values: this.cardstatus,
         },
         instock: {
           name: 'В наличии',
           placeholder: 'В наличии',
           type: 'checkbox',
-          values: 1
-        }
+          values: 1,
+        },
       },
-		}
+    }
   },
 
   unmounted() {
-		this.unsetReportCopo();
-    this.unsetReportCopoDetails();
-	},
+    this.unsetReportCopo()
+    this.unsetReportCopoDetails()
+  },
   mounted() {
     this.getOrgStores()
     this.getCardstatus()
     this.getData({
-			page: this.page,
-			perpage: this.pagination_items_per_page,
+      page: this.page,
+      perpage: this.pagination_items_per_page,
     })
     this.getReportCopo({
       tabledata: this.table_data,
-			page: this.page_brand,
-			perpage: this.pagination_items_per_page,
+      page: this.page_brand,
+      perpage: this.pagination_items_per_page,
     })
     this.getOrganization().then(() => {
-    //  this.chartData = this.setChartData();
-		//	this.chartDataMoney = this.setChartDataMoney();
-		//	this.chartDataHelpOne = this.setChartDataHelpOne();
-		//	this.chartDataHelpTwo = this.setChartDataHelpTwo();
-		//	this.chartDataHelpThee = this.setChartDataHelpTree();
-		//	this.chartDataHelpFour = this.setChartDataHelpFour();
-		//	const num = this.organization.products.copo_percent;
-		//	this.prods.copo_percent = num;
-		//	this.prods.all = this.organization.products.count;
-		//	this.prods.copo = this.organization.products.copo_count;
-		//	this.prods.count_all = this.organization.products.count_all;
-		//	this.prods.summ = this.organization.products.summ;
-		//	this.prods.copo_money_percent = this.organization.products.copo_money_percent;
-		//	this.prods.no_copo_money_percent = this.organization.products.no_copo_money_percent;
-		//	this.prods.summ_copo = this.organization.products.summ_copo;
-     this.loading = false
+      //  this.chartData = this.setChartData();
+      //	this.chartDataMoney = this.setChartDataMoney();
+      //	this.chartDataHelpOne = this.setChartDataHelpOne();
+      //	this.chartDataHelpTwo = this.setChartDataHelpTwo();
+      //	this.chartDataHelpThee = this.setChartDataHelpTree();
+      //	this.chartDataHelpFour = this.setChartDataHelpFour();
+      //	const num = this.organization.products.copo_percent;
+      //	this.prods.copo_percent = num;
+      //	this.prods.all = this.organization.products.count;
+      //	this.prods.copo = this.organization.products.copo_count;
+      //	this.prods.count_all = this.organization.products.count_all;
+      //	this.prods.summ = this.organization.products.summ;
+      //	this.prods.copo_money_percent = this.organization.products.copo_money_percent;
+      //	this.prods.no_copo_money_percent = this.organization.products.no_copo_money_percent;
+      //	this.prods.summ_copo = this.organization.products.summ_copo;
+      this.loading = false
     })
   },
   computed: {
@@ -659,161 +661,147 @@ export default {
       unsetReportCopoDetails: 'retail/unsetReportCopoDetails',
     }),
     setChartData() {
-			return {
-				datasets: [
-					{
-						data: [
+      return {
+        datasets: [
+          {
+            data: [
               this.organization.products.no_copo_percent,
-							this.organization.products.copo_percent,
-						],
-						backgroundColor: ["#ededed", "#4759af"],
-            borderColor: ["#fbfbfb", "#4759af"],
-						hoverBackgroundColor: ["#ededed", "#4759af"],
+              this.organization.products.copo_percent,
+            ],
+            backgroundColor: ['#ededed', '#4759af'],
+            borderColor: ['#fbfbfb', '#4759af'],
+            hoverBackgroundColor: ['#ededed', '#4759af'],
             borderWidth: 0.5,
             spacing: 2,
             rotation: 50,
-					},
-				],
-			};
-		},
-		setChartDataMoney() {
-			return {
-				datasets: [
-					{
-						data: [
-							this.organization.products.no_copo_money_percent,
+          },
+        ],
+      }
+    },
+    setChartDataMoney() {
+      return {
+        datasets: [
+          {
+            data: [
+              this.organization.products.no_copo_money_percent,
               this.organization.products.copo_money_percent,
-						],
-						backgroundColor: ["#ededed", "#c4cae5"],
-            borderColor: ["#fbfbfb", "#4759af"],
-						hoverBackgroundColor: ["#ededed", "#c4cae5"],
+            ],
+            backgroundColor: ['#ededed', '#c4cae5'],
+            borderColor: ['#fbfbfb', '#4759af'],
+            hoverBackgroundColor: ['#ededed', '#c4cae5'],
             borderWidth: 0.5,
             spacing: 2,
             rotation: 50,
-					},
-
-				],
-
-			};
-		},
-		setChartDataHelpOne() {
-			return {
-				datasets: [
-					{
-						data: this.products?.status ? [
-                100 -	(	this.statuses[5].count / (this.statuses.total / 100) ).toFixed(2),
-								(	this.statuses[5].count /	(this.statuses.total / 100)).toFixed(2)
-							  ] : [100,0],
-						backgroundColor: ["#ededed", "#c4cae5"],
-            borderColor: ["#fbfbfb", "#4759af"],
-						hoverBackgroundColor: ["#ededed", "#c4cae5"],
+          },
+        ],
+      }
+    },
+    setChartDataHelpOne() {
+      return {
+        datasets: [
+          {
+            data: this.products?.status
+              ? [
+                  100 - (this.statuses[5].count / (this.statuses.total / 100)).toFixed(2),
+                  (this.statuses[5].count / (this.statuses.total / 100)).toFixed(2),
+                ]
+              : [100, 0],
+            backgroundColor: ['#ededed', '#c4cae5'],
+            borderColor: ['#fbfbfb', '#4759af'],
+            hoverBackgroundColor: ['#ededed', '#c4cae5'],
             borderWidth: 0.5,
             spacing: 2,
             rotation: 50,
-					},
-				],
-			};
-		},
-		setChartDataHelpTwo() {
-			return {
-				datasets: [
-					{
-						data: this.products?.status ? [
-									100 -
-										(
-											this.statuses[1].count /
-											(this.statuses.total / 100)
-										).toFixed(2),
-                    (
-										this.statuses[1].count /
-										(this.statuses.total / 100)
-									).toFixed(2),
-							  ] : [100, 1],
-						backgroundColor: ["#ededed", "#cdf0a9"],
-            borderColor: ["#fbfbfb", "#97bc71"],
-						hoverBackgroundColor: ["#ededed", "#cdf0a9"],
+          },
+        ],
+      }
+    },
+    setChartDataHelpTwo() {
+      return {
+        datasets: [
+          {
+            data: this.products?.status
+              ? [
+                  100 - (this.statuses[1].count / (this.statuses.total / 100)).toFixed(2),
+                  (this.statuses[1].count / (this.statuses.total / 100)).toFixed(2),
+                ]
+              : [100, 1],
+            backgroundColor: ['#ededed', '#cdf0a9'],
+            borderColor: ['#fbfbfb', '#97bc71'],
+            hoverBackgroundColor: ['#ededed', '#cdf0a9'],
             borderWidth: 0.5,
             spacing: 2,
             rotation: 50,
-					},
-				],
-			};
-		},
-		setChartDataHelpTree() {
-			return {
-				datasets: [
-					{
-						data: this.products?.status
-							? [
-									100 -
-										(
-											this.products?.status[2]?.count /
-											(this.products.status.total / 100)
-										).toFixed(2),
-                    (
-										this.products?.status[2]?.count /
-										(this.products.status.total / 100)
-									).toFixed(2),
-							  ]
-							: [100, 0],
-						backgroundColor: ["#ededed", "#ffcec7"],
-            borderColor: ["#fbfbfb", "#f92c0d"],
-						hoverBackgroundColor: ["#ededed", "#ffcec7"],
+          },
+        ],
+      }
+    },
+    setChartDataHelpTree() {
+      return {
+        datasets: [
+          {
+            data: this.products?.status
+              ? [
+                  100 -
+                    (this.products?.status[2]?.count / (this.products.status.total / 100)).toFixed(
+                      2,
+                    ),
+                  (this.products?.status[2]?.count / (this.products.status.total / 100)).toFixed(2),
+                ]
+              : [100, 0],
+            backgroundColor: ['#ededed', '#ffcec7'],
+            borderColor: ['#fbfbfb', '#f92c0d'],
+            hoverBackgroundColor: ['#ededed', '#ffcec7'],
             borderWidth: 0.5,
             spacing: 2,
             rotation: 50,
-					},
-				],
-			};
-		},
-		setChartDataHelpFour() {
-			return {
-				datasets: [
-					{
-						data: this.products?.status
-							? [
-									100 -
-										(
-											this.products?.status[4]?.count /
-											(this.products.status.total / 100)
-										).toFixed(2),
-                    (
-										this.products?.status[4]?.count /
-										(this.products.status.total / 100)
-									).toFixed(2),
-							  ]
-							: [100, 0],
-						backgroundColor: ["#ededed", "#e2e2e2"],
-            borderColor: ["#fbfbfb", "#757575"],
-						hoverBackgroundColor: ["#ededed", "#e2e2e2"],
+          },
+        ],
+      }
+    },
+    setChartDataHelpFour() {
+      return {
+        datasets: [
+          {
+            data: this.products?.status
+              ? [
+                  100 -
+                    (this.products?.status[4]?.count / (this.products.status.total / 100)).toFixed(
+                      2,
+                    ),
+                  (this.products?.status[4]?.count / (this.products.status.total / 100)).toFixed(2),
+                ]
+              : [100, 0],
+            backgroundColor: ['#ededed', '#e2e2e2'],
+            borderColor: ['#fbfbfb', '#757575'],
+            hoverBackgroundColor: ['#ededed', '#e2e2e2'],
             borderWidth: 0.5,
             spacing: 2,
             rotation: 50,
-					},
-				],
-			};
-		},
-		filter(data) {
-			this.products.total = -1;
-			this.getData(data);
-		},
-		filterbrand(data) {
-			this.report_copo.total = -1;
-			this.getReportCopo(data);
-		},
-		paginate(data) {
-			this.products.total = -1;
-			this.page = data.page;
-			this.getData(data);
-		},
-		paginatebrand(data) {
-			this.report_copo.total = -1;
-			this.page_brand = data.page;
-			this.getReportCopo(data);
-		},
+          },
+        ],
+      }
+    },
+    filter(data) {
+      this.products.total = -1
+      this.getData(data)
+    },
+    filterbrand(data) {
+      this.report_copo.total = -1
+      this.getReportCopo(data)
+    },
+    paginate(data) {
+      this.products.total = -1
+      this.page = data.page
+      this.getData(data)
+    },
+    paginatebrand(data) {
+      this.report_copo.total = -1
+      this.page_brand = data.page
+      this.getReportCopo(data)
+    },
     filtermodal(data) {
-      data.tabledata = this.table_data_modal,
-      data.brand_id = this.brand_id
+      ;(data.tabledata = this.table_data_modal), (data.brand_id = this.brand_id)
       this.getReportCopoDetails(data)
     },
     paginatemodal(data) {
@@ -822,7 +810,7 @@ export default {
       data.brand_id = this.brand_id
       this.getReportCopoDetails(data)
     },
-    brandClick(id){
+    brandClick(id) {
       this.loading = true
       this.brand_id = id
       this.page_modal = 1
@@ -830,27 +818,25 @@ export default {
         tabledata: this.table_data_modal,
         page: this.page_modal,
         perpage: this.pagination_items_per_page,
-        brand_id: this.brand_id
+        brand_id: this.brand_id,
       }).then(() => {
-      this.modalBrand = true
-      this.loading = false
-    })
-    }
+        this.modalBrand = true
+        this.loading = false
+      })
+    },
   },
   watch: {
     cardstatus: function (newVal) {
-			this.filters_modal.status.values = newVal;
-		},
+      this.filters_modal.status.values = newVal
+    },
     products: function (newVal) {
       this.statuses = newVal.status
-
     },
-
-  }
+  },
 }
 </script>
 <style lang="scss">
-.product-comparison__stats{
+.product-comparison__stats {
   margin-top: 40px;
 }
 
@@ -995,31 +981,35 @@ export default {
       }
     }
   }
-
 }
-.product-comparison__stores.warehouse-analysis__table .d-table__head .d-table__head-col:nth-child(2),.product-comparison__stores.warehouse-analysis__table .d-table__row .d-table__col:nth-child(2){
+.product-comparison__stores.warehouse-analysis__table
+  .d-table__head
+  .d-table__head-col:nth-child(2),
+.product-comparison__stores.warehouse-analysis__table .d-table__row .d-table__col:nth-child(2) {
   min-width: auto;
   width: auto;
 }
-.product-comparison__brands{
+.product-comparison__brands {
   margin-top: 40px;
 }
-.product-comparison__brands .flex{
+.product-comparison__brands .flex {
   display: flex;
 }
-.product-comparison__brands .dart-form-group label{
+.product-comparison__brands .dart-form-group label {
   font-size: 16px;
   color: #757575;
 }
-.product-comparison__brands .p-floatlabel label, .product-comparison__brands .p-inputtext::placeholder, .product-comparison__brands .p-placeholder{
+.product-comparison__brands .p-floatlabel label,
+.product-comparison__brands .p-inputtext::placeholder,
+.product-comparison__brands .p-placeholder {
   font-size: 14px;
   color: #757575;
 }
-.product-comparison__brands .d-col-xl-6:first-child{
+.product-comparison__brands .d-col-xl-6:first-child {
   max-width: max-content;
   padding-right: 24px;
 }
-.product-comparison__brands .p-inputtext{
+.product-comparison__brands .p-inputtext {
   width: 100%;
 }
 .product-comparison__brands .form_input_group:after {
@@ -1030,114 +1020,120 @@ export default {
   top: calc(50% - 8.4px);
   right: 30px;
 }
-.product-comparison__brands .d-table__wrapper{
+.product-comparison__brands .d-table__wrapper {
   margin-top: 40px;
 }
 .product-comparison__brands .d-table__col {
-    padding: 20px 8px;
+  padding: 20px 8px;
 }
 .product-comparison__brands .d-table__row:first-child > .d-table__col {
-    padding-top: 20px;
+  padding-top: 20px;
 }
-.product-comparison__stats-block-image{
+.product-comparison__stats-block-image {
   height: 135px;
   width: 135px;
 }
-.product-comparison__stats-block-progress-line:before{
+.product-comparison__stats-block-progress-line:before {
   display: none;
 }
-.product-comparison__stats-block-progress-line-pink,.product-comparison__stats-block-progress-line-red{
-  content: "";
-    background-color: var(--line-color);
-    border: 0.5px solid var(--line-border-color);
-    border-radius: 30px;
-    position: absolute;
-    top: 50%;
-    left: 0;
-    translate: 0 -50%;
-    width: 100%;
-    height: 8px;
+.product-comparison__stats-block-progress-line-pink,
+.product-comparison__stats-block-progress-line-red {
+  content: '';
+  background-color: var(--line-color);
+  border: 0.5px solid var(--line-border-color);
+  border-radius: 30px;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  translate: 0 -50%;
+  width: 100%;
+  height: 8px;
 }
-.product-comparison__stats-block-progress-line-purple,.product-comparison__stats-block-progress-line-purple-dark{
-  content: "";
-    background-color: var(--line-color);
-    border: 0.5px solid var(--line-border-color);
-    border-radius: 30px;
-    position: absolute;
-    top: 50%;
-    left: 0;
-    translate: 0 -50%;
-    height: 8px;
+.product-comparison__stats-block-progress-line-purple,
+.product-comparison__stats-block-progress-line-purple-dark {
+  content: '';
+  background-color: var(--line-color);
+  border: 0.5px solid var(--line-border-color);
+  border-radius: 30px;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  translate: 0 -50%;
+  height: 8px;
 }
-.product-comparison__stats-item .product-comparison__stats-item-badge{
-    --d-badge2-size: 18px;
-    --d-badge2-bg-color: var(--stats-item-color) !important;
-    --d-badge2-color: #ededed;
+.product-comparison__stats-item .product-comparison__stats-item-badge {
+  --d-badge2-size: 18px;
+  --d-badge2-bg-color: var(--stats-item-color) !important;
+  --d-badge2-color: #ededed;
 }
-.product-comparison__stats-item .d-badge2{
+.product-comparison__stats-item .d-badge2 {
   background: var(--d-badge2-bg-color);
 }
 .product-comparison__stats-item .d-badge2--fit {
-    border-radius: 24px;
-    aspect-ratio: unset;
-    width: -moz-fit-content;
-    width: fit-content;
-    min-width: -moz-fit-content;
-    min-width: fit-content;
-    height: -moz-fit-content;
-    height: fit-content;
-    padding: 3px 7px 2px;
+  border-radius: 24px;
+  aspect-ratio: unset;
+  width: -moz-fit-content;
+  width: fit-content;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  padding: 3px 7px 2px;
 }
-.product-comparison__stats-item-image{
+.product-comparison__stats-item-image {
   width: 100px;
   height: 100px;
 }
-.product-comparison__stats-block-image canvas{
+.product-comparison__stats-block-image canvas {
   margin-top: -5px;
 }
-.product-comparison__stats-item-title, .product-comparison__stats-item-value{
-    width: max-content;
+.product-comparison__stats-item-title,
+.product-comparison__stats-item-value {
+  width: max-content;
 }
 .product-comparison__stats-item-header {
-    min-height: 52px;
-    height: auto;
+  min-height: 52px;
+  height: auto;
 }
 .product-comparison__stats-bottom {
   align-items: end;
 }
-.product-comparison__brands-modal .modal-content{
+.product-comparison__brands-modal .modal-content {
   max-width: 85%;
 }
-.product-comparison__brands-modal .modal__content{
+.product-comparison__brands-modal .modal__content {
   overflow-x: hidden;
 }
-.product-comparison__brands-modal-header h3{
+.product-comparison__brands-modal-header h3 {
   font-size: 20px;
 }
-.product-comparison__description{
+.product-comparison__description {
   margin-top: 16px;
 }
-.product-comparison__brands-modal .p-inputtext, .product-comparison__brands-modal .p-select{
-  width:100%;
+.product-comparison__brands-modal .p-inputtext,
+.product-comparison__brands-modal .p-select {
+  width: 100%;
 }
-.product-comparison__brands-modal .p-checkbox{
-  margin-right:16px;
+.product-comparison__brands-modal .p-checkbox {
+  margin-right: 16px;
 }
-.product-comparison__brands-modal label{
+.product-comparison__brands-modal label {
   font-weight: 500;
   font-size: 16px;
   line-height: 21px;
   color: #757575;
 }
-.product-comparison__brands-modal .p-floatlabel label, .product-comparison__brands-modal .p-inputtext::placeholder, .product-comparison__brands-modal .p-placeholder{
+.product-comparison__brands-modal .p-floatlabel label,
+.product-comparison__brands-modal .p-inputtext::placeholder,
+.product-comparison__brands-modal .p-placeholder {
   font-size: 14px;
   color: #757575;
 }
-.product-comparison__brands-modal .d-col-xl-6:nth-child(2){
+.product-comparison__brands-modal .d-col-xl-6:nth-child(2) {
   margin-left: 32px;
   margin-right: 32px;
 }
-.product-comparison__brands-modal .d-table__wrapper{
+.product-comparison__brands-modal .d-table__wrapper {
   margin-top: 40px;
 }
 .product-comparison__brands-modal .form_input_group:after {
@@ -1148,31 +1144,32 @@ export default {
   top: calc(50% - 8.4px);
   right: 30px;
 }
-.product-comparison__brands-modal .p-inputtext,.product-comparison__brands .p-inputtext{
-  padding-right:40px;
+.product-comparison__brands-modal .p-inputtext,
+.product-comparison__brands .p-inputtext {
+  padding-right: 40px;
 }
-.product-comparison__stats-block-percent-mobile{
-  display:none;
+.product-comparison__stats-block-percent-mobile {
+  display: none;
 }
 @media (width >1536px) {
-  .product-comparison__stats-item-value-container-mobile{
+  .product-comparison__stats-item-value-container-mobile {
     display: none;
   }
 }
 @media (width <=1536px) {
-  .product-comparison h2{
+  .product-comparison h2 {
     font-size: 20px;
   }
-  .product-comparison__stats-item-value-container{
+  .product-comparison__stats-item-value-container {
     display: none;
   }
   .product-comparison__stats-bottom {
-      align-items: start;
+    align-items: start;
   }
   .product-comparison__stats-item-content {
     align-items: start;
     padding: 16px 16px;
-    gap:12px;
+    gap: 12px;
   }
   .product-comparison__stats-item-image {
     width: 70px;
@@ -1181,11 +1178,12 @@ export default {
   .product-comparison__stats-item-percent {
     font-size: 20px;
   }
-  .product-comparison__stats-item-description, .product-comparison__stats-item-title {
+  .product-comparison__stats-item-description,
+  .product-comparison__stats-item-title {
     font-size: 14px;
     line-height: 18px;
   }
-  .product-comparison__stats-item-value-container-mobile{
+  .product-comparison__stats-item-value-container-mobile {
     display: flex;
     gap: 8px;
     align-items: center;
@@ -1193,8 +1191,8 @@ export default {
     margin-left: -78px;
     margin-top: 18px;
   }
-  .product-comparison__stats-item-value{
-    color:#757575;
+  .product-comparison__stats-item-value {
+    color: #757575;
   }
   .product-comparison__stats-item-header {
     padding: 6px 16px;
@@ -1209,8 +1207,8 @@ export default {
     font-size: 12px;
     min-width: 24px;
   }
-  .product-comparison__stats-item-image canvas{
-    margin-top:-10px;
+  .product-comparison__stats-item-image canvas {
+    margin-top: -10px;
   }
 }
 @media (width <=1280px) {
@@ -1233,8 +1231,8 @@ export default {
   .product-comparison__stats-block-info {
     gap: 8px;
   }
-  .product-comparison__stats-block-progress--secondary{
-    margin-top:8px;
+  .product-comparison__stats-block-progress--secondary {
+    margin-top: 8px;
   }
   .product-comparison__stats-item-title {
     font-size: 12px;
@@ -1242,19 +1240,19 @@ export default {
   }
   .product-comparison__stats-item .d-badge2--fit {
     padding: 0px 6px;
-    height:18px;
+    height: 18px;
   }
   .product-comparison__stats-item .d-badge2 {
     font-size: 10px;
     min-width: 18px;
-    min-height:18px;
+    min-height: 18px;
   }
   .product-comparison__stats-item-image {
     width: 55px;
     height: 55px;
   }
-  .product-comparison__stats-item-image canvas{
-    margin-top:-10px;
+  .product-comparison__stats-item-image canvas {
+    margin-top: -10px;
   }
   .product-comparison__stats-item-percent {
     font-size: 16px;
@@ -1266,7 +1264,7 @@ export default {
   .product-comparison__stats-item-value-label {
     font-size: 10px;
   }
- .product-comparison__stats-item-value-container-mobile {
+  .product-comparison__stats-item-value-container-mobile {
     min-height: 16px;
     margin-left: -73px;
     margin-top: 18px;
@@ -1274,33 +1272,38 @@ export default {
   .product-comparison__stats-item-value {
     font-size: 12px;
   }
-  .product-comparison__stats-item-percent{
-    margin-top:4px;
+  .product-comparison__stats-item-percent {
+    margin-top: 4px;
   }
   .product-comparison h2 {
     font-size: 16px;
   }
-  .product-comparison__brands .p-inputtext,.product-comparison__brands .form_input_group, .product-comparison__brands .d-col-xl-6:nth-child(2),
-  .product-comparison__brands-modal .p-inputtext,.product-comparison__brands-modal .form_input_group, .product-comparison__brands-modal .d-col-xl-6,
-  .product-comparison__brands-modal .p-select{
-    min-width:250px;
+  .product-comparison__brands .p-inputtext,
+  .product-comparison__brands .form_input_group,
+  .product-comparison__brands .d-col-xl-6:nth-child(2),
+  .product-comparison__brands-modal .p-inputtext,
+  .product-comparison__brands-modal .form_input_group,
+  .product-comparison__brands-modal .d-col-xl-6,
+  .product-comparison__brands-modal .p-select {
+    min-width: 250px;
   }
-  .product-comparison__brands .form_input_group:after,.product-comparison__brands-modal .form_input_group:after {
+  .product-comparison__brands .form_input_group:after,
+  .product-comparison__brands-modal .form_input_group:after {
     right: 6px;
   }
 }
 @media (width <=1024px) {
-  .product-comparison__stats-item-percent{
-    margin-top:0px;
+  .product-comparison__stats-item-percent {
+    margin-top: 0px;
   }
   .product-comparison__stats-item-value-container-mobile {
     margin-left: -62px;
     margin-top: 10px;
   }
-  .product-comparison__brands .d-col-xl-6{
+  .product-comparison__brands .d-col-xl-6 {
     min-width: 150px;
   }
-  .product-comparison__brands-modal .d-col-xl-6:nth-child(3){
+  .product-comparison__brands-modal .d-col-xl-6:nth-child(3) {
     margin-top: 16px;
   }
 }
@@ -1318,12 +1321,12 @@ export default {
     gap: 24px;
     margin-bottom: 24px;
   }
-  .product-comparison__stats-top{
+  .product-comparison__stats-top {
     align-items: start;
   }
   .product-comparison__stats-block {
-    min-width:calc(50% - 4px);
-    min-height:100%;
+    min-width: calc(50% - 4px);
+    min-height: 100%;
   }
   .product-comparison__stats-block-title {
     font-size: 9px;
@@ -1335,30 +1338,34 @@ export default {
   .product-comparison__stats-block-percent {
     font-size: 9px;
   }
-  .product-comparison__stats-block-progress-title, .product-comparison__stats-block-progress-value {
+  .product-comparison__stats-block-progress-title,
+  .product-comparison__stats-block-progress-value {
     font-size: 7px;
   }
-  .product-comparison__stats-block-progress-line-purple, .product-comparison__stats-block-progress-line-purple-dark,.product-comparison__stats-block-progress-line-pink, .product-comparison__stats-block-progress-line-red{
-    height:4px;
+  .product-comparison__stats-block-progress-line-purple,
+  .product-comparison__stats-block-progress-line-purple-dark,
+  .product-comparison__stats-block-progress-line-pink,
+  .product-comparison__stats-block-progress-line-red {
+    height: 4px;
   }
   .product-comparison__stats-block-progress--secondary {
     margin-top: 2px;
   }
-  .product-comparison__stats-bottom{
+  .product-comparison__stats-bottom {
     display: block;
   }
-  .product-comparison__stats-item{
+  .product-comparison__stats-item {
     width: calc(50% - 4px);
     float: left;
     margin-bottom: 8px;
   }
-  .product-comparison__stats-item:nth-child(odd){
+  .product-comparison__stats-item:nth-child(odd) {
     margin-right: 8px;
   }
-  .product-comparison__stats-item-value-container-mobile{
+  .product-comparison__stats-item-value-container-mobile {
     display: none;
   }
-  .product-comparison__stats-item-value-container{
+  .product-comparison__stats-item-value-container {
     display: flex;
   }
   .product-comparison__stats-item-title {
@@ -1370,13 +1377,13 @@ export default {
   }
   .product-comparison__stats-item .d-badge2--fit {
     padding: 0px 3px;
-    height:14px;
+    height: 14px;
   }
   .product-comparison__stats-item .d-badge2 {
     min-width: 14px;
     min-height: 14px;
   }
-  .product-comparison__stats-item-value-container{
+  .product-comparison__stats-item-value-container {
     flex-direction: row;
     align-items: center;
     gap: 8px;
@@ -1398,13 +1405,13 @@ export default {
     padding: 16px 16px;
     gap: 16px;
   }
-  .product-comparison__stats-item-info{
+  .product-comparison__stats-item-info {
     margin-top: 4px;
   }
   .product-comparison__stats-block-content {
     gap: 12px;
   }
-  .product-comparison__stats-block-progress-value{
+  .product-comparison__stats-block-progress-value {
     text-align: right;
   }
   .product-comparison__stats-item-content {
@@ -1421,21 +1428,26 @@ export default {
     align-items: start !important;
     justify-content: start;
   }
-  .product-comparison__brands .d-col-xl-6{
-    min-width:100%;
+  .product-comparison__brands .d-col-xl-6 {
+    min-width: 100%;
     margin-bottom: 8px;
   }
   .warehouse-analysis__description {
     font-size: 8px;
     margin: 16px 0;
   }
-  .product-comparison__brands .p-inputtext,.product-comparison__brands .form_input_group, .product-comparison__brands .d-col-xl-6:nth-child(2),
-  .product-comparison__brands-modal .p-inputtext,.product-comparison__brands-modal .form_input_group, .product-comparison__brands-modal .d-col-xl-6,
-  .product-comparison__brands-modal .p-select{
-    min-width:100%;
-    margin:4px 0;
+  .product-comparison__brands .p-inputtext,
+  .product-comparison__brands .form_input_group,
+  .product-comparison__brands .d-col-xl-6:nth-child(2),
+  .product-comparison__brands-modal .p-inputtext,
+  .product-comparison__brands-modal .form_input_group,
+  .product-comparison__brands-modal .d-col-xl-6,
+  .product-comparison__brands-modal .p-select {
+    min-width: 100%;
+    margin: 4px 0;
   }
-  .product-comparison__brands .form_input_group:after,.product-comparison__brands-modal .form_input_group:after {
+  .product-comparison__brands .form_input_group:after,
+  .product-comparison__brands-modal .form_input_group:after {
     right: 16px;
   }
   .product-comparison__brands-modal .d-col-xl-6:nth-child(2) {
@@ -1444,44 +1456,44 @@ export default {
   }
 }
 @media (width <=600px) {
-  .product-comparison{
+  .product-comparison {
     margin-top: 130px;
   }
   .product-comparison h2 {
     font-size: 16px;
   }
-  .product-comparison__stats{
+  .product-comparison__stats {
     width: calc(44px + 100% + 44px);
     margin-left: -44px;
   }
-  .product-comparison__stats-top{
+  .product-comparison__stats-top {
     flex-direction: column;
-    gap:24px;
+    gap: 24px;
   }
-  .product-comparison__stats-block{
-    width:100%;
-    background: #FBFBFB;
+  .product-comparison__stats-block {
+    width: 100%;
+    background: #fbfbfb;
     box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
     border-radius: 6px;
-    padding:0;
+    padding: 0;
   }
-  .product-comparison__stats-block-title{
-    padding:7px 44px;
+  .product-comparison__stats-block-title {
+    padding: 7px 44px;
     text-align: left;
     font-weight: 500;
     font-size: 14px;
     line-height: 18px;
     border-bottom: 0.5px solid #75757575;
   }
-  .product-comparison__stats-block-content{
+  .product-comparison__stats-block-content {
     padding-left: 44px;
     padding-right: 44px;
     padding-bottom: 24px;
     align-items: center;
   }
-  .product-comparison__stats-block-percent-mobile{
-    display:block;
-    width:100%;
+  .product-comparison__stats-block-percent-mobile {
+    display: block;
+    width: 100%;
     text-align: center;
     margin-top: 8px;
     font-weight: 500;
@@ -1489,20 +1501,20 @@ export default {
     line-height: 21px;
     color: #282828;
   }
-  .product-comparison__stats-block-percent{
-    display:none;
+  .product-comparison__stats-block-percent {
+    display: none;
   }
   .product-comparison__stats-block-image {
     height: 74px;
     width: 74px;
-    margin-top:-10px;
+    margin-top: -10px;
   }
   .product-comparison__stats-block-progress-header {
     flex-direction: column;
     align-items: start;
-    gap:4px;
+    gap: 4px;
   }
-  .product-comparison__stats-block-progress-title{
+  .product-comparison__stats-block-progress-title {
     font-size: 10px;
   }
   .product-comparison__stats-block-progress-value {
@@ -1533,7 +1545,7 @@ export default {
   }
   .product-comparison__stats-item .d-badge2--fit {
     padding: 2px 3px 0;
-    height:18px;
+    height: 18px;
   }
   .product-comparison__stats-item .d-badge2 {
     min-width: 18px;
@@ -1544,15 +1556,16 @@ export default {
   .product-comparison__stats-item-content {
     padding: 8px 44px 0px;
   }
-  .product-comparison__stats-block-image, .product-comparison__stats-item-image {
+  .product-comparison__stats-block-image,
+  .product-comparison__stats-item-image {
     height: 74px;
     width: 74px;
   }
-  .product-comparison__stats-item-value-container{
-    display:none;
+  .product-comparison__stats-item-value-container {
+    display: none;
   }
-  .product-comparison__stats-item-value-container-mobile{
-    display:flex;
+  .product-comparison__stats-item-value-container-mobile {
+    display: flex;
     margin-left: 0;
   }
   .product-comparison__stats-item-percent {
@@ -1564,12 +1577,12 @@ export default {
   }
   .product-comparison__stats-item-value-label {
     font-size: 10px;
-    font-weight:600;
+    font-weight: 600;
   }
   .product-comparison__stats-item-value-label::after {
-    content:':';
+    content: ':';
   }
-  .product-comparison__stats-item-value{
+  .product-comparison__stats-item-value {
     font-weight: 400;
     font-size: 10px;
     line-height: 13px;
@@ -1578,15 +1591,20 @@ export default {
   .product-comparison__stats-item-value-container-mobile {
     margin-top: 6px;
   }
-  .product-comparison__brands .p-inputtext,.product-comparison__brands .form_input_group, .product-comparison__brands .d-col-xl-6:nth-child(2),
-  .product-comparison__brands-modal .p-inputtext,.product-comparison__brands-modal .form_input_group, .product-comparison__brands-modal .d-col-xl-6,
-  .product-comparison__brands-modal .p-select{
-    min-width:calc(100vw - 88px);
-    max-width:calc(100vw - 88px);
-    width:calc(100vw - 88px);
-    margin:4px 0;
+  .product-comparison__brands .p-inputtext,
+  .product-comparison__brands .form_input_group,
+  .product-comparison__brands .d-col-xl-6:nth-child(2),
+  .product-comparison__brands-modal .p-inputtext,
+  .product-comparison__brands-modal .form_input_group,
+  .product-comparison__brands-modal .d-col-xl-6,
+  .product-comparison__brands-modal .p-select {
+    min-width: calc(100vw - 88px);
+    max-width: calc(100vw - 88px);
+    width: calc(100vw - 88px);
+    margin: 4px 0;
   }
-  .product-comparison__brands .form_input_group:after,.product-comparison__brands-modal .form_input_group:after {
+  .product-comparison__brands .form_input_group:after,
+  .product-comparison__brands-modal .form_input_group:after {
     right: 6px;
   }
   .product-comparison__brands .v-table {
@@ -1597,30 +1615,33 @@ export default {
   }
 }
 @media (width <=320px) {
-  .product-comparison__stats{
+  .product-comparison__stats {
     width: calc(28px + 100% + 28px);
     margin-left: -28px;
   }
-  .product-comparison__stats-block-title{
-    padding:7px 28px;
+  .product-comparison__stats-block-title {
+    padding: 7px 28px;
   }
-  .product-comparison__stats-block-content{
+  .product-comparison__stats-block-content {
     padding-left: 28px;
     padding-right: 28px;
   }
   .product-comparison__stats-item-header {
     padding: 7px 28px;
   }
-.product-comparison__stats-item-content {
+  .product-comparison__stats-item-content {
     padding: 8px 28px 0px;
   }
-  .product-comparison__brands .p-inputtext,.product-comparison__brands .form_input_group, .product-comparison__brands .d-col-xl-6:nth-child(2),
-  .product-comparison__brands-modal .p-inputtext,.product-comparison__brands-modal .form_input_group, .product-comparison__brands-modal .d-col-xl-6,
-  .product-comparison__brands-modal .p-select{
-    min-width:calc(100vw - 56px);
-    max-width:calc(100vw - 56px);
-    width:calc(100vw - 56px);
-
+  .product-comparison__brands .p-inputtext,
+  .product-comparison__brands .form_input_group,
+  .product-comparison__brands .d-col-xl-6:nth-child(2),
+  .product-comparison__brands-modal .p-inputtext,
+  .product-comparison__brands-modal .form_input_group,
+  .product-comparison__brands-modal .d-col-xl-6,
+  .product-comparison__brands-modal .p-select {
+    min-width: calc(100vw - 56px);
+    max-width: calc(100vw - 56px);
+    width: calc(100vw - 56px);
   }
 }
 </style>
