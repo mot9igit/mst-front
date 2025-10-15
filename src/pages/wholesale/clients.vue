@@ -113,7 +113,7 @@
     <Loader v-if="loading" />
     <div class="clients__card-container">
       <div class="clients__card dart-row" v-for="(item, index) in dilers.items" :key="index">
-        <div class="clients__card-left d-col-15">
+        <div class="clients__card-left d-col-14">
           <div class="clients__card-info d-col-6 clients__devider">
             <div class="clients__card-info-image-container">
               <img :src="item.image" alt="" class="clients__card-info-image" />
@@ -167,12 +167,12 @@
 
           <div class="clients__card-top-right">
             <div class="clients__card-top-right-top">
-              <!--
-              <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
+
+              <button  @click.prevent="createOffer(item)" class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
-              -->
+
               <div class="clients__card-action-container">
                 <button
                   class="clients__card-action"
@@ -239,8 +239,8 @@
             </div>-->
           </div>
         </div>
-        <div class="clients__card-right d-col-9">
-          <div class="clients__card-right-left d-col-21 clients__devider">
+        <div class="clients__card-right d-col-10">
+          <div class="clients__card-right-left d-col-14 clients__devider">
             <div
               class="clients__card-price-container d-col-12 clients__devider"
               v-if="Object.keys(item.debts).length != 0"
@@ -267,17 +267,17 @@
               >
             </div>
           </div>
-          <div class="clients__card-right-right d-col-3">
-            <!--<div
+          <div class="clients__card-right-right d-col-10">
+            <div
               class="d-col-18 clients__devider"
             >
 
-              <button class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
+              <button @click.prevent="createOffer(item)" class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
 
-            </div> -->
+            </div>
             <div class="clients__card-action-container">
               <button
                 class="clients__card-action"
@@ -473,6 +473,13 @@ export default {
         name: 'WholesaleClientsEdit',
         params: { id: this.$route.params.id, client_id: data.id },
       })
+    },
+    createOffer(data) {
+      this.$router.push({
+        name: 'WholesaleClientsOffer',
+        params: { id: this.$route.params.id, client_id: data.id },
+      })
+
     },
     deleteClient(data) {
       this.loading = true

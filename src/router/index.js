@@ -18,6 +18,7 @@ import WholesalePrices from '../pages/wholesale/prices.vue'
 import WholesaleSaleNew from '../pages/wholesale/saleNew.vue'
 import WholesaleClients from '../pages/wholesale/clients.vue'
 import WholesaleClientsAdd from '../pages/wholesale/clientsAdd.vue'
+import WholesaleClientsOffer from '../pages/wholesale/clientsOffer.vue'
 import WholesaleShipments from '../pages/wholesale/shipments.vue'
 import Retail from '../pages/retail/index.vue'
 import RetailOrders from '../pages/retail/orders.vue'
@@ -375,6 +376,11 @@ const router = createRouter({
                           name: 'WholesaleClientsAdd',
                           label: 'Клиенты',
                           component: WholesaleClientsAdd,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Создание виртуальной организации',
+                            },
+                          },
                         },
                         {
                           path: ':client_id',
@@ -382,6 +388,23 @@ const router = createRouter({
                           name: 'WholesaleClientsEdit',
                           label: 'Клиенты',
                           component: WholesaleClientsAdd,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Создание виртуальной организации',
+                            },
+                          },
+                        },
+                        {
+                          path: 'offer/:client_id',
+                          props: true,
+                          name: 'WholesaleClientsOffer',
+                          label: 'Предложение',
+                          component: WholesaleClientsOffer,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Предложение',
+                            },
+                          },
                         },
                       ],
                     },
@@ -545,18 +568,6 @@ const router = createRouter({
                       label: 'Мой склад',
                       component: Warehouse,
                     },
-                    //{
-                    //  path: 'review',
-                    //  name: 'warehouseReview',
-                    //  props: true,
-                    //  label: 'Анализ склада',
-                    //  component: WarehouseReview,
-                    //  meta: {
-                    //    breadcrumb: {
-                    //      label: 'Анализ склада',
-                    //    },
-                    //  },
-                    //},
                     {
                       path: 'review',
                       meta: {
