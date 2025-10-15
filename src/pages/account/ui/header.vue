@@ -319,59 +319,15 @@ export default {
         this.basketStore = {}
       }
     },
-    notificationTitle(num){
-      let title = ''
-      switch (num) {
-        case '1':
-          title = 'Изменение статуса заказа в маркетплейсе';
-          break;
-        case '2':
-          title = 'Поступил новый оптовый заказ';
-          break;
-                            case '3':
-                                title = 'Ваша компания отключена';
-                                break;
-                            case '4':
-                                title = 'Ваша компания подключена';
-                                break;
-                            case '5':
-                                title = 'Появился новый поставщик';
-                                break;
-                            case '6':
-                                title = 'Появился новый поставщик';
-                                break;
-                            case '7':
-                                title = 'Вас добавили в поставщики';
-                                break;
-                            case '8':
-                                title = 'Вас удалили из поставщиков';
-                                break;
-                            case '9':
-                                title = 'Ваш склад отключен';
-                                break;
-                            case '10':
-                                title = 'Ваш склад подключен';
-                                break;
-                            case '11':
-                                title = 'Вам отправлено предложение оформить заказ';
-                                break;
-                            case '12':
-                                title = 'Ваше предложение было отклонено';
-                                break;
-                            case '13':
-                                title = 'Ваше предложение было принято';
-                                break;
-                        }
-                        return title
-    },
+
     fetchNotification(){
       this.getNewNotification({
         data_start: this.data_start
       }).then((res) => {
                 for (let i = 0; i < res.data.data?.total; i++) {
                     setTimeout(() => {
-                        let title = this.notificationTitle(res.data.data.items[i].namespace);
-                        this.$toast.add({ severity: 'secondary', summary: title, detail: 'Чтобы узнать подробнее, нажмите ', info: res.data.data.items[i], life: 7000 });
+                        let title = res.data.data.items[i].title;
+                        this.$toast.add({ severity: 'secondary', summary: title, detail: res.data.data.items[i].text, info: res.data.data.items[i], life: 7000 });
                     }, i * 500);
                     if(this.showNotificationsModal == true){
                       this.reloadNotificationsModal = true
