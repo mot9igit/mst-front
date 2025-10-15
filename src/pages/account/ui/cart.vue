@@ -111,7 +111,7 @@
                     :value="Number(product?.count)"
                     :step="Number(product?.multiplicity ? product?.multiplicity : 1)"
                     :id="Number(product?.remain_id)"
-                    :key="product?.key"
+                    :key="new Date().getTime() + '_' + product?.key"
                   />
 
                   <span class="cart__item-footer-value">
@@ -404,7 +404,7 @@ export default {
     width: 100%;
   }
   .cart__item-badge {
-    height:auto;
+    height: auto;
     min-height: 21px;
   }
 }

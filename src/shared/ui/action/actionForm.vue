@@ -3198,53 +3198,55 @@ export default {
     this.unsetAction()
   },
   mounted() {
-    this.masterStepInc()
-    this.getCatalogs()
-    // Берем географию
-    this.getRegions({ exclude: [], filter: '' }).then(() => {
-      this.regions_all = this.regions.map(function (el) {
-        return { name: el.label, code: el.key }
+    this.unsetAction().then(() => {
+      this.masterStepInc()
+      this.getCatalogs()
+      // Берем географию
+      this.getRegions({ exclude: [], filter: '' }).then(() => {
+        this.regions_all = this.regions.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
       })
-    })
-    this.getOrganizations({ exclude: [], filter: '' }).then(() => {
-      this.organizations_all = this.organizations.map(function (el) {
-        return { name: el.name, code: el.id }
+      this.getOrganizations({ exclude: [], filter: '' }).then(() => {
+        this.organizations_all = this.organizations.map(function (el) {
+          return { name: el.name, code: el.id }
+        })
       })
-    })
-    this.getOrgStores()
-    this.getAllActions()
-    this.getActionAdvPages({ type: this.type })
-    if (this.$route.params.action) {
-      this.getAction().then(() => {
-        this.loading = false
-        if (this.form.store_id) {
-          this.getAvailableProducts({
-            store_id: this.form.store_id,
-            filter: '',
-            page: 1,
-            perpage: this.per_page_small,
-            type: 1,
-          }).then(() => {
+      this.getOrgStores()
+      this.getAllActions()
+      this.getActionAdvPages({ type: this.type })
+      if (this.$route.params.action) {
+        this.getAction().then(() => {
+          this.loading = false
+          if (this.form.store_id) {
             this.getAvailableProducts({
               store_id: this.form.store_id,
               filter: '',
               page: 1,
-              perpage: this.per_page,
-              type: 2,
+              perpage: this.per_page_small,
+              type: 1,
             }).then(() => {
-              this.productLoading = false
+              this.getAvailableProducts({
+                store_id: this.form.store_id,
+                filter: '',
+                page: 1,
+                perpage: this.per_page,
+                type: 2,
+              }).then(() => {
+                this.productLoading = false
+              })
             })
-          })
-          this.getProductGroups({
-            store_id: this.form.store_id,
-            filter: '',
-          })
-          this.getActiveActions()
-        }
-      })
-    } else {
-      this.modals.master = true
-    }
+            this.getProductGroups({
+              store_id: this.form.store_id,
+              filter: '',
+            })
+            this.getActiveActions()
+          }
+        })
+      } else {
+        this.modals.master = true
+      }
+    })
   },
   methods: {
     ...mapActions({

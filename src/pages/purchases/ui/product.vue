@@ -37,8 +37,8 @@
     <div class="products__list-wrapper">
       <div class="products__list" v-if="product.stores">
         <offer
-          v-for="item in product.stores"
-          :key="item.id"
+          v-for="(item, index) in product.stores"
+          :key="new Date().getTime() + '_' + Number(item.id) + '_' + index"
           :offer="item"
           :offerData="product"
           @updateBasket="updateBasket()"
