@@ -332,6 +332,12 @@
               </div>
               <div
                 class="product-card-actions__modal-actions-content-item"
+                v-if="item.min_count > 1"
+              >
+                Минимальное количество товаров - {{ item.min_count }} шт
+              </div>
+              <div
+                class="product-card-actions__modal-actions-content-item"
                 v-if="item.multiplicity > 1"
               >
                 Кратность - {{ item.multiplicity }} шт
@@ -407,6 +413,12 @@
                 v-if="item.condition_min_count > 0"
               >
                 Минимальное общее количество товаров - {{ item.condition_min_count }} шт
+              </div>
+              <div
+                class="product-card-actions__modal-actions-content-item"
+                v-if="item.min_count > 1"
+              >
+                Минимальное количество товаров - {{ item.min_count }} шт
               </div>
               <div
                 class="product-card-actions__modal-actions-content-item"

@@ -146,7 +146,7 @@
                         :value="Number(product?.count)"
                         :step="Number(product?.multiplicity ? product?.multiplicity : 1)"
                         :id="Number(product?.remain_id)"
-                        :key="product?.key"
+                        :key="new Date().getTime() + '_' + product?.key"
                       />
                     </div>
                     <a
@@ -170,7 +170,7 @@
                       :value="Number(product?.count)"
                       :step="Number(product?.multiplicity ? product?.multiplicity : 1)"
                       :id="Number(product?.remain_id)"
-                      :key="product?.key"
+                      :key="new Date().getTime() + '_1_' + product?.key"
                     />
                     <span class="order__item-product-price"
                       >{{ product.price.toLocaleString('ru') }} ₽</span
@@ -512,7 +512,6 @@ export default {
       })
     },
     ElemCount(object) {
-
       if (!this.fetchIds.includes(object.item.product.key)) {
         this.fetchIds.push(object.item.product.key)
       }
@@ -577,6 +576,7 @@ export default {
       this.loading = true
       this.getBasket().then(() => {
         this.loading = false
+        this.$emit('catalogUpdate')
       })
     },
     async orderSubmit(orgId) {

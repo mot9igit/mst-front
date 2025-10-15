@@ -5,16 +5,18 @@
     </div>
     <h2>Сопоставление товаров склада</h2>
     <div class="warehouse-analysis__header-storeinfo">
-        <div class="warehouse-analysis__header-storeinfo-logo">
-          <img :src="orgStore.image" />
+      <div class="warehouse-analysis__header-storeinfo-logo">
+        <img :src="orgStore.image" />
+      </div>
+      <div class="warehouse-analysis__header-storeinfo-info">
+        <div class="warehouse-analysis__header-storeinfo-info-name">{{ orgStore.name_short }}</div>
+        <div class="warehouse-analysis__header-storeinfo-info-address">
+          <i class="d-icon-location"></i><span>{{ orgStore.address_short }}</span>
         </div>
-        <div class="warehouse-analysis__header-storeinfo-info">
-          <div class="warehouse-analysis__header-storeinfo-info-name">{{ orgStore.name_short }}</div>
-          <div class="warehouse-analysis__header-storeinfo-info-address"><i class="d-icon-location"></i><span>{{ orgStore.address_short }}</span></div>
-        </div>
+      </div>
     </div>
     <Loader v-if="loading" />
-  <!--  <div class="product-comparison__stats">
+    <!--  <div class="product-comparison__stats">
 								<div class="product-comparison__stats-top" v-if="prods.all">
 									<div class="product-comparison__stats-block">
 										<p class="product-comparison__stats-block-title">Сопоставление товаров по стоимости</p>
@@ -252,42 +254,50 @@
     <h2>Сопоставление по брендам</h2>
     <div class="product-comparison__brands">
       <BaseTable
-              :items_data="report_copo.items"
-              :total="report_copo.total"
-              :pagination_items_per_page="this.pagination_items_per_page"
-              :pagination_offset="this.pagination_offset"
-              :page="this.page_brand"
-              :table_data="this.table_data_brand"
-              :filters="this.filtersbrand"
-              @filter="filterbrand"
-              @sort="filterbrand"
-              @paginate="paginatebrand"
-              @actionCell="brandClick"
-            >
+        :items_data="report_copo.items"
+        :total="report_copo.total"
+        :pagination_items_per_page="this.pagination_items_per_page"
+        :pagination_offset="this.pagination_offset"
+        :page="this.page_brand"
+        :table_data="this.table_data_brand"
+        :filters="this.filtersbrand"
+        @filter="filterbrand"
+        @sort="filterbrand"
+        @paginate="paginatebrand"
+        @actionCell="brandClick"
+      >
       </BaseTable>
 
       <Teleport to="body">
         <customModal class="product-comparison__brands-modal" v-model="this.modalBrand">
           <div class="product-comparison__brands-modal-header-fixed">
             <h3 class="product-comparison__brands-modal-header">
-              Сопоставление по бренду {{ report_copo_details.vendor.name }} ({{report_copo_details.total}})</h3>
-              <div class="warehouse-analysis__header-storeinfo">
-                <div class="warehouse-analysis__header-storeinfo-logo">
-                  <img :src="orgStore.image" />
+              Сопоставление по бренду {{ report_copo_details.vendor.name }} ({{
+                report_copo_details.total
+              }})
+            </h3>
+            <div class="warehouse-analysis__header-storeinfo">
+              <div class="warehouse-analysis__header-storeinfo-logo">
+                <img :src="orgStore.image" />
+              </div>
+              <div class="warehouse-analysis__header-storeinfo-info">
+                <div class="warehouse-analysis__header-storeinfo-info-name">
+                  {{ orgStore.name_short }}
                 </div>
-                <div class="warehouse-analysis__header-storeinfo-info">
-                  <div class="warehouse-analysis__header-storeinfo-info-name">{{ orgStore.name_short }}</div>
-                  <div class="warehouse-analysis__header-storeinfo-info-address"><i class="d-icon-location"></i><span>{{ orgStore.address_short }}</span></div>
+                <div class="warehouse-analysis__header-storeinfo-info-address">
+                  <i class="d-icon-location"></i><span>{{ orgStore.address_short }}</span>
                 </div>
               </div>
+            </div>
             <div class="warehouse-analysis__description product-comparison__description">
               <p>
-                На данной странице предоставлены товары бренда, найденые в вашем каталоге и статус сопоставления.
+                На данной странице предоставлены товары бренда, найденые в вашем каталоге и статус
+                сопоставления.
               </p>
             </div>
           </div>
           <div class="product-comparison__brands-modal-content">
-          <BaseTable
+            <BaseTable
               :items_data="report_copo_details.items"
               :total="report_copo_details.total"
               :pagination_items_per_page="this.pagination_items_per_page"
@@ -299,15 +309,11 @@
               @sort="filtermodal"
               @paginate="paginatemodal"
             >
-            <template v-slot:cell-slot>
-									Ghb
-						</template>
+              <template v-slot:cell-slot> Ghb </template>
             </BaseTable>
-
           </div>
         </customModal>
       </Teleport>
-
     </div>
   </section>
 </template>
@@ -335,107 +341,106 @@ export default {
   data() {
     return {
       loading: true,
-			globalIsModal: [],
-			chartData: null,
-			chartDataMoney: null,
-			chartDataHelpOne: null,
-			chartDataHelpTwo: null,
-			chartDataHelpThee: null,
-			chartDataHelpFour: null,
-			isModal: false,
-			isModalBrand: false,
+      globalIsModal: [],
+      chartData: null,
+      chartDataMoney: null,
+      chartDataHelpOne: null,
+      chartDataHelpTwo: null,
+      chartDataHelpThee: null,
+      chartDataHelpFour: null,
+      isModal: false,
+      isModalBrand: false,
       statuses: [],
-			chartOptions: {
-			cutout: "75%",
-			},
+      chartOptions: {
+        cutout: '75%',
+      },
       chartOptionsMin: {
-			cutout: "70%",
-			},
+        cutout: '70%',
+      },
       brand_id: null,
       modalBrand: false,
-			prods: {
-				copo_percent: 0,
-				all: 0,
-				copo: 0,
-				count_all: 0,
-				summ: 0,
-			},
-			page: 1,
-			page_brand: 1,
-			page_modal: 1,
+      prods: {
+        copo_percent: 0,
+        all: 0,
+        copo: 0,
+        count_all: 0,
+        summ: 0,
+      },
+      page: 1,
+      page_brand: 1,
+      page_modal: 1,
       filtersbrand: {
-				instock: {
-					name: "В наличии",
-					placeholder: "В наличии",
-					type: "checkbox",
-					values: 1,
-				},
+        instock: {
+          name: 'В наличии',
+          placeholder: 'В наличии',
+          type: 'checkbox',
+          values: 1,
+        },
         name: {
-					name: "Наименование товара, артикул",
-					placeholder: "Наименование товара, артикул",
-					type: "text",
-				},
-
-			},
+          name: 'Бренд',
+          placeholder: 'Бренд',
+          type: 'text',
+        },
+      },
       table_data: {
-				image: {
-					label: "Фото",
-					type: "image",
+        image: {
+          label: 'Фото',
+          type: 'image',
           class: 'cell_centeralign',
-				},
-				article: {
-					label: "Артикул",
-					type: "text",
-					sort: true,
+        },
+        article: {
+          label: 'Артикул',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				store_name: {
-					label: "Склад",
-					type: "text",
-					sort: true,
+        },
+        store_name: {
+          label: 'Склад',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				name: {
-					label: "Наименование",
-					type: "link",
-					description: {
-						type: "field",
-						key: "catalog",
-					},
-					sort: true,
+        },
+        name: {
+          label: 'Наименование',
+          type: 'link',
+          description: {
+            type: 'field',
+            key: 'catalog',
+          },
+          sort: true,
           class: 'cell_centeralign',
-				},
-				price: {
-					label: "Розничная цена",
-					type: "text",
-					sort: true,
+        },
+        price: {
+          label: 'Розничная цена',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				remains: {
-					label: "Фактическое наличие",
-					type: "text",
-					sort: true,
+        },
+        remains: {
+          label: 'Фактическое наличие',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				reserved: {
-					label: "Резерв",
-					type: "text",
-					sort: true,
+        },
+        reserved: {
+          label: 'Резерв',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				available: {
-					label: "Доступно для продажи",
-					type: "text",
-					sort: true,
+        },
+        available: {
+          label: 'Доступно для продажи',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				sales: {
-					label: "Продаж за все время",
-					type: "text",
-					sort: true,
+        },
+        sales: {
+          label: 'Продаж за все время',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				/*
+        },
+        /*
         price_rrc: {
           label: 'Цена, РРЦ',
           type: 'text',
@@ -447,52 +452,52 @@ export default {
           sort: true
         },
         */
-				summ: {
-					label: "Сумма товара, ₽",
-					type: "text",
-					sort: true,
+        summ: {
+          label: 'Сумма товара, ₽',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-			},
+        },
+      },
       table_data_brand: {
-				name: {
-					label: "Наименование",
-					type: "link_onclick",
+        name: {
+          label: 'Наименование',
+          type: 'link_onclick',
           id: 'vendor_id',
-					sort: true,
+          sort: true,
           class: 'cell_centeralign table_link',
-				},
-				find: {
-					label: "Найдено",
-					type: "text",
-					sort: true,
+        },
+        find: {
+          label: 'Найдено',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				identified: {
-					label: "Сопоставлено",
-					type: "text",
-					sort: true,
+        },
+        identified: {
+          label: 'Сопоставлено',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				cards: {
-					label: "Карточек создано",
-					type: "text",
-					sort: true,
+        },
+        cards: {
+          label: 'Карточек создано',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				percent_identified: {
-					label: "% сопоставления",
-					type: "text",
-					sort: true,
+        },
+        percent_identified: {
+          label: '% сопоставления',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-				vendor_price: {
-					label: "Сумма товара, ₽",
-					type: "text",
-					sort: true,
+        },
+        vendor_price: {
+          label: 'Сумма товара, ₽',
+          type: 'text',
+          sort: true,
           class: 'cell_centeralign',
-				},
-			},
+        },
+      },
       table_data_modal: {
         image: {
           label: 'Фото',
@@ -510,7 +515,7 @@ export default {
           type: 'text',
           description: {
             type: 'field',
-            key: 'catalog'
+            key: 'catalog',
           },
           sort: true,
           class: 'cell_centeralign',
@@ -556,51 +561,51 @@ export default {
           type: 'status',
           sort: true,
           class: 'cell_centeralign',
-        }
+        },
       },
       filters_modal: {
         name: {
           name: 'Наименование товара, артикул',
           placeholder: 'Наименование товара, артикул',
-          type: 'text'
+          type: 'text',
         },
         status: {
           name: 'Статус',
           placeholder: 'Статус',
           type: 'dropdown',
-          values: this.cardstatus
+          values: this.cardstatus,
         },
         instock: {
           name: 'В наличии',
           placeholder: 'В наличии',
           type: 'checkbox',
-          values: 1
-        }
+          values: 1,
+        },
       },
-		}
+    }
   },
 
   unmounted() {
-		this.unsetReportCopo();
-    this.unsetReportCopoDetails();
-	},
+    this.unsetReportCopo()
+    this.unsetReportCopoDetails()
+  },
   mounted() {
     this.getCardstatus()
     this.getData({
-			page: this.page_brand,
-			perpage: this.pagination_items_per_page,
+      page: this.page_brand,
+      perpage: this.pagination_items_per_page,
     })
     this.getReportCopo({
       tabledata: this.table_data,
-			page: this.page,
-			perpage: this.pagination_items_per_page,
-      store_id: this.$route.params.store_id
+      page: this.page,
+      perpage: this.pagination_items_per_page,
+      store_id: this.$route.params.store_id,
     })
     this.getOrgStore().then(() => {
-    //  this.chartDataHelpOne = this.setChartDataHelpOne();
-		//	this.chartDataHelpTwo = this.setChartDataHelpTwo();
-		//	this.chartDataHelpThee = this.setChartDataHelpTree();
-		//	this.chartDataHelpFour = this.setChartDataHelpFour();
+      //  this.chartDataHelpOne = this.setChartDataHelpOne();
+      //	this.chartDataHelpTwo = this.setChartDataHelpTwo();
+      //	this.chartDataHelpThee = this.setChartDataHelpTree();
+      //	this.chartDataHelpFour = this.setChartDataHelpFour();
       this.getVendors()
       this.loading = false
     })
@@ -627,152 +632,135 @@ export default {
       unsetReportCopoDetails: 'retail/unsetReportCopoDetails',
     }),
     setChartData() {
-			return {
-				datasets: [
-					{
-						data: [
-							this.orgStore?.products?.no_copo_percent,
-              this.orgStore?.products?.copo_percent,
-						],
-						backgroundColor: ["#ededed", "#4759af"],
-            borderColor: ["#fbfbfb", "#4759af"],
-						hoverBackgroundColor: ["#ededed", "#4759af"],
+      return {
+        datasets: [
+          {
+            data: [this.orgStore?.products?.no_copo_percent, this.orgStore?.products?.copo_percent],
+            backgroundColor: ['#ededed', '#4759af'],
+            borderColor: ['#fbfbfb', '#4759af'],
+            hoverBackgroundColor: ['#ededed', '#4759af'],
             borderWidth: 0.5,
             spacing: 2,
             rotation: 50,
-					},
-				],
-			};
-		},
-		setChartDataMoney() {
-			return {
-				datasets: [
-					{
-						data: [
-							this.orgStore?.products.no_copo_money_percent,
+          },
+        ],
+      }
+    },
+    setChartDataMoney() {
+      return {
+        datasets: [
+          {
+            data: [
+              this.orgStore?.products.no_copo_money_percent,
               this.orgStore?.products.copo_money_percent,
-						],
-						backgroundColor: ["#ededed", "#c4cae5"],
-            borderColor: ["#fbfbfb", "#4759af"],
-						hoverBackgroundColor: ["#ededed", "#c4cae5"],
+            ],
+            backgroundColor: ['#ededed', '#c4cae5'],
+            borderColor: ['#fbfbfb', '#4759af'],
+            hoverBackgroundColor: ['#ededed', '#c4cae5'],
             borderWidth: 0.5,
             spacing: 2,
             rotation: 50,
-					},
-
-				],
-
-			};
-		},
-		setChartDataHelpOne() {
-			return {
-				datasets: [
-					{
-						data: this.products?.status ? [
-                100 -	(	this.statuses[5].count / (this.statuses.total / 100) ).toFixed(2),
-								(	this.statuses[5].count /	(this.statuses.total / 100)).toFixed(2)
-							  ] : [100, 0],
-						backgroundColor: ["#ededed", "#c4cae5"],
-            borderColor: ["#fbfbfb", "#4759af"],
-						hoverBackgroundColor: ["#ededed", "#c4cae5"],
+          },
+        ],
+      }
+    },
+    setChartDataHelpOne() {
+      return {
+        datasets: [
+          {
+            data: this.products?.status
+              ? [
+                  100 - (this.statuses[5].count / (this.statuses.total / 100)).toFixed(2),
+                  (this.statuses[5].count / (this.statuses.total / 100)).toFixed(2),
+                ]
+              : [100, 0],
+            backgroundColor: ['#ededed', '#c4cae5'],
+            borderColor: ['#fbfbfb', '#4759af'],
+            hoverBackgroundColor: ['#ededed', '#c4cae5'],
             borderWidth: 0.5,
             spacing: 2,
             rotation: 50,
-					},
-				],
-			};
-		},
-		setChartDataHelpTwo() {
-			return {
-				datasets: [
-					{
-						data: this.products?.status ? [
-									100 -
-										(
-											this.statuses[1].count /
-											(this.statuses.total / 100)
-										).toFixed(2),
-                    (
-										this.statuses[1].count /
-										(this.statuses.total / 100)
-									).toFixed(2),
-							  ] : [100, 0],
-						backgroundColor: ["#ededed", "#cdf0a9"],
-            borderColor: ["#fbfbfb", "#97bc71"],
-						hoverBackgroundColor: ["#ededed", "#cdf0a9"],
+          },
+        ],
+      }
+    },
+    setChartDataHelpTwo() {
+      return {
+        datasets: [
+          {
+            data: this.products?.status
+              ? [
+                  100 - (this.statuses[1].count / (this.statuses.total / 100)).toFixed(2),
+                  (this.statuses[1].count / (this.statuses.total / 100)).toFixed(2),
+                ]
+              : [100, 0],
+            backgroundColor: ['#ededed', '#cdf0a9'],
+            borderColor: ['#fbfbfb', '#97bc71'],
+            hoverBackgroundColor: ['#ededed', '#cdf0a9'],
             borderWidth: 0.5,
             spacing: 2,
             rotation: 50,
-					},
-				],
-			};
-		},
-		setChartDataHelpTree() {
-			return {
-				datasets: [
-					{
-						data: this.products?.status
-							? [
-									100 -
-										(
-											this.products?.status[2]?.count /
-											(this.products.status.total / 100)
-										).toFixed(2),
-                    (
-										this.products?.status[2]?.count /
-										(this.products.status.total / 100)
-									).toFixed(2),
-							  ]
-							: [100, 0],
-						backgroundColor: ["#ededed", "#ffcec7"],
-            borderColor: ["#fbfbfb", "#f92c0d"],
-						hoverBackgroundColor: ["#ededed", "#ffcec7"],
+          },
+        ],
+      }
+    },
+    setChartDataHelpTree() {
+      return {
+        datasets: [
+          {
+            data: this.products?.status
+              ? [
+                  100 -
+                    (this.products?.status[2]?.count / (this.products.status.total / 100)).toFixed(
+                      2,
+                    ),
+                  (this.products?.status[2]?.count / (this.products.status.total / 100)).toFixed(2),
+                ]
+              : [100, 0],
+            backgroundColor: ['#ededed', '#ffcec7'],
+            borderColor: ['#fbfbfb', '#f92c0d'],
+            hoverBackgroundColor: ['#ededed', '#ffcec7'],
             borderWidth: 0.5,
             spacing: 2,
             rotation: 50,
-					},
-				],
-			};
-		},
-		setChartDataHelpFour() {
-			return {
-				datasets: [
-					{
-						data: this.products?.status
-							? [
-									100 -
-										(
-											this.products?.status[4]?.count /
-											(this.products.status.total / 100)
-										).toFixed(2),
-                    (
-										this.products?.status[4]?.count /
-										(this.products.status.total / 100)
-									).toFixed(2),
-							  ]
-							: [100, 0],
-						backgroundColor: ["#ededed", "#e2e2e2"],
-            borderColor: ["#fbfbfb", "#757575"],
-						hoverBackgroundColor: ["#ededed", "#e2e2e2"],
+          },
+        ],
+      }
+    },
+    setChartDataHelpFour() {
+      return {
+        datasets: [
+          {
+            data: this.products?.status
+              ? [
+                  100 -
+                    (this.products?.status[4]?.count / (this.products.status.total / 100)).toFixed(
+                      2,
+                    ),
+                  (this.products?.status[4]?.count / (this.products.status.total / 100)).toFixed(2),
+                ]
+              : [100, 0],
+            backgroundColor: ['#ededed', '#e2e2e2'],
+            borderColor: ['#fbfbfb', '#757575'],
+            hoverBackgroundColor: ['#ededed', '#e2e2e2'],
             borderWidth: 0.5,
             spacing: 2,
             rotation: 50,
-					},
-				],
-			};
-		},
-		filterbrand(data) {
-			this.report_copo.total = -1;
-			this.getReportCopo(data);
-		},
-		paginatebrand(data) {
-			this.report_copo.total = -1;
-			this.page_brand = data.page;
-			this.getReportCopo(data);
-		},
+          },
+        ],
+      }
+    },
+    filterbrand(data) {
+      this.report_copo.total = -1
+      this.getReportCopo(data)
+    },
+    paginatebrand(data) {
+      this.report_copo.total = -1
+      this.page_brand = data.page
+      this.getReportCopo(data)
+    },
     filtermodal(data) {
-      data.tabledata = this.table_data_modal,
-      data.brand_id = this.brand_id
+      ;(data.tabledata = this.table_data_modal), (data.brand_id = this.brand_id)
       this.getReportCopoDetails(data)
     },
     paginatemodal(data) {
@@ -781,7 +769,7 @@ export default {
       data.brand_id = this.brand_id
       this.getReportCopoDetails(data)
     },
-    brandClick(id){
+    brandClick(id) {
       this.loading = true
       this.brand_id = id
       this.page_modal = 1
@@ -790,43 +778,43 @@ export default {
         page: this.page_modal,
         perpage: this.pagination_items_per_page,
         brand_id: this.brand_id,
-        store_id: this.$route.params.store_id
-
+        store_id: this.$route.params.store_id,
       }).then(() => {
-      this.modalBrand = true
-      this.loading = false
-    })
-    }
+        this.modalBrand = true
+        this.loading = false
+      })
+    },
   },
   watch: {
     cardstatus: function (newVal) {
-			this.filters_modal.status.values = newVal;
-		},
+      this.filters_modal.status.values = newVal
+    },
     products: function (newVal) {
       this.statuses = newVal.status
     },
     orgStore: function (newVal) {
-		//	const num = newVal.products.copo_percent;
-		//	this.prods.copo_percent = num;
-		//	this.chartData = this.setChartData();
-		//	this.chartDataMoney = this.setChartDataMoney();
-		//	this.prods.all = newVal.products.count;
-		//	this.prods.copo =newVal.products.copo_count;
-		//	this.prods.count_all = newVal.products.count_all;
-		//	this.prods.summ = newVal.products.summ;
-		//	this.prods.copo_money_percent = newVal.products.copo_money_percent;
-		//	this.prods.no_copo_money_percent = newVal.products.no_copo_money_percent;
-		//	this.prods.summ_copo = newVal.products.summ_copo;
-    // this.chartDataHelpOne = this.setChartDataHelpOne();
-		//	this.chartDataHelpTwo = this.setChartDataHelpTwo();
-		//	this.chartDataHelpThee = this.setChartDataHelpTree();
-		//	this.chartDataHelpFour = this.setChartDataHelpFour();
-		},
-  }
+      //	const num = newVal.products.copo_percent;
+      //	this.prods.copo_percent = num;
+      //	this.chartData = this.setChartData();
+      //	this.chartDataMoney = this.setChartDataMoney();
+      //	this.prods.all = newVal.products.count;
+      //	this.prods.copo =newVal.products.copo_count;
+      //	this.prods.count_all = newVal.products.count_all;
+      //	this.prods.summ = newVal.products.summ;
+      //	this.prods.copo_money_percent = newVal.products.copo_money_percent;
+      //	this.prods.no_copo_money_percent = newVal.products.no_copo_money_percent;
+      //	this.prods.summ_copo = newVal.products.summ_copo;
+      // this.chartDataHelpOne = this.setChartDataHelpOne();
+      //	this.chartDataHelpTwo = this.setChartDataHelpTwo();
+      //	this.chartDataHelpThee = this.setChartDataHelpTree();
+      //	this.chartDataHelpFour = this.setChartDataHelpFour();
+    },
+  },
 }
 </script>
 <style lang="scss">
-.product-comparison .warehouse-analysis__header-storeinfo,.product-comparison__brands-modal .warehouse-analysis__header-storeinfo{
+.product-comparison .warehouse-analysis__header-storeinfo,
+.product-comparison__brands-modal .warehouse-analysis__header-storeinfo {
   margin-top: 16px;
 }
 </style>
