@@ -44,8 +44,8 @@
                 </div>
               </div>
               <div class="notifications__modal-item-content">
-                <h3>{{ notificationTitle(item.namespace) }}</h3>
-                <div v-html="item.chunk"></div>
+                <h3>{{ item.title }}</h3>
+                <div>{{ item.text }}</div>
               </div>
             </div>
           </div>
@@ -80,8 +80,8 @@
                 </div>
               </div>
               <div class="notifications__modal-item-content">
-                <h3>{{ notificationTitle(item.namespace) }}</h3>
-                <div v-html="item.chunk"></div>
+                <h3>{{ item.title }}</h3>
+                <div>{{ item.text }}</div>
               </div>
             </div>
           </div>
@@ -439,5 +439,8 @@ export default {
 }
 .notifications__modal-container-empty{
   margin-top:30px;
+}
+.notifications__modal-item-content h3{
+  padding-bottom: 8px;
 }
 </style>
