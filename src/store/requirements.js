@@ -17,7 +17,8 @@ export default {
         filter: filter,
         page: page,
         perpage: perpage,
-        matrix: router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? true : false,
+        matrix: false,
+        //router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? true : false,
       }
       const response = await api.requirements.getRequirements(sendData)
       if (response) {

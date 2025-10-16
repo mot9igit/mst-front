@@ -14,7 +14,7 @@
   ></ProfileSidebar>
   <div class="content">
     <ProfileHeader
-      v-if="this.$route.params.id"
+      v-if="this.$route.params.id && !this.$route.params.id_org_from"
       @toggleCatalog="toggleCatalog"
       @toggleVendor="toggleVendor"
       @toggleCart="toggleCart"
@@ -25,6 +25,18 @@
       :active="toggleMenu"
       :mobileNotificationsShow="mobileNotificationsShow"
     ></ProfileHeader>
+    <ProfileHeaderOffer
+      v-else-if="this.$route.params.id && this.$route.params.id_org_from"
+      @toggleCatalog="toggleCatalog"
+      @toggleVendor="toggleVendor"
+      @toggleCart="toggleCart"
+      @showRequipments="showRequip()"
+      @notifications="notificationsCol"
+      @notificationsMobile="mobileNotifications()"
+      :mobileRequipments="mobileRequipments"
+      :active="toggleMenu"
+      :mobileNotificationsShow="mobileNotificationsShow"
+    ></ProfileHeaderOffer>
 
     <main class="main">
       <div class="content-wrapper main__content-wrapper">
@@ -69,6 +81,7 @@ import ProfileCatalogMenu from './ui/catalogMenu.vue'
 import ProfileCart from './ui/cart.vue'
 import changeVendorsWindow from './ui/changeVendorsWindow.vue'
 import OrderWindow from './ui/orderWindow.vue'
+import ProfileHeaderOffer from './ui/headerOffer.vue'
 
 
 export default {
@@ -107,6 +120,10 @@ export default {
       default: '',
     },
     manager_id: {
+      type: String,
+      default: '',
+    },
+    id_org_from: {
       type: String,
       default: '',
     },
@@ -252,6 +269,7 @@ export default {
     ProfileCart,
     OrderWindow,
     changeVendorsWindow,
+    ProfileHeaderOffer,
   },
   watch: {
     '$route.params.id': {

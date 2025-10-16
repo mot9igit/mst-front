@@ -25,7 +25,7 @@
         <a
           href="#"
           class="change-address__content-list-item"
-          v-for="store in orgStores.items"
+          v-for="store in stores"
           v-bind:key="store.id"
           @click.prevent="setWarehouse(store.id)"
         >
@@ -48,13 +48,32 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'changeAddressWindow',
+  data(){
+    return {
+      stores: []
+    }
+  },
+  mounted() {
+     if(this.$route.matched[5]?.name == 'WholesaleClientsOffer'){
+       this.stores = this.fromOrgStores.items
+     }else{
+      this.stores = this.orgStores.items
+    }
+
+  },
   computed: {
     ...mapGetters({
       orgStores: 'org/orgStores',
+      fromOrgStores: 'offer/fromOrgStores',
       basketWarehouse: 'basket/basketWarehouse',
+      basketOfferWarehouse: 'offer/basketOfferWarehouse',
     }),
     orgBasketWarehouse() {
+       if(this.$route?.matched[5]?.name == 'WholesaleClientsOffer'){
+         return this.fromOrgStores?.items?.find((el) => el.id == this.basketOfferWarehouse)
+       }else{
       return this.orgStores?.items?.find((el) => el.id == this.basketWarehouse)
+      }
     },
   },
   methods: {

@@ -395,7 +395,7 @@ const router = createRouter({
                           },
                         },
                         {
-                          path: 'offer/:client_id',
+                          path: 'offer/:id_org_from',
                           props: true,
                           name: 'WholesaleClientsOffer',
                           label: 'Предложение',
