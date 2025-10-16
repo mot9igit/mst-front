@@ -303,7 +303,7 @@
           </div>
         </div>
       </div>
-      <div class="clients__paginate" v-if="countPages > 1">
+      <div class="clients__paginate d-pagination-wrap" v-if="countPages > 1">
         <paginate
           :page-count="countPages"
           :click-handler="pagClickCallback"
@@ -543,7 +543,7 @@ export default {
       id: this.$route.params.id,
       filter: '',
       page: '',
-      perpage: ''
+      perpage: '',
     })
     this.getStores({
       id: this.$route.params.id,
