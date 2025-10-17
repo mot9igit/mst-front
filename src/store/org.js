@@ -34,7 +34,11 @@ export default {
           let activeOrganization = resp.find(
             (org) => org.id === router.currentRoute._value.params.id,
           )
-          commit('SET_ACTIVE_ORG', activeOrganization)
+          if (activeOrganization) {
+            commit('SET_ACTIVE_ORG', activeOrganization)
+          } else {
+            router.push({ name: 'OrgAdd' })
+          }
         }
       }
       return response
@@ -222,7 +226,7 @@ export default {
       const data = {
         action: 'get/org/manager',
         id: router.currentRoute._value.params.id,
-        manager_id: manager_id
+        manager_id: manager_id,
       }
       const response = await api.org.getManager(data)
       if (response) {

@@ -7,7 +7,12 @@
     </div>
 
     <h1>О компании</h1>
-
+    <div v-if="this.orgProfValues.verified == 0" class="warehouse-analysis__description">
+      <p>
+        Компания создана, но не подтверждена. Для подтверждения вашего статуса и личности, менеджер
+        свяжется с компанией по ее публичным контактом в течение одного рабочего дня.
+      </p>
+    </div>
     <Loader v-if="loading" />
     <div v-else>
       <form @submit.prevent="editOrgProfData()">
@@ -93,14 +98,15 @@
               <p class="lk-about__info-text">{{ this.orgprofile[field.name] }}</p>
             </div>
 
-            <button
+            <router-link
+              :to="{ name: 'OrgAdd' }"
               v-if="field.name == 'name'"
               type="button"
               class="d-button d-button-quaternary d-button--no-shadow lk-about__info-button"
             >
               <i class="d-icon-plus-flat lk-about__info-button-icon"></i>
               <span>Добавить компанию</span>
-            </button>
+            </router-link>
           </div>
         </div>
         <div class="lk-about__submit-container">
