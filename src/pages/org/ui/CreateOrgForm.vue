@@ -180,6 +180,37 @@
         </div>
       </div>
     </form>
+    <teleport to="body">
+      <customModal
+        v-model="this.modalSuccess"
+        class="product-not-available product-multiplicity-not-available"
+      >
+        <span class="dart-modal-title">
+          <b>Компания создана</b>
+        </span>
+        <p>
+          Компания создана, но не подтверждена. <br />
+          Для подтверждения вашего статуса и личности, менеджер свяжется с компанией по ее публичным
+          контактом в течение одного рабочего дня.
+        </p>
+        <button
+          class="d-button d-button-primary d-button-primary-small"
+          @click="
+            () => {
+              this.modalSuccess = false
+              if (this.orgId) {
+                this.$router.push({
+                  name: 'organizationIndexPage',
+                  params: { id: this.orgId },
+                })
+              }
+            }
+          "
+        >
+          Ок
+        </button>
+      </customModal>
+    </teleport>
   </div>
 </template>
 <script>
@@ -192,10 +223,11 @@ import AddAddress from './AddAddress.vue'
 import Autocomplete from '@/shared/ui/Autocomplete.vue'
 import FileUpload from 'primevue/fileupload'
 import { mapActions, mapGetters } from 'vuex'
+import customModal from '@/shared/ui/Modal.vue'
 
 export default {
   name: 'CreateOrgForm',
-  components: { PreLoader, DropZone, AddAddress, Autocomplete, FileUpload },
+  components: { PreLoader, DropZone, AddAddress, Autocomplete, FileUpload, customModal },
   props: {
     type: {
       type: String,
@@ -205,6 +237,8 @@ export default {
   data() {
     return {
       args: {},
+      orgId: 0,
+      modalSuccess: false,
       loading: false,
       client_id: 0,
       orgprofile: {
@@ -326,10 +360,8 @@ export default {
                 detail: 'Сейчас Вы будете перенаправлены в личный кабинет Организации',
                 life: 3000,
               })
-              this.$router.push({
-                name: 'organizationIndexPage',
-                params: { id: response.data.data.data?.org?.id },
-              })
+              this.orgId = response.data.data.data?.org?.id
+              this.modalSuccess = true
             } else {
               this.$toast.add({
                 severity: 'success',
@@ -445,6 +477,18 @@ export default {
 }
 </script>
 <style lang="scss">
+.dart-modal-title {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 26px;
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.01em;
+  color: #282828;
+  display: block;
+  margin-bottom: 8px;
+}
 .sticky-element {
   position: sticky;
   z-index: 10;
