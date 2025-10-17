@@ -12,10 +12,10 @@ export default {
   actions: {
     async getOptCatalog({ commit }) {
       const data = {
-        id:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id_org_from
-            : router.currentRoute._value.params.id,
+        id: router.currentRoute._value.params.id,
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+          //   ? router.currentRoute._value.params.id_org_from
+          //   : router.currentRoute._value.params.id,
         //warehouse_id: router.currentRoute._value.params.warehouse_id,
         action: 'get/catalog',
       }
@@ -26,19 +26,19 @@ export default {
     },
     async getOptWarehouseCatalog({ commit }) {
       const data = {
-        id:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id_org_from
-            : router.currentRoute._value.params.id,
+        id: router.currentRoute._value.params.id,
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+          //   ? router.currentRoute._value.params.id_org_from
+          //   : router.currentRoute._value.params.id,
         //warehouse_id: router.currentRoute._value.params.warehouse_id,
         warehouse: true,
         action: 'get/catalog',
-        id_org_from:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id
-            : null,
-        extended_name:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        id_org_from: null,
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+          //   ? router.currentRoute._value.params.id
+          //   : null,
+        extended_name: 'cart',
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
       }
       const response = await api.catalog.getCatalog(data)
       if (response) {
@@ -51,18 +51,18 @@ export default {
         req = router.currentRoute._value.params.req
       }
       const data = {
-        id:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id_org_from
-            : router.currentRoute._value.params.id,
-        id_org_from:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id
-            : null,
+        id: router.currentRoute._value.params.id,
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+          //   ? router.currentRoute._value.params.id_org_from
+          //   : router.currentRoute._value.params.id,
+        id_org_from: null,
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+          //   ? router.currentRoute._value.params.id
+          //   : null,
         type: router.currentRoute._value.params.type,
         search: search,
-        extended_name:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        extended_name: 'cart',
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
         page: page,
         req: req,
         perpage: perpage,
@@ -91,14 +91,14 @@ export default {
         cat = 'all'
       }
       const data = {
-        id:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id_org_from
-            : router.currentRoute._value.params.id,
-        id_org_from:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id
-            : null,
+        id: router.currentRoute._value.params.id,
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+          //   ? router.currentRoute._value.params.id_org_from
+          //   : router.currentRoute._value.params.id,
+        id_org_from: null,
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+          //   ? router.currentRoute._value.params.id
+          //   : null,
         type: router.currentRoute._value.params.type,
         filters: filters,
         category_id: cat,
@@ -106,8 +106,8 @@ export default {
         warehouse_id: router.currentRoute._value.params.warehouse_id,
         warehouse_cat_id: router.currentRoute._value.params.warehouse_cat_id,
         search: search,
-        extended_name:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        extended_name: 'cart',
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
         page: page,
         req: req,
         perpage: perpage,

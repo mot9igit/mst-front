@@ -54,6 +54,7 @@ export default {
       }
       return response
     },
+
     async getOrgStore({ commit }) {
       const data = {
         id: router.currentRoute._value.params.id,
@@ -86,21 +87,21 @@ export default {
     },
     async getOptVendorsAvailable({ commit }, { filter, page, perpage }) {
       const data = {
-        id:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id_org_from
-            : router.currentRoute._value.params.id,
+        id: router.currentRoute._value.params.id,
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+          //   ? router.currentRoute._value.params.id_org_from
+          //   : router.currentRoute._value.params.id,
         type: 0,
         filter: filter,
         page: page,
         perpage: perpage,
         action: 'get/vendors',
-        id_org_from:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id
-            : null,
-        extended_name:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        id_org_from: null,
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+          //   ? router.currentRoute._value.params.id
+          //   : null,
+        extended_name: 'cart',
+        //  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
       }
       const response = await api.org.getOptVendors(data)
       if (response) {
@@ -110,20 +111,20 @@ export default {
     },
     async getOptVendorsSelected({ commit }, { page, perpage }) {
       const data = {
-        id:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id_org_from
-            : router.currentRoute._value.params.id,
+        id: router.currentRoute._value.params.id,
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+          //   ? router.currentRoute._value.params.id_org_from
+          //   : router.currentRoute._value.params.id,
         type: 1,
         page: page,
         perpage: perpage,
         action: 'get/vendors',
-        id_org_from:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id
-            : null,
-        extended_name:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+        id_org_from: null,
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+          //   ? router.currentRoute._value.params.id
+          //   : null,
+        extended_name: 'cart',
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
       }
       const response = await api.org.getOptVendors(data)
       if (response) {
@@ -135,12 +136,12 @@ export default {
       const data = {
         action: 'toggle/vendors/stores',
         active: active,
-        extended_name:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
-        id:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id_org_from
-            : router.currentRoute._value.params.id,
+        extended_name: 'cart',
+        //  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
+        id: router.currentRoute._value.params.id,
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+          //   ? router.currentRoute._value.params.id_org_from
+          //   : router.currentRoute._value.params.id,
         org_id: org_id,
         store_id: store_id,
       }
@@ -152,12 +153,12 @@ export default {
         type: 'toggleOptsVisible',
         id: id,
         action: action,
-        extended_name:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
-        store:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id_org_from
-            : router.currentRoute._value.params.id,
+        extended_name: 'cart',
+        //  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
+        store: router.currentRoute._value.params.id,
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+          //   ? router.currentRoute._value.params.id_org_from
+          //   : router.currentRoute._value.params.id,
       }
       const response = await api.org.toggleOpts(data)
       return response
@@ -165,12 +166,12 @@ export default {
     async toggleOptsVisible(store, sendData) {
       const data = {
         action: 'get/vendors',
-        extended_name:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
-        store:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer'
-            ? router.currentRoute._value.params.id_org_from
-            : router.currentRoute._value.params.id,
+        extended_name: 'cart',
+        //  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
+        store: router.currentRoute._value.params.id,
+          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+          //   ? router.currentRoute._value.params.id_org_from
+          //   : router.currentRoute._value.params.id,
       }
       if (Object.prototype.hasOwnProperty.call(sendData, 'id')) {
         data.id = sendData.id
@@ -259,6 +260,7 @@ export default {
     SET_MANAGER: (state, data) => {
       state.manager = data.data
     },
+
   },
   getters: {
     orgActive(state) {
@@ -270,6 +272,7 @@ export default {
     orgStores(state) {
       return state.orgStores
     },
+
     orgStore(state) {
       return state.orgStore
     },

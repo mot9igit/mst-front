@@ -168,10 +168,10 @@
           <div class="clients__card-top-right">
             <div class="clients__card-top-right-top">
 
-              <button  @click.prevent="createOffer(item)" class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
+            <!-- <button  @click.prevent="createOffer(item)" class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
-              </button>
+              </button>-->
 
               <div class="clients__card-action-container">
                 <button
@@ -268,14 +268,16 @@
             </div>
           </div>
           <div class="clients__card-right-right d-col-10">
-            <div
-              class="d-col-18 clients__devider"
-            >
+           <div
+              class="d-col-18 ">
 
-              <button @click.prevent="createOffer(item)" class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
+            <!--  clients__devider"
+            >-->
+
+            <!--   <button @click.prevent="createOffer(item)" class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
-              </button>
+              </button>-->
 
             </div>
             <div class="clients__card-action-container">
@@ -477,7 +479,7 @@ export default {
     createOffer(data) {
       this.$router.push({
         name: 'WholesaleClientsOffer',
-        params: { id: this.$route.params.id, client_id: data.id },
+        params: { id: this.$route.params.id, id_org_from: data.id },
       })
 
     },

@@ -95,7 +95,7 @@ export default {
         type: 2,
         is_action: isAction ? true : false,
         extended_name:
-          router?.currentRoute?._value.matched[4]?.name == 'purchases_offer' ? 'offer' : 'cart',
+          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
       }
       const response = await api.retail.getSales(data)
       if (response) {

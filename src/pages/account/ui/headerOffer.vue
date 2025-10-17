@@ -35,7 +35,7 @@
           </button>
 
           <div class="header__vendor" v-if="this.optVendorsAvailable">
-            <span class="header__vendor-title">выбрано поставщиков:</span>
+            <span class="header__vendor-title">ДЛЯ ОФФЕРА!!! выбрано поставщиков:</span>
             <button class="header__vendor-button" @click.prevent="toggleVendor">
               <i class="d-icon-trolley header__vendor-icon"></i>
               <span class="header__vendor-value"
@@ -191,6 +191,7 @@ export default {
       loading: {
         changeBasketStore: false,
       },
+      basketOfferWarehouse: 0,
       showChangeAddressModal: false,
       showNotificationsModal: false,
       designMenuActive: false,
@@ -220,18 +221,13 @@ export default {
   },
   mounted() {
 
-    // if(this.$route.matched[5]?.name == 'WholesaleClientsOffer'){
-    //   this.getFromOrgStores().then(() => {
-    //   this.getOrgBasketStore()
-    //   this.getBasket()
-    // })
-    // }else{
-      this.getOrgStores().then(() => {
-        this.getOrgBasketOfferStore()
-        this.getBasket()
+       this.getFromOrgStores().then(() => {
+       // this.getOrgBasketOfferStore()
+       this.basketOfferWarehouse = this.fromOrgStores.items[0].id
+        this.getBasketOffer()
         this.getAllNotifications()
-      })
-  //  }
+       })
+
 
 
     // mobile header
@@ -259,10 +255,11 @@ export default {
     ...mapGetters({
       getUser: 'user/getUser',
       orgStores: 'org/orgStores',
-      //fromOrgStores: 'offer/fromOrgStores',
+      fromOrgStores: 'offer/fromOrgStores',
       orgActive: 'org/orgActive',
-      basket: 'basket/basket',
-      basketWarehouse: 'basket/basketWarehouse',
+      //basket: 'basket/basket',
+      basketOffer: 'offer/basketOffer',
+      //basketWarehouse: 'basket/basketWarehouse',
       //basketOfferWarehouse: 'offer/basketOfferWarehouse',
       optVendorsAvailable: 'org/optVendorsAvailable',
       optVendorsSelected: 'org/optVendorsSelected',
@@ -270,26 +267,22 @@ export default {
       notificationsAll: 'notifications/notificationsAll',
     }),
     orgBasketWarehouse() {
-      //  if(this.$route?.matched[5]?.name == 'WholesaleClientsOffer'){
-      //      return this.fromOrgStores?.items?.find((el) => el.id == this.basketWarehouse)
-      //   }else{
 
-      return this.orgStores?.items?.find((el) => el.id == this.basketWarehouse)
-     // }
-
+      return this.fromOrgStores?.items?.find((el) => el.id == this.basketOfferWarehouse)
     },
   },
   methods: {
     ...mapActions({
       getOrgStores: 'org/getOrgStores',
-    //  getFromOrgStores: 'offer/getFromOrgStores',
-      getOrgBasketStore: 'basket/getOrgBasketStore',
-      setOrgBasketStore: 'basket/setOrgBasketStore',
-    //  getOrgBasketOfferStore: 'offer/getOrgBasketOfferStore',
-      getBasket: 'basket/getBasket',
+      getFromOrgStores: 'offer/getFromOrgStores',
+      //getOrgBasketStore: 'basket/getOrgBasketStore',
+      //setOrgBasketStore: 'basket/setOrgBasketStore',
+      //getOrgBasketOfferStore: 'offer/getOrgBasketOfferStore',
+      //getBasket: 'basket/getBasket',
       getNewNotification: 'notifications/getNewNotification',
       getAllNotifications: 'notifications/getAllNotifications',
       readAllNotifications: 'notifications/readAllNotifications',
+      getBasketOffer: 'offer/getBasketOffer',
     }),
     toggleMenu() {
       if (this.active === true) {
@@ -318,13 +311,13 @@ export default {
       close()
     },
     setWarehouse(id) {
-      this.loading.changeBasketStore = true
-      this.setOrgBasketStore(id).then(() => {
-        // this.getBasket()
-        this.loading.changeBasketStore = false
-        this.showChangeAddressModal = false
-        window.location.reload()
-      })
+      // this.loading.changeBasketStore = true
+      // this.setOrgBasketStore(id).then(() => {
+      //   // this.getBasket()
+      //   this.loading.changeBasketStore = false
+      //   this.showChangeAddressModal = false
+      //   window.location.reload()
+      // })
     },
     updateCart() {
       if (Object.keys(this.basket).length > 1) {
@@ -372,8 +365,8 @@ export default {
       this.modals.requirement = newVal
     },
     orgActive: function () {
-      this.getOrgStores().then(() => {
-        this.getOrgBasketStore()
+      this.getFromOrgStores().then(() => {
+        this.getOrgBasketOfferStore()
       })
     },
     'showNotificationsModal': function(newVal){

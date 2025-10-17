@@ -163,7 +163,7 @@ import addVendorWindow from '../account/ui/addVendorWindow.vue'
 SwiperCore.use([Autoplay, Pagination])
 
 export default {
-  name: 'clientsOffer',
+  name: 'WholesaleClientsOffer',
   inject: ['catalogUpdater'],
   data() {
     return {
@@ -180,6 +180,7 @@ export default {
       filter: 0,
       filtersdata: 0,
     })
+
   },
   methods: {
     ...mapActions({
