@@ -54,7 +54,7 @@ export default {
     }
   },
   mounted() {
-     if(this.$route.matched[5]?.name == 'WholesaleClientsOffer'){
+     if(this.$route.matched[6]?.name == 'WholesaleClientsOffer'){
        this.stores = this.fromOrgStores.items
      }else{
       this.stores = this.orgStores.items
@@ -69,7 +69,7 @@ export default {
       basketOfferWarehouse: 'offer/basketOfferWarehouse',
     }),
     orgBasketWarehouse() {
-       if(this.$route?.matched[5]?.name == 'WholesaleClientsOffer'){
+       if(this.$route?.matched[6]?.name == 'WholesaleClientsOffer'){
          return this.fromOrgStores?.items?.find((el) => el.id == this.basketOfferWarehouse)
        }else{
       return this.orgStores?.items?.find((el) => el.id == this.basketWarehouse)

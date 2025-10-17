@@ -396,15 +396,65 @@ const router = createRouter({
                         },
                         {
                           path: 'offer/:id_org_from',
-                          props: true,
                           name: 'WholesaleClientsOffer',
-                          label: 'Предложение',
-                          component: WholesaleClientsOffer,
                           meta: {
                             breadcrumb: {
                               label: 'Предложение',
                             },
                           },
+                          children: [
+                            {
+                              path: '',
+                              props: true,
+                              name: 'WholesaleClientsOffer1',
+                              label: 'Предложение',
+                              component: WholesaleClientsOffer,
+                            },
+                            {
+                              path: ':category_id',
+                              name: 'purchasesOfferCatalog',
+                              props: true,
+                              label: 'Оптовый каталог',
+                              component: PurchasesCatalog,
+                              meta: {
+                                breadcrumb: {
+                                  label: 'Каталог',
+                                },
+                              },
+                            },
+                            {
+                              path: '/:org_w_id/:warehouse_id',
+                              meta: {
+                                breadcrumb: {
+                                  label: 'Каталог поставщика',
+                                },
+                              },
+                              children: [
+                                {
+                                  path: '',
+                                  name: 'purchasesOfferCatalogWarehouse',
+                                  component: PurchasesCatalog,
+                                  label: 'Каталог поставщика',
+                                },
+                                {
+                                  path: ':warehouse_cat_id',
+                                  meta: {
+                                    breadcrumb: {
+                                      label: 'Каталог поставщика',
+                                    },
+                                  },
+                                  children: [
+                                    {
+                                      path: '',
+                                      name: 'purchasesOfferCatalogWarehouseCategory',
+                                      label: 'Мой оптовик',
+                                      component: PurchasesCatalog,
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ]
                         },
                       ],
                     },

@@ -220,18 +220,13 @@ export default {
   },
   mounted() {
 
-    // if(this.$route.matched[5]?.name == 'WholesaleClientsOffer'){
-    //   this.getFromOrgStores().then(() => {
-    //   this.getOrgBasketStore()
-    //   this.getBasket()
-    // })
-    // }else{
+
       this.getOrgStores().then(() => {
-        this.getOrgBasketOfferStore()
+        this.getOrgBasketStore()
         this.getBasket()
         this.getAllNotifications()
       })
-  //  }
+
 
 
     // mobile header
@@ -270,7 +265,7 @@ export default {
       notificationsAll: 'notifications/notificationsAll',
     }),
     orgBasketWarehouse() {
-      //  if(this.$route?.matched[5]?.name == 'WholesaleClientsOffer'){
+      //  if(this.$route?.matched[6]?.name == 'WholesaleClientsOffer'){
       //      return this.fromOrgStores?.items?.find((el) => el.id == this.basketWarehouse)
       //   }else{
 
@@ -394,7 +389,7 @@ export default {
       }
 
     },
-    // '$route.matched[5].name': function(newVal){
+    // '$route.matched[6].name': function(newVal){
     //   this.getOrgBasketStore()
     // }
 

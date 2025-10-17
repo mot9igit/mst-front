@@ -35,11 +35,11 @@
           </button>
 
           <div class="header__vendor" v-if="this.optVendorsAvailable">
-            <span class="header__vendor-title">ДЛЯ ОФФЕРА!!! выбрано поставщиков:</span>
+            <span class="header__vendor-title">выбрано поставщиков:</span>
             <button class="header__vendor-button" @click.prevent="toggleVendor">
               <i class="d-icon-trolley header__vendor-icon"></i>
               <span class="header__vendor-value"
-                >{{ this.optVendorsSelected.total }} из {{ this.optVendorsSelected.totalAll }}</span
+                >1 из 1</span
               >
               <i class="d-icon-angle header__vendor-arrow"></i>
             </button>
@@ -185,25 +185,25 @@ import Toast from 'primevue/toast'
 
 
 export default {
-  name: 'ProfileHeader',
+  name: 'ProfileHeaderOffer',
   data() {
     return {
       loading: {
         changeBasketStore: false,
       },
-      basketOfferWarehouse: 0,
       showChangeAddressModal: false,
       showNotificationsModal: false,
       designMenuActive: false,
       basketStore: {},
       reloadNotificationsModal: false,
+      storeActive: 0,
       modals: {
         requirement: false,
       },
       data_start: new Date(),
     }
   },
-  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments', 'notifications', 'notificationsMobile'],
+  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments', 'notifications', 'notificationsMobile', 'offer'],
   components: { Loader, customModal, changeAddressWindow, SearchField, requirement, Toast, notificationsWindow },
   props: {
     active: {
@@ -221,10 +221,14 @@ export default {
   },
   mounted() {
 
-       this.getFromOrgStores().then(() => {
-       // this.getOrgBasketOfferStore()
-       this.basketOfferWarehouse = this.fromOrgStores.items[0].id
-        this.getBasketOffer()
+      this.getFromOrgStores().then(() => {
+        this.storeActive = this.fromOrgStores.items[0].id
+        this.getOrgBasketOfferStore({
+          active_store: this.storeActive
+        }).then(() => {
+          this.getBasketOffer()
+        })
+        this.getOptVendorOffer()
         this.getAllNotifications()
        })
 
@@ -254,13 +258,13 @@ export default {
   computed: {
     ...mapGetters({
       getUser: 'user/getUser',
-      orgStores: 'org/orgStores',
+      vendorOffer: 'offer/vendorOffer',
       fromOrgStores: 'offer/fromOrgStores',
       orgActive: 'org/orgActive',
       //basket: 'basket/basket',
       basketOffer: 'offer/basketOffer',
       //basketWarehouse: 'basket/basketWarehouse',
-      //basketOfferWarehouse: 'offer/basketOfferWarehouse',
+      basketOfferWarehouse: 'offer/basketOfferWarehouse',
       optVendorsAvailable: 'org/optVendorsAvailable',
       optVendorsSelected: 'org/optVendorsSelected',
       newNotification: 'notifications/newNotification',
@@ -273,12 +277,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      getOrgStores: 'org/getOrgStores',
+      getOptVendorOffer: 'offer/getOptVendorOffer',
       getFromOrgStores: 'offer/getFromOrgStores',
-      //getOrgBasketStore: 'basket/getOrgBasketStore',
-      //setOrgBasketStore: 'basket/setOrgBasketStore',
-      //getOrgBasketOfferStore: 'offer/getOrgBasketOfferStore',
-      //getBasket: 'basket/getBasket',
+      getOrgBasketOfferStore: 'offer/getOrgBasketOfferStore',
       getNewNotification: 'notifications/getNewNotification',
       getAllNotifications: 'notifications/getAllNotifications',
       readAllNotifications: 'notifications/readAllNotifications',
@@ -303,6 +304,7 @@ export default {
     },
     toggleVendor() {
       this.$emit('toggleVendor')
+      this.$emit('offer')
     },
     toggleCart() {
       this.$emit('toggleCart')
@@ -311,13 +313,20 @@ export default {
       close()
     },
     setWarehouse(id) {
-      // this.loading.changeBasketStore = true
+      this.loading.changeBasketStore = true
+      this.storeActive = id
+      this.getOrgBasketOfferStore({
+          active_store: this.storeActive
+      }).then(() => {
+        this.getBasketOffer()
+      })
+
       // this.setOrgBasketStore(id).then(() => {
       //   // this.getBasket()
-      //   this.loading.changeBasketStore = false
-      //   this.showChangeAddressModal = false
-      //   window.location.reload()
-      // })
+        this.loading.changeBasketStore = false
+        this.showChangeAddressModal = false
+        //window.location.reload()
+    //  })
     },
     updateCart() {
       if (Object.keys(this.basket).length > 1) {
@@ -366,7 +375,12 @@ export default {
     },
     orgActive: function () {
       this.getFromOrgStores().then(() => {
-        this.getOrgBasketOfferStore()
+        this.storeActive = this.fromOrgStores.items[0].id
+        this.getOrgBasketOfferStore({
+          active_store: this.storeActive
+        })
+        this.getBasketOffer()
+        this.getAllNotifications()
       })
     },
     'showNotificationsModal': function(newVal){
@@ -387,9 +401,9 @@ export default {
       }
 
     },
-    // '$route.matched[5].name': function(newVal){
-    //   this.getOrgBasketStore()
-    // }
+    '$route.matched[6].name': function(newVal){
+       this.getOrgBasketStore()
+    }
 
   }
 }

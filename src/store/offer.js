@@ -7,6 +7,7 @@ export default {
     fromOrgStores: [],
     orgBasketOfferStore: 0,
     basketOffer: {},
+    vendorOffer: {},
   },
   actions: {
     async getFromOrgStores({ commit }) {
@@ -20,10 +21,11 @@ export default {
       }
       return response
     },
-    async getOrgBasketOfferStore({ commit }) {
+    async getOrgBasketOfferStore({ commit }, { active_store } ) {
       const data = {
         action: 'get/warehouse/basket/offer',
-        id_org_from: router.currentRoute._value.params.id_org_from
+        id_org_from: router.currentRoute._value.params.id_org_from,
+        active_store: active_store,
       }
       const response = await api.offer.getOrgBasketOfferStore(data)
       if (response) {
@@ -43,6 +45,20 @@ export default {
       }
       return response
     },
+    async getOptVendorOffer({ commit }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action: 'get/offer/vendor',
+        extended_name: 'offer',
+      }
+      const response = await api.offer.getOptVendorOffer(data)
+      if (response) {
+        commit('SET_OPT_VENDOR_OFFER', response.data)
+      }
+      return response
+    },
+
+
   },
   mutations: {
     SET_FROM_ORG_STORES: (state, data) => {
@@ -54,6 +70,10 @@ export default {
     SET_BASKET_OFFER: (state, data) => {
       state.basketOffer = data.data
     },
+    SET_OPT_VENDOR_OFFER: (state, data) => {
+      state.vendorOffer = data.data
+    },
+
   },
   getters: {
     fromOrgStores(state) {
@@ -65,5 +85,9 @@ export default {
     basketOffer(state) {
       return state.basketOffer
     },
+    vendorOffer(state) {
+      return state.vendorOffer
+    },
+
   },
 }

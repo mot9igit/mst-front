@@ -1,11 +1,11 @@
 <template>
-  <div class="d-sheet__overlay vendor-change__sheet-overlay" :class="{ active: active }">
-    <div class="d-sheet__wrapper vendor-change__sheet-wrapper" v-if="optVendorsAvailable.items">
-      <div class="d-sheet d-sheet--active vendor-change__sheet" data-sheet="vendor-change">
+  <div class="d-sheet__overlay vendor-change__sheet-overlay" :class="{ active: active }" >
+    <div class="d-sheet__wrapper vendor-change__sheet-wrapper" v-if="optVendorsAvailable.items" >
+      <div class="d-sheet d-sheet--active vendor-change__sheet" data-sheet="vendor-change" :class="offer ? 'd-sheet__overlay-500' : ''">
         <Loader v-if="this.loading" />
         <div class="d-sheet__content vendor-change">
           <!-- Яндекс карта -->
-          <div class="vendor-change__map">
+          <div class="vendor-change__map" v-if="!offer">
             <div class="yandex-map vendor-change__map-image" v-if="optVendorsAvailable.items">
               <yandex-map v-model="map" :settings="mapSettings" height="100%">
                 <yandex-map-default-features-layer />
@@ -39,7 +39,8 @@
           <div class="vendor-change__content">
             <!-- Заголовок модалки -->
             <div class="vendor-change__title-container">
-              <h3 class="vendor-change__title">Выбор поставщиков</h3>
+              <h3 class="vendor-change__title" v-if="!offer">Выбор поставщиков</h3>
+              <h3 class="vendor-change__title" v-else>Выбор склада для создания предложения</h3>
               <button class="vendor-change__close-button" @click.prevent="close()">
                 <i class="d-icon-times vendor-change__close-button-icon"></i>
                 <i class="d-icon-angle-rounded-left vendor-change__title-back"></i>
@@ -52,7 +53,7 @@
                 Выбранные поставщики
               </p>
 
-              <div class="vendor-change__selected-list">
+              <div class="vendor-change__selected-list" v-if="!offer">
                 <!-- Карточка выбранного поставщика -->
                 <div
                   class="vendor-change__selected-item"
@@ -135,6 +136,92 @@
                   </div>
                 </div>
               </div>
+              <div class="vendor-change__selected-list" v-else>
+                <!-- Карточка выбранного поставщика -->
+                <div
+                  class="vendor-change__selected-item"
+
+                >
+                  <!-- Верхушка -->
+                  <div class="vendor-change__selected-item-header">
+                    <div class="vendor-change__selected-item-title-container">
+                      <div class="vendor-change__selected-item-image-container">
+                        <img
+                          v-if="vendorOffer.items.image"
+                          :src="vendorOffer.items.image"
+                          alt=""
+                          class="vendor-change__selected-item-image"
+                        />
+                        <span v-else>
+                          {{ vendorOffer.items.name.slice(0, 2).toUpperCase() }}
+                        </span>
+                      </div>
+                      <p class="vendor-change__selected-item-title">{{ vendorOffer.items.name }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Контент с данными -->
+                  <div class="vendor-change__selected-item-content">
+                    <div class="vendor-change__selected-item-data">
+                      <i class="d-icon-location vendor-change__selected-item-data-icon"></i>
+                      <p class="vendor-change__selected-item-data-text">
+                        {{ vendorOffer.items.address }}
+                      </p>
+                    </div>
+
+                    <div class="vendor-change__selected-item-data-container">
+                      <div class="vendor-change__selected-item-data">
+                        <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
+                        <p class="vendor-change__selected-item-data-text">{{ vendorOffer.items.phone }}</p>
+                      </div>
+
+                      <div
+                        class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
+                      ></div>
+
+                      <div class="vendor-change__selected-item-data">
+                        <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
+                        <p class="vendor-change__selected-item-data-text">{{ vendorOffer.items.email }}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Данные склада -->
+                   <div v-if="error" class="d-input-error vendor-change-error">
+                    <i class="d-icon-warning d-input-error__icon"></i>
+                    <span class="d-input-error__text"
+                      >Вы должны выбрать хотя бы один склад</span
+                    >
+                  </div>
+                  <div class="vendor-change__selected-item-footer" v-if="vendorOffer.items.stores">
+                    <div
+                      class="d-radio__wrapper vendor-change__selected-item-radio-wrapper"
+                      v-for="store in vendorOffer.items.stores"
+                      :key="store.id"
+                    >
+                      <Checkbox
+                        @change="setOfferStores"
+                        v-model="offerStoresSelected"
+                        :binary="false"
+                        :inputId="'offer-' + store.id"
+                        :name="'offer-' + store.id"
+                        :value="store.id"
+                      />
+                      <label
+                        :for="'offer-' + store.id"
+                        class="d-radio__label vendor-change__selected-item-radio-label"
+                        >Склад #{{ store.id }},
+                        {{ store.address_short ? store.address_short : store.address }}
+                      </label>
+                    </div>
+                  </div>
+
+                </div>
+
+
+
+              </div>
+
             </div>
 
             <div class="d-pagination-wrap" v-if="pagesCountSelected > 1">
@@ -155,10 +242,11 @@
             <!-- Список подключенных поставщиков -->
             <p
               class="vendor-change__block-title vendor-change__connected-title vendor-change__connected-title--1280"
+              v-if="!offer"
             >
               Список подключенных поставщиков
             </p>
-            <div class="vendor-change__block vendor-change__connected">
+            <div class="vendor-change__block vendor-change__connected" v-if="!offer">
               <!-- Заголовок -->
               <p class="vendor-change__block-title vendor-change__connected-title">
                 Список подключенных поставщиков
@@ -292,8 +380,12 @@ export default {
       type: Boolean,
       default: false,
     },
+    offer: {
+      type: Boolean,
+      default: false,
+    }
   },
-  emits: ['vendorCheck', 'catalogUpdate'],
+  emits: ['vendorCheck', 'catalogUpdate', 'offerStoresSelected'],
   components: {
     YandexMap,
     YandexMapDefaultSchemeLayer,
@@ -330,12 +422,16 @@ export default {
         selected: [],
       },
       multisupplier: true,
+      offerStoresSelected: [],
+      error: false,
     }
   },
   computed: {
     ...mapGetters({
       optVendorsAvailable: 'org/optVendorsAvailable',
       optVendorsSelected: 'org/optVendorsSelected',
+      vendorOffer: 'offer/vendorOffer',
+
     }),
     avLength() {
       return this.optVendorsAvailable.total
@@ -355,6 +451,18 @@ export default {
       return pages
     },
   },
+  mounted() {
+    if(this.offer == true){
+      this.offerStoresSelected = []
+      this.getOptVendorOffer().then(() => {
+        for(let i = 0; i < this.vendorOffer.items.stores.length; i++){
+
+          this.offerStoresSelected.push(this.vendorOffer.items.stores[i].id)
+
+        }
+      })
+    }
+  },
   methods: {
     ...mapActions({
       toggleOptsVisible: 'org/toggleOptsVisible',
@@ -362,6 +470,7 @@ export default {
       getOptVendorsSelected: 'org/getOptVendorsSelected',
       toggleOpts: 'org/toggleOpts',
       toggleVendorStores: 'org/toggleVendorStores',
+      getOptVendorOffer: 'offer/getOptVendorOffer',
     }),
     close() {
       this.$emit('close')
@@ -513,7 +622,34 @@ export default {
         })
       }
     },
+    debounce(func, delay) {
+      clearTimeout(this.searchPTimer)
+      this.searchPTimer = setTimeout(func, delay)
+    },
+    setOfferStores(){
+      this.error = false
+      if(this.offerStoresSelected.length == 0){
+        this.error = true
+        this.debounce(() => {
+          this.error = false
+        }, 2000)
+        this.offerStoresSelected.push(this.vendorOffer.items.stores[0].id)
+        this.$emit('offerStoresSelected')
+      }else{
+        this.$emit('offerStoresSelected')
+      }
+    }
   },
+  watch: {
+    vendorOffer: function(newVal){
+      for(let i = 0; i < newVal.items.stores.length; i++){
+
+          this.offerStoresSelected.push(newVal.items.stores[i].id)
+
+        }
+    }
+  }
+
 }
 </script>
 <style lang="scss">
@@ -561,5 +697,11 @@ export default {
   .p-checkbox-box {
   border-color: rgba(249, 44, 13, 1);
   background: rgba(249, 44, 13, 1);
+}
+.d-sheet__overlay-500{
+  width:500px !important;
+}
+.vendor-change-error{
+  margin-bottom: 16px;
 }
 </style>

@@ -32,8 +32,14 @@
               <i class="d-icon-angle-rounded catalog__item-arrow"></i>
             </button>
             <router-link
-              :to="{
+              :to="!offer ? {
                 name: 'purchasesCatalog',
+                params: {
+                  id: this.$route.params.id,
+                  category_id: item.id,
+                },
+              } : {
+                name: 'purchasesOfferCatalog',
                 params: {
                   id: this.$route.params.id,
                   category_id: item.id,
@@ -110,8 +116,14 @@
           ><span class="catalog__head-item-text">{{ catalogListPrevios }}</span>
         </button>
         <router-link
-          :to="{
+          :to="!offer ? {
             name: 'purchasesCatalog',
+            params: {
+              id: this.$route.params.id,
+              category_id: catalogListIndex,
+            },
+          } : {
+            name: 'purchasesOfferCatalog',
             params: {
               id: this.$route.params.id,
               category_id: catalogListIndex,
@@ -126,8 +138,16 @@
         </router-link>
 
         <router-link
-          :to="{
+          :to="!offer ? {
             name: 'purchasesCatalogWarehouseCategory',
+            params: {
+              id: this.$route.params.id,
+              org_w_id: breadcrumbs[1].category_id,
+              warehouse_id: breadcrumbs[2].category_id,
+              warehouse_cat_id: catalogListIndex,
+            },
+          } : {
+            name: 'purchasesOfferCatalogWarehouseCategory',
             params: {
               id: this.$route.params.id,
               org_w_id: breadcrumbs[1].category_id,
@@ -173,8 +193,16 @@
 
             <div v-else>
               <router-link
-                :to="{
+                :to="!offer ? {
                   name: 'purchasesCatalogWarehouseCategory',
+                  params: {
+                    id: this.$route.params.id,
+                    org_w_id: subitem.org_w_id,
+                    warehouse_id: subitem.warehouse_id,
+                    warehouse_cat_id: subitem.id,
+                  },
+                } : {
+                  name: 'purchasesOfferCatalogWarehouseCategory',
                   params: {
                     id: this.$route.params.id,
                     org_w_id: subitem.org_w_id,
@@ -192,8 +220,14 @@
                 </div>
               </router-link>
               <router-link
-                :to="{
+                :to=" !offer ? {
                   name: 'purchasesCatalog',
+                  params: {
+                    id: this.$route.params.id,
+                    category_id: subitem.id,
+                  },
+                } : {
+                  name: 'purchasesOfferCatalog',
                   params: {
                     id: this.$route.params.id,
                     category_id: subitem.id,
@@ -253,6 +287,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    offer: {
+      type: Boolean,
+      default: false,
+    }
   },
 
   mounted() {

@@ -33,9 +33,11 @@
       @showRequipments="showRequip()"
       @notifications="notificationsCol"
       @notificationsMobile="mobileNotifications()"
+      @offer="offerVendor()"
       :mobileRequipments="mobileRequipments"
       :active="toggleMenu"
       :mobileNotificationsShow="mobileNotificationsShow"
+      :offer="isOffer"
     ></ProfileHeaderOffer>
 
     <main class="main">
@@ -52,6 +54,7 @@
       </teleport>
 
       <changeVendorsWindow
+        :offer="isOffer"
         :active="this.toggleVendors"
         @close="changeVendorsWindowClose()"
         @catalogUpdate="catalogUpdate()"
@@ -66,6 +69,7 @@
     </main>
   </div>
   <ProfileCatalogMenu
+    :offer="isOffer"
     :active="toggleMenu"
     :isMobile="mobileCatalogShow"
     @headerDesignOff="headerDesignOff"
@@ -141,6 +145,7 @@ export default {
       mobileRequipments: false,
       mobileNotificationsShow: false,
       notificationsNoRead: 0,
+      isOffer: false,
     }
   },
   mounted() {
@@ -180,6 +185,8 @@ export default {
         }
       }
     })
+
+
   },
   computed: {
     ...mapGetters({
@@ -241,9 +248,18 @@ export default {
     },
     changeVendorsWindowClose() {
       this.toggleVendors = false
+
     },
     changeOrderWindowClose() {
       this.toggleOrderWindow = false
+    },
+    offerVendor(){
+      if(this.$route.matched[6].name == 'WholesaleClientsOffer'){
+        this.isOffer = true
+      }else{
+        this.isOffer = false
+      }
+
     },
     copyVersion() {
       var range = document.createRange()
@@ -291,6 +307,13 @@ export default {
     },
     basket: function (newVal) {
       this.cartCount = newVal.cart_data?.sku_count ? newVal.cart_data.sku_count : 0
+    },
+    '$route.matched': function(newVal) {
+      if(newVal[6] && newVal[6].name == 'WholesaleClientsOffer'){
+        this.isOffer = true
+      }else{
+        this.isOffer = false
+      }
     },
   },
 }
