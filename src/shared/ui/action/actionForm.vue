@@ -1260,6 +1260,7 @@
                         <DropZone
                           v-if="!this.upload_product"
                           class=""
+                          :key="'banner_max'"
                           :maxFiles="Number(1)"
                           :maxFileSize="5000000"
                           url="/rest/file_upload.php?banner=max"
@@ -1311,6 +1312,7 @@
                         <DropZone
                           v-if="!this.upload_product"
                           class=""
+                          :key="'banner_min'"
                           :maxFiles="Number(1)"
                           :maxFileSize="5000000"
                           url="/rest/file_upload.php?banner=min"
@@ -1342,8 +1344,8 @@
                         </DropZone>
                         <div class="upload-banner__image">
                           <img
-                            :src="this.files?.min?.original_href"
-                            v-if="this.files?.min?.original_href"
+                            :src="this.form.adv.files?.min?.original_href"
+                            v-if="this.form.adv.files?.min?.original_href"
                           />
                         </div>
                       </div>
@@ -1362,6 +1364,7 @@
                         <DropZone
                           v-if="!this.upload_product"
                           class=""
+                          :key="'banner_small'"
                           :maxFiles="Number(1)"
                           :maxFileSize="5000000"
                           url="/rest/file_upload.php?banner=small"
@@ -1393,8 +1396,8 @@
                         </DropZone>
                         <div class="upload-banner__image">
                           <img
-                            :src="this.files?.small?.original_href"
-                            v-if="this.files?.small?.original_href"
+                            :src="this.form.adv.files?.small?.original_href"
+                            v-if="this.form.adv.files?.small?.original_href"
                           />
                         </div>
                       </div>
@@ -1945,7 +1948,6 @@
                           >Выберите акции из списка</label
                         >
                         <MultiSelect
-                          :key="new Date().getMilliseconds()"
                           filter
                           v-model="this.form.actions"
                           display="chip"
@@ -2148,6 +2150,7 @@
                       </div>
                       <div
                         class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings"
+                        v-if="type == 1"
                       >
                         <p class="promo-master__subtitle promo-master__subtitle--small">
                           Отдельные компании
@@ -3198,55 +3201,53 @@ export default {
     this.unsetAction()
   },
   mounted() {
-    this.unsetAction().then(() => {
-      this.masterStepInc()
-      this.getCatalogs()
-      // Берем географию
-      this.getRegions({ exclude: [], filter: '' }).then(() => {
-        this.regions_all = this.regions.map(function (el) {
-          return { name: el.label, code: el.key }
-        })
+    this.masterStepInc()
+    this.getCatalogs()
+    // Берем географию
+    this.getRegions({ exclude: [], filter: '' }).then(() => {
+      this.regions_all = this.regions.map(function (el) {
+        return { name: el.label, code: el.key }
       })
-      this.getOrganizations({ exclude: [], filter: '' }).then(() => {
-        this.organizations_all = this.organizations.map(function (el) {
-          return { name: el.name, code: el.id }
-        })
+    })
+    this.getOrganizations({ exclude: [], filter: '' }).then(() => {
+      this.organizations_all = this.organizations.map(function (el) {
+        return { name: el.name, code: el.id }
       })
-      this.getOrgStores()
-      this.getAllActions()
-      this.getActionAdvPages({ type: this.type })
-      if (this.$route.params.action) {
-        this.getAction().then(() => {
-          this.loading = false
-          if (this.form.store_id) {
+    })
+    this.getOrgStores()
+    this.getAllActions()
+    this.getActionAdvPages({ type: this.type })
+    if (this.$route.params.action) {
+      this.getAction().then(() => {
+        this.loading = false
+        if (this.form.store_id) {
+          this.getAvailableProducts({
+            store_id: this.form.store_id,
+            filter: '',
+            page: 1,
+            perpage: this.per_page_small,
+            type: 1,
+          }).then(() => {
             this.getAvailableProducts({
               store_id: this.form.store_id,
               filter: '',
               page: 1,
-              perpage: this.per_page_small,
-              type: 1,
+              perpage: this.per_page,
+              type: 2,
             }).then(() => {
-              this.getAvailableProducts({
-                store_id: this.form.store_id,
-                filter: '',
-                page: 1,
-                perpage: this.per_page,
-                type: 2,
-              }).then(() => {
-                this.productLoading = false
-              })
+              this.productLoading = false
             })
-            this.getProductGroups({
-              store_id: this.form.store_id,
-              filter: '',
-            })
-            this.getActiveActions()
-          }
-        })
-      } else {
-        this.modals.master = true
-      }
-    })
+          })
+          this.getProductGroups({
+            store_id: this.form.store_id,
+            filter: '',
+          })
+          this.getActiveActions()
+        }
+      })
+    } else {
+      this.modals.master = true
+    }
   },
   methods: {
     ...mapActions({
@@ -4144,6 +4145,12 @@ export default {
         if (newVal.image) {
           this.form.adv.files.max.original_href = newVal.image.image
         }
+        if (newVal.image_small) {
+          this.form.adv.files.small.original_href = newVal.image_small.image
+        }
+        if (newVal.image_inner) {
+          this.form.adv.files.min.original_href = newVal.image_inner.image
+        }
         if (newVal.page_create) {
           this.form.adv.active = true
         }
@@ -4289,6 +4296,11 @@ export default {
 }
 </script>
 <style lang="scss">
+.dart-form-group {
+  .p-multiselect {
+    max-width: 500px;
+  }
+}
 .promotions__card__no-banner {
   padding: 32px 32px;
   border-radius: 3px;
