@@ -8,6 +8,7 @@ export default {
     orgBasketOfferStore: 0,
     basketOffer: {},
     vendorOffer: {},
+    optOfferProducts: {},
   },
   actions: {
     async getFromOrgStores({ commit }) {
@@ -109,7 +110,74 @@ export default {
       }
       return response
     },
-
+    // async getOptProductsSearch(store, { page, perpage, search }) {
+    //   let req = null
+    //   if (router.currentRoute._value.params.req) {
+    //     req = router.currentRoute._value.params.req
+    //   }
+    //   const data = {
+    //     id: router.currentRoute._value.params.id,
+    //       // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+    //       //   ? router.currentRoute._value.params.id_org_from
+    //       //   : router.currentRoute._value.params.id,
+    //     id_org_from: null,
+    //       // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+    //       //   ? router.currentRoute._value.params.id
+    //       //   : null,
+    //     type: router.currentRoute._value.params.type,
+    //     search: search,
+    //     extended_name: 'cart',
+    //       // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
+    //     page: page,
+    //     req: req,
+    //     perpage: perpage,
+    //     action: 'get/products',
+    //   }
+    //   const response = await api.catalog.getOptProducts(data)
+    //   return response
+    // },
+    async getOfferOptProducts({ commit }, { filters, page, perpage, basket, search }) {
+      let cat = 0
+      if (
+        router.currentRoute._value.params.warehouse_id &&
+        !router.currentRoute._value.params.warehouse_cat_id
+      ) {
+        cat = 'all'
+      }
+      if (
+        !router.currentRoute._value.params.warehouse_id &&
+        !router.currentRoute._value.params.warehouse_cat_id
+      ) {
+        cat = router.currentRoute._value.params.category_id
+      }
+      let req = null
+      if (router.currentRoute._value.params.requirement_id) {
+        req = router.currentRoute._value.params.requirement_id
+        cat = 'all'
+      }
+      const data = {
+        id: router.currentRoute._value.params.id_org_from,
+        id_org_from: router.currentRoute._value.params.id,
+        type: router.currentRoute._value.params.type,
+        filters: filters,
+        category_id: cat,
+        org_w_id: router.currentRoute._value.params.org_w_id,
+        warehouse_id: router.currentRoute._value.params.warehouse_id,
+        warehouse_cat_id: router.currentRoute._value.params.warehouse_cat_id,
+        search: search,
+        extended_name: 'offer',
+        page: page,
+        req: req,
+        perpage: perpage,
+        action: 'get/products',
+        basket: basket,
+      }
+      const response = await api.catalog.getOptProducts(data)
+      if (response) {
+        commit('SET_OFFER_OPT_PRODUCTS', response.data)
+      }
+      return response
+    },
 
   },
   mutations: {
@@ -124,6 +192,9 @@ export default {
     },
     SET_OPT_VENDOR_OFFER: (state, data) => {
       state.vendorOffer = data.data
+    },
+    SET_OFFER_OPT_PRODUCTS: (state, data) => {
+      state.optOfferProducts = data.data
     },
 
   },
@@ -140,6 +211,8 @@ export default {
     vendorOffer(state) {
       return state.vendorOffer
     },
-
+    optOfferProducts(state) {
+      return state.optOfferProducts
+    },
   },
 }

@@ -104,7 +104,7 @@
                   <Counter
                     :classPrefix="'cart__item'"
                     @ElemCount="ElemCount"
-                    :item="{ basket, product }"
+                    :item="{ basketOffer, product }"
                     :mini="true"
                     :min="0"
                     :max="Number(product?.available)"
@@ -356,7 +356,7 @@ export default {
     basketOfferWarehouse(newVal) {
       if (Object.keys(this.basketOffer).length > 1 && newVal > 0) {
         if (Object.prototype.hasOwnProperty.call(this.basketOffer.data, newVal)) {
-          this.basketStore = this.basket.data[newVal]
+          this.basketStore = this.basketOffer.data[newVal]
         } else {
           this.basketStore = {}
         }
