@@ -69,11 +69,19 @@
     </main>
   </div>
   <ProfileCatalogMenu
+    :active="toggleMenu"
+    :isMobile="mobileCatalogShow"
+    @headerDesignOff="headerDesignOff"
+    @menuClose="menuClose"
+    v-if="!this.$route.params.id_org_from"
+  />
+    <ProfileOfferCatalogMenu
     :offer="isOffer"
     :active="toggleMenu"
     :isMobile="mobileCatalogShow"
     @headerDesignOff="headerDesignOff"
     @menuClose="menuClose"
+    v-else
   />
 </template>
 <script>
@@ -86,6 +94,7 @@ import ProfileCart from './ui/cart.vue'
 import changeVendorsWindow from './ui/changeVendorsWindow.vue'
 import OrderWindow from './ui/orderWindow.vue'
 import ProfileHeaderOffer from './ui/headerOffer.vue'
+import ProfileOfferCatalogMenu from './ui/catalogMenuOffer.vue'
 
 
 export default {
@@ -183,8 +192,15 @@ export default {
             this.$router.push({ name: 'OrgAdd' })
           }
         }
+        if(this.route.matched[5] && this.route.matched[5].name == 'WholesaleClientsOffer'){
+          this.isOffer = true
+        }else{
+          this.isOffer = false
+        }
+
       }
     })
+
 
 
   },
@@ -254,7 +270,7 @@ export default {
       this.toggleOrderWindow = false
     },
     offerVendor(){
-      if(this.$route.matched[6].name == 'WholesaleClientsOffer'){
+      if(this.$route.matched[5].name == 'WholesaleClientsOffer'){
         this.isOffer = true
       }else{
         this.isOffer = false
@@ -286,6 +302,7 @@ export default {
     OrderWindow,
     changeVendorsWindow,
     ProfileHeaderOffer,
+    ProfileOfferCatalogMenu,
   },
   watch: {
     '$route.params.id': {
@@ -309,7 +326,7 @@ export default {
       this.cartCount = newVal.cart_data?.sku_count ? newVal.cart_data.sku_count : 0
     },
     '$route.matched': function(newVal) {
-      if(newVal[6] && newVal[6].name == 'WholesaleClientsOffer'){
+      if(newVal[5] && newVal[5].name == 'WholesaleClientsOffer'){
         this.isOffer = true
       }else{
         this.isOffer = false

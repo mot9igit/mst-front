@@ -406,12 +406,12 @@ const router = createRouter({
                             {
                               path: '',
                               props: true,
-                              name: 'WholesaleClientsOffer1',
+                              name: 'WholesalesOfferClient',
                               label: 'Предложение',
                               component: WholesaleClientsOffer,
                             },
                             {
-                              path: ':category_id',
+                              path: 'catalog/:category_id',
                               name: 'purchasesOfferCatalog',
                               props: true,
                               label: 'Оптовый каталог',
@@ -423,7 +423,8 @@ const router = createRouter({
                               },
                             },
                             {
-                              path: '/:org_w_id/:warehouse_id',
+                              path: ':org_w_id/:warehouse_id',
+                              name: 'purchasesOfferCatalogWarehouse',
                               meta: {
                                 breadcrumb: {
                                   label: 'Каталог поставщика',
@@ -432,12 +433,13 @@ const router = createRouter({
                               children: [
                                 {
                                   path: '',
-                                  name: 'purchasesOfferCatalogWarehouse',
+                                  name: 'purchasesWarehouseOfferCatalog',
                                   component: PurchasesCatalog,
                                   label: 'Каталог поставщика',
                                 },
                                 {
                                   path: ':warehouse_cat_id',
+                                  name: 'purchasesCatalogWarehouseCategoryOffer',
                                   meta: {
                                     breadcrumb: {
                                       label: 'Каталог поставщика',

@@ -401,7 +401,7 @@ export default {
       }
 
     },
-    '$route.matched[6].name': function(newVal){
+    '$route.matched[5].name': function(newVal){
        this.getOrgBasketStore()
     }
 

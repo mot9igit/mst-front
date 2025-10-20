@@ -79,7 +79,7 @@ export default {
       }
 
       this.showSearchSuggestions = false
-      if (this.$router?.currentRoute?._value.matched[6]?.name == 'WholesaleClientsOffer') {
+      if (this.$router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer') {
         // this.$router.push({
         //   name: 'opt_search_offer',
         //   params: {

@@ -280,7 +280,7 @@ export default {
       notificationsAll: 'notifications/notificationsAll',
     }),
     orgBasketWarehouse() {
-      //  if(this.$route?.matched[6]?.name == 'WholesaleClientsOffer'){
+      //  if(this.$route?.matched[5]?.name == 'WholesaleClientsOffer'){
       //      return this.fromOrgStores?.items?.find((el) => el.id == this.basketWarehouse)
       //   }else{
 
@@ -407,7 +407,7 @@ export default {
         this.showNotificationsModal = newVal
       }
     },
-    // '$route.matched[6].name': function(newVal){
+    // '$route.matched[5].name': function(newVal){
     //   this.getOrgBasketStore()
     // }
   },
