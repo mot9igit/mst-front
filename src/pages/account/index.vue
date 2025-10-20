@@ -46,12 +46,14 @@
       </div>
       <teleport to="body">
         <ProfileCart
+          v-if="this.$route.params.id && !this.$route.params.id_org_from"
           @toggleCart="toggleCart()"
           @toggleOrder="toggleOrder()"
           @catalogUpdate="catalogUpdate()"
           :active="toggleShoppingCart"
         />
         <ProfileCartOffer
+          v-else-if="this.$route.params.id && this.$route.params.id_org_from"
           @toggleCart="toggleCart()"
           @toggleOrder="toggleOrder()"
           @catalogUpdate="catalogUpdate()"

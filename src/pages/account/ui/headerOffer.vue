@@ -333,12 +333,12 @@ export default {
     //  })
     },
     updateCart() {
-      if (Object.keys(this.basket).length > 1) {
+      if (Object.keys(this.basketOffer).length > 1) {
         if (
-          Object.prototype.hasOwnProperty.call(this.basket.data, this.basketWarehouse) &&
-          this.basketWarehouse
+          Object.prototype.hasOwnProperty.call(this.basketOffer.data, this.basketOfferWarehouse) &&
+          this.basketOfferWarehouse
         ) {
-          this.basketStore = this.basket.data[this.basketWarehouse]
+          this.basketStore = this.basketOffer.data[this.basketOfferWarehouse]
         } else {
           this.basketStore = {}
         }
@@ -368,10 +368,10 @@ export default {
 
   },
   watch: {
-    basket() {
+    basketOffer() {
       this.updateCart()
     },
-    basketWarehouse() {
+    basketOfferWarehouse() {
       this.updateCart()
     },
     mobileRequipments: function (newVal) {

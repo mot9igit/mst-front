@@ -155,7 +155,7 @@ import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
 
 export default {
-  name: 'ProfileCart',
+  name: 'ProfileCartOffer',
   emits: ['toggleCart', 'toggleOrder', 'basketUpdate', 'catalogUpdate'],
   components: { Loader, customModal, Counter },
   props: {
@@ -174,11 +174,10 @@ export default {
   },
   methods: {
     ...mapActions({
-      getBasket: 'basket/getBasket',
-      //getBasketOffer: 'offer/getBasketOffer',
-      basketClear: 'basket/basketClear',
-      basketProductRemove: 'basket/basketProductRemove',
-      basketProductUpdate: 'basket/basketProductUpdate',
+      getBasketOffer: 'offer/getBasketOffer',
+      basketOfferClear: 'offer/basketOfferClear',
+      basketOfferProductRemove: 'offer/basketOfferProductRemove',
+      basketOfferProductUpdate: 'offer/basketOfferProductUpdate',
     }),
     toggleCart() {
       this.$emit('toggleCart')
@@ -189,7 +188,7 @@ export default {
     clearCart() {
       this.loading = true
       this.showClearBasketModal = false
-      this.basketClear({ org_id: this.id_clear_org }).then(() => {
+      this.basketOfferClear({ org_id: this.id_clear_org }).then(() => {
         this.id_clear_org = 0
         this.$emit('catalogUpdate')
         this.updateBasket()
@@ -203,7 +202,7 @@ export default {
         key: key,
         product: product,
       }
-      this.basketProductRemove(data).then((response) => {
+      this.basketOfferProductRemove(data).then((response) => {
         this.$emit('catalogUpdate')
         this.loading = true
         this.updateBasket()
@@ -269,7 +268,7 @@ export default {
           key: object.item.product.key,
           actions: object.item.product.actions,
         }
-        this.basketProductUpdate(data).then((response) => {
+        this.basketOfferProductUpdate(data).then((response) => {
           // console.log(response)
           if (!response?.data?.data?.success && response?.data?.data?.message) {
             this.$toast.add({
@@ -292,7 +291,7 @@ export default {
                   {
                     id: object.id, // ID товара
                     name: object.item.product.name, // Название товара
-                    price: object.item.basket.price, // Цена товара
+                    price: object.item.basketOffer.price, // Цена товара
                     quantity: object.value, // Количество товара
                   },
                 ],
@@ -304,29 +303,27 @@ export default {
     },
     updateBasket() {
       this.loading = true
-      this.getBasket().then(() => {
+      this.getBasketOffer().then(() => {
         this.loading = false
       })
     },
   },
   computed: {
     ...mapGetters({
-      basket: 'basket/basket',
-    //  basketWarehouse: 'basket/basketWarehouse',
       basketOffer: 'offer/basketOffer',
       basketOfferWarehouse: 'offer/basketOfferWarehouse',
     }),
   },
   mounted() {
-    this.getBasket().then(() => {
+    this.getBasketOffer().then(() => {
       this.loading = false
     })
-    if (Object.keys(this.basket).length > 1) {
+    if (Object.keys(this.basketOffer).length > 1) {
       if (
-        Object.prototype.hasOwnProperty.call(this.basket.data, this.basketWarehouse) &&
-        this.basketWarehouse
+        Object.prototype.hasOwnProperty.call(this.basketOffer.data, this.basketOfferWarehouse) &&
+        this.basketOfferWarehouse
       ) {
-        this.basketStore = this.basket[this.basketWarehouse]
+        this.basketStore = this.basketOffer[this.basketOfferWarehouse]
       } else {
         this.basketStore = {}
       }
@@ -342,13 +339,13 @@ export default {
         this.loading = false
       }
     },
-    basket(newVal) {
-      if (Object.keys(this.basket).length > 1) {
+    basketOffer(newVal) {
+      if (Object.keys(this.basketOffer).length > 1) {
         if (
-          Object.prototype.hasOwnProperty.call(newVal.data, this.basketWarehouse) &&
-          this.basketWarehouse
+          Object.prototype.hasOwnProperty.call(newVal.data, this.basketOfferWarehouse) &&
+          this.basketOfferWarehouse
         ) {
-          this.basketStore = newVal.data[this.basketWarehouse]
+          this.basketStore = newVal.data[this.basketOfferWarehouse]
         } else {
           this.basketStore = {}
         }
@@ -356,9 +353,9 @@ export default {
         this.basketStore = {}
       }
     },
-    basketWarehouse(newVal) {
-      if (Object.keys(this.basket).length > 1 && newVal > 0) {
-        if (Object.prototype.hasOwnProperty.call(this.basket.data, newVal)) {
+    basketOfferWarehouse(newVal) {
+      if (Object.keys(this.basketOffer).length > 1 && newVal > 0) {
+        if (Object.prototype.hasOwnProperty.call(this.basketOffer.data, newVal)) {
           this.basketStore = this.basket.data[newVal]
         } else {
           this.basketStore = {}
