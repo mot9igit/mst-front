@@ -253,10 +253,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    offer: {
-      type: Boolean,
-      default: false,
-    }
   },
 
   mounted() {

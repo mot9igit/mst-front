@@ -203,7 +203,7 @@ export default {
       data_start: new Date(),
     }
   },
-  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments', 'notifications', 'notificationsMobile', 'offer'],
+  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments', 'notifications', 'notificationsMobile', 'offerNow'],
   components: { Loader, customModal, changeAddressWindow, SearchField, requirement, Toast, notificationsWindow },
   props: {
     active: {
@@ -218,6 +218,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    offer: {
+      type: Boolean,
+      default: false,
+    }
   },
   mounted() {
 
@@ -304,7 +308,7 @@ export default {
     },
     toggleVendor() {
       this.$emit('toggleVendor')
-      this.$emit('offer')
+      this.$emit('offerNow')
     },
     toggleCart() {
       this.$emit('toggleCart')

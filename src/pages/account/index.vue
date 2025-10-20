@@ -33,7 +33,7 @@
       @showRequipments="showRequip()"
       @notifications="notificationsCol"
       @notificationsMobile="mobileNotifications()"
-      @offer="offerVendor()"
+      @offerNow="offerVendor()"
       :mobileRequipments="mobileRequipments"
       :active="toggleMenu"
       :mobileNotificationsShow="mobileNotificationsShow"
@@ -46,6 +46,12 @@
       </div>
       <teleport to="body">
         <ProfileCart
+          @toggleCart="toggleCart()"
+          @toggleOrder="toggleOrder()"
+          @catalogUpdate="catalogUpdate()"
+          :active="toggleShoppingCart"
+        />
+        <ProfileCartOffer
           @toggleCart="toggleCart()"
           @toggleOrder="toggleOrder()"
           @catalogUpdate="catalogUpdate()"
@@ -75,8 +81,7 @@
     @menuClose="menuClose"
     v-if="!this.$route.params.id_org_from"
   />
-    <ProfileOfferCatalogMenu
-    :offer="isOffer"
+  <ProfileOfferCatalogMenu
     :active="toggleMenu"
     :isMobile="mobileCatalogShow"
     @headerDesignOff="headerDesignOff"
@@ -95,6 +100,7 @@ import changeVendorsWindow from './ui/changeVendorsWindow.vue'
 import OrderWindow from './ui/orderWindow.vue'
 import ProfileHeaderOffer from './ui/headerOffer.vue'
 import ProfileOfferCatalogMenu from './ui/catalogMenuOffer.vue'
+import ProfileCartOffer from './ui/cartOffer.vue'
 
 
 export default {
@@ -140,6 +146,20 @@ export default {
       type: String,
       default: '',
     },
+    org_w_id: {
+      type: String,
+      default: '',
+    },
+    warehouse_id: {
+      type: String,
+      default: '',
+    },
+    warehouse_cat_id: {
+      type: String,
+      default: '',
+    },
+
+
   },
   data() {
     return {
@@ -192,7 +212,7 @@ export default {
             this.$router.push({ name: 'OrgAdd' })
           }
         }
-        if(this.route.matched[5] && this.route.matched[5].name == 'WholesaleClientsOffer'){
+        if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
           this.isOffer = true
         }else{
           this.isOffer = false
@@ -303,6 +323,7 @@ export default {
     changeVendorsWindow,
     ProfileHeaderOffer,
     ProfileOfferCatalogMenu,
+    ProfileCartOffer,
   },
   watch: {
     '$route.params.id': {
