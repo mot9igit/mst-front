@@ -33,7 +33,7 @@
       @showRequipments="showRequip()"
       @notifications="notificationsCol"
       @notificationsMobile="mobileNotifications()"
-      @offer="offerVendor()"
+      @offerNow="offerVendor()"
       :mobileRequipments="mobileRequipments"
       :active="toggleMenu"
       :mobileNotificationsShow="mobileNotificationsShow"
@@ -46,6 +46,14 @@
       </div>
       <teleport to="body">
         <ProfileCart
+          v-if="this.$route.params.id && !this.$route.params.id_org_from"
+          @toggleCart="toggleCart()"
+          @toggleOrder="toggleOrder()"
+          @catalogUpdate="catalogUpdate()"
+          :active="toggleShoppingCart"
+        />
+        <ProfileCartOffer
+          v-else-if="this.$route.params.id && this.$route.params.id_org_from"
           @toggleCart="toggleCart()"
           @toggleOrder="toggleOrder()"
           @catalogUpdate="catalogUpdate()"
@@ -69,11 +77,18 @@
     </main>
   </div>
   <ProfileCatalogMenu
-    :offer="isOffer"
     :active="toggleMenu"
     :isMobile="mobileCatalogShow"
     @headerDesignOff="headerDesignOff"
     @menuClose="menuClose"
+    v-if="!this.$route.params.id_org_from"
+  />
+  <ProfileOfferCatalogMenu
+    :active="toggleMenu"
+    :isMobile="mobileCatalogShow"
+    @headerDesignOff="headerDesignOff"
+    @menuClose="menuClose"
+    v-else
   />
 </template>
 <script>
@@ -86,6 +101,8 @@ import ProfileCart from './ui/cart.vue'
 import changeVendorsWindow from './ui/changeVendorsWindow.vue'
 import OrderWindow from './ui/orderWindow.vue'
 import ProfileHeaderOffer from './ui/headerOffer.vue'
+import ProfileOfferCatalogMenu from './ui/catalogMenuOffer.vue'
+import ProfileCartOffer from './ui/cartOffer.vue'
 
 
 export default {
@@ -131,6 +148,20 @@ export default {
       type: String,
       default: '',
     },
+    org_w_id: {
+      type: String,
+      default: '',
+    },
+    warehouse_id: {
+      type: String,
+      default: '',
+    },
+    warehouse_cat_id: {
+      type: String,
+      default: '',
+    },
+
+
   },
   data() {
     return {
@@ -183,8 +214,15 @@ export default {
             this.$router.push({ name: 'OrgAdd' })
           }
         }
+        if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
+          this.isOffer = true
+        }else{
+          this.isOffer = false
+        }
+
       }
     })
+
 
 
   },
@@ -254,7 +292,7 @@ export default {
       this.toggleOrderWindow = false
     },
     offerVendor(){
-      if(this.$route.matched[6].name == 'WholesaleClientsOffer'){
+      if(this.$route.matched[5].name == 'WholesaleClientsOffer'){
         this.isOffer = true
       }else{
         this.isOffer = false
@@ -286,6 +324,8 @@ export default {
     OrderWindow,
     changeVendorsWindow,
     ProfileHeaderOffer,
+    ProfileOfferCatalogMenu,
+    ProfileCartOffer,
   },
   watch: {
     '$route.params.id': {
@@ -309,7 +349,7 @@ export default {
       this.cartCount = newVal.cart_data?.sku_count ? newVal.cart_data.sku_count : 0
     },
     '$route.matched': function(newVal) {
-      if(newVal[6] && newVal[6].name == 'WholesaleClientsOffer'){
+      if(newVal[5] && newVal[5].name == 'WholesaleClientsOffer'){
         this.isOffer = true
       }else{
         this.isOffer = false

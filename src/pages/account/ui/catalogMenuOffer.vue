@@ -33,7 +33,7 @@
             </button>
             <router-link
               :to="{
-                name: 'purchasesCatalog',
+                name: 'purchasesOfferCatalog',
                 params: {
                   id: this.$route.params.id,
                   category_id: item.id,
@@ -111,7 +111,7 @@
         </button>
         <router-link
           :to="{
-            name: 'purchasesCatalog',
+            name: 'purchasesOfferCatalog',
             params: {
               id: this.$route.params.id,
               category_id: catalogListIndex,
@@ -127,7 +127,7 @@
 
         <router-link
           :to="{
-            name: 'purchasesCatalogWarehouseCategory',
+            name: 'purchasesOfferCatalogWarehouseCategory',
             params: {
               id: this.$route.params.id,
               org_w_id: breadcrumbs[1].category_id,
@@ -174,7 +174,7 @@
             <div v-else>
               <router-link
                 :to="{
-                  name: 'purchasesCatalogWarehouseCategory',
+                  name: 'purchasesOfferCatalogWarehouseCategory',
                   params: {
                     id: this.$route.params.id,
                     org_w_id: subitem.org_w_id,
@@ -193,7 +193,7 @@
               </router-link>
               <router-link
                 :to="{
-                  name: 'purchasesCatalog',
+                  name: 'purchasesOfferCatalog',
                   params: {
                     id: this.$route.params.id,
                     category_id: subitem.id,
@@ -220,7 +220,7 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: 'catalogMenu',
+  name: 'catalogMenuOffer',
   data() {
     return {
       catalog: [],
@@ -253,7 +253,6 @@ export default {
       type: Boolean,
       default: false,
     },
-
   },
 
   mounted() {

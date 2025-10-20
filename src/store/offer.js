@@ -35,14 +35,66 @@ export default {
     },
     async getBasketOffer({ commit }) {
       const data = {
-        action: 'get/offer/basket',
+        action: 'basket/get',
         extended_name:'offer',
         id: router.currentRoute._value.params.id_org_from
       }
-      const response = await api.offer.getBasketOffer(data)
+      const response = await api.basket.getBasket(data)
       if (response) {
         commit('SET_BASKET_OFFER', response.data)
       }
+      return response
+    },
+    async basketOfferClear(store, { org_id }) {
+      const data = {
+        action: 'basket/clear',
+        extended_name: 'offer',
+        id:  router.currentRoute._value.params.id_org_from,
+        org_id: org_id,
+      }
+      const response = await api.basket.basketClear(data)
+      return response
+    },
+    async basketOfferProductRemove(store, { org_id, store_id, key, product }) {
+      const data = {
+        action: 'basket/remove',
+        extended_name: 'offer',
+        id: router.currentRoute._value.params.id_org_from,
+        org_id: org_id,
+        store_id: store_id,
+        key: key,
+        product: product,
+      }
+      const response = await api.basket.basketProductRemove(data)
+      return response
+    },
+    async basketOfferProductAdd(store, { org_id, store_id, id_remain, count, actions }) {
+      const data = {
+        action: 'basket/add',
+        extended_name: 'offer',
+        id: router.currentRoute._value.params.id_org_from,
+        org_id: org_id,
+        store_id: store_id,
+        id_remain: id_remain,
+        count: count,
+        actions: actions,
+      }
+      const response = await api.basket.basketProductAdd(data)
+      return response
+    },
+    async basketOfferProductUpdate(store, { org_id, store_id, key, id_remain, count, actions }) {
+      const data = {
+        action: 'basket/update',
+        extended_name: 'offer',
+        id: router.currentRoute._value.params.id_org_from,
+        org_id: org_id,
+        store_id: store_id,
+        id_remain: id_remain,
+        count: count,
+        key: key,
+        actions: actions,
+      }
+      const response = await api.basket.basketProductUpdate(data)
       return response
     },
     async getOptVendorOffer({ commit }) {
@@ -68,7 +120,7 @@ export default {
       state.orgBasketOfferStore = data.data
     },
     SET_BASKET_OFFER: (state, data) => {
-      state.basketOffer = data.data
+      state.basketOffer = data.data.data
     },
     SET_OPT_VENDOR_OFFER: (state, data) => {
       state.vendorOffer = data.data

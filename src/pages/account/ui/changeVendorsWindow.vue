@@ -147,16 +147,16 @@
                     <div class="vendor-change__selected-item-title-container">
                       <div class="vendor-change__selected-item-image-container">
                         <img
-                          v-if="vendorOffer.items.image"
+                          v-if="vendorOffer?.items?.image"
                           :src="vendorOffer.items.image"
                           alt=""
                           class="vendor-change__selected-item-image"
                         />
                         <span v-else>
-                          {{ vendorOffer.items.name.slice(0, 2).toUpperCase() }}
+                          {{ vendorOffer?.items?.name.slice(0, 2).toUpperCase() }}
                         </span>
                       </div>
-                      <p class="vendor-change__selected-item-title">{{ vendorOffer.items.name }}</p>
+                      <p class="vendor-change__selected-item-title">{{ vendorOffer?.items?.name }}</p>
                     </div>
                   </div>
 
@@ -165,14 +165,14 @@
                     <div class="vendor-change__selected-item-data">
                       <i class="d-icon-location vendor-change__selected-item-data-icon"></i>
                       <p class="vendor-change__selected-item-data-text">
-                        {{ vendorOffer.items.address }}
+                        {{ vendorOffer?.items?.address }}
                       </p>
                     </div>
 
                     <div class="vendor-change__selected-item-data-container">
                       <div class="vendor-change__selected-item-data">
                         <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">{{ vendorOffer.items.phone }}</p>
+                        <p class="vendor-change__selected-item-data-text">{{ vendorOffer?.items?.phone }}</p>
                       </div>
 
                       <div
@@ -181,7 +181,7 @@
 
                       <div class="vendor-change__selected-item-data">
                         <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">{{ vendorOffer.items.email }}</p>
+                        <p class="vendor-change__selected-item-data-text">{{ vendorOffer?.items?.email }}</p>
                       </div>
                     </div>
                   </div>
@@ -193,7 +193,7 @@
                       >Вы должны выбрать хотя бы один склад</span
                     >
                   </div>
-                  <div class="vendor-change__selected-item-footer" v-if="vendorOffer.items.stores">
+                  <div class="vendor-change__selected-item-footer" v-if="vendorOffer?.items?.stores">
                     <div
                       class="d-radio__wrapper vendor-change__selected-item-radio-wrapper"
                       v-for="store in vendorOffer.items.stores"

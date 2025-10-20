@@ -203,7 +203,7 @@ export default {
       data_start: new Date(),
     }
   },
-  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments', 'notifications', 'notificationsMobile', 'offer'],
+  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments', 'notifications', 'notificationsMobile', 'offerNow'],
   components: { Loader, customModal, changeAddressWindow, SearchField, requirement, Toast, notificationsWindow },
   props: {
     active: {
@@ -218,6 +218,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    offer: {
+      type: Boolean,
+      default: false,
+    }
   },
   mounted() {
 
@@ -304,7 +308,7 @@ export default {
     },
     toggleVendor() {
       this.$emit('toggleVendor')
-      this.$emit('offer')
+      this.$emit('offerNow')
     },
     toggleCart() {
       this.$emit('toggleCart')
@@ -329,12 +333,12 @@ export default {
     //  })
     },
     updateCart() {
-      if (Object.keys(this.basket).length > 1) {
+      if (Object.keys(this.basketOffer).length > 1) {
         if (
-          Object.prototype.hasOwnProperty.call(this.basket.data, this.basketWarehouse) &&
-          this.basketWarehouse
+          Object.prototype.hasOwnProperty.call(this.basketOffer.data, this.basketOfferWarehouse) &&
+          this.basketOfferWarehouse
         ) {
-          this.basketStore = this.basket.data[this.basketWarehouse]
+          this.basketStore = this.basketOffer.data[this.basketOfferWarehouse]
         } else {
           this.basketStore = {}
         }
@@ -364,10 +368,10 @@ export default {
 
   },
   watch: {
-    basket() {
+    basketOffer() {
       this.updateCart()
     },
-    basketWarehouse() {
+    basketOfferWarehouse() {
       this.updateCart()
     },
     mobileRequipments: function (newVal) {
@@ -401,7 +405,7 @@ export default {
       }
 
     },
-    '$route.matched[6].name': function(newVal){
+    '$route.matched[5].name': function(newVal){
        this.getOrgBasketStore()
     }
 

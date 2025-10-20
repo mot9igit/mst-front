@@ -25,7 +25,7 @@ export default {
         action_id: router.currentRoute._value.params.action,
         action: 'get',
         extended_name:
-          router?.currentRoute?._value.matched[6]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
+          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
       }
       const response = await api.action.getAction(data)
       if (response) {
