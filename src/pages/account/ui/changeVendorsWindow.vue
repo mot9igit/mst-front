@@ -1,7 +1,11 @@
 <template>
-  <div class="d-sheet__overlay vendor-change__sheet-overlay" :class="{ active: active }" >
-    <div class="d-sheet__wrapper vendor-change__sheet-wrapper" v-if="optVendorsAvailable.items" >
-      <div class="d-sheet d-sheet--active vendor-change__sheet" data-sheet="vendor-change" :class="offer ? 'd-sheet__overlay-500' : ''">
+  <div class="d-sheet__overlay vendor-change__sheet-overlay" :class="{ active: active }">
+    <div class="d-sheet__wrapper vendor-change__sheet-wrapper" v-if="optVendorsAvailable.items">
+      <div
+        class="d-sheet d-sheet--active vendor-change__sheet"
+        data-sheet="vendor-change"
+        :class="offer ? 'd-sheet__overlay-500' : ''"
+      >
         <Loader v-if="this.loading" />
         <div class="d-sheet__content vendor-change">
           <!-- Яндекс карта -->
@@ -138,10 +142,7 @@
               </div>
               <div class="vendor-change__selected-list" v-else>
                 <!-- Карточка выбранного поставщика -->
-                <div
-                  class="vendor-change__selected-item"
-
-                >
+                <div class="vendor-change__selected-item">
                   <!-- Верхушка -->
                   <div class="vendor-change__selected-item-header">
                     <div class="vendor-change__selected-item-title-container">
@@ -156,7 +157,9 @@
                           {{ vendorOffer?.items?.name.slice(0, 2).toUpperCase() }}
                         </span>
                       </div>
-                      <p class="vendor-change__selected-item-title">{{ vendorOffer?.items?.name }}</p>
+                      <p class="vendor-change__selected-item-title">
+                        {{ vendorOffer?.items?.name }}
+                      </p>
                     </div>
                   </div>
 
@@ -172,7 +175,9 @@
                     <div class="vendor-change__selected-item-data-container">
                       <div class="vendor-change__selected-item-data">
                         <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">{{ vendorOffer?.items?.phone }}</p>
+                        <p class="vendor-change__selected-item-data-text">
+                          {{ vendorOffer?.items?.phone }}
+                        </p>
                       </div>
 
                       <div
@@ -181,19 +186,22 @@
 
                       <div class="vendor-change__selected-item-data">
                         <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">{{ vendorOffer?.items?.email }}</p>
+                        <p class="vendor-change__selected-item-data-text">
+                          {{ vendorOffer?.items?.email }}
+                        </p>
                       </div>
                     </div>
                   </div>
 
                   <!-- Данные склада -->
-                   <div v-if="error" class="d-input-error vendor-change-error">
+                  <div v-if="error" class="d-input-error vendor-change-error">
                     <i class="d-icon-warning d-input-error__icon"></i>
-                    <span class="d-input-error__text"
-                      >Вы должны выбрать хотя бы один склад</span
-                    >
+                    <span class="d-input-error__text">Вы должны выбрать хотя бы один склад</span>
                   </div>
-                  <div class="vendor-change__selected-item-footer" v-if="vendorOffer?.items?.stores">
+                  <div
+                    class="vendor-change__selected-item-footer"
+                    v-if="vendorOffer?.items?.stores"
+                  >
                     <div
                       class="d-radio__wrapper vendor-change__selected-item-radio-wrapper"
                       v-for="store in vendorOffer.items.stores"
@@ -215,13 +223,8 @@
                       </label>
                     </div>
                   </div>
-
                 </div>
-
-
-
               </div>
-
             </div>
 
             <div class="d-pagination-wrap" v-if="pagesCountSelected > 1">
@@ -383,7 +386,7 @@ export default {
     offer: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   emits: ['vendorCheck', 'catalogUpdate', 'offerStoresSelected'],
   components: {
@@ -431,7 +434,6 @@ export default {
       optVendorsAvailable: 'org/optVendorsAvailable',
       optVendorsSelected: 'org/optVendorsSelected',
       vendorOffer: 'offer/vendorOffer',
-
     }),
     avLength() {
       return this.optVendorsAvailable.total
@@ -452,13 +454,11 @@ export default {
     },
   },
   mounted() {
-    if(this.offer == true){
+    if (this.offer == true) {
       this.offerStoresSelected = []
       this.getOptVendorOffer().then(() => {
-        for(let i = 0; i < this.vendorOffer.items.stores.length; i++){
-
+        for (let i = 0; i < this.vendorOffer.items.stores.length; i++) {
           this.offerStoresSelected.push(this.vendorOffer.items.stores[i].id)
-
         }
       })
     }
@@ -626,30 +626,27 @@ export default {
       clearTimeout(this.searchPTimer)
       this.searchPTimer = setTimeout(func, delay)
     },
-    setOfferStores(){
+    setOfferStores() {
       this.error = false
-      if(this.offerStoresSelected.length == 0){
+      if (this.offerStoresSelected.length == 0) {
         this.error = true
         this.debounce(() => {
           this.error = false
         }, 2000)
         this.offerStoresSelected.push(this.vendorOffer.items.stores[0].id)
         this.$emit('offerStoresSelected')
-      }else{
+      } else {
         this.$emit('offerStoresSelected')
       }
-    }
+    },
   },
   watch: {
-    vendorOffer: function(newVal){
-      for(let i = 0; i < newVal.items.stores.length; i++){
-
-          this.offerStoresSelected.push(newVal.items.stores[i].id)
-
-        }
-    }
-  }
-
+    vendorOffer: function (newVal) {
+      for (let i = 0; i < newVal.items.stores.length; i++) {
+        this.offerStoresSelected.push(newVal.items.stores[i].id)
+      }
+    },
+  },
 }
 </script>
 <style lang="scss">
@@ -677,7 +674,7 @@ export default {
     transition: all 0.2s ease;
   }
 }
-@media (width <= 1920px) {
+@media (width <= 3000px) {
   .vendor-change__sheet {
     padding: 20px;
     width: 940px;
@@ -698,10 +695,10 @@ export default {
   border-color: rgba(249, 44, 13, 1);
   background: rgba(249, 44, 13, 1);
 }
-.d-sheet__overlay-500{
-  width:500px !important;
+.d-sheet__overlay-500 {
+  width: 500px !important;
 }
-.vendor-change-error{
+.vendor-change-error {
   margin-bottom: 16px;
 }
 </style>

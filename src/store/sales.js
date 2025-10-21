@@ -30,9 +30,11 @@ export default {
         action: 'get',
         action_id: actionId,
         type: type,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        offset: new Date().getTimezoneOffset(),
         is_action: isAction ? true : false,
         extended_name: 'cart',
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
       }
       const response = await api.sales.getSales(data)
       if (response) {
@@ -48,9 +50,9 @@ export default {
       const data = {
         action: 'get/banners',
         id: router.currentRoute._value.params.id,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id_org_from
-          //   : router.currentRoute._value.params.id,
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+        //   ? router.currentRoute._value.params.id_org_from
+        //   : router.currentRoute._value.params.id,
       }
       const response = await api.sales.getSales(data)
       if (response) {

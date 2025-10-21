@@ -24,8 +24,12 @@ export default {
         id: router.currentRoute._value.params.id,
         action_id: router.currentRoute._value.params.action,
         action: 'get',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        offset: new Date().getTimezoneOffset(),
         extended_name:
-          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
+          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+            ? 'offer'
+            : 'cart',
       }
       const response = await api.action.getAction(data)
       if (response) {
@@ -37,6 +41,8 @@ export default {
     async setAction(store, data) {
       console.log(data)
       data.id = router.currentRoute._value.params.id
+      data.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+      data.offset = new Date().getTimezoneOffset()
       data.action = 'save'
       const response = await api.action.setAction(data)
       return response

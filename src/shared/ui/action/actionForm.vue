@@ -1134,10 +1134,18 @@
                     </div>
                   </div>
                   <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                    <label for="dateStart" class="d-dropdown__label">Описание акции </label>
+                    <label for="description" class="d-dropdown__label">Описание акции </label>
+                    <Editor
+                      v-model="this.form.description"
+                      id="description"
+                      editorStyle="height: 320px"
+                      variant="simple"
+                    />
+                    <!--
                     <Editor
                       api-key="6rm0whw8wmdnboh5ygnqkezf3b797nz9ufxilvttbxq8mgl1"
-                      language_url="../../../src/locales/tiny/ru.js"
+                      id="description"
+                      language_url="@/i18n/locales/tiny/ru.js"
                       :language_load="true"
                       v-model="this.form.description"
                       initial-value="<b>Подзаголовок акции</b>
@@ -1203,7 +1211,7 @@
                           help: { title: 'Help', items: '' },
                         },
                       }"
-                    />
+                    />-->
                   </div>
                 </div>
                 <!-- 2 ЭТАП Даты проведения акции -->
@@ -2618,23 +2626,31 @@
             </template>
           </DropZone>
           <div class="dart-upload-xlsx" v-if="this.upload_product">
-            <div class="dart-upload-xlsx__file">
+            <div class="dart-upload-xlsx__file dart-mt-2">
               <!-- <img src="../../../public/img/files/xls.png" alt=""> -->
-              <a targer="_blank" :href="files?.xlsx?.original_href">{{ files?.xlsx?.name }}</a>
+              <a targer="_blank" :href="this.files?.xlsx?.original_href">{{
+                this.files?.xlsx?.name
+              }}</a>
             </div>
             <div class="dart-upload-xlsx__info">
               <p>Загружено товаров: {{ Object.keys(this.upload_selected).length }} шт</p>
               <p>
                 Всего товаров:
-                {{ Object.keys(this.upload_selected).length + upload_error.length }} шт
+                {{ Object.keys(this.upload_selected).length + this.upload_error.length }} шт
               </p>
-              <div
+            </div>
+            <div
+              class="dart-mt-1 dart-mb-1 text-center"
+              v-if="Object.keys(this.upload_error).length > 0"
+            >
+              <a
+                href="#"
                 class="dart-link-blue"
                 v-if="upload_error.length"
-                @click="this.modals.error_product = true"
+                @click.prevent="this.modals.error_product = true"
               >
                 Список незагруженных товаров
-              </div>
+              </a>
             </div>
           </div>
           <div class="d-modal2__actions">
@@ -2965,6 +2981,25 @@
           </div>
         </div>
       </customModal>
+      <customModal v-model="this.modals.error_product" class="productsFileWindow">
+        <template v-slot:title>Список незагруженных товаров</template>
+        <div class="dart-list-error">
+          <table>
+            <thead>
+              <tr>
+                <th class="text-left">№</th>
+                <th class="text-left">Артикул</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in this.upload_error" :key="item.id">
+                <td>{{ index + 1 }}</td>
+                <td>{{ item }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </customModal>
     </teleport>
   </section>
 </template>
@@ -2973,7 +3008,8 @@ import breadcrumbs from '../breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import DropZone from 'dropzone-vue'
-import Editor from '@tinymce/tinymce-vue'
+// import Editor from '@tinymce/tinymce-vue'
+import Editor from 'primevue/editor'
 import Toast from 'primevue/toast'
 import InputNumber from 'primevue/inputnumber'
 import DatePicker from 'primevue/datepicker'
@@ -3127,6 +3163,10 @@ export default {
         },
         file: {
           original_href: '',
+        },
+        xlsx: {
+          original_href: '',
+          name: '',
         },
       },
       form: {
@@ -3310,6 +3350,11 @@ export default {
         if (xhr.readyState === 4) {
           if (xhr.response) {
             const response = JSON.parse(xhr.response)
+            console.log(response)
+            this.files.xlsx = {
+              original_href: response.data.files[0].original_href,
+              name: response.data.files[0].name,
+            }
             this.uploadProductsFile({
               file: response.data.files[0].original,
               store_id: this.form.store_id,
@@ -4296,9 +4341,59 @@ export default {
 }
 </script>
 <style lang="scss">
+.text-left {
+  text-align: left;
+}
 .dart-form-group {
   .p-multiselect {
     max-width: 500px;
+  }
+}
+.dart-upload-xlsx {
+  &__file {
+    border-radius: 5px;
+    border: 1px solid #e2e2e2;
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    gap: 20px;
+    img {
+      height: 45px !important;
+    }
+    a {
+      margin: 0;
+      font-size: 14px;
+      text-decoration: none;
+    }
+  }
+  &__info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    p {
+      margin: 0;
+      color: #a0a0a0;
+      font-size: 12px;
+    }
+  }
+}
+.dart-list-error {
+  table {
+    width: 100%;
+    th {
+      background-color: #f8f7f5;
+      padding: 16px;
+      color: #5e5e5e;
+      font-weight: 400;
+      font-size: 14px;
+    }
+    td {
+      padding: 16px;
+      color: #282828;
+      font-weight: 400;
+      font-size: 14px;
+    }
   }
 }
 .promotions__card__no-banner {
