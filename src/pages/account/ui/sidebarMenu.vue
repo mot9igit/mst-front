@@ -135,6 +135,11 @@ export default {
               icon: 'd-icon-cart',
               to: { name: 'purchasesOrders', params: { id: this.$route.params.id } },
             },
+            // {
+            //   name: 'Предложения',
+            //   icon: 'd-icon-cart',
+            //   to: { name: 'purchasesOffers', params: { id: this.$route.params.id } },
+            // },
             {
               name: 'Мои поставщики',
               icon: 'd-icon-cube',
@@ -154,6 +159,11 @@ export default {
                 icon: 'd-icon-doc',
                 to: { name: 'wholesaleOrders', params: { id: this.$route.params.id } },
               },
+            // {
+            //   name: 'Мои предложения',
+            //   icon: 'd-icon-cart',
+            //   to: { name: 'wholesaleOffers', params: { id: this.$route.params.id } },
+            // },
               {
                 name: 'Оптовые цены',
                 icon: 'd-icon-cart',
