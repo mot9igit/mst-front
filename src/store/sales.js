@@ -30,6 +30,8 @@ export default {
         action: 'get',
         action_id: actionId,
         type: type,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        offset: new Date().getTimezoneOffset(),
         is_action: isAction ? true : false,
         extended_name: router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
       }

@@ -93,9 +93,13 @@ export default {
         action: 'get',
         action_id: actionid,
         type: 2,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        offset: new Date().getTimezoneOffset(),
         is_action: isAction ? true : false,
         extended_name:
-          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
+          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+            ? 'offer'
+            : 'cart',
       }
       const response = await api.retail.getSales(data)
       if (response) {
@@ -136,15 +140,15 @@ export default {
     },
     async getReportCopo({ commit }, { tabledata, filter, filtersdata, page, sort, perpage }) {
       const data = {
-          id: router.currentRoute._value.params.id,
-          store_id: router.currentRoute._value.params.store_id,
-          type: 'report_copo',
-          filter: filter,
-          filtersdata: filtersdata,
-          tabledata: tabledata,
-          sort: sort,
-          page: page,
-          perpage: perpage
+        id: router.currentRoute._value.params.id,
+        store_id: router.currentRoute._value.params.store_id,
+        type: 'report_copo',
+        filter: filter,
+        filtersdata: filtersdata,
+        tabledata: tabledata,
+        sort: sort,
+        page: page,
+        perpage: perpage,
       }
       const response = await api.retail.getReportCopo(data)
       if (response) {
@@ -152,18 +156,21 @@ export default {
       }
       return response
     },
-    async getReportCopoDetails({ commit }, { tabledata, filter, filtersdata, page, sort, perpage, brand_id }) {
+    async getReportCopoDetails(
+      { commit },
+      { tabledata, filter, filtersdata, page, sort, perpage, brand_id },
+    ) {
       const data = {
-          id: router.currentRoute._value.params.id,
-          store_id: router.currentRoute._value.params.store_id,
-          brand_id: brand_id,
-          type: 'report_copo_details',
-          filter: filter,
-          filtersdata: filtersdata,
-          tabledata: tabledata,
-          sort: sort,
-          page: page,
-          perpage: perpage
+        id: router.currentRoute._value.params.id,
+        store_id: router.currentRoute._value.params.store_id,
+        brand_id: brand_id,
+        type: 'report_copo_details',
+        filter: filter,
+        filtersdata: filtersdata,
+        tabledata: tabledata,
+        sort: sort,
+        page: page,
+        perpage: perpage,
       }
       const response = await api.retail.getReportCopoDetails(data)
       if (response) {
@@ -171,17 +178,20 @@ export default {
       }
       return response
     },
-    async getReportCopoAll({ commit }, { tabledata, filter, filtersdata, page, sort, perpage, vendor_id }) {
+    async getReportCopoAll(
+      { commit },
+      { tabledata, filter, filtersdata, page, sort, perpage, vendor_id },
+    ) {
       const data = {
-          id: router.currentRoute._value.params.id,
-          vendor_id: vendor_id,
-          type: 'report_copo_all_details',
-          filter: filter,
-          filtersdata: filtersdata,
-          tabledata: tabledata,
-          sort: sort,
-          page: page,
-          perpage: perpage
+        id: router.currentRoute._value.params.id,
+        vendor_id: vendor_id,
+        type: 'report_copo_all_details',
+        filter: filter,
+        filtersdata: filtersdata,
+        tabledata: tabledata,
+        sort: sort,
+        page: page,
+        perpage: perpage,
       }
       const response = await api.retail.getReportCopoAll(data)
       if (response) {
@@ -191,7 +201,7 @@ export default {
     },
     async getCardstatus({ commit }) {
       const data = {
-          type: 'cardstatus'
+        type: 'cardstatus',
       }
       const response = await api.retail.getCardstatus(data)
       if (response) {
@@ -201,13 +211,13 @@ export default {
     },
     async getMSProducts({ commit }, { filter, filtersdata, page, sort, perpage }) {
       const data = {
-          id: router.currentRoute._value.params.id,
-          type: 'msproducts',
-          filter: filter,
-          filtersdata: filtersdata,
-          sort: sort,
-          page: page,
-          perpage: perpage
+        id: router.currentRoute._value.params.id,
+        type: 'msproducts',
+        filter: filter,
+        filtersdata: filtersdata,
+        sort: sort,
+        page: page,
+        perpage: perpage,
       }
       const response = await api.retail.getMSProducts(data)
       if (response) {
@@ -224,13 +234,13 @@ export default {
     unsetSales({ commit }) {
       commit('UNSET_SALES')
     },
-    unsetReportCopo ({ commit }) {
+    unsetReportCopo({ commit }) {
       commit('UNSET_REPORT_COPO')
     },
-    unsetReportCopoDetails ({ commit }) {
+    unsetReportCopoDetails({ commit }) {
       commit('UNSET_REPORT_COPO_DETAILS')
     },
-    unsetReportCopoAll ({ commit }) {
+    unsetReportCopoAll({ commit }) {
       commit('UNSET_REPORT_COPO_ALL')
     },
   },
@@ -307,22 +317,22 @@ export default {
     sales(state) {
       return state.sales
     },
-    organization (state) {
+    organization(state) {
       return state.organization
     },
-    report_copo (state) {
+    report_copo(state) {
       return state.report_copo
     },
-    report_copo_details (state) {
+    report_copo_details(state) {
       return state.report_copo_details
     },
-    report_copo_all (state) {
+    report_copo_all(state) {
       return state.report_copo_all
     },
-    cardstatus (state) {
+    cardstatus(state) {
       return state.cardstatus
     },
-    msproducts (state) {
+    msproducts(state) {
       return state.msproducts
     },
   },

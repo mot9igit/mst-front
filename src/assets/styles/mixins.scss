@@ -1,6 +1,6 @@
 // Media mixins
 @mixin width-1920 {
-  @media (width <= 1920px) {
+  @media (width <= 3000px) {
     @content;
   }
 }
@@ -94,7 +94,6 @@
     @content;
   }
 }
-
 
 // Utility mixins
 @mixin visually-hidden {
