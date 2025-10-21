@@ -31,8 +31,7 @@ export default {
         action_id: actionId,
         type: type,
         is_action: isAction ? true : false,
-        extended_name: 'cart',
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
+        extended_name: router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
       }
       const response = await api.sales.getSales(data)
       if (response) {
@@ -47,10 +46,9 @@ export default {
     async getSalesBanners({ commit }) {
       const data = {
         action: 'get/banners',
-        id: router.currentRoute._value.params.id,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id_org_from
-          //   : router.currentRoute._value.params.id,
+        id:  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+             ? router.currentRoute._value.params.id_org_from
+             : router.currentRoute._value.params.id,
       }
       const response = await api.sales.getSales(data)
       if (response) {

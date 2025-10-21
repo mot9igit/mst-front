@@ -55,7 +55,7 @@
         <ProfileCartOffer
           v-else-if="this.$route.params.id && this.$route.params.id_org_from"
           @toggleCart="toggleCart()"
-          @toggleOrder="toggleOrder()"
+          @toggleOrderOffer="toggleOrderOffer()"
           @catalogUpdate="catalogUpdate()"
           :active="toggleShoppingCart"
         />
@@ -71,6 +71,11 @@
         <OrderWindow
           :active="this.toggleOrderWindow"
           @close="changeOrderWindowClose()"
+          @catalogUpdate="catalogUpdate()"
+        />
+        <OrderOfferWindow
+          :active="this.toggleOrderOfferWindow"
+          @close="changeOrderOfferWindowClose()"
           @catalogUpdate="catalogUpdate()"
         />
       </teleport>
@@ -103,6 +108,7 @@ import OrderWindow from './ui/orderWindow.vue'
 import ProfileHeaderOffer from './ui/headerOffer.vue'
 import ProfileOfferCatalogMenu from './ui/catalogMenuOffer.vue'
 import ProfileCartOffer from './ui/cartOffer.vue'
+import OrderOfferWindow from './ui/orderOfferWindow.vue'
 
 
 export default {
@@ -177,6 +183,7 @@ export default {
       mobileNotificationsShow: false,
       notificationsNoRead: 0,
       isOffer: false,
+      toggleOrderOfferWindow: false,
     }
   },
   mounted() {
@@ -218,6 +225,7 @@ export default {
           this.isOffer = true
         }else{
           this.isOffer = false
+
         }
 
       }
@@ -284,12 +292,19 @@ export default {
       this.toggleShoppingCart = false
       this.toggleOrderWindow = !this.toggleOrderWindow
     },
+    toggleOrderOffer() {
+      this.toggleShoppingCart = false
+      this.toggleOrderOfferWindow = !this.toggleOrderOfferWindow
+    },
     changeVendorsWindowClose() {
       this.toggleVendors = false
 
     },
     changeOrderWindowClose() {
       this.toggleOrderWindow = false
+    },
+    changeOrderOfferWindowClose() {
+      this.toggleOrderOfferWindow = false
     },
     offerVendor(){
       if(this.$route.matched[5].name == 'WholesaleClientsOffer'){
@@ -326,6 +341,7 @@ export default {
     ProfileHeaderOffer,
     ProfileOfferCatalogMenu,
     ProfileCartOffer,
+    OrderOfferWindow,
   },
   watch: {
     '$route.params.id': {
@@ -353,6 +369,7 @@ export default {
         this.isOffer = true
       }else{
         this.isOffer = false
+        this.toggleOrderOfferWindow = false
       }
     },
   },

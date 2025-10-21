@@ -132,7 +132,7 @@
           class="d-button d-button-primary d-button-primary-small cart__buy"
           @click.prevent="toggleOrder"
         >
-          <span> Перейти к заказу </span>
+          <span> Перейти к предложению </span>
           <span> {{ basketStore.cart_data.cost.toLocaleString('ru') }} ₽ </span>
         </button>
       </div>
@@ -156,7 +156,7 @@ import Counter from '@/shared/ui/Counter.vue'
 
 export default {
   name: 'ProfileCartOffer',
-  emits: ['toggleCart', 'toggleOrder', 'basketUpdate', 'catalogUpdate'],
+  emits: ['toggleCart', 'toggleOrderOffer', 'basketUpdate', 'catalogUpdate'],
   components: { Loader, customModal, Counter },
   props: {
     active: {
@@ -183,7 +183,7 @@ export default {
       this.$emit('toggleCart')
     },
     toggleOrder() {
-      this.$emit('toggleOrder')
+      this.$emit('toggleOrderOffer')
     },
     clearCart() {
       this.loading = true

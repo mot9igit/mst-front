@@ -110,32 +110,25 @@ export default {
       }
       return response
     },
-    // async getOptProductsSearch(store, { page, perpage, search }) {
-    //   let req = null
-    //   if (router.currentRoute._value.params.req) {
-    //     req = router.currentRoute._value.params.req
-    //   }
-    //   const data = {
-    //     id: router.currentRoute._value.params.id,
-    //       // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-    //       //   ? router.currentRoute._value.params.id_org_from
-    //       //   : router.currentRoute._value.params.id,
-    //     id_org_from: null,
-    //       // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-    //       //   ? router.currentRoute._value.params.id
-    //       //   : null,
-    //     type: router.currentRoute._value.params.type,
-    //     search: search,
-    //     extended_name: 'cart',
-    //       // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
-    //     page: page,
-    //     req: req,
-    //     perpage: perpage,
-    //     action: 'get/products',
-    //   }
-    //   const response = await api.catalog.getOptProducts(data)
-    //   return response
-    // },
+    async getOptOfferProductsSearch(store, { page, perpage, search }) {
+      let req = null
+      if (router.currentRoute._value.params.req) {
+        req = router.currentRoute._value.params.req
+      }
+      const data = {
+        id: router.currentRoute._value.params.id_org_from,
+        id_org_from: router.currentRoute._value.params.id,
+        type: router.currentRoute._value.params.type,
+        search: search,
+        extended_name: 'offer',
+        page: page,
+        req: req,
+        perpage: perpage,
+        action: 'get/products',
+      }
+      const response = await api.catalog.getOptProducts(data)
+      return response
+    },
     async getOfferOptProducts({ commit }, { filters, page, perpage, basket, search }) {
       let cat = 0
       if (
@@ -178,7 +171,16 @@ export default {
       }
       return response
     },
-
+    async offerSubmit(store, { date_end }) {
+      const data = {
+        action: 'create/offer',
+        id: router.currentRoute._value.params.id,
+        id_org_from: router.currentRoute._value.params.id_org_from,
+        date_end: date_end
+      }
+      const response = await api.offer.offerSubmit(data)
+      return response
+    },
   },
   mutations: {
     SET_FROM_ORG_STORES: (state, data) => {

@@ -411,6 +411,18 @@ const router = createRouter({
                               component: WholesaleClientsOffer,
                             },
                             {
+                              path: 'search',
+                              name: 'purchasesCatalogSearchOffer',
+                              props: true,
+                              label: 'Оптовый каталог для предложения',
+                              component: PurchasesCatalog,
+                              meta: {
+                                breadcrumb: {
+                                  label: 'Поиск',
+                                },
+                              },
+                            },
+                            {
                               path: 'catalog/:category_id',
                               name: 'purchasesOfferCatalog',
                               props: true,
