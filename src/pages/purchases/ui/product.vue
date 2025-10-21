@@ -35,8 +35,18 @@
       </div>
     </div>
     <div class="products__list-wrapper">
-      <div class="products__list" v-if="product.stores">
+      <div class="products__list" v-if="product.stores && !$route.params.id_org_from">
         <offer
+          v-for="(item, index) in product.stores"
+          :key="new Date().getTime() + '_' + Number(item.id) + '_' + index"
+          :offer="item"
+          :offerData="product"
+          @updateBasket="updateBasket()"
+          @updateCatalog="updateCatalog()"
+        />
+      </div>
+      <div class="products__list" v-else-if="product.stores && $route.params.id_org_from">
+        <offerForOffer
           v-for="(item, index) in product.stores"
           :key="new Date().getTime() + '_' + Number(item.id) + '_' + index"
           :offer="item"
@@ -50,6 +60,7 @@
 </template>
 <script>
 import offer from './offer.vue'
+import offerForOffer from './offerOffer.vue'
 
 export default {
   name: 'productComponent',
@@ -62,7 +73,7 @@ export default {
       },
     },
   },
-  components: { offer },
+  components: { offer, offerForOffer },
   methods: {
     updateBasket() {
       this.$emit('updateBasket')
