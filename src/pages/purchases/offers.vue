@@ -7,8 +7,8 @@
       <h1>Предложения</h1>
       <Loader v-if="loading" />
       <BaseTable
-        :items_data="optorders.orders"
-        :total="optorders.total"
+        :items_data="offers.items"
+        :total="offers.total"
         :pagination_items_per_page="this.pagination_items_per_page"
         :pagination_offset="this.pagination_offset"
         :page="this.page"
@@ -28,7 +28,7 @@ import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
 
 export default {
-  name: 'purchasesOrders',
+  name: 'purchasesOffers',
   components: { Breadcrumbs, BaseTable, Loader },
   props: {
     pagination_items_per_page: {
@@ -47,18 +47,18 @@ export default {
       filters: {
         name: {
           name: 'Поиск',
-          placeholder: 'Поиск',
+          placeholder: 'Искать в рпедложениях',
           type: 'text',
         },
       },
       table_data: {
         id: {
-          label: '№',
+          label: 'Номер',
           type: 'link',
-          link_to: 'purchasesOrder',
+          link_to: 'purchasesOffer',
           link_params: {
             id: this.$route.params.id,
-            order_id: 'id',
+            offer_id: 'id',
           },
           sort: true,
           class: 'cell_centeralign',
@@ -66,82 +66,69 @@ export default {
         date: {
           label: 'Дата создания',
           type: 'link',
-          link_to: 'purchasesOrder',
+          link_to: 'purchasesOffer',
           link_params: {
             id: this.$route.params.id,
-            order_id: 'id',
+            offer_id: 'id',
           },
           sort: true,
           class: 'cell_centeralign',
         },
-        seller_address: {
-          label: 'Поставщик',
+        date_end: {
+          label: 'Дата окончания предложения',
           type: 'link',
-          link_to: 'purchasesOrder',
+          link_to: 'purchasesOffer',
           link_params: {
             id: this.$route.params.id,
-            order_id: 'id',
+            offer_id: 'id',
           },
           sort: true,
-          class: 'cell_centeralign cell_org-data',
-          items: ['seller_name', 'seller_inn', 'seller_address'],
-        },
-        seller_w_name: {
-          label: 'Магазин/Склад продавца',
-          type: 'link',
-          link_to: 'purchasesOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
-          class: 'cell_centeralign',
-        },
-        ur_persone_name: {
-          label: 'Покупатель',
-          type: 'link',
-          link_to: 'purchasesOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
-          sort: true,
-          class: 'cell_centeralign',
-          items: ['ur_persone_name', 'buyer_address'],
-        },
-        buyer_store: {
-          label: 'Магазин/Склад покупателя',
-          type: 'link',
-          link_to: 'purchasesOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
           class: 'cell_centeralign',
         },
         initiator: {
           label: 'Инициатор',
           type: 'link',
-          link_to: 'purchasesOrder',
+          link_to: 'purchasesOffer',
           link_params: {
             id: this.$route.params.id,
-            order_id: 'id',
+            offer_id: 'id',
           },
-          sort: true,
-          class: 'cell_centeralign cell_initiatior-data',
-          items: ['initiator', 'initiator_user_name'],
+          class: 'cell_centeralign',
         },
-        cost: {
-          label: 'Сумма',
+        from_org_name: {
+          label: 'Покупатель',
           type: 'link',
-          link_to: 'purchasesOrder',
+          link_to: 'purchasesOffer',
           link_params: {
             id: this.$route.params.id,
-            order_id: 'id',
+            offer_id: 'id',
           },
           sort: true,
           class: 'cell_centeralign nowrap',
         },
-        status: {
+        store_name: {
+          label: 'Склад покупателя',
+          type: 'link',
+          link_to: 'purchasesOffer',
+          link_params: {
+            id: this.$route.params.id,
+            offer_id: 'id',
+          },
+          sort: true,
+          class: 'cell_centeralign',
+        },
+        cost: {
+          label: 'Сумма',
+          type: 'link',
+          link_to: 'purchasesOffer',
+          link_params: {
+            id: this.$route.params.id,
+            offer_id: 'id',
+          },
+          sort: true,
+          class: 'cell_centeralign',
+        },
+        status_name: {
           label: 'Статус',
           type: 'status',
           sort: true,
@@ -152,29 +139,29 @@ export default {
   },
   methods: {
     ...mapActions({
-      getOptOrders: 'purchases/getOptOrders',
-      unsetOptOrders: 'purchases/unsetOptOrders',
+      getOffers: 'purchases/getOffers',
+      unsetOffers: 'purchases/unsetOffers',
     }),
     filter(data) {
       console.log(data)
       this.loading = true
-      this.unsetOptOrders()
+      this.unsetOffers()
       this.page = 1
-      this.getOptOrders(data).then(() => {
+      this.getOffers(data).then(() => {
         this.loading = false
       })
     },
     paginate(data) {
       this.loading = true
-      this.unsetOptOrders()
+      this.unsetOffers()
       this.page = data.page
-      this.getOptOrders(data).then(() => {
+      this.getOffers(data).then(() => {
         this.loading = false
       })
     },
   },
   mounted() {
-    this.getOptOrders({
+    this.getOffers({
       page: this.page,
       perpage: this.pagination_items_per_page,
     }).then(() => {
@@ -183,7 +170,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      optorders: 'purchases/optorders',
+      offers: 'purchases/offers',
     }),
   },
   watch: {},

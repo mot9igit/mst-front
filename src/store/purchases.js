@@ -14,6 +14,8 @@ export default {
     },
     optorder: {},
     ordercalc: {},
+    offers: {},
+    offer: {},
   },
   actions: {
     async getOptOrders({ commit }, { sort, filter, filtersdata, page, perpage }) {
@@ -126,6 +128,52 @@ export default {
 
       return response
     },
+    async getOffers({ commit }, { filter, sort, page, perpage }) {
+      const data = {
+        action: 'get/offers/my',
+        id: router.currentRoute._value.params.id,
+        filter: filter,
+        page: page,
+        sort: sort,
+        perpage: perpage,
+      }
+      const response = await api.offer.getOffers(data)
+      if (response) {
+        commit('SET_OFFERS', response.data)
+      }
+      return response
+    },
+    async getOffer({ commit }, { offer_id }) {
+      const data = {
+        action: 'get/offers/my',
+        id: router.currentRoute._value.params.id,
+        offer_id: offer_id,
+      }
+      const response = await api.offer.getOffers(data)
+      if (response) {
+        commit('SET_OFFER', response.data)
+      }
+      return response
+    },
+    async acceptOffer(store, { offer_id }) {
+      const data = {
+        action: 'offer/accept/setorder',
+        id: router.currentRoute._value.params.id,
+        offer_id: offer_id,
+      }
+      const response = await api.offer.getOffers(data)
+
+      return response
+    },
+    async cancelOffer(store, { offer_id }) {
+      const data = {
+        action: 'offer/cancel',
+        offer_id: offer_id,
+      }
+      const response = await api.offer.getOffers(data)
+
+      return response
+    },
     unsetOpts({ commit }) {
       commit('UNSET_OPTS')
     },
@@ -134,6 +182,12 @@ export default {
     },
     unsetOptOrder({ commit }) {
       commit('UNSET_OPT_ORDER')
+    },
+    unsetOffers({ commit }) {
+      commit('UNSET_OFFERS')
+    },
+    unsetOffer({ commit }) {
+      commit('UNSET_OFFER')
     },
   },
   mutations: {
@@ -161,6 +215,18 @@ export default {
     SET_ORDER_CALC: (state, data) => {
       state.ordercalc = data.data
     },
+    SET_OFFERS: (state, data) => {
+      state.offers = data.data
+    },
+    SET_OFFER: (state, data) => {
+      state.offer = data.data
+    },
+    UNSET_OFFERS: (state) => {
+      state.offers = {}
+    },
+    UNSET_OFFER: (state) => {
+      state.offer = {}
+    },
   },
   getters: {
     opts(state) {
@@ -174,6 +240,12 @@ export default {
     },
     ordercalc(state) {
       return state.ordercalc
-    }
+    },
+    offers(state) {
+      return state.offers
+    },
+    offer(state) {
+      return state.offer
+    },
   },
 }

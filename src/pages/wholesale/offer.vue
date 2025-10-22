@@ -86,11 +86,7 @@
         v-else
         :items_data="offer.products"
         :total="offer.products.length"
-        :pagination_items_per_page="this.pagination_items_per_page"
-        :pagination_offset="this.pagination_offset"
-        :page="this.page"
         :table_data="this.table_data"
-        @paginate="paginate"
       />
     </div>
 
@@ -147,7 +143,16 @@ export default {
 
     }
   },
-
+  props: {
+    pagination_items_per_page: {
+      type: Number,
+      default: 25,
+    },
+    pagination_offset: {
+      type: Number,
+      default: 0,
+    },
+  },
   methods: {
   ...mapActions({
       getOffer: 'wholesale/getOffer',
@@ -191,6 +196,7 @@ export default {
         },
       })
     }
+
   },
   mounted() {
     this.getOffer({
