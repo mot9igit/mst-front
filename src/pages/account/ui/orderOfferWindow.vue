@@ -594,7 +594,7 @@ export default {
       }else{
         this.loading = true
         let date = this.form.end_date
-      //  console.log('ХОЧУ УБИВААААТЬ!!!!!!')
+
          this.offerSubmit({ date_end: date }).then((res) => {
            if (res.data.success) {
            this.loading = false

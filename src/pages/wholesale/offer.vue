@@ -1,5 +1,6 @@
 <template>
-  <section class="shipments" id="shipments">
+  <Toast/>
+  <section class="shipments wholesaleoffer__content" id="shipments">
     <div class="d-top">
       <Breadcrumbs />
     </div>
@@ -7,9 +8,9 @@
     <div class="d-top-order-container">
       <div class="d-top-order-container-left">
         <div>
-          <h2>Предложение № {{ this.$route.params.order_id }}</h2>
+          <h2>Предложение № {{ this.$route.params.offer_id }}</h2>
 
-          <div class="d-top-order-container-date-created">от {{ order.date }}</div>
+          <div class="d-top-order-container-date-created">от {{ offer.date }}</div>
         </div>
         <div class="d-badge2 d-badge2--fit d-button--sm-shadow order-card__status" :style="
           'background-color: #' +
@@ -22,83 +23,57 @@
      <div class="d-top-order-container-right">
         <!-- <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>-->
     <div class="d-top-order-container-buttons">
-    <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs" @click.prevent="modalDocs = true"  v-if="docs.length">
-      <i class="item-list-item-icon d-icon-doc"></i>
-      <span class="catalog__head-item-text">Документы <span v-if="docs.length">({{ docs.length }})</span></span>
+
+    <button
+      @click.prevent="cancelOffer()"
+      class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action">
+      <span class="catalog__head-item-text">Отклонить предложение</span>
 		</button>
-    <!--<button  class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action">
-      <span class="catalog__head-item-text">Подтвердить заказ</span>
-		</button>-->
     </div>
       </div>
     </div>
     <div class="d-top-order-container-info">
       <h3>Информация о заказе</h3>
       <div class="order-card__orderinfo dart-row">
-        <div class="order-card__orderinfo-grid d-col-md-3">
+        <div class="order-card__orderinfo-grid d-col-md-5">
           <div class="order-card__orderinfo-grid-lable">Сумма</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.cost != '' ? this.order?.cost : '-' }}
-          </div>
-        </div>
-        <div class="order-card__orderinfo-grid d-col-md-3">
-          <div class="order-card__orderinfo-grid-lable">Инициатор</div>
-          <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.initiator_org_name != '' ? this.order?.initiator_org_name : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text-down">
-            ({{ this.order?.initiator_user_name != '' ? this.order?.initiator_user_name : '' }})
+            {{ this.offer?.cost != '' ? this.offer?.cost : '-' }}
           </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-5">
-          <div class="order-card__orderinfo-grid-lable">Поставщик</div>
+          <div class="order-card__orderinfo-grid-lable">Инициатор</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.seller_name != '' ? this.order?.seller_name : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
-            ИНН: {{ this.order?.seller_inn != '' ? this.order?.seller_inn : '-' }}
+            {{ this.offer?.initiator_org_name != '' ? this.offer?.initiator_org_name : '' }}
           </div>
           <div class="order-card__orderinfo-grid-text-down">
-            {{ this.order?.seller_address != '' ? this.order?.seller_address : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text-down">
-            <b>Магазин/склад:</b>
-            {{ this.order?.seller_w_name != '' ? this.order?.seller_w_name : '-' }}
+            ({{ this.offer?.initiator_user_name != '' ? this.offer?.initiator_user_name : '' }})
           </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-5">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.buyer_name != '' ? this.order?.buyer_name : '' }}
+            {{ this.offer?.from_org_name != '' ? this.offer?.from_org_name : '' }}
           </div>
           <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
-            ИНН: {{ this.order?.ur_persone?.inn != '' ? this.order?.ur_persone?.inn : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text-down">
-            {{ this.order?.buyer_address != '' ? this.order?.buyer_address : '' }}
+            ИНН: {{ this.offer?.from_org_inn != '' ? this.offer?.from_org_inn : '' }}
           </div>
           <div class="order-card__orderinfo-grid-text-down">
             <b>Магазин/склад:</b>
-            {{ this.order?.buyer_store != '' ? this.order?.buyer_store : '-' }}
+            {{ this.offer?.store_name != '' ? this.offer?.store_name : '-' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-3">
-          <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
+        <div class="order-card__orderinfo-grid d-col-md-5">
+          <div class="order-card__orderinfo-grid-lable">Дата окончания предложения</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.delay != '' ? (Number.parseInt(this.order?.delay) ? this.order?.delay + ' дн.' : this.order?.delay) : '0 дн.' }}
+            {{ this.offer?.date_end != '' ? this.offer?.date_end  : '' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-3">
-          <div class="order-card__orderinfo-grid-lable">Оплата доставки</div>
-          <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.payer != '' ? this.order?.payer : '-' }}
-          </div>
-        </div>
-        <div class="order-card__orderinfo-grid d-col-md-2">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.day_delivery != '' ? this.order?.day_delivery : '?' }} дн. <br />({{
-              this.order?.delivery_date != '' ? this.order?.delivery_date : '-'
+            {{ this.offer?.day_delivery != '' ? this.offer?.day_delivery : '?' }} дн. <br />({{
+              this.offer?.delivery_date != '' ? this.offer?.delivery_date : '-'
             }})
           </div>
         </div>
@@ -109,8 +84,8 @@
       <Loader v-if="loading" />
       <BaseTable
         v-else
-        :items_data="order.products"
-        :total="order.cost"
+        :items_data="offer.products"
+        :total="offer.products.length"
         :pagination_items_per_page="this.pagination_items_per_page"
         :pagination_offset="this.pagination_offset"
         :page="this.page"
@@ -118,21 +93,7 @@
         @paginate="paginate"
       />
     </div>
-        <Teleport to="body">
-      <customModal v-model="modalDocs" class="order-card__modal">
-        <h3>Документы <span v-if="docs.length">({{ docs.length }})</span></h3>
-        <BaseTable
-          :items_data="docs"
-          :total="docs.length"
-          :table_data="table_docs"
-          @clickElem="docClick"
-        />
-      <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow" @click.prevent="modalDocs = false">
-        Ok
-      </button>
-      </customModal>
 
-    </Teleport>
   </section>
 </template>
 
@@ -141,17 +102,15 @@ import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
-import customModal from '@/shared/ui/Modal.vue'
+import Toast from 'primevue/toast'
 
 export default {
-  name: 'WholesaleOrder',
-  components: { Breadcrumbs, BaseTable, Loader, customModal },
+  name: 'WholesaleOffer',
+  components: { Breadcrumbs, BaseTable, Loader, Toast },
   data() {
     return {
       loading: true,
       page: 1,
-      page_docs: 1,
-      modalDocs: false,
       status: [],
       table_data: {
         image: {
@@ -185,63 +144,68 @@ export default {
           class: 'cell_centeralign',
         },
       },
-      docs: [],
-      table_docs: {
-        name: {
-          label: 'Название',
-          type: 'text',
-          class: 'cell_centeralign',
-        },
-        createdon: {
-          label: 'Дата',
-          type: 'text',
-          class: 'cell_centeralign',
-        },
-         actions: {
-          label: 'Скачать',
-          type: 'actions',
-          sort: false,
-          class: 'cell_centeralign',
-          available: {
-            click: {
-              icon: 'pi pi-download',
-              label: 'Загрузить',
-            },
-          },
-        },
-      },
+
     }
   },
 
   methods: {
   ...mapActions({
-      getOrder: 'wholesale/getOrder',
-      unsetOrder: 'wholesale/unsetOrder',
+      getOffer: 'wholesale/getOffer',
+      unsetOffer: 'wholesale/unsetOffer',
+      deleteOffer: 'wholesale/deleteOffer',
     }),
-    docClick(data){
-      let loc = data.href
-      var downloadLink = document.createElement("a")
-      downloadLink.href = loc
-      downloadLink.setAttribute('download', loc)
-      downloadLink.setAttribute('target','_blank')
-      console.log(downloadLink)
-      downloadLink.click();
+    cancelOffer(){
+      this.$confirm.require({
+        message: 'Вы уверены, что хотите удалить предложение №' + this.offer.id + '?',
+        header: 'Удаление предложение',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.loading = true
+          this.deleteOffer().then((response) => {
+            if (response.data.data.success) {
+              this.$toast.add({
+                severity: 'success',
+                summary: 'Удаление прошло успешно',
+                life: 3000,
+              })
+                this.loading = false
+                this.$router.push({ name: 'wholesaleOffers'})
+            } else {
+              this.loading = false
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: response.data.data.message,
+                life: 3000,
+              })
+            }
+          })
+        },
+        reject: () => {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Удаление предложения',
+            detail: 'Действие отклонено',
+            life: 3000,
+          })
+        },
+      })
     }
   },
   mounted() {
-    this.getOrder({
-      order_id: this.$route.params.order_id,
+    this.getOffer({
+      offer_id: this.$route.params.offer_id,
     }).then(() => (this.loading = false))
   },
   computed: {
     ...mapGetters({
-      order: 'wholesale/order',
+      offer: 'wholesale/offer',
     }),
   },
   watch: {
-    order: function (newVal) {
-      this.status = newVal.status
-      this.docs = newVal.docs
+    offer: function (newVal) {
+      this.status.name = newVal.status_name
+      this.status.color = newVal.status_color
     },
   },
 }

@@ -1,5 +1,5 @@
 <template>
-  <section class="shipments wholesaleorders__content" id="shipments">
+  <section class="shipments wholesaleorders__content wholesaleoffers__content" id="shipments">
     <div class="d-top">
       <Breadcrumbs />
     </div>
@@ -45,7 +45,7 @@ export default {
       filters: {
         name: {
           name: 'Поиск',
-          placeholder: 'Поиск',
+          placeholder: 'Искать в рпедложениях',
           type: 'text',
         },
       },
@@ -53,52 +53,54 @@ export default {
         id: {
           label: 'Номер',
           type: 'link',
-          link_to: 'wholesaleOrder',
+          link_to: 'wholesaleOffer',
           link_params: {
             id: this.$route.params.id,
-            order_id: 'id',
+            offer_id: 'id',
           },
           sort: true,
-          class: 'cell_centeralign',
-        },
-        buyer: {
-          label: 'Покупатель',
-          type: 'link',
-          link_to: 'wholesaleOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
-          class: 'cell_centeralign',
-        },
-        buyer_store: {
-          label: 'Магазин/Склад покупателя',
-          type: 'link',
-          link_to: 'wholesaleOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
           class: 'cell_centeralign',
         },
         date: {
-          label: 'Дата',
+          label: 'Дата создания',
           type: 'link',
-          link_to: 'wholesaleOrder',
+          link_to: 'wholesaleOffer',
           link_params: {
             id: this.$route.params.id,
-            order_id: 'id',
+            offer_id: 'id',
           },
           sort: true,
           class: 'cell_centeralign',
         },
-        cost: {
-          label: 'Сумма',
+        date_end: {
+          label: 'Дата окончания предложения',
           type: 'link',
-          link_to: 'wholesaleOrder',
+          link_to: 'wholesaleOffer',
           link_params: {
             id: this.$route.params.id,
-            order_id: 'id',
+            offer_id: 'id',
+          },
+          sort: true,
+          class: 'cell_centeralign',
+        },
+        store_name: {
+          label: 'Склад поставщика',
+          type: 'link',
+          link_to: 'wholesaleOffer',
+          link_params: {
+            id: this.$route.params.id,
+            offer_id: 'id',
+          },
+          sort: true,
+          class: 'cell_centeralign',
+        },
+        from_org_name: {
+          label: 'Покупатель',
+          type: 'link',
+          link_to: 'wholesaleOffer',
+          link_params: {
+            id: this.$route.params.id,
+            offer_id: 'id',
           },
           sort: true,
           class: 'cell_centeralign nowrap',
@@ -106,33 +108,28 @@ export default {
         initiator: {
           label: 'Инициатор',
           type: 'link',
-          link_to: 'wholesaleOrder',
+          link_to: 'wholesaleOffer',
           link_params: {
             id: this.$route.params.id,
-            order_id: 'id',
+            offer_id: 'id',
+          },
+          class: 'cell_centeralign',
+        },
+        cost: {
+          label: 'Сумма',
+          type: 'link',
+          link_to: 'wholesaleOffer',
+          link_params: {
+            id: this.$route.params.id,
+            offer_id: 'id',
           },
           sort: true,
           class: 'cell_centeralign',
         },
-        seller_name: {
-          label: 'Поставщик',
-          type: 'link',
-          link_to: 'wholesaleOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
+        status_name: {
+          label: 'Статус',
+          type: 'status',
           sort: true,
-          class: 'cell_centeralign',
-        },
-        seller_w_name: {
-          label: 'Магазин/Склад продавца',
-          type: 'link',
-          link_to: 'wholesaleOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
           class: 'cell_centeralign',
         },
       },
@@ -141,7 +138,7 @@ export default {
   methods: {
     ...mapActions({
       getOffers: 'wholesale/getOffers',
-      //unsetOrders: 'wholesale/unsetOrders',
+      unsetOffers: 'wholesale/unsetOffers',
     }),
     filter(data) {
       console.log(data)
@@ -178,40 +175,5 @@ export default {
 }
 </script>
 <style lang="scss">
-.wholesaleorders__content .dart-row {
-  justify-content: end;
-  margin-top: -39px;
-}
-.wholesaleorders__content .dart-mb-1 {
-  margin-bottom: 40px;
-}
-.wholesaleorders__content .p-inputtext {
-  width: 100%;
-}
-.wholesaleorders__content .form_input_group:after {
-  content: '\e003';
-  font-family: 'Iconly' !important;
-  position: absolute;
-  font-size: 16.8px;
-  top: calc(50% - 8.4px);
-  right: 20px;
-}
-.wholesaleorders__content .p-inputtext {
-  padding-right: 40px;
-  box-shadow: none;
-  border: 0.2px solid #75757575;
-}
-.wholesaleorders__content .p-inputtext:enabled:focus {
-  border-color: #f92c0d;
-}
-.wholesaleorders__content .p-floatlabel:has(input:focus) label,
-.wholesaleorders__content .p-floatlabel:has(input:-webkit-autofill) label,
-.wholesaleorders__content .p-floatlabel:has(textarea:focus) label,
-.wholesaleorders__content .p-floatlabel:has(.p-inputwrapper-focus) label {
-  color: #f92c0d;
-}
-.wholesaleorders__content .d-table__col,
-.wholesaleorders__content .d-table__row:first-child > .d-table__col {
-  padding: 16px;
-}
+
 </style>

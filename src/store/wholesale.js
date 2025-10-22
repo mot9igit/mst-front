@@ -111,7 +111,6 @@ export default {
       const data = {
         action: 'get/offers/clients',
         id: router.currentRoute._value.params.id,
-
         filter: filter,
         page: page,
         sort: sort,
@@ -135,6 +134,15 @@ export default {
       }
       return response
     },
+    async deleteOffer(store) {
+      const data = {
+        action: 'delete',
+        id: router.currentRoute._value.params.id,
+        offer_id: router.currentRoute._value.params.offer_id,
+      }
+      const response = await api.offer.getOffers(data)
+      return response
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },
@@ -146,6 +154,12 @@ export default {
     },
     unsetVirtualProfile({ commit }) {
       commit('UNSET_VIRT_ORG')
+    },
+    unsetOffers({ commit }) {
+      commit('UNSET_MY_OFFERS')
+    },
+    unsetOffer({ commit }) {
+      commit('UNSET_MY_OFFER')
     },
   },
   mutations: {
@@ -186,7 +200,13 @@ export default {
       state.offers = data.data
     },
     SET_MY_OFFER: (state, data) => {
-      state.offer = data.data.order
+      state.offer = data.data
+    },
+    UNSET_MY_OFFERS: (state) => {
+      state.offers = {}
+    },
+    UNSET_MY_OFFER: (state) => {
+      state.offer = {}
     },
   },
   getters: {
