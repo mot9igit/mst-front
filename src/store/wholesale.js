@@ -13,6 +13,8 @@ export default {
     managers: {},
     stores: {},
     virtOrg: {},
+    offers: {},
+    offer: {},
   },
   actions: {
     async getOrders({ commit }, { filter, sort, page, perpage }) {
@@ -105,6 +107,42 @@ export default {
 
       return response
     },
+    async getOffers({ commit }, { filter, sort, page, perpage }) {
+      const data = {
+        action: 'get/offers/clients',
+        id: router.currentRoute._value.params.id,
+        filter: filter,
+        page: page,
+        sort: sort,
+        perpage: perpage,
+      }
+      const response = await api.offer.getOffers(data)
+      if (response) {
+        commit('SET_MY_OFFERS', response.data)
+      }
+      return response
+    },
+    async getOffer({ commit }, { offer_id }) {
+      const data = {
+        action: 'get/offers/clients',
+        id: router.currentRoute._value.params.id,
+        offer_id: offer_id,
+      }
+      const response = await api.offer.getOffers(data)
+      if (response) {
+        commit('SET_MY_OFFER', response.data)
+      }
+      return response
+    },
+    async deleteOffer(store) {
+      const data = {
+        action: 'delete',
+        id: router.currentRoute._value.params.id,
+        offer_id: router.currentRoute._value.params.offer_id,
+      }
+      const response = await api.offer.getOffers(data)
+      return response
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },
@@ -116,6 +154,12 @@ export default {
     },
     unsetVirtualProfile({ commit }) {
       commit('UNSET_VIRT_ORG')
+    },
+    unsetOffers({ commit }) {
+      commit('UNSET_MY_OFFERS')
+    },
+    unsetOffer({ commit }) {
+      commit('UNSET_MY_OFFER')
     },
   },
   mutations: {
@@ -152,6 +196,18 @@ export default {
     UNSET_VIRT_ORG: (state) => {
       state.virtOrg = {}
     },
+    SET_MY_OFFERS: (state, data) => {
+      state.offers = data.data
+    },
+    SET_MY_OFFER: (state, data) => {
+      state.offer = data.data
+    },
+    UNSET_MY_OFFERS: (state) => {
+      state.offers = {}
+    },
+    UNSET_MY_OFFER: (state) => {
+      state.offer = {}
+    },
   },
   getters: {
     orders(state) {
@@ -171,6 +227,12 @@ export default {
     },
     virtOrg(state) {
       return state.virtOrg
+    },
+    offers(state) {
+      return state.offers
+    },
+    offer(state) {
+      return state.offer
     },
   },
 }

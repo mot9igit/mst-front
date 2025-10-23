@@ -166,7 +166,10 @@ export default {
       type: String,
       default: '',
     },
-
+    offer_id: {
+      type: String,
+      default: '',
+    },
 
   },
   data() {

@@ -8,12 +8,16 @@ import OrgAdd from '../pages/org/add.vue'
 import Purchases from '../pages/purchases/index.vue'
 import PurchasesOrders from '../pages/purchases/orders.vue'
 import PurchasesOrder from '../pages/purchases/order.vue'
+import PurchasesOffers from '../pages/purchases/offers.vue'
+import PurchasesOffer from '../pages/purchases/offer.vue'
 import PurchasesCatalog from '../pages/purchases/сatalog.vue'
 import PurchasesVendors from '../pages/purchases/vendors.vue'
 import PurchasesAction from '../pages/purchases/action.vue'
 import Wholesale from '../pages/wholesale/index.vue'
 import WholesaleOrders from '../pages/wholesale/orders.vue'
 import WholesaleOrder from '../pages/wholesale/order.vue'
+import WholesaleOffers from '../pages/wholesale/offers.vue'
+import WholesaleOffer from '../pages/wholesale/offer.vue'
 import WholesalePrices from '../pages/wholesale/prices.vue'
 import WholesaleSaleNew from '../pages/wholesale/saleNew.vue'
 import WholesaleClients from '../pages/wholesale/clients.vue'
@@ -255,6 +259,35 @@ const router = createRouter({
                       ],
                     },
                     {
+                      path: 'offers',
+                      meta: {
+                        breadcrumb: {
+                          label: 'Предложения',
+                        },
+                      },
+                      children: [
+                        {
+                          path: '',
+                          name: 'purchasesOffers',
+                          props: true,
+                          label: 'Заказы',
+                          component: PurchasesOffers,
+                        },
+                        {
+                          path: ':offer_id',
+                          name: 'purchasesOffer',
+                          props: true,
+                          label: 'Предложение',
+                          component: PurchasesOffer,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Предложение',
+                            },
+                          },
+                        },
+                      ],
+                    },
+                    {
                       path: 'vendors',
                       name: 'purchasesVendors',
                       props: true,
@@ -309,6 +342,35 @@ const router = createRouter({
                           meta: {
                             breadcrumb: {
                               label: 'Оптовый заказ',
+                            },
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      path: 'offers',
+                      meta: {
+                        breadcrumb: {
+                          label: 'Мои предложения',
+                        },
+                      },
+                      children: [
+                        {
+                          path: '',
+                          name: 'wholesaleOffers',
+                          props: true,
+                          label: 'Мои предложения',
+                          component: WholesaleOffers,
+                        },
+                        {
+                          path: ':offer_id',
+                          name: 'wholesaleOffer',
+                          props: true,
+                          label: 'Предложение',
+                          component: WholesaleOffer,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Предложение',
                             },
                           },
                         },
