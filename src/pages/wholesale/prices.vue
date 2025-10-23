@@ -7,9 +7,35 @@
       <div class="d-col-md-12">
         <h1 class="dart-mb-2">Оптовые цены</h1>
       </div>
-      <div class="d-col-md-12 d-flex d-flex-end">
+      <div class="d-col-md-12 d-flex d-flex-end d-gap-12">
         <router-link
-          :to="{ name: 'wholesaleSaleNew', params: { id: this.$route.params.id } }"
+          :to="{
+            name: 'wholesaleSaleNew',
+            params: { id: this.$route.params.id },
+            query: { typeSale: 2 },
+          }"
+          class="d-button d-button-secondary d-button--sm-shadow d-button-wholesaleprices"
+        >
+          <i class="d-icon-plus-flat clients__card-offer-icon"></i>
+          Создать Индивидуальную Акцию
+        </router-link>
+        <router-link
+          :to="{
+            name: 'wholesaleSaleNew',
+            params: { id: this.$route.params.id },
+            query: { typeSale: 3 },
+          }"
+          class="d-button d-button-secondary d-button--sm-shadow d-button-wholesaleprices"
+        >
+          <i class="d-icon-plus-flat clients__card-offer-icon"></i>
+          Создать Сбытовую Политику
+        </router-link>
+        <router-link
+          :to="{
+            name: 'wholesaleSaleNew',
+            params: { id: this.$route.params.id },
+            query: { typeSale: 1 },
+          }"
           class="d-button d-button-primary d-button--sm-shadow d-button-wholesaleprices"
         >
           <i class="d-icon-plus-flat clients__card-offer-icon"></i>
@@ -17,7 +43,6 @@
         </router-link>
       </div>
     </div>
-
     <Loader v-if="loading" />
     <BaseTable
       :items_data="sales.items"
@@ -55,6 +80,21 @@ export default {
           name: 'Наименование',
           placeholder: 'Наименование',
           type: 'text',
+        },
+        salesPolitic: {
+          name: 'Сбытовые политики',
+          placeholder: 'Сбытовые политики',
+          type: 'checkbox',
+        },
+        salesInd: {
+          name: 'Индивидуальные скидки',
+          placeholder: 'Индивидуальные скидки',
+          type: 'checkbox',
+        },
+        sales: {
+          name: 'Акции',
+          placeholder: 'Акции',
+          type: 'checkbox',
         },
       },
       table_data: {
@@ -98,10 +138,19 @@ export default {
           sort: true,
           class: 'cell_centeralign',
         },
+        type_sale: {
+          label: 'Тип',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
         active: {
           label: 'Активно',
-          type: 'boolean',
+          type: 'boolean_active',
           class: 'cell_centeralign',
+        },
+        comment: {
+          label: 'Активно',
+          type: 'html',
         },
         actions: {
           label: 'Действия',
@@ -166,14 +215,20 @@ export default {
       delAction: 'action/delAction',
     }),
     paginate(data) {
+      this.loading = true
       this.page = data.page
       data.type = 1
-      this.getSales(data)
+      this.getSales(data).then(() => {
+        this.loading = false
+      })
     },
     filter(data) {
+      this.loading = true
       data.type = 1
       this.page = 1
-      this.getSales(data)
+      this.getSales(data).then(() => {
+        this.loading = false
+      })
     },
     editElem(item) {
       this.$router.push({
@@ -271,11 +326,25 @@ export default {
 }
 </script>
 <style lang="scss">
+.wholesaleprices {
+  .v-table {
+    margin-top: 24px;
+  }
+  .dart-form-group {
+    margin-bottom: 0;
+  }
+  .ml-2 {
+    margin-left: 8px;
+  }
+}
 .d-flex {
   display: flex;
 }
 .d-flex-end {
   justify-content: end;
+}
+.d-gap-12 {
+  gap: 12px;
 }
 .d-inline-block {
   display: inline-block;

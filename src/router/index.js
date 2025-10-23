@@ -530,7 +530,7 @@ const router = createRouter({
                                 },
                               ],
                             },
-                          ]
+                          ],
                         },
                       ],
                     },
