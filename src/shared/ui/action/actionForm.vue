@@ -8,16 +8,40 @@
 
     <div class="promotions__header-back">
       <h1 class="d-title promotions__header-title" v-if="$route.params.action">
-        Настройка акции № {{ $route.params.action }}
+        <template v-if="this.typeSale == 1">
+          Настройка Акции № {{ $route.params.action }}
+        </template>
+        <template v-if="this.typeSale == 2">
+          Настройка Индивидуальной Акции № {{ $route.params.action }}
+        </template>
+        <template v-if="this.typeSale == 3">
+          Настройка Сбытовой политики № {{ $route.params.action }}
+        </template>
       </h1>
-      <h1 class="d-title promotions__header-title" v-else>Создание акции</h1>
+      <h1 class="d-title promotions__header-title" v-else>
+        <template v-if="this.typeSale == 1"> Создание Акции </template>
+        <template v-if="this.typeSale == 2"> Создание Индивидуальной Акции </template>
+        <template v-if="this.typeSale == 3"> Создание Сбытовой политики </template>
+      </h1>
     </div>
 
     <div class="promotions__header">
       <h1 class="d-title promotions__header-title" v-if="$route.params.action">
-        Настройка акции № {{ $route.params.action }}
+        <template v-if="this.typeSale == 1">
+          Настройка Акции № {{ $route.params.action }}
+        </template>
+        <template v-if="this.typeSale == 2">
+          Настройка Индивидуальной Акции № {{ $route.params.action }}
+        </template>
+        <template v-if="this.typeSale == 3">
+          Настройка Сбытовой политики № {{ $route.params.action }}
+        </template>
       </h1>
-      <h1 class="d-title promotions__header-title" v-else>Создание акции</h1>
+      <h1 class="d-title promotions__header-title" v-else>
+        <template v-if="this.typeSale == 1"> Создание Акции </template>
+        <template v-if="this.typeSale == 2"> Создание Индивидуальной Акции </template>
+        <template v-if="this.typeSale == 3"> Создание Сбытовой политики </template>
+      </h1>
       <div class="promotions__header-actions" v-if="$route.params.action">
         <label class="d-switch-button" for="enable-promotion">
           <div class="d-switch">
@@ -189,16 +213,18 @@
                   />
                 </div>
                 <div class="promotions__card-value-container">
-                  <div
-                    class="d-message promotions__card-banner-message promotions__card-banner-message--content"
-                  >
-                    <i
-                      class="d-icon-danger d-message__icon promotions__card-banner-message-icon"
-                    ></i>
-                    <p class="d-message__text promotions__card-banner-message-text">
-                      Баннер не показывается в рекламе
-                    </p>
-                  </div>
+                  <!--
+                    <div
+                      class="d-message promotions__card-banner-message promotions__card-banner-message--content"
+                    >
+                      <i
+                        class="d-icon-danger d-message__icon promotions__card-banner-message-icon"
+                      ></i>
+                      <p class="d-message__text promotions__card-banner-message-text">
+                        Баннер не показывается в рекламе
+                      </p>
+                    </div>
+                  -->
                   <span class="promotions__card-label promotions__card-banner-label"
                     >Места размещения баннера:</span
                   >
@@ -571,7 +597,7 @@
                     <i
                       class="d-icon-toggles d-badge__icon promotions__card-audience-badge-icon"
                     ></i>
-                    Все компании
+                    Не указано
                   </div>
                 </div>
               </div>
@@ -1002,6 +1028,34 @@
                 @filterGroup="filterGroup"
                 @filterGroupProduct="filterGroupProductSelected"
                 @settings="settings"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="dart-row promotions__content-card-container">
+        <div class="d-col d-col-24">
+          <div class="promotions__card products__card">
+            <Loader v-if="this.productLoading" />
+            <div class="promotions__card-header">
+              <div class="promotions__card-header-left">
+                <i class="d-icon-message-status promotions__card-icon"></i>
+                <p class="promotions__card-title">Комментарий</p>
+              </div>
+              <div class="promotions__info-actions">
+                <button class="promotions__card-button promotions__card-header-add">
+                  <i class="d-icon-pen2 promotions__card-button-icon"></i>
+                </button>
+              </div>
+            </div>
+            <div
+              class="promotions__card-content products__card-content promotions__card-content--no-x-padding"
+            >
+              <Editor
+                v-model="this.form.comment"
+                id="comment"
+                editorStyle="height: 200px"
+                variant="simple"
               />
             </div>
           </div>
@@ -1811,11 +1865,11 @@
                       />
                     </div>
                   </div>
-                  <!--
+
                   <div
                     class="d-radio__container d-radio__container d-radio__container--1200-vertical d-radio__container--1200-small"
                   >
-                    <div
+                    <!--<div
                       class="d-radio__wrapper d-radio__wrapper--1200-start promo-master__radio-wrapper"
                     >
                       <label class="d-switch" for="negative-promo1">
@@ -1840,7 +1894,7 @@
                           автоматически, а потребует включения покупателем.
                         </p>
                       </div>
-                    </div>
+                    </div>-->
                     <div
                       class="d-radio__wrapper d-radio__wrapper--1200-start promo-master__radio-wrapper"
                     >
@@ -1866,7 +1920,7 @@
                         </p>
                       </div>
                     </div>
-                  </div>-->
+                  </div>
                 </div>
                 <!-- 7 ЭТАП - Условия участия в акции: Совместимость -->
                 <div class="contents" id="promoConditionsCompatibility" v-if="masterStep == 7">
@@ -3044,6 +3098,10 @@ export default {
       type: String,
       default: '2', // 1 - розница, 2 - опт
     },
+    typeSale: {
+      type: String,
+      default: '1', // 1 - Акция, 2 - Индивидуальная Акция, 3 - Сбытовая политика
+    },
   },
   data() {
     return {
@@ -3172,6 +3230,7 @@ export default {
       form: {
         name: '',
         description: '',
+        comment: '',
         client_id: 0,
         compatibilityDiscount: 1,
         actions: [],
@@ -3870,6 +3929,7 @@ export default {
       }
       const save_data = this.form
       save_data.type = this.type
+      save_data.type_sale = this.typeSale
       this.setAction(save_data).then(() => {
         this.loading = false
         if (this.type == 1) {
@@ -4185,6 +4245,7 @@ export default {
         this.form.active = newVal.active
         this.form.activeInitial = newVal.active
         this.form.description = newVal.description
+        this.form.comment = newVal.comment
         this.form.store_id = newVal.store_ids
         this.form.client_id = String(newVal.client_id)
         if (newVal.image) {

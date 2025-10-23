@@ -1,6 +1,6 @@
 <template>
   <div>
-    <actionForm type="1" typeSale="1"></actionForm>
+    <actionForm type="1" typeSale="3"></actionForm>
   </div>
 </template>
 <script>
