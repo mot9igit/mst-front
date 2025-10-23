@@ -27,6 +27,9 @@
         </span>
       </div>
     </div>
+    <div class="cell_value" v-else-if="cell_data.type == 'html'" :class="cell_data.class">
+      <div v-html="value[cell_key]"></div>
+    </div>
     <div class="cell_value" v-else-if="cell_data.type == 'gist'" :class="cell_data.class">
       <Chart
         type="line"
@@ -495,5 +498,8 @@ export default {
 }
 .table_link {
   cursor: pointer;
+}
+.p-buttonset {
+  white-space: nowrap;
 }
 </style>

@@ -743,6 +743,9 @@ export default {
     },
   },
   watch: {
+    productsAvailable: function () {
+      this.filter_table_global = false
+    },
     table: function (newVal) {
       if (this.productsSelected.products.length != newVal.length) {
         this.checked_all = false

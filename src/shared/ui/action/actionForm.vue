@@ -8,16 +8,40 @@
 
     <div class="promotions__header-back">
       <h1 class="d-title promotions__header-title" v-if="$route.params.action">
-        Настройка акции № {{ $route.params.action }}
+        <template v-if="this.typeSale == 1">
+          Настройка Акции № {{ $route.params.action }}
+        </template>
+        <template v-if="this.typeSale == 2">
+          Настройка Индивидуальной Скидки № {{ $route.params.action }}
+        </template>
+        <template v-if="this.typeSale == 3">
+          Настройка Сбытовой Политики № {{ $route.params.action }}
+        </template>
       </h1>
-      <h1 class="d-title promotions__header-title" v-else>Создание акции</h1>
+      <h1 class="d-title promotions__header-title" v-else>
+        <template v-if="this.typeSale == 1"> Создание Акции </template>
+        <template v-if="this.typeSale == 2"> Создание Индивидуальной Скидки </template>
+        <template v-if="this.typeSale == 3"> Создание Сбытовой Политики </template>
+      </h1>
     </div>
 
     <div class="promotions__header">
       <h1 class="d-title promotions__header-title" v-if="$route.params.action">
-        Настройка акции № {{ $route.params.action }}
+        <template v-if="this.typeSale == 1">
+          Настройка Акции № {{ $route.params.action }}
+        </template>
+        <template v-if="this.typeSale == 2">
+          Настройка Индивидуальной Скидки № {{ $route.params.action }}
+        </template>
+        <template v-if="this.typeSale == 3">
+          Настройка Сбытовой Политики № {{ $route.params.action }}
+        </template>
       </h1>
-      <h1 class="d-title promotions__header-title" v-else>Создание акции</h1>
+      <h1 class="d-title promotions__header-title" v-else>
+        <template v-if="this.typeSale == 1"> Создание Акции </template>
+        <template v-if="this.typeSale == 2"> Создание Индивидуальной Акции </template>
+        <template v-if="this.typeSale == 3"> Создание Сбытовой политики </template>
+      </h1>
       <div class="promotions__header-actions" v-if="$route.params.action">
         <label class="d-switch-button" for="enable-promotion">
           <div class="d-switch">
@@ -31,7 +55,7 @@
             <div class="d-switch__circle"></div>
           </div>
           <span class="d-switch-button__text">{{
-            this.form.active ? 'Выключить акцию' : 'Включить акцию'
+            this.form.active ? 'Выключить' : 'Включить'
           }}</span>
         </label>
         <!--
@@ -49,8 +73,8 @@
 
     <div class="promotions__info">
       <div class="promotions__info-title-container">
-        <h2 class="promotions__info-title">Мастер создания акций</h2>
-        <p class="promotions__info-description">Создайте акцию в несколько этапов</p>
+        <h2 class="promotions__info-title">Мастер создания</h2>
+        <p class="promotions__info-description">Установите цену в несколько этапов</p>
       </div>
 
       <!--
@@ -75,7 +99,7 @@
               <div class="d-switch__circle"></div>
             </div>
             <span class="d-switch-button__text promotions__info-switch-label">{{
-              this.form.active ? 'Выключить акцию' : 'Включить акцию'
+              this.form.active ? 'Выключить' : 'Включить'
             }}</span>
           </label>
           <div class="d-divider d-divider--vertical promotions__info-icon-divider"></div>
@@ -127,7 +151,7 @@
             <div class="promotions__card-header">
               <div class="promotions__card-header-left">
                 <i class="d-icon-lines promotions__card-icon"></i>
-                <p class="promotions__card-title">Контент акции</p>
+                <p class="promotions__card-title">Контент</p>
               </div>
               <div class="promotions__info-actions">
                 <button class="promotions__card-button" @click.prevent="openStep(1)">
@@ -142,13 +166,13 @@
             <div class="promotions__card-content">
               <div class="promotions__card-values">
                 <div class="promotions__card-value-container">
-                  <span class="promotions__card-label">Название акции:</span>
+                  <span class="promotions__card-label">Название:</span>
                   <p class="promotions__card-value promotions__card-value--bold">
                     {{ this.form.name }}
                   </p>
                 </div>
                 <div class="promotions__card-value-container">
-                  <span class="promotions__card-label">Описание акции:</span>
+                  <span class="promotions__card-label">Описание:</span>
                   <p class="promotions__card-value" v-html="this.form.description"></p>
                 </div>
               </div>
@@ -160,7 +184,7 @@
             <div class="promotions__card-header">
               <div class="promotions__card-header-left">
                 <i class="d-icon-picture promotions__card-icon"></i>
-                <p class="promotions__card-title">Баннер акции</p>
+                <p class="promotions__card-title">Баннер</p>
               </div>
               <div class="promotions__info-actions">
                 <button class="promotions__card-button" @click.prevent="openStep(3)">
@@ -189,16 +213,18 @@
                   />
                 </div>
                 <div class="promotions__card-value-container">
-                  <div
-                    class="d-message promotions__card-banner-message promotions__card-banner-message--content"
-                  >
-                    <i
-                      class="d-icon-danger d-message__icon promotions__card-banner-message-icon"
-                    ></i>
-                    <p class="d-message__text promotions__card-banner-message-text">
-                      Баннер не показывается в рекламе
-                    </p>
-                  </div>
+                  <!--
+                    <div
+                      class="d-message promotions__card-banner-message promotions__card-banner-message--content"
+                    >
+                      <i
+                        class="d-icon-danger d-message__icon promotions__card-banner-message-icon"
+                      ></i>
+                      <p class="d-message__text promotions__card-banner-message-text">
+                        Баннер не показывается в рекламе
+                      </p>
+                    </div>
+                  -->
                   <span class="promotions__card-label promotions__card-banner-label"
                     >Места размещения баннера:</span
                   >
@@ -216,7 +242,7 @@
               <div class="promotions__card__no-banner">
                 <div>
                   <i class="d-icon-picture"></i>
-                  <span>Добавьте баннер <br />в мастере настройки акции</span>
+                  <span>Добавьте баннер <br />в мастере настройки цен</span>
                 </div>
               </div>
             </div>
@@ -390,7 +416,7 @@
             <div class="promotions__card-header">
               <div class="promotions__card-header-left">
                 <i class="d-icon-calendar3 promotions__card-icon"></i>
-                <p class="promotions__card-title">Даты проведения акции</p>
+                <p class="promotions__card-title">Даты проведения</p>
               </div>
               <div class="promotions__info-actions">
                 <button class="promotions__card-button" @click.prevent="openStep(2)">
@@ -421,7 +447,7 @@
                           })
                         }}
                       </span>
-                      <span
+                      <span v-if="!this.form.nodeadline"
                         >по
                         {{
                           this.form.dates[1].toLocaleString(undefined, {
@@ -434,8 +460,15 @@
                     </p>
                     <p
                       class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
+                      v-if="!this.form.nodeadline"
                     >
                       {{ datesDays }} дн.
+                    </p>
+                    <p
+                      class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
+                      v-else
+                    >
+                      ∞ дней
                     </p>
                   </div>
                   <div class="promotions__card-value-container" v-else>
@@ -452,8 +485,17 @@
                       class="d-fractions__item-block"
                       :style="'width: ' + datesPercent + '%'"
                     ></div>
-                    <p class="d-fractions__item-text d-fractions__item-text--bottom">
+                    <p
+                      class="d-fractions__item-text d-fractions__item-text--bottom"
+                      v-if="!this.form.nodeadline"
+                    >
                       Осталось {{ datesDaysAvailable }} дн.
+                    </p>
+                    <p
+                      class="d-fractions__item-text d-fractions__item-text--bottom text-center"
+                      v-else
+                    >
+                      Осталось ∞ дн.
                     </p>
                   </div>
                 </div>
@@ -466,7 +508,7 @@
             <div class="promotions__card-header">
               <div class="promotions__card-header-left">
                 <i class="d-icon-user-star promotions__card-icon"></i>
-                <p class="promotions__card-title">Аудитория акции</p>
+                <p class="promotions__card-title">Аудитория</p>
               </div>
               <div class="promotions__info-actions">
                 <button class="promotions__card-button" @click.prevent="openStep(8)">
@@ -571,7 +613,7 @@
                     <i
                       class="d-icon-toggles d-badge__icon promotions__card-audience-badge-icon"
                     ></i>
-                    Все компании
+                    Не указано
                   </div>
                 </div>
               </div>
@@ -619,12 +661,12 @@
             <div class="promotions__card-header">
               <div class="promotions__card-header-left">
                 <i class="d-icon-check-list promotions__card-icon"></i>
-                <p class="promotions__card-title">Условия участия в акции</p>
+                <p class="promotions__card-title">Условия участия</p>
 
                 <div class="d-category__container ml-44 hidden-1200">
-                  <div class="d-category" v-if="this.form.negative">Негативная акция</div>
+                  <div class="d-category" v-if="this.form.negative">Негативная</div>
                   <div class="d-category" v-if="this.form.offer">
-                    Акция доступна только в предложениях
+                    Доступно только в предложениях
                   </div>
                 </div>
               </div>
@@ -655,11 +697,9 @@
               <div
                 class="d-badge__container d-badge__container--long promotions__card-promo-conds-badges visible-1200 hidden-600"
               >
-                <div class="d-badge d-badge--filled" v-if="this.form.negative">
-                  Негативная акция
-                </div>
+                <div class="d-badge d-badge--filled" v-if="this.form.negative">Негативная</div>
                 <div class="d-badge d-badge--filled" v-if="this.form.offer">
-                  Акция доступна только в предложениях
+                  Доступно только в предложениях
                 </div>
               </div>
               <div class="promotions__card-block-wrapper">
@@ -674,13 +714,13 @@
                       <p
                         class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-title"
                       >
-                        Минимальная общая сумма заказа товаров акции
+                        Минимальная общая сумма заказа товаров
                       </p>
                     </div>
                     <p
                       class="promotions__card-label promotions__card-label--big promotions__card-block-description"
                     >
-                      Общая сумма товаров акции должна быть не менее указанной суммы.
+                      Общая сумма товаров должна быть не менее указанной суммы.
                     </p>
                     <p
                       class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value"
@@ -704,13 +744,13 @@
                       <p
                         class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-title"
                       >
-                        Минимальное количество SKU акции
+                        Минимальное количество SKU
                       </p>
                     </div>
                     <p
                       class="promotions__card-label promotions__card-label--big promotions__card-block-description"
                     >
-                      В заказе должно быть не менее заданного количества SKU товаров акции.
+                      В заказе должно быть не менее заданного количества SKU товаров.
                     </p>
                     <p
                       class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value"
@@ -740,7 +780,7 @@
                     <p
                       class="promotions__card-label promotions__card-label--big promotions__card-block-description"
                     >
-                      В заказе должно быть не менее заданного общего количества товаров акции.
+                      В заказе должно быть не менее заданного общего количества товаров.
                     </p>
                     <p
                       class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value"
@@ -779,7 +819,8 @@
                           <p
                             class="promotions__card-label promotions__card-label--big promotions__card-block-description promotions__card-block-description--full"
                           >
-                            С какой акцией может применяться совместно
+                            С какой акцией, сбытовай политикой, индивидуальной скидкой может
+                            применяться совместно
                           </p>
                         </div>
                         <div
@@ -788,25 +829,17 @@
                           <p
                             class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-title"
                           >
+                            {{ this.form.compatibilityDiscount == 1 ? 'Совместима со всеми' : '' }}
                             {{
-                              this.form.compatibilityDiscount == 1
-                                ? 'Совместима со всеми акциями'
-                                : ''
-                            }}
-                            {{
-                              this.form.compatibilityDiscount == 2
-                                ? 'Не совместима со всеми акциями'
-                                : ''
+                              this.form.compatibilityDiscount == 2 ? 'Не совместима со всеми' : ''
                             }}
                             {{
                               this.form.compatibilityDiscount == 3
-                                ? 'Не совместима с выбранными акциями'
+                                ? 'Не совместима с выбранными'
                                 : ''
                             }}
                             {{
-                              this.form.compatibilityDiscount == 4
-                                ? 'Совместима с выбранными акциями'
-                                : ''
+                              this.form.compatibilityDiscount == 4 ? 'Совместима с выбранными' : ''
                             }}
                           </p>
                           <p
@@ -834,7 +867,7 @@
                           <p
                             class="promotions__card-label promotions__card-label--big promotions__card-block-description promotions__card-block-description--full"
                           >
-                            Как условия акций сочетаются
+                            Как условия сочетаются
                           </p>
                         </div>
                         <div
@@ -878,7 +911,7 @@
                     @click.prevent="openStep(7)"
                   >
                     <i class="d-icon-trade promotions__card-block-button-icon"></i>
-                    Совместимость акций
+                    Совместимость
                   </button>
                 --></div>
               </div>
@@ -913,7 +946,7 @@
                   </p>
                   <span
                     class="promotions__card-label promotions__card-label--big promotions__card-warehouse-label"
-                    >Укажите склады, на товары которых распространяется акция</span
+                    >Укажите склады, на товары которых распространяются условия</span
                   >
                 </div>
                 <div class="promotions__card-warehouse-settings hidden-1200">
@@ -1007,16 +1040,44 @@
           </div>
         </div>
       </div>
+      <div class="dart-row promotions__content-card-container">
+        <div class="d-col d-col-24">
+          <div class="promotions__card products__card">
+            <Loader v-if="this.productLoading" />
+            <div class="promotions__card-header">
+              <div class="promotions__card-header-left">
+                <i class="d-icon-message-status promotions__card-icon"></i>
+                <p class="promotions__card-title">Комментарий</p>
+              </div>
+              <div class="promotions__info-actions">
+                <button class="promotions__card-button promotions__card-header-add">
+                  <i class="d-icon-pen2 promotions__card-button-icon"></i>
+                </button>
+              </div>
+            </div>
+            <div
+              class="promotions__card-content products__card-content promotions__card-content--no-x-padding"
+            >
+              <Editor
+                v-model="this.form.comment"
+                id="comment"
+                editorStyle="height: 200px"
+                variant="simple"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- МАСТЕР СОЗДАНИЯ АКЦИЙ -->
+    <!-- МАСТЕР СОЗДАНИЯ -->
     <teleport to="body">
       <customModal v-model="this.modals.master" class="promo-master-modal">
         <div class="promo-modal__header">
           <div class="promo-modal__header-left">
             <div class="d-modal2__header promo-modal__header-title-container">
-              <p class="d-modal2__title promo-modal__header-title">Мастер создания акций</p>
+              <p class="d-modal2__title promo-modal__header-title">Мастер создания</p>
               <p class="d-modal2__description promo-modal__header-description">
-                Создайте акцию в несколько этапов
+                Создайте цену в несколько этапов
               </p>
             </div>
             <div
@@ -1027,21 +1088,21 @@
               v-if="masterStep == 1"
             >
               <i class="d-icon-lines"></i>
-              Контент акции
+              Контент
             </span>
             <span
               class="d-button d-button-tertiary box-shadow-none promo-modal__header-button"
               v-if="masterStep == 2"
             >
               <i class="d-icon-calendar"></i>
-              Даты проведения акции
+              Даты проведения
             </span>
             <span
               class="d-button d-button-tertiary box-shadow-none promo-modal__header-button"
               v-if="masterStep == 3"
             >
               <i class="d-icon-picture"></i>
-              Баннер акции
+              Баннер
             </span>
             <span
               class="d-button d-button-tertiary box-shadow-none promo-modal__header-button"
@@ -1062,21 +1123,21 @@
               v-if="masterStep == 6"
             >
               <i class="d-icon-percent"></i>
-              Условия участия в акции: Требования к заказу
+              Условия участия: Требования к заказу
             </span>
             <span
               class="d-button d-button-tertiary box-shadow-none promo-modal__header-button"
               v-if="masterStep == 7"
             >
               <i class="d-icon-percent"></i>
-              Условия участия в акции: Совместимость
+              Условия участия: Совместимость
             </span>
             <span
               class="d-button d-button-tertiary box-shadow-none promo-modal__header-button"
               v-if="masterStep == 8"
             >
               <i class="d-icon-user-star"></i>
-              Аудитория акции
+              Аудитория
             </span>
             <span
               class="d-button d-button-tertiary box-shadow-none promo-modal__header-button"
@@ -1115,13 +1176,13 @@
           <div class="promo-master">
             <div class="promo-master__content">
               <div class="promo-master__content-left">
-                <!-- 1 ЭТАП - Контент акции -->
+                <!-- 1 ЭТАП - Контент -->
                 <div class="contents" id="promoContent" v-if="masterStep == 1">
-                  <p class="promo-master__title promo-master__title--sm-margin">Контент акции</p>
+                  <p class="promo-master__title promo-master__title--sm-margin">Контент</p>
                   <div
                     class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical promo-master__settings promo-master__settings--sm-margin"
                   >
-                    <label for="actionName" class="d-dropdown__label">Название акции </label>
+                    <label for="actionName" class="d-dropdown__label">Название </label>
                     <div
                       class="d-input d-input--light d-input--width-640 d-textarea promo-master__textarea"
                     >
@@ -1134,7 +1195,7 @@
                     </div>
                   </div>
                   <div class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical">
-                    <label for="description" class="d-dropdown__label">Описание акции </label>
+                    <label for="description" class="d-dropdown__label">Описание </label>
                     <Editor
                       v-model="this.form.description"
                       id="description"
@@ -1216,13 +1277,9 @@
                 </div>
                 <!-- 2 ЭТАП Даты проведения акции -->
                 <div class="contents" id="eventDates" v-if="masterStep == 2">
-                  <p class="promo-master__title promo-master__title--sm-margin">
-                    Даты проведения акции
-                  </p>
+                  <p class="promo-master__title promo-master__title--sm-margin">Даты проведения</p>
                   <div class="d-field-container d-field-container--long">
-                    <div
-                      class="d-field-wrapper d-field-wrapper--small d-field-wrapper--vertical promo-master__dates"
-                    >
+                    <div class="d-field-wrapper d-field-wrapper--small promo-master__dates">
                       <!--<DatePicker
                         v-model="this.form.dates"
                         dateFormat="dd.mm.yy"
@@ -1240,6 +1297,7 @@
                         showIcon
                       />
                       <DatePicker
+                        v-if="!this.form.nodeadline"
                         v-model="this.form.end_date"
                         dateFormat="dd.mm.yy"
                         placeholder="Выберите дату окончания"
@@ -1249,10 +1307,30 @@
                       />
                     </div>
                   </div>
+                  <div class="d-radio__wrapper dart-mt-2 promo-master__radio-wrapper">
+                    <label class="d-switch" for="nodeadline-promo2">
+                      <input
+                        type="checkbox"
+                        name="nodeadline-promo2"
+                        id="nodeadline-promo2"
+                        v-model="this.form.nodeadline"
+                        class="d-switch__input"
+                      />
+                      <div class="d-switch__circle"></div>
+                    </label>
+                    <div class="d-switch__label-container">
+                      <label
+                        for="nodeadline-promo2"
+                        class="d-switch__label d-switch__label--regular"
+                        >Бессрочная
+                      </label>
+                      <p class="d-description">Условия будут без ограничения срока действия.</p>
+                    </div>
+                  </div>
                 </div>
                 <!-- 3 ЭТАП Баннер акции -->
                 <div class="contents" id="promoBanner" v-if="masterStep == 3">
-                  <p class="promo-master__title">Баннер акции</p>
+                  <p class="promo-master__title">Баннер</p>
                   <div class="dart-row">
                     <div class="d-col-24 d-col-md-12">
                       <div class="banner-wrap">
@@ -1732,17 +1810,17 @@
                 </div>
                 <!-- 6 ЭТАП - Условия участия в акции: Требования к заказу -->
                 <div class="contents" id="promoConditionsRequirements" v-if="masterStep == 6">
-                  <p class="promo-master__title">Условия участия в акции: требования к заказу</p>
+                  <p class="promo-master__title">Условия участия: требования к заказу</p>
                   <!-- Минимальная общая сумма заказа товаров акции -->
                   <div
                     class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings promo-master__settings--sm-margin"
                   >
                     <div class="promo-master__subtitle-container">
                       <p class="promo-master__subtitle promo-master__subtitle--1200-small">
-                        Минимальная общая сумма заказа товаров акции
+                        Минимальная общая сумма заказа товаров
                       </p>
                       <p class="d-text promo-master__description">
-                        Общая сумма товаров акции должна быть не менее указанной суммы
+                        Общая сумма товаров должна быть не менее указанной суммы
                       </p>
                     </div>
                     <div class="d-input--width-280">
@@ -1759,16 +1837,16 @@
                       />
                     </div>
                   </div>
-                  <!-- Минимальное количество SKU акции -->
+                  <!-- Минимальное количество SKU -->
                   <div
                     class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings promo-master__settings--sm-margin"
                   >
                     <div class="promo-master__subtitle-container">
                       <p class="promo-master__subtitle promo-master__subtitle--1200-small">
-                        Минимальное количество SKU акции
+                        Минимальное количество SKU
                       </p>
                       <p class="d-text promo-master__description">
-                        В заказе должно быть не менее заданного количества SKU товаров акции
+                        В заказе должно быть не менее заданного количества SKU товаров
                       </p>
                     </div>
                     <div class="d-input--width-280">
@@ -1794,7 +1872,7 @@
                         Минимальное общее количество товаров
                       </p>
                       <p class="d-text promo-master__description">
-                        В заказе должно быть не менее заданного общего количества товаров акции
+                        В заказе должно быть не менее заданного общего количества товаров
                       </p>
                     </div>
                     <div class="d-input--width-280">
@@ -1811,11 +1889,11 @@
                       />
                     </div>
                   </div>
-                  <!--
+
                   <div
                     class="d-radio__container d-radio__container d-radio__container--1200-vertical d-radio__container--1200-small"
                   >
-                    <div
+                    <!--<div
                       class="d-radio__wrapper d-radio__wrapper--1200-start promo-master__radio-wrapper"
                     >
                       <label class="d-switch" for="negative-promo1">
@@ -1840,7 +1918,7 @@
                           автоматически, а потребует включения покупателем.
                         </p>
                       </div>
-                    </div>
+                    </div>-->
                     <div
                       class="d-radio__wrapper d-radio__wrapper--1200-start promo-master__radio-wrapper"
                     >
@@ -1861,16 +1939,16 @@
                           >Доступна только в Предложениях
                         </label>
                         <p class="d-description">
-                          Акция будет видна только в рамках предложения для магазинов, в каталоге и
-                          в разделе «Акции поставщиков» выводиться не будет.
+                          Условия будут видны только в рамках предложения для магазинов, в каталоге
+                          и в разделе «Акции поставщиков» выводиться не будет.
                         </p>
                       </div>
                     </div>
-                  </div>-->
+                  </div>
                 </div>
                 <!-- 7 ЭТАП - Условия участия в акции: Совместимость -->
                 <div class="contents" id="promoConditionsCompatibility" v-if="masterStep == 7">
-                  <p class="promo-master__title">Условия участия в акции: совместимость</p>
+                  <p class="promo-master__title">Условия участия: совместимость</p>
                   <!-- Совместимость -->
                   <div
                     class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings"
@@ -1878,7 +1956,8 @@
                     <div class="promo-master__subtitle-container">
                       <p class="promo-master__subtitle">Совместимость</p>
                       <p class="d-text promo-master__description">
-                        С какими акциями может применяться совместно
+                        С какими акциями, сбытовыми политиками, индивидуальными скидками может
+                        применяться совместно
                       </p>
                     </div>
                     <div
@@ -1896,7 +1975,7 @@
                           />
                         </label>
                         <label for="compatibility1" class="d-radio__label promo-master__radio-label"
-                          >Совместима со всеми акциями
+                          >Совместима со всеми
                         </label>
                       </div>
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
@@ -1911,7 +1990,7 @@
                           />
                         </label>
                         <label for="compatibility2" class="d-radio__label promo-master__radio-label"
-                          >Совместима только с выбранными акциями
+                          >Совместима только с выбранными
                         </label>
                       </div>
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
@@ -1926,7 +2005,7 @@
                           />
                         </label>
                         <label for="compatibility3" class="d-radio__label promo-master__radio-label"
-                          >Не совместима со всеми акциями
+                          >Не совместима со всеми
                         </label>
                       </div>
                       <div class="d-radio__wrapper promo-master__radio-wrapper">
@@ -1941,7 +2020,7 @@
                           />
                         </label>
                         <label for="compatibility4" class="d-radio__label promo-master__radio-label"
-                          >Не совместима с выбранными акциями
+                          >Не совместима с выбранными
                         </label>
                       </div>
                       <div
@@ -1953,7 +2032,7 @@
                         "
                       >
                         <label class="d-text promo-master__description"
-                          >Выберите акции из списка</label
+                          >Выберите условия из списка</label
                         >
                         <MultiSelect
                           filter
@@ -1975,7 +2054,7 @@
                     <div class="promo-master__subtitle-container">
                       <p class="promo-master__subtitle">Режим совместимости</p>
                       <p class="d-text promo-master__description">
-                        Как условия совместимых акций сочетаются
+                        Как совместимые условия сочетаются
                       </p>
                     </div>
                     <div
@@ -2049,9 +2128,9 @@
                     </div>
                   </div>
                 </div>
-                <!-- 8 ЭТАП - Аудитория акции -->
+                <!-- 8 ЭТАП - Аудитория -->
                 <div class="contents" id="promoAudience" v-if="masterStep == 8">
-                  <p class="promo-master__title promo-master__title--ms-margin">Аудитория акции</p>
+                  <p class="promo-master__title promo-master__title--ms-margin">Аудитория</p>
                   <div
                     class="d-radio__container d-radio__container-vertical d-radio__container--big d-radio__container--1200-vertical d-radio__container--1200-tiny-small"
                   >
@@ -2113,15 +2192,15 @@
                       </div>
                     </div>
                   </div>
-                  <!-- Участники акции -->
+                  <!-- Участники -->
                   <div v-if="this.form.participantsType != 3" class="dart-mt-2">
                     <div
                       class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings promo-master__settings--sm-margin"
                     >
                       <div class="promo-master__subtitle-container">
-                        <p class="promo-master__subtitle">Участники акции</p>
+                        <p class="promo-master__subtitle">Участники</p>
                         <p class="d-text promo-master__description">
-                          По умолчанию акция доступна всем без исключения.
+                          По умолчанию условия доступны всем без исключения.
                         </p>
                       </div>
                     </div>
@@ -2253,11 +2332,11 @@
                 <div class="contents" id="congratulations" v-if="masterStep == 9">
                   <div class="promo-master__title-container">
                     <p class="promo-master__title promo-master__title--no-margin">
-                      Поздравляем!<br />Вы почти настроили Акцию
+                      Поздравляем!<br />Вы почти настроили Условия
                     </p>
                     <div class="d-description">
                       Сейчас система переместит вас в разде "Товары и скидки", где вы сможете
-                      выбрать склад и добавить товары в Акцию.
+                      выбрать склад и добавить товары в Условия продажи.
                     </div>
                   </div>
                 </div>
@@ -2283,7 +2362,7 @@
                     <button
                       class="d-button d-button-primary d-button-primary-small d-button--sm-padding d-button--sm-shadow"
                     >
-                      Включить акцию
+                      Включить
                     </button>
                   </div>
                 </div>
@@ -2299,7 +2378,7 @@
                     }"
                   >
                     <i class="d-icon-lines"></i>
-                    Контент акции
+                    Контент
                   </button>
                   <button
                     @click.prevent="openStep(2)"
@@ -2310,7 +2389,7 @@
                     }"
                   >
                     <i class="d-icon-calendar"></i>
-                    Даты проведения акции
+                    Даты проведения
                   </button>
                   <button
                     @click.prevent="openStep(3)"
@@ -2321,7 +2400,7 @@
                     }"
                   >
                     <i class="d-icon-picture"></i>
-                    Баннер акции
+                    Баннер
                   </button>
                   <button
                     @click.prevent="openStep(4)"
@@ -2355,7 +2434,7 @@
                     }"
                   >
                     <i class="d-icon-percent"></i>
-                    Условия участия в акции: Требования к заказу
+                    Условия участия: Требования к заказу
                   </button>
                   <button
                     v-if="type == 1"
@@ -2367,7 +2446,7 @@
                     }"
                   >
                     <i class="d-icon-percent"></i>
-                    Условия участия в акции: Совместимость
+                    Условия участия: Совместимость
                   </button>
                   <button
                     @click.prevent="openStep(8)"
@@ -2378,7 +2457,7 @@
                     }"
                   >
                     <i class="d-icon-user-star"></i>
-                    Аудитория акции
+                    Аудитория
                   </button>
                   <button
                     @click.prevent="openStep(9)"
@@ -2452,19 +2531,19 @@
                 class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--used"
               >
                 <i class="d-icon-lines"></i>
-                Контент акции
+                Контент
               </button>
               <button
                 class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--used"
               >
                 <i class="d-icon-calendar"></i>
-                Даты проведения акции
+                Даты проведения
               </button>
               <button
                 class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--used"
               >
                 <i class="d-icon-picture"></i>
-                Баннер акции
+                Баннер
               </button>
               <button class="d-button d-button-tertiary box-shadow-none promo-master__setting">
                 <i class="d-icon-wallet"></i>
@@ -2482,21 +2561,21 @@
                 disabled=""
               >
                 <i class="d-icon-percent"></i>
-                Условия участия в акции: Требования к заказу
+                Условия участия: Требования к заказу
               </button>
               <button
                 class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--disabled"
                 disabled=""
               >
                 <i class="d-icon-percent"></i>
-                Условия участия в акции: Совместимость
+                Условия участия: Совместимость
               </button>
               <button
                 class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--disabled"
                 disabled=""
               >
                 <i class="d-icon-user-star"></i>
-                Аудитория акции
+                Аудитория
               </button>
               <button
                 class="d-button d-button-tertiary box-shadow-none promo-master__setting promo-master__setting--disabled"
@@ -3044,6 +3123,10 @@ export default {
       type: String,
       default: '2', // 1 - розница, 2 - опт
     },
+    typeSale: {
+      type: String,
+      default: '1', // 1 - Акция, 2 - Индивидуальная Акция, 3 - Сбытовая политика
+    },
   },
   data() {
     return {
@@ -3172,6 +3255,7 @@ export default {
       form: {
         name: '',
         description: '',
+        comment: '',
         client_id: 0,
         compatibilityDiscount: 1,
         actions: [],
@@ -3211,6 +3295,7 @@ export default {
         dates: [],
         start_date: '',
         end_date: '',
+        nodeadline: 0,
         adv: {
           active: false,
           place: {},
@@ -3863,13 +3948,14 @@ export default {
         this.$toast.add({
           severity: 'error',
           summary: 'Проверьте заполненные данные',
-          detail: 'Проверьте корректно ли вы заполнили данные Акции',
+          detail: 'Проверьте корректно ли вы заполнили данные',
           life: 3000,
         })
         return
       }
       const save_data = this.form
       save_data.type = this.type
+      save_data.type_sale = this.typeSale
       this.setAction(save_data).then(() => {
         this.loading = false
         if (this.type == 1) {
@@ -3972,21 +4058,25 @@ export default {
     }),
     datesPercent() {
       if (this.form.dates.length == 2) {
-        const dateFrom = this.form.dates[0]
-        const dateTo = this.form.dates[1]
-        let diffTime = 0
-        let diffTimeAll = dateTo.getTime() - dateFrom.getTime()
-        const today = new Date()
-        if (today > dateFrom) {
-          if (today > dateTo) {
-            return 100
-          } else {
-            diffTime = dateTo.getTime() - today.getTime()
-          }
+        if (this.form.nodeadline) {
+          return 100
         } else {
-          return 10
+          const dateFrom = this.form.dates[0]
+          const dateTo = this.form.dates[1]
+          let diffTime = 0
+          let diffTimeAll = dateTo.getTime() - dateFrom.getTime()
+          const today = new Date()
+          if (today > dateFrom) {
+            if (today > dateTo) {
+              return 100
+            } else {
+              diffTime = dateTo.getTime() - today.getTime()
+            }
+          } else {
+            return 10
+          }
+          return 100 - Math.ceil((diffTime / diffTimeAll) * 100)
         }
-        return 100 - Math.ceil((diffTime / diffTimeAll) * 100)
       } else {
         return 0
       }
@@ -4078,11 +4168,11 @@ export default {
           if (newVal == false) {
             header = 'Подтверждение отключения'
             message =
-              'Вы уверены, что хотите отключить Акцию с ID ' + this.$route.params.action + '?'
+              'Вы уверены, что хотите отключить Условия с ID ' + this.$route.params.action + '?'
           } else {
             header = 'Подтверждение включения'
             message =
-              'Вы уверены, что хотите включить Акцию с ID ' + this.$route.params.action + '?'
+              'Вы уверены, что хотите включить Условия с ID ' + this.$route.params.action + '?'
           }
           // console.log(header)
           this.$confirm.require({
@@ -4182,9 +4272,11 @@ export default {
         console.log(newVal)
         this.form.action_id = newVal.id
         this.form.name = newVal.name
+        this.form.nodeadline = newVal.nodeadline
         this.form.active = newVal.active
         this.form.activeInitial = newVal.active
         this.form.description = newVal.description
+        this.form.comment = newVal.comment
         this.form.store_id = newVal.store_ids
         this.form.client_id = String(newVal.client_id)
         if (newVal.image) {
@@ -4579,6 +4671,9 @@ body {
       .d-fractions__item-text,
       .d-fractions__item-text--bottom {
         text-align: left;
+        &.text-center {
+          text-align: center;
+        }
       }
     }
   }

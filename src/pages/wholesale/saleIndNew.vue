@@ -1,9 +1,6 @@
 <template>
   <div>
-    <actionForm
-      type="1"
-      :typeSale="this.$route.query?.typeSale ? this.$route.query?.typeSale : 1"
-    ></actionForm>
+    <actionForm type="1" typeSale="2"></actionForm>
   </div>
 </template>
 <script>
