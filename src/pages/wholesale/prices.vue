@@ -4,10 +4,10 @@
       <Breadcrumbs />
     </div>
     <div class="dart-row">
-      <div class="d-col-md-12">
+      <div class="d-col-md-24">
         <h1 class="dart-mb-2">Оптовые цены</h1>
       </div>
-      <div class="d-col-md-12 d-flex d-flex-end d-gap-12">
+      <div class="d-col-md-24 d-flex d-flex-end d-gap-12">
         <router-link
           :to="{
             name: 'wholesaleSaleNew',
@@ -17,7 +17,7 @@
           class="d-button d-button-secondary d-button--sm-shadow d-button-wholesaleprices"
         >
           <i class="d-icon-plus-flat clients__card-offer-icon"></i>
-          Создать Индивидуальную Акцию
+          Индивидуальная скидка
         </router-link>
         <router-link
           :to="{
@@ -28,7 +28,7 @@
           class="d-button d-button-secondary d-button--sm-shadow d-button-wholesaleprices"
         >
           <i class="d-icon-plus-flat clients__card-offer-icon"></i>
-          Создать Сбытовую Политику
+          Сбытовая политика
         </router-link>
         <router-link
           :to="{
@@ -39,7 +39,7 @@
           class="d-button d-button-primary d-button--sm-shadow d-button-wholesaleprices"
         >
           <i class="d-icon-plus-flat clients__card-offer-icon"></i>
-          Создать Акцию
+          Акция
         </router-link>
       </div>
     </div>
@@ -149,7 +149,7 @@ export default {
           class: 'cell_centeralign',
         },
         comment: {
-          label: 'Активно',
+          label: 'Комментарий',
           type: 'html',
         },
         actions: {
