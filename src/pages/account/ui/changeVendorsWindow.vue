@@ -43,8 +43,7 @@
           <div class="vendor-change__content">
             <!-- Заголовок модалки -->
             <div class="vendor-change__title-container">
-              <h3 class="vendor-change__title" v-if="!offer">Выбор поставщиков</h3>
-              <h3 class="vendor-change__title" v-else>Выбор склада для создания предложения</h3>
+              <h3 class="vendor-change__title">Выбор поставщиков</h3>
               <button class="vendor-change__close-button" @click.prevent="close()">
                 <i class="d-icon-times vendor-change__close-button-icon"></i>
                 <i class="d-icon-angle-rounded-left vendor-change__title-back"></i>
@@ -142,24 +141,34 @@
               </div>
               <div class="vendor-change__selected-list" v-else>
                 <!-- Карточка выбранного поставщика -->
-                <div class="vendor-change__selected-item">
+                 <div v-if="error" class="d-input-error vendor-change-error">
+                    <i class="d-icon-warning d-input-error__icon"></i>
+                    <span class="d-input-error__text">Вы должны выбрать хотя бы один склад</span>
+                  </div>
+                <div class="vendor-change__selected-item" v-for="(item,index) in vendorOfferAvailable.items" :key="index">
                   <!-- Верхушка -->
                   <div class="vendor-change__selected-item-header">
                     <div class="vendor-change__selected-item-title-container">
                       <div class="vendor-change__selected-item-image-container">
                         <img
-                          v-if="vendorOffer?.items?.image"
-                          :src="vendorOffer.items.image"
+                          v-if="item.image"
+                          :src="item.image"
                           alt=""
                           class="vendor-change__selected-item-image"
                         />
                         <span v-else>
-                          {{ vendorOffer?.items?.name.slice(0, 2).toUpperCase() }}
+                          {{ item.name.slice(0, 2).toUpperCase() }}
                         </span>
                       </div>
                       <p class="vendor-change__selected-item-title">
-                        {{ vendorOffer?.items?.name }}
+                        {{ item.name }}
                       </p>
+                      <button
+                      class="vendor-change__selected-item-delete-button"
+                      @click.prevent="changeOfferOpts(item.id, 0)"
+                    >
+                      <i class="d-icon-trash vendor-change__selected-item-delete-icon"></i>
+                    </button>
                     </div>
                   </div>
 
@@ -168,7 +177,7 @@
                     <div class="vendor-change__selected-item-data">
                       <i class="d-icon-location vendor-change__selected-item-data-icon"></i>
                       <p class="vendor-change__selected-item-data-text">
-                        {{ vendorOffer?.items?.address }}
+                        {{ item.address }}
                       </p>
                     </div>
 
@@ -176,7 +185,7 @@
                       <div class="vendor-change__selected-item-data">
                         <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
                         <p class="vendor-change__selected-item-data-text">
-                          {{ vendorOffer?.items?.phone }}
+                          {{ item.phone }}
                         </p>
                       </div>
 
@@ -187,24 +196,21 @@
                       <div class="vendor-change__selected-item-data">
                         <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
                         <p class="vendor-change__selected-item-data-text">
-                          {{ vendorOffer?.items?.email }}
+                          {{ item.email }}
                         </p>
                       </div>
                     </div>
                   </div>
 
                   <!-- Данные склада -->
-                  <div v-if="error" class="d-input-error vendor-change-error">
-                    <i class="d-icon-warning d-input-error__icon"></i>
-                    <span class="d-input-error__text">Вы должны выбрать хотя бы один склад</span>
-                  </div>
+
                   <div
                     class="vendor-change__selected-item-footer"
-                    v-if="vendorOffer?.items?.stores"
+                    v-if="item.stores"
                   >
                     <div
                       class="d-radio__wrapper vendor-change__selected-item-radio-wrapper"
-                      v-for="store in vendorOffer.items.stores"
+                      v-for="store in item.stores"
                       :key="store.id"
                     >
                       <Checkbox
@@ -245,11 +251,11 @@
             <!-- Список подключенных поставщиков -->
             <p
               class="vendor-change__block-title vendor-change__connected-title vendor-change__connected-title--1280"
-              v-if="!offer"
+
             >
               Список подключенных поставщиков
             </p>
-            <div class="vendor-change__block vendor-change__connected" v-if="!offer">
+            <div class="vendor-change__block vendor-change__connected" >
               <!-- Заголовок -->
               <p class="vendor-change__block-title vendor-change__connected-title">
                 Список подключенных поставщиков
@@ -427,13 +433,19 @@ export default {
       multisupplier: true,
       offerStoresSelected: [],
       error: false,
+      filterOffer: '',
+      vendorFormOffer: {
+        selected: [],
+      },
+      multisupplierOffer: true,
     }
   },
   computed: {
     ...mapGetters({
       optVendorsAvailable: 'org/optVendorsAvailable',
       optVendorsSelected: 'org/optVendorsSelected',
-      vendorOffer: 'offer/vendorOffer',
+      vendorOfferAvailable: 'offer/vendorOfferAvailable',
+      vendorOfferSelected: 'offer/vendorOfferSelected',
     }),
     avLength() {
       return this.optVendorsAvailable.total
@@ -471,6 +483,7 @@ export default {
       toggleOpts: 'org/toggleOpts',
       toggleVendorStores: 'org/toggleVendorStores',
       getOptVendorOffer: 'offer/getOptVendorOffer',
+      getOptVendorsOfferSelected: 'offer/getOptVendorsOfferSelected',
     }),
     close() {
       this.$emit('close')
@@ -633,17 +646,166 @@ export default {
         this.debounce(() => {
           this.error = false
         }, 2000)
-        this.offerStoresSelected.push(this.vendorOffer.items.stores[0].id)
+        this.offerStoresSelected.push(this.vendorOffer.items[0].stores[0].id)
         this.$emit('offerStoresSelected')
       } else {
         this.$emit('offerStoresSelected')
       }
     },
+    // checkVendorOffer(id) {
+    //   if (!this.multisupplierOffer) {
+    //     for (let i = 0; i < this.vendorFormOffer.selected.length; i++) {
+    //       // if (i !== id) {
+    //       this.vendorFormOffer.selected[i] = false
+    //       // }
+    //     }
+    //     this.vendorFormOffer.selected[id] = true
+    //   }
+    //   if (this.multisupplierOffer) {
+    //     this.vendorFormOffer.selected[id] = !this.vendorFormOffer.selected[id]
+    //   }
+    //   this.checkVendorsOffer()
+    // },
+    // // Установка чекбокса поставщика
+    // changeSelectCheckboxOffer(id) {
+    //   this.vendorFormOffer.selected[id] = true
+    //   this.checkVendorsOffer()
+    // },
+    // changeOptsOffer(id, action) {
+    //   this.loading = true
+    //   const data = {
+    //     id: id,
+    //     action: action,
+    //   }
+    //   this.toggleOpts(data).then(() => {
+    //     this.getOptVendorsAvailable({
+    //       filter: '',
+    //       page: this.pageAvailable,
+    //       perpage: this.cfg.vendors.perpage,
+    //     }).then(() => {
+    //       this.getOptVendorsSelected({
+    //         filter: '',
+    //         page: this.pageSelected,
+    //         perpage: this.cfg.vendors.perpage,
+    //       }).then(() => {
+    //         this.loading = false
+    //         this.$emit('catalogUpdate')
+    //       })
+    //     })
+    //   })
+    // },
+    // pagClickCallbackSelectedOffer(pageNum) {
+    //   this.pageSelected = pageNum
+    //   this.loading = true
+    //   this.getOptVendorsSelected({
+    //     filter: this.filter,
+    //     page: this.pageSelected,
+    //     perpage: this.cfg.vendors.perpage,
+    //   }).then(() => {
+    //     this.loading = false
+    //   })
+    // },
+    // pagClickCallbackAvailableOffer(pageNum) {
+    //   this.pageAvailable = pageNum
+    //   this.getOptVendorsAvailable({
+    //     filter: this.filter,
+    //     page: this.pageAvailable,
+    //     perpage: this.cfg.vendors.perpage,
+    //   }).then(() => {
+    //     this.loading = false
+    //   })
+    // },
+    // setFilterOffer(type) {
+    //   this.pageAvailable = 1
+    //   if (type === 'filter') {
+    //     if (this.filter.length >= 3 || this.filter.length === 0) {
+    //       setTimeout(() => {
+    //         this.loading = true
+    //         this.getOptVendorsAvailable({
+    //           filter: this.filter,
+    //           page: this.pageAvailable,
+    //           perpage: this.cfg.vendors.perpage,
+    //         }).then(() => {
+    //           this.loading = false
+    //         })
+    //       }, 400)
+    //     }
+    //   }
+    // },
+    // changeStoresOffer(org_id, store_id, active) {
+    //   this.toggleVendorStores({
+    //     active: active,
+    //     org_id: org_id,
+    //     store_id: store_id,
+    //   }).then(() => {
+    //     this.loading = false
+    //     this.getOptVendorsAvailable({
+    //       filter: '',
+    //       page: this.pageAvailable,
+    //       perpage: this.cfg.vendors.perpage,
+    //     }).then(() => {
+    //       this.getOptVendorsSelected({
+    //         filter: '',
+    //         page: this.pageSelected,
+    //         perpage: this.cfg.vendors.perpage,
+    //       }).then(() => {
+    //         this.loading = false
+    //       })
+    //     })
+    //     this.vendorForm.selected = []
+    //     this.$emit('catalogUpdate')
+    //   })
+    // },
+    // checkVendorsOffer() {
+    //   let error = true
+    //   this.vendorForm.selected.forEach((element) => {
+    //     if (element) {
+    //       error = false
+    //     }
+    //   })
+    //   if (!error) {
+    //     this.loading = true
+    //     this.toggleOpts({
+    //       action: 1,
+    //       id: this.vendorForm.selected,
+    //     })
+    //       .then(() => {
+    //         this.loading = false
+    //         this.getOptVendorsAvailable({
+    //           filter: '',
+    //           page: this.pageAvailable,
+    //           perpage: this.cfg.vendors.perpage,
+    //         }).then(() => {
+    //           this.getOptVendorsSelected({
+    //             filter: '',
+    //             page: this.pageSelected,
+    //             perpage: this.cfg.vendors.perpage,
+    //           }).then(() => {
+    //             this.loading = false
+    //           })
+    //         })
+    //         this.vendorForm.selected = []
+    //         this.$emit('catalogUpdate')
+    //       })
+    //       .catch((result) => {
+    //         console.log(result)
+    //       })
+    //   } else {
+    //     this.$toast.add({
+    //       severity: 'error',
+    //       summary: 'Укажите поставщиков',
+    //       detail: 'Для того, чтобы выбрать поставщиков, отметьте флажки рядом с ними',
+    //       life: 3000,
+    //     })
+    //   }
+    // },
   },
   watch: {
-    vendorOffer: function (newVal) {
-      for (let i = 0; i < newVal.items.stores.length; i++) {
-        this.offerStoresSelected.push(newVal.items.stores[i].id)
+    vendorOfferAvailable: function (newVal) {
+      for (let i = 0; i < newVal.items.length; i++) {
+        for (let ii = 0; ii < newVal.items[i].stores.length; ii++) {
+          this.offerStoresSelected.push(newVal.items[i].stores[ii].id)
+        }
       }
     },
   },

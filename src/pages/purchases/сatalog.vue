@@ -233,6 +233,7 @@ export default {
       }
       if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
         this.getBasketOffer()
+        data.search = this.$route.query.search
         this.getOfferOptProducts(data).then(() => {
         this.opt_products = this.optOfferProducts
         this.loading = false
@@ -267,6 +268,7 @@ export default {
         data.search = this.$route.query.search
       }
       if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
+        data.search = this.$route.query.search
         this.getOfferOptProducts(data).then(() => {
         this.opt_products = this.optOfferProducts
         this.loading = false
@@ -298,6 +300,7 @@ export default {
         data.search = this.$route.query.search
       }
       if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
+        data.search = this.$route.query.search
         this.getOfferOptProducts(data).then(() => {
         this.opt_products = this.optOfferProducts
         this.loading = false
@@ -319,11 +322,13 @@ export default {
       const data = {
         page: this.page,
         perpage: this.per_page,
+
       }
       if (this.$route.name == 'purchasesCatalogSearch') {
         data.search = this.$route.query.search
       }
       if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
+        data.search = this.$route.query.search
         this.getOfferOptProducts(data).then(() => {
         this.opt_products = this.optOfferProducts
         this.loading = false
@@ -345,6 +350,7 @@ export default {
       data.search = this.$route.query.search
     }
     if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
+        data.search = this.$route.query.search
         this.getOfferOptProducts(data).then(() => {
         this.opt_products = this.optOfferProducts
         this.loading = false

@@ -39,7 +39,7 @@
             <button class="header__vendor-button" @click.prevent="toggleVendor">
               <i class="d-icon-trolley header__vendor-icon"></i>
               <span class="header__vendor-value"
-                >1 из 1</span
+                >{{ vendorOfferSelected.total }} из {{ vendorOfferAvailable.total }}</span
               >
               <i class="d-icon-angle header__vendor-arrow"></i>
             </button>
@@ -262,7 +262,8 @@ export default {
   computed: {
     ...mapGetters({
       getUser: 'user/getUser',
-      vendorOffer: 'offer/vendorOffer',
+      vendorOfferAvailable: 'offer/vendorOfferAvailable',
+      vendorOfferSelected: 'offer/vendorOfferSelected',
       fromOrgStores: 'offer/fromOrgStores',
       orgActive: 'org/orgActive',
       //basket: 'basket/basket',
@@ -275,13 +276,13 @@ export default {
       notificationsAll: 'notifications/notificationsAll',
     }),
     orgBasketWarehouse() {
-
       return this.fromOrgStores?.items?.find((el) => el.id == this.basketOfferWarehouse)
     },
   },
   methods: {
     ...mapActions({
       getOptVendorOffer: 'offer/getOptVendorOffer',
+      getOptVendorOfferSelected: 'offer/getOptVendorOfferSelected',
       getFromOrgStores: 'offer/getFromOrgStores',
       getOrgBasketOfferStore: 'offer/getOrgBasketOfferStore',
       getNewNotification: 'notifications/getNewNotification',

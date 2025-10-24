@@ -7,7 +7,8 @@ export default {
     fromOrgStores: [],
     orgBasketOfferStore: 0,
     basketOffer: {},
-    vendorOffer: {},
+    vendorOfferAvailable: {},
+    vendorOfferSelected: {},
     optOfferProducts: {},
     optOfferCatalog: {},
     optOfferWarehouseCatalog: {},
@@ -112,9 +113,23 @@ export default {
       }
       return response
     },
+    async getOptVendorsOfferSelected({ commit }, { filter }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action: 'get/offer/vendor',
+        extended_name: 'offer',
+        filter: filter
+      }
+      const response = await api.offer.getOptVendorOffer(data)
+      if (response) {
+        commit('SET_OPT_VENDOR_SELECTED_OFFER', response.data)
+      }
+      return response
+    },
     async getOfferOptCatalog({ commit }) {
       const data = {
         id: router.currentRoute._value.params.id_org_from,
+        id_org_from: router.currentRoute._value.params.id,
         action: 'get/catalog',
       }
       const response = await api.catalog.getCatalog(data)
@@ -124,18 +139,18 @@ export default {
     },
     async getOfferOptWarehouseCatalog({ commit }) {
       const data = {
-        // id: router.currentRoute._value.params.id_org_from,
-        // //warehouse_id: router.currentRoute._value.params.warehouse_id,
-        // warehouse: true,
-        // action: 'get/catalog',
-        // id_org_from: router.currentRoute._value.params.id,
-        // extended_name: 'offer',
-
-        id: router.currentRoute._value.params.id,
+        id: router.currentRoute._value.params.id_org_from,
+        //warehouse_id: router.currentRoute._value.params.warehouse_id,
         warehouse: true,
         action: 'get/catalog',
-        id_org_from: null,
-        extended_name: 'cart',
+        id_org_from: router.currentRoute._value.params.id,
+        extended_name: 'offer',
+
+        // id: router.currentRoute._value.params.id,
+        // warehouse: true,
+        // action: 'get/catalog',
+        // id_org_from: null,
+        // extended_name: 'cart',
       }
       const response = await api.catalog.getCatalog(data)
       if (response) {
@@ -225,7 +240,10 @@ export default {
       state.basketOffer = data.data.data
     },
     SET_OPT_VENDOR_OFFER: (state, data) => {
-      state.vendorOffer = data.data
+      state.vendorOfferAvailable = data.data
+    },
+    SET_OPT_VENDOR_SELECTED_OFFER: (state, data) => {
+      state.vendorOfferSelected = data.data
     },
     SET_OFFER_OPT_PRODUCTS: (state, data) => {
       state.optOfferProducts = data.data
@@ -248,8 +266,11 @@ export default {
     basketOffer(state) {
       return state.basketOffer
     },
-    vendorOffer(state) {
-      return state.vendorOffer
+    vendorOfferAvailable(state) {
+      return state.vendorOfferAvailable
+    },
+    vendorOfferSelected(state) {
+      return state.vendorOfferSelected
     },
     optOfferProducts(state) {
       return state.optOfferProducts
