@@ -228,7 +228,7 @@ export default {
         page: this.page,
         perpage: this.per_page,
       }
-      if (this.$route.name == 'purchasesCatalogSearch') {
+      if (this.$route.name == 'purchasesCatalogSearch' || this.$route.name == 'purchasesCatalogSearchOffer') {
         data.search = this.$route.query.search
       }
       if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){

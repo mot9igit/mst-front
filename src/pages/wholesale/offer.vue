@@ -25,10 +25,18 @@
     <div class="d-top-order-container-buttons">
 
     <button
+      v-if="status.api_key != 'offer_accept'"
       @click.prevent="cancelOffer()"
       class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action">
-      <span class="catalog__head-item-text">Отклонить предложение</span>
+      <span class="catalog__head-item-text">Отозвать предложение</span>
 		</button>
+    <button
+      v-if="status.api_key == 'offer_accept' && offer.order_id != 0"
+      @click.prevent="routeToOrder(offer.order_id)"
+      class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs">
+      <span class="catalog__head-item-text">Перейти к заказу № {{ offer.order_id }}</span>
+		</button>
+
     </div>
       </div>
     </div>
@@ -85,8 +93,12 @@
       <BaseTable
         v-else
         :items_data="offer.products"
-        :total="offer.products.length"
+        :total="offer.products"
         :table_data="this.table_data"
+        :pagination_items_per_page="this.pagination_items_per_page"
+        :pagination_offset="this.pagination_offset"
+        :page="this.page"
+        @paginate="paginate"
       />
     </div>
 
@@ -195,6 +207,14 @@ export default {
           })
         },
       })
+    },
+    routeToOrder(order){
+      this.$router.push({
+        name: 'wholesaleOrder',
+        params: {
+          id: this.$route.params.id,
+          order_id: order
+        }})
     }
 
   },
@@ -212,23 +232,24 @@ export default {
     offer: function (newVal) {
       this.status.name = newVal.status_name
       this.status.color = newVal.status_color
+      this.status.api_key = newVal.api_key
     },
   },
 }
 </script>
 
 <style lang="scss">
-.d-badge2 {
-  background: #282828;
-  border-radius: 41px;
-  padding: 3px 12px;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 18px;
-  text-align: center;
-  color: #ededed;
-  min-height: 24px;
-  min-width: 146px;
-}
+    .d-badge2 {
+        background: #282828;
+        border-radius: 41px;
+        padding: 3px 12px;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 18px;
+        text-align: center;
+        color: #ededed;
+        min-height: 24px;
+        min-width: 146px;
+    }
 </style>

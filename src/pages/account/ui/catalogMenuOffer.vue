@@ -256,8 +256,8 @@ export default {
   },
 
   mounted() {
-    this.getOptWarehouseCatalog()
-    this.getOptCatalog()
+    this.getOfferOptCatalog()
+    this.getOfferOptWarehouseCatalog()
     this.menu = this.getMenu()
     document.addEventListener('click', (event) => {
       //console.log(event)
@@ -278,8 +278,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      getOptCatalog: 'catalog/getOptCatalog',
-      getOptWarehouseCatalog: 'catalog/getOptWarehouseCatalog',
+      getOfferOptCatalog: 'offer/getOfferOptCatalog',
+      getOfferOptWarehouseCatalog: 'offer/getOfferOptWarehouseCatalog',
     }),
     toggleMenu() {
       this.$emit('toggleCatalog')
@@ -382,15 +382,15 @@ export default {
   },
   computed: {
     ...mapGetters({
-      optCatalog: 'catalog/optCatalog',
-      optCatalogWarehouse: 'catalog/optCatalogWarehouse',
+      optOfferCatalog: 'offer/optOfferCatalog',
+      optOfferWarehouseCatalog: 'offer/optOfferWarehouseCatalog',
     }),
   },
   watch: {
-    optCatalog: function (newVal) {
+    optOfferCatalog: function (newVal) {
       this.catalog = newVal
     },
-    optCatalogWarehouse: function (newVal) {
+    optOfferWarehouseCatalog: function (newVal) {
       this.catalog_warehouse = newVal
       this.actualCatalog = {}
     },

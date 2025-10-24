@@ -9,6 +9,8 @@ export default {
     basketOffer: {},
     vendorOffer: {},
     optOfferProducts: {},
+    optOfferCatalog: {},
+    optOfferWarehouseCatalog: {},
   },
   actions: {
     async getFromOrgStores({ commit }) {
@@ -110,7 +112,37 @@ export default {
       }
       return response
     },
-    async getOptOfferProductsSearch(store, { page, perpage, search }) {
+    async getOfferOptCatalog({ commit }) {
+      const data = {
+        id: router.currentRoute._value.params.id_org_from,
+        action: 'get/catalog',
+      }
+      const response = await api.catalog.getCatalog(data)
+      if (response) {
+        commit('SET_OPT_OFFER_CATALOG', response.data)
+      }
+    },
+    async getOfferOptWarehouseCatalog({ commit }) {
+      const data = {
+        // id: router.currentRoute._value.params.id_org_from,
+        // //warehouse_id: router.currentRoute._value.params.warehouse_id,
+        // warehouse: true,
+        // action: 'get/catalog',
+        // id_org_from: router.currentRoute._value.params.id,
+        // extended_name: 'offer',
+
+        id: router.currentRoute._value.params.id,
+        warehouse: true,
+        action: 'get/catalog',
+        id_org_from: null,
+        extended_name: 'cart',
+      }
+      const response = await api.catalog.getCatalog(data)
+      if (response) {
+        commit('SET_OPT_OFFER_WAREHOUSE_CATALOG', response.data)
+      }
+    },
+    async getOfferOptProductsSearch(store, { page, perpage, search }) {
       let req = null
       if (router.currentRoute._value.params.req) {
         req = router.currentRoute._value.params.req
@@ -198,6 +230,12 @@ export default {
     SET_OFFER_OPT_PRODUCTS: (state, data) => {
       state.optOfferProducts = data.data
     },
+    SET_OPT_OFFER_CATALOG: (state, data) => {
+      state.optOfferCatalog = data.data
+    },
+    SET_OPT_OFFER_WAREHOUSE_CATALOG: (state, data) => {
+      state.optOfferWarehouseCatalog = data.data
+    },
 
   },
   getters: {
@@ -215,6 +253,12 @@ export default {
     },
     optOfferProducts(state) {
       return state.optOfferProducts
+    },
+    optOfferCatalog(state) {
+      return state.optOfferCatalog
+    },
+    optOfferWarehouseCatalog(state) {
+      return state.optOfferWarehouseCatalog
     },
   },
 }

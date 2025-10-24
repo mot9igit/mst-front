@@ -26,14 +26,20 @@
       <button
     class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action"
     @click.prevent="acceptOfferClick"
-    v-if="status.id == 1 || status.id == 5">
+    v-if="status.acceptable == 1">
       <span class="catalog__head-item-text">Принять предложение</span>
 		</button>
     <button
     class="d-button d-button-tertiary d-button-tertiary-small d-button--sm-shadow  order-card__action"
     @click.prevent="cancelOfferClick"
-    v-if="status.id == 1 || status.id == 5">
+    v-if="status.cancelable == 1">
       <span class="catalog__head-item-text">Отклонить</span>
+		</button>
+    <button
+      v-if="status.api_key == 'offer_accept' && offer.order_id != 0"
+      @click.prevent="routeToOrder(offer.order_id)"
+      class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs">
+      <span class="catalog__head-item-text">Перейти к заказу № {{ offer.order_id }}</span>
 		</button>
     </div>
       </div>
@@ -179,7 +185,7 @@ export default {
             if (response.data.success) {
               this.$toast.add({
                 severity: 'success',
-                summary: 'Вы приняли предложение и оформили заказ №'.response.data.nums,
+                summary: 'Вы приняли предложение и оформили заказ №'.response.data.data.nums,
                 life: 3000,
               })
                 this.getOffer({
@@ -245,6 +251,14 @@ export default {
           })
         },
       })
+    },
+    routeToOrder(order){
+      this.$router.push({
+        name: 'purchasesOrder',
+        params: {
+          id: this.$route.params.id,
+          order_id: order
+        }})
     }
 
   },
@@ -263,6 +277,9 @@ export default {
       this.status.name = newVal.status_name
       this.status.color = newVal.status_color
       this.status.id = newVal.status
+      this.status.api_key = newVal.api_key
+      this.status.cancelable = newVal.cancelable
+      this.status.acceptable = newVal.acceptable
     },
   },
 }

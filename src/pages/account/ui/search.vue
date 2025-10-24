@@ -66,6 +66,7 @@ export default {
   methods: {
     ...mapActions({
       getOptProductsSearch: 'catalog/getOptProductsSearch',
+      getOfferOptProductsSearch: 'offer/getOfferOptProductsSearch',
     }),
     toSearch() {
       if (this.search.length < 3) {
@@ -80,13 +81,12 @@ export default {
 
       this.showSearchSuggestions = false
       if (this.$router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer') {
-        // this.$router.push({
-        //   name: 'opt_search_offer',
-        //   params: {
-        //     search: this.search,
-        //     id_org_from: this.$router.currentRoute._value.params.id_org_from,
-        //   },
-        // })
+        this.$router.push({
+          name: 'purchasesCatalogSearchOffer',
+          query: {
+            search: this.search,
+          },
+        })
       } else {
         this.$router.push({ name: 'purchasesCatalogSearch', query: { search: this.search } })
       }
@@ -99,7 +99,12 @@ export default {
         page: 1,
         perpage: 5,
       }
-      const response = await this.getOptProductsSearch(data)
+      let response = {}
+      if (this.$router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer') {
+        response = await this.getOfferOptProductsSearch(data)
+      }else{
+        response = await this.getOptProductsSearch(data)
+      }
       return response.data.data.items
     },
     debounce(func, delay) {
@@ -222,5 +227,10 @@ export default {
       }
     }
   }
+}
+.d-search .d-search__suggestions .d-search__suggestion-card img {
+    min-height: 50px;
+    max-height: 50px;
+    object-fit: cover;
 }
 </style>

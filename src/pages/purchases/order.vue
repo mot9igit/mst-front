@@ -21,9 +21,11 @@
         {{ status.name }}</div>
       </div>
       <div class="d-top-order-container-right">
-        <!-- <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>-->
+      <div class="d-top-order-container-buttons-text d-top-order-container-buttons-order_text" v-if="order.offer_id"><p>Заказ, оформленный по предложению поставщика нельзя отредактировать или повторить</p></div>
     <div class="d-top-order-container-buttons">
-    <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs" @click.prevent="modalDocs = true"  v-if="docs.length">
+    <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs"
+    @click.prevent="modalDocs = true"
+    v-if="docs.length">
       <i class="item-list-item-icon d-icon-doc"></i>
       <span class="catalog__head-item-text">Документы <span v-if="docs.length">({{ docs.length }})</span></span>
 		</button>
@@ -38,18 +40,23 @@
     <button
     class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__action"
     @click.prevent="modalEdit = true"
-    v-if="status.editable">
+    v-if="status.editable"
+    :disabled="order.offer_id">
       <span class="catalog__head-item-text">Редактировать заказ</span>
 		</button>
 
-    <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__repeat" @click.prevent="showReq()">
+    <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__repeat"
+    @click.prevent="showReq()"
+    :disabled="order.offer_id"
+    >
       <i class="item-list-item-icon d-icon-refresh"></i>
       <span class="catalog__head-item-text">Повторить заказ</span>
 		</button>
     <button
     class="d-button d-button-tertiary d-button-tertiary-small d-button--sm-shadow  order-card__action"
     @click.prevent="modalCancel = true"
-    v-if="status.cancelable">
+    v-if="status.cancelable"
+    >
       <span class="catalog__head-item-text">Отменить заказ</span>
 		</button>
     </div>
@@ -427,4 +434,21 @@ export default {
 .order-card__docs{
   margin-bottom:16px;
 }
+@media (width <= 3000px) {
+    .d-top-order-container-buttons-order_text.d-top-order-container-buttons-text p {
+        max-width: 350px;
+        color: #75757575;
+    }
+}
+.d-button-quaternary:disabled
+ {
+    cursor: default;
+    background-color: #75757540;
+    color: #75757599;
+    font-weight: 600;
+  }
+  .d-button--sm-shadow:disabled
+ {
+  box-shadow: none;
+ }
 </style>
