@@ -244,6 +244,7 @@ export default {
     }
   },
   emits: ['toggleCatalog', 'headerDesignOff', 'menuClose'],
+  inject: ['catalogUpdater'],
   props: {
     active: {
       type: Boolean,
@@ -403,6 +404,13 @@ export default {
     },
     isMobile: function (newVal) {
       this.mobileCatalog = newVal
+    },
+    catalogUpdater: function (newVal) {
+      if (newVal) {
+        this.getOptWarehouseCatalog()
+        this.getOptCatalog()
+        this.menu = this.getMenu()
+      }
     },
   },
 }

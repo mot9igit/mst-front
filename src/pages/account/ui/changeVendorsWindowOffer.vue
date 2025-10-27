@@ -27,10 +27,10 @@
 
               <div class="vendor-change__selected-list">
                 <!-- Карточка выбранного поставщика -->
-                 <div v-if="error" class="d-input-error vendor-change-error">
+                 <!-- <div v-if="error" class="d-input-error vendor-change-error">
                     <i class="d-icon-warning d-input-error__icon"></i>
                     <span class="d-input-error__text">Вы должны выбрать хотя бы один склад</span>
-                  </div>
+                  </div> -->
                 <div class="vendor-change__selected-item" v-for="item in vendorOfferSelected.items" :key="item.id">
                   <!-- Верхушка -->
                   <div class="vendor-change__selected-item-header">
@@ -434,6 +434,23 @@ export default {
       }
     },
     changeStores(org_id, store_id, active) {
+      //если снимаем галочку
+      let col_active_stores = 0
+      if(active == false){
+        //проверяем, остались ли активные склады, кроме этого
+        for(let i = 0; i < this.vendorOfferSelected.items.length; i++){
+          if(this.vendorOfferSelected.items[i].id == org_id){
+            for(let ii = 0; ii < this.vendorOfferSelected.items[i].stores.length; ii++){
+              if(this.vendorOfferSelected.items[i].stores[ii].active == true){
+                col_active_stores++
+                console.log(col_active_stores)
+              }
+            }
+          }
+
+        }
+
+      }
       this.toggleVendorStores({
         active: active,
         org_id: org_id,
@@ -507,6 +524,7 @@ export default {
 
   },
   watch: {
+
     offer: function(newVal){
       if(newVal == false){
         this.close()

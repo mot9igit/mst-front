@@ -409,6 +409,7 @@ export default {
     catalogUpdater: function (newVal) {
       if (newVal) {
         this.updateCatalog()
+
       }
     },
     $route() {
