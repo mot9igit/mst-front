@@ -1,41 +1,13 @@
 <template>
   <div class="d-sheet__overlay vendor-change__sheet-overlay" :class="{ active: active }">
-    <div class="d-sheet__wrapper vendor-change__sheet-wrapper" v-if="optVendorsAvailable.items">
-      <div class="d-sheet d-sheet--active vendor-change__sheet" data-sheet="vendor-change">
+    <div class="d-sheet__wrapper vendor-change__sheet-wrapper" v-if="vendorOfferAvailable.items">
+      <div
+        class="d-sheet d-sheet--active vendor-change__sheet"
+        data-sheet="vendor-change"
+        :class="offer ? 'd-sheet__overlay-500' : ''"
+      >
         <Loader v-if="this.loading" />
         <div class="d-sheet__content vendor-change">
-          <!-- Яндекс карта -->
-          <div class="vendor-change__map">
-            <div class="yandex-map vendor-change__map-image" v-if="optVendorsAvailable.items">
-              <yandex-map v-model="map" :settings="mapSettings" height="100%">
-                <yandex-map-default-features-layer />
-                <yandex-map-default-scheme-layer />
-                <yandex-map-marker
-                  v-for="item in optVendorsAvailable.items"
-                  :key="item.mapcoordinates"
-                  :settings="{
-                    coordinates: item.mapcoordinates,
-                  }"
-                  @click="checkVendor(item.id)"
-                >
-                  <div class="marker">
-                    <img :src="item.image" :alt="item.name" />
-                  </div>
-                </yandex-map-marker>
-                <template #cluster="{ length }">
-                  <div
-                    class="cluster fade-in"
-                    :style="{
-                      background: background,
-                    }"
-                  >
-                    {{ length }}
-                  </div>
-                </template>
-              </yandex-map>
-            </div>
-          </div>
-
           <div class="vendor-change__content">
             <!-- Заголовок модалки -->
             <div class="vendor-change__title-container">
@@ -52,13 +24,14 @@
                 Выбранные поставщики
               </p>
 
+
               <div class="vendor-change__selected-list">
                 <!-- Карточка выбранного поставщика -->
-                <div
-                  class="vendor-change__selected-item"
-                  v-for="item in optVendorsSelected.items"
-                  :key="item.id"
-                >
+                 <div v-if="error" class="d-input-error vendor-change-error">
+                    <i class="d-icon-warning d-input-error__icon"></i>
+                    <span class="d-input-error__text">Вы должны выбрать хотя бы один склад</span>
+                  </div>
+                <div class="vendor-change__selected-item" v-for="item in vendorOfferSelected.items" :key="item.id">
                   <!-- Верхушка -->
                   <div class="vendor-change__selected-item-header">
                     <div class="vendor-change__selected-item-title-container">
@@ -73,9 +46,11 @@
                           {{ item.name.slice(0, 2).toUpperCase() }}
                         </span>
                       </div>
-                      <p class="vendor-change__selected-item-title">{{ item.name }}</p>
-                    </div>
+                      <p class="vendor-change__selected-item-title">
+                        {{ item.name }}
+                      </p>
 
+                    </div>
                     <button
                       class="vendor-change__selected-item-delete-button"
                       @click.prevent="changeOpts(item.id, 0)"
@@ -96,7 +71,9 @@
                     <div class="vendor-change__selected-item-data-container">
                       <div class="vendor-change__selected-item-data">
                         <i class="d-icon-phone vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">{{ item.phone }}</p>
+                        <p class="vendor-change__selected-item-data-text">
+                          {{ item.phone }}
+                        </p>
                       </div>
 
                       <div
@@ -105,13 +82,19 @@
 
                       <div class="vendor-change__selected-item-data">
                         <i class="d-icon-mail vendor-change__selected-item-data-icon"></i>
-                        <p class="vendor-change__selected-item-data-text">{{ item.email }}</p>
+                        <p class="vendor-change__selected-item-data-text">
+                          {{ item.email }}
+                        </p>
                       </div>
                     </div>
                   </div>
 
                   <!-- Данные склада -->
-                  <div class="vendor-change__selected-item-footer" v-if="item.stores">
+
+                  <div
+                    class="vendor-change__selected-item-footer"
+                    v-if="item.stores"
+                  >
                     <div
                       class="d-radio__wrapper vendor-change__selected-item-radio-wrapper"
                       v-for="store in item.stores"
@@ -121,12 +104,12 @@
                         @change="changeStores(item.id, store.id, store.active)"
                         v-model="store.active"
                         :binary="true"
-                        :inputId="'store-' + store.id"
-                        :name="'store-' + store.id"
-                        value="true"
+                        :inputId="'offer-' + store.id"
+                        :name="'offer-' + store.id"
+                        :value="true"
                       />
                       <label
-                        for="warehouse1"
+                        :for="'offer-' + store.id"
                         class="d-radio__label vendor-change__selected-item-radio-label"
                         >Склад #{{ store.id }},
                         {{ store.address_short ? store.address_short : store.address }}
@@ -155,10 +138,11 @@
             <!-- Список подключенных поставщиков -->
             <p
               class="vendor-change__block-title vendor-change__connected-title vendor-change__connected-title--1280"
+
             >
               Список подключенных поставщиков
             </p>
-            <div class="vendor-change__block vendor-change__connected">
+            <div class="vendor-change__block vendor-change__connected" >
               <!-- Заголовок -->
               <p class="vendor-change__block-title vendor-change__connected-title">
                 Список подключенных поставщиков
@@ -188,7 +172,7 @@
                 <!-- Карточка подключенного поставщика -->
                 <div
                   class="vendor-change__connected-item"
-                  v-for="item in optVendorsAvailable.items"
+                  v-for="item in vendorOfferAvailable.items"
                   :key="item.id"
                 >
                   <!-- Выбор -->
@@ -273,32 +257,27 @@
   </div>
 </template>
 <script>
-import { ref, shallowRef } from 'vue'
-import {
-  YandexMap,
-  YandexMapDefaultSchemeLayer,
-  YandexMapDefaultFeaturesLayer,
-  YandexMapMarker,
-} from 'vue-yandex-maps'
+
 import { mapActions, mapGetters } from 'vuex'
 import { Checkbox } from 'primevue'
 import Paginate from 'vuejs-paginate-next'
 import Loader from '@/shared/ui/Loader.vue'
 
 export default {
-  name: 'changeVendorsWindow',
+  name: 'changeVendorsWindowOffer',
   props: {
     active: {
+      type: Boolean,
+      default: false,
+    },
+    offer: {
       type: Boolean,
       default: false,
     },
   },
   emits: ['vendorCheck', 'catalogUpdate'],
   components: {
-    YandexMap,
-    YandexMapDefaultSchemeLayer,
-    YandexMapDefaultFeaturesLayer,
-    YandexMapMarker,
+
     Checkbox,
     Loader,
     Paginate,
@@ -308,60 +287,68 @@ export default {
       loading: false,
       pageSelected: 1,
       pageAvailable: 1,
-      map: shallowRef(null),
-      gridSize: ref(128),
-      bounds: ref([
-        [0, 0],
-        [0, 0],
-      ]),
-      trueBounds: ref([
-        [0, 0],
-        [0, 0],
-      ]),
-      clusterer: shallowRef(null),
-      mapSettings: {
-        location: {
-          center: [37.420365, 55.903302],
-          zoom: 9,
-        },
-      },
       filter: '',
       vendorForm: {
         selected: [],
       },
       multisupplier: true,
+
     }
   },
   computed: {
     ...mapGetters({
-      optVendorsAvailable: 'org/optVendorsAvailable',
-      optVendorsSelected: 'org/optVendorsSelected',
+      vendorOfferAvailable: 'offer/vendorOfferAvailable',
+      vendorOfferSelected: 'offer/vendorOfferSelected',
     }),
     avLength() {
-      return this.optVendorsAvailable.total
+      return this.vendorOfferAvailable.total
     },
     pagesCountAvailable() {
-      let pages = Math.ceil(this.optVendorsAvailable.total / this.cfg.vendors.perpage)
+      let pages = Math.ceil(this.vendorOfferAvailable.total / this.cfg.vendors.perpage)
       if (pages === 0) {
         pages = 1
       }
       return pages
     },
     pagesCountSelected() {
-      let pages = Math.ceil(this.optVendorsSelected.total / this.cfg.vendors.perpage)
+      let pages = Math.ceil(this.vendorOfferSelected.total / this.cfg.vendors.perpage)
+      if (pages === 0) {
+        pages = 1
+      }
+      return pages
+    },
+    avLengthOffer() {
+      return this.vendorOfferAvailable.total
+    },
+    pagesCountAvailableOffer() {
+      let pages = Math.ceil(this.vendorOfferAvailable.total / this.cfg.vendors.perpage)
+      if (pages === 0) {
+        pages = 1
+      }
+      return pages
+    },
+    pagesCountSelectedOffer() {
+      let pages = Math.ceil(this.vendorOfferSelected.total / this.cfg.vendors.perpage)
       if (pages === 0) {
         pages = 1
       }
       return pages
     },
   },
+  mounted() {
+    this.getOptVendorsOfferSelected({
+            filter: '',
+            page: this.pageSelected,
+            perpage: this.cfg.vendors.perpage,
+          })
+  },
   methods: {
     ...mapActions({
-      toggleOptsVisible: 'org/toggleOptsVisible',
-      getOptVendorsAvailable: 'org/getOptVendorsAvailable',
-      getOptVendorsSelected: 'org/getOptVendorsSelected',
-      toggleOpts: 'org/toggleOpts',
-      toggleVendorStores: 'org/toggleVendorStores',
+      toggleOptsVisible: 'offer/toggleOptsVisible',
+      toggleOpts: 'offer/toggleOpts',
+      toggleVendorStores: 'offer/toggleVendorStores',
+      getOptVendorOffer: 'offer/getOptVendorOffer',
+      getOptVendorsOfferSelected: 'offer/getOptVendorsOfferSelected',
     }),
     close() {
       this.$emit('close')
@@ -392,12 +379,12 @@ export default {
         action: action,
       }
       this.toggleOpts(data).then(() => {
-        this.getOptVendorsAvailable({
+        this.getOptVendorOffer({
           filter: '',
           page: this.pageAvailable,
           perpage: this.cfg.vendors.perpage,
         }).then(() => {
-          this.getOptVendorsSelected({
+          this.getOptVendorsOfferSelected({
             filter: '',
             page: this.pageSelected,
             perpage: this.cfg.vendors.perpage,
@@ -411,7 +398,7 @@ export default {
     pagClickCallbackSelected(pageNum) {
       this.pageSelected = pageNum
       this.loading = true
-      this.getOptVendorsSelected({
+      this.getOptVendorsOfferSelected({
         filter: this.filter,
         page: this.pageSelected,
         perpage: this.cfg.vendors.perpage,
@@ -421,7 +408,7 @@ export default {
     },
     pagClickCallbackAvailable(pageNum) {
       this.pageAvailable = pageNum
-      this.getOptVendorsAvailable({
+      this.getOptVendorOffer({
         filter: this.filter,
         page: this.pageAvailable,
         perpage: this.cfg.vendors.perpage,
@@ -435,7 +422,7 @@ export default {
         if (this.filter.length >= 3 || this.filter.length === 0) {
           setTimeout(() => {
             this.loading = true
-            this.getOptVendorsAvailable({
+            this.getOptVendorOffer({
               filter: this.filter,
               page: this.pageAvailable,
               perpage: this.cfg.vendors.perpage,
@@ -453,12 +440,12 @@ export default {
         store_id: store_id,
       }).then(() => {
         this.loading = false
-        this.getOptVendorsAvailable({
+        this.getOptVendorOffer({
           filter: '',
           page: this.pageAvailable,
           perpage: this.cfg.vendors.perpage,
         }).then(() => {
-          this.getOptVendorsSelected({
+          this.getOptVendorsOfferSelected({
             filter: '',
             page: this.pageSelected,
             perpage: this.cfg.vendors.perpage,
@@ -485,12 +472,12 @@ export default {
         })
           .then(() => {
             this.loading = false
-            this.getOptVendorsAvailable({
+            this.getOptVendorOffer({
               filter: '',
               page: this.pageAvailable,
               perpage: this.cfg.vendors.perpage,
             }).then(() => {
-              this.getOptVendorsSelected({
+              this.getOptVendorsOfferSelected({
                 filter: '',
                 page: this.pageSelected,
                 perpage: this.cfg.vendors.perpage,
@@ -513,18 +500,24 @@ export default {
         })
       }
     },
+    debounce(func, delay) {
+      clearTimeout(this.searchPTimer)
+      this.searchPTimer = setTimeout(func, delay)
+    },
+
   },
   watch: {
     offer: function(newVal){
-      if(newVal == true){
+      if(newVal == false){
         this.close()
       }
     },
     '$route.matched': function(newVal) {
-      if(newVal[5] && newVal[5].name == 'WholesaleClientsOffer'){
+      if(newVal[5] && newVal[5].name != 'WholesaleClientsOffer'){
         this.close()
       }
     },
+
   },
 }
 </script>
@@ -553,7 +546,7 @@ export default {
     transition: all 0.2s ease;
   }
 }
-@media (width <= 1920px) {
+@media (width <= 3000px) {
   .vendor-change__sheet {
     padding: 20px;
     width: 940px;
@@ -573,5 +566,11 @@ export default {
   .p-checkbox-box {
   border-color: rgba(249, 44, 13, 1);
   background: rgba(249, 44, 13, 1);
+}
+.d-sheet__overlay-500 {
+  width: 500px !important;
+}
+.vendor-change-error {
+  margin-bottom: 16px;
 }
 </style>

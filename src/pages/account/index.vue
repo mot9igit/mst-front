@@ -28,7 +28,7 @@
     <ProfileHeaderOffer
       v-else-if="this.$route.params.id && this.$route.params.id_org_from"
       @toggleCatalog="toggleCatalog"
-      @toggleVendor="toggleVendor"
+      @toggleOfferVendor="toggleOfferVendor"
       @toggleCart="toggleCart"
       @showRequipments="showRequip()"
       @notifications="notificationsCol"
@@ -67,6 +67,13 @@
         @close="changeVendorsWindowClose()"
         @catalogUpdate="catalogUpdate()"
       />
+      <changeVendorsOfferWindow
+        :offer="isOffer"
+        :active="this.toggleOfferVendors"
+        @close="changeVendorsOfferWindowClose()"
+        @catalogUpdate="catalogUpdate()"
+      />
+
       <teleport to="body">
         <OrderWindow
           :active="this.toggleOrderWindow"
@@ -109,7 +116,7 @@ import ProfileHeaderOffer from './ui/headerOffer.vue'
 import ProfileOfferCatalogMenu from './ui/catalogMenuOffer.vue'
 import ProfileCartOffer from './ui/cartOffer.vue'
 import OrderOfferWindow from './ui/orderOfferWindow.vue'
-
+import changeVendorsOfferWindow from './ui/changeVendorsWindowOffer.vue'
 
 export default {
   name: 'UserAccount',
@@ -187,6 +194,7 @@ export default {
       notificationsNoRead: 0,
       isOffer: false,
       toggleOrderOfferWindow: false,
+      toggleOfferVendors: false,
     }
   },
   mounted() {
@@ -301,7 +309,9 @@ export default {
     },
     changeVendorsWindowClose() {
       this.toggleVendors = false
-
+    },
+    changeVendorsOfferWindowClose(){
+      this.toggleOfferVendors = false
     },
     changeOrderWindowClose() {
       this.toggleOrderWindow = false
@@ -315,7 +325,9 @@ export default {
       }else{
         this.isOffer = false
       }
-
+    },
+    toggleOfferVendor() {
+      this.toggleOfferVendors = !this.toggleOfferVendors
     },
     copyVersion() {
       var range = document.createRange()
@@ -345,6 +357,7 @@ export default {
     ProfileOfferCatalogMenu,
     ProfileCartOffer,
     OrderOfferWindow,
+    changeVendorsOfferWindow,
   },
   watch: {
     '$route.params.id': {

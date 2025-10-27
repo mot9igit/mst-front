@@ -104,8 +104,10 @@ export default {
     async getOptVendorOffer({ commit }) {
       const data = {
         id: router.currentRoute._value.params.id,
+        id_org_from: router.currentRoute._value.params.id_org_from,
         action: 'get/offer/vendor',
         extended_name: 'offer',
+        type: 0,
       }
       const response = await api.offer.getOptVendorOffer(data)
       if (response) {
@@ -116,8 +118,10 @@ export default {
     async getOptVendorsOfferSelected({ commit }, { filter }) {
       const data = {
         id: router.currentRoute._value.params.id,
+        id_org_from: router.currentRoute._value.params.id_org_from,
         action: 'get/offer/vendor',
         extended_name: 'offer',
+        type: 1,
         filter: filter
       }
       const response = await api.offer.getOptVendorOffer(data)
@@ -125,6 +129,46 @@ export default {
         commit('SET_OPT_VENDOR_SELECTED_OFFER', response.data)
       }
       return response
+    },
+    async toggleVendorStores(store, { active, org_id, store_id }) {
+      const data = {
+        action: 'toggle/vendors/stores',
+        active: active,
+        extended_name: 'offer',
+        id: router.currentRoute._value.params.id_org_from,
+        org_id: org_id,
+        store_id: store_id,
+      }
+      const response = await api.org.toggleVendorStores(data)
+      return response
+    },
+    async toggleOpts(store, { action, id }) {
+      const data = {
+        type: 'toggleOptsVisible',
+        id: id,
+        action: action,
+        extended_name: 'offer',
+        store: router.currentRoute._value.params.id_org_from,
+      }
+      const response = await api.org.toggleOpts(data)
+      return response
+    },
+    async toggleOptsVisible(store, sendData) {
+      const data = {
+        action: 'get/vendors',
+        extended_name: 'offer',
+        store: router.currentRoute._value.params.id_org_from,
+      }
+      if (Object.prototype.hasOwnProperty.call(sendData, 'id')) {
+        data.id = sendData.id
+      }
+      if (Object.prototype.hasOwnProperty.call(sendData, 'action')) {
+        data.action = sendData.action
+      }
+      if (Object.prototype.hasOwnProperty.call(sendData, 'filter')) {
+        data.filter = sendData.filter
+      }
+      await api.org.toggleOptsVisible(data)
     },
     async getOfferOptCatalog({ commit }) {
       const data = {
@@ -140,23 +184,17 @@ export default {
     async getOfferOptWarehouseCatalog({ commit }) {
       const data = {
         id: router.currentRoute._value.params.id_org_from,
-        //warehouse_id: router.currentRoute._value.params.warehouse_id,
         warehouse: true,
         action: 'get/catalog',
         id_org_from: router.currentRoute._value.params.id,
         extended_name: 'offer',
-
-        // id: router.currentRoute._value.params.id,
-        // warehouse: true,
-        // action: 'get/catalog',
-        // id_org_from: null,
-        // extended_name: 'cart',
       }
       const response = await api.catalog.getCatalog(data)
       if (response) {
         commit('SET_OPT_OFFER_WAREHOUSE_CATALOG', response.data)
       }
     },
+
     async getOfferOptProductsSearch(store, { page, perpage, search }) {
       let req = null
       if (router.currentRoute._value.params.req) {

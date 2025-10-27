@@ -36,10 +36,10 @@
 
           <div class="header__vendor" v-if="this.optVendorsAvailable">
             <span class="header__vendor-title">выбрано поставщиков:</span>
-            <button class="header__vendor-button" @click.prevent="toggleVendor">
+            <button class="header__vendor-button" @click.prevent="toggleOfferVendor">
               <i class="d-icon-trolley header__vendor-icon"></i>
               <span class="header__vendor-value"
-                >{{ vendorOfferSelected.total }} из {{ vendorOfferAvailable.total }}</span
+                >{{ vendorOfferSelected.total }} из {{ vendorOfferAvailable.totalAll }}</span
               >
               <i class="d-icon-angle header__vendor-arrow"></i>
             </button>
@@ -97,14 +97,14 @@
         <div class="header__vendor" v-if="this.optVendorsAvailable">
           <div class="header__vendor-content">
             <span class="header__vendor-title">выбрано поставщиков:</span>
-            <button class="header__vendor-button" @click.prevent="toggleVendor">
+            <button class="header__vendor-button" @click.prevent="toggleOfferVendor">
               <i class="d-icon-trolley header__vendor-icon"></i>
               <span class="header__vendor-value"
-                >{{ this.optVendorsSelected.total }} из {{ this.optVendorsSelected.totalAll }}</span
+                >{{ this.optVendorsSelected.total }} из {{ this.vendorOfferAvailable.totalAll }}</span
               >
             </button>
           </div>
-          <button @click.prevent="toggleVendor">
+          <button @click.prevent="toggleOfferVendor">
             <i class="d-icon-angle-rounded header__vendor-arrow"></i>
           </button>
         </div>
@@ -203,7 +203,7 @@ export default {
       data_start: new Date(),
     }
   },
-  emits: ['toggleCatalog', 'toggleVendor', 'toggleCart', 'showRequipments', 'notifications', 'notificationsMobile', 'offerNow'],
+  emits: ['toggleCatalog', 'toggleOfferVendor', 'toggleCart', 'showRequipments', 'notifications', 'notificationsMobile', 'offerNow'],
   components: { Loader, customModal, changeAddressWindow, SearchField, requirement, Toast, notificationsWindow },
   props: {
     active: {
@@ -307,8 +307,8 @@ export default {
       this.modals.requirement = false
       this.$emit('showRequipments')
     },
-    toggleVendor() {
-      this.$emit('toggleVendor')
+    toggleOfferVendor() {
+      this.$emit('toggleOfferVendor')
       this.$emit('offerNow')
     },
     toggleCart() {
