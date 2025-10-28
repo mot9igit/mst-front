@@ -441,38 +441,40 @@ export default {
         for(let i = 0; i < this.vendorOfferSelected.items.length; i++){
           if(this.vendorOfferSelected.items[i].id == org_id){
             for(let ii = 0; ii < this.vendorOfferSelected.items[i].stores.length; ii++){
-              if(this.vendorOfferSelected.items[i].stores[ii].active == true){
+              if(this.vendorOfferSelected.items[i].stores[ii].active){
                 col_active_stores++
-                console.log(col_active_stores)
               }
             }
           }
-
         }
-
       }
-      this.toggleVendorStores({
-        active: active,
-        org_id: org_id,
-        store_id: store_id,
-      }).then(() => {
-        this.loading = false
-        this.getOptVendorOffer({
-          filter: '',
-          page: this.pageAvailable,
-          perpage: this.cfg.vendors.perpage,
+      if(col_active_stores > 0){
+        this.toggleVendorStores({
+          active: active,
+          org_id: org_id,
+          store_id: store_id,
         }).then(() => {
-          this.getOptVendorsOfferSelected({
+          this.loading = false
+          this.getOptVendorOffer({
             filter: '',
-            page: this.pageSelected,
+            page: this.pageAvailable,
             perpage: this.cfg.vendors.perpage,
           }).then(() => {
-            this.loading = false
+            this.getOptVendorsOfferSelected({
+              filter: '',
+              page: this.pageSelected,
+              perpage: this.cfg.vendors.perpage,
+            }).then(() => {
+              this.loading = false
+            })
           })
+          this.vendorForm.selected = []
+          this.$emit('catalogUpdate')
         })
-        this.vendorForm.selected = []
-        this.$emit('catalogUpdate')
-      })
+      }else{
+        this.changeOpts(org_id, 0)
+      }
+
     },
     checkVendors() {
       let error = true
