@@ -434,6 +434,7 @@ export default {
       }
     },
     changeStores(org_id, store_id, active) {
+      console.log(active)
       //если снимаем галочку
       let col_active_stores = 0
       if(active == false){
@@ -443,12 +444,13 @@ export default {
             for(let ii = 0; ii < this.vendorOfferSelected.items[i].stores.length; ii++){
               if(this.vendorOfferSelected.items[i].stores[ii].active){
                 col_active_stores++
+                console.log(col_active_stores)
               }
             }
           }
         }
       }
-      if(col_active_stores > 0){
+      if(active == false && col_active_stores > 0 || active == true){
         this.toggleVendorStores({
           active: active,
           org_id: org_id,

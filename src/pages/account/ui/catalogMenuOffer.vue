@@ -409,6 +409,14 @@ export default {
         this.getOfferOptCatalog()
         this.getOfferOptWarehouseCatalog()
         this.menu = this.getMenu()
+        this.stepmenu = 1
+        this.breadcrumbs.splice(1)
+        this.cataloglistShow = false
+        this.catalogListPrevios = null
+        this.catalogListIndex = 0
+        this.catalogListName = null
+        this.catalogListPreviosIndex = []
+        this.childrens = []
 
       }
     },
