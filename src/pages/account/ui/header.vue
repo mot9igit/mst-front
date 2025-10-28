@@ -152,6 +152,7 @@
     </header>
   </div>
   <requirement
+    :offer="isOffer"
     :requirementsModal="this.modals.requirement"
     @closeWindow="closeRequirementsWindow"
   />
@@ -200,6 +201,7 @@ export default {
         requirement: false,
       },
       data_start: new Date(),
+      isOffer: false
     }
   },
   emits: [

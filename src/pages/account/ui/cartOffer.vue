@@ -332,13 +332,13 @@ export default {
     }
   },
   watch: {
-    basketStore(newVal) {
-      if (Object.keys(newVal).length) {
-        this.loading = false
-      } else {
-        this.loading = false
-      }
-    },
+    // basketStore(newVal) {
+    //   if (Object.keys(newVal).length) {
+    //     this.loading = false
+    //   } else {
+    //     this.loading = false
+    //   }
+    // },
     basketOffer(newVal) {
       if (Object.keys(this.basketOffer).length > 1) {
         if (

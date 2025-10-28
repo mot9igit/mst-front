@@ -168,10 +168,10 @@
           <div class="clients__card-top-right">
             <div class="clients__card-top-right-top">
 
-            <!-- <button  @click.prevent="createOffer(item)" class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
+             <button  @click.prevent="createOffer(item)" class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
-              </button>-->
+              </button>
 
               <div class="clients__card-action-container">
                 <button
@@ -274,10 +274,10 @@
             <!--  clients__devider"
             >-->
 
-            <!--   <button @click.prevent="createOffer(item)" class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
+               <button @click.prevent="createOffer(item)" class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
-              </button>-->
+              </button>
 
             </div>
             <div class="clients__card-action-container">
@@ -480,6 +480,8 @@ export default {
       this.$router.push({
         name: 'WholesaleClientsOffer',
         params: { id: this.$route.params.id, id_org_from: data.id },
+      }).then(() => {
+        window.location.reload()
       })
 
     },

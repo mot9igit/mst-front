@@ -146,11 +146,12 @@
           >
             <SelectInput
               v-model="this.formRequirementsView.warehouse"
-              :options="this.optVendorsSelected.items"
+              :options="!offer ? this.optVendorsSelected.items : this.vendorOfferSelected.items"
               optionLabel="name"
               placeholder="Выберите поставщика"
               class="w-full md:w-14rem"
             />
+
             <span class="error_desc" v-if="this.formRequirementsView.error">
               Выберите поставщика
             </span>
@@ -229,6 +230,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    offer: {
+      type: Boolean,
+      default: false,
+    },
+
   },
   data() {
     return {
@@ -292,6 +298,7 @@ export default {
     ...mapGetters({
       requirements: 'requirements/requirements',
       optVendorsSelected: 'org/optVendorsSelected',
+      vendorOfferSelected: 'offer/vendorOfferSelected',
     }),
   },
   mounted() {
@@ -328,11 +335,20 @@ export default {
                 detail: response.data.message,
                 life: 3000,
               })
-              this.$router.push({
-                name: 'purchasesCatalogRequirement',
-                params: { requirement_id: this.formRequirementsView.requirement.id + '_req' },
-                query: { timestamp: Date.now() },
-              })
+              if(!this.offer){
+                this.$router.push({
+                  name: 'purchasesCatalogRequirement',
+                  params: { requirement_id: this.formRequirementsView.requirement.id + '_req' },
+                  query: { timestamp: Date.now() },
+                })
+              }else{
+                this.$router.push({
+                  name: 'purchasesOfferCatalogRequirement',
+                  params: { requirement_id: this.formRequirementsView.requirement.id + '_req' },
+                  query: { timestamp: Date.now() },
+                })
+              }
+
               this.modals.requirements = false
               this.modals.requirementsView = false
             } else {

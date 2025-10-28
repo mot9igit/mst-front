@@ -150,6 +150,7 @@
     </header>
   </div>
   <requirement
+    :offer="isOffer"
     :requirementsModal="this.modals.requirement"
     @closeWindow="closeRequirementsWindow"
   />
@@ -188,6 +189,7 @@ export default {
   name: 'ProfileHeaderOffer',
   data() {
     return {
+      isOffer: true,
       loading: {
         changeBasketStore: false,
       },
@@ -408,6 +410,9 @@ export default {
     },
     '$route.matched[5].name': function(newVal){
        this.getOrgBasketStore()
+    },
+    offer: function(newVal){
+      this.isOffer = newVal
     }
 
   }

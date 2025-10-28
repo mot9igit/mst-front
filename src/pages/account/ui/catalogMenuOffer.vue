@@ -409,6 +409,7 @@ export default {
         this.getOfferOptCatalog()
         this.getOfferOptWarehouseCatalog()
         this.menu = this.getMenu()
+        this.activeShowCatalog = 1
         this.stepmenu = 1
         this.breadcrumbs.splice(1)
         this.cataloglistShow = false
