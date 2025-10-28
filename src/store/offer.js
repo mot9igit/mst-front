@@ -266,6 +266,16 @@ export default {
       const response = await api.offer.offerSubmit(data)
       return response
     },
+    async createOfferExtended(store, { id }) {
+      const data = {
+        action: 'create/offer/extended',
+        id_org_from: router.currentRoute._value.params.id,
+        id: id,
+        extended_name: 'offer',
+      }
+      const response = await api.offer.offerSubmit(data)
+      return response
+    },
   },
   mutations: {
     SET_FROM_ORG_STORES: (state, data) => {

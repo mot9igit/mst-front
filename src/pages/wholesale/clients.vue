@@ -415,6 +415,7 @@ export default {
       getManagers: 'wholesale/getManagers',
       getStores: 'wholesale/getStores',
       deleteOrgProfile: 'wholesale/deleteOrgProfile',
+      createOfferExtended: 'offer/createOfferExtended'
     }),
     setFilter(type = '0') {
       if (type === 'filter') {
@@ -477,12 +478,18 @@ export default {
       })
     },
     createOffer(data) {
-      this.$router.push({
-        name: 'WholesaleClientsOffer',
-        params: { id: this.$route.params.id, id_org_from: data.id },
+      this.createOfferExtended({
+        id: data.id
       }).then(() => {
-        window.location.reload()
+        this.$router.push({
+          name: 'WholesaleClientsOffer',
+          params: { id: this.$route.params.id, id_org_from: data.id },
+        }).then(() => {
+          window.location.reload()
+        })
+
       })
+
 
     },
     deleteClient(data) {
