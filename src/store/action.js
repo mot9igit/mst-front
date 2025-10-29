@@ -47,6 +47,17 @@ export default {
       const response = await api.action.setAction(data)
       return response
     },
+        // Копирование акции
+    async copyAction(store, data) {
+      console.log(data)
+      data.id = router.currentRoute._value.params.id
+      data.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+      data.offset = new Date().getTimezoneOffset()
+      data.action = 'save'
+      data.copy = true
+      const response = await api.action.setAction(data)
+      return response
+    },
     // Включение/Отключение акции
     async toggleAction(store, { action_id }) {
       const data = {

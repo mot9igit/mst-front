@@ -1,6 +1,7 @@
 <template>
-  <Toast />
+
   <section class="promotions" id="promotions">
+    <Toast />
     <Loader v-if="loading" />
     <div class="promotions__top">
       <breadcrumbs />
@@ -58,16 +59,17 @@
             this.form.active ? 'Выключить' : 'Включить'
           }}</span>
         </label>
-        <!--
+
         <div class="d-divider d-divider--vertical"></div>
-        <button class="d-icon-wrapper d-icon-wrapper--big">
+        <button class="d-icon-wrapper d-icon-wrapper--big"
+        @click.prevent="copySubmit()">
           <i class="d-icon-copy promotions__icon"></i>
         </button>
-        <div class="d-divider d-divider--vertical"></div>
+        <!--<div class="d-divider d-divider--vertical"></div>
         <button class="d-icon-wrapper d-icon-wrapper--big">
           <i class="d-icon-trash promotions__icon"></i>
-        </button>
-        -->
+        </button>-->
+
       </div>
     </div>
 
@@ -3252,6 +3254,7 @@ export default {
           name: '',
         },
       },
+      copyForm: {},
       form: {
         name: '',
         description: '',
@@ -3397,6 +3400,7 @@ export default {
       uploadProductsFile: 'action/uploadProductsFile',
       setSelectedProductData: 'action/setSelectedProductData',
       toggleAction: 'action/toggleAction',
+      copyAction: 'action/copyAction',
     }),
     addDelayItem() {
       this.form.delay.push({ percent: 0, day: 0 })
@@ -3957,6 +3961,7 @@ export default {
       save_data.type = this.type
       save_data.type_sale = this.typeSale
       this.setAction(save_data).then(() => {
+
         this.loading = false
         if (this.type == 1) {
           this.$router.push({ name: 'wholesalePrices', params: { id: this.$route.params.id } })
@@ -3965,6 +3970,67 @@ export default {
           this.$router.push({ name: 'retailActions', params: { id: this.$route.params.id } })
         }
       })
+    },
+    async copySubmit() {
+      this.loading = true
+
+      const save_data = this.copyForm
+      save_data.type = this.action.type
+      save_data.type_sale = this.action.type_sale
+      this.$confirm.require({
+            message: 'Вы действительно хотите скопировать акцию №'+ this.$route.params.action +'?',
+            header: 'Копирование акции',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+              this.copyAction(save_data).then((res) => {
+
+                if(res.data.success){
+                  let new_id = res.data.data.data.id
+                  this.$toast.add({
+                    severity: 'success',
+                    summary: 'Копирование акции',
+                    detail: 'Акция скопирована успешно! Создана акция №' + new_id,
+                    life: 3000,
+                  })
+                  this.$confirm.require({
+                      message: 'Акция №'+ this.$route.params.action +' успешно скопирована! Перейти на страницу созданной акции №'+ new_id +'?',
+                      header: 'Копирование акции',
+                      icon: 'pi pi-exclamation-triangle',
+                      accept: () => {
+                        this.loading = false
+                        if (this.type == 1) {
+                          this.$router.push({ name: 'wholesaleSale', params: { id: this.$route.params.id, action: new_id, } })
+                        }
+                        if (this.type == 2) {
+                          this.$router.push({ name: 'retailSale', params: { id: this.$route.params.id, action: new_id, } })
+                        }
+
+                      },
+                      reject: () => {
+                        this.loading = false
+                      },
+                })
+                }else{
+                  this.$toast.add({
+                    severity: 'error',
+                    summary: 'Копирование акции',
+                    detail: 'Не удалось скопировать акцию!',
+                    life: 3000,
+                  })
+                }
+
+              })
+            },
+            reject: () => {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Копирование акции',
+                detail: 'Действие отклонено',
+                life: 3000,
+              })
+            },
+          })
+
     },
     unActivateOrganization() {
       setTimeout(() => (this.search.organizationSuggestionsShow = false), 250)
@@ -4372,6 +4438,7 @@ export default {
           },
         )
         this.updateStoreData()
+        this.copyForm = this.form
       }
     },
     allActions: function (newVal) {
