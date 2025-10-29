@@ -3975,6 +3975,9 @@ export default {
       this.loading = true
 
       const save_data = this.copyForm
+      if(Object.keys(this.action.image).length){
+        save_data.set_image = true
+      }
       save_data.type = this.action.type
       save_data.type_sale = this.action.type_sale
       this.$confirm.require({
@@ -3997,12 +4000,18 @@ export default {
                       header: 'Копирование акции',
                       icon: 'pi pi-exclamation-triangle',
                       accept: () => {
-                        this.loading = false
+
                         if (this.type == 1) {
                           this.$router.push({ name: 'wholesaleSale', params: { id: this.$route.params.id, action: new_id, } })
+                          this.getAction().then(() => {
+                            this.loading = false
+                          })
                         }
                         if (this.type == 2) {
                           this.$router.push({ name: 'retailSale', params: { id: this.$route.params.id, action: new_id, } })
+                          this.getAction().then(() => {
+                            this.loading = false
+                          })
                         }
 
                       },
