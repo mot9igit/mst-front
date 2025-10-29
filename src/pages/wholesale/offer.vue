@@ -80,9 +80,7 @@
         <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.offer?.day_delivery != '' ? this.offer?.day_delivery : '?' }} дн. <br />({{
-              this.offer?.delivery_date != '' ? this.offer?.delivery_date : '-'
-            }})
+            {{ this.offer?.day_delivery != '' ? this.offer?.day_delivery : '?' }} дн.
           </div>
         </div>
       </div>

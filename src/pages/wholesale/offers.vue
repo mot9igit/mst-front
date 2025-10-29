@@ -45,7 +45,7 @@ export default {
       filters: {
         name: {
           name: 'Поиск',
-          placeholder: 'Искать в рпедложениях',
+          placeholder: 'Искать в предложениях',
           type: 'text',
         },
       },
