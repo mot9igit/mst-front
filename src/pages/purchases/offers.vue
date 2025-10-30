@@ -126,7 +126,7 @@ export default {
             offer_id: 'id',
           },
           sort: true,
-          class: 'cell_centeralign',
+          class: 'cell_centeralign nowrap',
         },
         status_name: {
           label: 'Статус',
