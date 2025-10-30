@@ -282,7 +282,7 @@
                       }
                     "
                   >
-                    Оформить предложение
+                    Отправить предложение
                   </button>
                   <!--
                     <div class="d-divider d-divider--vertical order__footer-actions-divider"></div>
@@ -315,7 +315,7 @@
                       }
                     "
                   >
-                    Оформить предложение
+                    Отправить предложение
                   </button>
                   <!--
                   <div class="d-divider d-divider--vertical order__footer-actions-divider"></div>

@@ -4018,14 +4018,16 @@ export default {
                       reject: () => {
                         this.loading = false
                       },
-                })
+                    })
+
                 }else{
                   this.$toast.add({
                     severity: 'error',
                     summary: 'Копирование акции',
                     detail: 'Не удалось скопировать акцию!',
                     life: 3000,
-                  })
+                  }),
+                  this.loading = false
                 }
 
               })
@@ -4036,10 +4038,11 @@ export default {
                 summary: 'Копирование акции',
                 detail: 'Действие отклонено',
                 life: 3000,
-              })
+              }),
+                  this.loading = false
             },
-          })
-
+          }),
+          this.loading = false
     },
     unActivateOrganization() {
       setTimeout(() => (this.search.organizationSuggestionsShow = false), 250)
