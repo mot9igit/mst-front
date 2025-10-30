@@ -176,7 +176,7 @@ export default {
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
           this.loading = true
-          this.deleteOffer().then((response) => {
+          this.deleteOffer({offer_id: this.$route.params.offer_id}).then((response) => {
             if (response.data.data.success) {
               this.$toast.add({
                 severity: 'success',

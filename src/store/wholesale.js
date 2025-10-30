@@ -115,6 +115,7 @@ export default {
         page: page,
         sort: sort,
         perpage: perpage,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       }
       const response = await api.offer.getOffers(data)
       if (response) {
@@ -127,6 +128,7 @@ export default {
         action: 'get/offers/clients',
         id: router.currentRoute._value.params.id,
         offer_id: offer_id,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       }
       const response = await api.offer.getOffers(data)
       if (response) {
@@ -134,11 +136,11 @@ export default {
       }
       return response
     },
-    async deleteOffer(store) {
+    async deleteOffer(store, { offer_id }) {
       const data = {
         action: 'delete',
         id: router.currentRoute._value.params.id,
-        offer_id: router.currentRoute._value.params.offer_id,
+        offer_id: offer_id,
       }
       const response = await api.offer.getOffers(data)
       return response

@@ -261,7 +261,8 @@ export default {
         action: 'create/offer',
         id: router.currentRoute._value.params.id,
         id_org_from: router.currentRoute._value.params.id_org_from,
-        date_end: date_end
+        date_end: date_end,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       }
       const response = await api.offer.offerSubmit(data)
       return response

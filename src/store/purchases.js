@@ -136,6 +136,7 @@ export default {
         page: page,
         sort: sort,
         perpage: perpage,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       }
       const response = await api.offer.getOffers(data)
       if (response) {
@@ -148,6 +149,7 @@ export default {
         action: 'get/offers/my',
         id: router.currentRoute._value.params.id,
         offer_id: offer_id,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       }
       const response = await api.offer.getOffers(data)
       if (response) {
