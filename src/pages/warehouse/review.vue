@@ -513,5 +513,13 @@ export default {
   top: calc(50% - 8.4px);
   right: 30px;
 }
-
+.warehouse-analysis__products .dart-form-group > span {
+    display: inline-flex;
+    font-size: 14px;
+    margin-bottom: 0px;
+}
+.warehouse-analysis__products .dart-align-items-center {
+    -ms-flex-align: start !important;
+    align-items: start !important;
+}
 </style>
