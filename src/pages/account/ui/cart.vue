@@ -71,6 +71,7 @@
         <div class="cart__list" v-if="Object.keys(basketStore).length > 1">
           <div class="dart-mb-1" v-for="(org, index) in basketStore.data" :key="index">
             <div v-for="(store, store_index) in org.data" :key="store_index">
+              <!--<div v-if="store.data">{{ store.data }}</div>-->
               <div
                 class="cart__item dart-mb-1"
                 v-for="(product, product_index) in store.data"

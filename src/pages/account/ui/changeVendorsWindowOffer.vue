@@ -275,7 +275,7 @@ export default {
       default: false,
     },
   },
-  emits: ['vendorCheck', 'catalogUpdate'],
+  emits: ['vendorCheck', 'catalogUpdate', 'close'],
   components: {
 
     Checkbox,

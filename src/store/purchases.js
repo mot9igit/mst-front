@@ -110,6 +110,20 @@ export default {
 
       return response
     },
+    async setOrderEditToCart(store, { store_id, seller_id, seller_store_id }) {
+      const data = {
+        action: 'order/edit/basket',
+        id: router.currentRoute._value.params.id,
+        order_id: router.currentRoute._value.params.order_id,
+        store_id: store_id,
+        seller_id: seller_id,
+        seller_store_id: seller_store_id,
+
+      }
+      const response = await api.purchases.setOrderEdit(data)
+
+      return response
+    },
     async repeatOrder(store, data) {
           const sendData = {
             action: 'set/order/repeat',
