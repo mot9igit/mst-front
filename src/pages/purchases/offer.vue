@@ -183,7 +183,7 @@ export default {
             if (response.data.success) {
               this.$toast.add({
                 severity: 'success',
-                summary: 'Вы приняли предложение и оформили заказ №'.response.data.data.nums,
+                summary: 'Вы приняли предложение и оформили заказ №' + response.data.data.data.nums,
                 life: 3000,
               })
                 this.getOffer({

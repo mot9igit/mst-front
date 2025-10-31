@@ -1,6 +1,6 @@
 <template>
   <Toast />
-  <aside class="sidebar test" id="sidebar">
+  <aside class="sidebar sidebar-hover" id="sidebar">
     <div
       class="sidebar__inner sidebar__inner--desktop"
 
@@ -289,7 +289,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Toast from 'primevue/toast'
-import sidebarMenu from './sidebarMenu.vue'
+import sidebarMenu from './sidebarMenuTEST.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import ChangeOrgWindow from '@/pages/org/ui/ChangeOrgWindow.vue'
 
@@ -670,7 +670,7 @@ aside {
   width: 100%;
 }
 @media(width >600px){
-  .sidebar.test:hover .sidebar__inner {
+  .sidebar.sidebar-hover:hover .sidebar__inner {
     transition: translate 0.2s ease-in-out;
     animation-name: sidebar-in;
     animation-duration: 0.2s;
@@ -684,7 +684,26 @@ aside {
      overflow: hidden;
     overflow-y: scroll;
 }
-.sidebar.test:hover{--sidebar-full-padding-inline: 20px;}
+  .sidebar.sidebar-hover:hover{
+    --sidebar-full-padding-inline: 20px;
+  }
+  .sidebar.sidebar-hover:hover .sidebar__item-list, .sidebar.sidebar-hover:hover .sidebar__item-dropdown {
+    display: flex;
+  }
+  .sidebar.sidebar-hover:hover .sidebar__logo-text {
+    display: flex;
+  }
+  .sidebar.sidebar-hover:hover .sidebar__hidden {
+    visibility: visible;
+  }
+  .sidebar.sidebar-hover:hover .sidebar__toggle-block, .sidebar.sidebar-hover:hover .sidebar__organization--mini{
+    display:none;
+  }
+  .sidebar.sidebar-hover:hover .sidebar__organization--full {
+    display: flex
+;
+}
+
 }
 
 </style>
