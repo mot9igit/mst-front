@@ -71,13 +71,15 @@
         <div class="cart__list" v-if="Object.keys(basketStore).length > 1">
           <div class="dart-mb-1" v-for="(org, index) in basketStore.data" :key="index">
             <div v-for="(store, store_index) in org.data" :key="store_index">
-              <!--<div v-if="store.data">{{ store.data }}</div>-->
+              <div class="cart__list-order-edit" v-if="store.type == 'order' && store.data">Редактирование заказа №{{ store.id }}</div>
               <div
                 class="cart__item dart-mb-1"
                 v-for="(product, product_index) in store.data"
                 :key="product_index"
               >
-                <div class="cart__item-header">
+
+              <div class="cart__item-header">
+
                   <div class="cart__item-badge">
                     <img :src="org.org_data.image" alt="" class="cart__item-badge-image" />
                     {{ org.org_data.name }}, {{ store.warehouse_data.address_short }}
@@ -171,6 +173,7 @@ export default {
       showClearBasketModal: false,
       basketStore: {},
       fetchIds: [],
+
     }
   },
   methods: {
@@ -407,6 +410,16 @@ export default {
   .cart__item-badge {
     height: auto;
     min-height: 21px;
+  }
+  .cart__list-order-edit{
+    background-color: #ededed;
+    border-radius: 24px 24px 0 0;
+    border-bottom: 1px solid #75757575;
+    color: #282828;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 8px 8px;
+    text-align: center;
   }
 }
 </style>

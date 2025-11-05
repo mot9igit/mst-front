@@ -48,6 +48,7 @@
                 v-for="(warehouse, warehouse_id) in org.data"
                 :key="warehouse_id"
               >
+              <div class="order__list-order-edit" v-if="warehouse.type == 'order'">Редактирование заказа №{{ warehouse.id }}</div>
                 <div class="order__item-header">
                   <div class="order__item-header-top">
                     <div class="order__item-header-left">
@@ -204,7 +205,7 @@
                     </div>
                   </div>
                   <div class="order__item-content-bottom-right">
-                    <button
+                    <button  v-if="warehouse.type != 'order'"
                       class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy"
                       @click.prevent="
                         () => {
@@ -218,6 +219,21 @@
                       "
                     >
                       Отправить заказ
+                    </button>
+                    <button  v-else
+                      class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy"
+                      @click.prevent="
+                        () => {
+                          if (org?.cart_data?.not_available) {
+                            this.showChangedCount = true
+                            this.showChangedId = org.org_data.id
+                          } else {
+                            orderSubmit(org.org_data.id)
+                          }
+                        }
+                      "
+                    >
+                      Изменить заказ
                     </button>
                     <!--
                       <div
@@ -742,6 +758,17 @@ export default {
   }
   .order__item-product-title {
     max-width: 500px;
+  }
+  .order__list-order-edit{
+
+    border-radius: 24px 24px 0 0;
+    border-bottom: 1px solid #75757575;
+    color: #282828;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 8px 0px 12px;
+    margin-bottom: 12px;
+
   }
 }
 </style>
