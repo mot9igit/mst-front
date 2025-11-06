@@ -175,7 +175,7 @@ export default {
     },
     async acceptOffer(store, { offer_id }) {
       const data = {
-        action: 'offer/accept/setorder',
+        action: 'offer/accept',
         id: router.currentRoute._value.params.id,
         offer_id: offer_id,
       }

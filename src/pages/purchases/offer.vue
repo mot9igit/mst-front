@@ -190,7 +190,7 @@ export default {
     }),
     acceptOfferClick(){
       this.$confirm.require({
-        message: 'Вы уверены, что хотите принять предложение №' + this.offer.id + ' и оформить заказ?',
+        message: 'Вы уверены, что хотите добавить предложение №' + this.offer.id + ' в корзину?',
         header: 'Принять предложение',
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
@@ -201,12 +201,10 @@ export default {
             if (response.data.success) {
               this.$toast.add({
                 severity: 'success',
-                summary: 'Вы приняли предложение и оформили заказ №' + response.data.data.data.nums,
+                summary: 'Предложение добавлено в корзину',
                 life: 3000,
               })
-                this.getOffer({
-                  offer_id: this.$route.params.offer_id,
-                }).then(() => (this.loading = false))
+                this.loading = false
             } else {
               this.loading = false
               this.$toast.add({
@@ -222,7 +220,7 @@ export default {
           this.$toast.add({
             severity: 'error',
             summary: 'Принять предложение',
-            detail: 'Вы отказались от оформления заказа',
+            detail: 'Действие отклонено',
             life: 3000,
           })
         },
