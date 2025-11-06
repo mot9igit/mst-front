@@ -16,6 +16,7 @@ export default {
     ordercalc: {},
     offers: {},
     offer: {},
+    offerStatuses: {},
   },
   actions: {
     async getOptOrders({ commit }, { sort, filter, filtersdata, page, perpage }) {
@@ -142,11 +143,12 @@ export default {
 
       return response
     },
-    async getOffers({ commit }, { filter, sort, page, perpage }) {
+    async getOffers({ commit }, { filter, sort, page, perpage, filterstatus }) {
       const data = {
         action: 'get/offers/my',
         id: router.currentRoute._value.params.id,
         filter: filter,
+        filterstatus: filterstatus,
         page: page,
         sort: sort,
         perpage: perpage,
@@ -188,6 +190,17 @@ export default {
       }
       const response = await api.offer.getOffers(data)
 
+      return response
+    },
+    async getOffersStatuses({ commit }) {
+      const data = {
+        action: 'get/offer/statuses',
+        id: router.currentRoute._value.params.id,
+      }
+      const response = await api.offer.getOffers(data)
+      if (response) {
+        commit('SET_OFFERS_STATUSES', response.data)
+      }
       return response
     },
     unsetOpts({ commit }) {
@@ -243,6 +256,9 @@ export default {
     UNSET_OFFER: (state) => {
       state.offer = {}
     },
+    SET_OFFERS_STATUSES: (state, data) => {
+      state.offerStatuses = data.data
+    },
   },
   getters: {
     opts(state) {
@@ -262,6 +278,9 @@ export default {
     },
     offer(state) {
       return state.offer
+    },
+    offerStatuses(state) {
+      return state.offerStatuses
     },
   },
 }

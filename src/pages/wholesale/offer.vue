@@ -43,13 +43,13 @@
     <div class="d-top-order-container-info">
       <h3>Информация о заказе</h3>
       <div class="order-card__orderinfo dart-row">
-        <div class="order-card__orderinfo-grid d-col-md-5">
+        <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Сумма</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.offer?.cost != '' ? this.offer?.cost : '-' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-5">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Инициатор</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.offer?.initiator_org_name != '' ? this.offer?.initiator_org_name : '' }}
@@ -57,8 +57,22 @@
           <div class="order-card__orderinfo-grid-text-down">
             ({{ this.offer?.initiator_user_name != '' ? this.offer?.initiator_user_name : '' }})
           </div>
+
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-5">
+        <div class="order-card__orderinfo-grid d-col-md-4">
+          <div class="order-card__orderinfo-grid-lable">Поставщик</div>
+          <div class="order-card__orderinfo-grid-text">
+            {{ this.offer?.initiator_org_name != '' ? this.offer?.initiator_org_name : '' }}
+          </div>
+          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
+            ИНН: {{ this.offer?.org_inn != '' ? this.offer?.org_inn : '-' }}
+          </div>
+          <div class="order-card__orderinfo-grid-text-down">
+            <b>Магазин/склад:</b>
+            {{ this.offer?.from_org_store != '' ? this.offer?.from_org_store : '-' }}
+          </div>
+        </div>
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.offer?.from_org_name != '' ? this.offer?.from_org_name : '' }}
@@ -71,16 +85,20 @@
             {{ this.offer?.store_name != '' ? this.offer?.store_name : '-' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-5">
-          <div class="order-card__orderinfo-grid-lable">Дата окончания предложения</div>
+        <div class="order-card__orderinfo-grid d-col-md-3">
+          <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.offer?.date_end != '' ? this.offer?.date_end  : '' }}
+            {{ this.offer?.delay != 0  ? Number.parseInt(this.offer?.delay) + ' дн.' : '-' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-4">
+        <div class="order-card__orderinfo-grid d-col-md-3">
+          <div class="order-card__orderinfo-grid-lable">Оплата доставки</div>
+          <div class="order-card__orderinfo-grid-text">{{ this.offer?.delivery_payer && this.offer?.delivery_payer == 1 ? 'Поставщик' : 'Покупатель' }}</div>
+        </div>
+        <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.offer?.day_delivery != '' ? this.offer?.day_delivery : '?' }} дн.
+            {{ this.offer?.day_delivery ? this.offer?.day_delivery : '?' }} дн.
           </div>
         </div>
       </div>

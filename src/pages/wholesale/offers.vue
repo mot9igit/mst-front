@@ -50,6 +50,12 @@ export default {
           placeholder: 'Искать в предложениях',
           type: 'text',
         },
+        status: {
+          name: 'Статус',
+          placeholder: 'Фильтр по статусу',
+          type: 'dropdown',
+          values: this.offerStatuses,
+        },
       },
       table_data: {
         id: {
@@ -74,17 +80,17 @@ export default {
           sort: true,
           class: 'cell_centeralign',
         },
-        date_end: {
-          label: 'Дата окончания предложения',
-          type: 'link',
-          link_to: 'wholesaleOffer',
-          link_params: {
-            id: this.$route.params.id,
-            offer_id: 'id',
-          },
-          sort: true,
-          class: 'cell_centeralign',
-        },
+        // date_end: {
+        //   label: 'Дата окончания предложения',
+        //   type: 'link',
+        //   link_to: 'wholesaleOffer',
+        //   link_params: {
+        //     id: this.$route.params.id,
+        //     offer_id: 'id',
+        //   },
+        //   sort: true,
+        //   class: 'cell_centeralign',
+        // },
         store_name: {
           label: 'Склад поставщика',
           type: 'link',
@@ -157,12 +163,16 @@ export default {
       getOffers: 'wholesale/getOffers',
       unsetOffers: 'wholesale/unsetOffers',
       deleteOffer: 'wholesale/deleteOffer',
+      getOffersStatuses: 'purchases/getOffersStatuses',
     }),
     filter(data) {
       console.log(data)
       this.loading = true
       this.unsetOffers()
       this.page = 1
+      if(data.filtersdata.status){
+        data.filterstatus = data.filtersdata.status
+      }
       this.getOffers(data).then(() => {
         this.loading = false
       })
@@ -230,15 +240,21 @@ export default {
       page: this.page,
       perpage: this.pagination_items_per_page,
     }).then(() => {
+      this.getOffersStatuses()
       this.loading = false
     })
   },
   computed: {
     ...mapGetters({
       offers: 'wholesale/offers',
+      offerStatuses: 'purchases/offerStatuses',
     }),
   },
-  watch: {},
+  watch: {
+    offerStatuses: function (newVal) {
+      this.filters.status.values = newVal
+    },
+  },
 }
 </script>
 <style lang="scss">
