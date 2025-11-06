@@ -213,7 +213,7 @@
                             this.showChangedCount = true
                             this.showChangedId = org.org_data.id
                           } else {
-                            orderSubmit(org.org_data.id)
+                            orderSubmit(org.org_data.id, warehouse_id)
                           }
                         }
                       "
@@ -228,7 +228,7 @@
                             this.showChangedCount = true
                             this.showChangedId = org.org_data.id
                           } else {
-                            orderSubmit(org.org_data.id)
+                            orderSubmit(org.org_data.id, warehouse_id)
                           }
                         }
                       "
@@ -254,7 +254,7 @@
                           this.showChangedCount = true
                           this.showChangedId = org.org_data.id
                         } else {
-                          orderSubmit(org.org_data.id)
+                          orderSubmit(org.org_data.id, warehouse_id)
                         }
                       }
                     "
@@ -331,7 +331,7 @@
                           this.showChangedCount = true
                           this.showChangedId = 'all'
                         } else {
-                          orderSubmit('all')
+                          orderSubmit('all', 0)
                         }
                       }
                     "
@@ -595,7 +595,7 @@ export default {
         this.$emit('catalogUpdate')
       })
     },
-    async orderSubmit(orgId) {
+    async orderSubmit(orgId, warehouse_id) {
       this.loading = true
       this.getBasket().then((response) => {
         // console.log(response.data?.data?.data)
@@ -605,7 +605,7 @@ export default {
           this.showChangedId = orgId
         } else {
           // orderSubmitApi
-          this.orderSubmitApi({ orgId: orgId }).then((response) => {
+          this.orderSubmitApi({ orgId: orgId, warehouse_id: warehouse_id }).then((response) => {
             let arr = []
             console.log(response)
             let res = response.data?.data
