@@ -71,9 +71,31 @@
         <div class="cart__list" v-if="Object.keys(basketStore).length > 1">
           <div class="dart-mb-1" v-for="(org, index) in basketStore.data" :key="index">
             <div v-for="(store, store_index) in org.data" :key="store_index">
-              <!-- <b-alert show dismissible fade>Dismissible Alert!</b-alert> -->
-              <div class="cart__list-order-edit" v-if="store.type == 'order' && store.data">Редактирование заказа №{{ store.id }}</div>
-              <div class="cart__list-order-edit" v-if="store.type == 'offer' && store.data">Редактирование предложения №{{ store.id }}</div>
+
+              <div class="mst__alert blue center_alert" v-if="store.type == 'order' && store.data">
+                <router-link
+                  :to="{
+                    name: 'purchasesOrder',
+                    params: {
+                      id: this.$route.params.id,
+                      order_id: store.id,
+                    },
+                  }">
+                В данный момент вы редактируете "Заказ #{{ store.id }}"
+                </router-link>
+              </div>
+              <div class="mst__alert blue center_alert" v-if="store.type == 'offer' && store.data">
+                <router-link
+                  :to="{
+                    name: 'purchasesOffer',
+                    params: {
+                      id: this.$route.params.id,
+                      offer_id: store.id,
+                    },
+                  }">
+                В данный момент вы редактируете "Предложение #{{ store.id }}"
+                 </router-link>
+              </div>
               <div
                 class="cart__item dart-mb-1"
                 v-for="(product, product_index) in store.data"
@@ -158,13 +180,15 @@ import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
-//import { BAlert } from 'bootstrap-vue'
+
+
 
 
 export default {
   name: 'ProfileCart',
   emits: ['toggleCart', 'toggleOrder', 'basketUpdate', 'catalogUpdate'],
-  components: { Loader, customModal, Counter },
+  components: { Loader, customModal, Counter},
+
   props: {
     active: {
       type: Boolean,
