@@ -216,6 +216,9 @@ export default {
                         summary: 'Предложение добавлено в корзину',
                         life: 3000,
                       })
+                        this.getOffer({
+                          offer_id: this.$route.params.offer_id,
+                        })
                         this.getBasket()
                         this.loading = false
                     } else {
