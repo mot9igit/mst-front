@@ -12,6 +12,7 @@ export default {
     optOfferProducts: {},
     optOfferCatalog: {},
     optOfferWarehouseCatalog: {},
+    cartCleaner: [],
   },
   actions: {
     async getFromOrgStores({ commit }) {
@@ -277,6 +278,19 @@ export default {
       const response = await api.offer.offerSubmit(data)
       return response
     },
+    async acceptOfferReview({ commit }, { offer_id, store_id }) {
+      const data = {
+        action: 'offer/accept/review',
+        id: router.currentRoute._value.params.id,
+        offer_id: offer_id,
+        store_id: store_id,
+      }
+      const response = await api.offer.getOffers(data)
+      if (response) {
+        commit('SET_OFFER_REVIEW', response.data)
+      }
+      return response
+    },
   },
   mutations: {
     SET_FROM_ORG_STORES: (state, data) => {
@@ -302,6 +316,9 @@ export default {
     },
     SET_OPT_OFFER_WAREHOUSE_CATALOG: (state, data) => {
       state.optOfferWarehouseCatalog = data.data
+    },
+    SET_OFFER_REVIEW: (state, data) => {
+      state.cartCleaner = data.data
     },
 
   },
@@ -329,6 +346,9 @@ export default {
     },
     optOfferWarehouseCatalog(state) {
       return state.optOfferWarehouseCatalog
+    },
+    cartCleaner(state) {
+      return state.cartCleaner
     },
   },
 }

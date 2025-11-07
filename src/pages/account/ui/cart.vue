@@ -71,7 +71,9 @@
         <div class="cart__list" v-if="Object.keys(basketStore).length > 1">
           <div class="dart-mb-1" v-for="(org, index) in basketStore.data" :key="index">
             <div v-for="(store, store_index) in org.data" :key="store_index">
+              <!-- <b-alert show dismissible fade>Dismissible Alert!</b-alert> -->
               <div class="cart__list-order-edit" v-if="store.type == 'order' && store.data">Редактирование заказа №{{ store.id }}</div>
+              <div class="cart__list-order-edit" v-if="store.type == 'offer' && store.data">Редактирование предложения №{{ store.id }}</div>
               <div
                 class="cart__item dart-mb-1"
                 v-for="(product, product_index) in store.data"
@@ -156,6 +158,8 @@ import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
+//import { BAlert } from 'bootstrap-vue'
+
 
 export default {
   name: 'ProfileCart',

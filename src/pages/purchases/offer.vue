@@ -185,8 +185,10 @@ export default {
   ...mapActions({
       getOffer: 'purchases/getOffer',
       unsetOffer: 'purchases/unsetOffer',
+      acceptOfferReview: 'offer/acceptOfferReview',
       acceptOffer: 'purchases/acceptOffer',
       cancelOffer: 'purchases/cancelOffer',
+      getBasket: 'basket/getBasket',
     }),
     acceptOfferClick(){
       this.$confirm.require({
@@ -195,26 +197,73 @@ export default {
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
           this.loading = true
-          this.acceptOffer({
-            offer_id: this.$route.params.offer_id,
-          }).then((response) => {
-            if (response.data.success) {
-              this.$toast.add({
-                severity: 'success',
-                summary: 'Предложение добавлено в корзину',
-                life: 3000,
-              })
-                this.loading = false
-            } else {
-              this.loading = false
-              this.$toast.add({
-                severity: 'error',
-                summary: 'Ошибка',
-                detail: 'Произошла ошибка',
-                life: 3000,
-              })
-            }
+          this.acceptOfferReview({
+            offer_id: this.offer.id,
+            store_id: this.basketWarehouse,
+          }).then((res) => {
+            if(res.data.data){
+              this.$confirm.require({
+                message: res.data.data,
+                header: 'Принять предложение',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                  this.acceptOffer({
+                    offer_id: this.$route.params.offer_id,
+                  }).then((response) => {
+                    if (response.data.success) {
+                      this.$toast.add({
+                        severity: 'success',
+                        summary: 'Предложение добавлено в корзину',
+                        life: 3000,
+                      })
+                        this.getBasket()
+                        this.loading = false
+                    } else {
+                      this.loading = false
+                      this.$toast.add({
+                        severity: 'error',
+                        summary: 'Ошибка',
+                        detail: 'Произошла ошибка',
+                        life: 3000,
+                      })
+                    }
+                  })
+                },
+                reject: () => {
+                  this.$toast.add({
+                    severity: 'error',
+                    summary: 'Принять предложение',
+                    detail: 'Действие отклонено',
+                    life: 3000,
+                  })
+                  this.loading = false
+                },
+            })
+          }else{
+            this.acceptOffer({
+                    offer_id: this.$route.params.offer_id,
+                  }).then((response) => {
+                    if (response.data.success) {
+                      this.$toast.add({
+                        severity: 'success',
+                        summary: 'Предложение добавлено в корзину',
+                        life: 3000,
+                      })
+                      this.getBasket()
+                        this.loading = false
+                    } else {
+                      this.loading = false
+                      this.$toast.add({
+                        severity: 'error',
+                        summary: 'Ошибка',
+                        detail: 'Произошла ошибка',
+                        life: 3000,
+                      })
+                    }
+                  })
+          }
           })
+
         },
         reject: () => {
           this.$toast.add({
@@ -223,6 +272,7 @@ export default {
             detail: 'Действие отклонено',
             life: 3000,
           })
+          this.loading = false
         },
       })
     },
@@ -284,6 +334,8 @@ export default {
   computed: {
     ...mapGetters({
       offer: 'purchases/offer',
+      cartCleaner: 'offer/cartCleaner',
+      basketWarehouse: 'basket/basketWarehouse',
     }),
   },
   watch: {

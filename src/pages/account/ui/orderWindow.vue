@@ -49,6 +49,7 @@
                 :key="warehouse_id"
               >
               <div class="order__list-order-edit" v-if="warehouse.type == 'order'">Редактирование заказа №{{ warehouse.id }}</div>
+              <div class="order__list-order-edit" v-if="warehouse.type == 'offer'">Редактирование предложения №{{ warehouse.id }}</div>
                 <div class="order__item-header">
                   <div class="order__item-header-top">
                     <div class="order__item-header-left">
