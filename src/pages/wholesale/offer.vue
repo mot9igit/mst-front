@@ -30,12 +30,12 @@
       class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action">
       <span class="catalog__head-item-text">Отозвать предложение</span>
 		</button>
-    <button
+    <!-- <button
       v-if="status.api_key == 'offer_accept' && offer.order_id != 0"
       @click.prevent="routeToOrder(offer.order_id)"
       class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs">
       <span class="catalog__head-item-text">Перейти к заказу № {{ offer.order_id }}</span>
-		</button>
+		</button> -->
 
     </div>
       </div>
