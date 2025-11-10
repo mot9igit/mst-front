@@ -53,7 +53,7 @@ export default {
         status: {
           name: 'Статус',
           placeholder: 'Фильтр по статусу',
-          type: 'dropdown',
+          type: 'tree',
           values: this.offerStatuses,
         },
       },

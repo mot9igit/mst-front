@@ -4585,4 +4585,41 @@
   color:#757575;
 }
 
-// ___________________________________
+// TREESELECT
+
+.dart-form-group .vue3-treeselect .vue3-treeselect__control {
+    background: #fff;
+    border: 1px solid #75757575;
+    border-radius: 5px;
+    display: table;
+    height: 39px;
+    padding-left: 5px;
+    padding-right: 5px;
+    table-layout: fixed;
+    transition-duration: .2s;
+    transition-property: border-color, box-shadow, width, height, background-color, opacity;
+    transition-timing-function: cubic-bezier(.215,.61,.355,1);
+    width: 100%;
+}
+.dart-form-group .vue3-treeselect svg {
+    fill: #282828 !important;
+}
+.dart-form-group .vue3-treeselect .vue3-treeselect__x-container:hover svg, .dart-form-group .vue3-treeselect .vue3-treeselect__icon:hover svg,
+.dart-form-group .vue3-treeselect .vue3-treeselect__control-arrow:hover svg {
+    fill: #f92c0d !important;
+}
+.dart-form-group .vue3-treeselect__multi-value-item {
+    background: #ededed;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    color: #757575;
+    cursor: default;
+    display: inline-table;
+    font-size: 12px;
+    padding: 2px 0;
+    vertical-align: top;
+}
+.vue3-treeselect__menu{
+
+}
+

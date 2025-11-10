@@ -35,6 +35,7 @@ import RetailCompareStoreProducts from '../pages/retail/compareStoreProducts.vue
 import Warehouse from '../pages/warehouse/index.vue'
 import WarehouseReview from '../pages/warehouse/review.vue'
 import WarehouseReviewStore from '../pages/warehouse/reviewStore.vue'
+import WarehouseStoreSettings from '../pages/warehouse/storeSettings.vue'
 import WarehouseCollections from '../pages/warehouse/collections.vue'
 import WarehouseCollection from '../pages/warehouse/collection.vue'
 import WarehouseCustomization from '../pages/warehouse/customization.vue'
@@ -729,6 +730,18 @@ const router = createRouter({
                           meta: {
                             breadcrumb: {
                               label: 'Статистика склада',
+                            },
+                          },
+                        },
+                        {
+                          path: 'settings/:store_id',
+                          name: 'warehouseStoreSettings',
+                          props: true,
+                          label: 'Настройки склада',
+                          component: WarehouseStoreSettings,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Настройки склада',
                             },
                           },
                         },
