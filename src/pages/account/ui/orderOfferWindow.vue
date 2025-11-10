@@ -234,7 +234,7 @@
           <!-- Итого -->
           <div class="order__footer" v-if="Object.keys(this.basketStore).length > 1">
             <div class="d-divider d-divider--full order__footer-divider"></div>
-             <div class="order__footer-content order__footer-content-date">
+             <!-- <div class="order__footer-content order__footer-content-date">
               <div class="order__footer-left">
                 <p class="order__footer-label-date">Укажите дату окончания действия предложения</p>
               </div>
@@ -259,7 +259,7 @@
 
               </div>
 
-            </div>
+            </div> -->
             <div class="order__footer-content">
               <div class="order__footer-left">
                 <p class="order__footer-label">Итого</p>
@@ -587,11 +587,11 @@ export default {
     },
     offerCreate() {
 
-      if(this.form.end_date == null) {
-        this.error = true
-        this.$toast.add({ severity: 'error', summary: "Ошибка", detail: "Укажите дату окончания предложения", life: 3000 });
-        return
-      }else{
+    //  if(this.form.end_date == null) {
+    //    this.error = true
+    //    this.$toast.add({ severity: 'error', summary: "Ошибка", detail: "Укажите дату окончания предложения", life: 3000 });
+    //    return
+    //  }else{
         this.loading = true
         let date = this.form.end_date
 
@@ -612,7 +612,7 @@ export default {
              return
            }
        })
-      }
+    //  }
 
     },
   },
