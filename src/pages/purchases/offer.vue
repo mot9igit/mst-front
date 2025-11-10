@@ -35,25 +35,25 @@
     v-if="status.cancelable == 1">
       <span class="catalog__head-item-text">Отклонить</span>
 		</button>
-    <button
+    <!-- <button
       v-if="status.api_key == 'offer_accept' && offer.order_id != 0"
       @click.prevent="routeToOrder(offer.order_id)"
       class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs">
       <span class="catalog__head-item-text">Перейти к заказу № {{ offer.order_id }}</span>
-		</button>
+		</button> -->
     </div>
       </div>
     </div>
     <div class="d-top-order-container-info">
       <h3>Информация о заказе</h3>
       <div class="order-card__orderinfo dart-row">
-        <div class="order-card__orderinfo-grid d-col-md-5">
+        <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Сумма</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.offer?.cost != '' ? this.offer?.cost : '-' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-5">
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Инициатор</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.offer?.initiator_org_name != '' ? this.offer?.initiator_org_name : '' }}
@@ -61,8 +61,22 @@
           <div class="order-card__orderinfo-grid-text-down">
             ({{ this.offer?.initiator_user_name != '' ? this.offer?.initiator_user_name : '' }})
           </div>
+
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-5">
+        <div class="order-card__orderinfo-grid d-col-md-4">
+          <div class="order-card__orderinfo-grid-lable">Поставщик</div>
+          <div class="order-card__orderinfo-grid-text">
+            {{ this.offer?.initiator_org_name != '' ? this.offer?.initiator_org_name : '' }}
+          </div>
+          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
+            ИНН: {{ this.offer?.org_inn != '' ? this.offer?.org_inn : '-' }}
+          </div>
+          <div class="order-card__orderinfo-grid-text-down">
+            <b>Магазин/склад:</b>
+            {{ this.offer?.from_org_store != '' ? this.offer?.from_org_store : '-' }}
+          </div>
+        </div>
+        <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.offer?.from_org_name != '' ? this.offer?.from_org_name : '' }}
@@ -75,16 +89,20 @@
             {{ this.offer?.store_name != '' ? this.offer?.store_name : '-' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-5">
-          <div class="order-card__orderinfo-grid-lable">Дата окончания предложения</div>
+        <div class="order-card__orderinfo-grid d-col-md-3">
+          <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.offer?.date_end != '' ? this.offer?.date_end  : '' }}
+            {{ this.offer?.delay != 0  ? Number.parseInt(this.offer?.delay) + ' дн.' : '-' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-4">
+        <div class="order-card__orderinfo-grid d-col-md-3">
+          <div class="order-card__orderinfo-grid-lable">Оплата доставки</div>
+          <div class="order-card__orderinfo-grid-text">{{ this.offer?.delivery_payer && this.offer?.delivery_payer == 1 ? 'Поставщик' : 'Покупатель' }}</div>
+        </div>
+        <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.offer?.day_delivery != '' ? this.offer?.day_delivery : '?' }} дн.
+            {{ this.offer?.day_delivery ? this.offer?.day_delivery : '?' }} дн.
           </div>
         </div>
       </div>
@@ -167,46 +185,97 @@ export default {
   ...mapActions({
       getOffer: 'purchases/getOffer',
       unsetOffer: 'purchases/unsetOffer',
+      acceptOfferReview: 'offer/acceptOfferReview',
       acceptOffer: 'purchases/acceptOffer',
       cancelOffer: 'purchases/cancelOffer',
+      getBasket: 'basket/getBasket',
     }),
     acceptOfferClick(){
       this.$confirm.require({
-        message: 'Вы уверены, что хотите принять предложение №' + this.offer.id + ' и оформить заказ?',
+        message: 'Вы уверены, что хотите добавить предложение №' + this.offer.id + ' в корзину?',
         header: 'Принять предложение',
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
           this.loading = true
-          this.acceptOffer({
-            offer_id: this.$route.params.offer_id,
-          }).then((response) => {
-            if (response.data.success) {
-              this.$toast.add({
-                severity: 'success',
-                summary: 'Вы приняли предложение и оформили заказ №'.response.data.data.nums,
-                life: 3000,
-              })
-                this.getOffer({
-                  offer_id: this.$route.params.offer_id,
-                }).then(() => (this.loading = false))
-            } else {
-              this.loading = false
-              this.$toast.add({
-                severity: 'error',
-                summary: 'Ошибка',
-                detail: 'Произошла ошибка',
-                life: 3000,
-              })
-            }
+          this.acceptOfferReview({
+            offer_id: this.offer.id,
+            store_id: this.basketWarehouse,
+          }).then((res) => {
+            if(res.data.data){
+              this.$confirm.require({
+                message: res.data.data,
+                header: 'Принять предложение',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                  this.acceptOffer({
+                    offer_id: this.$route.params.offer_id,
+                  }).then((response) => {
+                    if (response.data.success) {
+                      this.$toast.add({
+                        severity: 'success',
+                        summary: 'Предложение добавлено в корзину',
+                        life: 3000,
+                      })
+                        this.getOffer({
+                          offer_id: this.$route.params.offer_id,
+                        })
+                        this.getBasket()
+                        this.loading = false
+                    } else {
+                      this.loading = false
+                      this.$toast.add({
+                        severity: 'error',
+                        summary: 'Ошибка',
+                        detail: 'Произошла ошибка',
+                        life: 3000,
+                      })
+                    }
+                  })
+                },
+                reject: () => {
+                  this.$toast.add({
+                    severity: 'error',
+                    summary: 'Принять предложение',
+                    detail: 'Действие отклонено',
+                    life: 3000,
+                  })
+                  this.loading = false
+                },
+            })
+          }else{
+            this.acceptOffer({
+                    offer_id: this.$route.params.offer_id,
+                  }).then((response) => {
+                    if (response.data.success) {
+                      this.$toast.add({
+                        severity: 'success',
+                        summary: 'Предложение добавлено в корзину',
+                        life: 3000,
+                      })
+                      this.getBasket()
+                        this.loading = false
+                    } else {
+                      this.loading = false
+                      this.$toast.add({
+                        severity: 'error',
+                        summary: 'Ошибка',
+                        detail: 'Произошла ошибка',
+                        life: 3000,
+                      })
+                    }
+                  })
+          }
           })
+
         },
         reject: () => {
           this.$toast.add({
             severity: 'error',
             summary: 'Принять предложение',
-            detail: 'Вы отказались от оформления заказа',
+            detail: 'Действие отклонено',
             life: 3000,
           })
+          this.loading = false
         },
       })
     },
@@ -268,6 +337,8 @@ export default {
   computed: {
     ...mapGetters({
       offer: 'purchases/offer',
+      cartCleaner: 'offer/cartCleaner',
+      basketWarehouse: 'basket/basketWarehouse',
     }),
   },
   watch: {

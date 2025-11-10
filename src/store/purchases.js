@@ -16,6 +16,7 @@ export default {
     ordercalc: {},
     offers: {},
     offer: {},
+    offerStatuses: {},
   },
   actions: {
     async getOptOrders({ commit }, { sort, filter, filtersdata, page, perpage }) {
@@ -110,6 +111,20 @@ export default {
 
       return response
     },
+    async setOrderEditToCart(store, { store_id, seller_id, seller_store_id }) {
+      const data = {
+        action: 'order/edit/basket',
+        id: router.currentRoute._value.params.id,
+        order_id: router.currentRoute._value.params.order_id,
+        store_id: store_id,
+        seller_id: seller_id,
+        seller_store_id: seller_store_id,
+
+      }
+      const response = await api.purchases.setOrderEdit(data)
+
+      return response
+    },
     async repeatOrder(store, data) {
           const sendData = {
             action: 'set/order/repeat',
@@ -128,14 +143,16 @@ export default {
 
       return response
     },
-    async getOffers({ commit }, { filter, sort, page, perpage }) {
+    async getOffers({ commit }, { filter, sort, page, perpage, filterstatus }) {
       const data = {
         action: 'get/offers/my',
         id: router.currentRoute._value.params.id,
         filter: filter,
+        filterstatus: filterstatus,
         page: page,
         sort: sort,
         perpage: perpage,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       }
       const response = await api.offer.getOffers(data)
       if (response) {
@@ -148,6 +165,7 @@ export default {
         action: 'get/offers/my',
         id: router.currentRoute._value.params.id,
         offer_id: offer_id,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       }
       const response = await api.offer.getOffers(data)
       if (response) {
@@ -157,7 +175,7 @@ export default {
     },
     async acceptOffer(store, { offer_id }) {
       const data = {
-        action: 'offer/accept/setorder',
+        action: 'offer/accept',
         id: router.currentRoute._value.params.id,
         offer_id: offer_id,
       }
@@ -172,6 +190,17 @@ export default {
       }
       const response = await api.offer.getOffers(data)
 
+      return response
+    },
+    async getOffersStatuses({ commit }) {
+      const data = {
+        action: 'get/offer/statuses',
+        id: router.currentRoute._value.params.id,
+      }
+      const response = await api.offer.getOffers(data)
+      if (response) {
+        commit('SET_OFFERS_STATUSES', response.data)
+      }
       return response
     },
     unsetOpts({ commit }) {
@@ -227,6 +256,9 @@ export default {
     UNSET_OFFER: (state) => {
       state.offer = {}
     },
+    SET_OFFERS_STATUSES: (state, data) => {
+      state.offerStatuses = data.data
+    },
   },
   getters: {
     opts(state) {
@@ -246,6 +278,9 @@ export default {
     },
     offer(state) {
       return state.offer
+    },
+    offerStatuses(state) {
+      return state.offerStatuses
     },
   },
 }

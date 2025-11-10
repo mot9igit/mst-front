@@ -4548,4 +4548,41 @@
   }
 }
 
+.mst__alert{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 5px;
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 18px;
+  margin-bottom: 8px;
+}
+.center_alert{
+  text-align: center;
+  justify-content: center;
+}
+.mst__alert a{
+  text-decoration: underline;
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 18px;
+}
+.mst__alert a:hover{
+  text-decoration: none;
+}
+.mst__alert.blue{
+  background-color: #6C7ABF4D;
+  color:#2E468C;
+}
+.mst__alert.grey{
+  background-color: #ededed4D;
+  color:#757575;
+}
+
 // ___________________________________

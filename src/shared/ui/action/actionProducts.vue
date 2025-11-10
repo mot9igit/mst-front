@@ -59,7 +59,8 @@
       </button>
     </div>
     <div class="d-table__wrapper promotions__card-products" v-if="productsSelected.total > 0">
-      <table class="d-table hidden-1200">
+      <table class="d-table">
+        <!-- <table class="d-table hidden-1200"> -->
         <thead class="d-table__head">
           <tr class="d-table__row">
             <th class="d-table__head-col">
@@ -193,7 +194,7 @@
         </tbody>
       </table>
 
-      <div class="d-accordion visible-1200">
+      <!-- <div class="d-accordion visible-1200">
         <div class="d-accordion__header">
           <div class="d-product-list__header">
             <div class="d-radio__wrapper d-product-list__all">
@@ -528,7 +529,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="d-table__footer dart-mt-1">
         <div class="d-table__footer-content">

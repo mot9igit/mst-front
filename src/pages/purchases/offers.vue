@@ -50,6 +50,12 @@ export default {
           placeholder: 'Искать в предложениях',
           type: 'text',
         },
+        status: {
+          name: 'Статус',
+          placeholder: 'Фильтр по статусу',
+          type: 'dropdown',
+          values: this.offerStatuses,
+        },
       },
       table_data: {
         id: {
@@ -74,17 +80,17 @@ export default {
           sort: true,
           class: 'cell_centeralign',
         },
-        date_end: {
-          label: 'Дата окончания предложения',
-          type: 'link',
-          link_to: 'purchasesOffer',
-          link_params: {
-            id: this.$route.params.id,
-            offer_id: 'id',
-          },
-          sort: true,
-          class: 'cell_centeralign',
-        },
+        // date_end: {
+        //   label: 'Дата окончания предложения',
+        //   type: 'link',
+        //   link_to: 'purchasesOffer',
+        //   link_params: {
+        //     id: this.$route.params.id,
+        //     offer_id: 'id',
+        //   },
+        //   sort: true,
+        //   class: 'cell_centeralign',
+        // },
         initiator: {
           label: 'Инициатор',
           type: 'link',
@@ -141,12 +147,16 @@ export default {
     ...mapActions({
       getOffers: 'purchases/getOffers',
       unsetOffers: 'purchases/unsetOffers',
+      getOffersStatuses: 'purchases/getOffersStatuses',
     }),
     filter(data) {
       console.log(data)
       this.loading = true
       this.unsetOffers()
       this.page = 1
+      if(data.filtersdata.status){
+        data.filterstatus = data.filtersdata.status
+      }
       this.getOffers(data).then(() => {
         this.loading = false
       })
@@ -165,15 +175,21 @@ export default {
       page: this.page,
       perpage: this.pagination_items_per_page,
     }).then(() => {
+      this.getOffersStatuses()
       this.loading = false
     })
   },
   computed: {
     ...mapGetters({
       offers: 'purchases/offers',
+      offerStatuses: 'purchases/offerStatuses',
     }),
   },
-  watch: {},
+  watch: {
+    offerStatuses: function (newVal) {
+      this.filters.status.values = newVal
+    },
+  },
 }
 </script>
 
@@ -236,5 +252,11 @@ export default {
 .cell_initiatior-data .multyitem_cell:last-child span::after {
   content: ')';
   position: relative;
+}
+.myorders__content .dart-form-group, .wholesaleoffers__content .dart-form-group{
+  margin-bottom: 0;
+}
+.myorders__content .p-select, .wholesaleoffers__content .p-select{
+  min-width:100%;
 }
 </style>

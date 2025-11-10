@@ -71,12 +71,39 @@
         <div class="cart__list" v-if="Object.keys(basketStore).length > 1">
           <div class="dart-mb-1" v-for="(org, index) in basketStore.data" :key="index">
             <div v-for="(store, store_index) in org.data" :key="store_index">
+
+              <div class="mst__alert blue center_alert" v-if="store.type == 'order' && store.data">
+                <router-link
+                  :to="{
+                    name: 'purchasesOrder',
+                    params: {
+                      id: this.$route.params.id,
+                      order_id: store.id,
+                    },
+                  }">
+                В данный момент вы редактируете "Заказ #{{ store.id }}"
+                </router-link>
+              </div>
+              <div class="mst__alert blue center_alert" v-if="store.type == 'offer' && store.data">
+                <router-link
+                  :to="{
+                    name: 'purchasesOffer',
+                    params: {
+                      id: this.$route.params.id,
+                      offer_id: store.id,
+                    },
+                  }">
+                В данный момент вы редактируете "Предложение #{{ store.id }}"
+                 </router-link>
+              </div>
               <div
                 class="cart__item dart-mb-1"
                 v-for="(product, product_index) in store.data"
                 :key="product_index"
               >
-                <div class="cart__item-header">
+
+              <div class="cart__item-header">
+
                   <div class="cart__item-badge">
                     <img :src="org.org_data.image" alt="" class="cart__item-badge-image" />
                     {{ org.org_data.name }}, {{ store.warehouse_data.address_short }}
@@ -154,10 +181,14 @@ import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
 
+
+
+
 export default {
   name: 'ProfileCart',
   emits: ['toggleCart', 'toggleOrder', 'basketUpdate', 'catalogUpdate'],
-  components: { Loader, customModal, Counter },
+  components: { Loader, customModal, Counter},
+
   props: {
     active: {
       type: Boolean,
@@ -170,6 +201,7 @@ export default {
       showClearBasketModal: false,
       basketStore: {},
       fetchIds: [],
+
     }
   },
   methods: {
@@ -406,6 +438,16 @@ export default {
   .cart__item-badge {
     height: auto;
     min-height: 21px;
+  }
+  .cart__list-order-edit{
+    background-color: #ededed;
+    border-radius: 24px 24px 0 0;
+    border-bottom: 1px solid #75757575;
+    color: #282828;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 12px 8px 8px;
+    text-align: center;
   }
 }
 </style>

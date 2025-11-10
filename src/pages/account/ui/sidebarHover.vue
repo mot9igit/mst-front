@@ -1,9 +1,8 @@
 <template>
   <Toast />
-  <aside class="sidebar" id="sidebar" :class="{ 'sidebar--full': !active }">
+  <aside class="sidebar sidebar--full sidebar--hover" id="sidebar">
     <div
       class="sidebar__inner sidebar__inner--desktop"
-      @click.prevent="clickAround()"
       id="sidebar__inner--desktop"
     >
       <div class="sidebar__content-wrapper">
@@ -11,7 +10,7 @@
           <router-link
             :to="'/' + this.$route.params.id + '/purchases/catalog'"
             class="sidebar__logo-container"
-            @click.prevent="!active ? sidebarToggle() : ''"
+
           >
             <img src="/icons/logo.svg" alt="MST" width="40" height="40" class="sidebar__logo" />
             <span class="sidebar__logo-text"
@@ -20,15 +19,15 @@
             >
           </router-link>
           <div class="sidebar__block sidebar__toggle-block sidebar__logo-toggle">
-            <button class="sidebar__toggle" @click.prevent="sidebarToggle()">
+            <button class="sidebar__toggle">
               <i class="sidebar__toggle-icon d-icon-arrow"></i>
-              <i class="sidebar__toggle-icon d-icon-times-flat"></i>
+              <i class="sidebar__toggle-icon d-icon-times-flat" @click.prevent="sidebarToggle()"></i>
             </button>
           </div>
         </div>
         <div class="sidebar__content">
           <div class="sidebar__block sidebar__toggle-block">
-            <button class="sidebar__toggle" @click.prevent="sidebarToggle()">
+            <button class="sidebar__toggle">
               <i class="d-icon-arrow sidebar__toggle-icon"></i>
             </button>
           </div>
@@ -119,7 +118,7 @@
             </div>
             <router-link
               :to="{ name: 'OrgAdd' }"
-              @click.prevent="sidebarToggle()"
+
               class="d-button d-button-secondary d-button--sm-shadow sidebar__new-organization"
               v-else
             >
@@ -136,7 +135,7 @@
             <router-link
               :to="{ name: 'profile' }"
               class="sidebar__user sidebar__hidden"
-              @click.prevent="sidebarToggle()"
+
             >
               <i class="d-icon-profile sidebar__user-icon"></i>
               <span class="sidebar__user-text">{{ this.getUser?.profile?.fullname }}</span>
@@ -685,4 +684,20 @@ aside {
     overflow-y: scroll;
 }
 .sidebar:hover{--sidebar-full-padding-inline: 20px;}*/
+
+.sidebar--full .sidebar__inner {
+    transition: translate 0.2s ease-in-out;
+    animation-name: sidebar-in;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    background-color: rgba(255, 255, 255, 0.5490196078);
+    backdrop-filter: blur(30px);
+    box-shadow: 0 0 20px -10px #282828;
+    padding-inline: var(--sidebar-full-padding-inline);
+    width: var(--sidebar-full-width);
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
 </style>

@@ -39,7 +39,7 @@
 		</button>
     <button
     class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__action"
-    @click.prevent="modalEdit = true"
+    @click.prevent="editOrder()"
     v-if="status.editable"
     :disabled="order.offer_id">
       <span class="catalog__head-item-text">Редактировать заказ</span>
@@ -142,7 +142,7 @@
       <BaseTable
         v-else
         :items_data="optorder.products"
-        :total="optorder.cost"
+        :total="optorder.products.length"
         :pagination_items_per_page="this.pagination_items_per_page"
         :pagination_offset="this.pagination_offset"
         :page="this.page"
@@ -291,7 +291,9 @@ export default {
       unsetOptOrder: 'purchases/unsetOptOrder',
       canselOptOrder: 'purchases/canselOptOrder',
       repeatOrder: 'purchases/repeatOrder',
-      setStatusAccept: 'purchases/setStatusAccept'
+      setStatusAccept: 'purchases/setStatusAccept',
+      setOrderEditToCart: 'purchases/setOrderEditToCart',
+      getBasket: 'basket/getBasket',
     }),
     changeStatus(){
       this.loading = true
@@ -389,6 +391,36 @@ export default {
         order_id: this.$route.params.order_id,
       })
     },
+    editOrder(){
+      let head = 'Вы уверены, что хотите отредактировать заказ №' + this.$route.params.order_id + '?'
+      let mess = 'Корзина поставщика ' + this.order?.seller_name + ' будет очищена. Добавить текущий заказ для редактирования в корзину?'
+      this.$confirm.require({
+        message: mess,
+        header: head,
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.loading = true
+          this.setOrderEditToCart({
+            store_id: this.optorder.warehouse_id,
+            seller_id: this.optorder.seller_id,
+            seller_store_id: this.optorder.store_id
+          }).then(() => {
+            this.getBasket()
+            this.loading = false
+          })
+
+
+        },
+        reject: () => {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Редактирование заказа',
+            detail: 'Действие отклонено',
+            life: 3000,
+          })
+        },
+      })
+    },
 
   },
   mounted() {
@@ -399,6 +431,7 @@ export default {
   computed: {
     ...mapGetters({
       optorder: 'purchases/optorder',
+      basket: 'basket/basket',
     }),
   },
   watch: {

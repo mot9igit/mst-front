@@ -48,6 +48,30 @@
                 v-for="(warehouse, warehouse_id) in org.data"
                 :key="warehouse_id"
               >
+              <div class="mst__alert blue" v-if="warehouse.type == 'order' && warehouse.data">
+                <router-link
+                  :to="{
+                    name: 'purchasesOrder',
+                    params: {
+                      id: this.$route.params.id,
+                      order_id: warehouse.id,
+                    },
+                  }">
+                В данный момент вы редактируете "Заказ #{{ warehouse.id }}"
+                </router-link>
+              </div>
+              <div class="mst__alert blue" v-if="warehouse.type == 'offer' && warehouse.data">
+                <router-link
+                  :to="{
+                    name: 'purchasesOffer',
+                    params: {
+                      id: this.$route.params.id,
+                      offer_id: warehouse.id,
+                    },
+                  }">
+                В данный момент вы редактируете "Предложение #{{ warehouse.id }}"
+                 </router-link>
+              </div>
                 <div class="order__item-header">
                   <div class="order__item-header-top">
                     <div class="order__item-header-left">
@@ -204,7 +228,8 @@
                     </div>
                   </div>
                   <div class="order__item-content-bottom-right">
-                    <button
+
+                    <button  v-if="warehouse.type == 'order'"
                       class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy"
                       @click.prevent="
                         () => {
@@ -212,7 +237,22 @@
                             this.showChangedCount = true
                             this.showChangedId = org.org_data.id
                           } else {
-                            orderSubmit(org.org_data.id)
+                            orderSubmit(org.org_data.id, warehouse_id, 0)
+                          }
+                        }
+                      "
+                    >
+                      Изменить заказ
+                    </button>
+                    <button  v-else
+                      class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy"
+                      @click.prevent="
+                        () => {
+                          if (org?.cart_data?.not_available) {
+                            this.showChangedCount = true
+                            this.showChangedId = org.org_data.id
+                          } else {
+                            orderSubmit(org.org_data.id, warehouse_id)
                           }
                         }
                       "
@@ -238,7 +278,7 @@
                           this.showChangedCount = true
                           this.showChangedId = org.org_data.id
                         } else {
-                          orderSubmit(org.org_data.id)
+                          orderSubmit(org.org_data.id, warehouse_id)
                         }
                       }
                     "
@@ -315,7 +355,7 @@
                           this.showChangedCount = true
                           this.showChangedId = 'all'
                         } else {
-                          orderSubmit('all')
+                          orderSubmit('all', 0)
                         }
                       }
                     "
@@ -579,7 +619,7 @@ export default {
         this.$emit('catalogUpdate')
       })
     },
-    async orderSubmit(orgId) {
+    async orderSubmit(orgId, warehouse_id) {
       this.loading = true
       this.getBasket().then((response) => {
         // console.log(response.data?.data?.data)
@@ -589,7 +629,7 @@ export default {
           this.showChangedId = orgId
         } else {
           // orderSubmitApi
-          this.orderSubmitApi({ orgId: orgId }).then((response) => {
+          this.orderSubmitApi({ orgId: orgId, warehouse_id: warehouse_id }).then((response) => {
             let arr = []
             console.log(response)
             let res = response.data?.data
@@ -742,6 +782,17 @@ export default {
   }
   .order__item-product-title {
     max-width: 500px;
+  }
+  .order__list-order-edit{
+
+    border-radius: 24px 24px 0 0;
+    border-bottom: 1px solid #75757575;
+    color: #282828;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 8px 0px 12px;
+    margin-bottom: 12px;
+
   }
 }
 </style>

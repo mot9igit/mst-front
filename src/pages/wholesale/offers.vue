@@ -16,6 +16,8 @@
       @filter="filter"
       @sort="filter"
       @paginate="paginate"
+      @viewElem="viewOffer"
+      @deleteElem="delOffer"
     />
   </section>
 </template>
@@ -48,6 +50,12 @@ export default {
           placeholder: 'Искать в предложениях',
           type: 'text',
         },
+        status: {
+          name: 'Статус',
+          placeholder: 'Фильтр по статусу',
+          type: 'dropdown',
+          values: this.offerStatuses,
+        },
       },
       table_data: {
         id: {
@@ -72,17 +80,17 @@ export default {
           sort: true,
           class: 'cell_centeralign',
         },
-        date_end: {
-          label: 'Дата окончания предложения',
-          type: 'link',
-          link_to: 'wholesaleOffer',
-          link_params: {
-            id: this.$route.params.id,
-            offer_id: 'id',
-          },
-          sort: true,
-          class: 'cell_centeralign',
-        },
+        // date_end: {
+        //   label: 'Дата окончания предложения',
+        //   type: 'link',
+        //   link_to: 'wholesaleOffer',
+        //   link_params: {
+        //     id: this.$route.params.id,
+        //     offer_id: 'id',
+        //   },
+        //   sort: true,
+        //   class: 'cell_centeralign',
+        // },
         store_name: {
           label: 'Склад поставщика',
           type: 'link',
@@ -132,6 +140,21 @@ export default {
           sort: true,
           class: 'cell_centeralign',
         },
+        actions: {
+          label: 'Действия',
+          type: 'actions',
+          sort: false,
+          available: {
+            view: {
+              icon: 'pi pi-eye',
+              label: 'Просмотреть',
+            },
+            delete: {
+              icon: 'pi pi-trash',
+              label: 'Удалить',
+            },
+          },
+        },
       },
     }
   },
@@ -139,12 +162,17 @@ export default {
     ...mapActions({
       getOffers: 'wholesale/getOffers',
       unsetOffers: 'wholesale/unsetOffers',
+      deleteOffer: 'wholesale/deleteOffer',
+      getOffersStatuses: 'purchases/getOffersStatuses',
     }),
     filter(data) {
       console.log(data)
       this.loading = true
       this.unsetOffers()
       this.page = 1
+      if(data.filtersdata.status){
+        data.filterstatus = data.filtersdata.status
+      }
       this.getOffers(data).then(() => {
         this.loading = false
       })
@@ -157,21 +185,76 @@ export default {
         this.loading = false
       })
     },
+    viewOffer(data){
+      this.$router.push({
+        name: 'wholesaleOffer',
+        params: {
+          id: this.$route.params.id,
+          offer_id: data.id
+        }})
+    },
+    delOffer(data){
+      console.log(data)
+      this.$confirm.require({
+        message: 'Вы уверены, что хотите удалить предложение №' + data.id + '?',
+        header: 'Удаление акции',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.deleteOffer({ offer_id: data.id }).then((response) => {
+              if (response.data.success) {
+                this.$toast.add({
+                severity: 'success',
+                summary: 'Удаление прошло успешно',
+                life: 3000,
+              })
+              this.loading = true
+              this.getOffers({
+                page: this.page,
+                perpage: this.pagination_items_per_page,
+              }).then(() => {
+                this.loading = false
+              })
+            } else {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: 'Не удалось удалить предложение!',
+                life: 3000,
+              })
+            }
+          })
+        },
+        reject: () => {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Удаление предложения',
+            detail: 'Действие отклонено',
+            life: 3000,
+          })
+        },
+      })
+    },
   },
   mounted() {
     this.getOffers({
       page: this.page,
       perpage: this.pagination_items_per_page,
     }).then(() => {
+      this.getOffersStatuses()
       this.loading = false
     })
   },
   computed: {
     ...mapGetters({
       offers: 'wholesale/offers',
+      offerStatuses: 'purchases/offerStatuses',
     }),
   },
-  watch: {},
+  watch: {
+    offerStatuses: function (newVal) {
+      this.filters.status.values = newVal
+    },
+  },
 }
 </script>
 <style lang="scss">
