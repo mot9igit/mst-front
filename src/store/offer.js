@@ -50,12 +50,13 @@ export default {
       }
       return response
     },
-    async basketOfferClear(store, { org_id }) {
+    async basketOfferClear(store, { org_id, store_id }) {
       const data = {
         action: 'basket/clear',
         extended_name: 'offer',
         id:  router.currentRoute._value.params.id_org_from,
         org_id: org_id,
+        store_id: store_id,
       }
       const response = await api.basket.basketClear(data)
       return response

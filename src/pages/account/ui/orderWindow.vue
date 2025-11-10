@@ -105,6 +105,7 @@
                           () => {
                             this.showClearBasketModal = true
                             this.id_clear_org = org.org_data.id
+                            this.id_clear_store = warehouse_id
                           }
                         "
                       >
@@ -257,7 +258,7 @@
                         }
                       "
                     >
-                      Отправить заказ
+                      Оформить заказ
                     </button>
                     <!--
                       <div
@@ -283,7 +284,7 @@
                       }
                     "
                   >
-                    Отправить заказ
+                    Оформить заказ
 
                     <span class="order__item-buy-value"
                       >{{ org.cart_data.cost.toLocaleString('ru') }} ₽</span
@@ -479,6 +480,7 @@ export default {
       basketStore: {},
       fetchIds: [],
       id_clear_org: 0,
+      id_clear_store: 0,
       order: '',
     }
   },
@@ -502,7 +504,7 @@ export default {
     clearCart() {
       this.loading = true
       this.showClearBasketModal = false
-      this.basketClear({ org_id: this.id_clear_org }).then(() => {
+      this.basketClear({ org_id: this.id_clear_org, store_id: this.id_clear_store }).then(() => {
         this.id_clear_org = 0
         this.$emit('catalogUpdate')
         this.updateBasket()

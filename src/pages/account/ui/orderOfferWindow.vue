@@ -82,6 +82,7 @@
                           () => {
                             this.showClearBasketModal = true
                             this.id_clear_org = org.org_data.id
+                            this.id_clear_store = warehouse_id
                           }
                         "
                       >
@@ -437,6 +438,7 @@ export default {
       basketStore: {},
       fetchIds: [],
       id_clear_org: 0,
+      id_clear_store: 0,
       order: '',
       form: {
         end_date: null,
@@ -468,7 +470,7 @@ export default {
     clearCart() {
       this.loading = true
       this.showClearBasketModal = false
-      this.basketOfferClear({ org_id: this.id_clear_org }).then(() => {
+      this.basketOfferClear({ org_id: this.id_clear_org, store_id: this.id_clear_store }).then(() => {
         this.id_clear_org = 0
         this.$emit('catalogUpdate')
         this.updateBasket()
@@ -602,7 +604,9 @@ export default {
       //       //   // на предложения
 			//       // });
             this.$toast.add({ severity: 'success', summary: "Предложение создано", detail: "Вы успешно отправили предложение!", life: 3000 });
-            this.clearCart()
+            // this.id_clear_org = this.$route.params.id_org_from
+            // this.id_clear_store = this.basketOfferWarehouse
+            // this.clearCart({ org_id: this.id_clear_org, store_id: this.id_clear_store })
             this.getBasketOffer()
             this.$emit('offerSubmit')
             this.$emit('close')
