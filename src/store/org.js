@@ -20,6 +20,7 @@ export default {
       totalAll: 0,
     },
     manager: {},
+    optPrices: {},
   },
   actions: {
     async getOrg({ commit }) {
@@ -234,6 +235,29 @@ export default {
       }
       return response
     },
+    async getOptPrises({ commit }) {
+      const data = {
+        action: "get/type/prices",
+				store_id: router.currentRoute._value.params.store_id,
+      }
+      const response = await api.org.getOptPrises(data)
+      if (response) {
+        commit('SET_OPT_PRICES', response.data)
+      }
+      return response
+    },
+    async setOrgSettings(store, { settings }) {
+      const data = {
+        action: "set/organization/settings",
+        type: "organization",
+        id: router.currentRoute._value.params.id,
+				store_id: router.currentRoute._value.params.store_id,
+        settings: settings,
+      }
+      const response = await api.org.setOrgSettings(data)
+
+      return response
+    },
   },
   mutations: {
     SET_ORG: (state, data) => {
@@ -259,6 +283,9 @@ export default {
     },
     SET_MANAGER: (state, data) => {
       state.manager = data.data
+    },
+    SET_OPT_PRICES: (state, data) => {
+      state.optPrices = data.data
     },
 
   },
@@ -287,6 +314,9 @@ export default {
     },
     manager(state) {
       return state.manager
+    },
+    optPrices(state) {
+      return state.optPrices
     },
   },
 }
