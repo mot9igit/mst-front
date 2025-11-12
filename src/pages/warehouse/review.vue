@@ -163,9 +163,14 @@ export default {
           class: 'cell_review-stores-name',
           items: ['name_short','address'],
         },
-				active: {
-					label: "Активно",
-					type: "boolean",
+				integration_check: {
+					label: "Интеграция",
+					type: "text",
+          class: 'cell_centeralign cell_review-stores-active',
+				},
+        store_type: {
+					label: "Тип склада",
+					type: "text",
           class: 'cell_centeralign cell_review-stores-active',
 				},
         //actions: {
