@@ -165,12 +165,22 @@ export default {
         },
 				integration_check: {
 					label: "Интеграция",
-					type: "text",
+					type: 'link',
+          link_to: 'warehouseReviewStore',
+          link_params: {
+              id: this.$route.params.id,
+              store_id: 'id',
+          },
           class: 'cell_centeralign cell_review-stores-active',
 				},
         store_type: {
 					label: "Тип склада",
-					type: "text",
+					type: 'link',
+          link_to: 'warehouseReviewStore',
+          link_params: {
+              id: this.$route.params.id,
+              store_id: 'id',
+          },
           class: 'cell_centeralign cell_review-stores-active',
 				},
         //actions: {
