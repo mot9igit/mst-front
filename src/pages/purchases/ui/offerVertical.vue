@@ -37,7 +37,7 @@
             </button>
             </div>
             <p class="product-card__seller-info">
-              {{ offer.org.name }} ИНН {{ offer.org_inn ? offer.org_inn : '-' }}
+              {{ offer.org_fullname }} ИНН {{ offer.org_inn ? offer.org_inn : '-' }}
             </p>
           </div>
 
@@ -107,7 +107,7 @@
                 class="d-divider d-divider--vertical product-card__count-divider"
                 v-if="offer.requirement"
               ></div>
-              <div class="product-card__count-value" v-if="offer.requirement">
+              <div class="product-card__count-value product-card__count-value-require" v-if="offer.requirement">
                 <span class="product-card__count-label">Ваша потребность: </span>
                 {{ Number(offer.requirement.count) }} шт
 
@@ -421,7 +421,7 @@
 <script>
 import { mapActions } from 'vuex'
 import customModal from '@/shared/ui/Modal.vue'
-import Counter from '@/shared/ui/Counter.vue'
+import Counter from '@/shared/ui/CounterNoAdd.vue'
 
 export default {
   name: 'productOffer',
@@ -631,18 +631,8 @@ export default {
 }
 </script>
 <style lang="scss">
-@keyframes button-loading-spinner {
-  from {
-    transform: rotate(0turn);
-  }
-
-  to {
-    transform: rotate(1turn);
-  }
-}
-
 .product-card__vertical .products__list {
-  display: flex;
+  grid-template-columns: repeat(4, 1fr);
   align-items: flex-start;
   justify-content: start;
   gap: 49px;
@@ -665,6 +655,8 @@ export default {
   border-radius: 16px;
   box-shadow: none;
   padding: 8px 9px;
+  z-index: 1;
+  overflow: visible;
 }
 .product-card__vertical .product-card__content {
     display: flex;
@@ -758,7 +750,7 @@ export default {
     align-items: center;
     justify-content: space-between;
 }
-.product-card__vertical .product-card .product-card__count-value:last-child {
+.product-card__vertical .product-card .product-card__count-value-require {
   padding: 4px 13.5px;
   background: #EDEDED;
   border-radius: 36px;
@@ -836,9 +828,8 @@ export default {
   position: relative;
 
 }
-
 .product-card__seller--active{
-    transition: 0.4s;
+    transition: 0.3s;
     position: absolute;
     background-color: #fff;
     width: calc(100% + 18px);
@@ -848,6 +839,8 @@ export default {
     border-radius: 10px;
     padding: 8px 9px;
     min-height: 65px;
+    z-index: 2;
+    cursor: pointer;
 }
 .product-card__seller--active-header{
     display: flex;
@@ -855,29 +848,121 @@ export default {
 }
 .product-card__seller--active-header .product-card__seller-button{
   color: #F92C0D;
-  transition: 0.4s;
+  transition: 0.3s;
   rotate: 180deg;
-
+  padding-bottom: 5px;
+}
+.product-card__seller--active .product-card__seller-info{
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 123%;
+  color: #757575;
+  margin-top: 6px;
 }
 
-@media (width>1280px) {
+@media (width<=1710px) {
+.product-card__vertical .products__list {
+  grid-template-columns: repeat(3, 1fr);
+  align-items: flex-start;
+  justify-content: start;
+  gap: 24px;
+  margin-bottom: 52px;
 
+}
 }
 @media (width <=1536px) {
 
 }
 @media (width <=1280px) {
+.product-card__vertical .products__list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: flex-start;
+  justify-content: start;
+  gap: 24px;
+  margin-bottom: 52px;
 
+}
 }
 @media (width <=1024px) {
+.product-card__vertical .products__list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: flex-start;
+  justify-content: start;
+  gap: 24px;
+  margin-bottom: 52px;
 
 }
+}
 
-@media (width <=800px) {
+@media (width <=900px) {
+.product-card__vertical .products__list {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  align-items: flex-start;
+  justify-content: start;
+  gap: 24px;
+  margin-bottom: 52px;
 
+}
 }
 
 @media (width <=600px) {
+    .product-card__info-container {
+        background: #fff;
+        border-radius: 0px;
+        margin: 0px;
+        padding: 0px;
+    }
+    .product-card__vertical .product-card {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        background-color: #fff;
+        border-radius: 16px;
+        box-shadow: none;
+        padding: 8px 9px;
+        z-index: 1;
+        overflow: visible;
+        margin: 0;
+        padding-bottom: 8px !important;
+
+    }
+    .product-card__vertical .product-card__stat:nth-child(2), .product-card__stat:nth-child(3) {
+        display: flex;
+    }
+    .product-card__vertical  .product-card__stat-list:after, .product-card__vertical  .product-card__stat-list:before {
+        display: none;
+    }
+    .product-card__vertical .product-card__image-container {
+        border-radius: 0px;
+        overflow: hidden;
+        aspect-ratio: 1;
+        width: 80%;
+        height: 80%;
+        min-width: 80%;
+        min-height: 80%;
+        max-height: 80%;
+        margin: 0 auto;
+    }
+    .product-card__basket-button {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+        height: auto;
+    }
+    .product-card__basket-button .d-counter,  .product-card__basket-button .d-button{
+        max-width: 100%;
+        width: 100%;
+    }
+    .product-card__vertical .product-card__buy-icon,.product-card__vertical  .product-card__seller-button {
+        display: flex;
+    }
+    .product-card__vertical .product-card__buy-icon {
+        font-size: 17px;
+    }
 
 }
 @media (width <=320px) {
