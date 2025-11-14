@@ -111,8 +111,8 @@ export default {
         page: page,
         req: req,
         perpage: perpage,
-        action: 'get/products',
-       // action: 'get/products/all_sales',
+       action: 'get/products',
+        // action: 'get/products/all_sales',
         basket: basket,
       }
       const response = await api.catalog.getOptProducts(data)

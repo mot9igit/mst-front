@@ -34,8 +34,8 @@
         </div>
       </div>
     </div>
-    <!--<div class="products__list-wrapper  product-card__vertical">-->
-     <div class="products__list-wrapper">
+     <!--<div class="products__list-wrapper  product-card__vertical">-->
+    <div class="products__list-wrapper">
       <div class="products__list" v-if="product.stores && !$route.params.id_org_from">
         <offer
           v-for="(item, index) in product.stores"
