@@ -380,13 +380,31 @@
       </div>
       <div class="product-card-actions__modal-all-content">
         <div class="product-card-actions__modal-all-item dart-row"
-            v-for="(item, index) in activeActionsData"
+            v-for="(item, index) in offer.actions"
             :key="index">
+
             <div class="product-card-actions__modal-all-item-image d-col-md-7"><img :src="item.image.image"></div>
             <div class="product-card-actions__modal-all-item-action d-col-md-4">
+              <!--TODO флаги: Акция включена, Акция выключена, Акция несовместима, Условия акции не выполнены-->
               <p class="product-card-actions__modal-all-item-action-label">Акция включена:</p>
               <div class="product-card-actions__modal-all-item-action-button">
-                <i class="d-icon-cart product-card__buy-icon"></i>
+                <div>
+                  <i class="d-icon-times product-card__actions-icon-cross"></i>
+                  <i class="d-icon-check product-card__actions-icon-auto"></i>
+                  <i class="d-icon-info product-card__actions-icon-info"></i>
+                  <div class="d-switch">
+                    <input
+                      type="checkbox"
+                      name="enable-promotion"
+                      id="enable-promotion"
+                      class="d-switch__input"
+
+                    />
+                    <div class="d-switch__circle"></div>
+                  </div>
+
+                </div>
+
                 <p>
                   {{ item.name }}
                 </p>
@@ -397,50 +415,48 @@
               <p class="product-card-actions__modal-all-item-action-label">Описание:</p>
               <div v-html="item.description"></div></div>
             <div class="product-card__stat-list d-col-md-6">
-              <div class="" v-if="item.percent > 0">
-                <i class="d-icon-percent-rounded product-card__buy-icon"></i>{{ item.percent }}% Скидка
+              <div  v-if="item.percent > 0">
+                <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка {{ item.percent }}%
               </div>
               <div
-                class=""
                 v-if="item.delivery_type == 2"
               >
                 <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
               </div>
               <div
-                class=""
                 v-if="item.condition_min_sum > 0"
               >
-                Минимальная общая сумма заказа - {{ item.condition_min_sum }} ₽
+                <span class="product-card__icon-summ product-card__buy-icon">₽</span>
+                Мин. сумма - {{ parseInt(item.condition_min_sum) }} ₽
               </div>
               <div
-                class=""
+
                 v-if="item.condition_SKU > 0"
               >
-                Минимальное количество SKU акции - {{ item.condition_SKU }} шт
+                <i class="d-icon-box-flat product-card__buy-icon"></i>Мин. кол-во SKU - {{ item.condition_SKU }} шт
               </div>
               <div
-                class=""
+
                 v-if="item.condition_min_count > 0"
               >
-                Минимальное общее количество товаров - {{ item.condition_min_count }} шт
+                <i class="d-icon-box-flat product-card__buy-icon"></i>Мин. общее кол-во - {{ item.condition_min_count }} шт
               </div>
               <div
-                class=""
                 v-if="item.min_count > 1"
               >
-                Минимальное количество товаров - {{ item.min_count }} шт
+                <i class="d-icon-box-flat product-card__buy-icon"></i>Мин. кол-во - {{ item.min_count }} шт
               </div>
               <div
-                class=""
+
                 v-if="item.multiplicity > 1"
               >
-                Кратность - {{ item.multiplicity }} шт
+                <i class="d-icon-box-flat product-card__buy-icon"></i>Кратность - {{ item.multiplicity }} шт
               </div>
               <div
-                class=""
+
                 v-if="item.integration == 1"
               >
-                Интеграция с MachineStore
+                <i class="d-icon-shuffle product-card__buy-icon"></i>Интеграция с MachineStore
               </div>
             </div>
             <div class="product-card-actions__modal-all-item-href d-col-md-3">
@@ -901,14 +917,24 @@ export default {
   color: #757575;
   margin-top: 6px;
 }
+.product-card-actions__modal-all .modal-content {
+  max-width: 1519px;
+}
+.product-card-actions__modal-all .modal__content{
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
 .product-card-actions__modal-all-header{
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap:24px;
 }
 .product-card-actions__modal-all-header-product-info{
     display: flex;
     gap: 20px;
+    align-items: center;
 }
 .product-card-actions__modal-all h3{
   margin-top: -25px;
@@ -964,6 +990,7 @@ export default {
     padding: 12px 10px;
     background: #F4F4F4;
     border-radius: 8px;
+
 }
 .product-card-actions__modal-all .product-card__stat-content {
     flex-direction: row;
@@ -1040,9 +1067,9 @@ export default {
   border-left: 0.5px solid #75757534;
   height: auto;
 }
-.product-card-actions__modal-all .product-card-actions__modal-all-header-product-info {
-    max-width: 450px;
-}
+// .product-card-actions__modal-all .product-card-actions__modal-all-header-product-info {
+//     max-width: 450px;
+// }
 .product-card-actions__modal-all-item{
   display: flex;
   gap: 24px;
@@ -1057,6 +1084,7 @@ export default {
   display:flex;
   flex-direction: column;
   gap: 32px;
+  overflow-y: scroll;
 }
 .product-card-actions__modal-all-item-image{
   display: flex;
@@ -1064,7 +1092,7 @@ export default {
   align-items: center;
 }
 .product-card-actions__modal-all-item-image img{
-  height: 80px;
+  height: 100%;
   border-radius: 11px;
   object-fit: cover;
 }
@@ -1095,14 +1123,44 @@ export default {
   line-height: 18px;
   color: #282828;
 }
-.product-card-actions__modal-all .product-card__stat-list {
+.product-card-actions__modal-all-content .product-card__stat-list {
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
   line-height: 18px;
   color: #282828;
   margin-bottom: 0;
-  width: fit-content;
+  width: 100%;
+  max-width: 18%;
+}
+.product-card-actions__modal-all-content .product-card__stat-list .product-card__buy-icon{
+  color: #757575;
+  margin-right: 6px;
+}
+.product-card__icon-summ{
+  width:18px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 18px;
+  border: 0.5px solid #757575;
+  font-size: 13px;
+  font-weight: 400;
+  float: left;
+}
+.product-card__actions-icon-cross{
+  font-size: 15px;
+  color: #F92C0D;
+}
+.product-card__actions-icon-auto{
+  font-size: 23px;
+  color: #97BC71;
+}
+.product-card__actions-icon-info{
+  font-size: 18px;
+  color: #F92C0D;
+  font-weight: 600;
 }
 @media (width<=1710px) {
 .product-card__vertical .products__list {
