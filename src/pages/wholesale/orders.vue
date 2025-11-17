@@ -135,6 +135,12 @@ export default {
           },
           class: 'cell_centeralign',
         },
+        description: {
+          label: 'Комментарий',
+          type: 'html',
+          sort: false,
+          class: 'cell_centeralign',
+        },
       },
     }
   },

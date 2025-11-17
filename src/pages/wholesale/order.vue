@@ -103,6 +103,14 @@
           </div>
         </div>
       </div>
+      <div class="order-card__ordercomment">
+        <div  class="order-card__ordercomment-container" v-if="order.description">
+          <div class="order-card__orderinfo-grid-lable">Комментарий:</div>
+          <div v-html="order.description"></div>
+        </div>
+
+
+      </div>
     </div>
     <div class="d-order-container">
       <h3>Состав заказа</h3>
@@ -131,7 +139,6 @@
         Ok
       </button>
       </customModal>
-
     </Teleport>
   </section>
 </template>
@@ -260,5 +267,13 @@ export default {
   color: #ededed;
   min-height: 24px;
   min-width: 146px;
+}
+.order-card__ordercomment-container{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.order-card__ordercomment{
+  margin:24px 9% 24px 0;
 }
 </style>

@@ -135,6 +135,12 @@
           </div>
         </div>
       </div>
+       <div class="order-card__ordercomment">
+        <div  class="order-card__ordercomment-container" v-if="order.description">
+          <div class="order-card__orderinfo-grid-lable">Комментарий:</div>
+          <div v-html="order.description"></div>
+        </div>
+      </div>
     </div>
     <div class="d-order-container">
       <h3>Состав заказа</h3>
@@ -206,11 +212,12 @@ import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Toast from 'primevue/toast'
 import editOrderWindow from './ui/editOrderWindow.vue'
+import Editor from 'primevue/editor'
 
 
 export default {
   name: 'purchasesOrder',
-  components: { Breadcrumbs, BaseTable, Loader, customModal, Toast, editOrderWindow },
+  components: { Breadcrumbs, BaseTable, Loader, customModal, Toast, editOrderWindow, Editor },
   data() {
     return {
       loading: true,
@@ -220,7 +227,6 @@ export default {
       modalDocs: false,
       modalCancel: false,
       modalEdit: false,
-
       table_data: {
         image: {
           label: 'Фото',
