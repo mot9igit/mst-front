@@ -130,6 +130,19 @@ export default {
       const response = await api.basket.orderSubmit(data)
       return response
     },
+    async setBasketComment(store, { store_id, org_id, org_store, comment, set }) {
+      const data = {
+        action: 'basket/set/comment',
+        id: router.currentRoute._value.params.id,
+        store_id: store_id,
+        org_id: org_id,
+        org_store: org_store,
+        comment: comment,
+        set: set,
+      }
+      const response = await api.basket.setOrgBasketStore(data)
+      return response
+    },
   },
   mutations: {
     SET_BASKET: (state, data) => {

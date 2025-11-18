@@ -1,4 +1,5 @@
 <template>
+  <Toast/>
   <div class="d-sheet__overlay order__sheet-overlay" :class="{ active: active }">
     <div class="d-sheet__wrapper order__sheet-wrapper">
       <div
@@ -202,6 +203,33 @@
                     >
                   </div>
                 </div>
+                <div class="order__item-content-comment">
+                  <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order__item-content-comment-add"
+                    @click.prevent="modalComment = true, modalCommentOrg = org_id, modalCommentStore = warehouse_id, modalCommentText = ''"
+                    v-if="!warehouse.comment"
+                    >
+                      Добавить комментарий
+                      <i class="d-icon-plus"></i>
+                  </button>
+                  <div class="order__item-content-description-container" v-else>
+                    <div class="order__item-content-description-header">
+                      <p class="order__item-prop-label order__item-comment-weight">Комментарий:</p>
+                      <div class="order__item-content-description-actions">
+                        <button class="order__item-content-description-actions-button"
+                          @click.prevent="modalComment = true, modalCommentOrg = org_id, modalCommentStore = warehouse_id, modalCommentText = warehouse.comment">
+                          <i class="d-icon-pen2"></i>
+                        </button>
+                        <div class="d-divider d-divider--vertical"></div>
+                        <button class="order__item-content-description-actions-button"
+                        @click.prevent="modalCommentDelete = true, modalCommentOrg = org_id, modalCommentStore = warehouse_id">
+                          <i class="d-icon-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="order__item-prop-value order__item-comment-weight order--comment">{{ prepareComment(warehouse.comment) }}</div>
+                  </div>
+
+                </div>
                 <div class="order__item-content-bottom">
                   <div class="order__item-content-bottom-left">
                     <div
@@ -390,6 +418,54 @@
     </div>
   </div>
   <teleport to="body">
+    <customModal v-model="modalComment" class="order-card__modal-comment">
+        <h3>Ведите комментарий к заказу</h3>
+        <Editor
+          v-model="this.modalCommentText"
+          id="description"
+          editorStyle="height: 248px"
+          variant="simple"
+          @text-change="this.error = ''"
+        />
+        <div v-if="error != ''" class="d-input-error vendor-change-error">
+                    <i class="d-icon-warning d-input-error__icon"></i>
+                    <span class="d-input-error__text">{{ error }}</span>
+                  </div>
+        <div class="order-card__modal-buttons">
+          <button
+            type="button"
+            href="#"
+            class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
+            @click.prevent="modalCommentText = '', modalComment = false"
+          >
+            Отмена
+          </button>
+          <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+            @click.prevent="saveComment">
+            Сохранить
+          </button>
+        </div>
+
+    </customModal>
+    <customModal v-model="modalCommentDelete" class="order-card__modal-comment order-card__modal-comment-del">
+        <h3>Удалить комментарий?</h3>
+
+        <div class="order-card__modal-buttons">
+          <button
+            type="button"
+            href="#"
+            class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
+            @click.prevent="modalCommentDelete = false"
+          >
+            Отмена
+          </button>
+          <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+            @click.prevent="deleteComment">
+            Удалить
+          </button>
+        </div>
+
+    </customModal>
     <customModal v-model="this.showClearBasketModal" class="clear_cart">
       <b>Вы уверены, что хотите очистить корзину?</b>
       <p>Это действие невозможно будет отменить</p>
@@ -460,11 +536,13 @@ import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
+import Editor from 'primevue/editor'
+import Toast from 'primevue/toast'
 
 export default {
   name: 'orderWindow',
   emits: ['close', 'catalogUpdate', 'orderSubmit'],
-  components: { Loader, customModal, Counter },
+  components: { Loader, customModal, Counter, Editor, Toast },
   props: {
     active: {
       type: Boolean,
@@ -482,6 +560,12 @@ export default {
       id_clear_org: 0,
       id_clear_store: 0,
       order: '',
+      modalComment: false,
+      modalCommentOrg: 0,
+      modalCommentStore: 0,
+      modalCommentText: '',
+      error: '',
+      modalCommentDelete: false,
     }
   },
   computed: {
@@ -497,6 +581,7 @@ export default {
       basketProductRemove: 'basket/basketProductRemove',
       basketProductUpdate: 'basket/basketProductUpdate',
       orderSubmitApi: 'basket/orderSubmit',
+      setBasketComment: 'basket/setBasketComment',
     }),
     close() {
       this.$emit('close')
@@ -669,6 +754,90 @@ export default {
         }
       })
     },
+    saveComment(){
+      if(this.modalCommentText != '' && this.modalCommentText != '<p></p>'){
+        this.loading = true
+        this.setBasketComment({
+        store_id: this.basketWarehouse,
+        org_id: this.modalCommentOrg,
+        org_store: this.modalCommentStore,
+        comment: this.modalCommentText,
+        set: 'set'
+      }).then((res) => {
+        if(res.data.success){
+          this.$toast.add({
+              severity: 'success',
+              summary: 'Успешно!',
+              detail: 'Комментарий успешно обновлен!',
+              life: 3000,
+            })
+            this.error = ''
+            this.modalCommentText = ''
+            this.modalCommentOrg = 0
+            this.modalCommentStore = 0
+            this.modalComment = false
+            this.getBasket()
+            this.loading = false
+        }else{
+          this.$toast.add({
+          severity: 'error',
+          summary: 'Произошла ошибка!',
+          detail: 'Комментарий не обновлен! Попробуйте добавить комментарий еще раз',
+          life: 3000,
+        })
+        this.loading = false
+        }
+      })
+      }else{
+        this.error = 'Введите комментарий!'
+        return
+      }
+
+    },
+    prepareComment(code){
+      let new_string = code.replace(/<(.|\n)*?>/g, '')
+      new_string = new_string.replace(/\&nbsp;/g, ' ')
+      new_string = new_string.replace(/\n/g, '')
+      if(new_string.length > 120){
+        new_string = new_string.substring(0,120)+"..."
+      }
+      return new_string
+    },
+    deleteComment(){
+        this.loading = true
+        this.setBasketComment({
+          store_id: this.basketWarehouse,
+          org_id: this.modalCommentOrg,
+          org_store: this.modalCommentStore,
+          comment: '',
+          set: 'unset'
+        }).then((res) => {
+          if(res.data.success){
+            this.$toast.add({
+                severity: 'success',
+                summary: 'Успешно!',
+                detail: 'Комментарий успешно удален!',
+                life: 3000,
+              })
+              this.error = ''
+              this.modalCommentText = ''
+              this.modalCommentOrg = 0
+              this.modalCommentStore = 0
+              this.modalComment = false
+              this.modalCommentDelete = false
+              this.getBasket()
+              this.loading = false
+          }else{
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Произошла ошибка!',
+              detail: 'Комментарий не удален! Попробуйте еще раз',
+              life: 3000,
+            })
+            this.loading = false
+          }
+        })
+    }
   },
   mounted() {
     this.getBasket().then(() => {
@@ -794,7 +963,101 @@ export default {
     font-weight: 600;
     padding: 8px 0px 12px;
     margin-bottom: 12px;
+  }
+
+}
+  .order__item-content-comment{
+    margin-top: 24px;
 
   }
-}
+  .order__item-content-description-container{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .order__item-comment-weight{
+    font-weight: 400;
+  }
+  .order__item-content-description-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .order__item-content-description-actions{
+    display: flex;
+  }
+  .order__item-content-description-actions-button{
+    color: #757575;
+  }
+  .order__item-content .cart__item-header-button {
+    font-size: 16px;
+  }
+  .order__item-content-comment-add{
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 123%;
+    height: 24px;
+    min-height: 24px;
+    max-height: 24px;
+    padding: 4px 8px;
+    gap: 8px;
+  }
+  .order__item-content-comment-add i{
+    font-size: 10px;
+  }
+  .order-card__modal-comment .modal-content h3{
+    margin-top: -24px;
+    margin-bottom: 40px;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 31px;
+  }
+  .order-card__modal-comment .modal-content .order-card__modal-buttons{
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 56px;
+  }
+  .order-card__modal-comment .modal-content .order-card__modal-buttons .d-button{
+    height: 38px;
+    min-height: 38px;
+    max-height: 38px;
+    min-width: 91px;
+    padding: 10px 19px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .order-card__modal-buttons-cancel{
+    background-color: #fff;
+    border: 1px solid #282828;
+    color: #282828;
+    width: 91px;
+  }
+  .order-card__modal-buttons-cancel:hover{
+    background-color: #282828;
+    border: 1px solid #282828;
+    color: #fff;
+  }
+  .order-card__modal-comment .modal-content{
+    padding-bottom: 0;
+  }
+  .order-card__modal-comment-del .modal-content {
+        max-width: 656px;
+  }
+  .order--comment{
+    width: 100%;
+    position: relative;
+    word-wrap: break-word;
+    text-wrap: wrap;
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    overflow-wrap: break-word;
+    overflow: hidden;
+  }
+
+
+
 </style>

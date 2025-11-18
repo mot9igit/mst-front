@@ -136,9 +136,9 @@
         </div>
       </div>
        <div class="order-card__ordercomment">
-        <div  class="order-card__ordercomment-container" v-if="order.description">
+        <div  class="order-card__ordercomment-container" v-if="order.comment">
           <div class="order-card__orderinfo-grid-lable">Комментарий:</div>
-          <div v-html="order.description"></div>
+          <div v-html="order.comment"></div>
         </div>
       </div>
     </div>
@@ -212,12 +212,11 @@ import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Toast from 'primevue/toast'
 import editOrderWindow from './ui/editOrderWindow.vue'
-import Editor from 'primevue/editor'
 
 
 export default {
   name: 'purchasesOrder',
-  components: { Breadcrumbs, BaseTable, Loader, customModal, Toast, editOrderWindow, Editor },
+  components: { Breadcrumbs, BaseTable, Loader, customModal, Toast, editOrderWindow },
   data() {
     return {
       loading: true,

@@ -104,9 +104,9 @@
         </div>
       </div>
       <div class="order-card__ordercomment">
-        <div  class="order-card__ordercomment-container" v-if="order.description">
+        <div  class="order-card__ordercomment-container" v-if="order.comment">
           <div class="order-card__orderinfo-grid-lable">Комментарий:</div>
-          <div v-html="order.description"></div>
+          <div v-html="order.comment"></div>
         </div>
 
 

@@ -30,6 +30,9 @@
     <div class="cell_value" v-else-if="cell_data.type == 'html'" :class="cell_data.class">
       <div v-html="value[cell_key]"></div>
     </div>
+    <div class="cell_value" v-else-if="cell_data.type == 'prepare-html'" :class="cell_data.class">
+      <div class="d-table-html">{{ prepareHtml(value[cell_key]) }} </div>
+    </div>
     <div class="cell_value" v-else-if="cell_data.type == 'gist'" :class="cell_data.class">
       <Chart
         type="line"
@@ -386,6 +389,20 @@ export default {
     actionCell(id) {
       this.$emit('actionCell', id)
     },
+    prepareHtml(code){
+      if(code){
+        let new_string = code.replace(/<(.|\n)*?>/g, '')
+        new_string = new_string.replace(/\&nbsp;/g, ' ')
+        new_string = new_string.replace(/\n/g, '')
+        if(new_string.length > 120){
+          new_string = new_string.substring(0,120)+"..."
+        }
+        return new_string
+      }else{
+        return ''
+      }
+
+    },
   },
   components: {
     Button,
@@ -501,5 +518,17 @@ export default {
 }
 .p-buttonset {
   white-space: nowrap;
+}
+.d-table-html{
+  width: 100%;
+    position: relative;
+    word-wrap: break-word;
+    text-wrap: wrap;
+    white-space: pre-wrap; /* css-3 */
+    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    overflow-wrap: break-word;
+    overflow: hidden;
 }
 </style>

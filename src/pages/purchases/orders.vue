@@ -147,9 +147,9 @@ export default {
           sort: true,
           class: 'cell_centeralign',
         },
-        description: {
+        comment: {
           label: 'Комментарий',
-          type: 'html',
+          type: 'prepare-html',
           sort: false,
           class: 'cell_centeralign',
         },
