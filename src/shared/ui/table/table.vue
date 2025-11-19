@@ -168,13 +168,16 @@
               </div>
               <div v-else>
                 <a class="sort" href="#" v-if="row.sort" @click.prevent="sorting(index)">
-                  {{ row.label }}
-                  <span v-if="this.sort[index]">
-                    <mdicon name="sort-ascending" size="18" v-if="this.sort[index].dir == 'ASC'" />
-                    <mdicon name="sort-descending" size="18" v-else />
+                  <span class="d-row-label">{{ row.label }}</span>
+                  <span v-if="this.sort[index]" class="d-table-sort-active">
+                    <i class="d-icon-swap swap-rotate" v-if="this.sort[index].dir == 'ASC'" ></i>
+                    <i class="d-icon-swap" v-else ></i>
+                    <!-- <mdicon name="sort-ascending" size="18" v-if="this.sort[index].dir == 'ASC'" />
+                    <mdicon name="sort-descending" size="18" v-else /> -->
                   </span>
-                  <span v-else>
-                    <mdicon name="sort" size="18" />
+                  <span v-else class="d-table-sort">
+                    <i class="d-icon-trade"></i>
+                    <!-- <mdicon name="sort" size="18" /> -->
                   </span>
                 </a>
                 <span v-else>
@@ -800,5 +803,47 @@ tbody {
       }
     }
   }
+}
+.sort .d-table-sort {
+  line-height: 140%;
+}
+.d-table-sort{
+  display: inline-block;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  background: #3E3E3E;
+  border-radius: 50px;
+  padding-top: 1.5px;
+  color: #FBFBFB;
+}
+.d-table-sort i{
+  transform: rotate(90deg);
+  font-size: 10.5px;
+}
+.d-table-sort-active{
+  display: inline-block;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  background: #FBFBFB;
+  border-radius: 50px;
+  padding-top: 2px;
+  color: #282828;
+}
+.d-table-sort-active i{
+  font-size: 12px;
+}
+.d-row-label{
+  line-height: 123%;
+}
+.sort{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.swap-rotate{
+  transform: scale(-1, 1);
 }
 </style>

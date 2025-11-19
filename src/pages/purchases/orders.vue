@@ -18,6 +18,7 @@
         @sort="filter"
         @paginate="paginate"
       />
+
     </div>
   </section>
 </template>

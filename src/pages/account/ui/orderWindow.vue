@@ -88,7 +88,7 @@
                       </div>
                       <div class="d-divider d-divider--vertical order__item-header-divider"></div>
                       <div class="order__item-header-warehouse">
-                        <p class="order__item-header-warehouse-label">Склад #{{ warehouse_id }}</p>
+                        <p class="order__item-header-warehouse-label">Склад #{{ warehouse_id }}:</p>
                         <p class="order__item-header-warehouse-value">
                           {{
                             warehouse.warehouse_data.address_short
@@ -117,7 +117,7 @@
                   <div class="order__item-header-bottom">
                     <div class="order__item-header-address">
                       <i class="d-icon-location-flat order__item-header-icon"></i>
-                      <p class="order__item-header-address-label">Адрес доставки&nbsp;</p>
+                      <p class="order__item-header-address-label">Адрес доставки:&nbsp;</p>
                       <p class="order__item-header-address-value">
                         {{
                           basketStore.store_data.name_short
@@ -797,7 +797,7 @@ export default {
     prepareComment(code){
       let new_string = code.replace(/<(.|\n)*?>/g, '')
       new_string = new_string.replace(/\&nbsp;/g, ' ')
-      new_string = new_string.replace(/\n/g, '')
+      new_string = new_string.replace(/\n/g, ' ')
       if(new_string.length > 120){
         new_string = new_string.substring(0,120)+"..."
       }
@@ -1057,7 +1057,352 @@ export default {
     overflow-wrap: break-word;
     overflow: hidden;
   }
+.product-card__basket-button.basket-true .d-counter {
+    background: #ededed;
+    box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
+    border-radius: 35px;
+    border: none;
+}
+.order__footer-divider{
+    margin-top: 0;
+    margin-bottom: 35px;
+}
+.order__footer {
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(11.4px);
+    padding: 0 32px 32px;
+}
+.order__item-buy {
+    height: 32px;
+    min-height: 32px;
+}
+.order__item-list {
+    padding-bottom: 120px;
+}
+.order .d-divider {
+    background-color: #75757575 !important;
+}
+.order__item .order__item-header-warehouse {
+    flex-direction: row;
+    gap: 4px;
+    align-items: flex-start;
+    text-align: left;
+}
+.order__header {
+    margin-bottom: 40px;
+}
 
+.order__item-header-delete {
+  color: #757575;
+}
+@media (width <= 1920px) {
+    .order {
+        padding: 32px;
+    }
 
+}
+@media (width > 1536px) {
+    .order__item-product-counter .d-counter{
+        height: 30px;
+        width: 124px;
+        max-width: 124px;
+    }
+    .order__item-product-counter .d-counter__button:first-child:after {
+        content: "";
+        background-color: rgba(117, 117, 117, 0.3);
+        width: 0.5px;
+        height: 13px;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .order__item-product-counter .d-counter__button:last-child:before {
+        content: "";
+        background-color: rgba(117, 117, 117, 0.3);
+        width: 0.5px;
+        height: 13px;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .order__item-product-counter .d-counter__button-icon {
+        color: #282828;
+        font-size: 10px;
+    }
+    .order__item-product-counter .d-counter__button {
+        width: 20px;
+        padding-inline: 13px;
+        position: relative;
+    }
+    .order__item-product-counter {
+        background-color: #ededed;
+        border: none;
+        max-width: 124px;
+        height: 30px;
+    }
+    .order__item-product-price {
+        text-align: right;
+        font-size: 24px;
+    }
+}
+@media (width <= 1536px) {
+    .order__header-title {
+        font-size: 20px;
+    }
+    .order__item .order__item-product-title {
+        max-width: 440px;
+    }
+    .order__sheet {
+        width: 814px;
+    }
+    .order__item-product-counter .d-counter{
+        height: 24px;
+        width: 121px;
+        max-width: 121px;
+    }
+    .order__item-prop-label, .order__item-prop-value {
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .order__item-prop-divider {
+        display: block;
+    }
+    .order__item-buy {
+        font-size: 16px;
+    }
+    .order__item-content-bottom-left {
+        align-items: flex-start;
+        gap: 4px;
+        flex-direction: row;
+    }
+    .order__item-product-counter .d-counter__button:first-child:after {
+        content: "";
+        background-color: rgba(117, 117, 117, 0.3);
+        width: 0.5px;
+        height: 13px;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .order__item-product-counter .d-counter__button:last-child:before {
+        content: "";
+        background-color: rgba(117, 117, 117, 0.3);
+        width: 0.5px;
+        height: 13px;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .order__item-product-counter .d-counter__button-icon {
+        color: #282828;
+        font-size: 10px;
+    }
+    .order__item-product-counter .d-counter__button {
+        width: 20px;
+        padding-inline: 13px;
+        position: relative;
+    }
+    .order__item-product-counter {
+        background-color: #ededed;
+        border: none;
+        max-width: 121px;
+        height: 24px;
+    }
+    .order__item-product-price {
+        text-align: right;
+        font-size: 20px;
+    }
 
+}
+@media (width <= 1280px) {
+    .order__header-title {
+        font-size: 14px;
+    }
+    .order__item .order__item-product-title {
+        max-width: 266px;
+    }
+    .order__sheet {
+        width: 622px;
+    }
+    .order__item-content-top-right {
+        align-items: end;
+    }
+    .order__item-prop-label, .order__item-prop-value {
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .order__item-prop-divider {
+        display: block;
+    }
+    .cart__item-header-button {
+        display: block;
+    }
+    .order__item-content .cart__item-header-button {
+        font-size: 14px;
+    }
+    .order__item-header-delete {
+        font-size: 14px;
+        aspect-ratio: 1;
+        width: 20px;
+        height: 20px;
+    }
+    .order__item-buy,.order__footer-actions-buy {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 4px 16px;
+        height: 24px;
+        min-height: 24px;
+    }
+    .order__item-content-bottom-left {
+        align-items: flex-start;
+        gap: 4px;
+        flex-direction: row;
+    }
+    .order__item-product-price {
+        text-align: right;
+        font-size: 16px;
+    }
+    .order__item-content-description-actions {
+        font-size:14px;
+    }
+    .order__item-header-warehouse-label,.order__item-header-warehouse-value {
+        font-size: 12px;
+    }
+    .order__item-header-address-label, .order__item-header-address-value {
+        font-size: 14px;
+    }
+    .order__item-product-image-container {
+        aspect-ratio: 1;
+        width: 40px;
+        height: 40px;
+    }
+    .order__item-product-title, .order__item-product-article {
+        font-size: 12px;
+    }
+    .order__item-prop-label, .order__item-prop-value {
+        font-size: 10px;
+        font-weight: 500;
+    }
+    .order__footer-label{
+        font-size: 14px;
+    }
+    .order__footer-value {
+        font-size: 16px;
+    }
+    .order__footer {
+        padding: 0 16px 16px;
+    }
+    .order {
+        padding: 16px;
+    }
+    .order__header {
+        margin-bottom: 24px;
+    }
+    .order__footer-divider{
+        margin-top: 0;
+        margin-bottom: 16px;
+    }
+
+}
+@media (width <= 1024px) {
+    .order__header-title {
+        font-size: 14px;
+    }
+    .order__item .order__item-product-title {
+        max-width: 292px;
+    }
+    .order__sheet {
+        width: 622px;
+    }
+    .order__item-content-top-right {
+        align-items: end;
+    }
+    .order__item-prop-label, .order__item-prop-value {
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .order__item-prop-divider {
+        display: block;
+    }
+    .cart__item-header-button {
+        display: block;
+    }
+    .order__item-content .cart__item-header-button {
+        font-size: 14px;
+    }
+    .order__item-header-delete {
+        font-size: 14px;
+        aspect-ratio: 1;
+        width: 20px;
+        height: 20px;
+    }
+    .order__item-buy,.order__footer-actions-buy {
+        font-size: 10px;
+        font-weight: 600;
+        padding: 4px 16px;
+        height: 24px;
+        min-height: 24px;
+    }
+    .order__item-content-bottom-left {
+        align-items: flex-start;
+        gap: 4px;
+        flex-direction: row;
+    }
+    .order__item-product-price {
+        text-align: right;
+        font-size: 16px;
+    }
+    .order__item-content-description-actions {
+        font-size:14px;
+    }
+    .order__item-header-warehouse-label,.order__item-header-warehouse-value {
+        font-size: 10px;
+    }
+    .order__item-header-address-label, .order__item-header-address-value {
+        font-size: 10px;
+    }
+    .order__item-product-image-container {
+        aspect-ratio: 1;
+        width: 40px;
+        height: 40px;
+    }
+    .order__item-product-title, .order__item-product-article {
+        font-size: 12px;
+    }
+    .order__item-prop-label, .order__item-prop-value {
+        font-size: 10px;
+        font-weight: 500;
+    }
+    .order__footer-label{
+        font-size: 14px;
+    }
+    .order__footer-value {
+        font-size: 16px;
+    }
+    .order__footer {
+        padding: 0 16px 16px;
+    }
+    .order {
+        padding: 16px;
+    }
+    .order__item-header-badge-image-container {
+        width: 18px;
+        height: 18px;
+    }
+    .order__item-product-price {
+        font-size: 14px;
+        font-weight: 600;
+    }
+    .order__item-product-counter{
+      width: 121px;
+    }
+    .order__footer-divider{
+        margin-top: 0;
+        margin-bottom: 24px;
+    }
+}
 </style>
