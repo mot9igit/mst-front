@@ -1306,6 +1306,10 @@ export default {
         margin-top: 0;
         margin-bottom: 16px;
     }
+    .order__item-content-comment-add {
+      height: 24px;
+      font-size: 10px;
+    }
 
 }
 @media (width <= 1024px) {
@@ -1404,5 +1408,10 @@ export default {
         margin-top: 0;
         margin-bottom: 24px;
     }
+}
+@media (width <= 600px) {
+  .order__item-content-description-container{
+    padding: 0 44px 16px;
+  }
 }
 </style>

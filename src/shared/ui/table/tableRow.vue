@@ -1,5 +1,5 @@
 <template>
-  <tr v-if="Object.keys(link_row).length === 0" class="d-table__row">
+  <tr v-if="Object.keys(link_row).length === 0" class="d-table__row" :class="{'d-table__row-padding' : classRow}">
     <v-table-cell
       v-for="(row, index) in keys"
       :key="index"
@@ -18,9 +18,10 @@
       @disapproveElem="disapproveElem"
       @editNumber="editNumber"
       @actionCell="actionCell"
+      @rowClass="rowClass"
     />
   </tr>
-  <tr v-else class="d-table__row">
+  <tr v-else class="d-table__row" :class="{'d-table__row-padding' : classRow}">
     <v-table-cell
       v-for="(row, index) in keys"
       :key="index"
@@ -39,6 +40,7 @@
       @disapproveElem="disapproveElem"
       @editNumber="editNumber"
       @actionCell="actionCell"
+      @rowClass="rowClass"
       @click.prevent="
         $router.push({
           name: link_row.link_to,
@@ -100,10 +102,17 @@ export default {
     },
   },
   data() {
-    return {}
+    return {
+      classRow: false,
+    }
   },
   computed: {},
   methods: {
+    rowClass(s){
+      if(s == true){
+        this.classRow = true
+      }
+    },
     deleteElem(data) {
       this.$emit('deleteElem', data)
     },

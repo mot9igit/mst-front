@@ -4584,7 +4584,39 @@
   background-color: #ededed4D;
   color:#757575;
 }
+  @media (width <=1280px) {
+    .mst__alert{
+      font-size: 12px;
+      line-height: 14px;
+    }
 
+    .mst__alert a{
+      font-size: 12px;
+      line-height: 14px;
+    }
+  }
+    @media (width <=1024px) {
+    .mst__alert{
+      font-size: 10px;
+      line-height: 12px;
+    }
+
+    .mst__alert a{
+      font-size: 10px;
+      line-height: 12px;
+    }
+  }
+      @media (width <=600px) {
+    .mst__alert{
+      font-size: 14px;
+      line-height: 16px;
+    }
+
+    .mst__alert a{
+      font-size: 14px;
+      line-height: 16px;
+    }
+  }
 // TREESELECT
 
 .dart-form-group .vue3-treeselect .vue3-treeselect__control {
@@ -4619,7 +4651,5 @@
     padding: 2px 0;
     vertical-align: top;
 }
-.vue3-treeselect__menu{
 
-}
 

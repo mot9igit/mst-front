@@ -1,5 +1,5 @@
 <template>
-  <section class="shipments wholesaleorders__content" id="shipments">
+  <section class="shipments wholesaleorders__content myorders__content" id="shipments">
     <div class="d-top">
       <Breadcrumbs />
     </div>
@@ -61,26 +61,6 @@ export default {
           sort: true,
           class: 'cell_centeralign',
         },
-        buyer: {
-          label: 'Покупатель',
-          type: 'link',
-          link_to: 'wholesaleOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
-          class: 'cell_centeralign',
-        },
-        buyer_store: {
-          label: 'Магазин/Склад покупателя',
-          type: 'link',
-          link_to: 'wholesaleOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
-          class: 'cell_centeralign',
-        },
         date: {
           label: 'Дата',
           type: 'link',
@@ -92,17 +72,29 @@ export default {
           sort: true,
           class: 'cell_centeralign',
         },
-        cost: {
-          label: 'Сумма',
+        buyer: {
+          label: 'Покупатель',
           type: 'link',
           link_to: 'wholesaleOrder',
           link_params: {
             id: this.$route.params.id,
             order_id: 'id',
           },
-          sort: true,
-          class: 'cell_centeralign nowrap',
+          class: 'cell_centeralign',
         },
+
+        // buyer_store: {
+        //   label: 'Магазин/Склад покупателя',
+        //   type: 'link',
+        //   link_to: 'wholesaleOrder',
+        //   link_params: {
+        //     id: this.$route.params.id,
+        //     order_id: 'id',
+        //   },
+        //   class: 'cell_centeralign',
+        // },
+
+
         initiator: {
           label: 'Инициатор',
           type: 'link',
@@ -122,24 +114,34 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
-          sort: true,
           class: 'cell_centeralign',
         },
-        seller_w_name: {
-          label: 'Магазин/Склад продавца',
+        // seller_w_name: {
+        //   label: 'Магазин/Склад продавца',
+        //   type: 'link',
+        //   link_to: 'wholesaleOrder',
+        //   link_params: {
+        //     id: this.$route.params.id,
+        //     order_id: 'id',
+        //   },
+        //   class: 'cell_centeralign',
+        // },
+        cost: {
+          label: 'Сумма',
           type: 'link',
           link_to: 'wholesaleOrder',
           link_params: {
             id: this.$route.params.id,
             order_id: 'id',
           },
-          class: 'cell_centeralign',
+          sort: true,
+          class: 'cell_centeralign nowrap',
         },
         comment: {
           label: 'Комментарий',
           type: 'prepare-html',
           sort: false,
-          class: 'cell_centeralign',
+          class: 'cell_centeralign order-table_comment',
         },
       },
     }
@@ -220,4 +222,5 @@ export default {
 .wholesaleorders__content .d-table__row:first-child > .d-table__col {
   padding: 16px;
 }
+
 </style>

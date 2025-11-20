@@ -846,4 +846,49 @@ tbody {
 .swap-rotate{
   transform: scale(-1, 1);
 }
+@media (width <= 1280px) {
+  .d-table-sort{
+    width: 20px;
+    min-width: 20px;
+    height: 20px;
+    padding-left: 1px;
+    padding-top: 1.5px;
+
+  }
+  .d-table-sort i{
+    font-size: 9px;
+  }
+  .d-table-sort-active{
+    width: 20px;
+    min-width: 20px;
+    height: 20px;
+    padding-left: 0.5px;
+    padding-top: 2px;
+  }
+  .d-table-sort-active i{
+    font-size: 9.5px;
+  }
+}
+@media (width <= 1024px) {
+  .d-table-sort{
+    width: 16px;
+    min-width: 16px;
+    height: 16px;
+    padding-left: 1px;
+    padding-top: 0.5px;
+  }
+  .d-table-sort i{
+    font-size: 7px;
+  }
+  .d-table-sort-active{
+    width: 16px;
+    min-width: 16px;
+    height: 16px;
+    padding-left: 0.5px;
+    padding-top: 0.5px;
+  }
+  .d-table-sort-active i{
+    font-size: 7.5px;
+  }
+}
 </style>

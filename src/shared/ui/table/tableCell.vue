@@ -31,7 +31,7 @@
       <div v-html="value[cell_key]"></div>
     </div>
     <div class="cell_value" v-else-if="cell_data.type == 'prepare-html'" :class="cell_data.class">
-      <div class="d-table-html">{{ prepareHtml(value[cell_key]) }} </div>
+      <div class="d-table-html" :class="{'d-table-html-text' : value[cell_key]}"><p class="cell_data-label" v-if="value[cell_key]">{{cell_data.label}}:</p>{{ prepareHtml(value[cell_key]) }} </div>
     </div>
     <div class="cell_value" v-else-if="cell_data.type == 'gist'" :class="cell_data.class">
       <Chart
@@ -249,6 +249,7 @@ export default {
     'editNumber',
     'update:selectedItems',
     'actionCell',
+    'rowClass'
   ],
   props: {
     editMode: {
@@ -397,6 +398,7 @@ export default {
         if(new_string.length > 120){
           new_string = new_string.substring(0,120)+"..."
         }
+        this.$emit('rowClass', true)
         return new_string
       }else{
         return ''
