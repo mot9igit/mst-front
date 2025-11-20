@@ -419,7 +419,7 @@
   </div>
   <teleport to="body">
     <customModal v-model="modalComment" class="order-card__modal-comment">
-        <h3>Ведите комментарий к заказу</h3>
+        <h3>Введите комментарий к заказу</h3>
         <Editor
           v-model="this.modalCommentText"
           id="description"

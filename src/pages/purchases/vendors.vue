@@ -148,9 +148,9 @@
                     class="d-divider d-divider--vertical clients__card-divider clients__card-action-divider"
                   ></div>
                   -->
-                  <button class="clients__card-action" @click.prevent="changeOpts(item.id, '')">
+                  <!-- <button class="clients__card-action" @click.prevent="changeOpts(item.id, '')">
                     <i class="d-icon-trash"></i>
-                  </button>
+                  </button> -->
                 </div>
               </div>
               <div class="clients__card-vendor-wrapper">
