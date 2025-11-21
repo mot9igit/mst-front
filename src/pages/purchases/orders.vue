@@ -83,8 +83,7 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
-          sort: true,
-          class: 'cell_centeralign cell_org-data',
+          class: 'cell_centeralign',
           items: ['seller_name', 'seller_inn', 'seller_address'],
         },
         // seller_w_name: {
@@ -97,7 +96,7 @@ export default {
         //   },
         //   class: 'cell_centeralign',
         // },
-        ur_persone_name: {
+        buyer_name: {
           label: 'Покупатель',
           type: 'link',
           link_to: 'purchasesOrder',
@@ -105,9 +104,8 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
-          sort: true,
           class: 'cell_centeralign',
-          items: ['ur_persone_name', 'buyer_address'],
+          items: ['buyer_name', 'buyer_inn', 'buyer_address'],
         },
         // buyer_store: {
         //   label: 'Магазин/Склад покупателя',
@@ -121,15 +119,14 @@ export default {
         // },
         initiator: {
           label: 'Инициатор',
-          type: 'link',
+          type: 'html',
           link_to: 'purchasesOrder',
           link_params: {
             id: this.$route.params.id,
             order_id: 'id',
           },
-          sort: true,
-          class: 'cell_centeralign cell_initiatior-data',
-          items: ['initiator', 'initiator_user_name'],
+          class: 'cell_centeralign',
+          items: ['initiator'],
         },
         cost: {
           label: 'Сумма',
@@ -139,7 +136,6 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
-          sort: true,
           class: 'cell_centeralign nowrap',
         },
         status: {

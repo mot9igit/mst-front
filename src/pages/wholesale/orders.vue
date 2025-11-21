@@ -51,7 +51,7 @@ export default {
       },
       table_data: {
         id: {
-          label: 'Номер',
+          label: '№',
           type: 'link',
           link_to: 'wholesaleOrder',
           link_params: {
@@ -62,7 +62,7 @@ export default {
           class: 'cell_centeralign',
         },
         date: {
-          label: 'Дата',
+          label: 'Дата создания',
           type: 'link',
           link_to: 'wholesaleOrder',
           link_params: {
@@ -72,7 +72,18 @@ export default {
           sort: true,
           class: 'cell_centeralign',
         },
-        buyer: {
+        seller_address: {
+          label: 'Поставщик',
+          type: 'link',
+          link_to: 'wholesaleOrder',
+          link_params: {
+            id: this.$route.params.id,
+            order_id: 'id',
+          },
+          class: 'cell_centeralign',
+          items: ['seller_name', 'seller_inn', 'seller_address'],
+        },
+        buyer_name: {
           label: 'Покупатель',
           type: 'link',
           link_to: 'wholesaleOrder',
@@ -81,6 +92,7 @@ export default {
             order_id: 'id',
           },
           class: 'cell_centeralign',
+          items: ['buyer_name', 'buyer_inn', 'buyer_address'],
         },
 
         // buyer_store: {
@@ -97,25 +109,16 @@ export default {
 
         initiator: {
           label: 'Инициатор',
-          type: 'link',
+          type: 'html',
           link_to: 'wholesaleOrder',
           link_params: {
             id: this.$route.params.id,
             order_id: 'id',
           },
-          sort: true,
+
           class: 'cell_centeralign',
         },
-        seller_name: {
-          label: 'Поставщик',
-          type: 'link',
-          link_to: 'wholesaleOrder',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
-          class: 'cell_centeralign',
-        },
+
         // seller_w_name: {
         //   label: 'Магазин/Склад продавца',
         //   type: 'link',
@@ -137,10 +140,16 @@ export default {
           sort: true,
           class: 'cell_centeralign nowrap',
         },
+        status: {
+          label: 'Статус',
+          type: 'status',
+          sort: true,
+          class: 'cell_centeralign cell_order-status',
+        },
         comment: {
           label: 'Комментарий',
           type: 'prepare-html',
-          sort: false,
+
           class: 'cell_centeralign order-table_comment',
         },
       },

@@ -1095,6 +1095,9 @@ export default {
 .order__item-header-delete {
   color: #757575;
 }
+.order__item-list {
+    gap: 40px;
+  }
 @media (width <= 1920px) {
     .order {
         padding: 32px;
