@@ -932,6 +932,8 @@ export default {
 }
 .order__item {
   background-color: #f7f7f7;
+  box-shadow: none;
+
   .d-badge2 {
     background: #ededed;
   }
@@ -1132,6 +1134,7 @@ export default {
 }
 .cart-no-discount{
   font-size: 12px;
+  line-height: 12px;
 }
 @media (width <= 1920px) {
     .order {
