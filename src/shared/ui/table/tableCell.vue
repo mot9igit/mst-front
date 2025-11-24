@@ -166,14 +166,14 @@
       :class="cell_key == 'cell_status' ? 'cell_status' + cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'status'"
     >
-      <span
+      <div
         :style="
-          'font-size: 12px;padding: 3px 9px;border-radius: 15px;white-space: nowrap;color: #fff;background-color: #' +
+          'font-size: 14px;line-height:16px;padding: 3px 9px;font-weight:600;border-radius: 41px;color: #fff;background-color: #' +
           value.status_color
         "
       >
         {{ value['status_name'] }}
-      </span>
+  </div>
     </div>
     <div
       class="cell_value"

@@ -12,7 +12,7 @@
 
           <div class="d-top-order-container-date-created">от {{ this.order.date }}</div>
         </div>
-        <div class="d-badge2 d-badge2--fit d-button--sm-shadow order-card__status" :style="
+        <div class="d-badge2 d-badge2--fit order-card__status" :style="
           'background-color: #' +
           status.color
         "
@@ -21,46 +21,48 @@
         {{ status.name }}</div>
       </div>
       <div class="d-top-order-container-right">
-      <!-- <div class="d-top-order-container-buttons-text d-top-order-container-buttons-order_text" v-if="order.offer_id"><p>Заказ, оформленный по предложению поставщика нельзя отредактировать или повторить</p></div> -->
-    
-    <div class="d-top-order-container-buttons">
-    <button
-    class="order-card__action order-card__action-edit"
-    @click.prevent="editOrder()"
-    v-if="status.editable"
-    :disabled="order.offer_id">
-      <i class="d-icon-pen2"></i>		
-    </button>
+        <div class="d-top-order-container-buttons">
 
-      <button
-    class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action"
-    @click.prevent="changeStatus"
-    v-if="status.api_key == 'seller_accepted'">
-      <span class="catalog__head-item-text">Подтвердить заказ</span>
-		</button>
-   
-    <button
-    class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__cancel"
-    @click.prevent="modalCancel = true"
-    v-if="status.cancelable"
-    >
-      <i class="item-list-item-icon d-icon-plus"></i>
-      <span class="catalog__head-item-text">Отменить заказ</span>
-		</button>
-    <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__repeat"
-    @click.prevent="showReq()"
-    :disabled="order.offer_id"
-    >
-      <i class="item-list-item-icon d-icon-refresh"></i>
-      <span class="catalog__head-item-text">Повторить заказ</span>
-		</button>
-    <button  class="d-button d-button-tertiary d-button-tertiary-small d-button--sm-shadow  order-card__action order-card__docs"
-    @click.prevent="modalDocs = true"
-    v-if="docs.length">
-      <i class="item-list-item-icon d-icon-doc"></i>
-      <span class="catalog__head-item-text">Документы <span v-if="docs.length">({{ docs.length }})</span></span>
-		</button>
-    </div>
+          <button
+          class="order-card__action order-card__action-edit"
+          @click.prevent="editOrder()"
+          v-if="status.editable"
+          :disabled="order.offer_id">
+            <i class="d-icon-pen2"></i>
+          </button>
+
+          <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action"
+          @click.prevent="changeStatus"
+          v-if="status.api_key == 'seller_accepted'">
+            <span class="catalog__head-item-text">Подтвердить заказ</span>
+          </button>
+
+          <button
+          class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__cancel"
+          @click.prevent="modalCancel = true"
+          v-if="status.cancelable"
+          >
+            <i class="item-list-item-icon d-icon-plus"></i>
+            <span class="catalog__head-item-text">Отменить заказ</span>
+          </button>
+
+          <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__repeat"
+          @click.prevent="showReq()"
+          :disabled="order.offer_id"
+          >
+            <i class="item-list-item-icon d-icon-refresh"></i>
+            <span class="catalog__head-item-text">Повторить заказ</span>
+          </button>
+
+          <button  class="d-button d-button-tertiary d-button-tertiary-small order-card__action order-card__docs"
+          @click.prevent="modalDocs = true"
+          v-if="docs.length">
+            <i class="item-list-item-icon d-icon-doc"></i>
+            <span class="catalog__head-item-text">Документы <span v-if="docs.length">({{ docs.length }})</span></span>
+          </button>
+
+        </div>
       </div>
     </div>
     <div class="d-top-order-container-info">
@@ -77,43 +79,28 @@
           <div class="order-card__orderinfo-grid-text">
             {{ this.order?.initiator_org_name != '' ? this.order?.initiator_org_name : '' }}
           </div>
-          <div class="order-card__orderinfo-grid-text-down">
+          <div class="order-card__orderinfo-grid-text-down order-card__orderinfo-grid-text-down-min">
             ({{ this.order?.initiator_user_name != '' ? this.order?.initiator_user_name : '' }})
           </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-5">
           <div class="order-card__orderinfo-grid-lable">Поставщик</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.seller_name != '' ? this.order?.seller_name : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
-            ИНН: {{ this.order?.seller_inn != '' ? this.order?.seller_inn : '-' }}
+            {{ this.order?.seller_name != '' ? this.order?.seller_name : '' }}  ИНН: {{ this.order?.seller_inn != '' ? this.order?.seller_inn : '-' }}
           </div>
           <div class="order-card__orderinfo-grid-text-down">
-            {{ this.order?.seller_address != '' ? this.order?.seller_address : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text-down">
-            <b>Магазин/склад:</b>
-            {{ this.order?.seller_w_name != '' ? this.order?.seller_w_name : '-' }}
+            <b>Склад {{ this.order?.seller_w_id ? ' #'+this.order?.seller_w_id : '' }}</b><br>
+            {{ this.order?.seller_w_address ? this.order?.seller_w_address : '' }}
           </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-5">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.buyer_name != '' ? this.order?.buyer_name : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
-            ИНН: {{ this.order?.ur_persone?.inn != '' ? this.order?.ur_persone?.inn : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text-down" v-if="this.order?.delivery_address">
-            {{ this.order?.delivery_address }}
-          </div>
-          <div class="order-card__orderinfo-grid-text-down" v-else>
-            {{ this.order?.buyer_address != '' ? this.order?.buyer_address : '' }}
+            {{ this.order?.buyer_name != '' ? this.order?.buyer_name : '' }}  ИНН: {{ this.order?.ur_persone?.inn != '' ? this.order?.ur_persone?.inn : '' }}
           </div>
           <div class="order-card__orderinfo-grid-text-down">
-            <b>Магазин/склад:</b>
-            {{ this.order?.buyer_store != '' ? this.order?.buyer_store : '-' }}
+            <b>Склад {{ this.order?.buyer_w_id ? ' #'+this.order?.buyer_w_id : '' }}</b><br>
+            {{ this.order?.buyer_w_address ? this.order?.buyer_w_address : '' }}
           </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-3">
@@ -234,7 +221,7 @@ export default {
           class: 'cell_centeralign',
         },
         name: {
-          label: 'Название',
+          label: 'Наименование',
           type: 'text',
           class: 'cell_centeralign',
         },
@@ -248,8 +235,13 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
+        rrc_discount: {
+          label: 'Скидка от РРЦ в %',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
         count: {
-          label: 'Количество',
+          label: 'Кол-во',
           type: 'text',
           class: 'cell_centeralign',
         },
@@ -267,12 +259,17 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
+        type: {
+          label: 'Тип документа',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
         createdon: {
           label: 'Дата',
           type: 'text',
           class: 'cell_centeralign',
         },
-         actions: {
+        actions: {
           label: 'Скачать',
           type: 'actions',
           sort: false,
@@ -281,7 +278,7 @@ export default {
             click: {
               icon: 'pi pi-download',
               label: 'Загрузить',
-              url: 'href',
+              url: 'filename',
             },
           },
         },
@@ -512,9 +509,10 @@ export default {
   }
   .order-card__cancel i{
     transform: rotate(45deg);
+    font-size: 18px;
   }
       .order-card__docs .item-list-item-icon {
-        font-size: 21px;
+        font-size: 20px;
         font-weight: 600;
     }
 

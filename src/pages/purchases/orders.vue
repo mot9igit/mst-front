@@ -243,9 +243,9 @@ export default {
       max-width: 5%;
     }
     .orders_table .d-table__col:nth-child(2){
-      width: 8%;
-      min-width: 8%;
-      max-width: 8%;
+      width: 7%;
+      min-width: 7%;
+      max-width: 7%;
     }
     .orders_table .d-table__col:nth-child(3),.orders_table .d-table__col:nth-child(4){
       width: 18%;
@@ -253,14 +253,14 @@ export default {
       max-width: 18%;
     }
     .orders_table .d-table__col:nth-child(4){
-      width: 15%;
-      min-width: 15%;
-      max-width: 15%;
+      width: 16%;
+      min-width: 16%;
+      max-width: 16%;
     }
     .orders_table .d-table__col:nth-child(5){
-      width: 8%;
-      min-width: 8%;
-      max-width: 8%;
+      width: 12%;
+      min-width: 12%;
+      max-width: 12%;
     }
     .orders_table .d-table__col:nth-child(6){
       width: 10%;
@@ -268,12 +268,47 @@ export default {
       max-width: 10%;
     }
     .orders_table .d-table__col:last-child{
-      width: 18%;
-      min-width: 18%;
-      max-width: 18%;
+      width: 22%;
+      min-width: 22%;
+      max-width: 22%;
     }
 
 //
+.d-top-order-container-buttons button{
+  height: 40px;
+  min-height: 40px;
+  max-height: 40px;
+  margin: 0 0 0 0;
+  box-shadow: none;
+}
+.cell_order-status div{
+
+  white-space: pre-wrap;
+  width: fit-content;
+  margin: 0 auto;
+}
+@media (width <= 3000px) {
+  .shipments  .d-top-order-container {
+      align-items: end;
+      min-height: 0;
+      height: auto;
+      padding-bottom: 22.5px;
+  }
+  .d-top-order-container-info h3{
+        margin: 24px 0;
+    }
+    .order-card__orderinfo-grid-text-down-min {
+        font-size: 14px;
+        font-weight: 300;
+    }
+    .d-top-order-container-info h3, .d-order-container h3 {
+      margin-top: 40px;
+      margin-bottom: 24px;
+    }
+    .shipments .dart-mb-1 {
+      margin-bottom: 0;
+    }
+}
 @media (width <= 1536px) {
   .shipments h1{
     font-size: 20px;

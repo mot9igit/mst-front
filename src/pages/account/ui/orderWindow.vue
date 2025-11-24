@@ -160,8 +160,13 @@
                     </div>
                     <div class="order__item-content-top-right">
                       <span class="order__item-product-price"
-                        >{{ product.price.toLocaleString('ru') }} ₽</span
+                        >{{ product.cost.toLocaleString('ru') }} ₽</span
                       >
+                      <div class="order__item-product-price-rrc">
+                        <p v-if="product.prices.rrc_discount > 0">-{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ</p>
+                        <p v-else class="cart-no-discount">Без скидки от РРЦ</p>
+                        <p>{{ product.price.toLocaleString('ru') }} ₽ за ед.</p>
+                      </div>
                       <Counter
                         :classPrefix="'order__item-product'"
                         @ElemCount="ElemCount"
@@ -204,7 +209,7 @@
                   </div>
                 </div>
                 <div class="order__item-content-comment">
-                  <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order__item-content-comment-add"
+                  <button  class="d-button d-button-quaternary d-button-quaternary-small order__item-content-comment-add"
                     @click.prevent="modalComment = true, modalCommentOrg = org_id, modalCommentStore = warehouse_id, modalCommentText = ''"
                     v-if="!warehouse.comment"
                     >
@@ -926,6 +931,7 @@ export default {
   }
 }
 .order__item {
+  background-color: #f7f7f7;
   .d-badge2 {
     background: #ededed;
   }
@@ -1096,8 +1102,37 @@ export default {
   color: #757575;
 }
 .order__item-list {
-    gap: 40px;
-  }
+  gap: 40px;
+}
+.order__item-content-comment-add{
+  box-shadow: none;
+}
+.order__item-content-top-right {
+  width: max-content;
+  align-items: end;
+}
+.order__item-content-top-right form{
+  display: flex;
+  justify-content: end;
+}
+.order__item-product-price-rrc{
+  display: flex;
+  justify-content: end;
+  flex-direction: column;
+  align-items: end;
+  gap: 4px;
+  margin-bottom: 8px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  color: #757575;
+}
+.order__item-product-price-rrc p{
+  text-align: right;
+}
+.cart-no-discount{
+  font-size: 12px;
+}
 @media (width <= 1920px) {
     .order {
         padding: 32px;
@@ -1148,6 +1183,7 @@ export default {
     .order__item-product-price {
         text-align: right;
         font-size: 24px;
+        width: max-content;
     }
 }
 @media (width <= 1536px) {

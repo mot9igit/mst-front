@@ -274,6 +274,6 @@ export default {
   gap: 16px;
 }
 .order-card__ordercomment{
-  margin:24px 9% 24px 0;
+  margin:0px 9% 24px 0;
 }
 </style>
