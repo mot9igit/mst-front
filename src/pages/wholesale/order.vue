@@ -7,7 +7,7 @@
     <div class="d-top-order-container">
       <div class="d-top-order-container-left">
         <div>
-          <h2>Заказ № {{ this.$route.params.order_id }}</h2>
+          <h2>Оптовый заказ № {{ this.$route.params.order_id }}</h2>
 
           <div class="d-top-order-container-date-created">от {{ order.date }}</div>
         </div>

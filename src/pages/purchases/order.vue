@@ -21,30 +21,32 @@
         {{ status.name }}</div>
       </div>
       <div class="d-top-order-container-right">
-      <div class="d-top-order-container-buttons-text d-top-order-container-buttons-order_text" v-if="order.offer_id"><p>Заказ, оформленный по предложению поставщика нельзя отредактировать или повторить</p></div>
+      <!-- <div class="d-top-order-container-buttons-text d-top-order-container-buttons-order_text" v-if="order.offer_id"><p>Заказ, оформленный по предложению поставщика нельзя отредактировать или повторить</p></div> -->
+    
     <div class="d-top-order-container-buttons">
-    <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs"
-    @click.prevent="modalDocs = true"
-    v-if="docs.length">
-      <i class="item-list-item-icon d-icon-doc"></i>
-      <span class="catalog__head-item-text">Документы <span v-if="docs.length">({{ docs.length }})</span></span>
-		</button>
-    </div>
-    <div class="d-top-order-container-buttons">
+    <button
+    class="order-card__action order-card__action-edit"
+    @click.prevent="editOrder()"
+    v-if="status.editable"
+    :disabled="order.offer_id">
+      <i class="d-icon-pen2"></i>		
+    </button>
+
       <button
     class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action"
     @click.prevent="changeStatus"
     v-if="status.api_key == 'seller_accepted'">
       <span class="catalog__head-item-text">Подтвердить заказ</span>
 		</button>
+   
     <button
-    class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__action"
-    @click.prevent="editOrder()"
-    v-if="status.editable"
-    :disabled="order.offer_id">
-      <span class="catalog__head-item-text">Редактировать заказ</span>
+    class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__cancel"
+    @click.prevent="modalCancel = true"
+    v-if="status.cancelable"
+    >
+      <i class="item-list-item-icon d-icon-plus"></i>
+      <span class="catalog__head-item-text">Отменить заказ</span>
 		</button>
-
     <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__repeat"
     @click.prevent="showReq()"
     :disabled="order.offer_id"
@@ -52,12 +54,11 @@
       <i class="item-list-item-icon d-icon-refresh"></i>
       <span class="catalog__head-item-text">Повторить заказ</span>
 		</button>
-    <button
-    class="d-button d-button-tertiary d-button-tertiary-small d-button--sm-shadow  order-card__action"
-    @click.prevent="modalCancel = true"
-    v-if="status.cancelable"
-    >
-      <span class="catalog__head-item-text">Отменить заказ</span>
+    <button  class="d-button d-button-tertiary d-button-tertiary-small d-button--sm-shadow  order-card__action order-card__docs"
+    @click.prevent="modalDocs = true"
+    v-if="docs.length">
+      <i class="item-list-item-icon d-icon-doc"></i>
+      <span class="catalog__head-item-text">Документы <span v-if="docs.length">({{ docs.length }})</span></span>
 		</button>
     </div>
       </div>
@@ -489,4 +490,32 @@ export default {
  {
   box-shadow: none;
  }
+ .d-top-order-container-buttons {
+        align-items: center;
+      }
+ .order-card__action-edit{
+  padding-left: 8px;
+  padding-right: 8px;
+  position: relative;
+  font-size: 18px;
+  color:#757575;
+ }
+ .order-card__action-edit:before{
+    content: '';
+    background-color: rgb(117 117 117 / 30%);
+    width: 0.5px;
+    height: 13px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .order-card__cancel i{
+    transform: rotate(45deg);
+  }
+      .order-card__docs .item-list-item-icon {
+        font-size: 21px;
+        font-weight: 600;
+    }
+
 </style>

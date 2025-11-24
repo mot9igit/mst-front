@@ -1,6 +1,6 @@
 <template>
   <section class="shipments" id="shipments">
-    <div class="myorders__content">
+    <div class="myorders__content orders_table">
       <div class="d-top">
         <Breadcrumbs />
       </div>
@@ -86,16 +86,6 @@ export default {
           class: 'cell_centeralign',
           items: ['seller_name', 'seller_inn', 'seller_address'],
         },
-        // seller_w_name: {
-        //   label: 'Магазин/Склад продавца',
-        //   type: 'link',
-        //   link_to: 'purchasesOrder',
-        //   link_params: {
-        //     id: this.$route.params.id,
-        //     order_id: 'id',
-        //   },
-        //   class: 'cell_centeralign',
-        // },
         buyer_name: {
           label: 'Покупатель',
           type: 'link',
@@ -107,16 +97,6 @@ export default {
           class: 'cell_centeralign',
           items: ['buyer_name', 'buyer_inn', 'buyer_address'],
         },
-        // buyer_store: {
-        //   label: 'Магазин/Склад покупателя',
-        //   type: 'link',
-        //   link_to: 'purchasesOrder',
-        //   link_params: {
-        //     id: this.$route.params.id,
-        //     order_id: 'id',
-        //   },
-        //   class: 'cell_centeralign',
-        // },
         initiator: {
           label: 'Инициатор',
           type: 'html',
@@ -256,6 +236,44 @@ export default {
 .cell_data-label{
   display: none;
 }
+//--фиксированная ширина для колонок
+    .orders_table .d-table__col:first-child{
+      width: 5%;
+      min-width: 5%;
+      max-width: 5%;
+    }
+    .orders_table .d-table__col:nth-child(2){
+      width: 8%;
+      min-width: 8%;
+      max-width: 8%;
+    }
+    .orders_table .d-table__col:nth-child(3),.orders_table .d-table__col:nth-child(4){
+      width: 18%;
+      min-width: 18%;
+      max-width: 18%;
+    }
+    .orders_table .d-table__col:nth-child(4){
+      width: 15%;
+      min-width: 15%;
+      max-width: 15%;
+    }
+    .orders_table .d-table__col:nth-child(5){
+      width: 8%;
+      min-width: 8%;
+      max-width: 8%;
+    }
+    .orders_table .d-table__col:nth-child(6){
+      width: 10%;
+      min-width: 10%;
+      max-width: 10%;
+    }
+    .orders_table .d-table__col:last-child{
+      width: 18%;
+      min-width: 18%;
+      max-width: 18%;
+    }
+
+//
 @media (width <= 1536px) {
   .shipments h1{
     font-size: 20px;

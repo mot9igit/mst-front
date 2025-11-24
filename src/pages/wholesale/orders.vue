@@ -1,5 +1,5 @@
 <template>
-  <section class="shipments wholesaleorders__content myorders__content" id="shipments">
+  <section class="shipments wholesaleorders__content myorders__content orders_table" id="shipments">
     <div class="d-top">
       <Breadcrumbs />
     </div>
