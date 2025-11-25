@@ -166,9 +166,9 @@
       :class="cell_key == 'cell_status' ? 'cell_status' + cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'status'"
     >
-      <div
+      <div class="cell--status"
         :style="
-          'font-size: 14px;line-height:16px;padding: 3px 9px;font-weight:600;border-radius: 41px;color: #fff;background-color: #' +
+          'color: #fff;background-color: #' +
           value.status_color
         "
       >
@@ -532,5 +532,12 @@ export default {
     white-space: -o-pre-wrap; /* Opera 7 */
     overflow-wrap: break-word;
     overflow: hidden;
+}
+.cell--status{
+  font-size: 12px;
+  line-height:14px;
+  padding: 3px 9px;
+  font-weight:600;
+  border-radius: 41px;
 }
 </style>

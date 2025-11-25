@@ -515,5 +515,7 @@ export default {
         font-size: 20px;
         font-weight: 600;
     }
-
+.order-card__modal button{
+  min-width: 111px;
+}
 </style>

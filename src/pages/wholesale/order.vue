@@ -22,7 +22,7 @@
      <div class="d-top-order-container-right">
         <!-- <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>-->
     <div class="d-top-order-container-buttons">
-    <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs" @click.prevent="modalDocs = true"  v-if="docs.length">
+    <button  class="d-button d-button-tertiary d-button-tertiary-small order-card__action order-card__docs" @click.prevent="modalDocs = true"  v-if="docs.length">
       <i class="item-list-item-icon d-icon-doc"></i>
       <span class="catalog__head-item-text">Документы <span v-if="docs.length">({{ docs.length }})</span></span>
 		</button>
@@ -53,33 +53,21 @@
         <div class="order-card__orderinfo-grid d-col-md-5">
           <div class="order-card__orderinfo-grid-lable">Поставщик</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.seller_name != '' ? this.order?.seller_name : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
-            ИНН: {{ this.order?.seller_inn != '' ? this.order?.seller_inn : '-' }}
+            {{ this.order?.seller_name != '' ? this.order?.seller_name : '' }}  ИНН: {{ this.order?.seller_inn != '' ? this.order?.seller_inn : '-' }}
           </div>
           <div class="order-card__orderinfo-grid-text-down">
-            {{ this.order?.seller_address != '' ? this.order?.seller_address : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text-down">
-            <b>Магазин/склад:</b>
-            {{ this.order?.seller_w_name != '' ? this.order?.seller_w_name : '-' }}
+            <b>Склад {{ this.order?.seller_w_id ? ' #'+this.order?.seller_w_id : '' }}</b><br>
+            {{ this.order?.seller_w_address ? this.order?.seller_w_address : '' }}
           </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-5">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.buyer_name != '' ? this.order?.buyer_name : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
-            ИНН: {{ this.order?.ur_persone?.inn != '' ? this.order?.ur_persone?.inn : '' }}
+            {{ this.order?.buyer_name != '' ? this.order?.buyer_name : '' }}  ИНН: {{ this.order?.ur_persone?.inn != '' ? this.order?.ur_persone?.inn : '' }}
           </div>
           <div class="order-card__orderinfo-grid-text-down">
-            {{ this.order?.buyer_address != '' ? this.order?.buyer_address : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text-down">
-            <b>Магазин/склад:</b>
-            {{ this.order?.buyer_store != '' ? this.order?.buyer_store : '-' }}
+            <b>Склад {{ this.order?.buyer_w_id ? ' #'+this.order?.buyer_w_id : '' }}</b><br>
+            {{ this.order?.buyer_w_address ? this.order?.buyer_w_address : '' }}
           </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-3">
@@ -167,7 +155,7 @@ export default {
           class: 'cell_centeralign',
         },
         name: {
-          label: 'Название',
+          label: 'Наименование',
           type: 'text',
           class: 'cell_centeralign',
         },
@@ -178,6 +166,11 @@ export default {
         },
         price: {
           label: 'Стоимость за единицу',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+         rrc_discount: {
+          label: 'Скидка от РРЦ в %',
           type: 'text',
           class: 'cell_centeralign',
         },
@@ -196,6 +189,11 @@ export default {
       table_docs: {
         name: {
           label: 'Название',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        type: {
+          label: 'Тип документа',
           type: 'text',
           class: 'cell_centeralign',
         },

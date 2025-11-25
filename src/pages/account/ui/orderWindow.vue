@@ -1453,7 +1453,14 @@ export default {
 }
 @media (width <= 600px) {
   .order__item-content-description-container{
-    padding: 0 44px 16px;
+    padding: 0 0px 16px;
+  }
+  .order__item-content-comment {
+    margin: 0 24px 16px;
+  }
+  .order__item-content-comment button{
+    width:100%;
+
   }
 }
 </style>
