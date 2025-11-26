@@ -156,37 +156,30 @@
       <div class="d-table-min">
         <div class="d-table-min__head">
           <div class="d-table-min__row-sort">
-            <button class="d-table-min__row-sort-label">Сортировка <i class="d-icon-angle-rounded-bottom product-card__seller-button-icon"></i></button>
-              <div class="d-table-min__row-sort-list">
-                <div v-for="(row, index) in table_data" :key="index" class="d-table-min__head-col">
+            <button class="d-table-min__row-sort-label" @click.prevent="sort_active = !sort_active">Сортировка <i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sort_active == true}"></i></button>
+              <div class="d-table-min__row-sort-list" v-if="sort_active">
+                <div v-for="(row, index) in sort_list" :key="index" class="d-table-min__head-col">
 
-                <div  v-if="row.sort && index != 'id'">
-                  <input type="radio" :id="'sort_' + index" :value="index" @click.prevent="sorting(index)" />
-                  <label :for="'sort_' + index">{{ row.label }}</label>
+                  <div  v-if="row.sort && row.sort_asc" class="d-table-min__row-sort-list-item">
+                    <input type="radio" :id="'sort_ASC' + index"  :name="'sort_ASC' + index" :value="'sort_ASC' + index" v-model="checked" @click.prevent="sortingP(index, 'ASC')" />
+                    <label :for="'sort_ASC' + index">{{ row.sort_asc }}</label>
+                  </div>
+                  <div  v-if="row.sort && row.sort_desc" class="d-table-min__row-sort-list-item">
+                    <input type="radio" :id="'sort_DESC' + index" name="'sort_DESC' + index" :value="'sort_DESC' + index" v-model="checked"  @click.prevent="sortingP(index, 'DESC')" />
+                    <label :for="'sort_DESC' + index">{{ row.sort_desc }}</label>
+                  </div>
+                  <!-- <div  v-if="row.sort && !row.sort_desc && !row.sort_desc" class="d-table-min__row-sort-list-item">
+                    <input type="radio" :id="'sort_' + index" :value="index"  v-model="checked" @click.prevent="sorting(index)" />
+                    <label :for="'sort_' + index">{{ row.label }}</label>
+                  </div> -->
                 </div>
-
-
-
-                <!-- <a class="sort" href="#" v-if="row.sort" @click.prevent="sorting(index)">
-                  <span class="d-row-label">{{ row.label }}</span>
-                  <span v-if="this.sort[index]" class="d-table-min-sort-active">
-                    <i class="d-icon-swap swap-rotate" v-if="this.sort[index].dir == 'ASC'" ></i>
-                    <i class="d-icon-swap" v-else ></i>
-                     <mdicon name="sort-ascending" size="18" v-if="this.sort[index].dir == 'ASC'" />
-                    <mdicon name="sort-descending" size="18" v-else />
-                  <span v-else class="d-table-min-sort">
-                    <i class="d-icon-trade"></i>
-                 <mdicon name="sort" size="18" />
-                  </span>
-                </a> -->
-
-              </div>
               </div>
 
             </div>
         </div>
 
         <div v-if="total != -1" class="d-table-min__body">
+
           <!-- v-for="row in items_data" -->
           <v-table-row
             v-for="row in localItems"
@@ -353,6 +346,9 @@ export default {
       },
       filteredVendor: null,
       all_check: false,
+      sort_list: {},
+      checked: [],
+      sort_active: false
     }
   },
   computed: {
@@ -485,24 +481,7 @@ export default {
     actionCell(data) {
       this.$emit('actionCell', data)
     },
-    // filterglobalTable(checked) {
-    // 	if (checked) {
-    // 		this.selectedItems = [...new Set([...this.selectedItems, ...this.products.ids])];
-    // 	} else {
-    // 		const currentPageIds = this.localItems.map(item => item.id);
-    // 		this.selectedItems = this.selectedItems.filter(id =>
-    // 		!this.products.ids.includes(id) || currentPageIds.includes(id)
-    // 		);
-    // 	}
 
-    // 	this.$emit("checkElem", [...this.selectedItems]);
-
-    // 	// Обновляем чекбоксы на текущей странице
-    // 	this.localItems = this.localItems.map(item => ({
-    // 		...item,
-    // 		checked: checked || this.selectedItems.includes(item.id)
-    // 	}));
-    // },
     setFilter(type = '0') {
       // console.log(type)
       if (type === 'filter') {
@@ -556,6 +535,49 @@ export default {
         perpage: this.pagination_items_per_page,
       })
     },
+    sortingP(key, dirP) {
+        let id = 'sort_' + dirP + key
+        if(this.checked[0] == id){
+          this.sort = {}
+          this.checked = []
+          this.$emit('sort', {
+            filter: this.filter,
+            filtersdata: toRaw(this.filtersdata),
+            sort: '',
+            page: 1,
+            perpage: this.pagination_items_per_page,
+          })
+          this.sort_active = false
+        }else{
+            this.checked = []
+            this.checked.push('sort_' + dirP + key)
+            this.sort = {}
+            let sortASC = false
+            let sortDESC = false
+            if(dirP == 'ASC'){
+              sortASC = true
+              sortDESC = false
+            }else{
+              sortASC = false
+              sortDESC = true
+            }
+            this.sort[key] = {
+              dir: dirP,
+              sort_asc: sortASC,
+              sort_desc: sortDESC,
+              active: true,
+            }
+            this.sort_active = false
+          this.$emit('sort', {
+            filter: this.filter,
+            filtersdata: toRaw(this.filtersdata),
+            sort: toRaw(this.sort),
+            page: 1,
+            perpage: this.pagination_items_per_page,
+          })
+        }
+
+    },
     pagClickCallback(pageNum) {
       this.$emit('paginate', {
         filter: this.filter,
@@ -582,17 +604,13 @@ export default {
     },
   },
   mounted() {
-    const data = {
-      search: '',
-    }
-    this.getVendors(data).then((this.filteredVendor = this.vendors))
-    if (Array.isArray(this.items_data)) {
-      this.items_data.forEach((item) => {
-        if (typeof item.checked === 'undefined') {
-          item.checked = false
+    Object.entries(this.table_data).forEach((entry) => {
+        const [key, value] = entry
+        if(value.sort){
+          this.sort_list[key] = value
         }
       })
-    }
+
   },
   created() {
     // console.log(this.filters)
@@ -606,33 +624,14 @@ export default {
     }
   },
   watch: {
-    vendors: function (newVal) {
-      // console.log(newVal)
-      this.filteredVendor = toRaw(newVal)
-      // console.log(this.filteredVendor)
-    },
-    editMode: function (newVal) {
-      if (!newVal) {
-        this.all_check = false
-        this.$emit('setAllCheck', [this.all_check])
-      }
-    },
+
     items_data: {
       handler(newVal) {
         this.localItems = newVal
       },
       immediate: true,
     },
-    // all_check(val) {
-    // 	if (!Array.isArray(this.localItems)) return;
 
-    // 	this.localItems.forEach(item => {
-    // 		if (item.checked !== val) item.checked = val;
-    // 	});
-
-    // 	this.selectedItems = val ? [...this.localItems] : [];
-    // 	this.$emit("checkElem", this.selectedItems.map(item => item.id));
-    // },
     filters: {
       handler(newVal, oldVal) {
         // console.log('Filters updated:', newVal, oldVal);
@@ -661,15 +660,8 @@ export default {
     filtersdata: function (newVal) {
       console.log(newVal)
     },
-    // allChecked(val) {
-    // 	if (!Array.isArray(this.localItems)) return;
 
-    // 	this.localItems.forEach(item => {
-    // 	item.checked = val;
-    // 	});
 
-    // 	this.$emit("checkElem", val ? this.localItems.map(item => item.id) : []);
-    // }
   },
 }
 </script>

@@ -18,7 +18,7 @@
         @sort="filter"
         @paginate="paginate"
       />
-      <!-- <MinTable
+       <MinTable
         :items_data="optorders.orders"
         :total="optorders.total"
         :pagination_items_per_page="this.pagination_items_per_page"
@@ -29,7 +29,7 @@
         @filter="filter"
         @sort="filter"
         @paginate="paginate"
-      /> -->
+      />
 
     </div>
   </section>
@@ -74,7 +74,6 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
-          sort: true,
           class: 'cell_centeralign',
         },
         date: {
@@ -86,6 +85,8 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          sort_desc: 'Дата заказа от новых к старым',
+          sort_asc: 'Дата заказа от старых к новым',
           class: 'cell_centeralign',
         },
         seller_address: {
@@ -135,6 +136,8 @@ export default {
           label: 'Статус',
           type: 'status',
           sort: true,
+          sort_asc: 'Статус от новых к выполненным',
+          sort_desc: 'Статус от выполненным к новым',
           class: 'cell_centeralign cell_order-status',
         },
         comment: {
@@ -664,12 +667,12 @@ export default {
   }
 }
 @media (width <= 700px) {
-  // .shipments .v-table-min{
-  //   display: block;
-  // }
-  // .shipments .v-table{
-  //   display: none;
-  // }
+   .shipments .v-table-min{
+     display: block;
+   }
+   .shipments .v-table{
+     display: none;
+   }
 }
 @media (width <= 600px) {
   .d-top-order-container-right{

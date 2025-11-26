@@ -1,30 +1,33 @@
 <template>
- <router-link
-        :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
-      >
-  <div class="d-table-min__col-id" v-if="cell_data.type == 'id'" :class="cell_data.class">{{ value[cell_key] }}</div>
-  <div class="d-table-min__col-status" v-else-if="cell_data.type == 'status'" :class="cell_data.class">{{ value[cell_key] }}</div>
+  <div class="d-table-min__col-id" v-if="cell_key == 'id'" :id="'order_id_' + value[cell_key]">{{ cell_data.label }} {{ value[cell_key] }} </div>
+  <div class="d-table-min__col-status" v-else-if="cell_data.type == 'status'"><span :style="
+          'color: #fff;background-color: #' +
+          value.status_color
+        ">{{ value['status_name'] }}</span>
+  </div>
+  <div class="d-table-min__col-simple" v-else-if="cell_data.type == 'html' || (cell_data.type == 'prepare-html' && value[cell_key] != null )">
+    <div class="cell_value-label" v-if="value[cell_key] != null || value[cell_key] != ''">{{ cell_data.label }}</div>
+    <div class="item_cell">{{ prepareHtml(value[cell_key]) }}</div>
+  </div>
   <div class="d-table-min__col-simple" v-else>
 
     <div class="cell_value-label">{{ cell_data.label }}</div>
     <div
       class="cell_value"
       v-if="cell_data.items"
-      :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
+      :class="cell_key == 'name'"
     >
         <div v-for="item in cell_data.items" :key="item" class="multyitem_cell">
-          <span v-if="value[item] && item.includes('inn')"
-            >ИНН: {{ value[item] ? value[item] : '-' }}</span
+          <span v-if="value[item] && item.includes('inn')">
+            ИНН: {{ value[item] ? value[item] : '-' }}</span
           >
           <span v-if="value[item] && !item.includes('inn')" class="cell_value-inn">{{
             value[item]
           }}</span>
         </div>
     </div>
+    <div  class="item_cell" v-else>{{ value[cell_key] }}</div>
   </div>
-</router-link>
-
-
 </template>
 
 <script>
@@ -175,7 +178,7 @@ export default {
     },
     prepareHtml(code){
       if(code){
-        let new_string = code.replace(/<(.|\n)*?>/g, '')
+        let new_string = code.replace(/<(.|\n)*?>/g, ' ')
         new_string = new_string.replace(/\&nbsp;/g, ' ')
         new_string = new_string.replace(/\n/g, '')
         if(new_string.length > 120){
@@ -247,14 +250,114 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 4px;
+  justify-content: start;
+  gap: 8px;
+  padding: 7px 12px;
   position: absolute;
-  width: 148px;
-  height: 66px;
+  width: auto;
+  max-width: 180px;
+  height: auto;
   right: 0px;
   top: 18px;
   background: #FBFBFB;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.14), 0px 0px 2px rgba(0, 0, 0, 0.12);
   border-radius: 6px;
+  z-index: 10;
+}
+.d-table-min__head-col{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.d-table-min__row-sort-list{
+  transition:  all 0.2s ease;
+}
+.d-table-min__row-sort-list-item{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+}
+.d-table-min__row-sort-list-item input[type='radio']{
+  width: 12px;
+  height: 12px;
+  border: 1px solid #757575;
+}
+.d-table-min__row-sort-list-item label{
+  font-style: normal;
+  font-weight: 400;
+  font-size: 8px;
+  line-height: 10px;
+  color: #757575;
+}
+.product-card__seller-button-icon-open{
+  transform: rotate(-180deg);
+  padding-bottom: 1px;
+}
+.d-table-min__body{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+.d-table-min__row{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  padding: 14px 8px;
+  gap: 4px;
+  background: #F5F5F5;
+  border-radius: 8px;
+  width:100%;
+  position: relative;
+}
+.d-table-min__col-simple{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border-bottom: 0.5px solid rgb(117 117 117 / 16%);;
+  padding-bottom: 6px;
+  position: relative;
+}
+.cell_value-label{
+  width: 50%;
+  font-weight: 500;
+  font-size: 9px;
+  line-height: 12px;
+  color: #757575;
+}
+.item_cell, .multyitem_cell{
+  font-style: normal;
+  font-weight: 400;
+  font-size: 8px;
+  line-height: 10px;
+  text-align: right;
+  color: #282828;
+}
+.d-table-min__col-id{
+  font-style: normal;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 13px;
+  color: #282828;
+  margin-bottom: 10px;
+  width: max-content;
+}
+.d-table-min__col-status span{
+  font-style: normal;
+  font-weight: 600;
+  font-size: 9px;
+  line-height: 12px;
+  text-align: center;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.d-table-min__col-status{
+  position: absolute;
+  top: 8px;
+  left: 70px;
 }
 </style>

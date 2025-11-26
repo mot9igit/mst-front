@@ -58,7 +58,7 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
-          sort: true,
+
           class: 'cell_centeralign',
         },
         date: {
