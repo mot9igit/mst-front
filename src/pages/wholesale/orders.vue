@@ -17,17 +17,30 @@
       @sort="filter"
       @paginate="paginate"
     />
+    <MinTable
+        :items_data="orders.orders"
+        :total="orders.total"
+        :pagination_items_per_page="this.pagination_items_per_page"
+        :pagination_offset="this.pagination_offset"
+        :page="this.page"
+        :table_data="this.table_data"
+        :filters="this.filters"
+        @filter="filter"
+        @sort="filter"
+        @paginate="paginate"
+      />
   </section>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
+import MinTable from '@/shared/ui/tableMin/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
 
 export default {
   name: 'wholesaleOrders',
-  components: { Breadcrumbs, BaseTable, Loader },
+  components: { Breadcrumbs, BaseTable, Loader, MinTable },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -70,6 +83,8 @@ export default {
             order_id: 'id',
           },
           sort: true,
+          sort_desc: 'Дата заказа от новых к старым',
+          sort_asc: 'Дата заказа от старых к новым',
           class: 'cell_centeralign',
         },
         seller_address: {
@@ -137,13 +152,15 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
-          sort: true,
+
           class: 'cell_centeralign nowrap',
         },
         status: {
           label: 'Статус',
           type: 'status',
           sort: true,
+          sort_asc: 'Статус от новых к выполненным',
+          sort_desc: 'Статус от выполненным к новым',
           class: 'cell_centeralign cell_order-status',
         },
         comment: {

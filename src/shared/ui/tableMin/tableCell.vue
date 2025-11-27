@@ -1,15 +1,19 @@
 <template>
-  <div class="d-table-min__col-id" v-if="cell_key == 'id'" :id="'order_id_' + value[cell_key]">{{ cell_data.label }} {{ value[cell_key] }} </div>
-  <div class="d-table-min__col-status" v-else-if="cell_data.type == 'status'"><span :style="
+  <div class="d-table-min__col-id" v-if="cell_key == 'id'" :id="value[cell_key]">{{ cell_data.label }} {{ value[cell_key] }} </div>
+  <div class="d-table-min__col-status" v-else-if="cell_data.type == 'status'" :style="'left: calc(16px + ' + statusMargin(value.id) + 'px)'"><span :style="
           'color: #fff;background-color: #' +
           value.status_color
         ">{{ value['status_name'] }}</span>
   </div>
-  <div class="d-table-min__col-simple" v-else-if="cell_data.type == 'html' || (cell_data.type == 'prepare-html' && value[cell_key] != null )">
-    <div class="cell_value-label" v-if="value[cell_key] != null || value[cell_key] != ''">{{ cell_data.label }}</div>
+  <div class="d-table-min__col-simple" v-else-if="cell_data.type == 'html'">
+    <div class="cell_value-label">{{ cell_data.label }}</div>
     <div class="item_cell">{{ prepareHtml(value[cell_key]) }}</div>
   </div>
-  <div class="d-table-min__col-simple" v-else>
+   <div class="d-table-min__col-simple d-table-min__col-comment" v-else-if="cell_data.type == 'prepare-html' && value[cell_key] != null">
+    <div class="cell_value-label">{{ cell_data.label }}</div>
+    <div class="item_cell">{{ prepareHtml(value[cell_key]) }}</div>
+  </div>
+  <div class="d-table-min__col-simple" v-else-if="cell_key != 'id' && cell_data.type != 'html' && cell_data.type != 'prepare-html'">
 
     <div class="cell_value-label">{{ cell_data.label }}</div>
     <div
@@ -38,10 +42,7 @@ export default {
 
   ],
   props: {
-    editMode: {
-      type: Boolean,
-      default: false,
-    },
+
     cell_data: {
       type: Object,
       default: () => {
@@ -64,10 +65,7 @@ export default {
         return {}
       },
     },
-    selectedItems: {
-      type: Array,
-      default: () => [],
-    },
+
   },
   data() {
     return {
@@ -86,6 +84,7 @@ export default {
           },
         },
       },
+      widths: {},
     }
   },
   computed: {
@@ -118,6 +117,12 @@ export default {
     },
   },
   methods: {
+    statusMargin(id){
+      let el = document.getElementById(id)
+      // const width = el.clientWidth;
+      let width = 40
+      return width
+    },
     toggleSelection(id) {
       console.log(id)
       if (this.selectedItems.includes(id)) {
@@ -184,7 +189,7 @@ export default {
         if(new_string.length > 120){
           new_string = new_string.substring(0,120)+"..."
         }
-        this.$emit('rowClass', true)
+
         return new_string
       }else{
         return ''
@@ -313,14 +318,23 @@ export default {
   width:100%;
   position: relative;
 }
-.d-table-min__col-simple{
+.d-table-min__row .d-table-min__col-simple{
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  border-bottom: 0.5px solid rgb(117 117 117 / 16%);;
-  padding-bottom: 6px;
+  border-top: 0.5px solid rgb(117 117 117 / 16%);
+  padding-top: 6px;
   position: relative;
+}
+.d-table-min__row .d-table-min__col-simple:nth-child(2){
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+  border-top: none;
+  padding-top: 0px;
 }
 .cell_value-label{
   width: 50%;
@@ -329,7 +343,7 @@ export default {
   line-height: 12px;
   color: #757575;
 }
-.item_cell, .multyitem_cell{
+.d-table-min__row .item_cell, .d-table-min__row .multyitem_cell{
   font-style: normal;
   font-weight: 400;
   font-size: 8px;
@@ -358,6 +372,16 @@ export default {
 .d-table-min__col-status{
   position: absolute;
   top: 8px;
-  left: 70px;
+  right: 8px;
+}
+.d-table-min__col-comment{
+  display: flex;
+  flex-direction: column;
+  align-items: start !important;
+  gap: 6px;
+}
+.d-table-min__col-comment .item_cell{
+  text-align: left;
+  width: 90%;
 }
 </style>

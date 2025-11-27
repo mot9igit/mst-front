@@ -246,20 +246,13 @@ import Skeleton from 'primevue/skeleton'
 export default {
   name: 'v-table',
   emits: [
-    'deleteElem',
-    'viewElem',
-    'updateElem',
-    'editElem',
+
     'clickElem',
     'filter',
     'sort',
     'paginate',
     'setAllCheck',
-    'checkElem',
-    'approveElem',
-    'disapproveElem',
-    'editNumber',
-    'actionCell',
+
   ],
   components: {
     vTableRow,
@@ -276,10 +269,7 @@ export default {
     FloatLabel,
   },
   props: {
-    editMode: {
-      type: Boolean,
-      default: false,
-    },
+
     items_data: {
       type: Array,
       default: () => [],

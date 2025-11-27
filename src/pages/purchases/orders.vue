@@ -143,7 +143,7 @@ export default {
         comment: {
           label: 'Комментарий',
           type: 'prepare-html',
-          sort: false,
+
           class: 'cell_centeralign order-table_comment',
         },
       },
@@ -307,7 +307,7 @@ export default {
   line-height:16px;
   padding: 4px 12px;
 }
-.shipments .v-table-min{
+.orders_table .v-table-min{
   display: none;
 }
 @media (width <= 3000px) {
@@ -667,10 +667,10 @@ export default {
   }
 }
 @media (width <= 700px) {
-   .shipments .v-table-min{
+   .orders_table .v-table-min{
      display: block;
    }
-   .shipments .v-table{
+   .orders_table .v-table{
      display: none;
    }
 }

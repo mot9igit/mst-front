@@ -1,35 +1,17 @@
 <template>
 
-  <div class="d-table-min__row">
+  <router-link class="d-table-min__row"
+  :to="{ name: keys.id.link_to, params: {id: this.$route.params.id, order_id: row_data.id}, props: keys.id.link_props }"
+  >
     <v-table-cell
       v-for="(row, index) in keys"
       :key="index"
       :cell_data="row"
       :cell_key="index"
       :value="row_data"
-      :selectedItems="this.selectedItems"
-      :editMode="editMode"
-      @deleteElem="deleteElem"
-      @updateElem="updateElem"
-      @editElem="editElem"
-      @viewElem="viewElem"
-      @clickElem="clickElem"
-      @checkElem="checkElem"
-      @approveElem="approveElem"
-      @disapproveElem="disapproveElem"
-      @editNumber="editNumber"
-      @actionCell="actionCell"
-      @rowClass="rowClass"
-      @click.prevent="
-        $router.push({
-          name: link_row.link_to,
-          params: linkParams(row),
-          props: link_row.link_props,
-        })
-      "
       style="cursor: pointer"
     />
-      </div>
+  </router-link>
   <slot name="add_data"></slot>
 
 </template>
@@ -40,22 +22,10 @@ import vTableCell from './tableCell.vue'
 export default {
   name: 'v-table-row',
   emits: [
-    'deleteElem',
-    'updateElem',
-    'viewElem',
-    'editElem',
-    'clickElem',
-    'checkElem',
-    'approveElem',
-    'disapproveElem',
-    'editNumber',
-    'actionCell'
+
   ],
   props: {
-    editMode: {
-      type: Boolean,
-      default: false,
-    },
+
     row_data: {
       type: Object,
       default: () => {
@@ -74,12 +44,7 @@ export default {
         return {}
       },
     },
-    selectedItems: {
-      type: Array,
-      default: () => {
-        return []
-      },
-    },
+
   },
   data() {
     return {
