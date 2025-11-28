@@ -553,6 +553,7 @@ export default {
 .d-top-order-container-left-top{
   display: flex;
   gap: 16px;
+  align-items: center;
 }
 .d-top-order-container-left {
   flex-direction: column;
@@ -560,6 +561,16 @@ export default {
 }
 .d-top-order-container-date-created {
   margin-top: 0px;
+}
+.d-top-order-container-left-top .d-badge2 {
+    border-radius: 41px;
+    padding: 7px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    color: #ededed;
+    min-height: 32px;
+    min-width: auto;
 }
 @media (width <= 1536px) {
 // grids
@@ -601,6 +612,68 @@ export default {
     height: 38px;
     min-height: 38px;
     max-height: 38px;
+}
+.d-top-order-container-left-top .d-badge2 {
+    border-radius: 41px;
+    padding: 6px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    color: #ededed;
+    min-height: 30px;
+    min-width: auto;
+}
+}
+@media (width <= 1280px) {
+// grids
+// .order-card__orderinfo{
+//   display: grid;
+//   grid-template-columns: 147fr 196fr 327fr 327fr 178fr;
+//   grid-template-rows: auto auto;
+//   grid-row-gap: 24px;
+// }
+// .order-card__orderinfo-grid:nth-child(6){
+//   display: grid;
+//   grid-column-start: 1;
+//   grid-column-end: 2;
+//   border-left: none !important;
+// }
+// .order-card__orderinfo-grid:nth-child(7){
+//   display: grid;
+//   grid-column-start: 2;
+//   grid-column-end: 3;
+// }
+// .order-card__ordercomment{
+//   display: grid;
+//   grid-column-start: 3;
+//   grid-column-end: 8;
+//   padding-left: 10px;
+//   border-left: 0.5px solid #75757575;
+// }
+// .order-card__orderinfo-grid:first-child{
+//  padding-left: 0;
+// }
+// .order-card__orderinfo-grid:not(:first-child){
+//   border-left: 0.5px solid #75757575;
+// }
+//
+.d-top-order-container h2{
+  font-size: 16px;
+}
+.d-top-order-container-buttons button {
+    height: 31px;
+    min-height: 31px;
+    max-height: 31px;
+}
+.d-top-order-container-left-top .d-badge2 {
+    border-radius: 41px;
+    padding: 4px 10px;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 14px;
+    color: #ededed;
+    min-height: 24px;
+    min-width: auto;
 }
 }
 </style>
