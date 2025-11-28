@@ -161,11 +161,11 @@
                 <div v-for="(row, index) in sort_list" :key="index" class="d-table-min__head-col">
 
                   <div  v-if="row.sort && row.sort_asc" class="d-table-min__row-sort-list-item">
-                    <input type="radio" :id="'sort_ASC' + index"  :name="'sort_ASC' + index" :value="'sort_ASC' + index" v-model="checked" @click.prevent="sortingP(index, 'ASC')" />
+                    <Checkbox :id="'sort_ASC' + index"  :name="'sort_ASC' + index" :value="'sort_ASC' + index" v-model="checked" @click.prevent="sortingP(index, 'ASC')" />
                     <label :for="'sort_ASC' + index">{{ row.sort_asc }}</label>
                   </div>
                   <div  v-if="row.sort && row.sort_desc" class="d-table-min__row-sort-list-item">
-                    <input type="radio" :id="'sort_DESC' + index" name="'sort_DESC' + index" :value="'sort_DESC' + index" v-model="checked"  @click.prevent="sortingP(index, 'DESC')" />
+                    <Checkbox :id="'sort_DESC' + index" name="'sort_DESC' + index" :value="'sort_DESC' + index" v-model="checked"  @click.prevent="sortingP(index, 'DESC')" />
                     <label :for="'sort_DESC' + index">{{ row.sort_desc }}</label>
                   </div>
                   <!-- <div  v-if="row.sort && !row.sort_desc && !row.sort_desc" class="d-table-min__row-sort-list-item">
@@ -175,7 +175,7 @@
                 </div>
               </div>
 
-            </div>
+          </div>
         </div>
 
         <div v-if="total != -1" class="d-table-min__body">
@@ -239,7 +239,7 @@ import TreeSelect from '@zanmato/vue3-treeselect'
 import '@zanmato/vue3-treeselect/dist/vue3-treeselect.min.css'
 import SelectInput from 'primevue/select'
 import AutoComplete from 'primevue/autocomplete'
-import Checkbox from 'primevue/checkbox'
+import { Checkbox } from 'primevue'
 import InputNumber from 'primevue/inputnumber'
 import Skeleton from 'primevue/skeleton'
 

@@ -201,12 +201,13 @@ export default {
   width: 100%;
 }
 .myorders__content .form_input_group:after {
-  content: '\e003';
+  content: '\e01d';
   font-family: 'Iconly' !important;
   position: absolute;
   font-size: 16.8px;
   top: calc(50% - 8.4px);
   right: 20px;
+  color: #757575;
 }
 .myorders__content .p-inputtext {
   padding-right: 40px;
@@ -673,6 +674,11 @@ export default {
    .orders_table .v-table{
      display: none;
    }
+   .v-table-min .cell_value .multyitem_cell:first-child{
+    float: left;
+    width: max-content;
+    margin-right: 4px;
+   }
 }
 @media (width <= 600px) {
   .d-top-order-container-right{
@@ -690,5 +696,144 @@ export default {
   .shipments button span{
     font-size: 14px;
   }
+  .shipments h1 {
+    font-size: 14px;
+  }
+  .v-table-min .dart-row{
+    margin-bottom: 16px !important;
+  }
+  .v-table-min .d-col-xl-6.d-col-md-4{
+    padding: 0;
+  }
+  .shipments .v-table-min .p-inputtext {
+    padding-block: 11.6px;
+    font-size: 12px;
+  }
+  .shipments .v-table-min .p-floatlabel label {
+    font-size: 12px;
+    color:#757575;
+  }
+  .shipments .v-table-min .form_input_group:after {
+    top: calc(50% - 6.4px);
+    right: 16px;
+    font-size: 12px;
+  }
+  .d-table-min{
+    width: calc(100% + 16px);
+    margin-left: 0px;
+
+  }
+  .d-table-min .d-table-min__row{
+    padding: 24px 16px;
+  }
+  .orders_table .d-table__wrapper {
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    overflow: visible;
+  }
+  .d-table-min__col-id {
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 21px;
+  }
+  .d-table-min__row .d-table-min__col-simple:nth-child(2) {
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 8px;
+    border-top: 1px solid #75757575;
+    padding-top: 12px;
+  }
+  .d-table-min__row .d-table-min__col-simple {
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 8px;
+    border-top: 1px solid #75757575;
+    padding-top: 12px;
+  }
+  .cell_value-label {
+    width: 100%;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .d-table-min__row .item_cell, .d-table-min__row .multyitem_cell {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 21px;
+    width: 100%;
+    text-align: left;
+  }
+  .d-table-min__col-simple-html .item_cell, .d-table-min__col-comment .item_cell{
+    font-weight: 400 !important;
+  }
+  .d-table-min__col-status span {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 10px;
+    line-height: 12px;
+    text-align: center;
+    padding: 3px 7.5px;
+    border-radius: 20px;
+  }
+  .d-table-min__col-status {
+    position: absolute;
+    top: 22px;
+    left: 90px;
+  }
+  .d-table-min__head{
+    width: calc(100% - 34px);
+    margin: 0 0 0 16px;
+    height: 40px;
+  }
+  .d-table-min__row-sort{
+    width: 100%;
+  }
+  .d-table-min__row-sort-label{
+    width: 100%;
+    justify-content: space-between;
+    padding: 16px 16px 16px 12px;
+    box-shadow: none;
+    border: 0.2px solid rgba(117, 117, 117, 0.4588235294);
+    border-radius: 6px;
+    height: 40px;
+  }
+  .d-table-min__row-sort-label {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #757575;
+    background: #ffffff;
+  }
+  .d-table-min__row-sort-list {
+    gap: 16px;
+    padding: 12px 16px;
+    position: absolute;
+    width: 100%;
+    max-width: calc(100% - 16px);
+    height: auto;
+    right: 0px;
+    top: 40px;
+    background: #FFF;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.14), 0px 0px 2px rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+    z-index: 10;
+}
+.d-table-min__row-sort-list-item label {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    color: #757575;
+
+}
+.d-table-min__head-col {
+    display: flex
+;
+    flex-direction: column;
+    gap: 16px;
+}
 }
 </style>

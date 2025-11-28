@@ -223,12 +223,13 @@ export default {
   width: 100%;
 }
 .wholesaleorders__content .form_input_group:after {
-  content: '\e003';
+  content: '\e01d';
   font-family: 'Iconly' !important;
   position: absolute;
   font-size: 16.8px;
   top: calc(50% - 8.4px);
   right: 20px;
+  color: #757575;
 }
 .wholesaleorders__content .p-inputtext {
   padding-right: 40px;

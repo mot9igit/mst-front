@@ -205,7 +205,7 @@ export default {
   width: 100%;
 }
 .myorders__content .form_input_group:after {
-  content: '\e003';
+  content: '\e01d';
   font-family: 'Iconly' !important;
   position: absolute;
   font-size: 16.8px;

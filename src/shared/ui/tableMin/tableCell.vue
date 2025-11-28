@@ -1,11 +1,11 @@
 <template>
   <div class="d-table-min__col-id" v-if="cell_key == 'id'" :id="value[cell_key]">{{ cell_data.label }} {{ value[cell_key] }} </div>
-  <div class="d-table-min__col-status" v-else-if="cell_data.type == 'status'" :style="'left: calc(16px + ' + statusMargin(value.id) + 'px)'"><span :style="
+  <div class="d-table-min__col-status" v-else-if="cell_data.type == 'status'"><span :style="
           'color: #fff;background-color: #' +
           value.status_color
         ">{{ value['status_name'] }}</span>
   </div>
-  <div class="d-table-min__col-simple" v-else-if="cell_data.type == 'html'">
+  <div class="d-table-min__col-simple d-table-min__col-simple-html" v-else-if="cell_data.type == 'html'">
     <div class="cell_value-label">{{ cell_data.label }}</div>
     <div class="item_cell">{{ prepareHtml(value[cell_key]) }}</div>
   </div>
@@ -117,12 +117,7 @@ export default {
     },
   },
   methods: {
-    statusMargin(id){
-      let el = document.getElementById(id)
-      // const width = el.clientWidth;
-      let width = 40
-      return width
-    },
+
     toggleSelection(id) {
       console.log(id)
       if (this.selectedItems.includes(id)) {
@@ -283,10 +278,28 @@ export default {
   align-items: center;
   cursor: pointer;
 }
-.d-table-min__row-sort-list-item input[type='radio']{
+.d-table-min__row-sort-list-item .p-checkbox {
   width: 12px;
   height: 12px;
   border: 1px solid #757575;
+  border-radius: 12px;
+}
+.d-table-min__row-sort-list-item .p-checkbox-box {
+  border: none;
+  width: 12px;
+  height: 12px;
+  background-color: transparent;
+}
+.d-table-min__row-sort-list-item .p-checkbox-checked .p-checkbox-box {
+  width: 11px;
+  height: 11px;
+  border-radius: 12px;
+  margin: 0;
+}
+.d-table-min__row-sort-list-item .p-checkbox-icon {
+  font-size: 9px;
+  width: 12px;
+  height: 12px;
 }
 .d-table-min__row-sort-list-item label{
   font-style: normal;
@@ -372,7 +385,7 @@ export default {
 .d-table-min__col-status{
   position: absolute;
   top: 8px;
-  right: 8px;
+  left: 40px;
 }
 .d-table-min__col-comment{
   display: flex;
@@ -384,4 +397,5 @@ export default {
   text-align: left;
   width: 90%;
 }
+
 </style>

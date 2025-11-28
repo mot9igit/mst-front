@@ -7,18 +7,20 @@
     <Loader v-if="loading" />
     <div class="d-top-order-container">
       <div class="d-top-order-container-left">
-        <div>
+        <div class="d-top-order-container-left-top">
           <h2>Заказ № {{ this.$route.params.order_id }}</h2>
+          <div class="d-badge2 d-badge2--fit order-card__status" :style="
+            'background-color: #' +
+              status.color
+              "
+              v-if="(Object.keys(status).length != 0)"
+          >
+            {{ status.name }}
+          </div>
 
-          <div class="d-top-order-container-date-created">от {{ this.order.date }}</div>
         </div>
-        <div class="d-badge2 d-badge2--fit order-card__status" :style="
-          'background-color: #' +
-          status.color
-        "
-        v-if="(Object.keys(status).length != 0)"
-      >
-        {{ status.name }}</div>
+
+        <div class="d-top-order-container-date-created">от {{ this.order.date }}</div>
       </div>
       <div class="d-top-order-container-right">
         <div class="d-top-order-container-buttons">
@@ -67,14 +69,16 @@
     </div>
     <div class="d-top-order-container-info">
       <h3>Информация о заказе</h3>
-      <div class="order-card__orderinfo dart-row">
-        <div class="order-card__orderinfo-grid d-col-md-3">
+      <div class="order-card__orderinfo">
+
+        <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Сумма</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.order?.cost != '' ? this.order?.cost : '-' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-3">
+
+        <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Инициатор</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.order?.initiator_org_name != '' ? this.order?.initiator_org_name : '' }}
@@ -83,7 +87,8 @@
             ({{ this.order?.initiator_user_name != '' ? this.order?.initiator_user_name : '' }})
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-5">
+
+        <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Поставщик</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.order?.seller_name != '' ? this.order?.seller_name : '' }}  ИНН: {{ this.order?.seller_inn != '' ? this.order?.seller_inn : '-' }}
@@ -93,7 +98,8 @@
             {{ this.order?.seller_w_address ? this.order?.seller_w_address : '' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-5">
+
+        <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.order?.buyer_name != '' ? this.order?.buyer_name : '' }}  ИНН: {{ this.order?.ur_persone?.inn != '' ? this.order?.ur_persone?.inn : '' }}
@@ -103,7 +109,8 @@
             {{ this.order?.buyer_w_address ? this.order?.buyer_w_address : '' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-3">
+
+        <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
           <div class="order-card__orderinfo-grid-text" v-if="this.order?.delay_text">
             {{ this.order?.delay_text }}
@@ -112,23 +119,28 @@
             {{ this.order?.delay != '' ? (Number.parseInt(this.order?.delay) ? this.order?.delay + ' дн.' : this.order?.delay) : '0 дн.' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-3">
+
+        <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Оплата доставки</div>
           <div class="order-card__orderinfo-grid-text">{{ this.order?.payer }}</div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-2">
+
+        <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.day_delivery }}  ({{ this.order?.delivery_date }})
+            {{ this.order?.day_delivery }}дн. ({{ this.order?.delivery_date }})
           </div>
         </div>
-      </div>
-       <div class="order-card__ordercomment">
+
+        <div class="order-card__ordercomment">
         <div  class="order-card__ordercomment-container" v-if="order.comment">
           <div class="order-card__orderinfo-grid-lable">Комментарий:</div>
           <div v-html="order.comment"></div>
         </div>
       </div>
+
+      </div>
+
     </div>
     <div class="d-order-container">
       <h3>Состав заказа</h3>
@@ -511,11 +523,84 @@ export default {
     transform: rotate(45deg);
     font-size: 18px;
   }
-      .order-card__docs .item-list-item-icon {
-        font-size: 20px;
-        font-weight: 600;
-    }
-.order-card__modal button{
-  min-width: 111px;
+  .order-card__docs .item-list-item-icon {
+    font-size: 20px;
+    font-weight: 600;
+  }
+  .order-card__modal button{
+    min-width: 111px;
+  }
+// grids
+.order-card__orderinfo{
+  display: grid;
+  grid-template-columns: 139fr 149fr 400fr 400fr 150fr 150fr 134fr;
+  grid-template-rows: auto;
+  grid-row-gap: 24px;
+}
+.order-card__ordercomment{
+  display: grid;
+  grid-column-start: 1;
+  grid-column-end: 7;
+
+}
+.order-card__orderinfo-grid:first-child{
+ padding-left: 0;
+}
+.order-card__orderinfo-grid:not(:first-child){
+  border-left: 0.5px solid #75757575;
+}
+//
+.d-top-order-container-left-top{
+  display: flex;
+  gap: 16px;
+}
+.d-top-order-container-left {
+  flex-direction: column;
+  gap: 16px;
+}
+.d-top-order-container-date-created {
+  margin-top: 0px;
+}
+@media (width <= 1536px) {
+// grids
+.order-card__orderinfo{
+  display: grid;
+  grid-template-columns: 147fr 196fr 327fr 327fr 178fr;
+  grid-template-rows: auto auto;
+  grid-row-gap: 24px;
+}
+.order-card__orderinfo-grid:nth-child(6){
+  display: grid;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  border-left: none !important;
+}
+.order-card__orderinfo-grid:nth-child(7){
+  display: grid;
+  grid-column-start: 2;
+  grid-column-end: 3;
+}
+.order-card__ordercomment{
+  display: grid;
+  grid-column-start: 3;
+  grid-column-end: 8;
+  padding-left: 10px;
+  border-left: 0.5px solid #75757575;
+}
+.order-card__orderinfo-grid:first-child{
+ padding-left: 0;
+}
+.order-card__orderinfo-grid:not(:first-child){
+  border-left: 0.5px solid #75757575;
+}
+//
+.d-top-order-container h2{
+  font-size: 20px;
+}
+.d-top-order-container-buttons button {
+    height: 38px;
+    min-height: 38px;
+    max-height: 38px;
+}
 }
 </style>
