@@ -325,8 +325,8 @@ export default {
         font-size: 14px;
         font-weight: 300;
     }
-    .d-top-order-container-info h3, .d-order-container h3 {
-      margin-top: 40px;
+    .d-top-order-container-info h3{
+      margin-top: 24px;
       margin-bottom: 24px;
     }
     .shipments .dart-mb-1 {

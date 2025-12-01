@@ -70,7 +70,7 @@
     </div>
     <div class="d-top-order-container-info">
       <h3>Информация о заказе</h3>
-      <div class="order-card__orderinfo">
+      <div class="order-card__orderinfo order-card__orderinfo-line1">
 
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Сумма</div>
@@ -133,14 +133,42 @@
           </div>
         </div>
 
-        <div class="order-card__ordercomment">
-        <div  class="order-card__ordercomment-container" v-if="order.comment">
-          <div class="order-card__orderinfo-grid-lable">Комментарий:</div>
-          <div v-html="order.comment"></div>
-        </div>
+        
       </div>
+      <div class="order-card__orderinfo order-card__orderinfo-line2">
+
+        <div class="order-card__orderinfo-grid">
+          <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
+          <div class="order-card__orderinfo-grid-text" v-if="this.order?.delay_text">
+            {{ this.order?.delay_text }}
+          </div>
+          <div class="order-card__orderinfo-grid-text" v-else>
+            {{ this.order?.delay != '' ? (Number.parseInt(this.order?.delay) ? this.order?.delay + ' дн.' : this.order?.delay) : '0 дн.' }}
+          </div>
+        </div>
+
+        <div class="order-card__orderinfo-grid">
+          <div class="order-card__orderinfo-grid-lable">Оплата доставки</div>
+          <div class="order-card__orderinfo-grid-text">{{ this.order?.payer }}</div>
+        </div>
+
+        <div class="order-card__orderinfo-grid">
+          <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
+          <div class="order-card__orderinfo-grid-text">
+            {{ this.order?.day_delivery }}дн. ({{ this.order?.delivery_date }})
+          </div>
+        </div>
+
+        <div class="order-card__ordercomment">
+          <div  class="order-card__ordercomment-container" v-if="order.comment">
+            <div class="order-card__orderinfo-grid-lable">Комментарий:</div>
+            <div v-html="order.comment"></div>
+          </div>
+        </div>
 
       </div>
+
+      
 
     </div>
     <div class="d-order-container">
@@ -537,17 +565,31 @@ export default {
     min-width: 111px;
   }
 // grids
-.order-card__orderinfo{
+.order-card__orderinfo-line2 .order-card__orderinfo-grid{
+  display:none;
+}
+
+.order-card__orderinfo-grid{
+  height: 100%;
+  align-items: start;
+  grid-template-rows: auto 100%
+}
+.order-card__orderinfo-line1{
   display: grid;
   grid-template-columns: 139fr 149fr 400fr 400fr 150fr 150fr 134fr;
-  grid-template-rows: auto;
+  grid-template-rows: 100%;
   grid-row-gap: 24px;
   align-items: start;
 }
+.order-card__orderinfo-line2 {
+ grid-template-columns: 100%;
+ grid-template-rows: 100%;
+ align-items: start;
+ gap: 8px;
+}
 .order-card__ordercomment{
   display: grid;
-  grid-column-start: 1;
-  grid-column-end: 7;
+  width: 90%;
 
 }
 .order-card__orderinfo-grid:first-child{
@@ -586,30 +628,54 @@ export default {
 .shipments .d-top-order-container{
   align-items: center;
 }
+
 // grids
-.order-card__orderinfo{
+.order-card__orderinfo-grid, .order-card__ordercomment {
+  padding: 0 18px !important;
+  margin:  0 0 0 0 !important;
+  width: 100% !important;
+}
+.order-card__orderinfo-line1 .order-card__orderinfo-grid:first-child{
+  padding-left:0px !important;
+}
+.order-card__orderinfo-line1 .order-card__orderinfo-grid:nth-child(-n){
+  display:none;
+}
+.order-card__orderinfo-line1.order-card__orderinfo{
   display: grid;
   grid-template-columns: 147fr 196fr 327fr 327fr 178fr;
-  grid-template-rows: auto auto;
+  grid-template-rows: auto;
   grid-row-gap: 24px;
 }
-.order-card__orderinfo-grid:nth-child(6){
-  display: grid;
-  grid-column-start: 1;
-  grid-column-end: 2;
-  border-left: none !important;
+.order-card__orderinfo-grid-lable{
+  height: min-content;
 }
-.order-card__orderinfo-grid:nth-child(7){
+.order-card__orderinfo-line2.order-card__orderinfo{
   display: grid;
-  grid-column-start: 2;
-  grid-column-end: 3;
+  grid-template-columns: 178fr 189fr 905fr;
+  grid-template-rows: auto;
+  grid-row-gap: 0px;
+}
+.order-card__orderinfo-line1 .order-card__orderinfo-grid:nth-child(6){
+  display: none;
+}
+.order-card__orderinfo-line1 .order-card__orderinfo-grid:nth-child(7){
+  display: none;
+}
+.order-card__orderinfo-line2 .order-card__orderinfo-grid:nth-child(2){
+  display: inline-grid;
+  border-left: none;
+  padding-left: 0 !important;
+}
+.order-card__orderinfo-line2 .order-card__orderinfo-grid:nth-child(3){
+  display: inline-grid;
 }
 .order-card__ordercomment{
   display: grid;
-  grid-column-start: 3;
-  grid-column-end: 8;
   padding-left: 10px;
   border-left: 0.5px solid #75757575;
+  grid-column-start: auto;
+  grid-column-end: auto;
 }
 .order-card__orderinfo-grid:first-child{
  padding-left: 0;
@@ -641,38 +707,20 @@ export default {
 .shipments .d-top-order-container{
   align-items: end;
 }
-  // grids
-// .order-card__orderinfo{
-//   display: grid;
-//   grid-template-columns: 147fr 196fr 327fr 327fr 178fr;
-//   grid-template-rows: auto auto;
-//   grid-row-gap: 24px;
-// }
-// .order-card__orderinfo-grid:nth-child(6){
-//   display: grid;
-//   grid-column-start: 1;
-//   grid-column-end: 2;
-//   border-left: none !important;
-// }
-// .order-card__orderinfo-grid:nth-child(7){
-//   display: grid;
-//   grid-column-start: 2;
-//   grid-column-end: 3;
-// }
-// .order-card__ordercomment{
-//   display: grid;
-//   grid-column-start: 3;
-//   grid-column-end: 8;
-//   padding-left: 10px;
-//   border-left: 0.5px solid #75757575;
-// }
-// .order-card__orderinfo-grid:first-child{
-//  padding-left: 0;
-// }
-// .order-card__orderinfo-grid:not(:first-child){
-//   border-left: 0.5px solid #75757575;
-// }
-//
+    .order-card__orderinfo-grid-text-down-min, .order-card__orderinfo-grid-text-down, .order-card__ordercomment-container div {
+        font-size: 12px;
+        font-weight: 400;
+    }
+    .order-card__orderinfo-grid-text-down, .order-card__orderinfo-grid-text{
+      margin-top: 8px;
+    }
+    .order-card__orderinfo-grid-text-down b{
+      margin-bottom: 8px;
+    }
+// grids
+.order-card__orderinfo-grid, .order-card__ordercomment {
+  padding: 0 22px !important;
+}
 .d-top-order-container h2{
   font-size: 16px;
 }
