@@ -291,15 +291,18 @@ export default {
   background-color: transparent;
 }
 .d-table-min__row-sort-list-item .p-checkbox-checked .p-checkbox-box {
-  width: 11px;
-  height: 11px;
-  border-radius: 12px;
-  margin: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 8px;
+  margin: 1px;
 }
 .d-table-min__row-sort-list-item .p-checkbox-icon {
   font-size: 9px;
   width: 12px;
   height: 12px;
+}
+.d-table-min__row-sort-list-item .p-checkbox-checked .p-checkbox-icon {
+  color: var(--p-checkbox-checked-background);
 }
 .d-table-min__row-sort-list-item label{
   font-style: normal;

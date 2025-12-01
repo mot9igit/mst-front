@@ -1,5 +1,5 @@
 <template>
-  <section class="shipments" id="shipments">
+  <section class="shipments order_content" id="shipments">
     <div class="d-top">
       <Breadcrumbs />
     </div>
@@ -508,6 +508,8 @@ export default {
   position: relative;
   font-size: 18px;
   color:#757575;
+  display: flex;
+  align-items: center;
  }
  .order-card__action-edit:before{
     content: '';
@@ -536,6 +538,7 @@ export default {
   grid-template-columns: 139fr 149fr 400fr 400fr 150fr 150fr 134fr;
   grid-template-rows: auto;
   grid-row-gap: 24px;
+  align-items: start;
 }
 .order-card__ordercomment{
   display: grid;
@@ -675,5 +678,56 @@ export default {
     min-height: 24px;
     min-width: auto;
 }
+  .d-top-order-container-buttons {
+    gap: 8px;
+  }
+}
+@media (width <= 1024px) {
+  .d-top-order-container-left-top .d-badge2 {
+    padding: 3px 8px;
+    font-size: 9px;
+    line-height: 11px;
+    min-height: 18px;
+    max-height: 18px;
+  }
+  .shipments button span {
+    font-size: 10px;
+  }
+  .order-card__cancel i {
+    font-size: 12px;
+  }
+  .order-card__repeat .item-list-item-icon {
+    font-size: 12px !important;
+  }
+  .order-card__docs .item-list-item-icon {
+    font-size: 15px;
+  }
+  .order-card__action-edit i{
+    font-size: 13px;
+  }
+  .d-top-order-container-left {
+    gap: 8px;
+  }
+}
+@media (width <= 800px) {
+  .d-top-order-container h2 {
+    font-size: 14px;
+  }
+  .d-top-order-container-left-top .order-card__status {
+    font-size: 9px !important;
+  }
+  .d-top-order-container-date-created {
+    font-size: 12px;
+    margin-top: 0px;
+  }
+  .order_content .d-top-order-container{
+    flex-direction: row;
+    align-items: end;
+  }
+  .order_content .d-top-order-container-buttons button, .shipments .d-badge2 {
+        height: 20px;
+        max-height: 20px;
+        min-height: 20px;
+    }
 }
 </style>
