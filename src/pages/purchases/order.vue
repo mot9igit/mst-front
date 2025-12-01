@@ -9,6 +9,7 @@
       <div class="d-top-order-container-left">
         <div class="d-top-order-container-left-top">
           <h2>Заказ № {{ this.$route.params.order_id }}</h2>
+          <div class="d-top-order-container-date-created-hidden d-top-order-container-date-created">от {{ this.order.date }}</div>
           <div class="d-badge2 d-badge2--fit order-card__status" :style="
             'background-color: #' +
               status.color
@@ -482,6 +483,9 @@ export default {
 .order-card__docs{
   margin-bottom:16px;
 }
+.d-top-order-container-date-created-hidden.d-top-order-container-date-created{
+  display:none;
+}
 @media (width <= 3000px) {
     .d-top-order-container-buttons-order_text.d-top-order-container-buttons-text p {
         max-width: 350px;
@@ -576,6 +580,12 @@ export default {
     min-width: auto;
 }
 @media (width <= 1536px) {
+.d-top-order-container-left{
+  gap: 8px;
+}
+.shipments .d-top-order-container{
+  align-items: center;
+}
 // grids
 .order-card__orderinfo{
   display: grid;
@@ -628,7 +638,10 @@ export default {
 }
 }
 @media (width <= 1280px) {
-// grids
+.shipments .d-top-order-container{
+  align-items: end;
+}
+  // grids
 // .order-card__orderinfo{
 //   display: grid;
 //   grid-template-columns: 147fr 196fr 327fr 327fr 178fr;
@@ -708,6 +721,9 @@ export default {
   .d-top-order-container-left {
     gap: 8px;
   }
+  .order-card__action-edit{
+    color: #282828;
+  }
 }
 @media (width <= 800px) {
   .d-top-order-container h2 {
@@ -729,5 +745,89 @@ export default {
         max-height: 20px;
         min-height: 20px;
     }
+}
+@media (width <= 700px) {
+  .d-top-order-container{
+    flex-direction: column !important;
+    justify-content: center;
+    align-items: start !important;
+    gap: 8px;
+  }
+  .d-top-order-container-left{
+    flex-direction: row;
+    gap: 8px;
+  }
+  .d-top-order-container-date-created-hidden.d-top-order-container-date-created{
+    display: flex;
+  }
+  .d-top-order-container-date-created:not(.d-top-order-container-date-created-hidden){
+    display:none;
+  }
+  .d-top-order-container-left-top .d-badge2{
+    height: 16px;
+    max-height: 16px;
+    min-height: 16px;
+  }
+  .order_content .d-top-order-container-buttons button {
+    height: 18px;
+    max-height: 18px;
+    min-height: 18px;
+    font-size: 9px;
+    padding: 3px 8px;
+    gap: 8px;
+  }
+  .order-card__action-edit{
+    padding-left: 0 !important;
+  }
+}
+@media (width <= 600px) {
+  .d-top-order-container{
+    position: relative;
+  }
+  .d-top-order-container-left-top{
+    flex-direction: column;
+    gap: 8px;
+    align-items: start;
+    justify-content: center;
+  }
+  .d-top-order-container-date-created{
+    padding-bottom: 0;
+    font-size: 14px;
+  }
+  .d-top-order-container h2 {
+    font-size: 16px;
+  }
+  .order_content .d-top-order-container-left-top .d-badge2{
+    height: 24px;
+    max-height: 24px;
+    min-height: 24px;
+    font-size:12px !important;
+  }
+  .order-card__action-edit{
+    padding-right: 0 !important;
+  }
+  .order-card__action-edit:before{
+    display: none;
+  }
+  .order-card__action-edit{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width:min-content;
+  }
+  .order_content .d-top-order-container-buttons button {
+    height: 32px;
+    max-height: 32px;
+    min-height: 32px;
+    font-size: 12px;
+    padding: 8px;
+    gap: 8px;
+  }
+  .order_content .d-top-order-container-buttons button:not(.order-card__action-edit) {
+    width:100%;
+  }
+  .d-top-order-container-right{
+    padding-top:40px;
+  }
 }
 </style>
