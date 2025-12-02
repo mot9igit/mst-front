@@ -325,9 +325,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      vendors: 'addition/vendors',
-    }),
+    
     pagesCount() {
       let pages = Math.ceil(this.total / this.per_page)
       if (pages === 0) {
@@ -361,9 +359,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions({
-      getVendors: 'addition/getVendors',
-    }),
+    
     checkElem(data) {
       this.$emit('checkElem', data)
     },

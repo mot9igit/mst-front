@@ -665,11 +665,11 @@ export default {
   .orders_table .v-table{
     display: none;
   }
-  .v-table-min .cell_value .multyitem_cell:first-child{
+  /* .v-table-min .cell_value .multyitem_cell:first-child{
     float: left;
     width: max-content;
     margin-right: 4px;
-  }
+  } */
 }
 @media (width <= 600px) {
   .d-top-order-container-right{

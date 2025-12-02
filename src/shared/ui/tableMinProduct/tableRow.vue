@@ -235,7 +235,8 @@ export default {
   }
   .d-table-min-product__cell-value{
     font-size: 16px;
-    line-height: 18px;
+    line-height: 21px;
+    
   }
 }
 </style>
