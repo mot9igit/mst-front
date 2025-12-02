@@ -165,11 +165,8 @@
             <div v-html="order.comment"></div>
           </div>
         </div>
-
+        
       </div>
-
-      
-
     </div>
     <div class="d-order-container">
       <h3>Состав заказа</h3>
@@ -183,7 +180,18 @@
         :page="this.page"
         :table_data="this.table_data"
         @paginate="paginate"
-      />
+      /> 
+      <!-- <MinProductTable
+        v-else
+        :items_data="optorder.products"
+        :total="optorder.products.length"
+        :pagination_items_per_page="this.pagination_items_per_page"
+        :pagination_offset="this.pagination_offset"
+        :page="this.page"
+        :table_data="this.table_data"
+        @paginate="paginate"
+      />-->
+
     </div>
     <Teleport to="body">
       <customModal v-model="modalDocs" class="order-card__modal">
@@ -237,6 +245,7 @@
 import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
+import MinProductTable from '@/shared/ui/tableMinProduct/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Toast from 'primevue/toast'
@@ -245,7 +254,7 @@ import editOrderWindow from './ui/editOrderWindow.vue'
 
 export default {
   name: 'purchasesOrder',
-  components: { Breadcrumbs, BaseTable, Loader, customModal, Toast, editOrderWindow },
+  components: { Breadcrumbs, BaseTable, Loader, customModal, Toast, editOrderWindow, MinProductTable },
   data() {
     return {
       loading: true,
@@ -490,6 +499,9 @@ export default {
 </script>
 
 <style lang="scss">
+.v-table-min-product{
+  display:none;
+}
 .order-card__modal button{
  margin: 20px auto;
 }
@@ -920,6 +932,12 @@ export default {
   }
 }
 @media (width <= 700px) {
+  .v-table-min-product{
+    display:block;
+  }
+  .v-table{
+    display:none;
+  }
   .d-top-order-container{
     flex-direction: column !important;
     justify-content: center;
