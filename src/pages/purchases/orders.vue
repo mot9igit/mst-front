@@ -721,10 +721,15 @@ export default {
     margin-left: -16px;
     overflow: visible;
   }
+  .d-table-min__header{
+    padding-bottom: 8px;
+  }
   .d-table-min__col-id {
-    margin-bottom: 10px;
     font-size: 16px;
     line-height: 21px;
+  }
+  .d-table-min__row .d-table-min__col-simple{
+    padding-bottom: 8px;
   }
   .d-table-min__row .d-table-min__col-simple:nth-child(2) {
     flex-direction: column;
@@ -767,11 +772,7 @@ export default {
     padding: 3px 7.5px;
     border-radius: 20px;
   }
-  .d-table-min__col-status {
-    position: absolute;
-    top: 22px;
-    left: 90px;
-  }
+  
   .d-table-min__head{
     width: calc(100% - 34px);
     margin: 0 0 0 16px;

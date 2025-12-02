@@ -3,6 +3,15 @@
   <router-link class="d-table-min__row"
   :to="{ name: keys.id.link_to, params: {id: this.$route.params.id, order_id: row_data.id}, props: keys.id.link_props }"
   >
+  <div class="d-table-min__header">
+      <div class="d-table-min__col-id">№ {{ row_data.id }} </div>
+      <div class="d-table-min__col-status"><span :style="
+              'color: #fff;background-color: #' +
+              row_data.status_color
+            ">{{ row_data.status_name }}</span>
+      </div>
+  </div>
+
     <v-table-cell
       v-for="(row, index) in keys"
       :key="index"
@@ -127,5 +136,13 @@ export default {
 // }
 .name {
   text-align: left;
+}
+.d-table-min__header{
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 16px;
+  width: 100%;
+  padding: 4px 0;
 }
 </style>

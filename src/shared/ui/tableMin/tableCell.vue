@@ -1,11 +1,11 @@
 <template>
-  <div class="d-table-min__col-id" v-if="cell_key == 'id'" :id="value[cell_key]">{{ cell_data.label }} {{ value[cell_key] }} </div>
+  <!-- <div class="d-table-min__col-id" v-if="cell_key == 'id'" :id="value[cell_key]">{{ cell_data.label }} {{ value[cell_key] }} </div>
   <div class="d-table-min__col-status" v-else-if="cell_data.type == 'status'"><span :style="
           'color: #fff;background-color: #' +
           value.status_color
         ">{{ value['status_name'] }}</span>
-  </div>
-  <div class="d-table-min__col-simple d-table-min__col-simple-html" v-else-if="cell_data.type == 'html'">
+  </div> -->
+  <div class="d-table-min__col-simple d-table-min__col-simple-html" v-if="cell_data.type == 'html'">
     <div class="cell_value-label">{{ cell_data.label }}</div>
     <div class="item_cell">{{ prepareHtml(value[cell_key]) }}</div>
   </div>
@@ -13,7 +13,7 @@
     <div class="cell_value-label">{{ cell_data.label }}</div>
     <div class="item_cell">{{ prepareHtml(value[cell_key]) }}</div>
   </div>
-  <div class="d-table-min__col-simple" v-else-if="cell_key != 'id' && cell_data.type != 'html' && cell_data.type != 'prepare-html'">
+  <div class="d-table-min__col-simple" v-else-if="cell_key != 'id' && cell_key != 'status' && cell_data.type != 'html' && cell_data.type != 'prepare-html'">
 
     <div class="cell_value-label">{{ cell_data.label }}</div>
     <div
@@ -373,8 +373,12 @@ export default {
   font-size: 10px;
   line-height: 13px;
   color: #282828;
-  margin-bottom: 10px;
   width: max-content;
+}
+.d-table-min__col-status{
+  display: flex;
+  align-items: center;
+
 }
 .d-table-min__col-status span{
   font-style: normal;
@@ -385,11 +389,7 @@ export default {
   padding: 2px 8px;
   border-radius: 20px;
 }
-.d-table-min__col-status{
-  position: absolute;
-  top: 8px;
-  left: 40px;
-}
+
 .d-table-min__col-comment{
   display: flex;
   flex-direction: column;
