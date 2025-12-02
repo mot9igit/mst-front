@@ -833,14 +833,6 @@ body .d-fractions {
     .d-top-order-container-date-created {
         font-size: 10px;
     }
-    .d-top-order-container-info h3,
-    .d-order-container h3 {
-        display: none;
-    }
-    .order-card__orderinfo-grid-lable {
-        font-size: 7px;
-        line-height: 12px;
-    }
     .order-card__orderinfo-grid-text,
     .order-card__orderinfo-grid-text-down {
         font-size: 8px;
@@ -850,17 +842,6 @@ body .d-fractions {
     }
     .d-top-order-container h2 {
         font-size: 12px;
-    }
-    .d-top-order-container {
-        border-bottom: none;
-    }
-    .d-top-order-container,
-    .d-top-order-container-info {
-        min-height: auto;
-    }
-    .d-top-order-container-info,
-    .order-card__orderinfo-grid-lable {
-        margin-top: 8px;
     }
     .d-order-container .d-table__head-col,
     .d-order-container .d-table__col {
@@ -1797,10 +1778,6 @@ body .d-fractions {
     }
     .d-top-order-container-date-created {
         font-size: 10px;
-    }
-    .d-top-order-container-info h3,
-    .d-order-container h3 {
-        display: none;
     }
     .order-card__orderinfo-grid-lable {
         font-size: 12px;

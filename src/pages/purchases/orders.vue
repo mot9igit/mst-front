@@ -238,7 +238,6 @@ export default {
   content: ',';
   position: relative;
 }
-
 .cell_initiatior-data .multyitem_cell {
   display: block;
 }
@@ -254,42 +253,41 @@ export default {
   display: none;
 }
 //--фиксированная ширина для колонок
-    .orders_table .d-table__col:first-child{
-      width: 5%;
-      min-width: 5%;
-      max-width: 5%;
-    }
-    .orders_table .d-table__col:nth-child(2){
-      width: 7%;
-      min-width: 7%;
-      max-width: 7%;
-    }
-    .orders_table .d-table__col:nth-child(3),.orders_table .d-table__col:nth-child(4){
-      width: 18%;
-      min-width: 18%;
-      max-width: 18%;
-    }
-    .orders_table .d-table__col:nth-child(4){
-      width: 16%;
-      min-width: 16%;
-      max-width: 16%;
-    }
-    .orders_table .d-table__col:nth-child(5){
-      width: 12%;
-      min-width: 12%;
-      max-width: 12%;
-    }
-    .orders_table .d-table__col:nth-child(6){
-      width: 10%;
-      min-width: 10%;
-      max-width: 10%;
-    }
-    .orders_table .d-table__col:last-child{
-      width: 22%;
-      min-width: 22%;
-      max-width: 22%;
-    }
-
+.orders_table .d-table__col:first-child{
+  width: 5%;
+  min-width: 5%;
+  max-width: 5%;
+}
+.orders_table .d-table__col:nth-child(2){
+  width: 7%;
+  min-width: 7%;
+  max-width: 7%;
+}
+.orders_table .d-table__col:nth-child(3),.orders_table .d-table__col:nth-child(4){
+  width: 18%;
+  min-width: 18%;
+  max-width: 18%;
+}
+.orders_table .d-table__col:nth-child(4){
+  width: 16%;
+  min-width: 16%;
+  max-width: 16%;
+}
+.orders_table .d-table__col:nth-child(5){
+  width: 12%;
+  min-width: 12%;
+  max-width: 12%;
+}
+.orders_table .d-table__col:nth-child(6){
+  width: 10%;
+  min-width: 10%;
+  max-width: 10%;
+}
+.orders_table .d-table__col:last-child{
+  width: 22%;
+  min-width: 22%;
+  max-width: 22%;
+}
 //
 .d-top-order-container-buttons button{
   height: 40px;
@@ -313,25 +311,25 @@ export default {
 }
 @media (width <= 3000px) {
   .shipments  .d-top-order-container {
-      align-items: end;
-      min-height: 0;
-      height: auto;
-      padding-bottom: 22.5px;
+    align-items: end;
+    min-height: 0;
+    height: auto;
+    padding-bottom: 22.5px;
   }
   .d-top-order-container-info h3{
-        margin: 24px 0;
-    }
-    .order-card__orderinfo-grid-text-down-min {
-        font-size: 14px;
-        font-weight: 300;
-    }
-    .d-top-order-container-info h3{
-      margin-top: 24px;
-      margin-bottom: 24px;
-    }
-    .shipments .dart-mb-1 {
-      margin-bottom: 0;
-    }
+    margin: 24px 0;
+  }
+  .order-card__orderinfo-grid-text-down-min {
+    font-size: 14px;
+    font-weight: 300;
+  }
+  .d-top-order-container-info h3{
+    margin-top: 24px;
+    margin-bottom: 24px;
+  }
+  .shipments .dart-mb-1 {
+    margin-bottom: 0;
+  }
 }
 @media (width <= 1536px) {
   .shipments h1{
@@ -381,7 +379,6 @@ export default {
       min-width: 16%;
       max-width: 16%;
     }
-
 //
 }
 @media (width <= 1280px) {
@@ -406,7 +403,7 @@ export default {
     right: 20px !important;
   }
   .shipments .dart-row {
-      margin-top: -24px !important;
+    margin-top: -24px !important;
   }
   .cell_order-status span{
     font-size:10px !important;
@@ -460,13 +457,13 @@ export default {
       min-width: 33%;
       max-width: 33%;
     }
-    .d-table__footer-right-pagination {
-        display: flex;
-    }
-//
+  //  
+  .d-table__footer-right-pagination {
+    display: flex;
+  }
+
 }
 @media (width <= 1024px) {
-
   .shipments .d-table__col {
     font-size: 9px;
   }
@@ -486,14 +483,14 @@ export default {
     font-size:12px !important;
   }
   .shipments .dart-row {
-      margin-top: -24px !important;
+    margin-top: -24px !important;
   }
   .cell_order-status span{
     font-size:9px !important;
     color: #282828
   }
   .shipments  .dart-mb-1 {
-      margin-bottom: 32px !important;
+    margin-bottom: 32px !important;
   }
   .cell_order-status .cell--status{
     font-size: 8px;
@@ -536,7 +533,6 @@ export default {
       min-width: 33%;
       max-width: 33%;
     }
-
 //
   .shipments .order-card__ordercomment-container{
     font-size: 10px;
@@ -603,7 +599,7 @@ export default {
   .d-table__row-padding.d-table__row:first-child .d-table__col:not(:first-child)::before {
     top: 31% !important;
   }
-    //--фиксированная ширина для колонок
+  //--фиксированная ширина для колонок
     .orders_table .d-table__col:first-child{
       width: auto;
       min-width: auto;
@@ -646,8 +642,6 @@ export default {
         padding-left: 0 !important;
         padding-right: 24px !important;
     }
-
-
 //
 }
 @media (width <= 800px) {
@@ -663,22 +657,19 @@ export default {
   .shipments button span{
     font-size: 10px;
   }
-  .d-top-order-container-info{
-    margin-top: 28px;
-  }
 }
 @media (width <= 700px) {
-   .orders_table .v-table-min{
-     display: block;
-   }
-   .orders_table .v-table{
-     display: none;
-   }
-   .v-table-min .cell_value .multyitem_cell:first-child{
+  .orders_table .v-table-min{
+    display: block;
+  }
+  .orders_table .v-table{
+    display: none;
+  }
+  .v-table-min .cell_value .multyitem_cell:first-child{
     float: left;
     width: max-content;
     margin-right: 4px;
-   }
+  }
 }
 @media (width <= 600px) {
   .d-top-order-container-right{
@@ -721,7 +712,6 @@ export default {
   .d-table-min{
     width: calc(100% + 16px);
     margin-left: 0px;
-
   }
   .d-table-min .d-table-min__row{
     padding: 24px 16px;
@@ -820,20 +810,18 @@ export default {
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.14), 0px 0px 2px rgba(0, 0, 0, 0.12);
     border-radius: 6px;
     z-index: 10;
-}
-.d-table-min__row-sort-list-item label {
+  }
+  .d-table-min__row-sort-list-item label {
     font-style: normal;
     font-weight: 400;
     font-size: 12px;
     line-height: 14px;
     color: #757575;
-
-}
-.d-table-min__head-col {
-    display: flex
-;
+  }
+  .d-table-min__head-col {
+    display: flex;
     flex-direction: column;
     gap: 16px;
-}
+  }
 }
 </style>
