@@ -170,27 +170,24 @@
     </div>
     <div class="d-order-container">
       <h3>Состав заказа</h3>
-      <Loader v-if="loading" />
       <BaseTable
-        v-else
         :items_data="optorder.products"
-        :total="optorder.products.length"
+        :total="optorder.total_products"
         :pagination_items_per_page="this.pagination_items_per_page"
         :pagination_offset="this.pagination_offset"
         :page="this.page"
         :table_data="this.table_data"
         @paginate="paginate"
       /> 
-      <!-- <MinProductTable
-        v-else
+      <MinProductTable
         :items_data="optorder.products"
-        :total="optorder.products.length"
+        :total="optorder.total_products"
         :pagination_items_per_page="this.pagination_items_per_page"
         :pagination_offset="this.pagination_offset"
         :page="this.page"
         :table_data="this.table_data"
         @paginate="paginate"
-      />-->
+      />
 
     </div>
     <Teleport to="body">
@@ -337,7 +334,16 @@ export default {
       requirement_id: 0,
     }
   },
-
+  props: {
+    pagination_items_per_page: {
+      type: Number,
+      default: 5,
+    },
+    pagination_offset: {
+      type: Number,
+      default: 0,
+    },
+  },
   methods: {
   ...mapActions({
       getOptOrder: 'purchases/getOptOrder',
@@ -354,6 +360,8 @@ export default {
           order_id: this.$route.params.order_id,
         }).then(() => {
         this.getOptOrder({
+          page: this.page,
+          perpage: this.pagination_items_per_page,
           order_id: this.$route.params.order_id,
         }).then(() => (this.loading = false))
       })
@@ -392,7 +400,7 @@ export default {
     paginate(data){
       this.loading = true
       this.unsetOptOrder()
-      data.page = this.page
+      this.page = data.page
       data.order_id = this.$route.params.order_id,
       this.getOptOrder(data).then(() => {
         this.loading = false
@@ -431,7 +439,8 @@ export default {
             })
           }
         data.page = this.page
-        data.order_id = this.$route.params.order_id,
+        data.perpage = this.pagination_items_per_page
+        data.order_id = this.$route.params.order_id
         this.getOptOrder(data).then(() => {
         this.loading = false
         this.modalCancel = false
@@ -478,6 +487,8 @@ export default {
   },
   mounted() {
     this.getOptOrder({
+      page: this.page,
+      perpage: this.pagination_items_per_page,
       order_id: this.$route.params.order_id,
     }).then(() => (this.loading = false))
   },
