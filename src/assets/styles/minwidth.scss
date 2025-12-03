@@ -1254,7 +1254,7 @@ body .d-fractions {
     }
     .cart .cart__buy {
         position: absolute;
-        bottom: calc(var(--sidebar-height) + 18px);
+        bottom: calc(var(--sidebar-height) + 8px);
     }
     .cart .cart__content .product-list {
         max-height: 80% !important;

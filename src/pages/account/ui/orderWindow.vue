@@ -203,9 +203,17 @@
                       :id="Number(product?.remain_id)"
                       :key="new Date().getTime() + '_1_' + product?.key"
                     />
-                    <span class="order__item-product-price nowrap"
-                      >{{ product.price.toLocaleString('ru') }} ₽</span
-                    >
+                    <div class="order__item-product-price nowrap">
+
+                      <p>{{ product.price.toLocaleString('ru') }} ₽</p>
+                      <div class="order__item-product-price-rrc">
+                        <p v-if="product.cost.rrc_discount > 0">-{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ</p>
+                        <p v-else class="cart-no-discount">Без скидки от РРЦ</p>
+                        <p>{{ product.price.toLocaleString('ru') }} ₽ за ед.</p>
+                      </div>
+                      
+                    </div>
+                    
                   </div>
                 </div>
                 <div class="order__item-content-comment">
@@ -1129,6 +1137,7 @@ export default {
   line-height: 18px;
   color: #757575;
 }
+
 .order__item-product-price-rrc p{
   text-align: right;
 }
@@ -1139,6 +1148,9 @@ export default {
 .order__item-product{
         display:flex;
         align-items: center;
+    }
+    .cart__item-header-button{
+      align-self: start;
     }
 @media (width <= 1920px) {
     .order {
@@ -1509,7 +1521,7 @@ export default {
   }
   .order__item-content{
     padding: 8px 0;
-    border-top: 0.5px solid #75757575; 
+    border-top: 0.5px solid #75757540; 
   }
   .order__item .order__item-content + .order__item-content {
     margin-top: 0px;
@@ -1531,6 +1543,10 @@ export default {
     font-size: 9px;
     line-height: 11px;
     margin-bottom: 4px;
+  }
+  .cart-no-discount{
+    font-size: 9px;
+    line-height: 11px;
   }
   .order__item-product-counter {
     width: 90px;
@@ -1606,15 +1622,157 @@ export default {
   }
 }
 @media (width <= 600px) {
+  .order__header{
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    min-height: 40px;
+    margin-top:-16px;
+    border-radius: 10px 10px 0 0;
+    padding: 9px 44px;
+  }
   .order__item-content-description-container{
     padding: 0 0px 16px;
   }
   .order__item-content-comment {
     margin: 0 24px 16px;
   }
-  .order__item-content-comment button{
-    width:100%;
-
+  .order__header-title {
+    font-size: 16px;
+  }
+  .order__header {
+    margin-bottom: 0px;
+  }
+  .order__item-header-badge-text {
+    font-size: 10px;
+  }
+  .order__item-header-badge-image-container {
+    width: 16px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .order__item-header-badge {
+    padding: 4px 8px;
+    height: 24px;
+    max-height: 24px;
+    min-height: 24px !important;
+  }
+  .order__item-list{
+    width: calc(100% + 32px);
+    margin-left: -16px;
+  }
+  .order__item{
+    width: calc(100% - 1px);
+    margin-left: 0px;
+    padding: 16px 44px;
+  }
+  .order__item-header{
+    padding: 0;
+  }
+  .order__item-header-top{
+    align-items: start;
+  }
+  .order__item-header-warehouse-label, .order__item-header-warehouse-value {
+    font-size: 9px;
+  }
+  .order__item-header-warehouse-label{
+    padding-left: 4px;
+  }
+  .order__item-header-left {
+    gap: 8px;
+  }
+  .order__item-header {
+    gap: 4px;
+  }
+  .order__item-header{
+    border-bottom: none;
+    margin-bottom: 8px;
+  }
+  .order__item-content {
+    margin-bottom: 0px;
+  }
+  .order__item-product-image-container {
+    width: 40px;
+    height: 100%;
+  }
+  .order__item-product-counter {
+    max-width: 98px;
+    height: 24px;
+  }
+  .order__item-product-price-rrc{
+    flex-direction: row;
+  }
+  .order__item-product-price-rrc p:first-child{
+    padding-right: 8px;
+    border-right: 0.5px solid #75757575;
+  }
+  .order__item-product-price-rrc p:last-child{
+    padding-left: 8px;
+  }
+  .order__item-product-price{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .order__item-content {
+    border-bottom: none;
+  }
+  .order__item-content-comment {
+    margin: 16px 0 0 0;
+  }
+  .order__item-content-bottom{
+    padding: 0;
+    margin: 24px 0 !important;
+  }
+  .order__item-footer{
+    padding: 0;
+  }
+  .order__item-buy,.order__footer-actions-buy{
+    width: 100%;
+    padding: 7px 29px;
+    font-size: 14px;
+    height: 32px;
+    min-height: 32px;
+    max-height: 32px;
+    max-width: 100%;
+  }
+  .order__item-header-left .d-badge2 {
+    width: auto;
+    min-width: auto;
+  }
+  .mst__alert a {
+    font-size: 10px;
+    line-height: 12px;
+  }
+  .mst__alert{
+    margin-bottom: 16px;
+  }
+  .order__footer{
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    padding: 0 44px;
+  }
+  .order__footer-content{
+    padding-top: 16px;
+    gap: 16px;
+  }
+  .order__footer-label {
+    font-size: 14px;
+  }
+  .order__footer-value {
+    font-size: 14px;
+  }
+}
+@media (width <= 400px) {
+  .order__header{
+    padding: 9px 28px;
+  }
+  .order__footer{
+    padding: 0 28px;
+  }
+  .order__item{
+    padding: 16px 28px;
   }
 }
 </style>
