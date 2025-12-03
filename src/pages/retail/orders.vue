@@ -204,7 +204,7 @@ export default {
 .retailorders__content .d-table__row:first-child > .d-table__col {
   padding: 16px;
 }
-.nowrap a {
+.nowrap a, .nowrap {
   white-space: nowrap;
 }
 </style>

@@ -74,7 +74,7 @@
 
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Сумма</div>
-          <div class="order-card__orderinfo-grid-text">
+          <div class="order-card__orderinfo-grid-text nowrap">
             {{ this.order?.cost != '' ? this.order?.cost : '-' }}
           </div>
         </div>
@@ -280,7 +280,7 @@ export default {
         price: {
           label: 'Стоимость за единицу',
           type: 'text',
-          class: 'cell_centeralign',
+          class: 'cell_centeralign nowrap',
         },
         rrc_discount: {
           label: 'Скидка от РРЦ в %',
@@ -295,7 +295,7 @@ export default {
         summ: {
           label: 'Сумма',
           type: 'text',
-          class: 'cell_centeralign',
+          class: 'cell_centeralign nowrap',
         },
       },
       docs: [],
@@ -337,7 +337,7 @@ export default {
   props: {
     pagination_items_per_page: {
       type: Number,
-      default: 5,
+      default: 25,
     },
     pagination_offset: {
       type: Number,
