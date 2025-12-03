@@ -75,8 +75,8 @@
                   {{ item.req?.inn != '' ? item.req?.inn : 'не указан' }}
                 </p>
               </div>
-<!-- clients__devider -->
-              <div class="clients__card-contact-container d-col-12 ">
+              <!-- clients__devider -->
+              <div class="clients__card-contact-container d-col-12">
                 <a :href="'tel:' + item.phone.replace(/[^+\d]/g, '')" class="clients__card-contact">
                   <i class="d-icon-telephone clients__card-contact-icon"></i>
                   <span>{{ item.phone }}</span>
@@ -107,9 +107,9 @@
           </div>-->
             <div class="clients__card-right-right d-col-24">
               <div class="clients__card-action-container d-col-6">
-                <!-- <button class="clients__card-action" @click.prevent="changeOpts(item.id, '')">
+                <button class="clients__card-action" @click.prevent="changeOpts(item.id, '')">
                   <i class="d-icon-trash"></i>
-                </button> -->
+                </button>
               </div>
             </div>
           </div>

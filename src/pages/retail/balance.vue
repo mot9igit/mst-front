@@ -100,6 +100,7 @@
           <input
             type="number"
             min="0"
+            step="0.01"
             class="modal__input balance-form__input"
             placeholder="0"
             v-model="form.summEntered"
