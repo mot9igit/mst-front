@@ -217,8 +217,7 @@ body .d-fractions {
         border-bottom: 0.5px solid #75757575;
         flex-wrap: wrap;
     }
-    .d-top-order-container-info h3,
-    .d-order-container h3 {
+    .d-top-order-container-info h3 {
         font-style: normal;
         font-weight: 600;
         font-size: 20px;
@@ -915,7 +914,6 @@ body .d-fractions {
     .order__header {
         border-color: #75757575;
     }
-    .order__item-header {}
     .order__item-header-left .d-badge2 {
         width: auto;
         min-width: 100px;
@@ -2556,12 +2554,6 @@ body .d-fractions {
     }
     .retailorders__content .d-top-order-container-date-created {
         padding-bottom: 0px;
-    }
-    .retailorders__content .order-card__status,
-    .shipments .order-card__status {
-        margin-bottom: 16px;
-        width: auto;
-        margin-top: 8px;
     }
     .d-top-order-container-date-created {
         padding-bottom: 0px;

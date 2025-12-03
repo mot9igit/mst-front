@@ -678,12 +678,7 @@ export default {
   .d-top-order-container-buttons{
     flex-direction: column;
   }
-  .shipments .d-top-order-container-buttons button, .shipments .d-badge2{
-    height: 32px;
-    max-height: 32px;
-    min-height: 32px;
-    width: 100%;
-  }
+  
   .shipments button span{
     font-size: 14px;
   }
@@ -823,6 +818,20 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 16px;
+  }
+}
+@media (width <= 320px) {
+  .d-table-min {
+    width: calc(100% + 16px);
+    margin-left: -8px;
+  }
+  .d-table-min .d-table-min__row {
+    padding: 24px 20px;
+  }
+  .d-table-min__head {
+    width: calc(100% - 34px);
+    margin: 0 0 0 24px;
+    height: 40px;
   }
 }
 </style>

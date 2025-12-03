@@ -540,6 +540,15 @@ export default {
 .order-card__orderinfo-grid-text-down p{
   margin-top: 4px;
 }
+.d-order-container h3{
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 26px;
+  color: #757575;
+  margin: 40px 0 24px;
+}
+
 @media (width <= 3000px) {
   .d-top-order-container-buttons-order_text.d-top-order-container-buttons-text p {
     max-width: 350px;
@@ -649,6 +658,11 @@ export default {
   }
   .shipments .d-top-order-container{
     align-items: center;
+  }
+  .d-order-container h3, .d-top-order-container-info h3 {
+    font-size: 16px;
+    line-height: 18px;
+    margin: 24px 0;
   }
   // grids
   .order-card__orderinfo-grid, .order-card__ordercomment {
@@ -868,6 +882,9 @@ export default {
     max-height: 20px;
     min-height: 20px;
   }
+  .d-order-container .dart-row{
+    margin-top: -32px !important;
+  }
   // grids
   .order-card__orderinfo-grid {
     padding: 0 10px !important;
@@ -985,7 +1002,9 @@ export default {
   .order-card__action-edit{
     padding-left: 0 !important;
   }
-  .d-top-order-container-info h3 {
+  .d-top-order-container-info h3, .d-order-container h3 {
+    font-size: 10px;
+    line-height: 12px;
     margin-top: 16px;
     margin-bottom: 16px;
   }
@@ -1089,6 +1108,7 @@ export default {
     max-height: 24px;
     min-height: 24px;
     font-size:12px !important;
+    width: auto !important;
   }
   .order-card__action-edit{
     padding-right: 0 !important;
@@ -1121,14 +1141,17 @@ export default {
   .d-top-order-container-buttons {
     flex-direction: column-reverse;
   }
-  .d-top-order-container-right{
-    padding-top:40px;
-  }
-  .d-top-order-container-info h3, .d-order-container h3 {
+  .d-top-order-container-info h3{
     font-size: 16px;
     line-height: 18px;
     margin-top: 0;
     margin-bottom: 16px;
+  }
+  .d-order-container h3 {
+    font-size: 16px;
+    line-height: 18px;
+    margin-top: 40px;
+    margin-bottom: 32px;
   }
    // grids -> flex
   .order-card__orderinfo-grid {  
@@ -1214,6 +1237,21 @@ export default {
   }
   .order-card__orderinfo-grid-text-down-min,.order-card__orderinfo-grid-text-down{
     margin-top: 4px;
+  }
+  .optorder__content .d-top-order-container-left .order-card__status{
+    height: 24px;
+    max-height: 24px;
+    min-height: 24px;
+    font-size: 12px !important;
+  }
+}
+@media (width <= 320px) {
+  .v-table-min-product {
+    width: calc(100% + 56px);
+    margin-left: -28px;
+  }
+  .d-table-min-product__row {
+    padding: 16px 28px;
   }
 }
 </style>

@@ -1099,7 +1099,7 @@ export default {
     font-size: 20px;
   }
   .product-card__basket-button.basket-true {
-    margin: 16px 0px 28px 0;
+    margin: 16px 18px 28px 0;
   }
 }
 

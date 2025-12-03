@@ -159,7 +159,7 @@
                       </div>
                     </div>
                     <div class="order__item-content-top-right">
-                      <span class="order__item-product-price"
+                      <span class="order__item-product-price nowrap"
                         >{{ product.cost.toLocaleString('ru') }} ₽</span
                       >
                       <div class="order__item-product-price-rrc">
@@ -203,7 +203,7 @@
                       :id="Number(product?.remain_id)"
                       :key="new Date().getTime() + '_1_' + product?.key"
                     />
-                    <span class="order__item-product-price"
+                    <span class="order__item-product-price nowrap"
                       >{{ product.price.toLocaleString('ru') }} ₽</span
                     >
                   </div>
@@ -240,8 +240,8 @@
                     <div
                       class="order__item-prop"
                       v-if="org?.cart_data?.delay_type == 1 && org?.cart_data?.delay == 0"
-                    >
-                      <p class="order__item-prop-label">Предоплата</p>
+                    ><p class="order__item-prop-label">Отсрочка:&nbsp;</p>
+                      <p class="order__item-prop-value">Предоплата</p>
                     </div>
                     <div class="order__item-prop" v-else>
                       <p class="order__item-prop-label">
@@ -1076,7 +1076,7 @@ export default {
     margin-bottom: 35px;
 }
 .order__footer {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0);
     backdrop-filter: blur(11.4px);
     padding: 0 32px 32px;
 }
@@ -1136,6 +1136,10 @@ export default {
   font-size: 12px;
   line-height: 12px;
 }
+.order__item-product{
+        display:flex;
+        align-items: center;
+    }
 @media (width <= 1920px) {
     .order {
         padding: 32px;
@@ -1450,6 +1454,156 @@ export default {
         margin-top: 0;
         margin-bottom: 24px;
     }
+}
+@media (width <= 800px){
+  .order__sheet {
+    width: 90%;
+    min-height: 70%;
+  }
+  .order__header{
+    border-bottom: none;
+  }
+  .order__header-title {
+    font-size: 10px;
+  }
+  .order__header {
+    margin-bottom: 8px;
+  }
+  .order__item-list {
+    gap: 16px;
+  }
+  .order__item {
+    margin-bottom: 0px;
+  }
+  .order__item-header-badge-text {
+    font-size: 8px;
+  }
+  .order__item-header-badge-image-container {
+    width: 12px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .order__item-header-badge {
+    padding: 2px 8px;
+    height: 16px;
+    max-height: 16px;
+    min-height: 16px !important;
+  }
+  .order__item-header-warehouse-label, .order__item-header-warehouse-value {
+    font-size: 8px;
+  }
+  .order__item-header-delete,.cart__item-header-button {
+    font-size: 10px !important;
+    width: 14px;
+    height: 14px;
+    display: flex;
+    justify-content: end;
+  }
+  .order__item-header-address-label, .order__item-header-address-value {
+    font-size: 8px;
+  }
+  .order__item-header {
+    gap: 9px;
+  }
+  .order__item-content{
+    padding: 8px 0;
+    border-top: 0.5px solid #75757575; 
+  }
+  .order__item .order__item-content + .order__item-content {
+    margin-top: 0px;
+  }
+  .order__item-product-image-container {
+    width: 38px;
+    height: 100%;
+  }
+  .order__item-product-title, .order__item-product-article {
+    font-size: 9px;
+  }
+  .order__item-product-price {
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .order__item-product-price-rrc {
+    gap: 2px;
+    font-weight: 400;
+    font-size: 9px;
+    line-height: 11px;
+    margin-bottom: 4px;
+  }
+  .order__item-product-counter {
+    width: 90px;
+  }
+  .order__item-product-counter {
+    max-width: 90px;
+    height: 16px;
+  }
+  .d-counter__input {
+    font-size: 9px;
+  }
+  .order__item-product-counter .d-counter__button-icon {
+    font-size: 6px;
+  }
+  .order__item-product-counter .d-counter__button {
+    padding-inline: 7px;
+  }
+  .order__item-content-comment {
+    margin-top: 8px;
+  }
+  .order__item-content-comment-add {
+    height: 24px;
+    font-size: 9px;
+  }
+  .order__item-content-comment-add i {
+    font-size: 9px;
+  }
+  .order__item .order__item-content-bottom {
+    margin-top: 30px;
+  }
+  .order__item-prop-label, .order__item-prop-value {
+    font-size: 9px;
+  }
+  .order__item-content-bottom-left {
+    align-items: center;
+  }
+  .order__item-content-bottom-left .d-divider{
+    height: 8px;
+  }
+  .order__item-buy, .order__footer-actions-buy {
+    font-size: 9px;
+  }
+  .order__footer {
+    padding: 0;
+  }
+  .order__footer-label {
+    font-size: 10px;
+  }
+  .order__footer-value {
+    font-size: 10px;
+  }
+  .mst__alert {
+    font-size: 9px;
+    line-height: 11px;
+    padding: 8px;
+  }
+  .order__item-content-description-actions {
+    font-size: 10px;
+    align-items: center;
+  }
+  .order__item-content-description-actions .d-divider{
+    height: 7px;
+  }
+  .order__item-content-description-container {
+    gap: 10px;
+  }
+  .order__footer-divider {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  .order__footer-right {
+    gap: 8px;
+  }
 }
 @media (width <= 600px) {
   .order__item-content-description-container{
