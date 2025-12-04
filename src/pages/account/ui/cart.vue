@@ -127,6 +127,31 @@
                 <p class="cart__item-title">{{ product.name }}</p>
                 <p class="cart__item-article">Арт: {{ product.article }}</p>
 
+                <div class="cart__item-sales" v-if="product.action">
+                  <button class="cart__item-sales-label" @click.prevent="salesActive(product.key)" :class="{'cart__item-sales-label-open' : sales_active[product.key] == true}">Примененные акции<i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sales_active[product.key] == true}"></i></button>
+                  <div class="cart__item-sales-container" v-if="sales_active[product.key] == true">
+                    <div class="cart__item-sales-item" v-for="(sale, ind) in product.action" :key="ind">
+                      <p class="cart__item-sales-item-name">{{ sale.name }}</p>
+                      <p class="cart__item-sales-item-values">
+                        <span class="cart__item-sales-item-value" v-if="sale.type != 3">Индивидуальная скидка</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.percent > 0">{{ sale.percent }}% Скидка</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2">Под реализацию</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2">{{sale.delay_type == 1 && sale.delay > 0
+                          ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'
+                          : 'Предоплата'}}
+                        </span>
+                        <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2">Бесплатная доставка</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.condition_min_sum > 0">Мин. общ. сумма - {{ sale.condition_min_sum }} ₽</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.condition_SKU > 0">Мин. кол-во SKU - {{ sale.condition_SKU }} шт</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.condition_min_count > 0">Мин. общ. кол-во товаров - {{ sale.condition_min_count }} шт</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.min_count > 1">Мин. кол-во товаров - {{ sale.min_count }} шт</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.multiplicity > 1">Кратность - {{ sale.multiplicity }} шт</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.integration == 1">Интеграция с MachineStore</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="cart__item-footer">
                   <Counter
                     :classPrefix="'cart__item'"
@@ -201,7 +226,7 @@ export default {
       showClearBasketModal: false,
       basketStore: {},
       fetchIds: [],
-
+      sales_active: {}
     }
   },
   methods: {
@@ -211,6 +236,13 @@ export default {
       basketProductRemove: 'basket/basketProductRemove',
       basketProductUpdate: 'basket/basketProductUpdate',
     }),
+    salesActive(key){
+      if(key in this.sales_active){
+        this.sales_active[key] = !this.sales_active[key]
+      }else{
+        this.sales_active[key] = true
+      }
+    },
     toggleCart() {
       this.$emit('toggleCart')
     },
@@ -448,6 +480,138 @@ export default {
     font-weight: 600;
     padding: 12px 8px 8px;
     text-align: center;
+  }
+}
+.cart__item-sales{
+  padding: 0 0 16px 0;
+}
+.cart__item-sales-label:not(.cart__item-sales-label-open){
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+  color: #757575;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cart__item-sales-label.cart__item-sales-label-open{
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+  color: #282828;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cart__item-sales-label:not(.cart__item-sales-label-open) i{
+  margin-top: -2px;
+}
+.cart__item-sales-label-open i{
+  color: #282828;
+  margin-top:2px;
+}
+.cart__item-sales-item-name{
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #757575;
+  margin-top: 8px;
+  margin-bottom: 2px;
+  padding-left: 11px;
+  position: relative;
+  margin-left: 4px;
+}
+.cart__item-sales-item-name:before{
+  content: '';
+  position: absolute;
+  display: block;
+  top: 5px;
+  left: 0;
+  background-color: #757575;
+  width: 3px;
+  height: 3px;
+  border-radius: 3px;
+}
+.cart__item-sales-item-values{
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 14px;
+  color: rgb(117 117 117 / 61%);
+  padding-left: 14px;
+  transition: all 0.2s ease;
+}
+.cart__item-sales-item-value:not(:first-child)::before{
+  content: ';';
+  margin-right: 8px;
+}
+
+@media (width <= 1024px) {
+  .cart__item-sales{
+    padding: 0 0 8px 0;
+  }
+  .cart__item-sales-label:not(.cart__item-sales-label-open){
+    font-size: 9px;
+    line-height: 11px;
+    gap: 4px;
+  }
+  .cart__item-sales-label.cart__item-sales-label-open{
+    font-size: 9px;
+    line-height: 11px;
+    gap: 4px;
+  }
+  .cart__item-sales-label:not(.cart__item-sales-label-open) i{
+    margin-top: -2px;
+    font-size: 7px;
+  }
+  .cart__item-sales-label-open i{
+    margin-top:0px;
+    font-size: 7px;
+  }
+  .cart__item-sales-item-name{
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .cart__item-sales-item-name:before{
+    content: '';
+    top: 3px;
+  }
+  .cart__item-sales-item-values{
+    font-size: 8px;
+    line-height: 10px;
+  }
+}
+@media (width <= 600px) {
+  .cart__item-sales{
+    padding: 0 0 16px 0;
+  }
+  .cart__item-sales-label:not(.cart__item-sales-label-open){
+    font-size: 12px;
+    line-height: 16px;
+    gap: 8px;
+  }
+  .cart__item-sales-label.cart__item-sales-label-open{
+    font-size: 12px;
+    line-height: 16px;
+    gap: 8px;
+  }
+  .cart__item-sales-label:not(.cart__item-sales-label-open) i{
+    margin-top: -2px;
+    font-size: 9px;
+  }
+  .cart__item-sales-label-open i{
+    margin-top:2px;
+    font-size: 9px;
+  }
+  .cart__item-sales-item-name{
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .cart__item-sales-item-name:before{
+    top: 5px;
+  }
+  .cart__item-sales-item-values{
+    font-size: 10px;
+    line-height: 14px;
   }
 }
 </style>

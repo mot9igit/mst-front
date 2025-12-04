@@ -327,7 +327,7 @@ export default {
     margin-top: 24px;
     margin-bottom: 24px;
   }
-  .shipments .dart-mb-1 {
+  .optorder__content .dart-mb-1 {
     margin-bottom: 0;
   }
 }
