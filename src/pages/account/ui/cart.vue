@@ -126,8 +126,8 @@
 
                 <p class="cart__item-title">{{ product.name }}</p>
                 <p class="cart__item-article">Арт: {{ product.article }}</p>
-
-                <div class="cart__item-sales" v-if="product.action">
+<!-- && product.action.enabled == 1 -->
+                <div class="cart__item-sales" v-if="(product.action && !product.triggers) || (product.action && product.triggers && org.cart_data.enabled && product.triggers.filter(item => org.cart_data.enabled?.includes(item)))">
                   <button class="cart__item-sales-label" @click.prevent="salesActive(product.key)" :class="{'cart__item-sales-label-open' : sales_active[product.key] == true}">Примененные акции<i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sales_active[product.key] == true}"></i></button>
                   <div class="cart__item-sales-container" v-if="sales_active[product.key] == true">
                     <div class="cart__item-sales-item" v-for="(sale, ind) in product.action" :key="ind">
