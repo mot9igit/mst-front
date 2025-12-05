@@ -1,5 +1,6 @@
 <template>
   <div class="product-item">
+  <!-- <div class="product-item product-item-vertical"> -->
     <div class="products__header">
       <!-- Левая часть шапки страницы -->
       <div class="products__header-left">
