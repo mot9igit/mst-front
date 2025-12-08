@@ -1602,6 +1602,9 @@ export default {
         margin-top: 0;
         margin-bottom: 24px;
     }
+    .cart__item-sales-item{
+      padding-right: 36px;
+    }
 }
 @media (width <= 800px){
   .order__sheet {
