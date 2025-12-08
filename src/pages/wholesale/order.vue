@@ -8,16 +8,16 @@
       <div class="d-top-order-container-left">
         <div class="d-top-order-container-left-top">
           <h2>Заказ № {{ this.$route.params.order_id }}</h2>
-          <div class="d-top-order-container-date-created-hidden d-top-order-container-date-created">от {{ this.order.date }}</div>
-          <div class="d-badge2 d-badge2--fit order-card__status" :style="
-            'background-color: #' +
-              status.color
-              "
-              v-if="(Object.keys(status).length != 0)"
+          <div class="d-top-order-container-date-created-hidden d-top-order-container-date-created">
+            от {{ this.order.date }}
+          </div>
+          <div
+            class="d-badge2 d-badge2--fit order-card__status"
+            :style="'background-color: #' + status.color"
+            v-if="Object.keys(status).length != 0"
           >
             {{ status.name }}
           </div>
-
         </div>
 
         <div class="d-top-order-container-date-created">от {{ this.order.date }}</div>
@@ -25,9 +25,15 @@
       <div class="d-top-order-container-right">
         <!-- <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>-->
         <div class="d-top-order-container-buttons">
-          <button  class="d-button d-button-tertiary d-button-tertiary-small order-card__action order-card__docs" @click.prevent="modalDocs = true"  v-if="docs.length">
+          <button
+            class="d-button d-button-tertiary d-button-tertiary-small order-card__action order-card__docs"
+            @click.prevent="modalDocs = true"
+            v-if="docs.length"
+          >
             <i class="item-list-item-icon d-icon-doc"></i>
-            <span class="catalog__head-item-text">Документы <span v-if="docs.length">({{ docs.length }})</span></span>
+            <span class="catalog__head-item-text"
+              >Документы <span v-if="docs.length">({{ docs.length }})</span></span
+            >
           </button>
           <!--<button  class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action">
             <span class="catalog__head-item-text">Подтвердить заказ</span>
@@ -38,7 +44,6 @@
     <div class="d-top-order-container-info">
       <h3>Информация о заказе</h3>
       <div class="order-card__orderinfo order-card__orderinfo-line1">
-
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Сумма</div>
           <div class="order-card__orderinfo-grid-text nowrap">
@@ -59,10 +64,12 @@
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Поставщик</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.seller_name != '' ? this.order?.seller_name : '' }}  ИНН: {{ this.order?.seller_inn != '' ? this.order?.seller_inn : '-' }}
+            {{ this.order?.seller_name != '' ? this.order?.seller_name : '' }} ИНН:
+            {{ this.order?.seller_inn != '' ? this.order?.seller_inn : '-' }}
           </div>
           <div class="order-card__orderinfo-grid-text-down">
-            <b>Склад {{ this.order?.seller_w_id ? ' #'+this.order?.seller_w_id : '' }}</b><br>
+            <b>Склад {{ this.order?.seller_w_id ? ' #' + this.order?.seller_w_id : '' }}</b
+            ><br />
             <p>{{ this.order?.seller_w_address ? this.order?.seller_w_address : '' }}</p>
           </div>
         </div>
@@ -70,10 +77,12 @@
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.buyer_name != '' ? this.order?.buyer_name : '' }}  ИНН: {{ this.order?.ur_persone?.inn != '' ? this.order?.ur_persone?.inn : '' }}
+            {{ this.order?.buyer_name != '' ? this.order?.buyer_name : '' }} ИНН:
+            {{ this.order?.ur_persone?.inn != '' ? this.order?.ur_persone?.inn : '' }}
           </div>
           <div class="order-card__orderinfo-grid-text-down">
-            <b>Склад {{ this.order?.buyer_w_id ? ' #'+this.order?.buyer_w_id : '' }}</b><br>
+            <b>Склад {{ this.order?.buyer_w_id ? ' #' + this.order?.buyer_w_id : '' }}</b
+            ><br />
             <p>{{ this.order?.buyer_w_address ? this.order?.buyer_w_address : '' }}</p>
           </div>
         </div>
@@ -84,7 +93,13 @@
             {{ this.order?.delay_text }}
           </div>
           <div class="order-card__orderinfo-grid-text" v-else>
-            {{ this.order?.delay != '' ? (Number.parseInt(this.order?.delay) ? this.order?.delay + ' дн.' : this.order?.delay) : '0 дн.' }}
+            {{
+              this.order?.delay != ''
+                ? Number.parseInt(this.order?.delay)
+                  ? this.order?.delay + ' дн.'
+                  : this.order?.delay
+                : '0 дн.'
+            }}
           </div>
         </div>
 
@@ -109,7 +124,13 @@
             {{ this.order?.delay_text }}
           </div>
           <div class="order-card__orderinfo-grid-text" v-else>
-            {{ this.order?.delay != '' ? (Number.parseInt(this.order?.delay) ? this.order?.delay + ' дн.' : this.order?.delay) : '0 дн.' }}
+            {{
+              this.order?.delay != ''
+                ? Number.parseInt(this.order?.delay)
+                  ? this.order?.delay + ' дн.'
+                  : this.order?.delay
+                : '0 дн.'
+            }}
           </div>
         </div>
 
@@ -126,12 +147,11 @@
         </div>
 
         <div class="order-card__ordercomment">
-          <div  class="order-card__ordercomment-container" v-if="order.comment">
+          <div class="order-card__ordercomment-container" v-if="order.comment">
             <div class="order-card__orderinfo-grid-lable">Комментарий:</div>
             <div v-html="order.comment"></div>
           </div>
         </div>
-
       </div>
     </div>
     <div class="d-order-container">
@@ -155,18 +175,23 @@
         @paginate="paginate"
       />
     </div>
-        <Teleport to="body">
+    <Teleport to="body">
       <customModal v-model="modalDocs" class="order-card__modal">
-        <h3>Документы <span v-if="docs.length">({{ docs.length }})</span></h3>
+        <h3>
+          Документы <span v-if="docs.length">({{ docs.length }})</span>
+        </h3>
         <BaseTable
           :items_data="docs"
           :total="docs.length"
           :table_data="table_docs"
           @clickElem="docClick"
         />
-      <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow" @click.prevent="modalDocs = false">
-        Ok
-      </button>
+        <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          @click.prevent="modalDocs = false"
+        >
+          Ok
+        </button>
       </customModal>
     </Teleport>
   </section>
@@ -211,7 +236,7 @@ export default {
           type: 'text',
           class: 'cell_centeralign nowrap',
         },
-         rrc_discount: {
+        rrc_discount: {
           label: 'Скидка от РРЦ в %',
           type: 'text',
           class: 'cell_centeralign',
@@ -244,7 +269,7 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
-         actions: {
+        actions: {
           label: 'Скачать',
           type: 'actions',
           sort: false,
@@ -270,27 +295,27 @@ export default {
     },
   },
   methods: {
-  ...mapActions({
+    ...mapActions({
       getOrder: 'wholesale/getOrder',
       unsetOrder: 'wholesale/unsetOrder',
     }),
-    docClick(data){
-      let loc = data.href
-      var downloadLink = document.createElement("a")
+    docClick(data) {
+      let loc = data.filename
+      var downloadLink = document.createElement('a')
       downloadLink.href = loc
       downloadLink.setAttribute('download', loc)
-      downloadLink.setAttribute('target','_blank')
-      console.log(downloadLink)
-      downloadLink.click();
+      downloadLink.setAttribute('target', '_blank')
+      // console.log(downloadLink)
+      downloadLink.click()
     },
-    paginate(data){
+    paginate(data) {
       this.loading = true
       this.unsetOrder()
       this.page = data.page
-      data.order_id = this.$route.params.order_id,
-      this.getOrder(data).then(() => {
-        this.loading = false
-      })
+      ;(data.order_id = this.$route.params.order_id),
+        this.getOrder(data).then(() => {
+          this.loading = false
+        })
     },
   },
   mounted() {
@@ -328,17 +353,17 @@ export default {
   min-height: 24px;
   min-width: 146px;
 }
-.order-card__ordercomment-container{
+.order-card__ordercomment-container {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-.order-card__ordercomment{
-  margin:0px 9% 0px 0;
+.order-card__ordercomment {
+  margin: 0px 9% 0px 0;
 }
 @media (width <= 1280px) {
-    .shipments.optorder__content .d-top-order-container {
-        align-items: start;
-    }
+  .shipments.optorder__content .d-top-order-container {
+    align-items: start;
+  }
 }
 </style>
