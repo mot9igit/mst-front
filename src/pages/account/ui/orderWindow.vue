@@ -215,7 +215,33 @@
                     </div>
                     
                   </div>
+                  <div class="cart__item-sales" v-if="(product.action && !product.triggers) || (product.action && product.triggers && org.cart_data.enabled && product.triggers.filter(item => org.cart_data.enabled?.includes(item)))">
+                  <button class="cart__item-sales-label" @click.prevent="salesActive(product.key)" :class="{'cart__item-sales-label-open' : sales_active[product.key] == true}">Примененные акции<i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sales_active[product.key] == true}"></i></button>
+                  <div class="cart__item-sales-container" v-if="sales_active[product.key] == true">
+                    <div class="cart__item-sales-item" v-for="(sale, ind) in product.action" :key="ind">
+                      <!-- <a class="cart__item-sales-item-name" :href="'/' + $route.params.id + '/purchases/actions/' + sale.id" tagret="_blank">{{ sale.name }}</a> -->
+                      <p class="cart__item-sales-item-name">{{ sale.name }}</p>
+                      <p class="cart__item-sales-item-values">
+                        <span class="cart__item-sales-item-value" v-if="sale.type != 3">Индивидуальная скидка</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.percent > 0">{{ sale.percent }}% Скидка</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2">Под реализацию</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2">{{sale.delay_type == 1 && sale.delay > 0
+                          ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'
+                          : 'Предоплата'}}
+                        </span>
+                        <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2">Бесплатная доставка</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.condition_min_sum > 0">Мин. общ. сумма - {{ sale.condition_min_sum }} ₽</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.condition_SKU > 0">Мин. кол-во SKU - {{ sale.condition_SKU }} шт</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.condition_min_count > 0">Мин. общ. кол-во товаров - {{ sale.condition_min_count }} шт</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.min_count > 1">Мин. кол-во товаров - {{ sale.min_count }} шт</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.multiplicity > 1">Кратность - {{ sale.multiplicity }} шт</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.integration == 1">Интеграция с MachineStore</span>
+                      </p>
+                    </div>
+                  </div>
                 </div>
+                </div>
+                
                 <div class="order__item-content-comment">
                   <button  class="d-button d-button-quaternary d-button-quaternary-small order__item-content-comment-add"
                     @click.prevent="modalComment = true, modalCommentOrg = org_id, modalCommentStore = warehouse_id, modalCommentText = ''"
@@ -579,6 +605,7 @@ export default {
       modalCommentText: '',
       error: '',
       modalCommentDelete: false,
+      sales_active: {}
     }
   },
   computed: {
@@ -596,6 +623,13 @@ export default {
       orderSubmitApi: 'basket/orderSubmit',
       setBasketComment: 'basket/setBasketComment',
     }),
+    salesActive(key){
+      if(key in this.sales_active){
+        this.sales_active[key] = !this.sales_active[key]
+      }else{
+        this.sales_active[key] = true
+      }
+    },
     close() {
       this.$emit('close')
     },
@@ -982,9 +1016,11 @@ export default {
   }
 
 }
+  .order__item-content{
+    gap: 0;
+  }
   .order__item-content-comment{
     margin-top: 24px;
-
   }
   .order__item-content-description-container{
     display: flex;
@@ -1137,7 +1173,6 @@ export default {
   line-height: 18px;
   color: #757575;
 }
-
 .order__item-product-price-rrc p{
   text-align: right;
 }
@@ -1146,12 +1181,82 @@ export default {
   line-height: 12px;
 }
 .order__item-product{
-        display:flex;
-        align-items: center;
-    }
-    .cart__item-header-button{
-      align-self: start;
-    }
+  display:flex;
+  align-items: center;
+}
+.cart__item-header-button{
+  align-self: start;
+}
+.order__item-content .cart__item-sales{
+  padding: 0 0 16px 58px;
+}
+.order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open){
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 16px;
+  color: #757575;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.order__item-content .cart__item-sales-label.cart__item-sales-label-open{
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 16px;
+  color: #282828;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) i{
+  margin-top: -2px;
+}
+.order__item-content .cart__item-sales-label-open i{
+  color: #282828;
+  margin-top:4px;
+}
+.order__item-content .cart__item-sales-item-name{
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: #757575;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-left: 11px;
+  position: relative;
+  margin-left: 4px;
+  min-width: 40%;
+}
+.order__item-content .cart__item-sales-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+.order__item-content .cart__item-sales-item-name:before{
+  content: '';
+  position: absolute;
+  display: block;
+  top: 5px;
+  left: 0;
+  background-color: #757575;
+  width: 3px;
+  height: 3px;
+  border-radius: 3px;
+}
+.order__item-content .cart__item-sales-item-values{
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 14px;
+  color: rgb(117 117 117 / 61%);
+  padding-left: 14px;
+  transition: all 0.2s ease;
+  text-align: right;
+}
+.order__item-content .cart__item-sales-item-value:not(:first-child)::before{
+  content: ';';
+  margin-right: 8px;
+}
 @media (width <= 1920px) {
     .order {
         padding: 32px;
@@ -1368,7 +1473,38 @@ export default {
       height: 24px;
       font-size: 10px;
     }
-
+    .order__item-content .cart__item-sales{
+      padding: 0 0 16px 48px;
+    }
+    .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open){
+      font-size: 10px;
+      line-height: 12px;
+      gap: 4px;
+    }
+    .order__item-content .cart__item-sales-label.cart__item-sales-label-open{
+      font-size: 10px;
+      line-height: 12px;
+      gap: 4px;
+    }
+    .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) i{
+      margin-top: -2px;
+      font-size: 7px;
+    }
+    .order__item-content .cart__item-sales-label-open i{
+      margin-top:0px;
+      font-size: 7px;
+    }
+    .order__item-content .cart__item-sales-item-name{
+      font-size: 10px;
+      line-height: 12px;
+    }
+    .order__item-content .cart__item-sales-item-name:before{
+      top: 5px;
+    }
+    .order__item-content .cart__item-sales-item-values{
+      font-size: 9px;
+      line-height: 11px;
+    }
 }
 @media (width <= 1024px) {
     .order__header-title {
@@ -1620,6 +1756,39 @@ export default {
   .order__footer-right {
     gap: 8px;
   }
+  .order__item-content .cart__item-sales{
+    padding: 0 33px 16px 46px;
+    
+  }
+  .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open){
+    font-size: 9px;
+    line-height: 11px;
+    gap: 4px;
+  }
+  .order__item-content .cart__item-sales-label.cart__item-sales-label-open{
+    font-size: 9px;
+    line-height: 11px;
+    gap: 4px;
+  }
+  .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) i{
+    margin-top: -2px;
+    font-size: 7px;
+  }
+  .order__item-content .cart__item-sales-label-open i{
+    margin-top:0px;
+    font-size: 7px;
+  }
+  .order__item-content .cart__item-sales-item-name{
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .order__item-content .cart__item-sales-item-name:before{
+    top: 5px;
+  }
+  .order__item-content .cart__item-sales-item-values{
+    font-size: 8px;
+    line-height: 10px;
+  }
 }
 @media (width <= 600px) {
   .order__header{
@@ -1762,6 +1931,48 @@ export default {
   }
   .order__footer-value {
     font-size: 14px;
+  }
+  .order__item-content .cart__item-sales{
+    padding: 16px 0 8px; 
+  }
+  .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open){
+    font-size: 10px;
+    line-height: 12px;
+    gap: 4px;
+  }
+  .order__item-content .cart__item-sales-label.cart__item-sales-label-open{
+    font-size: 10px;
+    line-height: 12px;
+    gap: 4px;
+  }
+  .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) i{
+    margin-top: -2px;
+    font-size: 7px;
+  }
+  .order__item-content .cart__item-sales-label-open i{
+    margin-top:0px;
+    font-size: 7px;
+  }
+  .order__item-content .cart__item-sales-item-name{
+    font-size: 10px;
+    line-height: 12px;
+  }
+  .order__item-content .cart__item-sales-item-name:before{
+    top: 5px;
+  }
+  .order__item-content .cart__item-sales-item-values{
+    font-size: 10px;
+    line-height: 12px;
+    text-align: left;
+    padding-left: 0;
+  }
+  .cart__item-sales-item{
+    flex-direction: column;
+    align-items: start !important;
+    gap: 4px;
+  }
+  .cart__item-sales-item{
+    margin-top: 16px;
   }
 }
 @media (width <= 400px) {
