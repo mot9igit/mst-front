@@ -40,7 +40,6 @@
               {{ offer.org_fullname }} ИНН {{ offer.org_inn ? offer.org_inn : '-' }}
             </p>
           </div>
-<div v-for="item, ind in offer.actions" :key="ind">{{ item.enabled }}</div>
           <!-- Сделать всплывающую информацию о продавце -->
         </div>
         <!-- Главная информация -->
@@ -71,11 +70,11 @@
               </div>
               <!-- Кнопка: "Все акции" -->
                 <button
-                  v-if="offer.actions"
+                  v-if="offer.action_confl"
                   class="product-card-vertical__promo-all"
                   @click.prevent="showModal()"
                 >
-                  Все акции <span class="red-badge">{{ Object.keys(modalActionsData).length }}</span>
+                  Все акции <span class="red-badge">{{ Object.keys(offer.action_confl).length }}</span>
                   <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
                 </button>
 
@@ -410,30 +409,53 @@
       <div class="product-card-actions__modal-all-content">
 
         <div class="product-card-actions__modal-all-item"
-            v-for="(item, index) in modalActionsData"
+            v-for="(item, index) in offer.action_confl"
             :key="index">
             <!-- Баннер -->
             <div class="product-card-actions__modal-all-item-image"><img :src="item.image.image"></div>
 
             <!--Акция включена, Акция выключена, Акция несовместима, Условия акции не выполнены -->
             <div class="product-card-actions__modal-all-item-action">
-              <p class="product-card-actions__modal-all-item-action-label">Акция включена:</p>
+              <p class="product-card-actions__modal-all-item-action-label">
 
+                <span  v-if="item.main_sale != index && item.active_now != true">Условия акции не выполнены:</span>
+                <span v-else-if="item.main_sale != index && item.active_now == true">Применена автоматически:</span>
+                <span v-else-if="item.main_sale == index && item.active_now == true">Акция включена:</span>
+                <span v-else-if="item.main_sale == index && item.active_now != true">Акция несовместима:</span>
+
+              </p>
               <div class="product-card-actions__modal-all-item-action-button">
                 <div>
-                  <i class="d-icon-times product-card__actions-icon-cross"  v-if="item.main_sale != index && item.active_now != true"></i>
-                  <i class="d-icon-check product-card__actions-icon-auto" v-if="item.main_sale != index && item.active_now == true"></i>
-                  <i class="d-icon-info product-card__actions-icon-info" v-if="item.main_sale == index && item.active_now != true"></i>
+
+
+
                   <div class="d-switch" v-if="item.main_sale == index && item.active_now == true">
                     <input
                       type="checkbox"
-                      name="enable-promotion"
-                      id="enable-promotion"
+                      :name="index"
+                      :id="index"
                       class="d-switch__input"
-
+                      :checked="true"
+                      @change="uncheckAction(index, false)"
                     />
                     <div class="d-switch__circle"></div>
                   </div>
+
+                  <div class="d-switch" v-if="item.main_sale == index && item.active_now != true">
+                    <input
+                      type="checkbox"
+                      :name="index"
+                      :id="index"
+                      class="d-switch__input"
+                      :checked="false"
+                      @change="uncheckAction(index, true)"
+                    />
+                    <div class="d-switch__circle"></div>
+                  </div>
+
+                  <i class="d-icon-times product-card__actions-icon-cross"  v-if="item.main_sale != index && item.active_now != true"></i>
+                  <i class="d-icon-check product-card__actions-icon-auto" v-else-if="item.main_sale != index && item.active_now == true"></i>
+                  <i class="d-icon-info product-card__actions-icon-info" v-else-if="item.main_sale == index && item.active_now != true"></i>
 
                 </div>
 
@@ -531,17 +553,10 @@ export default {
   data() {
     return {
       loading: false,
-      activeActions: 0,
-      otherActions: 0,
       modalActions: false,
       modalActiveActions: false,
-      modalOtherActions: false,
-      modalMultiplicityRemain: false,
-      activeActionsData: [],
-      otherActionsData: [],
-      fetchIds: [],
       seller_info: false,
-      modalActionsData: {},
+      modalActionsData: [],
     }
   },
   components: { customModal, Counter },
@@ -561,34 +576,7 @@ export default {
     },
   },
   mounted() {
-    this.getActiveActions()
-    if(Object.keys(this.offer.action_conf).length){
-        let key = 0
-        for(let i in this.offer.action_conf){
-          for(let ii in this.offer.action_conf[i]){
-            key = this.offer.action_conf[i][ii].action_id
-            this.modalActionsData[key] = this.offer.action_conf[i][ii]
-            let main = 0
-            if(ii == 0){
-              this.modalActionsData[key].main_sale = key
-              main = key
-            }else{
-              this.modalActionsData[key].main_sale = main
-            }
-          }
-        }
-        for(let k in this.offer.min_price.action_prices){
-          this.modalActionsData[k].price_sale = this.offer.min_price.action_prices[k].price
-        }
-        for(let key in this.modalActionsData){
-          if(this.modalActionsData[key].price == this.offer.min_price.price){
-            this.modalActionsData[key].active_now = true
-            let main = this.modalActionsData[key].main_sale
-            this.modalActionsData[main].active_now = true
-          }
-        }
 
-    }
   },
   computed: {},
   methods: {
@@ -758,16 +746,14 @@ export default {
         }
       }
     },
+    uncheckAction(ind){
+
+
+
+    },
   },
   watch: {
-    offer: function(newVal){
-      if(newVal.action_conf.length){
-        for(let key in newVal.action_conf){
-          console.log(newVal.action_conf[key])
-        }
 
-      }
-    }
   }
 }
 </script>
@@ -1193,7 +1179,7 @@ export default {
   width: 251px;
   max-width: 251px;
 }
-.product-card-actions__modal-all .product-card-actions__modal-all-item-action-button div{
+.product-card-actions__modal-all .product-card-actions__modal-all-item-action-button div:not(.d-switch){
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -1211,9 +1197,6 @@ export default {
   border-left: 0.5px solid #75757534;
   height: auto;
 }
-// .product-card-actions__modal-all .product-card-actions__modal-all-header-product-info {
-//     max-width: 450px;
-// }
 .product-card-actions__modal-all-item{
   display: grid;
   gap: 24px;
@@ -1257,7 +1240,7 @@ export default {
 .product-card-actions__modal-all-item-action-button{
   display:flex;
   gap: 16px;
-  align-items: start;
+  align-items: center;
   margin-top: 22px;
   font-weight: 500;
   font-size: 14px;
@@ -1321,6 +1304,16 @@ export default {
 .product-item-vertical .products__header {
   padding: 0;
 }
+.product-card-actions__modal-all .product-card__stat-list .product-card__buy-icon {
+  font-size: 16px;
+  margin: 0;
+}
+.product-card-actions__modal-all .product-card__stat-list div{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 @media (width <=1736px) {
   .product-card__vertical .products__list {
     gap: inherit;
@@ -1533,17 +1526,83 @@ export default {
     font-size: 10px;
   }
   .product-card-actions__modal-all .product-card__price-value-discounted {
-        font-size: 24px;
+    font-size: 24px;
   }
   .product-card-actions__modal-all .modal-content {
     max-width: 1152px;
   }
-  .product-card-actions__modal-all-item {
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item {
     gap: 24px;
     grid-template-areas:
-    "A A A A A   B B B B B B B B   E E E E E E"
-    "A A A A A   C C C C C C C C   E E E E E E"
-    "A A A A A   D D D D D D D D   G G G G G G";
+    "A A A A A   B B B B B  C C C C C C  E E E E"
+    "A A A A A   B B B B B  C C C C C C  E E E E"
+    "A A A A A   B B B B B  C C C C C C  G G G G";
+    grid-template-columns: auto auto auto;
+    gap: 8px 44px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-image{
+    grid-area: A;
+    width: 220px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-action{
+    grid-area: B;
+    width: 220px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-descr{
+    grid-area: C;
+    width: 251px;
+  }
+  .product-card-actions__modal-all-content .product-card__stat-list-cont{
+    grid-area: E;
+    width: 187px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-href{
+    grid-area: G;
+    width: 187px;
+  }
+  .product-card-actions__modal-all-item-image {
+    width: 100%;
+    height: 100%;
+  }
+  .product-card-actions__modal-all-item-image img {
+    height: 52px;
+  }
+  .product-card-actions__modal-all-item-action-label {
+    font-size: 9px;
+    line-height: 12px;
+  }
+  .product-card-actions__modal-all-item-action-button {
+    gap: 8px;
+    margin-top: 16px;
+    font-size: 10px;
+    line-height: 12px;
+  }
+  .product-card-actions__modal-all-item-descr div {
+    margin-top: 16px;
+    font-size: 10px;
+    line-height: 12px;
+  }
+  .product-card-actions__modal-all-content .product-card__stat-list {
+    font-size: 10px;
+    line-height: 12px;
+  }
+  .product-card-actions__modal-all .product-card__stat-list {
+    gap: 8px;
+    padding: 12px 8px;
+    max-width: 187px;
+  }
+  .product-card-actions__modal-all .product-card__stat-list .product-card__buy-icon {
+    font-size: 13px;
+  }
+  .product-card-actions__modal-all .product-card-actions__modal-all-item .product-card__stat-list-cont {
+    width: 187px;
+    max-width: 187px;
+  }
+  .product-card-actions__modal-all-item-href a, .product-card-actions__modal-all-item-href button{
+    width: 100%;
+  }
+  .product-card-actions__modal-all-content {
+    gap: 24px;
   }
   //---    -----    ---//
 }
@@ -1759,6 +1818,127 @@ export default {
     font-size: 14px;
     font-weight: 600;
   }
+    //--- all actions ---//
+  .product-card-actions__modal-all h3 {
+    font-size: 14px;
+    margin-top: -21px;
+  }
+  .product-card-actions__modal-all-header {
+    grid-template-columns: auto 169px auto;
+    gap: 24px;
+  }
+  .product-card-actions__modal-all .product-card__image-container {
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+    min-height: 80px;
+  }
+  .product-card-actions__modal-all .product-card__title {
+    font-size: 14px;
+  }
+  .product-card-actions__modal-all .product-card__article {
+    font-size: 12px;
+  }
+  .product-card-actions__modal-all .product-card__seller-image {
+    height: 16px;
+  }
+  .product-card-actions__modal-all .product-card__seller-name {
+    font-size: 12px;
+    margin-right: 2px;
+  }
+  .product-card-actions__modal-all .product-card__stat-name, .product-card-actions__modal-all .product-card__stat-description {
+    font-size: 9px;
+  }
+  .product-card-actions__modal-all .product-card__stat-list .product-card__stat-content {
+    gap: 4px;
+  }
+  .product-card-actions__modal-all .product-card__price-value-discounted {
+    font-size: 16px;
+  }
+  .product-card-actions__modal-all .product-card__p, .product-card-actions__modal-all .product-card__count-value, .product-card-actions__modal-all .product-card__count-label {
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .product-card-actions__modal-all .product-card__basket-button {
+    margin-top: 16px;
+  }
+  .product-card-actions__modal-all .modal-content {
+    max-width: 1008px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item {
+    gap: 24px;
+    grid-template-areas:
+    "A A A A A   B B B B B  C C C C C C  E E E E"
+    "A A A A A   B B B B B  C C C C C C  E E E E"
+    "A A A A A   B B B B B  C C C C C C  G G G G";
+    grid-template-columns: auto auto auto;
+    gap: 8px 44px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-image{
+    grid-area: A;
+    width: 220px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-action{
+    grid-area: B;
+    width: 220px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-descr{
+    grid-area: C;
+    width: 251px;
+  }
+  .product-card-actions__modal-all-content .product-card__stat-list-cont{
+    grid-area: E;
+    width: 187px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-href{
+    grid-area: G;
+    width: 187px;
+  }
+  .product-card-actions__modal-all-item-image {
+    width: 100%;
+    height: 100%;
+  }
+  .product-card-actions__modal-all-item-image img {
+    height: 52px;
+  }
+  .product-card-actions__modal-all-item-action-label {
+    font-size: 9px;
+    line-height: 12px;
+  }
+  .product-card-actions__modal-all-item-action-button {
+    gap: 8px;
+    margin-top: 16px;
+    font-size: 10px;
+    line-height: 12px;
+  }
+  .product-card-actions__modal-all-item-descr div {
+    margin-top: 16px;
+    font-size: 10px;
+    line-height: 12px;
+  }
+  .product-card-actions__modal-all-content .product-card__stat-list {
+    font-size: 10px;
+    line-height: 12px;
+  }
+  .product-card-actions__modal-all .product-card__stat-list {
+    gap: 8px;
+    padding: 12px 8px;
+    max-width: 187px;
+  }
+  .product-card-actions__modal-all .product-card__stat-list .product-card__buy-icon {
+    font-size: 13px;
+  }
+  .product-card-actions__modal-all .product-card-actions__modal-all-item .product-card__stat-list-cont {
+    width: 187px;
+    max-width: 187px;
+  }
+  .product-card-actions__modal-all-item-href a, .product-card-actions__modal-all-item-href button{
+    width: 100%;
+  }
+  .product-card-actions__modal-all-content {
+    gap: 24px;
+  }
+  //---    -----    ---//
 }
 @media (width <=1150px) {
   .product-card__vertical .products__list {
