@@ -417,46 +417,30 @@
             <!--Акция включена, Акция выключена, Акция несовместима, Условия акции не выполнены -->
             <div class="product-card-actions__modal-all-item-action">
               <p class="product-card-actions__modal-all-item-action-label">
-
-                <span  v-if="item.main_sale != index && item.active_now != true">Условия акции не выполнены:</span>
+                <span v-if="item.main_sale != index && item.active_now != true">Условия акции не выполнены:</span>
                 <span v-else-if="item.main_sale != index && item.active_now == true">Применена автоматически:</span>
                 <span v-else-if="item.main_sale == index && item.active_now == true">Акция включена:</span>
-                <span v-else-if="item.main_sale == index && item.active_now != true">Акция несовместима:</span>
-
+                <span v-else-if="item.main_sale == index && item.active_now != true && this.allOff == false">Акция несовместима:</span>
+                <span v-else-if="item.main_sale == index && item.active_now != true && this.allOff == true">Акция выключена:</span>
               </p>
               <div class="product-card-actions__modal-all-item-action-button">
                 <div>
-
-
-
-                  <div class="d-switch" v-if="item.main_sale == index && item.active_now == true">
+                  <div class="d-switch"
+                  @click.prevent="checkAction(index)" 
+                  v-if="(item.main_sale == index && item.active_now == true) || (item.main_sale == index && item.active_now != true)">
                     <input
                       type="checkbox"
                       :name="index"
                       :id="index"
+                      binary="true"
                       class="d-switch__input"
-                      :checked="true"
-                      @change="uncheckAction(index, false)"
+                      v-model="modalActionsData[index].active_now"
                     />
                     <div class="d-switch__circle"></div>
                   </div>
-
-                  <div class="d-switch" v-if="item.main_sale == index && item.active_now != true">
-                    <input
-                      type="checkbox"
-                      :name="index"
-                      :id="index"
-                      class="d-switch__input"
-                      :checked="false"
-                      @change="uncheckAction(index, true)"
-                    />
-                    <div class="d-switch__circle"></div>
-                  </div>
-
                   <i class="d-icon-times product-card__actions-icon-cross"  v-if="item.main_sale != index && item.active_now != true"></i>
                   <i class="d-icon-check product-card__actions-icon-auto" v-else-if="item.main_sale != index && item.active_now == true"></i>
-                  <i class="d-icon-info product-card__actions-icon-info" v-else-if="item.main_sale == index && item.active_now != true"></i>
-
+                  <i class="d-icon-info product-card__actions-icon-info" v-else-if="item.main_sale == index && item.active_now != true && allOff == false"></i>
                 </div>
 
                 <p>
@@ -556,7 +540,8 @@ export default {
       modalActions: false,
       modalActiveActions: false,
       seller_info: false,
-      modalActionsData: [],
+      modalActionsData: {},
+      allOff: false,
     }
   },
   components: { customModal, Counter },
@@ -576,7 +561,9 @@ export default {
     },
   },
   mounted() {
-
+    if(Object.keys(this.offer).length){
+      this.modalActionsData = this.offer.action_confl
+    }
   },
   computed: {},
   methods: {
@@ -746,14 +733,32 @@ export default {
         }
       }
     },
-    uncheckAction(ind){
+    checkAction(ind){
 
-
-
+      if(this.modalActionsData[ind].active_now){
+        this.allOff = true
+        for (var i in this.modalActionsData){
+          if(this.modalActionsData[i].main_sale == ind){
+            this.modalActionsData[i].active_now = false
+            
+          }
+        }
+      }else{
+        this.allOff = false
+        for (var i in this.modalActionsData){
+          if(this.modalActionsData[i].main_sale == ind && this.modalActionsData[i].enabled == 1){
+            this.modalActionsData[i].active_now = true
+          }else{
+            this.modalActionsData[i].active_now = false
+          }
+        }
+      }
     },
   },
   watch: {
-
+    offer: function(newVal) {
+      this.modalActionsData = newVal.action_confl;
+    }
   }
 }
 </script>
@@ -1603,6 +1608,10 @@ export default {
   }
   .product-card-actions__modal-all-content {
     gap: 24px;
+    margin-top: 40px;
+  }
+  .product-card-actions__modal-all .product-card__basket-button .d-counter__input {
+    font-size: 14px;
   }
   //---    -----    ---//
 }
@@ -1635,7 +1644,7 @@ export default {
     gap: 40px;
     margin-bottom: 40px;
     background-color: transparent;
-}
+  }
   .product-card__vertical .products__list {
     gap: 24px;
   }
@@ -1866,25 +1875,24 @@ export default {
     max-width: 1008px;
   }
   .product-card-actions__modal-all-content .product-card-actions__modal-all-item {
-    gap: 24px;
     grid-template-areas:
     "A A A A A   B B B B B  C C C C C C  E E E E"
     "A A A A A   B B B B B  C C C C C C  E E E E"
     "A A A A A   B B B B B  C C C C C C  G G G G";
     grid-template-columns: auto auto auto;
-    gap: 8px 44px;
+    gap: 8px 16px;
   }
   .product-card-actions__modal-all-content .product-card-actions__modal-all-item-image{
     grid-area: A;
-    width: 220px;
+    width: 200px;
   }
   .product-card-actions__modal-all-content .product-card-actions__modal-all-item-action{
     grid-area: B;
-    width: 220px;
+    width: 176px;
   }
   .product-card-actions__modal-all-content .product-card-actions__modal-all-item-descr{
     grid-area: C;
-    width: 251px;
+    width: 281px;
   }
   .product-card-actions__modal-all-content .product-card__stat-list-cont{
     grid-area: E;
@@ -1937,6 +1945,20 @@ export default {
   }
   .product-card-actions__modal-all-content {
     gap: 24px;
+    margin-top: 32px;
+  }
+  .product-card-actions__modal-all-item-href button{
+    font-size: 12px;
+    height: 24px;
+    min-height: 24px;
+    max-height: 24px;
+  }
+  .product-card-actions__modal-all .product-card__basket-button .d-counter {
+    height: 24px;
+    max-width: 127px;
+  }
+  .product-card-actions__modal-all .product-card__basket-button .d-counter__input {
+    font-size: 12px;
   }
   //---    -----    ---//
 }
@@ -2240,6 +2262,154 @@ export default {
   .product-card__vertical .product-card .product-card__count {
     gap: 8px;
   }
+  //--- all actions ---//
+  .product-card-actions__modal-all h3 {
+    font-size: 12px;
+    margin-top: -21px;
+    margin-bottom: 24px;
+  }
+  .product-card-actions__modal-all-header {
+    grid-template-columns: auto 152px auto;
+    gap: 24px;
+  }
+  .product-card-actions__modal-all .product-card__image-container {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    min-height: 54px;
+  }
+  .product-card-actions__modal-all .product-card__title {
+    font-size: 12px;
+  }
+  .product-card-actions__modal-all .product-card__article {
+    font-size: 10px;
+  }
+  .product-card-actions__modal-all .product-card__seller-image {
+    height: 16px;
+  }
+  .product-card-actions__modal-all .product-card__seller-name {
+    font-size: 12px;
+    margin-right: 2px;
+  }
+  .product-card-actions__modal-all .product-card__stat-name, .product-card-actions__modal-all .product-card__stat-description {
+    font-size: 9px;
+  }
+  .product-card-actions__modal-all .product-card__stat-list .product-card__stat-content {
+    gap: 4px;
+  }
+  .product-card-actions__modal-all .product-card__price-value-discounted {
+    font-size: 16px;
+  }
+  .product-card-actions__modal-all .product-card__p, .product-card-actions__modal-all .product-card__count-value, .product-card-actions__modal-all .product-card__count-label {
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .product-card-actions__modal-all .product-card__basket-button {
+    margin-top: 16px;
+  }
+  .product-card-actions__modal-all .modal-content {
+    max-width: 752px;
+  }
+
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item {
+    grid-template-areas:
+    "A A A A A   B B B B B  C C C C C C  G G G G"
+    "E E E E E   B B B B B  C C C C C C  G G G G";
+    grid-template-columns: auto auto;
+    gap: 8px 17px;
+    padding:8px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-image{
+    grid-area: A;
+    width: 200px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-action{
+    grid-area: B;
+    width: 150px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-descr{
+    grid-area: C;
+    width: 170px;
+  }
+  .product-card-actions__modal-all-content .product-card__stat-list-cont{
+    grid-area: E;
+    width: 200px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-href{
+    grid-area: G;
+    width: 76px;
+  }
+  .product-card-actions__modal-all-item-image {
+    width: 100%;
+    height: 100%;
+    justify-content: start;
+  }
+  .product-card-actions__modal-all-item-image img {
+    height: 47px;
+  }
+  .product-card-actions__modal-all-item-action-label {
+    font-size: 9px;
+    line-height: 12px;
+  }
+  .product-card-actions__modal-all-item-action-button {
+    gap: 8px;
+    margin-top: 16px;
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .product-card-actions__modal-all-item-descr div {
+    margin-top: 16px;
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .product-card-actions__modal-all-content .product-card__stat-list {
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .product-card-actions__modal-all .product-card__stat-list {
+    gap: 8px;
+    padding: 12px 8px;
+    max-width: 200px;
+  }
+  .product-card-actions__modal-all .product-card__stat-list .product-card__buy-icon {
+    font-size: 13px;
+  }
+  .product-card-actions__modal-all .product-card-actions__modal-all-item .product-card__stat-list-cont {
+    width: 200px;
+    max-width: 200px;
+  }
+  .product-card-actions__modal-all-item-href a, .product-card-actions__modal-all-item-href button{
+    width: 100%;
+  }
+  .product-card-actions__modal-all-content {
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .product-card-actions__modal-all-item-href button{
+    font-size: 10px;
+    height: 24px;
+    min-height: 24px;
+    max-height: 24px;
+  }
+  .product-card-actions__modal-all .product-card__stat-description {
+    width: fit-content;
+  }
+  .product-card-actions__modal-all .product-card-vertical__buy .d-button__text {
+    font-size: 10px;
+  }
+  .product-card-actions__modal-all .product-card__buy-icon {
+    font-size: 9px;
+  }
+  .product-card-actions__modal-all .d-button__text {
+    gap: 8px;
+  }
+  .product-card__actions-icon-info, .product-card__actions-icon-auto,  {
+    font-size: 16px;
+  }
+  .product-card__actions-icon-cross {
+    font-size: 12px;
+  }
+  //---    -----    ---//
 }
 @media (width <= 890px) {
     .product-card__vertical .product-card__header,
@@ -2366,6 +2536,166 @@ export default {
   .product-card__vertical .product-card__basket-button .d-counter {
     width: 106px;
   }
+    //--- all actions ---//
+  .product-card-actions__modal-all h3 {
+    font-size: 12px;
+    margin-top: -21px;
+    margin-bottom: 24px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-header {
+    grid-template-areas:
+    "A A A A   B B B B B"
+    "A A A A   C C C C C";
+    grid-template-columns: auto auto;
+    gap: 0;
+  }
+  .product-card-actions__modal-all-header-product-info{
+    grid-area: A;
+  }
+  .product-card-actions__modal-all-header .product-card__stat-list-cont{
+    grid-area: C;
+  }
+  .product-card-actions__modal-all-header .product-card__price-container-all{
+    grid-area: B;
+  }
+  .product-card-actions__modal-all .product-card__image-container {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    min-height: 54px;
+  }
+  .product-card-actions__modal-all .product-card__title {
+    font-size: 12px;
+  }
+  .product-card-actions__modal-all .product-card__article {
+    font-size: 10px;
+  }
+  .product-card-actions__modal-all .product-card__seller-image {
+    height: 16px;
+  }
+  .product-card-actions__modal-all .product-card__seller-name {
+    font-size: 12px;
+    margin-right: 2px;
+  }
+  .product-card-actions__modal-all .product-card__stat-name, .product-card-actions__modal-all .product-card__stat-description {
+    font-size: 9px;
+  }
+  .product-card-actions__modal-all .product-card__stat-list .product-card__stat-content {
+    gap: 4px;
+  }
+  .product-card-actions__modal-all .product-card__price-value-discounted {
+    font-size: 16px;
+  }
+  .product-card-actions__modal-all .product-card__p, .product-card-actions__modal-all .product-card__count-value, .product-card-actions__modal-all .product-card__count-label {
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .product-card-actions__modal-all .product-card__basket-button {
+    margin-top: 16px;
+  }
+  .product-card-actions__modal-all .modal-content {
+    max-width: 752px;
+  }
+
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item {
+    grid-template-areas:
+    "A A A A A   B B B B B  C C C C C C  G G G G"
+    "E E E E E   B B B B B  C C C C C C  G G G G";
+    grid-template-columns: auto auto;
+    gap: 8px 17px;
+    padding:8px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-image{
+    grid-area: A;
+    width: 200px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-action{
+    grid-area: B;
+    width: 150px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-descr{
+    grid-area: C;
+    width: 170px;
+  }
+  .product-card-actions__modal-all-content .product-card__stat-list-cont{
+    grid-area: E;
+    width: 200px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-href{
+    grid-area: G;
+    width: 76px;
+  }
+  .product-card-actions__modal-all-item-image {
+    width: 100%;
+    height: 100%;
+    justify-content: start;
+  }
+  .product-card-actions__modal-all-item-image img {
+    height: 47px;
+  }
+  .product-card-actions__modal-all-item-action-label {
+    font-size: 9px;
+    line-height: 12px;
+  }
+  .product-card-actions__modal-all-item-action-button {
+    gap: 8px;
+    margin-top: 16px;
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .product-card-actions__modal-all-item-descr div {
+    margin-top: 16px;
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .product-card-actions__modal-all-content .product-card__stat-list {
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .product-card-actions__modal-all .product-card__stat-list {
+    gap: 8px;
+    padding: 12px 8px;
+    max-width: 200px;
+  }
+  .product-card-actions__modal-all .product-card__stat-list .product-card__buy-icon {
+    font-size: 13px;
+  }
+  .product-card-actions__modal-all .product-card-actions__modal-all-item .product-card__stat-list-cont {
+    width: 200px;
+    max-width: 200px;
+  }
+  .product-card-actions__modal-all-item-href a, .product-card-actions__modal-all-item-href button{
+    width: 100%;
+  }
+  .product-card-actions__modal-all-content {
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .product-card-actions__modal-all-item-href button{
+    font-size: 10px;
+    height: 24px;
+    min-height: 24px;
+    max-height: 24px;
+  }
+  .product-card-actions__modal-all .product-card__stat-description {
+    width: fit-content;
+  }
+  .product-card-actions__modal-all .product-card-vertical__buy .d-button__text {
+    font-size: 10px;
+  }
+  .product-card-actions__modal-all .product-card__buy-icon {
+    font-size: 9px;
+  }
+  .product-card-actions__modal-all .d-button__text {
+    gap: 8px;
+  }
+  .product-card__actions-icon-info, .product-card__actions-icon-auto,  {
+    font-size: 16px;
+  }
+  .product-card__actions-icon-cross {
+    font-size: 12px;
+  }
+  //---    -----    ---//
 }
 @media (width <=780px) {
   .product-card__vertical .product-card__stat-list {
