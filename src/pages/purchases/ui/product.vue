@@ -1,6 +1,6 @@
 <template>
-  <div class="product-item">
-  <!-- <div class="product-item product-item-vertical"> -->
+  <!-- <div class="product-item"> -->
+  <div class="product-item product-item-vertical">
     <div class="products__header">
       <!-- Левая часть шапки страницы -->
       <div class="products__header-left">
@@ -35,8 +35,8 @@
         </div>
       </div>
     </div>
-     <!--<div class="products__list-wrapper  product-card__vertical">-->
-    <div class="products__list-wrapper">
+     <div class="products__list-wrapper  product-card__vertical">
+    <!--<div class="products__list-wrapper">-->
       <div class="products__list" v-if="product.stores && !$route.params.id_org_from">
         <offer
           v-for="(item, index) in product.stores"
@@ -61,8 +61,8 @@
   </div>
 </template>
 <script>
-// import offer from './offerVertical.vue'
-import offer from './offer.vue'
+import offer from './offerVertical.vue'
+// import offer from './offer.vue'
 import offerForOffer from './offerOffer.vue'
 
 export default {

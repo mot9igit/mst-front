@@ -42,6 +42,7 @@
           </div>
         
         </div>
+        
         <!-- Главная информация -->
         <div class="product-card__info-container">
           <div class="product-card__info">
@@ -70,7 +71,7 @@
                 <button
                   v-if="offer.action_confl"
                   class="product-card-vertical__promo-all"
-                  @click.prevent="showModal()"
+                  @click.prevent="addBasket(offer)"
                 >
                   Все акции <span class="red-badge">{{ Object.keys(offer.action_confl).length }}</span>
                   <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
@@ -171,12 +172,13 @@
                   :id="Number(offer.remain_id)"
                   :store_id="Number(offer.store_id)"
                   :index="Number(offer.remain_id)"
-                  :value="Number(offer?.basket?.count)"
+                  :value="count"
                   :step="offer?.multiplicity ? Number(offer?.multiplicity) : 1"
                   :item="offer"
                   :key="new Date().getTime() + '_' + Number(offer.remain_id)"
                 />
                 <button
+                  @click.prevent="addBasket(offer, count)"
                   class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
                   :class="{ 'd-button--loading': this.loading }"
 
@@ -384,7 +386,7 @@
                   :id="Number(offer.remain_id)"
                   :store_id="Number(offer.store_id)"
                   :index="Number(offer.remain_id)"
-                  :value="Number(offer?.basket?.count)"
+                  :value="count"
                   :step="offer?.multiplicity ? Number(offer?.multiplicity) : 1"
                   :item="offer"
                   :key="new Date().getTime() + '_' + Number(offer.remain_id)"
@@ -402,6 +404,28 @@
               </div>
         </div>
       </div>
+
+      <!-- Фильтры 
+        <div class="product-card__info-filters">
+          <button
+            class='product-card-actions__modal-button-active'
+          >
+            Активные акции
+            <div class="d-badge2 product-card__promo-badge">{{ colActiveActions }}</div>
+          </button>
+          <button
+            class='product-card-actions__modal-button-active'
+          >
+            Акции без выполненных условий
+            <div class="d-badge2 product-card__promo-badge">{{ colNoTriggerActions }}</div>
+          </button>
+          <button
+            class='product-card-actions__modal-button'
+          >
+            Возможные акции
+            <div class="d-badge2 product-card__promo-badge">{{ colNoActiveActions }}</div>
+          </button>
+        </div>-->
 
       <!-- Список акций -->
       <div class="product-card-actions__modal-all-content">
@@ -541,6 +565,10 @@ export default {
       modalActionsData: {},
       allOff: false,
       pricePrefix: false,
+      count: 1,
+      colActiveActions: 0,
+      colNoActiveActions: 0,
+      colNoTriggerActions: 0,
     }
   },
   components: { customModal, Counter },
@@ -585,68 +613,33 @@ export default {
       basketProductRemove: 'basket/basketProductRemove',
       basketProductUpdate: 'basket/basketProductUpdate',
     }),
-    clearBasketProduct(org_id, store_id, key, product) {
-      this.loading = true
-      const data = {
-        org_id: org_id,
-        store_id: store_id,
-        key: key,
-        product: product,
-      }
-      this.basketProductRemove(data).then((response) => {
-        this.$emit('updateBasket')
-        if (!response?.data?.data?.success && response?.data?.data?.message) {
-          this.$toast.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: response?.data?.data?.message,
-            life: 3000,
-          })
-        }
-        this.loading = false
-      })
-
-      // Убедитесь, что dataLayer существует
-      window.dataLayer = window.dataLayer || []
-
-      // Отправка данных в dataLayer
-      window.dataLayer.push({
-        ecommerce: {
-          currencyCode: 'RUB', // Валюта
-          remove: {
-            products: [
-              {
-                id: product.remain_id, // ID товара
-                name: product.name, // Название товара
-                price: product.price, // Цена товара
-                quantity: product.count, // Количество товара
-              },
-            ],
-          },
-        },
-      })
-    },
+    
     ElemCount(object) {
+      console.log(object)
       if (object.value == object.min) {
-        this.clearBasketProduct(
-          object.item.org_id,
-          object.item.store_id,
-          object.item.key,
-          object.item,
-        )
-        return
-      }
+        this.count = object.value
+         return
+       }
       if (object.value > Number(object.max)) {
-        this.modal_remain = true
-      } else {
+         this.modal_remain = true
+       } else {
+        this.count = object.value
+       }
+    },
+  
+    addBasket(item, count) {
+      if(this.modalActionsData && Object.keys(this.modalActionsData).length){
+        this.modalActions = true
+      }else{
+        console.log('сразу в корзину')
         this.loading = true
         const data = {
-          org_id: object.item.org_id,
-          store_id: object.item.store_id,
-          id_remain: object.id,
-          count: object.value,
-          key: object.item.key,
-          actions: object.item.actions,
+          org_id: item.org_id,
+          store_id: item.store_id,
+          id_remain: item.id,
+          count: item.basket.count + count,
+          key: item.key,
+          actions: {},
         }
         this.basketProductUpdate(data).then((response) => {
           this.loading = false
@@ -661,89 +654,13 @@ export default {
           this.$emit('updateCatalog')
           this.$emit('updateBasket')
         })
-        if (Number(object.value) != object.old_value) {
-          window.dataLayer = window.dataLayer || []
-          window.dataLayer.push({
-            ecommerce: {
-              currencyCode: 'RUB', // Валюта
-              add: {
-                products: [
-                  {
-                    id: object.id, // ID товара
-                    name: object.item.name, // Название товара
-                    price: object.item.basket.price, // Цена товара
-                    quantity: object.value, // Количество товара
-                  },
-                ],
-              },
-            },
-          })
+        this.count = 1
         }
-      }
+        
+      
+      
     },
-    showModal() {
-      this.modalActions = true
-      if (this.activeActions != 0) {
-        this.modalActiveActions = true
-        this.modalOtherActions = false
-      } else {
-        this.modalActiveActions = false
-        this.modalOtherActions = true
-      }
-    },
-    addBasket(item) {
-      this.loading = true
-      if (Number(item?.multiplicity) > 1) {
-        if (Number(item?.multiplicity) > Number(item.available)) {
-          this.modalMultiplicityRemain = true
-          this.loading = false
-          return false
-        }
-      }
-      const data = {
-        org_id: item.org_id,
-        store_id: item.store_id,
-        id_remain: item.id,
-        count: item.basket.count,
-        actions: item.actions,
-      }
-      this.basketProductAdd(data).then(() => {
-        this.loading = false
-        this.$emit('updateBasket')
-      })
-
-      // Убедитесь, что dataLayer существует
-      window.dataLayer = window.dataLayer || []
-
-      // Отправка данных в dataLayer
-      window.dataLayer.push({
-        ecommerce: {
-          currencyCode: 'RUB', // Валюта
-          add: {
-            products: [
-              {
-                id: item.id, // ID товара
-                name: item.name, // Название товара
-                price: item.price, // Цена товара
-                category: item.catalog, // Категория товара
-                quantity: item.basket.count, // Количество товара
-              },
-            ],
-          },
-        },
-      })
-    },
-    getActiveActions() {
-      for (var i in this.offer.actions) {
-        if (this.offer.actions[i].enabled === 1) {
-          this.activeActions++
-          this.activeActionsData.push(this.offer.actions[i])
-        } else {
-          this.otherActions++
-          this.otherActionsData.push(this.offer.actions[i])
-        }
-      }
-    },
+    
     checkAction(ind){
 
       if(this.modalActionsData[ind].active_now){
@@ -769,7 +686,12 @@ export default {
   watch: {
     offer: function(newVal) {
       this.modalActionsData = newVal.action_confl;
-    }
+    },
+    modalActions: function(newVal){
+      if(newVal == false){
+        this.count = 1
+      }
+    },
   }
 }
 </script>
@@ -1335,7 +1257,21 @@ export default {
   font-size: 10px !important;
   line-height: 15px;
 }
-
+.product-card__info-filters{
+  display: flex;
+  gap: 24px;
+  margin-top: 40px;
+}
+.product-card__info-filters button{
+  font-weight: 500;
+}
+.product-card__info-filters button .d-badge2{
+  width:auto;
+  min-width: auto;
+}
+.product-card__info-filters .product-card-actions__modal-button {
+  border: none;
+}
 @media (width <=1736px) {
   .product-card__vertical .products__list {
     gap: inherit;
