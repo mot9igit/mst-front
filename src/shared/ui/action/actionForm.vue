@@ -3348,6 +3348,9 @@ export default {
     if (this.$route.params.action) {
       this.getAction().then(() => {
         this.loading = false
+        if(this.action.delay_type == 2){
+          this.form.postponementPeriod = this.action.delay
+        }
         if (this.form.store_id) {
           this.getAvailableProducts({
             store_id: this.form.store_id,
