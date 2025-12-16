@@ -150,7 +150,7 @@
               <!-- Элемент доп. информации -->
               <div class="product-card__stat">
                 <i class="d-icon-wallet product-card__stat-icon"></i>
-                <div class="product-card__stat-content product-card__stat-content--horizontal">
+                <div class="product-card__stat-content product-card__stat-content--horizontal" v-if="delayPrefix == ''">
                   <p class="product-card__stat-name">
                     {{ offer.delay_type == 2 ? 'Под реал.' : 'Отсрочка' }}
                   </p>
@@ -158,6 +158,14 @@
                     платежа {{ offer.delay }} дней
                   </p>
                   <p class="product-card__stat-description" v-else>Предоплата</p>
+                </div>
+                <div class="product-card__stat-content product-card__stat-content--horizontal" v-else>
+                  <p class="product-card__stat-name">
+                    Возможно: {{ delayPrefix }}
+                  </p>
+                  <p class="product-card__stat-description">
+                    {{ delayDays }} дней
+                  </p>
                 </div>
               </div>
 
@@ -573,6 +581,8 @@ export default {
       allOff: false,
       pricePrefix: false,
       deliveryPrefix: false,
+      delayPrefix: '',
+      delayDays: 0,
       count: 1,
       colActiveActions: 0,
       colNoActiveActions: 0,
@@ -602,15 +612,27 @@ export default {
         let col = Object.keys(this.modalActionsData).length
         let del = Object.keys(this.modalActionsData).length
         let active = Object.keys(this.modalActionsData).length
+        let real = 0;
+        let delay = 0;
         for(var i in this.modalActionsData){
-          if(( this.modalActionsData[i].active_now == 1 && this.modalActionsData[i].enabled == 1 ) || 
+          if((this.modalActionsData[i].active_now == 1 && this.modalActionsData[i].enabled == 1) || 
             this.modalActionsData[i].action_price == this.offer.prices.rrc){
             col--
           }
           if(this.modalActionsData[i].payer == 0){
             del--
           }
-          if( this.modalActionsData[i].active_now == 1 && this.modalActionsData[i].enabled == 1 ){
+          if(this.modalActionsData[i].delay_type == 2){
+            if(Number(this.modalActionsData[i].delay)>real){
+              real = Number(this.modalActionsData[i].delay)
+            }
+          }
+          if(this.modalActionsData[i].delay_type == 1){
+            if(Number(this.modalActionsData[i].delay)>delay){
+              delay = Number(this.modalActionsData[i].delay)
+            }
+          }
+          if(this.modalActionsData[i].active_now == 1 && this.modalActionsData[i].enabled == 1){
             active--
           }
         }
@@ -619,6 +641,15 @@ export default {
         }
         if(del > 0 && active > 0){
           this.deliveryPrefix = true
+        }
+        if((real > 0 || delay > 0) && active > 0){
+          if(real > 0){
+            this.delayPrefix = 'под реализацию'
+            this.delayDays = real
+          }else{
+            this.delayPrefix = 'отсрочка'
+            this.delayDays = delay
+          }
         }
       }
     }
