@@ -167,8 +167,8 @@
               >
                 <Counter
                   @ElemCount="ElemCount"
-                  :min="0"
-                  :max="Number(offer.max)"
+                  :min="1"
+                  :max="Number(offer.max) - Number(offer.basket.count)"
                   :id="Number(offer.remain_id)"
                   :store_id="Number(offer.store_id)"
                   :index="Number(offer.remain_id)"
@@ -381,8 +381,8 @@
               >
                 <Counter
                   @ElemCount="ElemCount"
-                  :min="0"
-                  :max="Number(offer.max)"
+                  :min="1"
+                  :max="Number(offer.max) - Number(offer.basket.count)"
                   :id="Number(offer.remain_id)"
                   :store_id="Number(offer.store_id)"
                   :index="Number(offer.remain_id)"
@@ -561,6 +561,7 @@ export default {
       loading: false,
       modalActions: false,
       modalActiveActions: false,
+      modalMultiplicityRemain: false,
       seller_info: false,
       modalActionsData: {},
       allOff: false,
@@ -615,16 +616,16 @@ export default {
     }),
     
     ElemCount(object) {
-      console.log(object)
       if (object.value == object.min) {
         this.count = object.value
-         return
-       }
+        return
+      }
       if (object.value > Number(object.max)) {
-         this.modal_remain = true
-       } else {
+        this.modal_remain = true
+        this.count = 1
+      }else{
         this.count = object.value
-       }
+      }
     },
   
     addBasket(item, count) {
