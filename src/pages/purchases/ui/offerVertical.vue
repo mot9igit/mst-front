@@ -133,10 +133,16 @@
               <!-- Элемент доп. информации -->
               <div class="product-card__stat">
                 <i class="d-icon-truck product-card__stat-icon"></i>
-                <div class="product-card__stat-content">
+                <div class="product-card__stat-content" v-if="!deliveryPrefix">
                   <p class="product-card__stat-name">Доставка</p>
-                  <p class="product-card__stat-description">
+                  <p class="product-card__stat-description" >
                     за счет {{ offer.payer == 1 ? 'поставщика' : 'покупателя' }}
+                  </p>
+                </div>
+                <div class="product-card__stat-content" v-else>
+                  <p class="product-card__stat-name">Возможно: доставка</p>
+                  <p class="product-card__stat-description" >
+                    за счет поставщика
                   </p>
                 </div>
               </div>
@@ -566,6 +572,7 @@ export default {
       modalActionsData: {},
       allOff: false,
       pricePrefix: false,
+      deliveryPrefix: false,
       count: 1,
       colActiveActions: 0,
       colNoActiveActions: 0,
@@ -593,14 +600,25 @@ export default {
       this.modalActionsData = this.offer.action_confl
       if(this.modalActionsData && Object.keys(this.modalActionsData).length){
         let col = Object.keys(this.modalActionsData).length
+        let del = Object.keys(this.modalActionsData).length
+        let active = Object.keys(this.modalActionsData).length
         for(var i in this.modalActionsData){
           if(( this.modalActionsData[i].active_now == 1 && this.modalActionsData[i].enabled == 1 ) || 
             this.modalActionsData[i].action_price == this.offer.prices.rrc){
             col--
           }
+          if(this.modalActionsData[i].payer == 0){
+            del--
+          }
+          if( this.modalActionsData[i].active_now == 1 && this.modalActionsData[i].enabled == 1 ){
+            active--
+          }
         }
         if(col > 0){
           this.pricePrefix = true
+        }
+        if(del > 0 && active > 0){
+          this.deliveryPrefix = true
         }
       }
     }
