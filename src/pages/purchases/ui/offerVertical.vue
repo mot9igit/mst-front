@@ -10,7 +10,6 @@
         <!-- Шапка -->
         <div class="product-card__header">
           <!-- Продавец -->
-
           <div class="product-card__seller" @click="this.seller_info = true">
             <img
               :src="offer.store_image"
@@ -40,9 +39,7 @@
               {{ offer.org_fullname }} ИНН {{ offer.org_inn ? offer.org_inn : '-' }}
             </p>
           </div>
-        
         </div>
-        
         <!-- Главная информация -->
         <div class="product-card__info-container">
           <div class="product-card__info">
@@ -69,11 +66,11 @@
               </div>
               <!-- Кнопка: "Все акции" -->
                 <button
-                  v-if="offer.action_confl"
+                  v-if="Object.keys(offer.actions).length > 0"
                   class="product-card-vertical__promo-all"
                   @click.prevent="addBasket(offer)"
                 >
-                  Все акции <span class="red-badge">{{ Object.keys(offer.action_confl).length }}</span>
+                  Все акции <span class="red-badge">{{ Object.keys(offer.actions).length }}</span>
                   <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
                 </button>
 
@@ -189,17 +186,10 @@
                   </div>
                 </button>
               </div>
-
           </div>
         </div>
-
-
       </div>
-
-
     </div>
-
-
   </div>
   <teleport to="body">
     <customModal
@@ -405,7 +395,7 @@
         </div>
       </div>
 
-      <!-- Фильтры 
+      <!-- Фильтры
         <div class="product-card__info-filters">
           <button
             class='product-card-actions__modal-button-active'
@@ -428,10 +418,10 @@
         </div>-->
 
       <!-- Список акций -->
-      <div class="product-card-actions__modal-all-content">
+      <div class="product-card-actions__modal-all-content" v-if="this.activeConflict">
 
         <div class="product-card-actions__modal-all-item"
-            v-for="(item, index) in offer.action_confl"
+            v-for="(item, index) in offer.actions"
             :key="index">
             <!-- Баннер -->
             <div class="product-card-actions__modal-all-item-image"><img :src="item.image.image"></div>
@@ -439,30 +429,30 @@
             <!--Акция включена, Акция выключена, Акция несовместима, Условия акции не выполнены -->
             <div class="product-card-actions__modal-all-item-action">
               <p class="product-card-actions__modal-all-item-action-label">
-                <span v-if="(item.main_sale != index && item.active_now != true) || (item.is_trigger == 1 && item.enabled == 0)">Условия акции не выполнены:</span>
-                <span v-else-if="(item.main_sale != index && item.active_now == true)  || (item.active_now == true && item.is_trigger == 1 && item.enabled == 1)">Применена автоматически:</span>
-                <span v-else-if="item.main_sale == index && item.active_now == true && item.is_trigger == 0">Акция включена:</span>
-                <span v-else-if="item.main_sale == index && item.active_now != true && this.allOff == false && item.is_trigger == 0">Акция несовместима:</span>
-                <span v-else-if="item.main_sale == index && item.active_now != true && this.allOff == true && item.is_trigger == 0">Акция выключена:</span>
+                <span v-if="this.activeConflict.actions_ids.includes(item.action_id) && (item.is_trigger == 1 && item.enabled == 0)">Условия акции не выполнены:</span>
+                <span v-else-if="this.activeConflict.actions_ids.includes(item.action_id) && (item.is_trigger == 1 && item.enabled == 1)">Применена автоматически:</span>
+                <span v-else-if="this.activeConflict.actions_ids.includes(item.action_id) && item.is_trigger == 0">Акция включена:</span>
+                <span v-else-if="!this.activeConflict.actions_ids.includes(item.action_id) && this.offer.main_actions.includes(Number(item.action_id))">Акция несовместима:</span>
+                <span v-else-if="!this.activeConflict.actions_ids.includes(item.action_id) && !this.offer.main_actions.includes(Number(item.action_id))">Акция выключена:</span>
               </p>
               <div class="product-card-actions__modal-all-item-action-button">
                 <div>
                   <div class="d-switch"
-                  @click.prevent="checkAction(index)" 
-                  v-if="(item.main_sale == index && item.active_now == true && item.is_trigger == 0) || (item.main_sale == index && item.active_now != true && item.is_trigger == 0)">
+                  @click.prevent="checkAction(Number(item.action_id))"
+                  v-if="this.offer.main_actions.includes(Number(item.action_id))">
                     <input
                       type="checkbox"
-                      :name="index"
-                      :id="index"
+                      :name="Number(item.action_id)"
+                      :id="Number(item.action_id)"
                       binary="true"
                       class="d-switch__input"
-                      v-model="modalActionsData[index].active_now"
+                      v-model="mainActionsData[Number(item.action_id)]"
                     />
                     <div class="d-switch__circle"></div>
                   </div>
-                  <i class="d-icon-times product-card__actions-icon-cross"  v-if="(item.main_sale != index && item.active_now != true) || (item.main_sale == index && item.active_now != true && item.is_trigger == 1)"></i>
-                  <i class="d-icon-check product-card__actions-icon-auto" v-else-if="(item.main_sale != index && item.active_now == true) || (item.main_sale == index && item.active_now == true && item.is_trigger == 1)"></i>
-                  <i class="d-icon-info product-card__actions-icon-info" v-else-if="item.main_sale == index && item.active_now != true && allOff == false && item.is_trigger == 0"></i>
+                  <i class="d-icon-times product-card__actions-icon-cross"  v-if="!this.activeConflict.actions_ids.includes(item.action_id) && !this.offer.main_actions.includes(Number(item.action_id))"></i>
+                  <i class="d-icon-check product-card__actions-icon-auto" v-else-if="this.activeConflict.actions_ids.includes(item.action_id) && ((item.is_trigger == 1 && item.enabled == 1) || (item.is_trigger == 0))"></i>
+                  <i class="d-icon-info product-card__actions-icon-info" v-else-if="!this.activeConflict.actions_ids.includes(item.action_id) && this.offer.main_actions.includes(Number(item.action_id))"></i>
                 </div>
 
                 <p>
@@ -563,9 +553,11 @@ export default {
       modalActiveActions: false,
       seller_info: false,
       modalActionsData: {},
+      mainActionsData: {},
       allOff: false,
       pricePrefix: false,
       count: 1,
+      activeConflict: {},
       colActiveActions: 0,
       colNoActiveActions: 0,
       colNoTriggerActions: 0,
@@ -589,17 +581,37 @@ export default {
   },
   mounted() {
     if(Object.keys(this.offer).length){
-      this.modalActionsData = this.offer.action_confl
-      if(this.modalActionsData && Object.keys(this.modalActionsData).length){
-        let col = Object.keys(this.modalActionsData).length
-        for(var i in this.modalActionsData){
-          if(( this.modalActionsData[i].active_now == 1 && this.modalActionsData[i].enabled == 1 ) || 
-            this.modalActionsData[i].action_price == this.offer.prices.rrc){
+      this.modalActionsData = this.offer.conflicts
+      if(this.modalActionsData && Object.keys(this.modalActionsData).length > 1){
+        let col = Object.keys(this.offer.actions).length
+        for(var i in this.offer.actions){
+          if(( this.offer.actions[i].enabled == 1 ) ||
+            this.offer.actions[i].action_price == this.offer.prices.rrc){
             col--
           }
         }
         if(col > 0){
           this.pricePrefix = true
+        }
+      }
+    }
+    if(Object.keys(this.offer).length){
+      for(var ic in this.offer.conflicts){
+        if(this.offer.conflicts[ic].active){
+          this.activeConflict = this.offer.conflicts[ic]
+        }
+      }
+      if(this.activeConflict.actions_ids){
+        let item = JSON.parse(JSON.stringify(this.activeConflict.actions_ids))
+        for(var iitem in item){
+          item[iitem] = Number(item[iitem])
+        }
+        for(var ima in this.offer.main_actions){
+          if(item.includes(Number(this.offer.main_actions[ima]))){
+            this.mainActionsData[this.offer.main_actions[ima]] = true
+          }else{
+            this.mainActionsData[this.offer.main_actions[ima]] = false
+          }
         }
       }
     }
@@ -613,7 +625,7 @@ export default {
       basketProductRemove: 'basket/basketProductRemove',
       basketProductUpdate: 'basket/basketProductUpdate',
     }),
-    
+
     ElemCount(object) {
       console.log(object)
       if (object.value == object.min) {
@@ -626,9 +638,9 @@ export default {
         this.count = object.value
        }
     },
-  
+
     addBasket(item, count) {
-      if(this.modalActionsData && Object.keys(this.modalActionsData).length){
+      if(this.modalActionsData && Object.keys(this.modalActionsData).length > 1){
         this.modalActions = true
       }else{
         console.log('сразу в корзину')
@@ -637,7 +649,7 @@ export default {
           org_id: item.org_id,
           store_id: item.store_id,
           id_remain: item.id,
-          count: item.basket.count + count,
+          count: count,
           key: item.key,
           actions: {},
         }
@@ -656,28 +668,26 @@ export default {
         })
         this.count = 1
         }
-        
-      
-      
-    },
-    
-    checkAction(ind){
 
-      if(this.modalActionsData[ind].active_now){
-        this.allOff = true
-        for (var i in this.modalActionsData){
-          if(this.modalActionsData[i].main_sale == ind){
-            this.modalActionsData[i].active_now = false
-            
-          }
-        }
+
+    },
+    checkAction(ind){
+      if(this.mainActionsData[ind]){
+        this.mainActionsData[ind] = false
       }else{
-        this.allOff = false
-        for (var i in this.modalActionsData){
-          if(this.modalActionsData[i].main_sale == ind && this.modalActionsData[i].enabled == 1){
-            this.modalActionsData[i].active_now = true
+        for (var ii in this.mainActionsData){
+          if(ii == ind){
+            this.mainActionsData[ii] = true
+            // выставляем новый активный конфликт
+            for (var ic in this.offer.conflicts){
+              if(this.offer.conflicts[ic] !== undefined){
+                if(this.offer.conflicts[ic].actions_ids.includes(ii)){
+                  this.activeConflict = this.offer.conflicts[ic]
+                }
+              }
+            }
           }else{
-            this.modalActionsData[i].active_now = false
+            this.mainActionsData[ii] = false
           }
         }
       }
@@ -685,7 +695,7 @@ export default {
   },
   watch: {
     offer: function(newVal) {
-      this.modalActionsData = newVal.action_confl;
+      this.modalActionsData = newVal.conflicts;
     },
     modalActions: function(newVal){
       if(newVal == false){
@@ -2406,10 +2416,10 @@ export default {
     .product-card-actions__modal-all .product-card__buy-icon, .product-card-actions__modal-all-content .product-card__seller-button {
       display: flex;
     }
-    
+
 }
 @media (width <=800px) {
-  
+
   .product-card__vertical .product-card__image-container{
     width: 121px;
     min-width: 121px;
@@ -2650,7 +2660,7 @@ export default {
     font-size: 9px;
     line-height: 11px;
   }
-  
+
   .product-card-actions__modal-all .product-card__stat-list .product-card__buy-icon {
     font-size: 13px;
   }
@@ -2661,7 +2671,7 @@ export default {
   .product-card-actions__modal-all-item-href a, .product-card-actions__modal-all-item-href button{
     width: 76px;
   }
-  
+
   .product-card-actions__modal-all-content {
     gap: 16px;
     margin-top: 24px;
