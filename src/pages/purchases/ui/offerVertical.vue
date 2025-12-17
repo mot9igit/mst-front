@@ -693,7 +693,9 @@ export default {
     },
 
     addBasket(item, count) {
-      
+      if(this.modalActionsData && Object.keys(this.modalActionsData).length > 1){
+        this.modalActions = true
+      }else{
         console.log('сразу в корзину')
         this.loading = true
         const data = {
@@ -718,9 +720,7 @@ export default {
           this.$emit('updateBasket')
         })
         this.count = Object.keys(this.modalActionsData).length > 0 ? this.modalActionsData[0].min > 0 ? this.modalActionsData[0].min : 1 : 1
-        
-
-
+      }
     },
     checkAction(ind){
       if(this.mainActionsData[ind]){
