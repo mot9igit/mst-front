@@ -62,7 +62,7 @@
                 <button
                   v-if="Object.keys(offer.actions).length > 0"
                   class="product-card-vertical__promo-all"
-                  @click.prevent="modalActions=true"
+                  @click.prevent="modalActions = true"
                 >
                   Все акции <span class="red-badge">{{ Object.keys(offer.actions).length }}</span>
                   <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
@@ -178,13 +178,13 @@
               >
                 <Counter
                   @ElemCount="ElemCount"
-                  :min="0"
+                  :min="Object.keys(modalActionsData).length > 0 ? Number(modalActionsData[0].min) : 1"
                   :max="Number(offer.max)"
                   :id="Number(offer.remain_id)"
                   :store_id="Number(offer.store_id)"
                   :index="Number(offer.remain_id)"
                   :value="count"
-                  :step="offer?.multiplicity ? Number(offer?.multiplicity) : 1"
+                  :step="Object.keys(modalActionsData).length == 1 && Number(modalActionsData[0].multiplicity) > 1 ? Number(modalActionsData[0].multiplicity) : 1"
                   :item="offer"
                   :key="new Date().getTime() + '_' + Number(offer.remain_id)"
                 />
@@ -338,7 +338,7 @@
               <!-- Цена товара -->
               <div class="product-card__price" v-else>
                 <p class="product-card__price-value-discounted">
-                  {{ offer.price.toLocaleString('ru') }} ₽
+                  {{ activeConflict.price.toLocaleString('ru') }} ₽
                 </p>
               </div>
 
@@ -380,13 +380,13 @@
               >
                 <Counter
                   @ElemCount="ElemCount"
-                  :min="0"
+                  :min="activeConflict.min"
                   :max="Number(offer.max)"
                   :id="Number(offer.remain_id)"
                   :store_id="Number(offer.store_id)"
                   :index="Number(offer.remain_id)"
                   :value="count"
-                  :step="offer?.multiplicity ? Number(offer?.multiplicity) : 1"
+                  :step="activeConflict?.multiplicity ? Number(activeConflict?.multiplicity) : 1"
                   :item="offer"
                   :key="new Date().getTime() + '_' + Number(offer.remain_id)"
                 />
@@ -561,6 +561,7 @@ export default {
       modalActions: false,
       modalActiveActions: false,
       seller_info: false,
+      modalMultiplicityRemain: false,
       modalActionsData: {},
       mainActionsData: {},
       allOff: false,
@@ -594,6 +595,14 @@ export default {
   mounted() {
     if(Object.keys(this.offer).length){
       this.modalActionsData = this.offer.conflicts
+      if(this.modalActionsData){
+        this.count = this.modalActionsData[0].min > 0 ? this.modalActionsData[0].min : 1
+        
+      }
+      
+      if(this.modalActionsData && Object.keys(this.modalActionsData).length == 1){
+        this.count = this.modalActionsData[0].multiplicity
+      }
       if(this.modalActionsData && Object.keys(this.modalActionsData).length > 1){
         let col = Object.keys(this.modalActionsData).length
         let payer = false
@@ -684,9 +693,7 @@ export default {
     },
 
     addBasket(item, count) {
-      if(this.modalActionsData && Object.keys(this.modalActionsData).length > 1){
-        this.modalActions = true
-      }else{
+      
         console.log('сразу в корзину')
         this.loading = true
         const data = {
@@ -695,7 +702,7 @@ export default {
           id_remain: item.id,
           count: count,
           key: item.key,
-          actions: {},
+          actions: this.modalActionsData,
         }
         this.basketProductUpdate(data).then((response) => {
           this.loading = false
@@ -710,8 +717,8 @@ export default {
           this.$emit('updateCatalog')
           this.$emit('updateBasket')
         })
-        this.count = 1
-        }
+        this.count = Object.keys(this.modalActionsData).length > 0 ? this.modalActionsData[0].min > 0 ? this.modalActionsData[0].min : 1 : 1
+        
 
 
     },
@@ -743,7 +750,12 @@ export default {
     },
     modalActions: function(newVal){
       if(newVal == false){
-        this.count = 1
+        if(this.modalActionsData && Object.keys(this.modalActionsData).length == 1){
+          this.count = this.modalActionsData[0].multiplicity
+        }else{
+          this.count = this.modalActionsData[0].min
+        }
+        
       }
     },
   }
