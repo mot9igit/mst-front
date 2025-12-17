@@ -64,11 +64,11 @@
               </div>
               <!-- Кнопка: "Все акции" -->
                 <button
-                  v-if="offer.action_confl"
+                  v-if="offer.actions"
                   class="product-card-vertical__promo-all"
                   @click.prevent="modalActions = true"
                 >
-                  Все акции <span class="red-badge">{{ Object.keys(offer.action_confl).length }}</span>
+                  Все акции <span class="red-badge">{{ Object.keys(offer.actions).length }}</span>
                   <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
                 </button>
 
@@ -180,10 +180,11 @@
                   'loading-counter': this.loading,
                 }"
               >
+              <!-- - Number(offer.basket.count)-->
                 <Counter
                   @ElemCount="ElemCount"
                   :min="1"
-                  :max="Number(offer.max) - Number(offer.basket.count)"
+                  :max="Number(offer.max)"
                   :id="Number(offer.remain_id)"
                   :store_id="Number(offer.store_id)"
                   :index="Number(offer.remain_id)"
@@ -219,8 +220,7 @@
   <teleport to="body">
     <customModal
       v-model="this.modalMultiplicityRemain"
-      class="product-not-available product-multiplicity-not-available"
-    >
+      class="product-not-available product-multiplicity-not-available">
       <img src="/images/icons_milen/outOfStock2.png" alt="" />
       <b>У нас нет столько товаров :(</b>
       <p>
@@ -351,11 +351,7 @@
                 <p class="product-card__price-value-discounted">
                   {{ offer.price.toLocaleString('ru') }} ₽
                 </p>
-                <p class="product-card__price-value" v-if="offer.price > offer.min_price.price">
-                  {{ offer.min_price.price.toLocaleString('ru') }}
-                  <span class="product-card__price-value-suffix">₽</span>
-                  <span class="product-card__price-label">мин. цена</span>
-                </p>
+                
               </div>
 
 
@@ -394,10 +390,11 @@
                   'loading-counter': this.loading,
                 }"
               >
+              <!-- - Number(offer.basket.count)-->
                 <Counter
                   @ElemCount="ElemCount"
                   :min="1"
-                  :max="Number(offer.max) - Number(offer.basket.count)"
+                  :max="Number(offer.max)"
                   :id="Number(offer.remain_id)"
                   :store_id="Number(offer.store_id)"
                   :index="Number(offer.remain_id)"
@@ -446,7 +443,7 @@
       <div class="product-card-actions__modal-all-content">
 
         <div class="product-card-actions__modal-all-item"
-            v-for="(item, index) in offer.action_confl"
+            v-for="(item, index) in offer.actions"
             :key="index">
             <!-- Баннер -->
             <div class="product-card-actions__modal-all-item-image"><img :src="item.image.image"></div>
