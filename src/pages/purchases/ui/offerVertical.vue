@@ -52,14 +52,9 @@
             </div>
             <!-- Блок с ценой и акциями -->
             <div class="product-card__price-container">
-              <!-- Если нет в наличии -->
-              <div class="product-card__price" v-if="offer.requirement && offer.available == 0">
-                <p class="product-card__price-value-discounted product-card__noavailable">
-                  Нет в наличии
-                </p>
-              </div>
+              
               <!-- Цена товара -->
-              <div class="product-card__price" v-else>
+              <div class="product-card__price">
                 <p class="product-card__price-value-discounted" v-if="pricePrefix == false">
                   {{ offer.price.toLocaleString('ru') }} ₽
                 </p>
@@ -71,7 +66,7 @@
                 <button
                   v-if="offer.action_confl"
                   class="product-card-vertical__promo-all"
-                  @click.prevent="addBasket(offer)"
+                  @click.prevent="modalActions = true"
                 >
                   Все акции <span class="red-badge">{{ Object.keys(offer.action_confl).length }}</span>
                   <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
@@ -172,9 +167,15 @@
               </div>
             </div>
             <!-- Купить -->
+             <!-- Если нет в наличии -->
+              <div class="product-card__price__noavailable" v-if="offer.available == 0">
+                <p class="product-card__price-value-discounted product-card__noavailable">
+                  Нет в наличии
+                </p>
+              </div>
               <div
                 class="product-card__basket-button"
-                v-if="!offer.requirement || (offer.requirement && offer.available > 0)"
+                v-else
                 :class="{
                   'loading-counter': this.loading,
                 }"
@@ -1322,6 +1323,25 @@ export default {
 .product-card__info-filters .product-card-actions__modal-button {
   border: none;
 }
+.product-card__vertical .product-card-noactive{
+  opacity: 1;
+  .product-card__header, .product-card__image-container{
+    opacity: 0.3;
+  }
+  .product-card__price-value-discounted, .product-card__info-text, .product-card__count, .product-card__stat-cont {
+    opacity: 0.1;
+  }
+  .product-card__basket-button{
+    display:none;
+  }
+  .product-card__price-value-discounted.product-card__noavailable{
+    opacity: 0.59;
+  }
+  .product-card__price-value-discounted{
+    font-size: 20px;
+    color: #757575;
+  }
+}
 @media (width <=1736px) {
   .product-card__vertical .products__list {
     gap: inherit;
@@ -1617,6 +1637,12 @@ export default {
     font-size: 14px;
   }
   //---    -----    ---//
+  .product-card__vertical .product-card-noactive{
+    .product-card__price-value-discounted{
+      font-size: 16px;
+      width: max-content;
+    }
+  }
 }
 @media (width <=1436px) {
   .product-card__vertical .products__list {
@@ -1964,6 +1990,15 @@ export default {
     font-size: 12px;
   }
   //---    -----    ---//
+  .product-card__vertical .product-card-noactive{
+    .product-card__price-value-discounted{
+      font-size: 16px;
+      width: max-content;
+    }
+    .product-card__count{
+      display:none;
+    }
+  }
 }
 @media (width <=1150px) {
   .product-card__vertical .products__list {
@@ -2427,6 +2462,12 @@ export default {
     padding: 8px;
   }
   //---    -----    ---//
+  .product-card__vertical .product-card-noactive{
+    .product-card__price-value-discounted{
+      font-size: 14px;
+      width: max-content;
+    }
+  }
 }
 @media (width <= 890px) {
     .product-card__vertical .product-card__header,
@@ -2455,6 +2496,11 @@ export default {
     }
     .product-card-actions__modal-all .product-card__buy-icon, .product-card-actions__modal-all-content .product-card__seller-button {
       display: flex;
+    }
+    .product-card__vertical .product-card-noactive{
+      .product-card__price-value-discounted{
+        margin-top: 0;
+      }
     }
     
 }
@@ -2747,6 +2793,14 @@ export default {
     margin-top: 8px;
   }
   //---    -----    ---//
+  .product-card__vertical .product-card-noactive .product-card__price-value-discounted {
+    margin-top: 8px;
+  }
+  .product-card__vertical .product-card-noactive{
+    .product-card__price-value-discounted{
+      font-size: 12px !important;
+    }
+  }
 }
 @media (width <=780px) {
   .product-card__vertical .product-card__stat-list {
@@ -3214,6 +3268,9 @@ export default {
   .product-card__vertical .product-card__buy-icon {
     font-size: 13px;
   }
+  .product-card__vertical .product-card-noactive .product-card__price-value-discounted {
+    font-size: 20px !important;
+  }
 }
 @media (width <=320px) {
   .product-card__vertical   .product-card {
@@ -3248,6 +3305,10 @@ export default {
     max-width: 131px;
     min-width: 131px;
     width: 131px;
+  }
+  .product-card__vertical .product-card-noactive .product-card__price-value-discounted {
+    font-size: 20px !important;
+    text-align: left;
   }
 }
 </style>
