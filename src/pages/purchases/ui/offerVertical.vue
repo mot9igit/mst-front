@@ -62,7 +62,7 @@
                 <button
                   v-if="Object.keys(offer.actions).length > 0"
                   class="product-card-vertical__promo-all"
-                  @click.prevent="addBasket(offer)"
+                  @click.prevent="modalActions=true"
                 >
                   Все акции <span class="red-badge">{{ Object.keys(offer.actions).length }}</span>
                   <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
