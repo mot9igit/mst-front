@@ -2,7 +2,7 @@
   <!--Карточка товара -->
   <div
     class="product-card"
-    :class="{ 'product-card-noactive': offer.requirement && offer.available == 0 }"
+    :class="{ 'product-card-noactive': offer.available == 0 }"
   >
     <div class="product-card__content">
       <!-- Информация о товаре -->
@@ -49,14 +49,8 @@
             </div>
             <!-- Блок с ценой и акциями -->
             <div class="product-card__price-container">
-              <!-- Если нет в наличии -->
-              <div class="product-card__price" v-if="offer.requirement && offer.available == 0">
-                <p class="product-card__price-value-discounted product-card__noavailable">
-                  Нет в наличии
-                </p>
-              </div>
               <!-- Цена товара -->
-              <div class="product-card__price" v-else>
+              <div class="product-card__price">
                 <p class="product-card__price-value-discounted" v-if="pricePrefix == false">
                   {{ offer.price.toLocaleString('ru') }} ₽
                 </p>
@@ -155,9 +149,15 @@
               </div>
             </div>
             <!-- Купить -->
+             <!-- Если нет в наличии -->
+             <div class="product-card__price__noavailable" v-if="offer.available == 0">
+                <p class="product-card__price-value-discounted product-card__noavailable">
+                  Нет в наличии
+                </p>
+              </div>
               <div
                 class="product-card__basket-button"
-                v-if="!offer.requirement || (offer.requirement && offer.available > 0)"
+                v-else
                 :class="{
                   'loading-counter': this.loading,
                 }"
@@ -325,11 +325,6 @@
               <div class="product-card__price" v-else>
                 <p class="product-card__price-value-discounted">
                   {{ offer.price.toLocaleString('ru') }} ₽
-                </p>
-                <p class="product-card__price-value" v-if="offer.price > offer.min_price.price">
-                  {{ offer.min_price.price.toLocaleString('ru') }}
-                  <span class="product-card__price-value-suffix">₽</span>
-                  <span class="product-card__price-label">мин. цена</span>
                 </p>
               </div>
 
@@ -1282,6 +1277,25 @@ export default {
 .product-card__info-filters .product-card-actions__modal-button {
   border: none;
 }
+.product-card__vertical .product-card-noactive{
+  opacity: 1;
+  .product-card__header, .product-card__image-container{
+    opacity: 0.3;
+  }
+  .product-card__price-value-discounted, .product-card__info-text, .product-card__count, .product-card__stat-cont {
+    opacity: 0.1;
+  }
+  .product-card__basket-button{
+    display:none;
+  }
+  .product-card__price-value-discounted.product-card__noavailable{
+    opacity: 0.59;
+  }
+  .product-card__price-value-discounted{
+    font-size: 20px;
+    color: #757575;
+  }
+}
 @media (width <=1736px) {
   .product-card__vertical .products__list {
     gap: inherit;
@@ -1577,6 +1591,12 @@ export default {
     font-size: 14px;
   }
   //---    -----    ---//
+  .product-card__vertical .product-card-noactive{
+    .product-card__price-value-discounted{
+      font-size: 16px;
+      width: max-content;
+    }
+  }
 }
 @media (width <=1436px) {
   .product-card__vertical .products__list {
@@ -1923,7 +1943,19 @@ export default {
   .product-card-actions__modal-all .product-card__basket-button .d-counter__input {
     font-size: 12px;
   }
+  .product-card-actions__modal-all .product-card__basket-button {
+    height: 24px;
+  }
   //---    -----    ---//
+  .product-card__vertical .product-card-noactive{
+    .product-card__price-value-discounted{
+      font-size: 16px;
+      width: max-content;
+    }
+    .product-card__count{
+      display:none;
+    }
+  }
 }
 @media (width <=1150px) {
   .product-card__vertical .products__list {
@@ -2386,7 +2418,19 @@ export default {
     left: -8px;
     padding: 8px;
   }
+  .product-card-actions__modal-all .product-card__basket-button .d-counter__input {
+    font-size: 10px;
+  }
+  .product-card-actions__modal-all .product-card__basket-button .d-counter__button-icon {
+    font-size: 10px;
+  }
   //---    -----    ---//
+  .product-card__vertical .product-card-noactive{
+    .product-card__price-value-discounted{
+      font-size: 14px;
+      width: max-content;
+    }
+  }
 }
 @media (width <= 890px) {
     .product-card__vertical .product-card__header,
@@ -2413,13 +2457,19 @@ export default {
     .product-card__vertical .product-card__image-container {
       width: 156px;
     }
-    .product-card-actions__modal-all .product-card__buy-icon, .product-card-actions__modal-all-content .product-card__seller-button {
-      display: flex;
+    .product-card-actions__modal-all .product-card__buy-icon, .product-card-actions__modal-all-content .product-card__seller-button, .product-card__seller-button {
+      display: flex !important;
     }
-
+    
+    .product-card__vertical .product-card-noactive{
+      .product-card__price-value-discounted{
+        margin-top: 0;
+      }
+    }
+    
 }
 @media (width <=800px) {
-
+  
   .product-card__vertical .product-card__image-container{
     width: 121px;
     min-width: 121px;
@@ -2660,7 +2710,7 @@ export default {
     font-size: 9px;
     line-height: 11px;
   }
-
+  
   .product-card-actions__modal-all .product-card__stat-list .product-card__buy-icon {
     font-size: 13px;
   }
@@ -2671,7 +2721,7 @@ export default {
   .product-card-actions__modal-all-item-href a, .product-card-actions__modal-all-item-href button{
     width: 76px;
   }
-
+  
   .product-card-actions__modal-all-content {
     gap: 16px;
     margin-top: 24px;
@@ -2707,6 +2757,14 @@ export default {
     margin-top: 8px;
   }
   //---    -----    ---//
+  .product-card__vertical .product-card-noactive .product-card__price-value-discounted {
+    margin-top: 8px;
+  }
+  .product-card__vertical .product-card-noactive{
+    .product-card__price-value-discounted{
+      font-size: 12px !important;
+    }
+  }
 }
 @media (width <=780px) {
   .product-card__vertical .product-card__stat-list {
@@ -2918,6 +2976,213 @@ export default {
     font-weight: 500;
     font-size: 8px;
   }
+      //--- all actions ---//
+  .product-card-actions__modal-all h3 {
+    font-size: 12px;
+    margin-top: -21px;
+    margin-bottom: 24px;
+  }
+  .product-card-actions__modal-all-header {
+    grid-template-areas:
+    "A A A  B B B B B B"
+    "A A A  B B B B B B"
+    "C C C  C C C C C C";
+    grid-template-columns: auto auto;
+    gap: 0 16px;
+  }
+  .product-card-actions__modal-all-header-product-info{
+    grid-area: A;
+  }
+  .product-card-actions__modal-all-header .product-card__stat-list-cont{
+    grid-area: C;
+    width: 100%;
+  }
+  .product-card-actions__modal-all .product-card__stat-list-cont {
+    max-width: 100%;
+  }
+  .product-card-actions__modal-all-header .product-card__price-container-all{
+    grid-area: B;
+  }
+  .product-card-actions__modal-all .product-card__image-container {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+  }
+  .product-card-actions__modal-all-header .product-card__stat-list{
+    display: flex;
+    padding: 5px 0px;
+    
+  }
+  .product-card__stat-list::after, .product-card__stat-list::before{
+    display: none;
+  }
+  .product-card-actions__modal-all .product-card__stat-list div:first-child {
+    margin-right: 8px;
+    float: left;
+  }
+  .product-card-actions__modal-all .product-card__stat-list div {
+    height: 14px;
+  }
+  .product-card-actions__modal-all .product-card__price-container-all {
+    margin-bottom: 4px;
+    width: 100%;
+  }
+  .product-card-actions__modal-all .product-card__title {
+    font-size: 9px;
+  }
+  .product-card-actions__modal-all .product-card__article {
+    font-size: 9px;
+  }
+  .product-card-actions__modal-all .product-card__seller-image {
+    height: 16px;
+  }
+  .product-card-actions__modal-all .product-card__seller-name {
+    font-size: 9px;
+    margin-right: 2px;
+  }
+  .product-card-actions__modal-all .product-card__stat-name, .product-card-actions__modal-all .product-card__stat-description {
+    font-size: 9px;
+  }
+  .product-card-actions__modal-all .product-card__stat-list .product-card__stat-content {
+    gap: 4px;
+  }
+  .product-card-actions__modal-all .product-card__price-value-discounted {
+    font-size: 12px;
+  }
+  .product-card-actions__modal-all .product-card__p, .product-card-actions__modal-all .product-card__count-value, .product-card-actions__modal-all .product-card__count-label {
+    font-size: 8px;
+    line-height: 10px;
+  }
+  .product-card-actions__modal-all .product-card__basket-button .d-counter {
+    height: 16px;
+    max-width: 83px;
+  }
+  .product-card-actions__modal-all .product-card__basket-button .product-card-vertical__buy{
+    height: 16px;
+    max-height: 16px;
+    min-height: 16px;
+    max-width: 76px; 
+    min-width: 76px;
+    padding-inline: 0;
+  }
+  .product-card-actions__modal-all .product-card__basket-button{
+    flex-direction: row-reverse;
+  }
+  .product-card-actions__modal-all .product-card__basket-button {
+    margin-top: 16px;
+  }
+  .product-card-actions__modal-all .modal-content {
+    max-width: 572px;
+  }
+  .product-card-actions__modal-all .product-card__seller-button-icon {
+    font-size: 8px;
+  }
+
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item {
+    grid-template-areas:
+    "A A A A A   E E E E   B B B B"
+    "C C C C C   C C C C   C C C C"
+    "G G G G G   G G G G   G G G G";
+    grid-template-columns: auto auto auto;
+    gap: 17px 27px;
+    padding:8px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-image{
+    grid-area: A;
+    width: 200px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-action{
+    grid-area: B;
+    width: 161px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-descr{
+    grid-area: C;
+    width: 100%;
+  }
+  .product-card-actions__modal-all-content .product-card__stat-list-cont{
+    grid-area: E;
+    width: 143px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-href{
+    grid-area: G;
+    width: 100%;
+    justify-content: center;
+  }
+  .product-card-actions__modal-all-item-image {
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+  }
+  .product-card-actions__modal-all-item-image img {
+    height: 47px;
+  }
+  .product-card-actions__modal-all-item-action-label {
+    font-size: 9px;
+    line-height: 12px;
+  }
+  .product-card-actions__modal-all-item-action-button {
+    gap: 8px;
+    margin-top: 16px;
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .product-card-actions__modal-all-item-descr div {
+    margin-top: 16px;
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .product-card-actions__modal-all-content .product-card__stat-list {
+    font-size: 9px;
+    line-height: 11px;
+  }
+  
+  .product-card-actions__modal-all .product-card__stat-list .product-card__buy-icon {
+    font-size: 13px;
+  }
+  .product-card-actions__modal-all .product-card-actions__modal-all-item .product-card__stat-list-cont {
+    width: 143px;
+    max-width: 143px;
+  }
+  .product-card-actions__modal-all-item-href a, .product-card-actions__modal-all-item-href button{
+    width: 76px;
+  }
+  
+  .product-card-actions__modal-all-content {
+    gap: 16px;
+    margin-top: 24px;
+  }
+  .product-card-actions__modal-all-item-href button{
+    font-size: 10px;
+    height: 24px;
+    min-height: 24px;
+    max-height: 24px;
+  }
+  .product-card-actions__modal-all .product-card__stat-description {
+    width: fit-content;
+  }
+  .product-card-actions__modal-all .product-card-vertical__buy .d-button__text {
+    font-size: 8px;
+  }
+  .product-card-actions__modal-all .product-card__buy-icon {
+    font-size: 8px;
+  }
+  .product-card-actions__modal-all .d-button__text {
+    gap: 4px;
+  }
+  .product-card__actions-icon-info, .product-card__actions-icon-auto,  {
+    font-size: 16px;
+  }
+  .product-card__actions-icon-cross {
+    font-size: 12px;
+  }
+  .product-card-actions__modal-all .modal-content {
+    padding: 4px 24px 24px 24px;
+  }
+  .product-card-actions__modal-all-item-action-button,     .product-card-actions__modal-all-item-descr div {
+    margin-top: 8px;
+  }
+  //---    -----    ---//
 }
 @media (width <=600px) {
   .product-item-vertical .products__header {
@@ -3174,6 +3439,9 @@ export default {
   .product-card__vertical .product-card__buy-icon {
     font-size: 13px;
   }
+  .product-card__vertical .product-card-noactive .product-card__price-value-discounted {
+    font-size: 20px !important;
+  }
 }
 @media (width <=320px) {
   .product-card__vertical   .product-card {
@@ -3208,6 +3476,10 @@ export default {
     max-width: 131px;
     min-width: 131px;
     width: 131px;
+  }
+  .product-card__vertical .product-card-noactive .product-card__price-value-discounted {
+    font-size: 20px !important;
+    text-align: left;
   }
 }
 </style>
