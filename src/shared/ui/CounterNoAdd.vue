@@ -130,6 +130,9 @@ export default {
       let newValue = Number(this.d_value) + Number(this.d_step)
       if (newValue > this.d_max) {
         newValue = this.d_max
+        if(newValue <= 0){
+          newValue = 1
+        }
         this.modal_remain = true
       }
       if (newValue % this.d_step !== 0) {
