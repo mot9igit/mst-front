@@ -394,7 +394,7 @@
                 <button
                   class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
                   :class="{ 'd-button--loading': this.loading }"
-
+                  @click.prevent="addBasketAllSales(offer, count)"
                 >
                   <div class="d-button__text">
                     <i class="d-icon-cart product-card__buy-icon"></i>
@@ -704,7 +704,6 @@ export default {
       if(this.modalActionsData && (Object.keys(this.modalActionsData).length > 1 || (Object.keys(this.modalActionsData).length = 1 && this.allOff))){
         this.modalActions = true
       }else{
-        console.log('сразу в корзину')
         this.loading = true
         let conf = {}
         if(!this.allOff){
@@ -733,6 +732,40 @@ export default {
         })
         this.count = Object.keys(this.modalActionsData).length > 0 ? this.modalActionsData[0].min_count > 0 ? this.modalActionsData[0].min_count : 1 : 1
       }
+    },
+    addBasketAllSales(item, count) {
+        this.loading = true
+        let conf = {}
+        if(!this.allOff){
+          conf = this.activeConflict.actions
+          item.price = this.activeConflict.price
+          item.payer = this.activeConflict.payer ? this.activeConflict.payer : 0
+          item.delay = this.activeConflict.delay ? this.activeConflict.delay : 0
+          item.delay_type = this.activeConflict.delay_type ? this.activeConflict.delay_type : 1
+        }
+        const data = {
+          org_id: item.org_id,
+          store_id: item.store_id,
+          id_remain: item.id,
+          count: count,
+          key: item.key,
+          actions: conf,
+        }
+        this.basketProductUpdate(data).then((response) => {
+          this.loading = false
+          if (!response?.data?.data?.success && response?.data?.data?.message) {
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: response?.data?.data?.message,
+              life: 3000,
+            })
+          }
+          this.$emit('updateCatalog')
+          this.$emit('updateBasket')
+        })
+        this.count = Object.keys(this.modalActionsData).length > 0 ? this.modalActionsData[0].min_count > 0 ? this.modalActionsData[0].min_count : 1 : 1
+      
     },
     checkAction(ind){
       if(this.mainActionsData[ind]){
