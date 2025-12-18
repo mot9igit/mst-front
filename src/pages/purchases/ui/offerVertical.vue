@@ -439,14 +439,16 @@
             <!--Акция включена, Акция выключена, Акция несовместима, Условия акции не выполнены -->
             <div class="product-card-actions__modal-all-item-action">
               <p class="product-card-actions__modal-all-item-action-label">
-                <span v-if="this.activeConflict.actions_ids.includes(item.action_id) && (item.is_trigger == 1 && item.enabled == 0)">Условия акции не выполнены:</span>
-                <span v-else-if="this.activeConflict.actions_ids.includes(item.action_id) && (item.is_trigger == 1 && item.enabled == 1)">Применена автоматически:</span>
-                <span v-else-if="this.activeConflict.actions_ids.includes(item.action_id) && item.is_trigger == 0">Акция включена:</span>
-                <span v-else-if="!this.activeConflict.actions_ids.includes(item.action_id) && this.offer.main_actions.includes(Number(item.action_id))">Акция несовместима:</span>
-                <span v-else-if="!this.activeConflict.actions_ids.includes(item.action_id) && !this.offer.main_actions.includes(Number(item.action_id))">Акция выключена:</span>
+                <span v-if="(item.is_trigger == 1 && item.enabled == 0) || (!this.activeConflict.actions_ids.includes(item.action_id) && !Object.keys(this.mainActionsData).includes(item.action_id))">Условия акции не выполнены:</span>
+                <span v-else-if="(this.activeConflict.actions_ids.includes(item.action_id) && item.is_trigger == 0 && !Object.keys(this.mainActionsData).includes(item.action_id)) || (this.activeConflict.actions_ids.includes(item.action_id) && item.is_trigger == 1 && item.enabled == 1)">Применена автоматически:</span>
+                <span v-else-if="this.mainActionsData[item.action_id] == true">Акция включена:</span>
+                <span v-else-if="this.mainActionsData[item.action_id] == false && !allOff">Акция несовместима:</span>
+                <span v-else-if="this.mainActionsData[item.action_id] == false && allOff">Акция выключена:</span>
               </p>
               <div class="product-card-actions__modal-all-item-action-button">
                 <div>
+                  <!--несовместима-->
+                  <i class="d-icon-info product-card__actions-icon-info" v-if="this.mainActionsData[item.action_id] == false && !allOff"></i>
                   <div class="d-switch"
                   @click.prevent="checkAction(Number(item.action_id))"
                   v-if="this.offer.main_actions.includes(Number(item.action_id))">
@@ -461,11 +463,10 @@
                     <div class="d-switch__circle"></div>
                   </div>
                   <!--крест-->
-                  <i class="d-icon-times product-card__actions-icon-cross"  v-if="!this.activeConflict.actions_ids.includes(item.action_id) && !this.offer.main_actions.includes(Number(item.action_id))"></i>
+                  <i class="d-icon-times product-card__actions-icon-cross"  v-else-if="!this.activeConflict.actions_ids.includes(item.action_id) && !this.offer.main_actions.includes(Number(item.action_id))"></i>
                   <!--галочка-->
                   <i class="d-icon-check product-card__actions-icon-auto" v-else-if="this.activeConflict.actions_ids.includes(item.action_id) && ((item.is_trigger == 1 && item.enabled == 1) || (item.is_trigger == 0))"></i>
-                  <!--несовместима-->
-                  <i class="d-icon-info product-card__actions-icon-info" v-else-if="!this.activeConflict.actions_ids.includes(item.action_id) && this.offer.main_actions.includes(Number(item.action_id))"></i>
+                  
                 </div>
 
                 <p>
@@ -717,7 +718,7 @@ export default {
           key: item.key,
           actions: conf,
         }
-        this.basketProductUpdate(data).then((response) => {
+        this.basketProductAdd(data).then((response) => {
           this.loading = false
           if (!response?.data?.data?.success && response?.data?.data?.message) {
             this.$toast.add({
@@ -751,7 +752,7 @@ export default {
           key: item.key,
           actions: conf,
         }
-        this.basketProductUpdate(data).then((response) => {
+        this.basketProductAdd(data).then((response) => {
           this.loading = false
           if (!response?.data?.data?.success && response?.data?.data?.message) {
             this.$toast.add({
@@ -770,6 +771,8 @@ export default {
     checkAction(ind){
       if(this.mainActionsData[ind]){
         this.mainActionsData[ind] = false
+        this.activeConflict.actions_ids = []
+        this.activeConflict.action = {}
         this.allOff = true
       }else{
         for (var ii in this.mainActionsData){
@@ -1236,8 +1239,9 @@ export default {
 }
 .product-card-actions__modal-all .product-card-actions__modal-all-item-action-button div:not(.d-switch){
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: start;
+  align-items: center;
   gap: 8px;
 }
 .product-card-actions__modal-all .product-card__basket-button .d-counter__button-icon {

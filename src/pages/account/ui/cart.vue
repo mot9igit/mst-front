@@ -131,8 +131,15 @@
                   <button class="cart__item-sales-label" @click.prevent="salesActive(product.key)" :class="{'cart__item-sales-label-open' : sales_active[product.key] == true}">Примененные акции<i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sales_active[product.key] == true}"></i></button>
                   <div class="cart__item-sales-container" v-if="sales_active[product.key] == true">
                     <div class="cart__item-sales-item" v-for="(sale, ind) in product.action" :key="ind">
-                      <!-- <a class="cart__item-sales-item-name" :href="'/' + $route.params.id + '/purchases/actions/' + sale.id" tagret="_blank">{{ sale.name }}</a> -->
+                      <router-link
+                        target="_blank"
+                        :to="{
+                          name: 'purchasesAction',
+                          params: { action_id: sale.action_id },
+                        }"
+                      >
                       <p class="cart__item-sales-item-name">{{ sale.name }}</p>
+                      </router-link>
                       <p class="cart__item-sales-item-values">
                         <span class="cart__item-sales-item-value" v-if="sale.type != 3">Индивидуальная скидка</span>
                         <span class="cart__item-sales-item-value" v-if="sale.percent > 0">{{ sale.percent }}% Скидка</span>
