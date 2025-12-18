@@ -439,8 +439,8 @@
             <!--Акция включена, Акция выключена, Акция несовместима, Условия акции не выполнены -->
             <div class="product-card-actions__modal-all-item-action">
               <p class="product-card-actions__modal-all-item-action-label">
-                <span v-if="(item.is_trigger == 1 && item.enabled == 0) || (!this.activeConflict.actions_ids.includes(item.action_id) && !Object.keys(this.mainActionsData).includes(item.action_id))">Условия акции не выполнены:</span>
-                <span v-else-if="(this.activeConflict.actions_ids.includes(item.action_id) && item.is_trigger == 0 && !Object.keys(this.mainActionsData).includes(item.action_id)) || (this.activeConflict.actions_ids.includes(item.action_id) && item.is_trigger == 1 && item.enabled == 1)">Применена автоматически:</span>
+                <span v-if="(item.is_trigger == 1 && item.enabled == 0) || (!this.activeConflict?.actions_ids?.includes(item.action_id) && !Object.keys(this.mainActionsData).includes(item.action_id))">Условия акции не выполнены:</span>
+                <span v-else-if="(this.activeConflict?.actions_ids?.includes(item.action_id) && item.is_trigger == 0 && !Object.keys(this.mainActionsData).includes(item.action_id)) || (this.activeConflict?.actions_ids?.includes(item.action_id) && item.is_trigger == 1 && item.enabled == 1)">Применена автоматически:</span>
                 <span v-else-if="this.mainActionsData[item.action_id] == true">Акция включена:</span>
                 <span v-else-if="this.mainActionsData[item.action_id] == false && !allOff">Акция несовместима:</span>
                 <span v-else-if="this.mainActionsData[item.action_id] == false && allOff">Акция выключена:</span>
@@ -463,9 +463,9 @@
                     <div class="d-switch__circle"></div>
                   </div>
                   <!--крест-->
-                  <i class="d-icon-times product-card__actions-icon-cross"  v-else-if="!this.activeConflict.actions_ids.includes(item.action_id) && !this.offer.main_actions.includes(Number(item.action_id))"></i>
+                  <i class="d-icon-times product-card__actions-icon-cross"  v-else-if="!this.activeConflict?.actions_ids?.includes(item.action_id) && !this.offer.main_actions.includes(Number(item.action_id))"></i>
                   <!--галочка-->
-                  <i class="d-icon-check product-card__actions-icon-auto" v-else-if="this.activeConflict.actions_ids.includes(item.action_id) && ((item.is_trigger == 1 && item.enabled == 1) || (item.is_trigger == 0))"></i>
+                  <i class="d-icon-check product-card__actions-icon-auto" v-else-if="this.activeConflict?.actions_ids?.includes(item.action_id) && ((item.is_trigger == 1 && item.enabled == 1) || (item.is_trigger == 0))"></i>
                   
                 </div>
 
@@ -772,7 +772,7 @@ export default {
       if(this.mainActionsData[ind]){
         this.mainActionsData[ind] = false
         this.allOff = true
-        this.activeConflict.actions_ids = []
+        this.activeConflict = {}
       }else{
         for (var ii in this.mainActionsData){
           if(ii == ind){
