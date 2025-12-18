@@ -304,7 +304,7 @@
                   <div class="product-card__stat-content">
                     <p class="product-card__stat-name">Доставка</p>
                     <p class="product-card__stat-description">
-                      за счет {{ activeConflict?.payer == 1 ? 'поставщика' : 'покупателя' }}
+                      за счет {{ !allOff && activeConflict?.payer == 1 ? 'поставщика' : 'покупателя' }}
                     </p>
                   </div>
                 </div>
@@ -314,9 +314,9 @@
                   <i class="d-icon-wallet product-card__stat-icon"></i>
                   <div class="product-card__stat-content product-card__stat-content--horizontal">
                     <p class="product-card__stat-name">
-                      {{ activeConflict?.delay_type == 2 ? 'Под реал.' : 'Отсрочка' }}
+                      {{ !allOff && activeConflict?.delay_type == 2 ? 'Под реал.' : 'Отсрочка' }}
                     </p>
-                    <p class="product-card__stat-description" v-if="activeConflict.delay > 0">
+                    <p class="product-card__stat-description" v-if="!allOff && activeConflict.delay > 0">
                        {{ activeConflict.delay }} дней
                     </p>
                     <p class="product-card__stat-description" v-else>Предоплата</p>
@@ -771,9 +771,8 @@ export default {
     checkAction(ind){
       if(this.mainActionsData[ind]){
         this.mainActionsData[ind] = false
-        this.activeConflict.actions_ids = []
-        this.activeConflict.action = {}
         this.allOff = true
+        this.activeConflict.actions_ids = []
       }else{
         for (var ii in this.mainActionsData){
           if(ii == ind){
@@ -784,6 +783,7 @@ export default {
               if(this.offer.conflicts[ic] !== undefined){
                 if(this.offer.conflicts[ic].actions_ids.includes(ii)){
                   this.activeConflict = this.offer.conflicts[ic]
+                  
                   if(Number(this.activeConflict.multiplicity) > 1){
                     this.count = Number(this.activeConflict.multiplicity)
                   }
