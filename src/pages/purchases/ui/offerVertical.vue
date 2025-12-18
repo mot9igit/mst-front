@@ -439,8 +439,8 @@
             <!--Акция включена, Акция выключена, Акция несовместима, Условия акции не выполнены -->
             <div class="product-card-actions__modal-all-item-action">
               <p class="product-card-actions__modal-all-item-action-label">
-                <span v-if="(item.is_trigger == 1 && item.enabled == 0) || (!this.activeConflict?.actions_ids?.includes(item.action_id) && !Object.keys(this.mainActionsData).includes(item.action_id))">Условия акции не выполнены:</span>
-                <span v-else-if="(this.activeConflict?.actions_ids?.includes(item.action_id) && item.is_trigger == 0 && !Object.keys(this.mainActionsData).includes(item.action_id)) || (this.activeConflict?.actions_ids?.includes(item.action_id) && item.is_trigger == 1 && item.enabled == 1)">Применена автоматически:</span>
+                <span v-if="(item.is_trigger == 1 && item.enabled == 0 && !Object.keys(this.mainActionsData).includes(item.action_id)) || (!this.activeConflict?.actions_ids?.includes(item.action_id) && !Object.keys(this.mainActionsData).includes(item.action_id))">Условия акции не выполнены:</span>
+                <span v-else-if="(this.activeConflict?.actions_ids?.includes(item.action_id) && item.is_trigger == 0 && !Object.keys(this.mainActionsData).includes(item.action_id)) || (this.activeConflict?.actions_ids?.includes(item.action_id) && item.is_trigger == 1 && item.enabled == 1 && !Object.keys(this.mainActionsData).includes(item.action_id))">Применена автоматически:</span>
                 <span v-else-if="this.mainActionsData[item.action_id] == true">Акция включена:</span>
                 <span v-else-if="this.mainActionsData[item.action_id] == false && !allOff">Акция несовместима:</span>
                 <span v-else-if="this.mainActionsData[item.action_id] == false && allOff">Акция выключена:</span>
@@ -486,7 +486,7 @@
             <div class="product-card__stat-list-cont">
               <div class="product-card__stat-list">
                 <div  v-if="item.percent > 0">
-                  <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка {{ item.percent }}%
+                  <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка {{ item.percent_num }}%
                 </div>
                 <div
                   v-if="item.delivery_type == 2"
