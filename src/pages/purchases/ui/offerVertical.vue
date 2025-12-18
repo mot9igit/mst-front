@@ -767,7 +767,7 @@ export default {
     },
     modalActions: function(newVal){
       if(newVal == false){
-        if(this.modalActionsData && Object.keys(this.modalActionsData).length == 1){
+        if(this.modalActionsData && Object.keys(this.modalActionsData).length == 1 && !this.allOff){
           this.count = Number(this.modalActionsData[0].multiplicity)
         }else{
           this.count = Number(this.modalActionsData[0].min_count) > 0 ? Number(this.modalActionsData[0].min_count) : 1
