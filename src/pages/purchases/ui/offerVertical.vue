@@ -51,12 +51,13 @@
             <div class="product-card__price-container">
               <!-- Цена товара -->
               <div class="product-card__price">
-                <p class="product-card__price-value-discounted" v-if="pricePrefix == false">
-                  {{ offer.price.toLocaleString('ru') }} ₽
-                </p>
-                <p class="product-card__price-value-discounted" v-else>
+                <p class="product-card__price-value-discounted" v-if="pricePrefix == true || (Object.keys(modalActionsData).length == 1 && allOff == true)">
                   от {{ offer.min_price.price.toLocaleString('ru') }} ₽
                 </p>
+                <p class="product-card__price-value-discounted" v-else>
+                  {{ offer.price.toLocaleString('ru') }} ₽
+                </p>
+                
               </div>
               <!-- Кнопка: "Все акции" -->
                 <button
@@ -178,13 +179,13 @@
               >
                 <Counter
                   @ElemCount="ElemCount"
-                  :min="Object.keys(modalActionsData).length > 0 ? Number(modalActionsData[0].min) : 1"
+                  :min="Object.keys(modalActionsData).length > 0 ? Number(modalActionsData[0].min_count) : 1"
                   :max="Number(offer.max)"
                   :id="Number(offer.remain_id)"
                   :store_id="Number(offer.store_id)"
                   :index="Number(offer.remain_id)"
                   :value="count"
-                  :step="Object.keys(modalActionsData).length == 1 && Number(modalActionsData[0].multiplicity) > 1 ? Number(modalActionsData[0].multiplicity) : 1"
+                  :step="Object.keys(modalActionsData).length == 1 && allOff == false && Number(modalActionsData[0].multiplicity) > 1 ? Number(modalActionsData[0].multiplicity) : 1"
                   :item="offer"
                   :key="new Date().getTime() + '_' + Number(offer.remain_id)"
                 />
@@ -303,7 +304,7 @@
                   <div class="product-card__stat-content">
                     <p class="product-card__stat-name">Доставка</p>
                     <p class="product-card__stat-description">
-                      за счет {{ offer.payer == 1 ? 'поставщика' : 'покупателя' }}
+                      за счет {{ activeConflict?.payer == 1 ? 'поставщика' : 'покупателя' }}
                     </p>
                   </div>
                 </div>
@@ -313,10 +314,10 @@
                   <i class="d-icon-wallet product-card__stat-icon"></i>
                   <div class="product-card__stat-content product-card__stat-content--horizontal">
                     <p class="product-card__stat-name">
-                      {{ offer.delay_type == 2 ? 'Под реал.' : 'Отсрочка' }}
+                      {{ activeConflict?.delay_type == 2 ? 'Под реал.' : 'Отсрочка' }}
                     </p>
-                    <p class="product-card__stat-description" v-if="offer.delay">
-                      платежа {{ offer.delay }} дней
+                    <p class="product-card__stat-description" v-if="activeConflict.delay > 0">
+                       {{ activeConflict.delay }} дней
                     </p>
                     <p class="product-card__stat-description" v-else>Предоплата</p>
                   </div>
@@ -338,7 +339,7 @@
               <!-- Цена товара -->
               <div class="product-card__price" v-else>
                 <p class="product-card__price-value-discounted">
-                  {{ activeConflict.price.toLocaleString('ru') }} ₽
+                  {{ allOff == true ? offer.prices.rrc : activeConflict.price.toLocaleString('ru') }} ₽
                 </p>
               </div>
 
@@ -380,13 +381,13 @@
               >
                 <Counter
                   @ElemCount="ElemCount"
-                  :min="activeConflict.min"
+                  :min="allOff == false ? Number(activeConflict.min_count) > 0 ? Number(activeConflict.min_count) : 1 : 1"
                   :max="Number(offer.max)"
                   :id="Number(offer.remain_id)"
                   :store_id="Number(offer.store_id)"
                   :index="Number(offer.remain_id)"
                   :value="count"
-                  :step="activeConflict?.multiplicity ? Number(activeConflict?.multiplicity) : 1"
+                  :step="allOff == false ? Number(activeConflict?.multiplicity)>1 ? Number(activeConflict?.multiplicity) : 1 : 1"
                   :item="offer"
                   :key="new Date().getTime() + '_' + Number(offer.remain_id)"
                 />
@@ -459,8 +460,11 @@
                     />
                     <div class="d-switch__circle"></div>
                   </div>
+                  <!--крест-->
                   <i class="d-icon-times product-card__actions-icon-cross"  v-if="!this.activeConflict.actions_ids.includes(item.action_id) && !this.offer.main_actions.includes(Number(item.action_id))"></i>
+                  <!--галочка-->
                   <i class="d-icon-check product-card__actions-icon-auto" v-else-if="this.activeConflict.actions_ids.includes(item.action_id) && ((item.is_trigger == 1 && item.enabled == 1) || (item.is_trigger == 0))"></i>
+                  <!--несовместима-->
                   <i class="d-icon-info product-card__actions-icon-info" v-else-if="!this.activeConflict.actions_ids.includes(item.action_id) && this.offer.main_actions.includes(Number(item.action_id))"></i>
                 </div>
 
@@ -596,12 +600,12 @@ export default {
     if(Object.keys(this.offer).length){
       this.modalActionsData = this.offer.conflicts
       if(this.modalActionsData){
-        this.count = this.modalActionsData[0].min > 0 ? this.modalActionsData[0].min : 1
+        this.count = Number(this.modalActionsData[0].min_count) > 0 ? Number(this.modalActionsData[0].min_count) : 1
         
       }
       
       if(this.modalActionsData && Object.keys(this.modalActionsData).length == 1){
-        this.count = this.modalActionsData[0].multiplicity
+        this.count = Number(this.modalActionsData[0].multiplicity)
       }
       if(this.modalActionsData && Object.keys(this.modalActionsData).length > 1){
         let col = Object.keys(this.modalActionsData).length
@@ -690,21 +694,29 @@ export default {
        } else {
         this.count = object.value
        }
+       if (object.value < object.min) {
+        this.count = Number(this.activeConflict.multiplicity) > 1 ? Number(this.activeConflict.multiplicity) : 1
+         return
+       }
     },
 
     addBasket(item, count) {
-      if(this.modalActionsData && Object.keys(this.modalActionsData).length > 1){
+      if(this.modalActionsData && (Object.keys(this.modalActionsData).length > 1 || (Object.keys(this.modalActionsData).length = 1 && this.allOff))){
         this.modalActions = true
       }else{
         console.log('сразу в корзину')
         this.loading = true
+        let conf = {}
+        if(!this.allOff){
+          conf = this.activeConflict?.actions
+        }
         const data = {
           org_id: item.org_id,
           store_id: item.store_id,
           id_remain: item.id,
           count: count,
           key: item.key,
-          actions: this.modalActionsData,
+          actions: conf,
         }
         this.basketProductUpdate(data).then((response) => {
           this.loading = false
@@ -719,21 +731,26 @@ export default {
           this.$emit('updateCatalog')
           this.$emit('updateBasket')
         })
-        this.count = Object.keys(this.modalActionsData).length > 0 ? this.modalActionsData[0].min > 0 ? this.modalActionsData[0].min : 1 : 1
+        this.count = Object.keys(this.modalActionsData).length > 0 ? this.modalActionsData[0].min_count > 0 ? this.modalActionsData[0].min_count : 1 : 1
       }
     },
     checkAction(ind){
       if(this.mainActionsData[ind]){
         this.mainActionsData[ind] = false
+        this.allOff = true
       }else{
         for (var ii in this.mainActionsData){
           if(ii == ind){
             this.mainActionsData[ii] = true
+            this.allOff = false
             // выставляем новый активный конфликт
             for (var ic in this.offer.conflicts){
               if(this.offer.conflicts[ic] !== undefined){
                 if(this.offer.conflicts[ic].actions_ids.includes(ii)){
                   this.activeConflict = this.offer.conflicts[ic]
+                  if(Number(this.activeConflict.multiplicity) > 1){
+                    this.count = Number(this.activeConflict.multiplicity)
+                  }
                 }
               }
             }
@@ -751,13 +768,14 @@ export default {
     modalActions: function(newVal){
       if(newVal == false){
         if(this.modalActionsData && Object.keys(this.modalActionsData).length == 1){
-          this.count = this.modalActionsData[0].multiplicity
+          this.count = Number(this.modalActionsData[0].multiplicity)
         }else{
-          this.count = this.modalActionsData[0].min
+          this.count = Number(this.modalActionsData[0].min_count) > 0 ? Number(this.modalActionsData[0].min_count) : 1
         }
         
       }
     },
+    
   }
 }
 </script>
