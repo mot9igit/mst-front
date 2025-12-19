@@ -2576,13 +2576,11 @@ export default {
     .product-card-actions__modal-all .product-card__buy-icon, .product-card-actions__modal-all-content .product-card__seller-button, .product-card__seller-button {
       display: flex !important;
     }
-
     .product-card__vertical .product-card-noactive{
       .product-card__price-value-discounted{
         margin-top: 0;
       }
     }
-
 }
 @media (width <=800px) {
 
@@ -3092,7 +3090,7 @@ export default {
     font-weight: 500;
     font-size: 8px;
   }
-      //--- all actions ---//
+  //--- all actions ---//
   .product-card-actions__modal-all h3 {
     font-size: 12px;
     margin-top: -21px;
@@ -3129,7 +3127,6 @@ export default {
     display: flex;
     padding: 5px 0px;
     flex-direction: row;
-
   }
   .product-card-actions__modal-all .product-card__stat-list div {
     gap: 5px;
@@ -3255,7 +3252,7 @@ export default {
     justify-content: start;
     align-items: start;
     gap: 4px;
-}
+  }
   .product-card-actions__modal-all-item-image img {
     height: 47px;
   }
@@ -3326,7 +3323,6 @@ export default {
   .product-card-actions__modal-all .d-button__text {
     gap: 4px;
   }
-
   .product-card-actions__modal-all .modal-content {
     padding: 4px 24px 24px 24px;
   }
@@ -3891,7 +3887,6 @@ export default {
   .product-card-actions__modal-all .d-button__text {
     gap: 8px;
   }
-
   .product-card-actions__modal-all .vfm__content {
       padding: 0 0px 0 0px !important;
   }
@@ -3942,6 +3937,48 @@ export default {
   .product-card__vertical .product-card-noactive .product-card__price-value-discounted {
     font-size: 20px !important;
     text-align: left;
+  }
+  // all sales
+  .product-card-actions__modal-all .modal__content {
+    padding: 24px 8px 24px 16px;
+  }
+  .product-card-actions__modal-all .product-card__basket-button {
+    flex-direction: column;
+    margin-top: 8px !important;
+    height: auto;
+  }
+  .product-card-actions__modal-all .d-counter__button {
+    width: 104px;
+  }
+  .product-card-actions__modal-all .product-card__basket-button .product-card-vertical__buy {
+    max-width: 100%;
+    min-width: 100%;
+  }
+  .product-card-actions__modal-all .product-card-vertical__buy .d-button__text .product-card__buy-icon {
+    position: relative;
+  }
+  .product-card-actions__modal-all-content {
+    gap: 32px;
+    margin-top: 40px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item {
+    padding: 24px 28px;
+    width: calc(100% + 24px);
+    margin-left: -16px;
+    background-color: #Fff;
+    border-radius: 10px;
+  }
+  .product-card-actions__modal-all-content .product-card-actions__modal-all-item-descr {
+    padding-top: 32px;
+  }
+  .product-card-actions__modal-all-content   .product-card__buy-icon {
+    position: relative;
+  }
+  .product-card-actions__modal-all-item-image img {
+    height: 64px;
+  }
+  .product-card-actions__modal-all-item-href button {
+    width: 100%;
   }
 }
 </style>
