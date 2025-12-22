@@ -701,7 +701,7 @@ export default {
     },
 
     addBasket(item, count) {
-            if(this.modalActionsData && (Object.keys(this.modalActionsData).length > 1 || (Object.keys(this.modalActionsData).length = 1 && this.allOff))){
+            if(this.modalActionsData && (Object.keys(this.modalActionsData).length > 1 || (Object.keys(this.modalActionsData).length == 1 && this.allOff))){
         this.modalActions = true
       }else{
         this.loading = true
