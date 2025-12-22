@@ -205,22 +205,30 @@
                     />
                     <div class="order__item-product-price nowrap">
 
-                      <p>{{ product.price.toLocaleString('ru') }} ₽</p>
+                      <p>{{ product.cost.toLocaleString('ru') }} ₽</p>
                       <div class="order__item-product-price-rrc">
                         <p v-if="product.cost.rrc_discount > 0">-{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ</p>
                         <p v-else class="cart-no-discount">Без скидки от РРЦ</p>
                         <p>{{ product.price.toLocaleString('ru') }} ₽ за ед.</p>
                       </div>
-                      
+
                     </div>
-                    
+
                   </div>
                   <div class="cart__item-sales" v-if="(product.action && !product.triggers) || (product.action && product.triggers && org.cart_data.enabled && product.triggers.filter(item => org.cart_data.enabled?.includes(item)))">
                   <button class="cart__item-sales-label" @click.prevent="salesActive(product.key)" :class="{'cart__item-sales-label-open' : sales_active[product.key] == true}">Примененные акции<i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sales_active[product.key] == true}"></i></button>
                   <div class="cart__item-sales-container" v-if="sales_active[product.key] == true">
                     <div class="cart__item-sales-item" v-for="(sale, ind) in product.action" :key="ind">
                       <!-- <a class="cart__item-sales-item-name" :href="'/' + $route.params.id + '/purchases/actions/' + sale.id" tagret="_blank">{{ sale.name }}</a> -->
+                      <router-link
+                        target="_blank"
+                        :to="{
+                          name: 'purchasesAction',
+                          params: { action_id: sale.action_id },
+                        }"
+                      >
                       <p class="cart__item-sales-item-name">{{ sale.name }}</p>
+                      </router-link>
                       <p class="cart__item-sales-item-values">
                         <span class="cart__item-sales-item-value" v-if="sale.type != 3">Индивидуальная скидка</span>
                         <span class="cart__item-sales-item-value" v-if="sale.percent > 0">{{ sale.percent }}% Скидка</span>
@@ -239,9 +247,9 @@
                       </p>
                     </div>
                   </div>
+                  </div>
                 </div>
-                </div>
-                
+
                 <div class="order__item-content-comment">
                   <button  class="d-button d-button-quaternary d-button-quaternary-small order__item-content-comment-add"
                     @click.prevent="modalComment = true, modalCommentOrg = org_id, modalCommentStore = warehouse_id, modalCommentText = ''"
@@ -1660,7 +1668,7 @@ export default {
   }
   .order__item-content{
     padding: 8px 0;
-    border-top: 0.5px solid #75757540; 
+    border-top: 0.5px solid #75757540;
   }
   .order__item .order__item-content + .order__item-content {
     margin-top: 0px;
@@ -1761,7 +1769,7 @@ export default {
   }
   .order__item-content .cart__item-sales{
     padding: 0 33px 16px 46px;
-    
+
   }
   .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open){
     font-size: 9px;
@@ -1936,7 +1944,7 @@ export default {
     font-size: 14px;
   }
   .order__item-content .cart__item-sales{
-    padding: 16px 0 8px; 
+    padding: 16px 0 8px;
   }
   .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open){
     font-size: 10px;

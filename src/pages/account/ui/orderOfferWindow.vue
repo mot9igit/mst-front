@@ -136,8 +136,13 @@
                     </div>
                     <div class="order__item-content-top-right">
                       <span class="order__item-product-price"
-                        >{{ product.price.toLocaleString('ru') }} ₽</span
+                        >{{ product.cost.toLocaleString('ru') }} ₽</span
                       >
+                      <div class="order__item-product-price-rrc">
+                        <p v-if="product.prices.rrc_discount > 0">-{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ</p>
+                        <p v-else class="cart-no-discount">Без скидки от РРЦ</p>
+                        <p>{{ product.price.toLocaleString('ru') }} ₽ за ед.</p>
+                      </div>
                       <Counter
                         :classPrefix="'order__item-product'"
                         @ElemCount="ElemCount"
@@ -174,10 +179,52 @@
                       :id="Number(product?.remain_id)"
                       :key="new Date().getTime() + '_1_' + product?.key"
                     />
-                    <span class="order__item-product-price"
-                      >{{ product.price.toLocaleString('ru') }} ₽</span
-                    >
+                    <div class="order__item-product-price nowrap">
+
+                      <p>{{ product.cost.toLocaleString('ru') }} ₽</p>
+                      <div class="order__item-product-price-rrc">
+                        <p v-if="product.cost.rrc_discount > 0">-{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ</p>
+                        <p v-else class="cart-no-discount">Без скидки от РРЦ</p>
+                        <p>{{ product.price.toLocaleString('ru') }} ₽ за ед.</p>
+                      </div>
+
+                    </div>
                   </div>
+
+                  <div class="cart__item-sales" v-if="(product.action && !product.triggers) || (product.action && product.triggers && org.cart_data.enabled && product.triggers.filter(item => org.cart_data.enabled?.includes(item)))">
+                    <button class="cart__item-sales-label" @click.prevent="salesActive(product.key)" :class="{'cart__item-sales-label-open' : sales_active[product.key] == true}">Примененные акции<i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sales_active[product.key] == true}"></i></button>
+                    <div class="cart__item-sales-container" v-if="sales_active[product.key] == true">
+                      <div class="cart__item-sales-item" v-for="(sale, ind) in product.action" :key="ind">
+                        <!-- <a class="cart__item-sales-item-name" :href="'/' + $route.params.id + '/purchases/actions/' + sale.id" tagret="_blank">{{ sale.name }}</a> -->
+                        <router-link
+                          target="_blank"
+                          :to="{
+                            name: 'purchasesAction',
+                            params: { action_id: sale.action_id },
+                          }"
+                        >
+                        <p class="cart__item-sales-item-name">{{ sale.name }}</p>
+                        </router-link>
+                        <p class="cart__item-sales-item-values">
+                          <span class="cart__item-sales-item-value" v-if="sale.type != 3">Индивидуальная скидка</span>
+                          <span class="cart__item-sales-item-value" v-if="sale.percent > 0">{{ sale.percent }}% Скидка</span>
+                          <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2">Под реализацию</span>
+                          <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2">{{sale.delay_type == 1 && sale.delay > 0
+                            ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'
+                            : 'Предоплата'}}
+                          </span>
+                          <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2">Бесплатная доставка</span>
+                          <span class="cart__item-sales-item-value" v-if="sale.condition_min_sum > 0">Мин. общ. сумма - {{ sale.condition_min_sum }} ₽</span>
+                          <span class="cart__item-sales-item-value" v-if="sale.condition_SKU > 0">Мин. кол-во SKU - {{ sale.condition_SKU }} шт</span>
+                          <span class="cart__item-sales-item-value" v-if="sale.condition_min_count > 0">Мин. общ. кол-во товаров - {{ sale.condition_min_count }} шт</span>
+                          <span class="cart__item-sales-item-value" v-if="sale.min_count > 1">Мин. кол-во товаров - {{ sale.min_count }} шт</span>
+                          <span class="cart__item-sales-item-value" v-if="sale.multiplicity > 1">Кратность - {{ sale.multiplicity }} шт</span>
+                          <span class="cart__item-sales-item-value" v-if="sale.integration == 1">Интеграция с MachineStore</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
                 <div class="order__item-content-bottom">
                   <div class="order__item-content-bottom-left">
@@ -415,14 +462,13 @@ import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
-import DatePicker from 'primevue/datepicker'
 import Toast from 'primevue/toast'
 
 
 export default {
   name: 'orderOfferWindow',
   emits: ['close', 'catalogUpdate', 'offerSubmit'],
-  components: { Loader, customModal, Counter, DatePicker, Toast },
+  components: { Loader, customModal, Counter,  Toast },
   props: {
     active: {
       type: Boolean,
@@ -445,7 +491,7 @@ export default {
       },
       error: false,
       now: '',
-
+      sales_active: {}
     }
   },
   computed: {
@@ -464,6 +510,13 @@ export default {
       basketOfferProductUpdate: 'offer/basketOfferProductUpdate',
       offerSubmit: 'offer/offerSubmit',
     }),
+    salesActive(key){
+      if(key in this.sales_active){
+        this.sales_active[key] = !this.sales_active[key]
+      }else{
+        this.sales_active[key] = true
+      }
+    },
     close() {
       this.$emit('close')
     },
@@ -698,6 +751,9 @@ export default {
     --d-divider-margin: 16px 48px;
 }
 .offer__sheet-wrapper .order__item-list {
-    padding-bottom: 210px;
+    padding-bottom: 150px;
+}
+.offer__sheet-wrapper .order__item{
+  margin-bottom: 40px;
 }
 </style>
