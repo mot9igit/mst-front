@@ -96,7 +96,8 @@
               <div
                 class="d-divider d-divider--vertical product-card__count-divider"
                 v-if="offer.requirement"
-              ></div>
+              >
+              </div>
               <div class="product-card__count-value product-card__count-value-require" v-if="offer.requirement">
                 <span class="product-card__count-label">Ваша потребность: </span>
                 -{{ Number(offer.requirement.count) }} шт
@@ -845,6 +846,7 @@ export default {
   padding: 8px 9px;
   z-index: 1;
   overflow: visible;
+  height: 100%;
 }
 .product-card__vertical .product-card__content {
   display: flex;
@@ -1410,7 +1412,14 @@ export default {
   .product-card__price-value-discounted{
     font-size: 20px;
     color: #757575;
+    height: 31px;
   }
+}
+.product-card__price__noavailable{
+  height: 32px;
+  display: flex;
+  align-items: center;
+  margin-top: 11px;
 }
 @media (width <=1736px) {
   .product-card__vertical .products__list {
@@ -1431,6 +1440,12 @@ export default {
     min-width: 112px;
     padding-inline: 12px;
   }
+  .product-card__price__noavailable{
+    height: 32px;
+    display: flex;
+    align-items: center;
+    margin-top: 0px;
+}
 }
 @media (width <=1536px) {
   .product-card__vertical .products__list {
@@ -1711,7 +1726,14 @@ export default {
     .product-card__price-value-discounted{
       font-size: 16px;
       width: max-content;
+      height: 26px;
     }
+  }
+  .product-card__price__noavailable{
+    height: 32px;
+    display: flex;
+    align-items: center;
+    margin-top: 11px;
   }
 }
 @media (width <=1436px) {
@@ -2068,9 +2090,13 @@ export default {
       font-size: 16px;
       width: max-content;
     }
-    .product-card__count{
-      display:none;
-    }
+
+  }
+  .product-card__price__noavailable{
+    height: 24px;
+    display: flex;
+    align-items: center;
+    margin-top: 11px;
   }
 }
 @media (width <=1150px) {
@@ -3588,8 +3614,18 @@ export default {
   }
   .product-card__vertical .product-card-noactive .product-card__price-value-discounted {
     font-size: 20px !important;
+    margin-top: 0;
   }
-      //--- all actions ---//
+  .product-card__price__noavailable{
+    height: 32px;
+    display: flex;
+    align-items: center;
+    margin-top: 11px;
+  }
+  .product-card__noavailable{
+    padding-bottom: 0px;
+  }
+  //--- all actions ---//
   .product-card-actions__modal-all h3 {
     font-size: 16px;
     margin-top: -18px;
