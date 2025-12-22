@@ -2,7 +2,7 @@
   <!--Карточка товара -->
   <div
     class="product-card"
-    :class="{ 'product-card-noactive': offer.requirement && offer.available == 0 }"
+    :class="{ 'product-card-noactive': offer.available == 0 }"
   >
     <div class="product-card__content">
       <!-- Информация о товаре -->
@@ -10,7 +10,7 @@
         <!-- Шапка -->
         <div class="product-card__header">
           <!-- Продавец -->
-          <div class="product-card__seller">
+          <div class="product-card__seller" @click="this.seller_info = true">
             <img
               :src="offer.store_image"
               :alt="offer.org.name"
@@ -18,208 +18,195 @@
               v-if="offer.store_image"
             />
             <p class="product-card__seller-name">{{ offer.org.name }}</p>
-            <!-- <button class="product-card__seller-button">
+            <button class="product-card__seller-button">
               <i class="d-icon-angle-rounded-bottom product-card__seller-button-icon"></i>
-            </button>-->
+            </button>
+          </div>
+          <div class="product-card__seller--active" @click="this.seller_info = false" v-if="this.seller_info">
+            <div class="product-card__seller--active-header">
+              <img
+              :src="offer.store_image"
+              :alt="offer.org.name"
+              class="product-card__seller-image"
+              v-if="offer.store_image"
+            />
+            <p class="product-card__seller-name">{{ offer.org.name }}</p>
+            <button class="product-card__seller-button">
+              <i class="d-icon-angle-rounded-bottom product-card__seller-button-icon"></i>
+            </button>
+            </div>
+            <p class="product-card__seller-info">
+              {{ offer.org_fullname }} ИНН {{ offer.org_inn ? offer.org_inn : '-' }}
+            </p>
           </div>
         </div>
         <!-- Главная информация -->
         <div class="product-card__info-container">
           <div class="product-card__info">
+            <!-- Изображение товара -->
             <div class="product-card__image-container">
               <img :src="offerData.image" :alt="offerData.pagetitle" class="product-card__image" />
             </div>
+            <!-- Блок с ценой и акциями -->
+            <div class="product-card__price-container">
+              <!-- Цена товара -->
+              <div class="product-card__price">
+                <p class="product-card__price-value-discounted" v-if="pricePrefix == true || (Object.keys(modalActionsData).length == 1 && allOff == true)">
+                  от {{ offer.min_price.price.toLocaleString('ru') }} ₽
+                </p>
+                <p class="product-card__price-value-discounted" v-else>
+                  {{ offer.price.toLocaleString('ru') }} ₽
+                </p>
+
+              </div>
+              <!-- Кнопка: "Все акции" -->
+                <button
+                  v-if="Object.keys(offer.actions).length > 0 && offer.available > 0"
+                  class="product-card-vertical__promo-all"
+                  @click.prevent="modalActions = true"
+                >
+                  Все акции <span class="red-badge">{{ Object.keys(offer.actions).length }}</span>
+                  <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
+                </button>
+
+            </div>
+            <!-- Название и артикул товара -->
             <div class="product-card__info-text">
               <p class="product-card__title">
                 {{ offerData.pagetitle }}
               </p>
               <p class="product-card__article">Арт: {{ offerData.article }}</p>
             </div>
-          </div>
-        </div>
-        <!-- Дополнительная информация -->
-        <div class="product-card__stat-list">
-          <!-- Элемент доп. информации -->
-          <div class="product-card__stat">
-            <i class="d-icon-location product-card__stat-icon"></i>
-            <div class="product-card__stat-content">
-              <p class="product-card__stat-name">
-                {{ offer.delivery }} дн. ({{
-                  new Date(offer.delivery_day).toLocaleString('ru', {
-                    month: '2-digit',
-                    day: '2-digit',
-                    year: '2-digit',
-                  })
-                }})
-              </p>
-              <p class="product-card__stat-description">{{ offer.store_city }}</p>
+            <!-- Количество -->
+            <div class="product-card__count">
+              <div class="product-card__count-value">
+                <span class="product-card__count-label">В наличии: </span>
+                <span v-if="offer.remains_abstract != offer.available">{{
+                  offer.remains_abstract
+                }}</span>
+                <span v-else>{{ offer.available }} шт</span>
+                <div v-if="offer.requirement" class="redder">
+                  <span v-if="Number(offer.requirement.count) > Number(offer.available)"
+                    >Не хватает
+                    {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
+                  >
+                </div>
+              </div>
+              <div
+                class="d-divider d-divider--vertical product-card__count-divider"
+                v-if="offer.requirement"
+              ></div>
+              <div class="product-card__count-value product-card__count-value-require" v-if="offer.requirement">
+                <span class="product-card__count-label">Ваша потребность: </span>
+                -{{ Number(offer.requirement.count) }} шт
+
+              </div>
             </div>
-          </div>
-          <!-- Элемент доп. информации -->
-          <div class="product-card__stat">
-            <i class="d-icon-truck product-card__stat-icon"></i>
-            <div class="product-card__stat-content">
-              <p class="product-card__stat-name">Доставка</p>
-              <p class="product-card__stat-description">
-                за счет {{ offer.payer == 1 ? 'поставщика' : 'покупателя' }}
-              </p>
+            <!-- Дополнительная информация -->
+            <div class="product-card__stat-cont">
+              <div class="product-card__stat-list">
+                <!-- Элемент доп. информации -->
+                <div class="product-card__stat">
+                  <i class="d-icon-location product-card__stat-icon"></i>
+                  <div class="product-card__stat-content" v-if="offer.available > 0">
+                    <p class="product-card__stat-name">
+                      {{ offer.delivery }} дн. ({{
+                        new Date(offer.delivery_day).toLocaleString('ru', {
+                          month: '2-digit',
+                          day: '2-digit',
+                          year: '2-digit',
+                        })
+                      }})
+                    </p>
+                    <p class="product-card__stat-description">{{ offer.store_city }}</p>
+                  </div>
+                  <div v-else><p class="product-card__stat-description">-</p></div>
+                </div>
+                <!-- Элемент доп. информации -->
+                <div class="product-card__stat">
+                  <i class="d-icon-truck product-card__stat-icon"></i>
+                  <div class="product-card__stat-content" v-if="!deliveryPrefix">
+                    <p class="product-card__stat-name">Доставка</p>
+                    <p class="product-card__stat-description" >
+                      за счет {{ offer.payer == 1 ? 'поставщика' : 'покупателя' }}
+                    </p>
+                  </div>
+                  <div class="product-card__stat-content" v-else>
+                    <p class="product-card__stat-name">Возможно: доставка</p>
+                    <p class="product-card__stat-description" >
+                      за счет поставщика
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Элемент доп. информации -->
+                <div class="product-card__stat">
+                  <i class="d-icon-wallet product-card__stat-icon"></i>
+                  <div class="product-card__stat-content product-card__stat-content--horizontal" v-if="delayPrefix == ''">
+                    <p class="product-card__stat-name">
+                      {{ offer.delay_type == 2 ? 'Под реал.' : 'Отсрочка' }}
+                    </p>
+                    <p class="product-card__stat-description" v-if="offer.delay">
+                      платежа {{ offer.delay }} дней
+                    </p>
+                    <p class="product-card__stat-description" v-else>Предоплата</p>
+                  </div>
+                  <div class="product-card__stat-content product-card__stat-content--horizontal" v-else>
+                    <p class="product-card__stat-name">
+                      Возможно: {{ delayPrefix }}
+                    </p>
+                    <p class="product-card__stat-description">
+                      {{ delayDays }} дней
+                    </p>
+                  </div>
+                </div>
+
+              </div>
             </div>
-          </div>
-          <!-- Элемент доп. информации -->
-          <div class="product-card__stat">
-            <i class="d-icon-cube product-card__stat-icon"></i>
-            <div class="product-card__stat-content">
-              <p class="product-card__stat-name">{{ offer.store_name }}</p>
-              <p class="product-card__stat-description"></p>
-            </div>
-          </div>
-          <!-- Элемент доп. информации -->
-          <div class="product-card__stat">
-            <i class="d-icon-wallet product-card__stat-icon"></i>
-            <div class="product-card__stat-content product-card__stat-content--horizontal">
-              <p class="product-card__stat-name">
-                {{ offer.delay_type == 2 ? 'Под реал.' : 'Отсрочка' }}
-              </p>
-              <p class="product-card__stat-description" v-if="offer.delay">
-                платежа {{ offer.delay }} дней
-              </p>
-              <p class="product-card__stat-description" v-else>Предоплата</p>
-            </div>
-          </div>
-        </div>
-        <!-- Для узкого экрана -->
-        <div class="product-card__count product-card__count-min">
-          <p class="product-card__count-value">
-            <span class="product-card__count-label">В наличии: </span>
-            <span v-if="offer.remains_abstract != offer.available">{{
-              offer.remains_abstract
-            }}</span>
-            <span v-else>{{ offer.available }} шт</span>
-          </p>
-          <div
-            class="d-divider d-divider--vertical product-card__count-divider"
-            v-if="offer.requirement"
-          ></div>
-          <div class="product-card__count-value" v-if="offer.requirement">
-            <span class="product-card__count-label">Ваша потребность: </span>
-            {{ Number(offer.requirement.count) }} шт
-            <div v-if="offer.requirement" class="redder">
-              <span v-if="Number(offer.requirement.count) > Number(offer.available)"
-                >Не хватает
-                {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
+            <!-- Купить -->
+             <!-- Если нет в наличии -->
+             <div class="product-card__price__noavailable" v-if="offer.available == 0">
+                <p class="product-card__price-value-discounted product-card__noavailable">
+                  Нет в наличии
+                </p>
+              </div>
+              <div
+                class="product-card__basket-button"
+                v-else
+                :class="{
+                  'loading-counter': this.loading,
+                }"
               >
-            </div>
-          </div>
-        </div>
-      </div>
+                <Counter
+                  @ElemCount="ElemCount"
+                  :min="Object.keys(modalActionsData).length > 0 ? Number(modalActionsData[0].min_count) : 1"
+                  :max="Number(offer.max)"
+                  :id="Number(offer.remain_id)"
+                  :store_id="Number(offer.store_id)"
+                  :index="Number(offer.remain_id)"
+                  :value="count"
+                  :step="Object.keys(modalActionsData).length == 1 && allOff == false && Number(modalActionsData[0].multiplicity) > 1 ? Number(modalActionsData[0].multiplicity) : 1"
+                  :item="offer"
+                  :key="new Date().getTime() + '_' + Number(offer.remain_id)"
+                />
+                <button
+                  @click.prevent="addBasket(offer, count)"
+                  class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
+                  :class="{ 'd-button--loading': this.loading }"
 
-      <!-- Информация о цене и количестве -->
-      <div class="product-card__content-right">
-        <!-- Цена -->
-        <div class="product-card__price" v-if="offer.requirement && offer.available == 0">
-          <p class="product-card__price-value-discounted product-card__noavailable">
-            Нет в наличии
-          </p>
-        </div>
-        <div class="product-card__price" v-else>
-          <p class="product-card__price-value-discounted">
-            {{ offer.price.toLocaleString('ru') }} ₽
-          </p>
-          <p class="product-card__price-value" v-if="offer.price > offer.min_price.price">
-            {{ offer.min_price.price.toLocaleString('ru') }}
-            <span class="product-card__price-value-suffix">₽</span>
-            <span class="product-card__price-label">мин. цена</span>
-          </p>
-        </div>
-
-        <!-- Купить -->
-        <div
-          class="product-card__basket-button"
-          v-if="!offer.requirement || (offer.requirement && offer.available > 0)"
-          :class="{
-            'basket-true': offer?.basket?.availability,
-            'loading-counter': this.loading,
-          }"
-        >
-          <Counter
-            @ElemCount="ElemCount"
-            :min="0"
-            :max="Number(offer.max)"
-            :id="Number(offer.remain_id)"
-            :store_id="Number(offer.store_id)"
-            :index="Number(offer.remain_id)"
-            :value="Number(offer?.basket?.count)"
-            :step="offer?.multiplicity ? Number(offer?.multiplicity) : 1"
-            :item="offer"
-            :key="new Date().getTime() + '_' + Number(offer.remain_id)"
-          />
-          <button
-            class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card__buy"
-            :class="{ 'd-button--loading': this.loading }"
-            @click="addBasket(offer)"
-          >
-            <div class="d-button__text">
-              <i class="d-icon-cart product-card__buy-icon"></i>
-              Купить
-            </div>
-          </button>
-        </div>
-
-        <!-- Количество -->
-        <div class="product-card__count">
-          <p class="product-card__count-value">
-            <span class="product-card__count-label">В наличии: </span>
-            <span v-if="offer.remains_abstract != offer.available">{{
-              offer.remains_abstract
-            }}</span>
-            <span v-else>{{ offer.available }} шт</span>
-          </p>
-          <div
-            class="d-divider d-divider--vertical product-card__count-divider"
-            v-if="offer.requirement"
-          ></div>
-          <div class="product-card__count-value" v-if="offer.requirement">
-            <span class="product-card__count-label">Ваша потребность: </span>
-            {{ Number(offer.requirement.count) }} шт
-            <div v-if="offer.requirement" class="redder">
-              <span v-if="Number(offer.requirement.count) > Number(offer.available)"
-                >Не хватает
-                {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
-              >
-            </div>
+                >
+                  <div class="d-button__text">
+                    <i class="d-icon-cart product-card__buy-icon"></i>
+                    В корзину
+                  </div>
+                </button>
+              </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Нижняя часть карточки с информацией об акциях -->
-    <div class="product-card__footer" v-if="offer.actions && offer.actions.length">
-      <!-- Список акций -->
-      <div class="product-card__promo-list">
-        <div class="product-card__promo" v-if="activeActions > 0">
-          Активные акции
-          <div class="d-badge2 product-card__promo-badge">{{ activeActions }}</div>
-        </div>
-        <div class="product-card__promo" v-if="otherActions > 0">
-          Акции без выполненных условий
-          <div class="d-badge2 product-card__promo-badge">{{ otherActions }}</div>
-        </div>
-        <!--<div class="product-card__promo">
-          Возможные акции
-          <div class="d-badge2 product-card__promo-badge">20</div>
-        </div>-->
-      </div>
-      <div class="d-divider d-divider--vertical product-card__footer-divider"></div>
 
-      <!-- Кнопка: "Все акции" -->
-      <button
-        v-if="offer.actions"
-        class="d-button d-button--sm-shadow d-button-tertiary d-button-tertiary-small product-card__promo-all"
-        @click.prevent="showModal()"
-      >
-        Все акции
-      </button>
-    </div>
   </div>
   <teleport to="body">
     <customModal
@@ -239,202 +226,329 @@
         Понятно
       </button>
     </customModal>
-    <customModal v-model="this.modalActions" class="product-card-actions__modal">
-      <div class="product-card-actions__modal-container">
-        <div class="product-card-actions__modal-buttons">
+    <customModal v-model="this.modalActions" class="product-card-actions__modal-all">
+      <h3>Все акции</h3>
+      <!--Шапка модального окна акций -->
+      <div class="product-card-actions__modal-all-header">
+        <div class="product-card-actions__modal-all-header-product-info">
+          <!-- Изображение товара -->
+          <div class="product-card__image-container">
+            <img :src="offerData.image" :alt="offerData.pagetitle" class="product-card__image" />
+          </div>
+
+          <div class="product-card__info-text-container">
+            <!-- Название и артикул товара -->
+            <div class="product-card__info-text">
+              <p class="product-card__title">
+                {{ offerData.pagetitle }}
+              </p>
+              <p class="product-card__article">Арт: {{ offerData.article }}</p>
+            </div>
+            <!-- Продавец -->
+            <div class="product-card__seller-cont">
+              <div class="product-card__seller" @click="this.seller_info = true">
+                <img
+                  :src="offer.store_image"
+                  :alt="offer.org.name"
+                  class="product-card__seller-image"
+                  v-if="offer.store_image"
+                />
+                <p class="product-card__seller-name">{{ offer.org.name }}</p>
+                <button class="product-card__seller-button">
+                  <i class="d-icon-angle-rounded-bottom product-card__seller-button-icon"></i>
+                </button>
+              </div>
+              <div class="product-card__seller--active" @click="this.seller_info = false" v-if="this.seller_info">
+                <div class="product-card__seller--active-header">
+                  <img
+                  :src="offer.store_image"
+                  :alt="offer.org.name"
+                  class="product-card__seller-image"
+                  v-if="offer.store_image"
+                />
+                <p class="product-card__seller-name">{{ offer.org.name }}</p>
+                <button class="product-card__seller-button">
+                  <i class="d-icon-angle-rounded-bottom product-card__seller-button-icon"></i>
+                </button>
+                </div>
+                <p class="product-card__seller-info">
+                  {{ offer.org_fullname }} ИНН {{ offer.org_inn ? offer.org_inn : '-' }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Дополнительная информация -->
+         <div class="product-card__stat-list-cont">
+          <div class="product-card__stat-list">
+                <!-- Элемент доп. информации -->
+                <div class="product-card__stat">
+                  <i class="d-icon-location product-card__stat-icon"></i>
+                  <div class="product-card__stat-content">
+                    <p class="product-card__stat-name">
+                      {{ offer.delivery }} дн. ({{
+                        new Date(offer.delivery_day).toLocaleString('ru', {
+                          month: '2-digit',
+                          day: '2-digit',
+                          year: '2-digit',
+                        })
+                      }})
+                    </p>
+                    <p class="product-card__stat-description">{{ offer.store_city }}</p>
+                  </div>
+                </div>
+                <!-- Элемент доп. информации -->
+                <div class="product-card__stat">
+                  <i class="d-icon-truck product-card__stat-icon"></i>
+                  <div class="product-card__stat-content">
+                    <p class="product-card__stat-name">Доставка</p>
+                    <p class="product-card__stat-description">
+                      за счет {{ !allOff && activeConflict?.payer == 1 ? 'поставщика' : 'покупателя' }}
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Элемент доп. информации -->
+                <div class="product-card__stat">
+                  <i class="d-icon-wallet product-card__stat-icon"></i>
+                  <div class="product-card__stat-content product-card__stat-content--horizontal">
+                    <p class="product-card__stat-name">
+                      {{ !allOff && activeConflict?.delay_type == 2 ? 'Под реал.' : 'Отсрочка' }}
+                    </p>
+                    <p class="product-card__stat-description" v-if="!allOff && activeConflict.delay > 0">
+                       {{ activeConflict.delay }} дней
+                    </p>
+                    <p class="product-card__stat-description" v-else>Предоплата</p>
+                  </div>
+                </div>
+
+
+          </div>
+        </div>
+
+        <div class="product-card__price-container-all">
+          <!-- Блок с ценой и акциями -->
+            <div class="product-card__price-container">
+              <!-- Если нет в наличии -->
+              <div class="product-card__price" v-if="offer.requirement && offer.available == 0">
+                <p class="product-card__price-value-discounted product-card__noavailable">
+                  Нет в наличии
+                </p>
+              </div>
+              <!-- Цена товара -->
+              <div class="product-card__price" v-else>
+                <p class="product-card__price-value-discounted">
+                  {{ allOff == true ? offer.prices.rrc : activeConflict.price.toLocaleString('ru') }} ₽
+                </p>
+              </div>
+
+
+            </div>
+            <p class="product-card__p">Цена с учетом примененных акций</p>
+            <!-- Количество -->
+            <div class="product-card__count">
+              <div class="product-card__count-value">
+                <span class="product-card__count-label">В наличии: </span>
+                <span v-if="offer.remains_abstract != offer.available">{{
+                  offer.remains_abstract
+                }}</span>
+                <span v-else>{{ offer.available }} шт</span>
+                <div v-if="offer.requirement" class="redder">
+                  <span v-if="Number(offer.requirement.count) > Number(offer.available)"
+                    >Не хватает
+                    {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
+                  >
+                </div>
+              </div>
+              <div
+                class="d-divider d-divider--vertical product-card__count-divider"
+                v-if="offer.requirement"
+              ></div>
+              <div class="product-card__count-value product-card__count-value-require" v-if="offer.requirement">
+                <span class="product-card__count-label">Ваша потребность: </span>
+                {{ Number(offer.requirement.count) }} шт
+
+              </div>
+            </div>
+            <!-- Купить -->
+              <div
+                class="product-card__basket-button"
+                v-if="!offer.requirement || (offer.requirement && offer.available > 0)"
+                :class="{
+                  'loading-counter': this.loading,
+                }"
+              >
+                <Counter
+                  @ElemCount="ElemCount"
+                  :min="allOff == false ? Number(activeConflict.min_count) > 0 ? Number(activeConflict.min_count) : 1 : 1"
+                  :max="Number(offer.max)"
+                  :id="Number(offer.remain_id)"
+                  :store_id="Number(offer.store_id)"
+                  :index="Number(offer.remain_id)"
+                  :value="count"
+                  :step="allOff == false ? Number(activeConflict?.multiplicity)>1 ? Number(activeConflict?.multiplicity) : 1 : 1"
+                  :item="offer"
+                  :key="new Date().getTime() + '_' + Number(offer.remain_id)"
+                />
+                <button
+                  class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
+                  :class="{ 'd-button--loading': this.loading }"
+                  @click.prevent="addBasketAllSales(offer, count)"
+                >
+                  <div class="d-button__text">
+                    <i class="d-icon-cart product-card__buy-icon"></i>
+                    В корзину
+                  </div>
+                </button>
+              </div>
+        </div>
+      </div>
+
+      <!-- Фильтры
+        <div class="product-card__info-filters">
           <button
-            @click.prevent="((modalActiveActions = true), (modalOtherActions = false))"
-            v-if="activeActions > 0"
-            :class="
-              modalActiveActions
-                ? 'product-card-actions__modal-button-active'
-                : 'product-card-actions__modal-button'
-            "
+            class='product-card-actions__modal-button-active'
           >
             Активные акции
-            <div class="d-badge2 product-card__promo-badge">{{ activeActions }}</div>
+            <div class="d-badge2 product-card__promo-badge">{{ colActiveActions }}</div>
           </button>
           <button
-            @click.prevent="((modalOtherActions = true), (modalActiveActions = false))"
-            v-if="otherActions > 0"
-            :class="
-              modalOtherActions
-                ? 'product-card-actions__modal-button-active'
-                : 'product-card-actions__modal-button'
-            "
+            class='product-card-actions__modal-button-active'
           >
             Акции без выполненных условий
-            <div class="d-badge2 product-card__promo-badge">{{ otherActions }}</div>
+            <div class="d-badge2 product-card__promo-badge">{{ colNoTriggerActions }}</div>
           </button>
-        </div>
-        <div v-if="modalActiveActions">
-          <div
-            class="product-card-actions__modal-actions"
-            v-for="(item, index) in activeActionsData"
-            :key="index"
+          <button
+            class='product-card-actions__modal-button'
           >
-            <router-link
-              :to="{
-                name: 'purchasesAction',
-                params: { action_id: item.action_id },
-              }"
-            >
-              <div class="product-card-actions__modal-actions-header">
-                <i
-                  class="product-card-actions__modal-actions-header-icon d-icon-percent-rounded"
-                ></i>
-                {{ item.type != 3 ? item.name : 'Индивидуальная скидка' }}
+            Возможные акции
+            <div class="d-badge2 product-card__promo-badge">{{ colNoActiveActions }}</div>
+          </button>
+        </div>-->
+
+      <!-- Список акций -->
+      <div class="product-card-actions__modal-all-content" v-if="this.activeConflict">
+
+        <div class="product-card-actions__modal-all-item"
+            v-for="(item, index) in offer.actions"
+            :key="index">
+            <!-- Баннер -->
+            <div class="product-card-actions__modal-all-item-image"><img :src="item.image.image"></div>
+
+            <!--Акция включена, Акция выключена, Акция несовместима, Условия акции не выполнены -->
+            <div class="product-card-actions__modal-all-item-action">
+              <p class="product-card-actions__modal-all-item-action-label">
+                <span v-if="(item.is_trigger == 1 && item.enabled == 0 && !Object.keys(this.mainActionsData).includes(item.action_id)) || (!this.activeConflict?.actions_ids?.includes(item.action_id) && !Object.keys(this.mainActionsData).includes(item.action_id))">Условия акции не выполнены:</span>
+                <span v-else-if="(this.activeConflict?.actions_ids?.includes(item.action_id) && item.is_trigger == 0 && !Object.keys(this.mainActionsData).includes(item.action_id)) || (this.activeConflict?.actions_ids?.includes(item.action_id) && item.is_trigger == 1 && item.enabled == 1 && !Object.keys(this.mainActionsData).includes(item.action_id))">Применена автоматически:</span>
+                <span v-else-if="this.mainActionsData[item.action_id] == true">Акция включена:</span>
+                <span v-else-if="this.mainActionsData[item.action_id] == false && !allOff">Акция несовместима:</span>
+                <span v-else-if="this.mainActionsData[item.action_id] == false && allOff">Акция выключена:</span>
+              </p>
+              <div class="product-card-actions__modal-all-item-action-button">
+                <div>
+                  <!--несовместима-->
+                  <i class="d-icon-info product-card__actions-icon-info" v-if="this.mainActionsData[item.action_id] == false && !allOff"></i>
+                  <div class="d-switch"
+                  @click.prevent="checkAction(Number(item.action_id))"
+                  v-if="this.offer.main_actions.includes(Number(item.action_id))">
+                    <input
+                      type="checkbox"
+                      :name="Number(item.action_id)"
+                      :id="Number(item.action_id)"
+                      binary="true"
+                      class="d-switch__input"
+                      v-model="mainActionsData[Number(item.action_id)]"
+                    />
+                    <div class="d-switch__circle"></div>
+                  </div>
+                  <!--крест-->
+                  <i class="d-icon-times product-card__actions-icon-cross"  v-else-if="!this.activeConflict?.actions_ids?.includes(item.action_id) && !this.offer.main_actions.includes(Number(item.action_id))"></i>
+                  <!--галочка-->
+                  <i class="d-icon-check product-card__actions-icon-auto" v-else-if="this.activeConflict?.actions_ids?.includes(item.action_id) && ((item.is_trigger == 1 && item.enabled == 1) || (item.is_trigger == 0))"></i>
+
+                </div>
+
+                <p>
+                  {{ item.name }}
+                </p>
               </div>
-            </router-link>
-            <div class="product-card-actions__modal-actions-content">
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.delay_type == 2"
-              >
-                Под реализацию
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.delay_type < 2"
-              >
-                {{
-                  item.delay_type == 1 && item.delay > 0
-                    ? Number(item.delay).toFixed(0) + ' дн. отсрочки'
-                    : 'Предоплата'
-                }}
-              </div>
-              <div class="product-card-actions__modal-actions-content-item" v-if="item.percent > 0">
-                {{ item.percent }}% Скидка
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.delivery_type == 2"
-              >
-                Бесплатная доставка
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.condition_min_sum > 0"
-              >
-                Минимальная общая сумма заказа - {{ item.condition_min_sum }} ₽
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.condition_SKU > 0"
-              >
-                Минимальное количество SKU акции - {{ item.condition_SKU }} шт
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.condition_min_count > 0"
-              >
-                Минимальное общее количество товаров - {{ item.condition_min_count }} шт
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.min_count > 1"
-              >
-                Минимальное количество товаров - {{ item.min_count }} шт
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.multiplicity > 1"
-              >
-                Кратность - {{ item.multiplicity }} шт
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.integration == 1"
-              >
-                Интеграция с MachineStore
+
+            </div>
+
+            <!-- Описание -->
+            <div class="product-card-actions__modal-all-item-descr">
+              <p class="product-card-actions__modal-all-item-action-label">Описание:</p>
+              <div v-html="item.description"></div>
+            </div>
+
+            <!-- Дополнительная информация -->
+            <div class="product-card__stat-list-cont">
+              <div class="product-card__stat-list">
+                <div  v-if="item.percent > 0">
+                  <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка {{ item.percent_num }}%
+                </div>
+                <div
+                  v-if="item.delivery_type == 2"
+                >
+                  <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
+                </div>
+                <div
+                  v-if="item.condition_min_sum > 0"
+                >
+                  <span class="product-card__icon-summ product-card__buy-icon">₽</span>
+                  Мин. сумма - {{ parseInt(item.condition_min_sum) }} ₽
+                </div>
+                <div
+
+                  v-if="item.condition_SKU > 0"
+                >
+                  <i class="d-icon-box-flat product-card__buy-icon"></i>Мин. кол-во SKU - {{ item.condition_SKU }} шт
+                </div>
+                <div
+
+                  v-if="item.condition_min_count > 0"
+                >
+                  <i class="d-icon-box-flat product-card__buy-icon"></i>Мин. общее кол-во - {{ item.condition_min_count }} шт
+                </div>
+                <div
+                  v-if="item.min_count > 1"
+                >
+                  <i class="d-icon-box-flat product-card__buy-icon"></i>Мин. кол-во - {{ item.min_count }} шт
+                </div>
+                <div
+
+                  v-if="item.multiplicity > 1"
+                >
+                  <i class="d-icon-box-flat product-card__buy-icon"></i>Кратность - {{ item.multiplicity }} шт
+                </div>
+                <div
+
+                  v-if="item.integration == 1"
+                >
+                  <i class="d-icon-shuffle product-card__buy-icon"></i>Интеграция с MachineStore
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div v-else>
-          <div
-            class="product-card-actions__modal-actions"
-            v-for="(item, index) in otherActionsData"
-            :key="index"
-          >
-            <router-link
-              :to="{
-                name: 'purchasesAction',
-                params: { action_id: item.action_id },
-              }"
-            >
-              <div class="product-card-actions__modal-actions-header">
-                <i
-                  class="product-card-actions__modal-actions-header-icon d-icon-percent-rounded"
-                ></i>
-                {{ item.type != 3 ? item.name : 'Индивидуальная скидка' }}
-              </div>
-            </router-link>
-            <div class="product-card-actions__modal-actions-content">
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.delay_type == 2"
+
+
+            <!-- Кнопка подробнее -->
+            <div class="product-card-actions__modal-all-item-href">
+              <router-link
+                target="_blank"
+                :to="{
+                  name: 'purchasesAction',
+                  params: { action_id: item.action_id },
+                }"
               >
-                Под реализацию
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.delay_type < 2"
-              >
-                {{
-                  item.delay_type == 1 && item.delay > 0
-                    ? Number(item.delay).toFixed(0) + ' дн. отсрочки'
-                    : 'Предоплата'
-                }}
-              </div>
-              <div class="product-card-actions__modal-actions-content-item" v-if="item.percent > 0">
-                {{ item.percent }}% Скидка
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.delivery_type == 2"
-              >
-                Бесплатная доставка
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.condition_min_sum > 0"
-              >
-                Минимальная общая сумма заказа - {{ item.condition_min_sum }} ₽
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.condition_SKU > 0"
-              >
-                Минимальное количество SKU акции - {{ item.condition_SKU }} шт
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.condition_min_count > 0"
-              >
-                Минимальное общее количество товаров - {{ item.condition_min_count }} шт
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.min_count > 1"
-              >
-                Минимальное количество товаров - {{ item.min_count }} шт
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.multiplicity > 1"
-              >
-                Кратность - {{ item.multiplicity }} шт
-              </div>
-              <div
-                class="product-card-actions__modal-actions-content-item"
-                v-if="item.integration == 1"
-              >
-                Интеграция с MachineStore
-              </div>
+              <button  class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small">
+                  Подробнее
+              </button>
+              </router-link>
             </div>
-          </div>
         </div>
+
       </div>
     </customModal>
   </teleport>
@@ -442,22 +556,29 @@
 <script>
 import { mapActions } from 'vuex'
 import customModal from '@/shared/ui/Modal.vue'
-import Counter from '@/shared/ui/Counter.vue'
+import Counter from '@/shared/ui/CounterNoAdd.vue'
 
 export default {
   name: 'productOfferOffer',
   data() {
     return {
       loading: false,
-      activeActions: 0,
-      otherActions: 0,
       modalActions: false,
       modalActiveActions: false,
-      modalOtherActions: false,
+      seller_info: false,
       modalMultiplicityRemain: false,
-      activeActionsData: [],
-      otherActionsData: [],
-      fetchIds: [],
+      modalActionsData: {},
+      mainActionsData: {},
+      allOff: false,
+      pricePrefix: false,
+      deliveryPrefix: false,
+      delayPrefix: '',
+      delayDays: 0,
+      count: 1,
+      activeConflict: {},
+      colActiveActions: 0,
+      colNoActiveActions: 0,
+      colNoTriggerActions: 0,
     }
   },
   components: { customModal, Counter },
@@ -477,7 +598,81 @@ export default {
     },
   },
   mounted() {
-    this.getActiveActions()
+        if(Object.keys(this.offer).length){
+      this.modalActionsData = this.offer.conflicts
+      if(this.modalActionsData){
+        this.count = Number(this.modalActionsData[0].min_count) > 0 ? Number(this.modalActionsData[0].min_count) : 1
+
+      }
+
+      if(this.modalActionsData && Object.keys(this.modalActionsData).length == 1){
+        this.count = Number(this.modalActionsData[0].multiplicity)
+      }
+      if(this.modalActionsData && Object.keys(this.modalActionsData).length > 1){
+        let col = Object.keys(this.modalActionsData).length
+        let payer = false
+        let active = Object.keys(this.offer.actions).length
+        let real = 0;
+        let delay = 0;
+        for(var i in this.modalActionsData){
+          if((this.modalActionsData[i].active == true ) || this.modalActionsData[i].price == this.offer.prices.rrc){
+            col--
+          }
+          let actions = this.modalActionsData[i].actions
+          for(var ii in actions){
+            if(actions[ii].payer == 1){
+              payer = true
+            }
+            if(actions[ii].delay_type == 2){
+              if(Number(actions[ii].delay)>real){
+                real = Number(actions[ii].delay)
+              }
+            }
+            if(actions[ii].delay_type == 1){
+              if(Number(actions[ii].delay)>delay){
+                delay = Number(actions[ii].delay)
+              }
+            }
+          }
+
+        }
+        if(col > 0){
+          this.pricePrefix = true
+        }
+        if(payer == true){
+          this.deliveryPrefix = true
+        }
+        if(real > 0 || delay > 0){
+          if(real > 0){
+            this.delayPrefix = 'под реализацию'
+            this.delayDays = real
+          }else{
+            this.delayPrefix = 'отсрочка'
+            this.delayDays = delay
+          }
+        }
+      }
+    }
+    if(Object.keys(this.offer).length){
+      for(var ic in this.offer.conflicts){
+        if(this.offer.conflicts[ic].active){
+          this.activeConflict = this.offer.conflicts[ic]
+        }
+      }
+      if(this.activeConflict.actions_ids){
+        let item = JSON.parse(JSON.stringify(this.activeConflict.actions_ids))
+        for(var iitem in item){
+          item[iitem] = Number(item[iitem])
+        }
+        for(var ima in this.offer.main_actions){
+          if(item.includes(Number(this.offer.main_actions[ima]))){
+            this.mainActionsData[this.offer.main_actions[ima]] = true
+          }else{
+            this.mainActionsData[this.offer.main_actions[ima]] = false
+          }
+        }
+      }
+    }
   },
   computed: {},
   methods: {
@@ -488,70 +683,41 @@ export default {
       basketOfferProductRemove: 'offer/basketOfferProductRemove',
       basketOfferProductUpdate: 'offer/basketOfferProductUpdate',
     }),
-    clearBasketProduct(org_id, store_id, key, product) {
-      this.loading = true
-      const data = {
-        org_id: org_id,
-        store_id: store_id,
-        key: key,
-        product: product,
-      }
-      this.basketOfferProductRemove(data).then((response) => {
-        this.$emit('updateBasket')
-        if (!response?.data?.data?.success && response?.data?.data?.message) {
-          this.$toast.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: response?.data?.data?.message,
-            life: 3000,
-          })
-        }
-        this.loading = false
-      })
 
-      // Убедитесь, что dataLayer существует
-      window.dataLayer = window.dataLayer || []
-
-      // Отправка данных в dataLayer
-      window.dataLayer.push({
-        ecommerce: {
-          currencyCode: 'RUB', // Валюта
-          remove: {
-            products: [
-              {
-                id: product.remain_id, // ID товара
-                name: product.name, // Название товара
-                price: product.price, // Цена товара
-                quantity: product.count, // Количество товара
-              },
-            ],
-          },
-        },
-      })
-    },
     ElemCount(object) {
       if (object.value == object.min) {
-        this.clearBasketProduct(
-          object.item.org_id,
-          object.item.store_id,
-          object.item.key,
-          object.item,
-        )
-        return
-      }
+        this.count = object.value
+         return
+       }
       if (object.value > Number(object.max)) {
-        this.modal_remain = true
-      } else {
+         this.modal_remain = true
+       } else {
+        this.count = object.value
+       }
+       if (object.value < object.min) {
+        this.count = Number(this.activeConflict.multiplicity) > 1 ? Number(this.activeConflict.multiplicity) : 1
+         return
+       }
+    },
+
+    addBasket(item, count) {
+            if(this.modalActionsData && (Object.keys(this.modalActionsData).length > 1 || (Object.keys(this.modalActionsData).length = 1 && this.allOff))){
+        this.modalActions = true
+      }else{
         this.loading = true
-        const data = {
-          org_id: object.item.org_id,
-          store_id: object.item.store_id,
-          id_remain: object.id,
-          count: object.value,
-          key: object.item.key,
-          actions: object.item.actions,
+        let conf = {}
+        if(!this.allOff){
+          conf = this.activeConflict?.actions
         }
-        this.basketOfferProductUpdate(data).then((response) => {
+        const data = {
+          org_id: item.org_id,
+          store_id: item.store_id,
+          id_remain: item.id,
+          count: count,
+          key: item.key,
+          actions: conf,
+        }
+        this.basketOfferProductAdd(data).then((response) => {
           this.loading = false
           if (!response?.data?.data?.success && response?.data?.data?.message) {
             this.$toast.add({
@@ -564,91 +730,88 @@ export default {
           this.$emit('updateCatalog')
           this.$emit('updateBasket')
         })
-        if (Number(object.value) != object.old_value) {
-          window.dataLayer = window.dataLayer || []
-          window.dataLayer.push({
-            ecommerce: {
-              currencyCode: 'RUB', // Валюта
-              add: {
-                products: [
-                  {
-                    id: object.id, // ID товара
-                    name: object.item.name, // Название товара
-                    price: object.item.basket.price, // Цена товара
-                    quantity: object.value, // Количество товара
-                  },
-                ],
-              },
-            },
-          })
+        this.count = Object.keys(this.modalActionsData).length > 0 ? this.modalActionsData[0].min_count > 0 ? this.modalActionsData[0].min_count : 1 : 1
+      }
+    },
+    addBasketAllSales(item, count) {
+        this.loading = true
+        let conf = {}
+        if(!this.allOff){
+          conf = this.activeConflict.actions
+          item.price = this.activeConflict.price
+          item.payer = this.activeConflict.payer ? this.activeConflict.payer : 0
+          item.delay = this.activeConflict.delay ? this.activeConflict.delay : 0
+          item.delay_type = this.activeConflict.delay_type ? this.activeConflict.delay_type : 1
         }
-      }
-    },
-    showModal() {
-      this.modalActions = true
-      if (this.activeActions != 0) {
-        this.modalActiveActions = true
-        this.modalOtherActions = false
-      } else {
-        this.modalActiveActions = false
-        this.modalOtherActions = true
-      }
-    },
-    addBasket(item) {
-      console.log(item)
-      this.loading = true
-      if (Number(item?.multiplicity) > 1) {
-        if (Number(item?.multiplicity) > Number(item.available)) {
-          this.modalMultiplicityRemain = true
+        const data = {
+          org_id: item.org_id,
+          store_id: item.store_id,
+          id_remain: item.id,
+          count: count,
+          key: item.key,
+          actions: conf,
+        }
+        this.basketOfferProductAdd(data).then((response) => {
           this.loading = false
-          return false
-        }
-      }
-      const data = {
-        org_id: item.org_id,
-        store_id: item.store_id,
-        id_remain: item.id,
-        count: item.basket.count,
-        actions: item.actions,
-      }
-      this.basketOfferProductAdd(data).then(() => {
-        this.loading = false
-        this.$emit('updateBasket')
-      })
+          if (!response?.data?.data?.success && response?.data?.data?.message) {
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: response?.data?.data?.message,
+              life: 3000,
+            })
+          }
+          this.$emit('updateCatalog')
+          this.$emit('updateBasket')
+        })
+        this.count = Object.keys(this.modalActionsData).length > 0 ? this.modalActionsData[0].min_count > 0 ? this.modalActionsData[0].min_count : 1 : 1
 
-      // Убедитесь, что dataLayer существует
-      window.dataLayer = window.dataLayer || []
-
-      // Отправка данных в dataLayer
-      window.dataLayer.push({
-        ecommerce: {
-          currencyCode: 'RUB', // Валюта
-          add: {
-            products: [
-              {
-                id: item.id, // ID товара
-                name: item.name, // Название товара
-                price: item.price, // Цена товара
-                category: item.catalog, // Категория товара
-                quantity: item.basket.count, // Количество товара
-              },
-            ],
-          },
-        },
-      })
     },
-    getActiveActions() {
-      for (var i in this.offer.actions) {
-        if (this.offer.actions[i].enabled === 1) {
-          this.activeActions++
-          this.activeActionsData.push(this.offer.actions[i])
-        } else {
-          this.otherActions++
-          this.otherActionsData.push(this.offer.actions[i])
+    checkAction(ind){
+      if(this.mainActionsData[ind]){
+        this.mainActionsData[ind] = false
+        this.allOff = true
+        this.activeConflict = {}
+      }else{
+        for (var ii in this.mainActionsData){
+          if(ii == ind){
+            this.mainActionsData[ii] = true
+            this.allOff = false
+            // выставляем новый активный конфликт
+            for (var ic in this.offer.conflicts){
+              if(this.offer.conflicts[ic] !== undefined){
+                if(this.offer.conflicts[ic].actions_ids.includes(ii)){
+                  this.activeConflict = this.offer.conflicts[ic]
+
+                  if(Number(this.activeConflict.multiplicity) > 1){
+                    this.count = Number(this.activeConflict.multiplicity)
+                  }
+                }
+              }
+            }
+          }else{
+            this.mainActionsData[ii] = false
+          }
         }
       }
     },
   },
+  watch: {
+    offer: function(newVal) {
+      this.modalActionsData = newVal.conflicts;
+    },
+    modalActions: function(newVal){
+      if(newVal == false){
+        if(this.modalActionsData && Object.keys(this.modalActionsData).length == 1 && !this.allOff){
+          this.count = Number(this.modalActionsData[0].multiplicity)
+        }else{
+          this.count = Number(this.modalActionsData[0].min_count) > 0 ? Number(this.modalActionsData[0].min_count) : 1
+        }
+
+      }
+    },
+
+  }
 }
 </script>
 <style lang="scss">

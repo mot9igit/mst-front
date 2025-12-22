@@ -100,6 +100,39 @@
                 <p class="cart__item-title">{{ product.name }}</p>
                 <p class="cart__item-article">Арт: {{ product.article }}</p>
 
+                <div class="cart__item-sales" v-if="(product.action && !product.triggers) || (product.action && product.triggers && org.cart_data.enabled && product.triggers.filter(item => org.cart_data.enabled?.includes(item)))">
+                  <button class="cart__item-sales-label" @click.prevent="salesActive(product.key)" :class="{'cart__item-sales-label-open' : sales_active[product.key] == true}">Примененные акции<i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sales_active[product.key] == true}"></i></button>
+                  <div class="cart__item-sales-container" v-if="sales_active[product.key] == true">
+                    <div class="cart__item-sales-item" v-for="(sale, ind) in product.action" :key="ind">
+                      <router-link
+                        target="_blank"
+                        :to="{
+                          name: 'purchasesAction',
+                          params: { action_id: sale.action_id },
+                        }"
+                      >
+                      <p class="cart__item-sales-item-name">{{ sale.name }}</p>
+                      </router-link>
+                      <p class="cart__item-sales-item-values">
+                        <span class="cart__item-sales-item-value" v-if="sale.type != 3">Индивидуальная скидка</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.percent > 0">{{ sale.percent }}% Скидка</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2">Под реализацию</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2">{{sale.delay_type == 1 && sale.delay > 0
+                          ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'
+                          : 'Предоплата'}}
+                        </span>
+                        <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2">Бесплатная доставка</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.condition_min_sum > 0">Мин. общ. сумма - {{ sale.condition_min_sum }} ₽</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.condition_SKU > 0">Мин. кол-во SKU - {{ sale.condition_SKU }} шт</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.condition_min_count > 0">Мин. общ. кол-во товаров - {{ sale.condition_min_count }} шт</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.min_count > 1">Мин. кол-во товаров - {{ sale.min_count }} шт</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.multiplicity > 1">Кратность - {{ sale.multiplicity }} шт</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.integration == 1">Интеграция с MachineStore</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="cart__item-footer">
                   <Counter
                     :classPrefix="'cart__item'"
@@ -146,6 +179,24 @@
         Да, очистить!
       </button>
     </customModal>
+    <customModal v-model="this.salesModal" class="sales_cart">
+      <h3>Внимание, отключение акций!</h3>
+      <p>Акция: {{ saleOff }} будет отключена</p>
+      <div class="sales_cart-buttons">
+        <button
+          type="button"
+          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
+          @click.prevent=""
+          >
+          Отмена
+        </button>
+        <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          @click.prevent="">
+          Принять
+        </button>
+      </div>
+
+    </customModal>
   </teleport>
 </template>
 <script>
@@ -170,6 +221,8 @@ export default {
       showClearBasketModal: false,
       basketStore: {},
       fetchIds: [],
+      sales_active: {},
+      salesModal: false,
     }
   },
   methods: {
@@ -179,6 +232,13 @@ export default {
       basketOfferProductRemove: 'offer/basketOfferProductRemove',
       basketOfferProductUpdate: 'offer/basketOfferProductUpdate',
     }),
+    salesActive(key){
+      if(key in this.sales_active){
+        this.sales_active[key] = !this.sales_active[key]
+      }else{
+        this.sales_active[key] = true
+      }
+    },
     toggleCart() {
       this.$emit('toggleCart')
     },

@@ -61,7 +61,7 @@
               </div>
               <!-- Кнопка: "Все акции" -->
                 <button
-                  v-if="Object.keys(offer.actions).length > 0"
+                  v-if="Object.keys(offer.actions).length > 0 && offer.available > 0"
                   class="product-card-vertical__promo-all"
                   @click.prevent="modalActions = true"
                 >
@@ -105,11 +105,11 @@
             </div>
             <!-- Дополнительная информация -->
             <div class="product-card__stat-cont">
-            <div class="product-card__stat-list">
+              <div class="product-card__stat-list">
               <!-- Элемент доп. информации -->
               <div class="product-card__stat">
                 <i class="d-icon-location product-card__stat-icon"></i>
-                <div class="product-card__stat-content">
+                <div class="product-card__stat-content" v-if="offer.available > 0">
                   <p class="product-card__stat-name">
                     {{ offer.delivery }} дн. ({{
                       new Date(offer.delivery_day).toLocaleString('ru', {
@@ -121,6 +121,7 @@
                   </p>
                   <p class="product-card__stat-description">{{ offer.store_city }}</p>
                 </div>
+                <div v-else><p class="product-card__stat-description">-</p></div>
               </div>
               <!-- Элемент доп. информации -->
               <div class="product-card__stat">
@@ -685,7 +686,6 @@ export default {
     }),
 
     ElemCount(object) {
-      console.log(object)
       if (object.value == object.min) {
         this.count = object.value
          return
