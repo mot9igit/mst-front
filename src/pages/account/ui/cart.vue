@@ -212,12 +212,12 @@
         <button
           type="button"
           class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
-          @click.prevent=""
+          @click.prevent="this.salesModal = false"
           >
           Отмена
         </button>
         <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
-          @click.prevent="">
+          @click.prevent="ElemCountSaleOff()">
           Принять
         </button>
       </div>
@@ -251,6 +251,8 @@ export default {
       fetchIds: [],
       sales_active: {},
       salesModal: false,
+      saleOff: [],
+      newCount: 0,
     }
   },
   methods: {
@@ -366,6 +368,11 @@ export default {
               detail: response?.data?.data?.message,
               life: 3000,
             })
+            if (response?.data?.data?.data.length){
+              this.salesModal = true
+              this.saleOff = response.data.data.data
+            }
+
           }
           this.$emit('catalogUpdate')
           this.updateBasket()
@@ -389,6 +396,9 @@ export default {
           })
         }
       }
+    },
+    ElemCountSaleOff(){
+      console.log('В работе')
     },
     updateBasket() {
       this.loading = true
