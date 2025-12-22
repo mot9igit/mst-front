@@ -126,7 +126,6 @@
 
                 <p class="cart__item-title">{{ product.name }}</p>
                 <p class="cart__item-article">Арт: {{ product.article }}</p>
-<!-- && product.action.enabled == 1 -->
                 <div class="cart__item-sales" v-if="(product.action && !product.triggers) || (product.action && product.triggers && org.cart_data.enabled && product.triggers.filter(item => org.cart_data.enabled?.includes(item)))">
                   <button class="cart__item-sales-label" @click.prevent="salesActive(product.key)" :class="{'cart__item-sales-label-open' : sales_active[product.key] == true}">Примененные акции<i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sales_active[product.key] == true}"></i></button>
                   <div class="cart__item-sales-container" v-if="sales_active[product.key] == true">
@@ -206,6 +205,24 @@
         Да, очистить!
       </button>
     </customModal>
+    <customModal v-model="this.salesModal" class="sales_cart">
+      <h3>Внимание, отключение акций!</h3>
+      <p>Акция: {{ saleOff }} будет отключена</p>
+      <div class="sales_cart-buttons">
+        <button
+          type="button"
+          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
+          @click.prevent=""
+          >
+          Отмена
+        </button>
+        <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          @click.prevent="">
+          Принять
+        </button>
+      </div>
+
+    </customModal>
   </teleport>
 </template>
 <script>
@@ -213,9 +230,7 @@ import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
-
-
-
+import offer from '@/pages/wholesale/api/offer';
 
 export default {
   name: 'ProfileCart',
@@ -234,7 +249,8 @@ export default {
       showClearBasketModal: false,
       basketStore: {},
       fetchIds: [],
-      sales_active: {}
+      sales_active: {},
+      salesModal: false,
     }
   },
   methods: {
@@ -310,6 +326,7 @@ export default {
       })
     },
     ElemCount(object) {
+
       if (!this.fetchIds.includes(object.item.product.key)) {
         this.fetchIds.push(object.item.product.key)
       }
@@ -552,7 +569,24 @@ export default {
   content: ';';
   margin-right: 8px;
 }
-
+.sales_cart{
+  h3 {
+    margin-top: -16px;
+    margin-bottom: 32px;
+    font-size: 24px;
+  }
+  .sales_cart-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 48px;
+  }
+  button{
+    font-weight: 500;
+    font-size: 14px;
+    height: 38px;
+  }
+}
 @media (width <= 1024px) {
   .cart__item-sales{
     padding: 0 0 8px 0;
@@ -588,6 +622,54 @@ export default {
     line-height: 10px;
   }
 }
+.sales_cart{
+  h3 {
+    margin-top: -12px;
+    margin-bottom: 32px;
+    font-size: 14px;
+  }
+  p {
+    font-size: 12px;
+  }
+  .sales_cart-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 48px;
+  }
+  button{
+    font-weight: 500;
+    font-size: 10px;
+    height: 24px;
+    min-height: 24px;
+    max-height: 24px;
+  }
+}
+@media (width <= 800px) {
+.sales_cart{
+  h3 {
+    margin-top: -12px;
+    margin-bottom: 24px;
+    font-size: 12px;
+  }
+  p {
+    font-size: 10px;
+  }
+  .sales_cart-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 24px;
+  }
+  button{
+    font-weight: 500;
+    font-size: 9px;
+    height: 16px;
+    min-height: 16px;
+    max-height: 16px;
+  }
+}
+}
 @media (width <= 600px) {
   .cart__item-sales{
     padding: 0 0 16px 0;
@@ -621,5 +703,28 @@ export default {
     font-size: 10px;
     line-height: 14px;
   }
+  .sales_cart{
+  h3 {
+    margin-top: -12px;
+    margin-bottom: 40px;
+    font-size: 16px;
+  }
+  p {
+    font-size: 14px;
+  }
+  .sales_cart-buttons{
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 48px;
+  }
+  button{
+    font-weight: 500;
+    font-size: 14px;
+    height: 32px;
+    min-height: 32px;
+    max-height: 32px;
+  }
+}
 }
 </style>
