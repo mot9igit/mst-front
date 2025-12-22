@@ -228,34 +228,35 @@ export default {
         page: this.page,
         perpage: this.per_page,
       }
-      if (this.$route.name == 'purchasesCatalogSearch' || this.$route.name == 'purchasesCatalogSearchOffer') {
+      if (
+        this.$route.name == 'purchasesCatalogSearch' ||
+        this.$route.name == 'purchasesCatalogSearchOffer'
+      ) {
         data.search = this.$route.query.search
       }
-      if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
+      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         this.getBasketOffer()
         data.search = this.$route.query.search
         this.getOfferOptProducts(data).then(() => {
-        this.opt_products = this.optOfferProducts
-        this.loading = false
+          this.opt_products = this.optOfferProducts
+          this.loading = false
         })
-      }else{
+      } else {
         this.getBasket()
         this.getOptProducts(data).then(() => {
-        this.opt_products = this.optProducts
-        this.loading = false
-      })
+          this.opt_products = this.optProducts
+          this.loading = false
+        })
       }
-
-
     },
     updatePage(order_id) {
       let cart = {}
       this.order_id = order_id
       this.page = 1
       this.loading = true
-      if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
+      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         cart = this.basketOffer
-      }else{
+      } else {
         cart = this.basket
       }
       const data = {
@@ -267,27 +268,26 @@ export default {
       if (this.$route.name == 'purchasesCatalogSearch') {
         data.search = this.$route.query.search
       }
-      if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
+      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         data.search = this.$route.query.search
         this.getOfferOptProducts(data).then(() => {
-        this.opt_products = this.optOfferProducts
-        this.loading = false
-      })
-      }else{
+          this.opt_products = this.optOfferProducts
+          this.loading = false
+        })
+      } else {
         this.getOptProducts(data).then(() => {
-        this.opt_products = this.optProducts
-        this.loading = false
-      })
+          this.opt_products = this.optProducts
+          this.loading = false
+        })
       }
-
     },
     pagClickCallback(pageNum) {
       let cart = {}
       this.page = pageNum
       this.loading = true
-      if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
+      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         cart = this.basketOffer
-      }else{
+      } else {
         cart = this.basket
       }
       const data = {
@@ -299,17 +299,17 @@ export default {
       if (this.$route.name == 'purchasesCatalogSearch') {
         data.search = this.$route.query.search
       }
-      if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
+      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         data.search = this.$route.query.search
         this.getOfferOptProducts(data).then(() => {
-        this.opt_products = this.optOfferProducts
-        this.loading = false
-      })
-      }else{
+          this.opt_products = this.optOfferProducts
+          this.loading = false
+        })
+      } else {
         this.getOptProducts(data).then(() => {
-        this.opt_products = this.optProducts
-        this.loading = false
-      })
+          this.opt_products = this.optProducts
+          this.loading = false
+        })
       }
 
       const el = document.querySelector('.products__top-wrapper')
@@ -322,22 +322,21 @@ export default {
       const data = {
         page: this.page,
         perpage: this.per_page,
-
       }
       if (this.$route.name == 'purchasesCatalogSearch') {
         data.search = this.$route.query.search
       }
-      if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
+      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         data.search = this.$route.query.search
         this.getOfferOptProducts(data).then(() => {
-        this.opt_products = this.optOfferProducts
-        this.loading = false
-      })
-      }else{
+          this.opt_products = this.optOfferProducts
+          this.loading = false
+        })
+      } else {
         this.getOptProducts(data).then(() => {
-        this.opt_products = this.optProducts
-        this.loading = false
-      })
+          this.opt_products = this.optProducts
+          this.loading = false
+        })
       }
     },
   },
@@ -349,14 +348,17 @@ export default {
     if (this.$route.name == 'purchasesCatalogSearch') {
       data.search = this.$route.query.search
     }
-    if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
-        data.search = this.$route.query.search
-        this.getOfferOptProducts(data).then(() => {
+    if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+      data.req = this.$route.query.requirement_id
+    }
+    if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
+      data.search = this.$route.query.search
+      this.getOfferOptProducts(data).then(() => {
         this.opt_products = this.optOfferProducts
         this.loading = false
       })
-    }else{
-        this.getOptProducts(data).then(() => {
+    } else {
+      this.getOptProducts(data).then(() => {
         this.opt_products = this.optProducts
         this.loading = false
       })
@@ -376,9 +378,9 @@ export default {
     }),
     pagesCount() {
       let pages = 1
-      if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
+      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         pages = Math.ceil(this.optOfferProducts.total / this.per_page)
-      }else{
+      } else {
         pages = Math.ceil(this.optProducts.total / this.per_page)
       }
       if (pages === 0) {
@@ -409,7 +411,6 @@ export default {
     catalogUpdater: function (newVal) {
       if (newVal) {
         this.updateCatalog()
-
       }
     },
     $route() {
