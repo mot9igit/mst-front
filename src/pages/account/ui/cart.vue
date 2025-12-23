@@ -217,7 +217,7 @@
           Отмена
         </button>
         <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
-          @click.prevent="ElemCountSaleOff()">
+          @click.prevent="accept = 1, ElemCount(countObject),  salesModal = false">
           Принять
         </button>
       </div>
@@ -253,6 +253,8 @@ export default {
       salesModal: false,
       saleOff: [],
       newCount: 0,
+      countObject: {},
+      accept: 0,
     }
   },
   methods: {
@@ -351,6 +353,7 @@ export default {
         }
       } else {
         this.loading = true
+        this.countObject = object
         const data = {
           org_id: object.item.product.org_id,
           store_id: object.item.product.store_id,
@@ -358,6 +361,7 @@ export default {
           count: object.value,
           key: object.item.product.key,
           actions: object.item.product.actions,
+          accept: this.accept
         }
         this.basketProductUpdate(data).then((response) => {
           // console.log(response)
@@ -376,6 +380,7 @@ export default {
           }
           this.$emit('catalogUpdate')
           this.updateBasket()
+          this.accept = 0
         })
         if (Number(object.value) != object.old_value) {
           window.dataLayer = window.dataLayer || []

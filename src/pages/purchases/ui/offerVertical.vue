@@ -465,7 +465,7 @@
                     <div class="d-switch__circle"></div>
                   </div>
                   <!--крест-->
-                  <i class="d-icon-times product-card__actions-icon-cross"  v-else-if="!this.activeConflict?.actions_ids?.includes(item.action_id) && !this.offer.main_actions.includes(Number(item.action_id))"></i>
+                  <i class="d-icon-times product-card__actions-icon-cross"  v-else-if="(!this.activeConflict?.actions_ids?.includes(item.action_id) && !this.offer.main_actions.includes(Number(item.action_id))) || (item.is_trigger == 1 && item.enabled == 0)"></i>
                   <!--галочка-->
                   <i class="d-icon-check product-card__actions-icon-auto" v-else-if="this.activeConflict?.actions_ids?.includes(item.action_id) && ((item.is_trigger == 1 && item.enabled == 1) || (item.is_trigger == 0))"></i>
 
