@@ -4791,6 +4791,9 @@ body {
     }
   }
 }
+.promotions__card-value{
+    overflow: hidden;
+}
 .promotions__card-dates {
   .promotions__card-value-container {
     display: flex;
@@ -4822,6 +4825,7 @@ body {
       }
     }
   }
+
   .d-fractions.d-fractions-dates {
     .d-fractions__item {
       width: 100%;

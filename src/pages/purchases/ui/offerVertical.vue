@@ -1374,6 +1374,7 @@ export default {
   font-size: 14px;
   line-height: 18px;
   color: #282828;
+  overflow: hidden;
 }
 .product-card-actions__modal-all-content .product-card__stat-list {
   font-style: normal;
