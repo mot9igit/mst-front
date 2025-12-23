@@ -181,13 +181,13 @@
               >
                 <Counter
                   @ElemCount="ElemCount"
-                  :min="Object.keys(modalActionsData).length > 0 ? Number(modalActionsData[0].min_count) : 1"
+                  :min="count_min"
                   :max="Number(offer.max)"
                   :id="Number(offer.remain_id)"
                   :store_id="Number(offer.store_id)"
                   :index="Number(offer.remain_id)"
                   :value="count"
-                  :step="Object.keys(modalActionsData).length == 1 && allOff == false && Number(modalActionsData[0].multiplicity) > 1 ? Number(modalActionsData[0].multiplicity) : 1"
+                  :step="step"
                   :item="offer"
                   :key="new Date().getTime() + '_' + Number(offer.remain_id)"
                 />
@@ -383,13 +383,13 @@
               >
                 <Counter
                   @ElemCount="ElemCount"
-                  :min="allOff == false ? Number(activeConflict.min_count) > 0 ? Number(activeConflict.min_count) : 1 : 1"
+                  :min="count_min"
                   :max="Number(offer.max)"
                   :id="Number(offer.remain_id)"
                   :store_id="Number(offer.store_id)"
                   :index="Number(offer.remain_id)"
                   :value="count"
-                  :step="allOff == false ? Number(activeConflict?.multiplicity)>1 ? Number(activeConflict?.multiplicity) : 1 : 1"
+                  :step="step"
                   :item="offer"
                   :key="new Date().getTime() + '_' + Number(offer.remain_id)"
                 />
@@ -577,6 +577,8 @@ export default {
       delayPrefix: '',
       delayDays: 0,
       count: 1,
+      count_min: 1,
+      step: 1,
       activeConflict: {},
       colActiveActions: 0,
       colNoActiveActions: 0,
@@ -602,18 +604,11 @@ export default {
   mounted() {
     if(Object.keys(this.offer).length){
       this.modalActionsData = this.offer.conflicts
-      if(this.modalActionsData){
-        this.count = Number(this.modalActionsData[0].min_count) > 0 ? Number(this.modalActionsData[0].min_count) : 1
 
-      }
-
-      if(this.modalActionsData && Object.keys(this.modalActionsData).length == 1){
-        this.count = Number(this.modalActionsData[0].multiplicity)
-      }
       if(this.modalActionsData && Object.keys(this.modalActionsData).length > 1){
         let col = Object.keys(this.modalActionsData).length
         let payer = false
-        let active = Object.keys(this.offer.actions).length
+        //let active = Object.keys(this.offer.actions).length
         let real = 0;
         let delay = 0;
         for(var i in this.modalActionsData){
@@ -673,6 +668,29 @@ export default {
             this.mainActionsData[this.offer.main_actions[ima]] = false
           }
         }
+
+        if(Number(this.activeConflict.multiplicity) > Number(this.activeConflict.min_count) && Number(this.activeConflict.multiplicity) > 1){
+          this.count = Number(this.activeConflict.multiplicity)
+          this.step = Number(this.activeConflict.multiplicity)
+          this.count_min = Number(this.activeConflict.multiplicity)
+        }else{
+          if(Number(this.activeConflict.multiplicity) <= Number(this.activeConflict.min_count) && Number(this.activeConflict.multiplicity) > 1){
+            if(!(Number(this.activeConflict.min_count) % Number(this.activeConflict.multiplicity))){
+              this.count = Number(this.activeConflict.min_count)
+              this.step = Number(this.activeConflict.multiplicity)
+              this.count_min = Number(this.activeConflict.min_count)
+            }else{
+              this.count = Number(this.activeConflict.min_count) + Number(this.activeConflict.multiplicity) - Number(this.activeConflict.min_count) % Number(this.activeConflict.multiplicity)
+              this.step = Number(this.activeConflict.multiplicity)
+              this.count_min = this.count
+            }
+          }else{
+            this.count = Number(this.activeConflict.min_count) > 0 ? Number(this.activeConflict.min_count) : 1
+            this.step = 1
+            this.count_min = this.count
+          }
+        }
+
       }
     }
   },
@@ -697,8 +715,8 @@ export default {
         this.count = object.value
        }
        if (object.value < object.min) {
-        this.count = Number(this.activeConflict.multiplicity) > 1 ? Number(this.activeConflict.multiplicity) : 1
-         return
+        this.count = this.count_min
+        return
        }
     },
 
@@ -732,7 +750,8 @@ export default {
           this.$emit('updateCatalog')
           this.$emit('updateBasket')
         })
-        this.count = Object.keys(this.modalActionsData).length > 0 ? this.modalActionsData[0].min_count > 0 ? this.modalActionsData[0].min_count : 1 : 1
+        this.count = this.min_count
+
       }
     },
     addBasketAllSales(item, count) {
@@ -766,13 +785,34 @@ export default {
           this.$emit('updateCatalog')
           this.$emit('updateBasket')
         })
-        this.count = Object.keys(this.modalActionsData).length > 0 ? this.modalActionsData[0].min_count > 0 ? this.modalActionsData[0].min_count : 1 : 1
+        if(Number(this.activeConflict.multiplicity) > Number(this.activeConflict.min_count) && Number(this.activeConflict.multiplicity) > 1){
+          this.count = Number(this.activeConflict.multiplicity)
+          this.step = Number(this.activeConflict.multiplicity)
+          this.count_min = Number(this.activeConflict.multiplicity)
+        }else{
+          if(Number(this.activeConflict.multiplicity) <= Number(this.activeConflict.min_count) && Number(this.activeConflict.multiplicity) > 1){
+            if(!(Number(this.activeConflict.min_count) % Number(this.activeConflict.multiplicity))){
+              this.count = Number(this.activeConflict.min_count)
+              this.step = Number(this.activeConflict.multiplicity)
+              this.count_min = Number(this.activeConflict.min_count)
+            }else{
+              this.count = Number(this.activeConflict.min_count) + Number(this.activeConflict.multiplicity) - Number(this.activeConflict.min_count) % Number(this.activeConflict.multiplicity)
+              this.step = Number(this.activeConflict.multiplicity)
+              this.count_min = this.count
+            }
+          }else{
+            this.count = Number(this.activeConflict.min_count) > 0 ? Number(this.activeConflict.min_count) : 1
+            this.step = 1
+            this.count_min = this.count
+          }
+        }
 
     },
     checkAction(ind){
       if(this.mainActionsData[ind]){
         this.mainActionsData[ind] = false
         this.allOff = true
+        this.count = 1
         this.activeConflict = {}
       }else{
         for (var ii in this.mainActionsData){
@@ -785,9 +825,28 @@ export default {
                 if(this.offer.conflicts[ic].actions_ids.includes(ii)){
                   this.activeConflict = this.offer.conflicts[ic]
 
-                  if(Number(this.activeConflict.multiplicity) > 1){
+                  if(Number(this.activeConflict.multiplicity) > Number(this.activeConflict.min_count) && Number(this.activeConflict.multiplicity) > 1){
                     this.count = Number(this.activeConflict.multiplicity)
+                    this.step = Number(this.activeConflict.multiplicity)
+                    this.count_min = Number(this.activeConflict.multiplicity)
+                  }else{
+                    if(Number(this.activeConflict.multiplicity) <= Number(this.activeConflict.min_count) && Number(this.activeConflict.multiplicity) > 1){
+                      if(!(Number(this.activeConflict.min_count) % Number(this.activeConflict.multiplicity))){
+                        this.count = Number(this.activeConflict.min_count)
+                        this.step = Number(this.activeConflict.multiplicity)
+                        this.count_min = Number(this.activeConflict.min_count)
+                      }else{
+                        this.count = Number(this.activeConflict.min_count) + Number(this.activeConflict.multiplicity) - Number(this.activeConflict.min_count) % Number(this.activeConflict.multiplicity)
+                        this.step = Number(this.activeConflict.multiplicity)
+                        this.count_min = this.count
+                      }
+                    }else{
+                      this.count = Number(this.activeConflict.min_count) > 0 ? Number(this.activeConflict.min_count) : 1
+                      this.step = 1
+                      this.count_min = this.count
+                    }
                   }
+
                 }
               }
             }
@@ -804,12 +863,13 @@ export default {
     },
     modalActions: function(newVal){
       if(newVal == false){
-        if(this.modalActionsData && Object.keys(this.modalActionsData).length == 1 && !this.allOff){
-          this.count = Number(this.modalActionsData[0].multiplicity)
+        if(!this.allOff){
+          if(Number(this.activeConflict.multiplicity) <= 1 || Number(this.activeConflict.min_count) <= 1){
+            this.count = 1
+          }
         }else{
-          this.count = Number(this.modalActionsData[0].min_count) > 0 ? Number(this.modalActionsData[0].min_count) : 1
+          this.count = 1
         }
-
       }
     },
 
