@@ -3,7 +3,8 @@
   <div class="product-item product-item-vertical">
     <div class="products__header">
       <!-- Левая часть шапки страницы -->
-      <div class="products__header-left" @click.prevent="modalProduct = false">
+      <div class="products__header-left" @click.prevent="showInfo ? modalProduct = true : modalProduct = false" 
+      :class="{ 'products__header-left--active' : showInfo }">
         <div class="products__image-container">
           <img
             :src="product.image"
@@ -13,9 +14,9 @@
           />
         </div>
         <span class="products__title">{{ product.pagetitle }}</span>
-        <!-- <button class="products__header-description-button">
+        <button class="products__header-description-button"  :class="{ 'products__header-description-button--active' : showInfo }">
           <i class="d-icon-arrow-right products__header-description-button-icon"></i>
-        </button> -->
+        </button>
       </div>
       <!-- Правая часть шапки страницы -->
       <div class="products__header-right">
@@ -65,6 +66,7 @@
   <teleport to="body">
     <customModal
       v-model="this.modalProduct"
+      
       class="product-modal__info"
     >
       <div class="product-modal__info-header">
@@ -76,17 +78,57 @@
             <p class="product-card__article">Арт: {{ product.article }}</p>
           </div>
           <div class="product-modal__info-header-info-characters">
-            <div class="product-modal__info-header-info-characters-item">
-              <div class="product-modal__info-header-info-characters-label">Производитель</div>
-              <div class="product-modal__info-header-info-characters-text">Интерскол</div>
-            </div>
-            <div class="product-modal__info-header-info-characters-item">
-              <div class="product-modal__info-header-info-characters-label">Производитель</div>
-              <div class="product-modal__info-header-info-characters-text">Интерскол</div>
+            <div class="product-modal__info-header-info-characters-item" v-for="(item, index) in product.category_characters" :key="index">
+              <div class="product-modal__info-header-info-characters-label">{{ item.caption }}</div>
+              <div class="product-modal__info-header-info-characters-text">{{ item.value }}</div>
             </div>
           </div>
         </div>
-        <div class="product-modal__info-header-slider"><img :src="product.image" :alt="product.pagetitle" class="product-card__image" /></div>
+        <div class="product-modal__info-header-slider" v-if="product.gallery.length > 1">
+          <Swiper
+            ref="galleryTop"
+            :modules="[Thumbs]"
+            :thumbs="{ swiper: galleryThumbs }"
+            :slides-per-view="1"
+            
+          >
+            <SwiperSlide v-for="(img, ind) in product.gallery" :key="ind">
+              <img :src="site_url_prefix + img.url" />
+            </SwiperSlide>
+            
+          </Swiper>
+          <Swiper
+            ref="galleryThumbs"
+            class="galleryThumbs"
+            :modules="[Thumbs]"
+            :slides-per-view="4"
+            :space-between="10"
+            watch-slides-progress
+          >
+            <SwiperSlide v-for="(img, ind) in product.gallery" :key="ind">
+              <img :src="site_url_prefix + img.url" />
+            </SwiperSlide>
+          </Swiper>
+          <!-- <Swiper
+            v-if="product.gallery.length>1"
+            :slides-per-view="1"
+            
+            :modules="[Navigation, Pagination]"
+            navigation
+            pagination
+            :autoplay="{ delay: 10000, disableOnInteraction: false }"
+            >
+            <template v-for="(img, n) in product.gallery" :key="n">
+              <SwiperSlide>
+                <img :src="site_url_prefix + img.url" :alt="product.pagetitle" class="product-card__image" loading="lazy"/>
+              </SwiperSlide>
+            </template>
+          </Swiper> -->
+          
+        </div>
+        <div class="product-modal__info-header-slider" v-else>
+          <img :src="product.image" :alt="product.pagetitle" class="product-card__image" /> 
+        </div>
       </div>
 
       <Tabs class="product-modal__info-content">
@@ -104,8 +146,26 @@
         </TabList>
 
         <TabPanels>
-          <TabPanel v-if="!tabException">О товаре</TabPanel>
-          <TabPanel v-else>Характеристики</TabPanel>
+          <TabPanel v-if="!tabException">
+            <div class="product-modal__info-tab" 
+            v-html="product.content"
+            v-if="product.content && product.content != '<p></p>'">
+            </div>
+            <div v-else  class="product-modal__info-tab">
+              <div class="dart-alert dart-alert-info">Нет описания</div>
+            </div>
+        </TabPanel>
+          <TabPanel v-else>
+            <div class="product-modal__info-tab product-modal__info-tab-characters" v-if="product.characters.length">
+              <div class="product-modal__info-header-info-characters-item" v-for="(item, index) in product.characters" :key="index">
+                <div class="product-modal__info-header-info-characters-label">{{ item.caption }}</div>
+                <div class="product-modal__info-header-info-characters-text">{{ item.value }}</div>
+              </div>
+            </div>
+            <div v-else  class="product-modal__info-tab">
+              <div class="dart-alert dart-alert-info">Характеристики не найдены</div>
+            </div>
+          </TabPanel>
         </TabPanels>
       </Tabs>
     </customModal>
@@ -118,6 +178,9 @@ import offer from './offerVertical.vue'
 import offerForOffer from './offerOffer.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Tabs from 'primevue/tabs'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Thumbs } from 'swiper'
+import { ref } from 'vue'
 
 export default {
   name: 'productComponent',
@@ -126,6 +189,9 @@ export default {
     return {
       modalProduct: false,
       tabException: false,
+      showInfo: false,
+      galleryTop: ref(null),
+      galleryThumbs: ref(null),
     }
   },
   props: {
@@ -137,7 +203,16 @@ export default {
     },
 
   },
-  components: { offer, offerForOffer, customModal, Tabs },
+  components: { offer, offerForOffer, customModal, Tabs, Swiper, SwiperSlide },
+  mounted() {
+    if(Object.keys(this.product).length){
+      if(this.product.id != 0 && this.product.id != null){
+        if(this.product?.category_characters?.length > 1 || this.product?.category_characters?.length > 0){
+          this.showInfo = true
+        }
+      }
+    }
+  },
   methods: {
     updateBasket() {
       this.$emit('updateBasket')
@@ -149,17 +224,27 @@ export default {
 }
 </script>
 <style lang="scss">
+  .products__header-left--active {
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .products__header-description-button.products__header-description-button--active {
+    display: flex;
+  }
   .products__header-description-button {
     height: 70px;
     width: 20px;
     background: #EDEDED;
     border-radius: 0px 12px 12px 0px;
-    display: flex;
     align-items: center;
     justify-content: center;
+    display: none;
     .products__header-description-button-icon{
       font-size: 11px;
     }
+  }
+  .product-modal__info .modal__content{
+    padding-right: 16px;
   }
   .product-modal__info .modal-content{
     max-width: 1008px;
@@ -176,9 +261,10 @@ export default {
   }
   .product-modal__info .product-card__info-text{
     gap: 8px;
+    max-width: 492px;
+    width: 492px;
   }
   .product-modal__info .product-card__title{
-    max-width: 492px;
     font-weight: 600;
     font-size: 24px;
     line-height: 31px;
@@ -191,24 +277,112 @@ export default {
     color: #757575;
   }
   .product-modal__info .product-modal__info-header-info-characters{
-
-  }
-  .product-modal__info .product-modal__info-header-info-characters{
-
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 544px;
+    width: 544px;
   }
   .product-modal__info .product-modal__info-header-info-characters-item{
-
+    min-height: 40px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ededed;
   }
   .product-modal__info .product-modal__info-header-info-characters-label{
-
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 21px;
+    color: #757575;
   }
   .product-modal__info .product-modal__info-header-info-characters-text{
-
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 21px;
+    text-align: right;
+    color: #282828;
   }
   .product-modal__info .product-modal__info-header-slider{
-
+    width: 336px;
+    max-width: 336px;
+    overflow: hidden;
   }
-
+  .product-modal__info .product-modal__info-content{
+    margin-top: 48px;
+  }
+  .product-modal__info .product-modal__info-content .product-modal__info-tabs{
+    display: flex;
+    gap: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #75757575;
+  }
+  .product-modal__info .d-tab2--active {
+    background-color: #282828 !important;
+    color: #fbfbfb !important;
+    font-weight: 600 !important;
+  }
+  .product-modal__info .d-tab2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    background-color: #ededed;
+    border-radius: 30px;
+    color: #282828;
+    font-size: 16px;
+    font-weight: 600;
+    transition-duration: 0.2s;
+    padding: 4px 16px;
+    height: 38px;
+    max-height: 100%;
+  }
+  .product-modal__info  .product-modal__info-tab{
+    margin: 24px 0;
+  }
+  .product-modal__info  .product-modal__info-tab .content{
+    background-color: transparent !important;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 21px;
+    color: #282828;
+  }
+  .product-modal__info .product-modal__info-tab .product-modal__info-header-info-characters-label,
+  .product-modal__info .product-modal__info-tab .product-modal__info-header-info-characters-text{
+    font-size: 14px;
+    line-height: 100%;
+  }
+  .product-modal__info .product-modal__info-tab .product-modal__info-header-info-characters{
+    gap: 4px;
+  }
+  .product-modal__info  .product-modal__info-tab-characters{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 40px; 
+  }
+  .product-modal__info  .product-card__image{
+    border-radius: 16px;
+  }
+  .product-modal__info .product-modal__info-header-slider img {
+    width: auto;
+    max-width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    object-fit: contain;
+    aspect-ratio: 1;
+    border-radius: 16px;
+  }
+  .product-modal__info .product-modal__info-header-slider .swiper-slide {
+    max-width: 301px;
+    max-height: 301px;
+    border-radius: 16px;
+    background-color: #fff;
+  }
+  .product-modal__info .product-modal__info-header-slider .galleryThumbs{
+    margin-top: 16px;
+  }
   @media (width <= 1280px) {
     .products__header-description-button {
       height: 50px;
