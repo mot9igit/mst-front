@@ -85,12 +85,13 @@
           </div>
         </div>
         <div class="product-modal__info-header-slider" v-if="product.gallery.length > 1">
+          
           <Swiper
             ref="galleryTop"
+            class="galleryTop"
             :modules="[Thumbs]"
             :thumbs="{ swiper: galleryThumbs }"
             :slides-per-view="1"
-            
           >
             <SwiperSlide v-for="(img, ind) in product.gallery" :key="ind">
               <img :src="site_url_prefix + img.url" />
@@ -126,27 +127,27 @@
           </Swiper> -->
           
         </div>
-        <div class="product-modal__info-header-slider" v-else>
+        <div class="product-modal__info-header-slider product-modal__info-header-simple-image" v-else>
           <img :src="product.image" :alt="product.pagetitle" class="product-card__image" /> 
         </div>
       </div>
 
       <Tabs class="product-modal__info-content">
         <TabList class="product-modal__info-tabs">
-          <Tab class="d-tab2" :class="{ 'd-tab2--active': !tabException }" :value="tabException">
-            <button class="collection__tabs-link" @click.prevent="tabException = false">
+          <Tab class="d-tab2" :class="{ 'd-tab2--active': tabException == 0 }" :value="0">
+            <button class="collection__tabs-link" @click.prevent="tabException = 0">
               <span>О товаре</span>
             </button>
           </Tab>
-          <Tab class="d-tab2" :class="{ 'd-tab2--active': tabException }" :value="tabException">
-            <button class="collection__tabs-link" @click.prevent="tabException = true">
+          <Tab class="d-tab2" :class="{ 'd-tab2--active': tabException == 1 }" :value="1">
+            <button class="collection__tabs-link" @click.prevent="tabException = 1">
               <span>Характеристики</span>
             </button>
           </Tab>
         </TabList>
 
         <TabPanels>
-          <TabPanel v-if="!tabException">
+          <TabPanel v-if="tabException == 0">
             <div class="product-modal__info-tab" 
             v-html="product.content"
             v-if="product.content && product.content != '<p></p>'">
@@ -154,7 +155,7 @@
             <div v-else  class="product-modal__info-tab">
               <div class="dart-alert dart-alert-info">Нет описания</div>
             </div>
-        </TabPanel>
+          </TabPanel>
           <TabPanel v-else>
             <div class="product-modal__info-tab product-modal__info-tab-characters" v-if="product.characters.length">
               <div class="product-modal__info-header-info-characters-item" v-for="(item, index) in product.characters" :key="index">
@@ -178,6 +179,10 @@ import offer from './offerVertical.vue'
 import offerForOffer from './offerOffer.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Tabs from 'primevue/tabs'
+//import Tab from 'primevue/tab'
+import TabPanels from 'primevue/tabpanels'
+import TabPanel from 'primevue/tabpanel'
+import TabList from 'primevue/tablist'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Thumbs } from 'swiper'
 import { ref } from 'vue'
@@ -188,7 +193,7 @@ export default {
   data() {
     return {
       modalProduct: false,
-      tabException: false,
+      tabException: 0,
       showInfo: false,
       galleryTop: ref(null),
       galleryThumbs: ref(null),
@@ -203,7 +208,7 @@ export default {
     },
 
   },
-  components: { offer, offerForOffer, customModal, Tabs, Swiper, SwiperSlide },
+  components: { offer, offerForOffer, customModal, Tabs,  TabPanels, TabPanel, TabList, Swiper, SwiperSlide, Thumbs },
   mounted() {
     if(Object.keys(this.product).length){
       if(this.product.id != 0 && this.product.id != null){
@@ -310,6 +315,15 @@ export default {
     max-width: 336px;
     overflow: hidden;
   }
+  .product-modal__info .product-modal__info-header-slider.product-modal__info-header-simple-image{
+    width: 336px;
+    max-width: 336px;
+    height: 336px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+  }
+
   .product-modal__info .product-modal__info-content{
     margin-top: 48px;
   }
@@ -382,6 +396,16 @@ export default {
   }
   .product-modal__info .product-modal__info-header-slider .galleryThumbs{
     margin-top: 16px;
+  }
+  .product-modal__info .p-tablist-tab-list {
+    position: relative;
+    display: flex;
+    border: none;
+    background: transparent;
+    border-style: solid;
+    border-color: transparent;
+    border-width: 0px;
+    gap: 16px;
   }
   @media (width <= 1280px) {
     .products__header-description-button {
