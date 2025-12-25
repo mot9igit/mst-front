@@ -87,46 +87,27 @@
         <div class="product-modal__info-header-slider" v-if="product.gallery.length > 1">
           
           <Swiper
-            ref="galleryTop"
             class="galleryTop"
-            :modules="[Thumbs]"
-           
-            :thumbs="{ swiper: galleryThumbs }"
+            :thumbs="{ swiper: thumbsSwiper }"
             :slides-per-view="1"
+            :navigation="{ clickable: true }"
+            :autoplay="{ delay: 10000, disableOnInteraction: false }"
           >
             <SwiperSlide v-for="(img, ind) in product.gallery" :key="ind">
               <img :src="site_url_prefix + img.url" />
             </SwiperSlide>
-            
           </Swiper>
           <Swiper
-            ref="galleryThumbs"
             class="galleryThumbs"
-            :modules="[Thumbs]"
             :slides-per-view="4"
             :space-between="10"
-           
+            @swiper="setThumbsSwiper"
             watch-slides-progress
           >
             <SwiperSlide v-for="(img, ind) in product.gallery" :key="ind">
               <img :src="site_url_prefix + img.url" />
             </SwiperSlide>
           </Swiper>
-          <!-- <Swiper
-            v-if="product.gallery.length>1"
-            :slides-per-view="1"
-            
-            :modules="[Navigation, Pagination]"
-            navigation
-            pagination
-            :autoplay="{ delay: 10000, disableOnInteraction: false }"
-            >
-            <template v-for="(img, n) in product.gallery" :key="n">
-              <SwiperSlide>
-                <img :src="site_url_prefix + img.url" :alt="product.pagetitle" class="product-card__image" loading="lazy"/>
-              </SwiperSlide>
-            </template>
-          </Swiper> -->
           
         </div>
         <div class="product-modal__info-header-slider product-modal__info-header-simple-image" v-else>
@@ -136,16 +117,16 @@
 
       <Tabs class="product-modal__info-content">
         <TabList class="product-modal__info-tabs">
-          <Tab class="d-tab2" :class="{ 'd-tab2--active': tabException == 0 }" :value="0">
+          <div class="d-tab2" :class="{ 'd-tab2--active': tabException == 0 }" :value="0">
             <button class="collection__tabs-link" @click.prevent="tabException = 0">
               <span>О товаре</span>
             </button>
-          </Tab>
-          <Tab class="d-tab2" :class="{ 'd-tab2--active': tabException == 1 }" :value="1">
+          </div>
+          <div class="d-tab2" :class="{ 'd-tab2--active': tabException == 1 }" :value="1">
             <button class="collection__tabs-link" @click.prevent="tabException = 1">
               <span>Характеристики</span>
             </button>
-          </Tab>
+          </div>
         </TabList>
 
         <TabPanels>
@@ -181,13 +162,14 @@ import offer from './offerVertical.vue'
 import offerForOffer from './offerOffer.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Tabs from 'primevue/tabs'
-//import Tab from 'primevue/tab'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import TabList from 'primevue/tablist'
 import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Thumbs } from 'swiper'
+import SwiperCore, { Autoplay, Thumbs, Navigation, Pagination } from 'swiper'
 import { ref } from 'vue'
+
+SwiperCore.use([Autoplay, Pagination, Thumbs, Navigation])
 
 export default {
   name: 'productComponent',
@@ -210,7 +192,18 @@ export default {
     },
 
   },
-  components: { offer, offerForOffer, customModal, Tabs,  TabPanels, TabPanel, TabList, Swiper, SwiperSlide, Thumbs },
+  setup() {
+      const thumbsSwiper = ref(null);
+      const setThumbsSwiper = (swiper) => {
+        thumbsSwiper.value = swiper;
+      };
+      return {
+        Thumbs,
+        thumbsSwiper,
+        setThumbsSwiper,
+      };
+    },
+  components: { offer, offerForOffer, customModal, Tabs,  TabPanels, TabPanel, TabList, Swiper, SwiperSlide },
   mounted() {
     if(Object.keys(this.product).length){
       if(this.product.id != 0 && this.product.id != null){
@@ -219,6 +212,7 @@ export default {
         }
       }
     }
+
   },
   methods: {
     updateBasket() {
@@ -325,7 +319,6 @@ export default {
     display: flex;
     justify-content: center;
   }
-
   .product-modal__info .product-modal__info-content{
     margin-top: 48px;
   }
@@ -411,6 +404,50 @@ export default {
   }
   .product-modal__info .p-tabpanels{
     padding: 0;
+  }
+  .product-modal__info .swiper-button-prev, .product-modal__info .swiper-button-next{
+    width:26px;
+    height: 119px;
+    background-color: #d9d9d98a;
+    position: absolute;
+    top: 30%;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(2px);
+  }
+  .product-modal__info .swiper-button-prev{
+    left: -1px;
+    border-radius: 0 20px 20px 0;
+  } 
+  .product-modal__info .swiper-button-next{
+    right: -1px;
+    border-radius:  20px 0 0 20px ;
+  }
+  .product-modal__info .swiper-button-prev:after{
+    content: '\e00d';
+    font-family: 'Iconly';
+    font-size: 12px;
+    transform: rotate(90deg) ;
+    color:#757575;
+  }
+  .product-modal__info .swiper-button-next:after{
+    content: '\e00d';
+    font-family: 'Iconly';
+    font-size: 12px;
+    transform: rotate(-90deg) ;
+    color:#757575;
+  }
+  .product-modal__info .swiper-button-prev.swiper-button-disabled, .product-modal__info .swiper-button-next.swiper-button-disabled{
+    background-color: #d9d9d94d;
+  }
+  .swiper-button-disabled:after{
+    color:#75757575 !important;
+  }
+  .galleryThumbs img{
+    cursor: pointer;
   }
   @media (width <= 1280px) {
     .products__header-description-button {
@@ -507,6 +544,23 @@ export default {
     }
     .product-modal__info .p-tablist-tab-list {
       gap: 8px;
+    }
+    .product-modal__info .swiper-button-prev, .product-modal__info .swiper-button-next{
+      width:18px;
+      height: 70px;
+      top: 30%;
+    }
+    .product-modal__info .swiper-button-prev{
+      border-radius: 0 10px 10px 0;
+    } 
+    .product-modal__info .swiper-button-next{
+      border-radius:  10px 0 0 10px ;
+    }
+    .product-modal__info .swiper-button-prev:after{
+      font-size: 10px;
+    }
+    .product-modal__info .swiper-button-next:after{
+      font-size: 10px;
     }
   }
   @media (width <= 1024px) {
@@ -626,6 +680,23 @@ export default {
     .product-modal__info .p-tablist-tab-list {
       gap: 8px;
     }
+    .product-modal__info .swiper-button-prev, .product-modal__info .swiper-button-next{
+      width:15px;
+      height: 50px;
+      top: 30%;
+    }
+    .product-modal__info .swiper-button-prev{
+      border-radius: 0 10px 10px 0;
+    } 
+    .product-modal__info .swiper-button-next{
+      border-radius:  10px 0 0 10px ;
+    }
+    .product-modal__info .swiper-button-prev:after{
+      font-size: 9px;
+    }
+    .product-modal__info .swiper-button-next:after{
+      font-size: 9px;
+    }
    }
   @media (width <= 700px) {
     .products__header-description-button {
@@ -731,6 +802,23 @@ export default {
     }
     .product-modal__info .p-tablist-tab-list {
       gap: 16px;
+    }
+    .product-modal__info .swiper-button-prev, .product-modal__info .swiper-button-next{
+      width:21px;
+      height: 119px;
+      top: 30%;
+    }
+    .product-modal__info .swiper-button-prev{
+      border-radius: 0 20px 20px 0;
+    } 
+    .product-modal__info .swiper-button-next{
+      border-radius:  20px 0 0 20px ;
+    }
+    .product-modal__info .swiper-button-prev:after{
+      font-size: 12px;
+    }
+    .product-modal__info .swiper-button-next:after{
+      font-size: 12px;
     }
   }
 </style>
