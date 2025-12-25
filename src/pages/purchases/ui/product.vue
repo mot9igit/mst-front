@@ -90,6 +90,7 @@
             ref="galleryTop"
             class="galleryTop"
             :modules="[Thumbs]"
+           
             :thumbs="{ swiper: galleryThumbs }"
             :slides-per-view="1"
           >
@@ -104,6 +105,7 @@
             :modules="[Thumbs]"
             :slides-per-view="4"
             :space-between="10"
+           
             watch-slides-progress
           >
             <SwiperSlide v-for="(img, ind) in product.gallery" :key="ind">
