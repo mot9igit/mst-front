@@ -206,13 +206,21 @@
       </button>
     </customModal>
     <customModal v-model="this.salesModal" class="sales_cart">
-      <h3>Внимание, отключение акций!</h3>
-      <p>Акция: {{ saleOff }} будет отключена</p>
+      <div v-if="actionSale == 0">
+        <h3>Внимание, отключение акций!</h3>
+        <p>Акция: {{ saleOff }} будет отключена</p>
+      </div>
+      <div v-else>
+        <h3>Внимание, подключение акций!</h3>
+        <p>В корзине подключена акция: {{ saleOff }}</p>
+      </div>
+      
       <div class="sales_cart-buttons">
         <button
           type="button"
           class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
           @click.prevent="this.salesModal = false"
+          v-if="actionSale == 0"
           >
           Отмена
         </button>
@@ -255,6 +263,7 @@ export default {
       newCount: 0,
       countObject: {},
       accept: 0,
+      actionSale: 0,
     }
   },
   methods: {
@@ -372,9 +381,10 @@ export default {
               detail: response?.data?.data?.message,
               life: 3000,
             })
-            if (response?.data?.data?.data.length){
+            if (response?.data?.data?.data.names.length){
               this.salesModal = true
-              this.saleOff = response.data.data.data
+              this.saleOff = response.data.data.data.names
+              this.actionSale = response.data.data.data.action
             }
 
           }
