@@ -407,6 +407,9 @@ export default {
     border-width: 0px;
     gap: 16px;
   }
+  .product-modal__info .p-tabpanels{
+    padding: 0;
+  }
   @media (width <= 1280px) {
     .products__header-description-button {
       height: 50px;
