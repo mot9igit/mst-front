@@ -440,8 +440,8 @@
             <!--Акция включена, Акция выключена, Акция несовместима, Условия акции не выполнены -->
             <div class="product-card-actions__modal-all-item-action">
               <p class="product-card-actions__modal-all-item-action-label">
-                <span v-if="(item.is_trigger == 1 && item.enabled == 0 && !Object.keys(this.mainActionsData).includes(item.action_id)) || (!this.activeConflict?.actions_ids?.includes(item.action_id) && !Object.keys(this.mainActionsData).includes(item.action_id))">Условия акции не выполнены:</span>
-                <span v-else-if="(this.activeConflict?.actions_ids?.includes(item.action_id) && item.is_trigger == 0 && !Object.keys(this.mainActionsData).includes(item.action_id)) || (this.activeConflict?.actions_ids?.includes(item.action_id) && item.is_trigger == 1 && item.enabled == 1 && !Object.keys(this.mainActionsData).includes(item.action_id))">Применена автоматически:</span>
+                <span v-if="(item.is_trigger == 1 && item.enabled == 0 && !Object.keys(this.mainActionsData).includes(item.action_id)) || (!this.activeConflict?.actions_ids?.includes(item.action_id) && !Object.keys(this.mainActionsData).includes(item.action_id)) || (this.mainActionsData[item.action_id] == true && Object.keys(this.mainActionsData).length == 1 && item.is_trigger == 1 && item.enabled == 0)">Условия акции не выполнены:</span>
+                <span v-else-if="(this.activeConflict?.actions_ids?.includes(item.action_id) && item.is_trigger == 0 && !Object.keys(this.mainActionsData).includes(item.action_id)) || (this.activeConflict?.actions_ids?.includes(item.action_id) && item.is_trigger == 1 && item.enabled == 1 && !Object.keys(this.mainActionsData).includes(item.action_id)) || (this.mainActionsData[item.action_id] == true && Object.keys(this.mainActionsData).length == 1 && item.is_trigger == 1 && item.enabled == 1)">Применена автоматически:</span>
                 <span v-else-if="this.mainActionsData[item.action_id] == true">Акция включена:</span>
                 <span v-else-if="this.mainActionsData[item.action_id] == false && !allOff">Акция несовместима:</span>
                 <span v-else-if="this.mainActionsData[item.action_id] == false && allOff">Акция выключена:</span>
@@ -452,7 +452,7 @@
                   <i class="d-icon-info product-card__actions-icon-info" v-if="this.mainActionsData[item.action_id] == false && !allOff"></i>
                   <div class="d-switch"
                   @click.prevent="checkAction(Number(item.action_id))"
-                  v-if="this.offer.main_actions.includes(Number(item.action_id))">
+                  v-if="(this.offer.main_actions.includes(Number(item.action_id)) && item.is_trigger == 0) || (this.offer.main_actions.includes(Number(item.action_id)) && item.is_trigger == 1 && Object.keys(this.mainActionsData).length > 1)">
                     <input
                       type="checkbox"
                       :name="Number(item.action_id)"
@@ -464,9 +464,9 @@
                     <div class="d-switch__circle"></div>
                   </div>
                   <!--крест-->
-                  <i class="d-icon-times product-card__actions-icon-cross"  v-else-if="!this.activeConflict?.actions_ids?.includes(item.action_id) && !this.offer.main_actions.includes(Number(item.action_id))"></i>
+                  <i class="d-icon-times product-card__actions-icon-cross"  v-else-if="(!this.activeConflict?.actions_ids?.includes(item.action_id) && !this.offer.main_actions.includes(Number(item.action_id))) || (item.is_trigger == 1 && item.enabled == 0) || (this.mainActionsData[item.action_id] == true && Object.keys(this.mainActionsData).length == 1 && item.is_trigger == 1 && item.enabled == 0)"></i>
                   <!--галочка-->
-                  <i class="d-icon-check product-card__actions-icon-auto" v-else-if="this.activeConflict?.actions_ids?.includes(item.action_id) && ((item.is_trigger == 1 && item.enabled == 1) || (item.is_trigger == 0))"></i>
+                  <i class="d-icon-check product-card__actions-icon-auto" v-else-if="this.activeConflict?.actions_ids?.includes(item.action_id) && ((item.is_trigger == 1 && item.enabled == 1) || (item.is_trigger == 0)) || (this.mainActionsData[item.action_id] == true && Object.keys(this.mainActionsData).length == 1 && item.is_trigger == 1 && item.enabled == 1)"></i>
 
                 </div>
 
