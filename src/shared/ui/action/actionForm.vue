@@ -4793,6 +4793,7 @@ body {
 }
 .promotions__card-value{
     overflow: hidden;
+    word-break: break-all;
 }
 .promotions__card-dates {
   .promotions__card-value-container {

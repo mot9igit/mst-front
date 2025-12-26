@@ -884,7 +884,6 @@ export default {
   justify-content: start;
   gap:49px;
   margin-bottom: 52px;
-
 }
 .product-card__vertical .product-card__price-container{
   display: flex;
@@ -1481,6 +1480,10 @@ export default {
   display: flex;
   align-items: center;
   margin-top: 11px;
+}
+.product-card-actions__modal-all-item-descr div {
+  overflow: hidden;
+  word-break: break-all;
 }
 @media (width <=1736px) {
   .product-card__vertical .products__list {
