@@ -207,6 +207,7 @@
             @disapproveElem="disapproveElem"
             @editNumber="editNumber"
             @actionCell="actionCell"
+            @saleModal="saleModal"
             :link_row="link_row"
           />
         </tbody>
@@ -275,6 +276,7 @@ export default {
     'disapproveElem',
     'editNumber',
     'actionCell',
+    "saleModal",
   ],
   components: {
     vTableRow,
@@ -492,6 +494,9 @@ export default {
     },
     actionCell(data) {
       this.$emit('actionCell', data)
+    },
+    saleModal(data){
+      this.$emit('saleModal', data)
     },
     // filterglobalTable(checked) {
     // 	if (checked) {

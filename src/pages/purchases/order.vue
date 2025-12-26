@@ -194,6 +194,7 @@
         :page="this.page"
         :table_data="this.table_data"
         @paginate="paginate"
+        @saleModal="saleModal"
       />
       <MinProductTable
         :items_data="optorder.products"
@@ -203,9 +204,19 @@
         :page="this.page"
         :table_data="this.table_data"
         @paginate="paginate"
+        @saleModal="saleModal"
       />
     </div>
     <Teleport to="body">
+      <customModal v-model="modalActiveActions" class="product-card-actions__modal-all product-card-actions-product__modal-all">
+        <saleWindow :product="productOrder" :orderInfo="orderInfo"></saleWindow>
+        <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-actions-product__modal-all-button"
+          @click.prevent="modalActiveActions = false"
+        >
+          Ok
+        </button>
+      </customModal>
       <customModal v-model="modalDocs" class="order-card__modal">
         <h3>
           Документы <span v-if="docs.length">({{ docs.length }})</span>
@@ -267,6 +278,8 @@ import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Toast from 'primevue/toast'
 import editOrderWindow from './ui/editOrderWindow.vue'
+import saleWindow from './ui/activeSalesWindow.vue'
+
 
 export default {
   name: 'purchasesOrder',
@@ -278,6 +291,7 @@ export default {
     Toast,
     editOrderWindow,
     MinProductTable,
+    saleWindow,
   },
   data() {
     return {
@@ -312,6 +326,11 @@ export default {
         rrc_discount: {
           label: 'Скидка от РРЦ в %',
           type: 'text',
+          class: 'cell_centeralign',
+        },
+        actions: {
+          label: 'Примененные акции',
+          type: 'sales',
           class: 'cell_centeralign',
         },
         count: {
@@ -359,6 +378,9 @@ export default {
       },
       requirement: {},
       requirement_id: 0,
+      modalActiveActions: false,
+      productOrder: [],
+      orderInfo: {}
     }
   },
   props: {
@@ -511,13 +533,25 @@ export default {
         },
       })
     },
+    saleModal(data){
+      this.modalActiveActions = true
+      this.productOrder = data
+    },
   },
   mounted() {
     this.getOptOrder({
       page: this.page,
       perpage: this.pagination_items_per_page,
       order_id: this.$route.params.order_id,
-    }).then(() => (this.loading = false))
+    }).then(() => {
+      this.loading = false
+      this.orderInfo.seller_name = this.optorder.seller_name
+      this.orderInfo.seller_img = this.optorder.seller_image
+      this.orderInfo.delivery = this.optorder.day_delivery
+      this.orderInfo.payer = this.optorder.payer
+      this.orderInfo.delay_type = this.optorder.delay_type
+      this.orderInfo.delay = this.optorder.delay
+    })
   },
   computed: {
     ...mapGetters({
@@ -531,6 +565,12 @@ export default {
       this.docs = newVal.docs
       this.status = newVal.status
       this.requirement = newVal
+      this.orderInfo.seller_name = newVal.seller_name
+      this.orderInfo.seller_img = newVal.seller_image
+      this.orderInfo.delivery = newVal.day_delivery
+      this.orderInfo.payer = newVal.payer
+      this.orderInfo.delay_type = newVal.delay_type
+      this.orderInfo.delay = newVal.delay
     },
   },
 }
@@ -997,7 +1037,7 @@ export default {
     font-size: 10px;
   }
 }
-@media (width <= 700px) {
+@media (width <= 780px) {
   .v-table-min-product {
     display: block;
   }

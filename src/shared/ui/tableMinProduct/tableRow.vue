@@ -27,6 +27,7 @@
         :cell_data="row"
         :cell_key="index"
         :value="row_data"
+        @saleModal="saleModal"
       />
     </div>
   </div>
@@ -41,7 +42,7 @@ import vTableCell from './tableCell.vue'
 export default {
   name: 'v-table-row',
   emits: [
-
+    "saleModal"
   ],
   props: {
 
@@ -72,6 +73,9 @@ export default {
   },
   computed: {},
   methods: {
+    saleModal(data){
+      this.$emit('saleModal', data)
+    },
     rowClass(s){
       if(s == true){
         this.classRow = true
@@ -236,7 +240,7 @@ export default {
   .d-table-min-product__cell-value{
     font-size: 16px;
     line-height: 21px;
-    
+
   }
 }
 </style>

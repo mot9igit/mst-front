@@ -181,6 +181,7 @@
             @disapproveElem="disapproveElem"
             @editNumber="editNumber"
             @actionCell="actionCell"
+            @saleModal="saleModal"
             :link_row="link_row"
           />
         </div>
@@ -229,7 +230,7 @@ import Skeleton from 'primevue/skeleton'
 export default {
   name: 'v-table',
   emits: [
-
+    "saleModal",
     'clickElem',
     'filter',
     'sort',
@@ -325,7 +326,7 @@ export default {
     }
   },
   computed: {
-    
+
     pagesCount() {
       let pages = Math.ceil(this.total / this.per_page)
       if (pages === 0) {
@@ -359,7 +360,9 @@ export default {
     },
   },
   methods: {
-    
+    saleModal(data){
+      this.$emit('saleModal', data)
+    },
     checkElem(data) {
       this.$emit('checkElem', data)
     },

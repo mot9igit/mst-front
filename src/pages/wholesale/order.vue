@@ -164,6 +164,7 @@
         :page="this.page"
         :table_data="this.table_data"
         @paginate="paginate"
+        @saleModal="saleModal"
       />
       <MinProductTable
         :items_data="order.products"
@@ -173,6 +174,7 @@
         :page="this.page"
         :table_data="this.table_data"
         @paginate="paginate"
+        @saleModal="saleModal"
       />
     </div>
     <Teleport to="body">
@@ -193,6 +195,15 @@
           Ok
         </button>
       </customModal>
+      <customModal v-model="modalActiveActions" class="product-card-actions__modal-all product-card-actions-product__modal-all">
+        <saleWindow :product="productOrder" :orderInfo="orderInfo"></saleWindow>
+        <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-actions-product__modal-all-button"
+          @click.prevent="modalActiveActions = false"
+        >
+          Ok
+        </button>
+      </customModal>
     </Teleport>
   </section>
 </template>
@@ -204,10 +215,11 @@ import BaseTable from '@/shared/ui/table/table.vue'
 import MinProductTable from '@/shared/ui/tableMinProduct/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
+import saleWindow from '@/pages/purchases/ui/activeSalesWindow.vue'
 
 export default {
   name: 'WholesaleOrder',
-  components: { Breadcrumbs, BaseTable, Loader, customModal, MinProductTable },
+  components: { Breadcrumbs, BaseTable, Loader, customModal, MinProductTable, saleWindow },
   data() {
     return {
       loading: true,
@@ -239,6 +251,11 @@ export default {
         rrc_discount: {
           label: 'Скидка от РРЦ в %',
           type: 'text',
+          class: 'cell_centeralign',
+        },
+        actions: {
+          label: 'Примененные акции',
+          type: 'sales',
           class: 'cell_centeralign',
         },
         count: {
@@ -282,6 +299,9 @@ export default {
           },
         },
       },
+      modalActiveActions: false,
+      productOrder: [],
+      orderInfo: {}
     }
   },
   props: {
@@ -317,13 +337,25 @@ export default {
           this.loading = false
         })
     },
+    saleModal(data){
+      this.modalActiveActions = true
+      this.productOrder = data
+    },
   },
   mounted() {
     this.getOrder({
       page: this.page,
       perpage: this.pagination_items_per_page,
       order_id: this.$route.params.order_id,
-    }).then(() => (this.loading = false))
+    }).then(() => {
+      this.loading = false
+      this.orderInfo.seller_name = this.order.seller_name
+      this.orderInfo.seller_img = this.order.seller_image
+      this.orderInfo.delivery = this.order.day_delivery
+      this.orderInfo.payer = this.order.payer
+      this.orderInfo.delay_type = this.order.delay_type
+      this.orderInfo.delay = this.order.delay
+    })
   },
   computed: {
     ...mapGetters({
@@ -334,6 +366,12 @@ export default {
     order: function (newVal) {
       this.status = newVal.status
       this.docs = newVal.docs
+      this.orderInfo.seller_name = newVal.seller_name
+      this.orderInfo.seller_img = newVal.seller_image
+      this.orderInfo.delivery = newVal.day_delivery
+      this.orderInfo.payer = newVal.payer
+      this.orderInfo.delay_type = newVal.delay_type
+      this.orderInfo.delay = newVal.delay
     },
   },
 }
@@ -360,6 +398,15 @@ export default {
 }
 .order-card__ordercomment {
   margin: 0px 9% 0px 0;
+}
+.product-card-actions-product__modal-all-button{
+  margin: 40px auto 0;
+}
+.product-card-actions-product__modal-all .product-card__seller{
+  cursor: auto;
+}
+.product-card-actions-product__modal-all .product-card__price-container-all{
+  width: 100%;
 }
 @media (width <= 1280px) {
   .shipments.optorder__content .d-top-order-container {

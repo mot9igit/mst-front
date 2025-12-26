@@ -1,7 +1,14 @@
 <template>
-  <div class="d-table-min-product__col-simple" v-if="cell_key != 'name' && cell_key != 'image'">
+  <div class="d-table-min-product__col-simple" v-if="cell_key != 'name' && cell_key != 'image' && cell_key != 'actions'">
     <div class="d-table-min-product__cell-label">{{ cell_data.label }}</div>
     <div  class="d-table-min-product__cell-value">{{ value[cell_key] }}</div>
+  </div>
+  <div class="d-table-min-product__col-sales" v-if="cell_key != 'name' && cell_key != 'image' && cell_key == 'actions'">
+    <div class="product-card-vertical__promo-all order-product-actions" @click.prevent="this.$emit('saleModal', value)" v-if="countSales(value[cell_key]) > 0">
+      <div class="d-table-min-product__cell-label">Акции</div>
+      <div  class="red-badge">{{ countSales(value[cell_key]) }}</div>
+      <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
+    </div>
   </div>
 </template>
 
@@ -10,7 +17,7 @@
 export default {
   name: 'tableCell',
   emits: [
-
+    "saleModal"
   ],
   props: {
 
@@ -88,7 +95,15 @@ export default {
     },
   },
   methods: {
-
+    countSales(sale){
+      let count = 0
+      for(var i in sale){
+        if(sale[i].enabled == 1){
+          count++
+        }
+      }
+      return count
+    },
     toggleSelection(id) {
       console.log(id)
       if (this.selectedItems.includes(id)) {
@@ -195,4 +210,35 @@ export default {
 </script>
 
 <style lang="scss">
+  .d-table-min-product__col-sales{
+    position: absolute;
+    top:0;
+    right: 0;
+  }
+  .d-table-min-product__content{
+    position: relative;
+  }
+  .order-product-actions{
+    font-size: 9px;
+    display: flex;
+    gap: 4px;
+    cursor: pointer;
+  }
+  @media (width <=600px) {
+  .order-product-actions{
+    font-size: 12px;
+    display: flex;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .d-table-min-product__col-sales{
+    bottom:0;
+    top: auto;
+    right: 0;
+    height: fit-content;
+  }
+  .d-table-min-product__col-all{
+    position: relative;
+  }
+  }
 </style>

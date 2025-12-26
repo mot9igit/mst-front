@@ -19,6 +19,7 @@
       @editNumber="editNumber"
       @actionCell="actionCell"
       @rowClass="rowClass"
+      @saleModal="saleModal"
     />
   </tr>
   <tr v-else class="d-table__row" :class="{'d-table__row-padding' : classRow}">
@@ -41,6 +42,7 @@
       @editNumber="editNumber"
       @actionCell="actionCell"
       @rowClass="rowClass"
+      @saleModal="saleModal"
       @click.prevent="
         $router.push({
           name: link_row.link_to,
@@ -69,7 +71,8 @@ export default {
     'approveElem',
     'disapproveElem',
     'editNumber',
-    'actionCell'
+    'actionCell',
+    "saleModal",
   ],
   props: {
     editMode: {
@@ -144,6 +147,9 @@ export default {
     },
     actionCell(data){
       this.$emit('actionCell', data)
+    },
+    saleModal(data){
+      this.$emit('saleModal', data)
     },
     linkParams() {
       const linkparams = {}

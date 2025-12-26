@@ -128,6 +128,16 @@
     </div>
     <div
       class="cell_value"
+      :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
+      v-else-if="cell_data.type == 'sales'"
+    >
+      <div class="order-product-actions" @click.prevent="this.$emit('saleModal', value)" v-if="countSales(value[cell_key]) > 0">
+          <div>{{ countSales(value[cell_key]) }}</div><div>Смотреть</div>
+      </div>
+
+    </div>
+    <div
+      class="cell_value"
       v-if="cell_data.type == 'link' && cell_data.items"
       :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
     >
@@ -249,7 +259,8 @@ export default {
     'editNumber',
     'update:selectedItems',
     'actionCell',
-    'rowClass'
+    'rowClass',
+    'saleModal',
   ],
   props: {
     editMode: {
@@ -405,6 +416,15 @@ export default {
       }
 
     },
+    countSales(sale){
+      let count = 0
+      for(var i in sale){
+        if(sale[i].enabled == 1){
+          count++
+        }
+      }
+      return count
+    },
   },
   components: {
     Button,
@@ -539,5 +559,39 @@ export default {
   padding: 3px 9px;
   font-weight:600;
   border-radius: 41px;
+}
+.order-product-actions {
+    display: flex;
+    gap: 0;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+}
+.order-product-actions div{
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    color: #282828;
+    background: #CDF0A9;
+    border-radius: 4px;
+    padding: 3px 5px;
+}
+.order-product-actions div:first-child{
+    padding: 3px 8px;
+}
+@media (width <= 1536px) {
+    .shipments .order-product-actions div {
+        font-size: 12px;
+    }
+}
+@media (width <= 1280px) {
+    .shipments .order-product-actions div {
+        font-size: 10px;
+    }
+}
+@media (width <= 1024px) {
+    .shipments .order-product-actions div {
+        font-size: 8px;
+    }
 }
 </style>
