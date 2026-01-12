@@ -126,11 +126,15 @@
 
                 <p class="cart__item-title">{{ product.name }}</p>
                 <p class="cart__item-article">Арт: {{ product.article }}</p>
-                <div class="cart__item-sales" v-if="(product.action && !product.triggers.length) || (product.action && product.triggers.length && org.cart_data.enabled && product.triggers.filter(item => org.cart_data.enabled?.includes(item)))">
+                <div class="cart__item-sales"
+                v-if="(product.action.length && !product.triggers.length) ||
+                      (product.action.length && product.triggers.length && org.cart_data.enabled.length && product.triggers.filter(item => org.cart_data.enabled?.includes(item)).length)">
                   <button class="cart__item-sales-label" @click.prevent="salesActive(product.key)" :class="{'cart__item-sales-label-open' : sales_active[product.key] == true}">Примененные акции<i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sales_active[product.key] == true}"></i></button>
+
                   <div class="cart__item-sales-container" v-if="sales_active[product.key] == true">
                     <div class="cart__item-sales-item" v-for="(sale, ind) in product.action" :key="ind">
                       <router-link
+                        v-if="sale.enabled == 1"
                         target="_blank"
                         :to="{
                           name: 'purchasesAction',
@@ -139,10 +143,10 @@
                       >
                       <p class="cart__item-sales-item-name">{{ sale.name }}</p>
                       </router-link>
-                      <p class="cart__item-sales-item-values">
+                      <p class="cart__item-sales-item-values" v-if="sale.enabled == 1">
                         <span class="cart__item-sales-item-value" v-if="sale.type != 3">Индивидуальная скидка</span>
                         <span class="cart__item-sales-item-value" v-if="sale.percent > 0">{{ sale.percent }}% Скидка</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2">Под реализацию</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2 ">Под реализацию {{ sale.delay > 0 ? '- ' + sale.delay + 'дн' : '' }}</span>
                         <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2">{{sale.delay_type == 1 && sale.delay > 0
                           ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'
                           : 'Предоплата'}}
@@ -214,7 +218,7 @@
         <h3>Внимание, подключение акций!</h3>
         <p>В корзине подключена акция: {{ saleOff }}</p>
       </div>
-      
+
       <div class="sales_cart-buttons">
         <button
           type="button"
@@ -375,12 +379,12 @@ export default {
         this.basketProductUpdate(data).then((response) => {
           // console.log(response)
           if (!response?.data?.data?.success && response?.data?.data?.message) {
-            this.$toast.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: response?.data?.data?.message,
-              life: 3000,
-            })
+            // this.$toast.add({
+            //   severity: 'error',
+            //   summary: 'Ошибка',
+            //   detail: response?.data?.data?.message,
+            //   life: 3000,
+            // })
             if (response?.data?.data?.data.names.length){
               this.salesModal = true
               this.saleOff = response.data.data.data.names
