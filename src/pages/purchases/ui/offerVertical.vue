@@ -341,13 +341,12 @@
               <!-- Цена товара -->
               <div class="product-card__price" v-else>
                 <p class="product-card__price-value-discounted">
-                  {{ allOff == true ? offer.prices.rrc : activeConflict.price.toLocaleString('ru') }} ₽
+                  {{ allOff == true ? (offer.prices.rrc * count).toLocaleString('ru') : (activeConflict.price * count).toLocaleString('ru')}} ₽
                 </p>
               </div>
-
-
             </div>
-            <p class="product-card__p">Цена с учетом примененных акций</p>
+            <p class="product-card__p">{{ allOff == true || activeConflict.prices.rrc_discount == 0 ? 'Без скидки от РРЦ' : '-' + activeConflict.prices.rrc_discount + '% от РРЦ'}}</p>
+            <p class="product-card__p">{{ allOff == true ? offer.prices.rrc.toLocaleString('ru') : activeConflict.price.toLocaleString('ru')}} ₽ цена за ед.</p>
             <!-- Количество -->
             <div class="product-card__count">
               <div class="product-card__count-value">
@@ -487,13 +486,18 @@
             <!-- Дополнительная информация -->
             <div class="product-card__stat-list-cont">
               <div class="product-card__stat-list">
-                <div  v-if="item.percent > 0">
-                  <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка {{ item.percent_num }}%
+                <div
+                  v-if="item.percent > 0"
+                >
+                  <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка {{ item.percent }}%
+                </div>
+                <div v-if="item.delivery_type == 2">
+                  <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
                 </div>
                 <div
-                  v-if="item.delivery_type == 2"
+                  v-if="item.delay_type == 2 && item.delay > 0"
                 >
-                  <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
+                  <i class="d-icon-box-flat product-card__buy-icon"></i>Под реал. {{ item.delay }}дн.
                 </div>
                 <div
                   v-if="item.condition_min_sum > 0"
