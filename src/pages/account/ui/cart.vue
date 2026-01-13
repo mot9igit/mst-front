@@ -233,7 +233,6 @@
           Принять
         </button>
       </div>
-
     </customModal>
   </teleport>
 </template>

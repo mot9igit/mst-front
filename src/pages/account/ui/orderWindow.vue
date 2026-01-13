@@ -215,12 +215,13 @@
                     </div>
 
                   </div>
-                  <div class="cart__item-sales" v-if="(product.action && !product.triggers) || (product.action && product.triggers && org.cart_data.enabled && product.triggers.filter(item => org.cart_data.enabled?.includes(item)))">
+                  <div class="cart__item-sales" v-if="(product.action.length && !product.triggers.length) || (product.action.length && product.triggers.length && org.cart_data.enabled.length && product.triggers.filter(item => org.cart_data.enabled?.includes(item)).length)">
                   <button class="cart__item-sales-label" @click.prevent="salesActive(product.key)" :class="{'cart__item-sales-label-open' : sales_active[product.key] == true}">Примененные акции<i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sales_active[product.key] == true}"></i></button>
                   <div class="cart__item-sales-container" v-if="sales_active[product.key] == true">
                     <div class="cart__item-sales-item" v-for="(sale, ind) in product.action" :key="ind">
                       <!-- <a class="cart__item-sales-item-name" :href="'/' + $route.params.id + '/purchases/actions/' + sale.id" tagret="_blank">{{ sale.name }}</a> -->
                       <router-link
+                        v-if="sale.enabled == 1"
                         target="_blank"
                         :to="{
                           name: 'purchasesAction',
@@ -229,10 +230,10 @@
                       >
                       <p class="cart__item-sales-item-name">{{ sale.name }}</p>
                       </router-link>
-                      <p class="cart__item-sales-item-values">
+                      <p class="cart__item-sales-item-values" v-if="sale.enabled == 1">
                         <span class="cart__item-sales-item-value" v-if="sale.type != 3">Индивидуальная скидка</span>
                         <span class="cart__item-sales-item-value" v-if="sale.percent > 0">{{ sale.percent }}% Скидка</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2">Под реализацию</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2 ">Под реализацию {{ sale.delay > 0 ? '- ' + sale.delay + 'дн' : '' }}</span>
                         <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2">{{sale.delay_type == 1 && sale.delay > 0
                           ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'
                           : 'Предоплата'}}
@@ -465,6 +466,31 @@
     </div>
   </div>
   <teleport to="body">
+    <customModal v-model="this.salesModal" class="sales_cart">
+      <div v-if="actionSale == 0">
+        <h3>Внимание, отключение акций!</h3>
+        <p>Акция: {{ saleOff }} будет отключена</p>
+      </div>
+      <div v-else>
+        <h3>Внимание, подключение акций!</h3>
+        <p>В корзине подключена акция: {{ saleOff }}</p>
+      </div>
+
+      <div class="sales_cart-buttons">
+        <button
+          type="button"
+          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
+          @click.prevent="this.salesModal = false"
+          v-if="actionSale == 0"
+          >
+          Отмена
+        </button>
+        <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          @click.prevent="accept = 1, ElemCount(countObject),  salesModal = false">
+          Принять
+        </button>
+      </div>
+    </customModal>
     <customModal v-model="modalComment" class="order-card__modal-comment">
         <h3>Введите комментарий к заказу</h3>
         <Editor
@@ -613,7 +639,13 @@ export default {
       modalCommentText: '',
       error: '',
       modalCommentDelete: false,
-      sales_active: {}
+      sales_active: {},
+      salesModal: false,
+      saleOff: [],
+      newCount: 0,
+      countObject: {},
+      accept: 0,
+      actionSale: 0,
     }
   },
   computed: {
@@ -714,6 +746,7 @@ export default {
         }
       } else {
         this.loading = true
+        this.countObject = object
         const data = {
           org_id: object.item.product.org_id,
           store_id: object.item.product.store_id,
@@ -721,18 +754,25 @@ export default {
           count: object.value,
           key: object.item.product.key,
           actions: object.item.product.actions,
+          accept: this.accept
         }
         this.basketProductUpdate(data).then((response) => {
           // console.log(response)
           if (!response?.data?.data?.success && response?.data?.data?.message) {
-            this.$toast.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: response?.data?.data?.message,
-              life: 3000,
-            })
+            // this.$toast.add({
+            //   severity: 'error',
+            //   summary: 'Ошибка',
+            //   detail: response?.data?.data?.message,
+            //   life: 3000,
+            // })
+            if (response?.data?.data?.data.names.length){
+              this.salesModal = true
+              this.saleOff = response.data.data.data.names
+              this.actionSale = response.data.data.data.action
+            }
           }
           this.updateBasket()
+          this.accept = 0
         })
         if (Number(object.value) != object.old_value) {
           window.dataLayer = window.dataLayer || []
