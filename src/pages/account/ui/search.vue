@@ -67,9 +67,11 @@ export default {
     ...mapActions({
       getOptProductsSearch: 'catalog/getOptProductsSearch',
       getOfferOptProductsSearch: 'offer/getOfferOptProductsSearch',
+      unsetOptProducts: 'catalog/unsetOptProducts',
+      unsetOfferProducts: 'offer/unsetOfferProducts',
     }),
     toSearch() {
-      if (this.search.length < 3) {
+      if (this.search.length < 3 && this.search.length > 0) {
         this.$toast.add({
           severity: 'warn',
           summary: 'Предупреждение поиска',
@@ -78,7 +80,6 @@ export default {
         })
         return
       }
-
       this.showSearchSuggestions = false
       if (this.$router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer') {
         this.$router.push({
@@ -91,8 +92,9 @@ export default {
         this.$router.push({ name: 'purchasesCatalogSearch', query: { search: this.search } })
       }
     },
+
     async searchProducts() {
-      if (this.search.length < 3) return
+      if (this.search.length < 3 && this.search.length > 0) return
       this.searchSuggestions = []
       const data = {
         search: this.search,
@@ -119,10 +121,16 @@ export default {
   },
   watch: {
     search(newVal) {
-      if (newVal.length < 3 || newVal == this.$route.query.search) {
+      if ((newVal.length < 3 && newVal.length > 0) || newVal == this.$route.query.search) {
         this.showSearchSuggestions = false
         return
+      }else{
+          if(newVal.length == 0){
+            this.toSearch()
+          }
       }
+
+
 
       this.showSearchSuggestions = !!newVal
 
