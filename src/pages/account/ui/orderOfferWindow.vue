@@ -207,7 +207,7 @@
                         </router-link>
                         <p class="cart__item-sales-item-values">
                           <span class="cart__item-sales-item-value" v-if="sale.type != 3">Индивидуальная скидка</span>
-                          <span class="cart__item-sales-item-value" v-if="sale.percent > 0">{{ sale.percent }}% Скидка</span>
+                          <span class="cart__item-sales-item-value" v-if="sale.percent_num > 0">{{ sale.percent_num }}% Скидка</span>
                           <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2">Под реализацию</span>
                           <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2">{{sale.delay_type == 1 && sale.delay > 0
                             ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'

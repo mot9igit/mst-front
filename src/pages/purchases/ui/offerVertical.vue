@@ -467,14 +467,11 @@
                   <i class="d-icon-times product-card__actions-icon-cross"  v-else-if="(!this.activeConflict?.actions_ids?.includes(item.action_id) && !this.offer.main_actions.includes(Number(item.action_id))) || (item.is_trigger == 1 && item.enabled == 0) || (this.mainActionsData[item.action_id] == true && Object.keys(this.mainActionsData).length == 1 && item.is_trigger == 1 && item.enabled == 0)"></i>
                   <!--галочка-->
                   <i class="d-icon-check product-card__actions-icon-auto" v-else-if="this.activeConflict?.actions_ids?.includes(item.action_id) && ((item.is_trigger == 1 && item.enabled == 1) || (item.is_trigger == 0)) || (this.mainActionsData[item.action_id] == true && Object.keys(this.mainActionsData).length == 1 && item.is_trigger == 1 && item.enabled == 1)"></i>
-
                 </div>
-
                 <p>
                   {{ item.name }}
                 </p>
               </div>
-
             </div>
 
             <!-- Описание -->
@@ -487,9 +484,9 @@
             <div class="product-card__stat-list-cont">
               <div class="product-card__stat-list">
                 <div
-                  v-if="item.percent > 0"
+                  v-if="item.percent_num > 0"
                 >
-                  <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка {{ item.percent }}%
+                  <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка {{ item.percent_num }}%
                 </div>
                 <div v-if="item.delivery_type == 2">
                   <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка

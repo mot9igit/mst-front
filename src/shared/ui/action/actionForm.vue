@@ -4515,6 +4515,9 @@ export default {
 }
 </script>
 <style lang="scss">
+.d-field-wrapper  .p-editor {
+    max-width: 100%;
+}
 .text-left {
   text-align: left;
 }
