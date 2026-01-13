@@ -300,7 +300,7 @@
                     <p class="product-card__stat-description">{{ offer.store_city }}</p>
                   </div>
                 </div>
-                <!-- Элемент доп. информации -->
+                <!-- Элемент доп. информации
                 <div class="product-card__stat">
                   <i class="d-icon-truck product-card__stat-icon"></i>
                   <div class="product-card__stat-content">
@@ -309,9 +309,9 @@
                       за счет {{ !allOff && activeConflict?.payer == 1 ? 'поставщика' : 'покупателя' }}
                     </p>
                   </div>
-                </div>
+                </div>-->
 
-                <!-- Элемент доп. информации -->
+                <!-- Элемент доп. информации
                 <div class="product-card__stat">
                   <i class="d-icon-wallet product-card__stat-icon"></i>
                   <div class="product-card__stat-content product-card__stat-content--horizontal">
@@ -323,7 +323,7 @@
                     </p>
                     <p class="product-card__stat-description" v-else>Предоплата</p>
                   </div>
-                </div>
+                </div>-->
 
 
           </div>

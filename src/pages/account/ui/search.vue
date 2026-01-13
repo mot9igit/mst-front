@@ -67,8 +67,6 @@ export default {
     ...mapActions({
       getOptProductsSearch: 'catalog/getOptProductsSearch',
       getOfferOptProductsSearch: 'offer/getOfferOptProductsSearch',
-      unsetOptProducts: 'catalog/unsetOptProducts',
-      unsetOfferProducts: 'offer/unsetOfferProducts',
     }),
     toSearch() {
       if (this.search.length < 3 && this.search.length > 0) {
