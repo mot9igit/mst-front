@@ -142,6 +142,7 @@
                 <div class="d-divider d-divider--full d-divider--big order__item-divider"></div>
                 <div
                   class="order__item-content"
+                  :class="{ 'order__item-noactive': product.count > Number(product.available) }"
                   v-for="(product, product_key) in warehouse.data"
                   :key="product_key"
                 >
@@ -165,7 +166,7 @@
                       </div>
                     </div>
                     <div class="order__item-content-top-right">
-                      <span class="order__item-product-price nowrap"
+                      <span class="order__item-product-price nowrap" v-if="product.cost > 0"
                         >{{ product.cost.toLocaleString('ru') }} ₽</span
                       >
                       <div class="order__item-product-price-rrc">
@@ -398,6 +399,7 @@
                           if (org?.cart_data?.not_available) {
                             this.showChangedCount = true
                             this.showChangedId = org.org_data.id
+                            this.showChangedIdStore = warehouse_id
                           } else {
                             orderSubmit(org.org_data.id, warehouse_id, 0)
                           }
@@ -414,6 +416,7 @@
                           if (org?.cart_data?.not_available) {
                             this.showChangedCount = true
                             this.showChangedId = org.org_data.id
+                            this.showChangedIdStore = warehouse_id
                           } else {
                             orderSubmit(org.org_data.id, warehouse_id)
                           }
@@ -440,6 +443,7 @@
                         if (org?.cart_data?.not_available) {
                           this.showChangedCount = true
                           this.showChangedId = org.org_data.id
+                          this.showChangedIdStore = warehouse_id
                         } else {
                           orderSubmit(org.org_data.id, warehouse_id)
                         }
@@ -485,6 +489,7 @@
                         if (this.basket?.cart_data?.not_available) {
                           this.showChangedCount = true
                           this.showChangedId = 'all'
+                          this.showChangedIdStore = ''
                         } else {
                           orderSubmit('all')
                         }
@@ -517,6 +522,7 @@
                         if (this.basketStore?.cart_data?.not_available) {
                           this.showChangedCount = true
                           this.showChangedId = 'all'
+                          this.showChangedIdStore = ''
                         } else {
                           orderSubmit('all', 0)
                         }
@@ -639,8 +645,8 @@
         Да, очистить!
       </button>
     </customModal>
-    <customModal v-model="this.showChangedCount" class="clear_cart">
-      <b>На складе не хватает товара</b>
+    <customModal v-model="this.showChangedCount" class="clear_cart cart_not-avialable">
+      <h3>На складе не хватает товара</h3>
       <p>
         Пока вы формировали заказ, у Поставщиков изменилось количество товаров на складе. Мы внесли
         изменения в ваш заказ в соответствии с остатками продукции на складах. Вам необходимо
@@ -661,12 +667,14 @@
                       <img :src="item.image" alt="" />
                       <div class="basket-change__product-info">
                         <div class="basket-change__product-name">{{ item.name }}</div>
-                        <div class="basket-change__product-article">{{ item.article }}</div>
+                        <div class="basket-change__product-article">Арт.: {{ item.article }}</div>
                       </div>
                     </div>
                     <div class="basket-change__product-right">
-                      Нет в наличии: <br />
-                      {{ item.available }} шт. <span>из {{ item.count }} шт</span>
+                      <span class="basket-change__product-right-label">В наличии:</span>
+                      <span class="basket-change__product-right-value"
+                        >{{ item.available }} шт из {{ item.count }} шт</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -686,7 +694,8 @@
           class="d-button d-button-primary d-button-primary-small"
           @click.prevent="
             () => {
-              orderSubmit(this.showChangedId)
+              this.order_to_basket = true
+              orderSubmit(this.showChangedId, this.showChangedIdStore)
               this.showChangedCount = false
             }
           "
@@ -721,6 +730,7 @@ export default {
       showClearBasketModal: false,
       showChangedCount: false,
       showChangedId: '',
+      showChangedIdStore: '',
       basketStore: {},
       fetchIds: [],
       id_clear_org: 0,
@@ -739,6 +749,7 @@ export default {
       countObject: {},
       accept: 0,
       actionSale: 0,
+      order_to_basket: false,
     }
   },
   computed: {
@@ -898,10 +909,11 @@ export default {
       this.loading = true
       this.getBasket().then((response) => {
         // console.log(response.data?.data?.data)
-        if (response.data?.data?.data?.cart_data?.not_available) {
+        if (response.data?.data?.data?.cart_data?.not_available && !this.order_to_basket) {
           this.loading = false
           this.showChangedCount = true
           this.showChangedId = orgId
+          this.showChangedIdStore = warehouse_id
         } else {
           // orderSubmitApi
           this.orderSubmitApi({ orgId: orgId, warehouse_id: warehouse_id }).then((response) => {
@@ -920,7 +932,7 @@ export default {
                 quantity: product.count,
               })
             }
-
+            this.order_to_basket = false
             window.dataLayer = window.dataLayer || []
 
             window.dataLayer.push({
@@ -938,6 +950,8 @@ export default {
             this.order = nums.join(', ')
             this.getBasket()
             this.loading = false
+            this.showChangedId = ''
+            this.showChangedIdStore = ''
           })
         }
       })
@@ -1400,6 +1414,101 @@ export default {
   flex-direction: column;
   gap: 40px;
 }
+.cart_not-avialable .modal-content {
+  width: 70%;
+}
+.cart_not-avialable .basket-change__product {
+  width: 100%;
+  justify-content: center;
+}
+.cart_not-avialable .basket-change__product,
+.cart_not-avialable .basket-change__product-left {
+  display: flex;
+  gap: 16px;
+}
+.cart_not-avialable .basket-change__product-left img {
+  max-height: 80px;
+  margin: 10px 0;
+  border-radius: 6px;
+}
+.cart_not-avialable h3 {
+  text-align: left;
+  margin-top: -24px;
+  margin-bottom: 40px;
+}
+.cart_not-avialable p {
+  text-align: left;
+}
+.cart_not-avialable .basket-change__h2 {
+  text-align: left;
+  font-weight: 600;
+  padding: 32px 0;
+}
+.cart_not-avialable .basket-change__product-info {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 0;
+  min-width: 500px;
+  max-width: 500px;
+  width: 500px;
+}
+
+.cart_not-avialable .basket-change__product-name {
+  font-size: 16px;
+  line-height: 18px;
+  font-weight: 600;
+  text-align: left;
+}
+.cart_not-avialable .basket-change__product-article {
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 400;
+  color: #757575;
+}
+.cart_not-avialable .basket-change__product-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 0;
+}
+.cart_not-avialable .basket-change__product-right-label {
+  font-size: 16px;
+  line-height: 18px;
+  font-weight: 400;
+}
+.cart_not-avialable .basket-change__product-right-value {
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 600;
+}
+.cart_not-avialable .basket-change__buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  padding: 40px 0 0;
+}
+.cart_not-avialable .basket-change__buttons .d-button-primary-small {
+  height: 32px;
+  min-height: 32px;
+  max-height: 32px;
+  padding: 6px 24px;
+  font-size: 14px;
+  width: fit-content;
+}
+.order__item-noactive .order__item-product,
+.order__item-noactive .order__item-content-top-right,
+.order__item-noactive .cart__item-sales-label {
+  opacity: 0.3;
+}
+.order__item-noactive .cart__item-sales-container {
+  opacity: 0.6;
+}
 @media (width <= 1920px) {
   .order {
     padding: 32px;
@@ -1653,6 +1762,63 @@ export default {
     font-size: 9px;
     line-height: 11px;
   }
+  .cart_not-avialable .basket-change__product-left img {
+    max-height: 50px;
+    margin: 8px 0;
+    border-radius: 6px;
+  }
+  .cart_not-avialable h3 {
+    margin-top: -21px;
+    margin-bottom: 40px;
+    font-size: 16px;
+  }
+  .cart_not-avialable p {
+    font-size: 12px;
+  }
+  .cart_not-avialable .basket-change__h2 {
+    padding: 16px 0;
+    font-size: 14px;
+  }
+  .cart_not-avialable .basket-change__product-info {
+    gap: 4px;
+    margin: 8px 0;
+    min-width: 400px;
+    max-width: 400px;
+    width: 400px;
+  }
+  .cart_not-avialable .basket-change__product-name {
+    font-size: 12px;
+    line-height: 14px;
+  }
+  .cart_not-avialable .basket-change__product-article {
+    font-size: 12px;
+    line-height: 14px;
+  }
+  .cart_not-avialable .basket-change__product-right {
+    gap: 4px;
+    margin: 8px 0;
+  }
+  .cart_not-avialable .basket-change__product-right-label {
+    font-size: 12px;
+    line-height: 14px;
+    font-weight: 400;
+  }
+  .cart_not-avialable .basket-change__product-right-value {
+    font-size: 12px;
+    line-height: 14px;
+    font-weight: 600;
+  }
+  .cart_not-avialable .basket-change__buttons {
+    gap: 16px;
+    padding: 24px 0 0;
+  }
+  .cart_not-avialable .basket-change__buttons .d-button-primary-small {
+    height: 24px;
+    min-height: 24px;
+    max-height: 24px;
+    padding: 4px 12px;
+    font-size: 12px;
+  }
 }
 @media (width <= 1024px) {
   .order__header-title {
@@ -1758,6 +1924,63 @@ export default {
   }
   .cart__item-sales-item {
     padding-right: 36px;
+  }
+  .cart_not-avialable .basket-change__product-left img {
+    max-height: 30px;
+    margin: 8px 0;
+    border-radius: 6px;
+  }
+  .cart_not-avialable h3 {
+    margin-top: -16px;
+    margin-bottom: 24px;
+    font-size: 10px;
+  }
+  .cart_not-avialable p {
+    font-size: 9px;
+  }
+  .cart_not-avialable .basket-change__h2 {
+    padding: 16px 0;
+    font-size: 9px;
+  }
+  .cart_not-avialable .basket-change__product-info {
+    gap: 4px;
+    margin: 8px 0;
+    min-width: 300px;
+    max-width: 300px;
+    width: 300px;
+  }
+  .cart_not-avialable .basket-change__product-name {
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .cart_not-avialable .basket-change__product-article {
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .cart_not-avialable .basket-change__product-right {
+    gap: 4px;
+    margin: 8px 0;
+  }
+  .cart_not-avialable .basket-change__product-right-label {
+    font-size: 9px;
+    line-height: 11px;
+    font-weight: 400;
+  }
+  .cart_not-avialable .basket-change__product-right-value {
+    font-size: 9px;
+    line-height: 11px;
+    font-weight: 600;
+  }
+  .cart_not-avialable .basket-change__buttons {
+    gap: 16px;
+    padding: 16px 0 0;
+  }
+  .cart_not-avialable .basket-change__buttons .d-button-primary-small {
+    height: 24px;
+    min-height: 24px;
+    max-height: 24px;
+    padding: 6px 12px;
+    font-size: 10px;
   }
 }
 @media (width <= 800px) {
@@ -1951,6 +2174,13 @@ export default {
     font-size: 8px;
     line-height: 10px;
   }
+  .cart_not-avialable .basket-change__product-info {
+    gap: 4px;
+    margin: 8px 0;
+    min-width: 200px;
+    max-width: 200px;
+    width: 200px;
+  }
 }
 @media (width <= 600px) {
   .order__header {
@@ -2137,6 +2367,103 @@ export default {
   }
   .cart__item-sales-item {
     margin-top: 16px;
+  }
+  .cart_not-avialable .modal-content {
+    width: 100%;
+  }
+  .cart_not-avialable .basket-change__product {
+    width: 100%;
+    justify-content: center;
+  }
+  .cart_not-avialable .basket-change__product,
+  .cart_not-avialable .basket-change__product-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+  .cart_not-avialable .basket-change__product-left img {
+    max-height: 80%;
+    width: 80%;
+    margin: 40px 0 0;
+    border-radius: 6px;
+  }
+  .cart_not-avialable h3 {
+    text-align: left;
+    margin-top: -24px;
+    margin-bottom: 40px;
+    font-size: 20px;
+  }
+  .cart_not-avialable p {
+    text-align: left;
+    font-size: 14px;
+  }
+  .cart_not-avialable .basket-change__h2 {
+    text-align: left;
+    font-weight: 600;
+    padding: 32px 0;
+    font-size: 16px;
+  }
+  .cart_not-avialable .basket-change__product-info {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 8px;
+    margin: 10px 0;
+    min-width: 100%;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .cart_not-avialable .basket-change__product-name {
+    font-size: 16px;
+    line-height: 18px;
+    font-weight: 600;
+    text-align: left;
+  }
+  .cart_not-avialable .basket-change__product-article {
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 400;
+    color: #757575;
+  }
+  .cart_not-avialable .basket-change__product-right {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    gap: 8px;
+    margin: 10px 0;
+    width: 100%;
+  }
+  .cart_not-avialable .basket-change__product-right-label {
+    font-size: 16px;
+    line-height: 18px;
+    font-weight: 400;
+  }
+  .cart_not-avialable .basket-change__product-right-value {
+    font-size: 14px;
+    line-height: 16px;
+    font-weight: 600;
+  }
+  .cart_not-avialable .basket-change__buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 40px 0 0;
+    width: 100%;
+  }
+  .cart_not-avialable .basket-change__buttons .d-button-primary-small {
+    height: 32px;
+    min-height: 32px;
+    max-height: 32px;
+    padding: 8px 12px;
+    font-size: 14px;
+    width: 100%;
   }
 }
 @media (width <= 400px) {
