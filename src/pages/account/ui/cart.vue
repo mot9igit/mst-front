@@ -99,6 +99,7 @@
               </div>
               <div
                 class="cart__item dart-mb-1"
+                :class="{ 'cart__item-noactive': product.count > Number(product.available) }"
                 v-for="(product, product_index) in store.data"
                 :key="product_index"
               >
@@ -224,7 +225,7 @@
                     :key="new Date().getTime() + '_' + product?.key"
                   />
 
-                  <span class="cart__item-footer-value">
+                  <span class="cart__item-footer-value" v-if="product.price > 0">
                     {{ product.price.toLocaleString('ru') }} ₽
                   </span>
                 </div>
@@ -667,6 +668,12 @@ export default {
     font-size: 14px;
     height: 38px;
   }
+}
+.cart__item-noactive .cart__item-badge,
+.cart__item-noactive .cart__item-title,
+.cart__item-noactive .cart__item-article,
+.cart__item-noactive .cart__item-footer {
+  opacity: 0.3;
 }
 @media (width <= 1024px) {
   .cart__item-sales {

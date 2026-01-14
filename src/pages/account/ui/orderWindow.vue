@@ -174,7 +174,9 @@
                           -{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ
                         </p>
                         <p v-else class="cart-no-discount">Без скидки от РРЦ</p>
-                        <p>{{ product.price.toLocaleString('ru') }} ₽ за ед.</p>
+                        <p v-if="product.price > 0">
+                          {{ product.price.toLocaleString('ru') }} ₽ за ед.
+                        </p>
                       </div>
                       <Counter
                         :classPrefix="'order__item-product'"
