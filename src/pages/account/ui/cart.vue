@@ -71,7 +71,6 @@
         <div class="cart__list" v-if="Object.keys(basketStore).length > 1">
           <div class="dart-mb-1" v-for="(org, index) in basketStore.data" :key="index">
             <div v-for="(store, store_index) in org.data" :key="store_index">
-
               <div class="mst__alert blue center_alert" v-if="store.type == 'order' && store.data">
                 <router-link
                   :to="{
@@ -80,8 +79,9 @@
                       id: this.$route.params.id,
                       order_id: store.id,
                     },
-                  }">
-                В данный момент вы редактируете "Заказ #{{ store.id }}"
+                  }"
+                >
+                  В данный момент вы редактируете "Заказ #{{ store.id }}"
                 </router-link>
               </div>
               <div class="mst__alert blue center_alert" v-if="store.type == 'offer' && store.data">
@@ -92,18 +92,17 @@
                       id: this.$route.params.id,
                       offer_id: store.id,
                     },
-                  }">
-                В данный момент вы редактируете "Предложение #{{ store.id }}"
-                 </router-link>
+                  }"
+                >
+                  В данный момент вы редактируете "Предложение #{{ store.id }}"
+                </router-link>
               </div>
               <div
                 class="cart__item dart-mb-1"
                 v-for="(product, product_index) in store.data"
                 :key="product_index"
               >
-
-              <div class="cart__item-header">
-
+                <div class="cart__item-header">
                   <div class="cart__item-badge">
                     <img :src="org.org_data.image" alt="" class="cart__item-badge-image" />
                     {{ org.org_data.name }}, {{ store.warehouse_data.address_short }}
@@ -126,13 +125,36 @@
 
                 <p class="cart__item-title">{{ product.name }}</p>
                 <p class="cart__item-article">Арт: {{ product.article }}</p>
-                <div class="cart__item-sales"
-                v-if="(product.action.length && !product.triggers.length) ||
-                      (product.action.length && product.triggers.length && org.cart_data.enabled.length && product.triggers.filter(item => org.cart_data.enabled?.includes(item)).length)">
-                  <button class="cart__item-sales-label" @click.prevent="salesActive(product.key)" :class="{'cart__item-sales-label-open' : sales_active[product.key] == true}">Примененные акции<i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sales_active[product.key] == true}"></i></button>
+                <div
+                  class="cart__item-sales"
+                  v-if="
+                    (product.action?.length && !product.triggers.length) ||
+                    (product.action?.length &&
+                      product.triggers.length &&
+                      org.cart_data.enabled.length &&
+                      product.triggers.filter((item) => org.cart_data.enabled?.includes(item))
+                        .length)
+                  "
+                >
+                  <button
+                    class="cart__item-sales-label"
+                    @click.prevent="salesActive(product.key)"
+                    :class="{ 'cart__item-sales-label-open': sales_active[product.key] == true }"
+                  >
+                    Примененные акции<i
+                      class="d-icon-angle-rounded-bottom product-card__seller-button-icon"
+                      :class="{
+                        'product-card__seller-button-icon-open': sales_active[product.key] == true,
+                      }"
+                    ></i>
+                  </button>
 
                   <div class="cart__item-sales-container" v-if="sales_active[product.key] == true">
-                    <div class="cart__item-sales-item" v-for="(sale, ind) in product.action" :key="ind">
+                    <div
+                      class="cart__item-sales-item"
+                      v-for="(sale, ind) in product.action"
+                      :key="ind"
+                    >
                       <router-link
                         v-if="sale.enabled == 1"
                         target="_blank"
@@ -141,23 +163,48 @@
                           params: { action_id: sale.action_id },
                         }"
                       >
-                      <p class="cart__item-sales-item-name">{{ sale.name }}</p>
+                        <p class="cart__item-sales-item-name">{{ sale.name }}</p>
                       </router-link>
                       <p class="cart__item-sales-item-values" v-if="sale.enabled == 1">
-                        <span class="cart__item-sales-item-value" v-if="sale.type != 3">Индивидуальная скидка</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.percent_num > 0">{{ sale.percent_num }}% Скидка</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2 ">Под реализацию {{ sale.delay > 0 ? '- ' + sale.delay + 'дн' : '' }}</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2">{{sale.delay_type == 1 && sale.delay > 0
-                          ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'
-                          : 'Предоплата'}}
+                        <span class="cart__item-sales-item-value" v-if="sale.type != 3"
+                          >Индивидуальная скидка</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.percent_num > 0"
+                          >{{ sale.percent_num }}% Скидка</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2"
+                          >Под реализацию {{ sale.delay > 0 ? '- ' + sale.delay + 'дн' : '' }}</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2"
+                          >{{
+                            sale.delay_type == 1 && sale.delay > 0
+                              ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'
+                              : 'Предоплата'
+                          }}
                         </span>
-                        <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2">Бесплатная доставка</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.condition_min_sum > 0">Мин. общ. сумма - {{ sale.condition_min_sum }} ₽</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.condition_SKU > 0">Мин. кол-во SKU - {{ sale.condition_SKU }} шт</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.condition_min_count > 0">Мин. общ. кол-во товаров - {{ sale.condition_min_count }} шт</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.min_count > 1">Мин. кол-во товаров - {{ sale.min_count }} шт</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.multiplicity > 1">Кратность - {{ sale.multiplicity }} шт</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.integration == 1">Интеграция с MachineStore</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2"
+                          >Бесплатная доставка</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.condition_min_sum > 0"
+                          >Мин. общ. сумма - {{ sale.condition_min_sum }} ₽</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.condition_SKU > 0"
+                          >Мин. кол-во SKU - {{ sale.condition_SKU }} шт</span
+                        >
+                        <span
+                          class="cart__item-sales-item-value"
+                          v-if="sale.condition_min_count > 0"
+                          >Мин. общ. кол-во товаров - {{ sale.condition_min_count }} шт</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.min_count > 1"
+                          >Мин. кол-во товаров - {{ sale.min_count }} шт</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.multiplicity > 1"
+                          >Кратность - {{ sale.multiplicity }} шт</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.integration == 1"
+                          >Интеграция с MachineStore</span
+                        >
                       </p>
                     </div>
                   </div>
@@ -225,11 +272,13 @@
           class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
           @click.prevent="this.salesModal = false"
           v-if="actionSale == 0"
-          >
+        >
           Отмена
         </button>
-        <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
-          @click.prevent="accept = 1, ElemCount(countObject),  salesModal = false">
+        <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          @click.prevent="((accept = 1), ElemCount(countObject), (salesModal = false))"
+        >
           Принять
         </button>
       </div>
@@ -241,12 +290,12 @@ import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
-import offer from '@/pages/wholesale/api/offer';
+import offer from '@/pages/wholesale/api/offer'
 
 export default {
   name: 'ProfileCart',
   emits: ['toggleCart', 'toggleOrder', 'basketUpdate', 'catalogUpdate'],
-  components: { Loader, customModal, Counter},
+  components: { Loader, customModal, Counter },
 
   props: {
     active: {
@@ -276,10 +325,10 @@ export default {
       basketProductRemove: 'basket/basketProductRemove',
       basketProductUpdate: 'basket/basketProductUpdate',
     }),
-    salesActive(key){
-      if(key in this.sales_active){
+    salesActive(key) {
+      if (key in this.sales_active) {
         this.sales_active[key] = !this.sales_active[key]
-      }else{
+      } else {
         this.sales_active[key] = true
       }
     },
@@ -342,7 +391,6 @@ export default {
       })
     },
     ElemCount(object) {
-
       if (!this.fetchIds.includes(object.item.product.key)) {
         this.fetchIds.push(object.item.product.key)
       }
@@ -373,7 +421,7 @@ export default {
           count: object.value,
           key: object.item.product.key,
           actions: object.item.product.actions,
-          accept: this.accept
+          accept: this.accept,
         }
         this.basketProductUpdate(data).then((response) => {
           // console.log(response)
@@ -384,12 +432,11 @@ export default {
             //   detail: response?.data?.data?.message,
             //   life: 3000,
             // })
-            if (response?.data?.data?.data.names.length){
+            if (response?.data?.data?.data.names.length) {
               this.salesModal = true
               this.saleOff = response.data.data.data.names
               this.actionSale = response.data.data.data.action
             }
-
           }
           this.$emit('catalogUpdate')
           this.updateBasket()
@@ -415,7 +462,7 @@ export default {
         }
       }
     },
-    ElemCountSaleOff(){
+    ElemCountSaleOff() {
       console.log('В работе')
     },
     updateBasket() {
@@ -524,7 +571,7 @@ export default {
     height: auto;
     min-height: 21px;
   }
-  .cart__list-order-edit{
+  .cart__list-order-edit {
     background-color: #ededed;
     border-radius: 24px 24px 0 0;
     border-bottom: 1px solid #75757575;
@@ -535,10 +582,10 @@ export default {
     text-align: center;
   }
 }
-.cart__item-sales{
+.cart__item-sales {
   padding: 0 0 16px 0;
 }
-.cart__item-sales-label:not(.cart__item-sales-label-open){
+.cart__item-sales-label:not(.cart__item-sales-label-open) {
   font-weight: 600;
   font-size: 12px;
   line-height: 16px;
@@ -547,7 +594,7 @@ export default {
   align-items: center;
   gap: 8px;
 }
-.cart__item-sales-label.cart__item-sales-label-open{
+.cart__item-sales-label.cart__item-sales-label-open {
   font-weight: 600;
   font-size: 12px;
   line-height: 16px;
@@ -556,14 +603,14 @@ export default {
   align-items: center;
   gap: 8px;
 }
-.cart__item-sales-label:not(.cart__item-sales-label-open) i{
+.cart__item-sales-label:not(.cart__item-sales-label-open) i {
   margin-top: -2px;
 }
-.cart__item-sales-label-open i{
+.cart__item-sales-label-open i {
   color: #282828;
-  margin-top:2px;
+  margin-top: 2px;
 }
-.cart__item-sales-item-name{
+.cart__item-sales-item-name {
   font-weight: 400;
   font-size: 12px;
   line-height: 16px;
@@ -574,7 +621,7 @@ export default {
   position: relative;
   margin-left: 4px;
 }
-.cart__item-sales-item-name:before{
+.cart__item-sales-item-name:before {
   content: '';
   position: absolute;
   display: block;
@@ -585,7 +632,7 @@ export default {
   height: 3px;
   border-radius: 3px;
 }
-.cart__item-sales-item-values{
+.cart__item-sales-item-values {
   font-weight: 500;
   font-size: 10px;
   line-height: 14px;
@@ -593,64 +640,64 @@ export default {
   padding-left: 14px;
   transition: all 0.2s ease;
 }
-.cart__item-sales-item-value:not(:first-child)::before{
+.cart__item-sales-item-value:not(:first-child)::before {
   content: ';';
   margin-right: 8px;
 }
-.sales_cart{
+.sales_cart {
   h3 {
     margin-top: -16px;
     margin-bottom: 32px;
     font-size: 24px;
   }
-  .sales_cart-buttons{
+  .sales_cart-buttons {
     display: flex;
     justify-content: center;
     gap: 24px;
     margin-top: 48px;
   }
-  button{
+  button {
     font-weight: 500;
     font-size: 14px;
     height: 38px;
   }
 }
 @media (width <= 1024px) {
-  .cart__item-sales{
+  .cart__item-sales {
     padding: 0 0 8px 0;
   }
-  .cart__item-sales-label:not(.cart__item-sales-label-open){
+  .cart__item-sales-label:not(.cart__item-sales-label-open) {
     font-size: 9px;
     line-height: 11px;
     gap: 4px;
   }
-  .cart__item-sales-label.cart__item-sales-label-open{
+  .cart__item-sales-label.cart__item-sales-label-open {
     font-size: 9px;
     line-height: 11px;
     gap: 4px;
   }
-  .cart__item-sales-label:not(.cart__item-sales-label-open) i{
+  .cart__item-sales-label:not(.cart__item-sales-label-open) i {
     margin-top: -2px;
     font-size: 7px;
   }
-  .cart__item-sales-label-open i{
-    margin-top:0px;
+  .cart__item-sales-label-open i {
+    margin-top: 0px;
     font-size: 7px;
   }
-  .cart__item-sales-item-name{
+  .cart__item-sales-item-name {
     font-size: 9px;
     line-height: 11px;
   }
-  .cart__item-sales-item-name:before{
+  .cart__item-sales-item-name:before {
     content: '';
     top: 3px;
   }
-  .cart__item-sales-item-values{
+  .cart__item-sales-item-values {
     font-size: 8px;
     line-height: 10px;
   }
 }
-.sales_cart{
+.sales_cart {
   h3 {
     margin-top: -12px;
     margin-bottom: 32px;
@@ -659,13 +706,13 @@ export default {
   p {
     font-size: 12px;
   }
-  .sales_cart-buttons{
+  .sales_cart-buttons {
     display: flex;
     justify-content: center;
     gap: 24px;
     margin-top: 48px;
   }
-  button{
+  button {
     font-weight: 500;
     font-size: 10px;
     height: 24px;
@@ -674,85 +721,85 @@ export default {
   }
 }
 @media (width <= 800px) {
-.sales_cart{
-  h3 {
-    margin-top: -12px;
-    margin-bottom: 24px;
-    font-size: 12px;
+  .sales_cart {
+    h3 {
+      margin-top: -12px;
+      margin-bottom: 24px;
+      font-size: 12px;
+    }
+    p {
+      font-size: 10px;
+    }
+    .sales_cart-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    button {
+      font-weight: 500;
+      font-size: 9px;
+      height: 16px;
+      min-height: 16px;
+      max-height: 16px;
+    }
   }
-  p {
-    font-size: 10px;
-  }
-  .sales_cart-buttons{
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    margin-top: 24px;
-  }
-  button{
-    font-weight: 500;
-    font-size: 9px;
-    height: 16px;
-    min-height: 16px;
-    max-height: 16px;
-  }
-}
 }
 @media (width <= 600px) {
-  .cart__item-sales{
+  .cart__item-sales {
     padding: 0 0 16px 0;
   }
-  .cart__item-sales-label:not(.cart__item-sales-label-open){
+  .cart__item-sales-label:not(.cart__item-sales-label-open) {
     font-size: 12px;
     line-height: 16px;
     gap: 8px;
   }
-  .cart__item-sales-label.cart__item-sales-label-open{
+  .cart__item-sales-label.cart__item-sales-label-open {
     font-size: 12px;
     line-height: 16px;
     gap: 8px;
   }
-  .cart__item-sales-label:not(.cart__item-sales-label-open) i{
+  .cart__item-sales-label:not(.cart__item-sales-label-open) i {
     margin-top: -2px;
     font-size: 9px;
   }
-  .cart__item-sales-label-open i{
-    margin-top:2px;
+  .cart__item-sales-label-open i {
+    margin-top: 2px;
     font-size: 9px;
   }
-  .cart__item-sales-item-name{
+  .cart__item-sales-item-name {
     font-size: 12px;
     line-height: 16px;
   }
-  .cart__item-sales-item-name:before{
+  .cart__item-sales-item-name:before {
     top: 5px;
   }
-  .cart__item-sales-item-values{
+  .cart__item-sales-item-values {
     font-size: 10px;
     line-height: 14px;
   }
-  .sales_cart{
-  h3 {
-    margin-top: -12px;
-    margin-bottom: 40px;
-    font-size: 16px;
+  .sales_cart {
+    h3 {
+      margin-top: -12px;
+      margin-bottom: 40px;
+      font-size: 16px;
+    }
+    p {
+      font-size: 14px;
+    }
+    .sales_cart-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 48px;
+    }
+    button {
+      font-weight: 500;
+      font-size: 14px;
+      height: 32px;
+      min-height: 32px;
+      max-height: 32px;
+    }
   }
-  p {
-    font-size: 14px;
-  }
-  .sales_cart-buttons{
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    margin-top: 48px;
-  }
-  button{
-    font-weight: 500;
-    font-size: 14px;
-    height: 32px;
-    min-height: 32px;
-    max-height: 32px;
-  }
-}
 }
 </style>

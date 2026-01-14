@@ -1,5 +1,5 @@
 <template>
-  <Toast/>
+  <Toast />
   <div class="d-sheet__overlay order__sheet-overlay" :class="{ active: active }">
     <div class="d-sheet__wrapper order__sheet-wrapper">
       <div
@@ -49,30 +49,32 @@
                 v-for="(warehouse, warehouse_id) in org.data"
                 :key="warehouse_id"
               >
-              <div class="mst__alert blue" v-if="warehouse.type == 'order' && warehouse.data">
-                <router-link
-                  :to="{
-                    name: 'purchasesOrder',
-                    params: {
-                      id: this.$route.params.id,
-                      order_id: warehouse.id,
-                    },
-                  }">
-                В данный момент вы редактируете "Заказ #{{ warehouse.id }}"
-                </router-link>
-              </div>
-              <div class="mst__alert blue" v-if="warehouse.type == 'offer' && warehouse.data">
-                <router-link
-                  :to="{
-                    name: 'purchasesOffer',
-                    params: {
-                      id: this.$route.params.id,
-                      offer_id: warehouse.id,
-                    },
-                  }">
-                В данный момент вы редактируете "Предложение #{{ warehouse.id }}"
-                 </router-link>
-              </div>
+                <div class="mst__alert blue" v-if="warehouse.type == 'order' && warehouse.data">
+                  <router-link
+                    :to="{
+                      name: 'purchasesOrder',
+                      params: {
+                        id: this.$route.params.id,
+                        order_id: warehouse.id,
+                      },
+                    }"
+                  >
+                    В данный момент вы редактируете "Заказ #{{ warehouse.id }}"
+                  </router-link>
+                </div>
+                <div class="mst__alert blue" v-if="warehouse.type == 'offer' && warehouse.data">
+                  <router-link
+                    :to="{
+                      name: 'purchasesOffer',
+                      params: {
+                        id: this.$route.params.id,
+                        offer_id: warehouse.id,
+                      },
+                    }"
+                  >
+                    В данный момент вы редактируете "Предложение #{{ warehouse.id }}"
+                  </router-link>
+                </div>
                 <div class="order__item-header">
                   <div class="order__item-header-top">
                     <div class="order__item-header-left">
@@ -163,7 +165,9 @@
                         >{{ product.cost.toLocaleString('ru') }} ₽</span
                       >
                       <div class="order__item-product-price-rrc">
-                        <p v-if="product.prices.rrc_discount > 0">-{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ</p>
+                        <p v-if="product.prices.rrc_discount > 0">
+                          -{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ
+                        </p>
                         <p v-else class="cart-no-discount">Без скидки от РРЦ</p>
                         <p>{{ product.price.toLocaleString('ru') }} ₽ за ед.</p>
                       </div>
@@ -204,86 +208,163 @@
                       :key="new Date().getTime() + '_1_' + product?.key"
                     />
                     <div class="order__item-product-price nowrap">
-
                       <p>{{ product.cost.toLocaleString('ru') }} ₽</p>
                       <div class="order__item-product-price-rrc">
-                        <p v-if="product.cost.rrc_discount > 0">-{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ</p>
+                        <p v-if="product.cost.rrc_discount > 0">
+                          -{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ
+                        </p>
                         <p v-else class="cart-no-discount">Без скидки от РРЦ</p>
                         <p>{{ product.price.toLocaleString('ru') }} ₽ за ед.</p>
                       </div>
-
                     </div>
-
                   </div>
-                  <div class="cart__item-sales" v-if="(product.action.length && !product.triggers.length) || (product.action.length && product.triggers.length && org.cart_data.enabled.length && product.triggers.filter(item => org.cart_data.enabled?.includes(item)).length)">
-                  <button class="cart__item-sales-label" @click.prevent="salesActive(product.key)" :class="{'cart__item-sales-label-open' : sales_active[product.key] == true}">Примененные акции<i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sales_active[product.key] == true}"></i></button>
-                  <div class="cart__item-sales-container" v-if="sales_active[product.key] == true">
-                    <div class="cart__item-sales-item" v-for="(sale, ind) in product.action" :key="ind">
-                      <!-- <a class="cart__item-sales-item-name" :href="'/' + $route.params.id + '/purchases/actions/' + sale.id" tagret="_blank">{{ sale.name }}</a> -->
-                      <router-link
-                        v-if="sale.enabled == 1"
-                        target="_blank"
-                        :to="{
-                          name: 'purchasesAction',
-                          params: { action_id: sale.action_id },
+                  <div
+                    class="cart__item-sales"
+                    v-if="
+                      (product.action?.length && !product.triggers.length) ||
+                      (product.action?.length &&
+                        product.triggers.length &&
+                        org.cart_data.enabled.length &&
+                        product.triggers.filter((item) => org.cart_data.enabled?.includes(item))
+                          .length)
+                    "
+                  >
+                    <button
+                      class="cart__item-sales-label"
+                      @click.prevent="salesActive(product.key)"
+                      :class="{ 'cart__item-sales-label-open': sales_active[product.key] == true }"
+                    >
+                      Примененные акции<i
+                        class="d-icon-angle-rounded-bottom product-card__seller-button-icon"
+                        :class="{
+                          'product-card__seller-button-icon-open':
+                            sales_active[product.key] == true,
                         }"
+                      ></i>
+                    </button>
+                    <div
+                      class="cart__item-sales-container"
+                      v-if="sales_active[product.key] == true"
+                    >
+                      <div
+                        class="cart__item-sales-item"
+                        v-for="(sale, ind) in product.action"
+                        :key="ind"
                       >
-                      <p class="cart__item-sales-item-name">{{ sale.name }}</p>
-                      </router-link>
-                      <p class="cart__item-sales-item-values" v-if="sale.enabled == 1">
-                        <span class="cart__item-sales-item-value" v-if="sale.type != 3">Индивидуальная скидка</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.percent_num > 0">{{ sale.percent_num }}% Скидка</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2 ">Под реализацию {{ sale.delay > 0 ? '- ' + sale.delay + 'дн' : '' }}</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2">{{sale.delay_type == 1 && sale.delay > 0
-                          ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'
-                          : 'Предоплата'}}
-                        </span>
-                        <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2">Бесплатная доставка</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.condition_min_sum > 0">Мин. общ. сумма - {{ sale.condition_min_sum }} ₽</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.condition_SKU > 0">Мин. кол-во SKU - {{ sale.condition_SKU }} шт</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.condition_min_count > 0">Мин. общ. кол-во товаров - {{ sale.condition_min_count }} шт</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.min_count > 1">Мин. кол-во товаров - {{ sale.min_count }} шт</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.multiplicity > 1">Кратность - {{ sale.multiplicity }} шт</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.integration == 1">Интеграция с MachineStore</span>
-                      </p>
+                        <!-- <a class="cart__item-sales-item-name" :href="'/' + $route.params.id + '/purchases/actions/' + sale.id" tagret="_blank">{{ sale.name }}</a> -->
+                        <router-link
+                          v-if="sale.enabled == 1"
+                          target="_blank"
+                          :to="{
+                            name: 'purchasesAction',
+                            params: { action_id: sale.action_id },
+                          }"
+                        >
+                          <p class="cart__item-sales-item-name">{{ sale.name }}</p>
+                        </router-link>
+                        <p class="cart__item-sales-item-values" v-if="sale.enabled == 1">
+                          <span class="cart__item-sales-item-value" v-if="sale.type != 3"
+                            >Индивидуальная скидка</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.percent_num > 0"
+                            >{{ sale.percent_num }}% Скидка</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2"
+                            >Под реализацию
+                            {{ sale.delay > 0 ? '- ' + sale.delay + 'дн' : '' }}</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2"
+                            >{{
+                              sale.delay_type == 1 && sale.delay > 0
+                                ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'
+                                : 'Предоплата'
+                            }}
+                          </span>
+                          <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2"
+                            >Бесплатная доставка</span
+                          >
+                          <span
+                            class="cart__item-sales-item-value"
+                            v-if="sale.condition_min_sum > 0"
+                            >Мин. общ. сумма - {{ sale.condition_min_sum }} ₽</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.condition_SKU > 0"
+                            >Мин. кол-во SKU - {{ sale.condition_SKU }} шт</span
+                          >
+                          <span
+                            class="cart__item-sales-item-value"
+                            v-if="sale.condition_min_count > 0"
+                            >Мин. общ. кол-во товаров - {{ sale.condition_min_count }} шт</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.min_count > 1"
+                            >Мин. кол-во товаров - {{ sale.min_count }} шт</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.multiplicity > 1"
+                            >Кратность - {{ sale.multiplicity }} шт</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.integration == 1"
+                            >Интеграция с MachineStore</span
+                          >
+                        </p>
+                      </div>
                     </div>
-                  </div>
                   </div>
                 </div>
 
                 <div class="order__item-content-comment">
-                  <button  class="d-button d-button-quaternary d-button-quaternary-small order__item-content-comment-add"
-                    @click.prevent="modalComment = true, modalCommentOrg = org_id, modalCommentStore = warehouse_id, modalCommentText = ''"
+                  <button
+                    class="d-button d-button-quaternary d-button-quaternary-small order__item-content-comment-add"
+                    @click.prevent="
+                      ((modalComment = true),
+                      (modalCommentOrg = org_id),
+                      (modalCommentStore = warehouse_id),
+                      (modalCommentText = ''))
+                    "
                     v-if="!warehouse.comment"
-                    >
-                      Добавить комментарий
-                      <i class="d-icon-plus"></i>
+                  >
+                    Добавить комментарий
+                    <i class="d-icon-plus"></i>
                   </button>
                   <div class="order__item-content-description-container" v-else>
                     <div class="order__item-content-description-header">
                       <p class="order__item-prop-label order__item-comment-weight">Комментарий:</p>
                       <div class="order__item-content-description-actions">
-                        <button class="order__item-content-description-actions-button"
-                          @click.prevent="modalComment = true, modalCommentOrg = org_id, modalCommentStore = warehouse_id, modalCommentText = warehouse.comment">
+                        <button
+                          class="order__item-content-description-actions-button"
+                          @click.prevent="
+                            ((modalComment = true),
+                            (modalCommentOrg = org_id),
+                            (modalCommentStore = warehouse_id),
+                            (modalCommentText = warehouse.comment))
+                          "
+                        >
                           <i class="d-icon-pen2"></i>
                         </button>
                         <div class="d-divider d-divider--vertical"></div>
-                        <button class="order__item-content-description-actions-button"
-                        @click.prevent="modalCommentDelete = true, modalCommentOrg = org_id, modalCommentStore = warehouse_id">
+                        <button
+                          class="order__item-content-description-actions-button"
+                          @click.prevent="
+                            ((modalCommentDelete = true),
+                            (modalCommentOrg = org_id),
+                            (modalCommentStore = warehouse_id))
+                          "
+                        >
                           <i class="d-icon-trash"></i>
                         </button>
                       </div>
                     </div>
-                    <div class="order__item-prop-value order__item-comment-weight order--comment">{{ prepareComment(warehouse.comment) }}</div>
+                    <div class="order__item-prop-value order__item-comment-weight order--comment">
+                      {{ prepareComment(warehouse.comment) }}
+                    </div>
                   </div>
-
                 </div>
                 <div class="order__item-content-bottom">
                   <div class="order__item-content-bottom-left">
                     <div
                       class="order__item-prop"
                       v-if="org?.cart_data?.delay_type == 1 && org?.cart_data?.delay == 0"
-                    ><p class="order__item-prop-label">Отсрочка:&nbsp;</p>
+                    >
+                      <p class="order__item-prop-label">Отсрочка:&nbsp;</p>
                       <p class="order__item-prop-value">Предоплата</p>
                     </div>
                     <div class="order__item-prop" v-else>
@@ -305,8 +386,8 @@
                     </div>
                   </div>
                   <div class="order__item-content-bottom-right">
-
-                    <button  v-if="warehouse.type == 'order'"
+                    <button
+                      v-if="warehouse.type == 'order'"
                       class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy"
                       @click.prevent="
                         () => {
@@ -321,7 +402,8 @@
                     >
                       Изменить заказ
                     </button>
-                    <button  v-else
+                    <button
+                      v-else
                       class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy"
                       @click.prevent="
                         () => {
@@ -482,62 +564,69 @@
           class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
           @click.prevent="this.salesModal = false"
           v-if="actionSale == 0"
-          >
+        >
           Отмена
         </button>
-        <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
-          @click.prevent="accept = 1, ElemCount(countObject),  salesModal = false">
+        <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          @click.prevent="((accept = 1), ElemCount(countObject), (salesModal = false))"
+        >
           Принять
         </button>
       </div>
     </customModal>
     <customModal v-model="modalComment" class="order-card__modal-comment">
-        <h3>Введите комментарий к заказу</h3>
-        <Editor
-          v-model="this.modalCommentText"
-          id="description"
-          editorStyle="height: 248px"
-          variant="simple"
-          @text-change="this.error = ''"
-        />
-        <div v-if="error != ''" class="d-input-error vendor-change-error">
-                    <i class="d-icon-warning d-input-error__icon"></i>
-                    <span class="d-input-error__text">{{ error }}</span>
-                  </div>
-        <div class="order-card__modal-buttons">
-          <button
-            type="button"
-            href="#"
-            class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
-            @click.prevent="modalCommentText = '', modalComment = false"
-          >
-            Отмена
-          </button>
-          <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
-            @click.prevent="saveComment">
-            Сохранить
-          </button>
-        </div>
-
+      <h3>Введите комментарий к заказу</h3>
+      <Editor
+        v-model="this.modalCommentText"
+        id="description"
+        editorStyle="height: 248px"
+        variant="simple"
+        @text-change="this.error = ''"
+      />
+      <div v-if="error != ''" class="d-input-error vendor-change-error">
+        <i class="d-icon-warning d-input-error__icon"></i>
+        <span class="d-input-error__text">{{ error }}</span>
+      </div>
+      <div class="order-card__modal-buttons">
+        <button
+          type="button"
+          href="#"
+          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
+          @click.prevent="((modalCommentText = ''), (modalComment = false))"
+        >
+          Отмена
+        </button>
+        <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          @click.prevent="saveComment"
+        >
+          Сохранить
+        </button>
+      </div>
     </customModal>
-    <customModal v-model="modalCommentDelete" class="order-card__modal-comment order-card__modal-comment-del">
-        <h3>Удалить комментарий?</h3>
+    <customModal
+      v-model="modalCommentDelete"
+      class="order-card__modal-comment order-card__modal-comment-del"
+    >
+      <h3>Удалить комментарий?</h3>
 
-        <div class="order-card__modal-buttons">
-          <button
-            type="button"
-            href="#"
-            class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
-            @click.prevent="modalCommentDelete = false"
-          >
-            Отмена
-          </button>
-          <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
-            @click.prevent="deleteComment">
-            Удалить
-          </button>
-        </div>
-
+      <div class="order-card__modal-buttons">
+        <button
+          type="button"
+          href="#"
+          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
+          @click.prevent="modalCommentDelete = false"
+        >
+          Отмена
+        </button>
+        <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          @click.prevent="deleteComment"
+        >
+          Удалить
+        </button>
+      </div>
     </customModal>
     <customModal v-model="this.showClearBasketModal" class="clear_cart">
       <b>Вы уверены, что хотите очистить корзину?</b>
@@ -663,10 +752,10 @@ export default {
       orderSubmitApi: 'basket/orderSubmit',
       setBasketComment: 'basket/setBasketComment',
     }),
-    salesActive(key){
-      if(key in this.sales_active){
+    salesActive(key) {
+      if (key in this.sales_active) {
         this.sales_active[key] = !this.sales_active[key]
-      }else{
+      } else {
         this.sales_active[key] = true
       }
     },
@@ -754,7 +843,7 @@ export default {
           count: object.value,
           key: object.item.product.key,
           actions: object.item.product.actions,
-          accept: this.accept
+          accept: this.accept,
         }
         this.basketProductUpdate(data).then((response) => {
           // console.log(response)
@@ -765,7 +854,7 @@ export default {
             //   detail: response?.data?.data?.message,
             //   life: 3000,
             // })
-            if (response?.data?.data?.data.names.length){
+            if (response?.data?.data?.data.names.length) {
               this.salesModal = true
               this.saleOff = response.data.data.data.names
               this.actionSale = response.data.data.data.action
@@ -849,18 +938,18 @@ export default {
         }
       })
     },
-    saveComment(){
-      if(this.modalCommentText != '' && this.modalCommentText != '<p></p>'){
+    saveComment() {
+      if (this.modalCommentText != '' && this.modalCommentText != '<p></p>') {
         this.loading = true
         this.setBasketComment({
-        store_id: this.basketWarehouse,
-        org_id: this.modalCommentOrg,
-        org_store: this.modalCommentStore,
-        comment: this.modalCommentText,
-        set: 'set'
-      }).then((res) => {
-        if(res.data.success){
-          this.$toast.add({
+          store_id: this.basketWarehouse,
+          org_id: this.modalCommentOrg,
+          org_store: this.modalCommentStore,
+          comment: this.modalCommentText,
+          set: 'set',
+        }).then((res) => {
+          if (res.data.success) {
+            this.$toast.add({
               severity: 'success',
               summary: 'Успешно!',
               detail: 'Комментарий успешно обновлен!',
@@ -873,66 +962,65 @@ export default {
             this.modalComment = false
             this.getBasket()
             this.loading = false
-        }else{
-          this.$toast.add({
-          severity: 'error',
-          summary: 'Произошла ошибка!',
-          detail: 'Комментарий не обновлен! Попробуйте добавить комментарий еще раз',
-          life: 3000,
-        })
-        this.loading = false
-        }
-      })
-      }else{
-        this.error = 'Введите комментарий!'
-        return
-      }
-
-    },
-    prepareComment(code){
-      let new_string = code.replace(/<(.|\n)*?>/g, '')
-      new_string = new_string.replace(/\&nbsp;/g, ' ')
-      new_string = new_string.replace(/\n/g, ' ')
-      if(new_string.length > 120){
-        new_string = new_string.substring(0,120)+"..."
-      }
-      return new_string
-    },
-    deleteComment(){
-        this.loading = true
-        this.setBasketComment({
-          store_id: this.basketWarehouse,
-          org_id: this.modalCommentOrg,
-          org_store: this.modalCommentStore,
-          comment: '',
-          set: 'unset'
-        }).then((res) => {
-          if(res.data.success){
-            this.$toast.add({
-                severity: 'success',
-                summary: 'Успешно!',
-                detail: 'Комментарий успешно удален!',
-                life: 3000,
-              })
-              this.error = ''
-              this.modalCommentText = ''
-              this.modalCommentOrg = 0
-              this.modalCommentStore = 0
-              this.modalComment = false
-              this.modalCommentDelete = false
-              this.getBasket()
-              this.loading = false
-          }else{
+          } else {
             this.$toast.add({
               severity: 'error',
               summary: 'Произошла ошибка!',
-              detail: 'Комментарий не удален! Попробуйте еще раз',
+              detail: 'Комментарий не обновлен! Попробуйте добавить комментарий еще раз',
               life: 3000,
             })
             this.loading = false
           }
         })
-    }
+      } else {
+        this.error = 'Введите комментарий!'
+        return
+      }
+    },
+    prepareComment(code) {
+      let new_string = code.replace(/<(.|\n)*?>/g, '')
+      new_string = new_string.replace(/\&nbsp;/g, ' ')
+      new_string = new_string.replace(/\n/g, ' ')
+      if (new_string.length > 120) {
+        new_string = new_string.substring(0, 120) + '...'
+      }
+      return new_string
+    },
+    deleteComment() {
+      this.loading = true
+      this.setBasketComment({
+        store_id: this.basketWarehouse,
+        org_id: this.modalCommentOrg,
+        org_store: this.modalCommentStore,
+        comment: '',
+        set: 'unset',
+      }).then((res) => {
+        if (res.data.success) {
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Успешно!',
+            detail: 'Комментарий успешно удален!',
+            life: 3000,
+          })
+          this.error = ''
+          this.modalCommentText = ''
+          this.modalCommentOrg = 0
+          this.modalCommentStore = 0
+          this.modalComment = false
+          this.modalCommentDelete = false
+          this.getBasket()
+          this.loading = false
+        } else {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Произошла ошибка!',
+            detail: 'Комментарий не удален! Попробуйте еще раз',
+            life: 3000,
+          })
+          this.loading = false
+        }
+      })
+    },
   },
   mounted() {
     this.getBasket().then(() => {
@@ -1052,8 +1140,7 @@ export default {
   .order__item-product-title {
     max-width: 500px;
   }
-  .order__list-order-edit{
-
+  .order__list-order-edit {
     border-radius: 24px 24px 0 0;
     border-bottom: 1px solid #75757575;
     color: #282828;
@@ -1062,134 +1149,133 @@ export default {
     padding: 8px 0px 12px;
     margin-bottom: 12px;
   }
-
 }
-  .order__item-content{
-    gap: 0;
-  }
-  .order__item-content-comment{
-    margin-top: 24px;
-  }
-  .order__item-content-description-container{
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .order__item-comment-weight{
-    font-weight: 400;
-  }
-  .order__item-content-description-header{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .order__item-content-description-actions{
-    display: flex;
-  }
-  .order__item-content-description-actions-button{
-    color: #757575;
-  }
-  .order__item-content .cart__item-header-button {
-    font-size: 16px;
-  }
-  .order__item-content-comment-add{
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 123%;
-    height: 24px;
-    min-height: 24px;
-    max-height: 24px;
-    padding: 4px 8px;
-    gap: 8px;
-  }
-  .order__item-content-comment-add i{
-    font-size: 10px;
-  }
-  .order-card__modal-comment .modal-content h3{
-    margin-top: -24px;
-    margin-bottom: 40px;
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 31px;
-  }
-  .order-card__modal-comment .modal-content .order-card__modal-buttons{
-    display: flex;
-    gap: 24px;
-    align-items: center;
-    justify-content: center;
-    margin-top: 56px;
-  }
-  .order-card__modal-comment .modal-content .order-card__modal-buttons .d-button{
-    height: 38px;
-    min-height: 38px;
-    max-height: 38px;
-    min-width: 91px;
-    padding: 10px 19px;
-    font-size: 14px;
-    font-weight: 500;
-  }
-  .order-card__modal-buttons-cancel{
-    background-color: #fff;
-    border: 1px solid #282828;
-    color: #282828;
-    width: 91px;
-  }
-  .order-card__modal-buttons-cancel:hover{
-    background-color: #282828;
-    border: 1px solid #282828;
-    color: #fff;
-  }
-  .order-card__modal-comment .modal-content{
-    padding-bottom: 0;
-  }
-  .order-card__modal-comment-del .modal-content {
-        max-width: 656px;
-  }
-  .order--comment{
-    width: 100%;
-    position: relative;
-    word-wrap: break-word;
-    text-wrap: wrap;
-    white-space: pre-wrap; /* css-3 */
-    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
-    white-space: -pre-wrap; /* Opera 4-6 */
-    white-space: -o-pre-wrap; /* Opera 7 */
-    overflow-wrap: break-word;
-    overflow: hidden;
-  }
+.order__item-content {
+  gap: 0;
+}
+.order__item-content-comment {
+  margin-top: 24px;
+}
+.order__item-content-description-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.order__item-comment-weight {
+  font-weight: 400;
+}
+.order__item-content-description-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.order__item-content-description-actions {
+  display: flex;
+}
+.order__item-content-description-actions-button {
+  color: #757575;
+}
+.order__item-content .cart__item-header-button {
+  font-size: 16px;
+}
+.order__item-content-comment-add {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 123%;
+  height: 24px;
+  min-height: 24px;
+  max-height: 24px;
+  padding: 4px 8px;
+  gap: 8px;
+}
+.order__item-content-comment-add i {
+  font-size: 10px;
+}
+.order-card__modal-comment .modal-content h3 {
+  margin-top: -24px;
+  margin-bottom: 40px;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 31px;
+}
+.order-card__modal-comment .modal-content .order-card__modal-buttons {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 56px;
+}
+.order-card__modal-comment .modal-content .order-card__modal-buttons .d-button {
+  height: 38px;
+  min-height: 38px;
+  max-height: 38px;
+  min-width: 91px;
+  padding: 10px 19px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.order-card__modal-buttons-cancel {
+  background-color: #fff;
+  border: 1px solid #282828;
+  color: #282828;
+  width: 91px;
+}
+.order-card__modal-buttons-cancel:hover {
+  background-color: #282828;
+  border: 1px solid #282828;
+  color: #fff;
+}
+.order-card__modal-comment .modal-content {
+  padding-bottom: 0;
+}
+.order-card__modal-comment-del .modal-content {
+  max-width: 656px;
+}
+.order--comment {
+  width: 100%;
+  position: relative;
+  word-wrap: break-word;
+  text-wrap: wrap;
+  white-space: pre-wrap; /* css-3 */
+  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  overflow-wrap: break-word;
+  overflow: hidden;
+}
 .product-card__basket-button.basket-true .d-counter {
-    background: #ededed;
-    box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
-    border-radius: 35px;
-    border: none;
+  background: #ededed;
+  box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
+  border-radius: 35px;
+  border: none;
 }
-.order__footer-divider{
-    margin-top: 0;
-    margin-bottom: 35px;
+.order__footer-divider {
+  margin-top: 0;
+  margin-bottom: 35px;
 }
 .order__footer {
-    background-color: rgba(255, 255, 255, 0);
-    backdrop-filter: blur(11.4px);
-    padding: 0 32px 32px;
+  background-color: rgba(255, 255, 255, 0);
+  backdrop-filter: blur(11.4px);
+  padding: 0 32px 32px;
 }
 .order__item-buy {
-    height: 32px;
-    min-height: 32px;
+  height: 32px;
+  min-height: 32px;
 }
 .order__item-list {
-    padding-bottom: 120px;
+  padding-bottom: 120px;
 }
 .order .d-divider {
-    background-color: #75757575 !important;
+  background-color: #75757575 !important;
 }
 .order__item .order__item-header-warehouse {
-    flex-direction: row;
-    gap: 4px;
-    align-items: flex-start;
-    text-align: left;
+  flex-direction: row;
+  gap: 4px;
+  align-items: flex-start;
+  text-align: left;
 }
 .order__header {
-    margin-bottom: 40px;
+  margin-bottom: 40px;
 }
 
 .order__item-header-delete {
@@ -1198,18 +1284,18 @@ export default {
 .order__item-list {
   gap: 40px;
 }
-.order__item-content-comment-add{
+.order__item-content-comment-add {
   box-shadow: none;
 }
 .order__item-content-top-right {
   width: max-content;
   align-items: end;
 }
-.order__item-content-top-right form{
+.order__item-content-top-right form {
   display: flex;
   justify-content: end;
 }
-.order__item-product-price-rrc{
+.order__item-product-price-rrc {
   display: flex;
   justify-content: end;
   flex-direction: column;
@@ -1221,24 +1307,24 @@ export default {
   line-height: 18px;
   color: #757575;
 }
-.order__item-product-price-rrc p{
+.order__item-product-price-rrc p {
   text-align: right;
 }
-.cart-no-discount{
+.cart-no-discount {
   font-size: 12px;
   line-height: 12px;
 }
-.order__item-product{
-  display:flex;
+.order__item-product {
+  display: flex;
   align-items: center;
 }
-.cart__item-header-button{
+.cart__item-header-button {
   align-self: start;
 }
-.order__item-content .cart__item-sales{
+.order__item-content .cart__item-sales {
   padding: 0 0 16px 58px;
 }
-.order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open){
+.order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) {
   font-weight: 600;
   font-size: 14px;
   line-height: 16px;
@@ -1247,7 +1333,7 @@ export default {
   align-items: center;
   gap: 8px;
 }
-.order__item-content .cart__item-sales-label.cart__item-sales-label-open{
+.order__item-content .cart__item-sales-label.cart__item-sales-label-open {
   font-weight: 600;
   font-size: 14px;
   line-height: 16px;
@@ -1256,14 +1342,14 @@ export default {
   align-items: center;
   gap: 8px;
 }
-.order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) i{
+.order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) i {
   margin-top: -2px;
 }
-.order__item-content .cart__item-sales-label-open i{
+.order__item-content .cart__item-sales-label-open i {
   color: #282828;
-  margin-top:4px;
+  margin-top: 4px;
 }
-.order__item-content .cart__item-sales-item-name{
+.order__item-content .cart__item-sales-item-name {
   font-weight: 400;
   font-size: 12px;
   line-height: 16px;
@@ -1275,13 +1361,13 @@ export default {
   margin-left: 4px;
   min-width: 40%;
 }
-.order__item-content .cart__item-sales-item{
+.order__item-content .cart__item-sales-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 8px;
 }
-.order__item-content .cart__item-sales-item-name:before{
+.order__item-content .cart__item-sales-item-name:before {
   content: '';
   position: absolute;
   display: block;
@@ -1292,7 +1378,7 @@ export default {
   height: 3px;
   border-radius: 3px;
 }
-.order__item-content .cart__item-sales-item-values{
+.order__item-content .cart__item-sales-item-values {
   font-weight: 500;
   font-size: 12px;
   line-height: 14px;
@@ -1301,365 +1387,376 @@ export default {
   transition: all 0.2s ease;
   text-align: right;
 }
-.order__item-content .cart__item-sales-item-value:not(:first-child)::before{
+.order__item-content .cart__item-sales-item-value:not(:first-child)::before {
   content: ';';
   margin-right: 8px;
 }
 @media (width <= 1920px) {
-    .order {
-        padding: 32px;
-    }
-
+  .order {
+    padding: 32px;
+  }
 }
 @media (width > 1536px) {
-    .order__item-product-counter .d-counter{
-        height: 30px;
-        width: 124px;
-        max-width: 124px;
-    }
-    .order__item-product-counter .d-counter__button:first-child:after {
-        content: "";
-        background-color: rgba(117, 117, 117, 0.3);
-        width: 0.5px;
-        height: 13px;
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
-    .order__item-product-counter .d-counter__button:last-child:before {
-        content: "";
-        background-color: rgba(117, 117, 117, 0.3);
-        width: 0.5px;
-        height: 13px;
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
-    .order__item-product-counter .d-counter__button-icon {
-        color: #282828;
-        font-size: 10px;
-    }
-    .order__item-product-counter .d-counter__button {
-        width: 20px;
-        padding-inline: 13px;
-        position: relative;
-    }
-    .order__item-product-counter {
-        background-color: #ededed;
-        border: none;
-        max-width: 124px;
-        height: 30px;
-    }
-    .order__item-product-price {
-        text-align: right;
-        font-size: 24px;
-        width: max-content;
-    }
+  .order__item-product-counter .d-counter {
+    height: 30px;
+    width: 124px;
+    max-width: 124px;
+  }
+  .order__item-product-counter .d-counter__button:first-child:after {
+    content: '';
+    background-color: rgba(117, 117, 117, 0.3);
+    width: 0.5px;
+    height: 13px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .order__item-product-counter .d-counter__button:last-child:before {
+    content: '';
+    background-color: rgba(117, 117, 117, 0.3);
+    width: 0.5px;
+    height: 13px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .order__item-product-counter .d-counter__button-icon {
+    color: #282828;
+    font-size: 10px;
+  }
+  .order__item-product-counter .d-counter__button {
+    width: 20px;
+    padding-inline: 13px;
+    position: relative;
+  }
+  .order__item-product-counter {
+    background-color: #ededed;
+    border: none;
+    max-width: 124px;
+    height: 30px;
+  }
+  .order__item-product-price {
+    text-align: right;
+    font-size: 24px;
+    width: max-content;
+  }
 }
 @media (width <= 1536px) {
-    .order__header-title {
-        font-size: 20px;
-    }
-    .order__item .order__item-product-title {
-        max-width: 440px;
-    }
-    .order__sheet {
-        width: 814px;
-    }
-    .order__item-product-counter .d-counter{
-        height: 24px;
-        width: 121px;
-        max-width: 121px;
-    }
-    .order__item-prop-label, .order__item-prop-value {
-        font-size: 14px;
-        font-weight: 500;
-    }
-    .order__item-prop-divider {
-        display: block;
-    }
-    .order__item-buy {
-        font-size: 16px;
-    }
-    .order__item-content-bottom-left {
-        align-items: flex-start;
-        gap: 4px;
-        flex-direction: row;
-    }
-    .order__item-product-counter .d-counter__button:first-child:after {
-        content: "";
-        background-color: rgba(117, 117, 117, 0.3);
-        width: 0.5px;
-        height: 13px;
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
-    .order__item-product-counter .d-counter__button:last-child:before {
-        content: "";
-        background-color: rgba(117, 117, 117, 0.3);
-        width: 0.5px;
-        height: 13px;
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
-    .order__item-product-counter .d-counter__button-icon {
-        color: #282828;
-        font-size: 10px;
-    }
-    .order__item-product-counter .d-counter__button {
-        width: 20px;
-        padding-inline: 13px;
-        position: relative;
-    }
-    .order__item-product-counter {
-        background-color: #ededed;
-        border: none;
-        max-width: 121px;
-        height: 24px;
-    }
-    .order__item-product-price {
-        text-align: right;
-        font-size: 20px;
-    }
-
+  .order__header-title {
+    font-size: 20px;
+  }
+  .order__item .order__item-product-title {
+    max-width: 440px;
+  }
+  .order__sheet {
+    width: 814px;
+  }
+  .order__item-product-counter .d-counter {
+    height: 24px;
+    width: 121px;
+    max-width: 121px;
+  }
+  .order__item-prop-label,
+  .order__item-prop-value {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .order__item-prop-divider {
+    display: block;
+  }
+  .order__item-buy {
+    font-size: 16px;
+  }
+  .order__item-content-bottom-left {
+    align-items: flex-start;
+    gap: 4px;
+    flex-direction: row;
+  }
+  .order__item-product-counter .d-counter__button:first-child:after {
+    content: '';
+    background-color: rgba(117, 117, 117, 0.3);
+    width: 0.5px;
+    height: 13px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .order__item-product-counter .d-counter__button:last-child:before {
+    content: '';
+    background-color: rgba(117, 117, 117, 0.3);
+    width: 0.5px;
+    height: 13px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .order__item-product-counter .d-counter__button-icon {
+    color: #282828;
+    font-size: 10px;
+  }
+  .order__item-product-counter .d-counter__button {
+    width: 20px;
+    padding-inline: 13px;
+    position: relative;
+  }
+  .order__item-product-counter {
+    background-color: #ededed;
+    border: none;
+    max-width: 121px;
+    height: 24px;
+  }
+  .order__item-product-price {
+    text-align: right;
+    font-size: 20px;
+  }
 }
 @media (width <= 1280px) {
-    .order__header-title {
-        font-size: 14px;
-    }
-    .order__item .order__item-product-title {
-        max-width: 266px;
-    }
-    .order__sheet {
-        width: 622px;
-    }
-    .order__item-content-top-right {
-        align-items: end;
-    }
-    .order__item-prop-label, .order__item-prop-value {
-        font-size: 14px;
-        font-weight: 500;
-    }
-    .order__item-prop-divider {
-        display: block;
-    }
-    .cart__item-header-button {
-        display: block;
-    }
-    .order__item-content .cart__item-header-button {
-        font-size: 14px;
-    }
-    .order__item-header-delete {
-        font-size: 14px;
-        aspect-ratio: 1;
-        width: 20px;
-        height: 20px;
-    }
-    .order__item-buy,.order__footer-actions-buy {
-        font-size: 10px;
-        font-weight: 600;
-        padding: 4px 16px;
-        height: 24px;
-        min-height: 24px;
-    }
-    .order__item-content-bottom-left {
-        align-items: flex-start;
-        gap: 4px;
-        flex-direction: row;
-    }
-    .order__item-product-price {
-        text-align: right;
-        font-size: 16px;
-    }
-    .order__item-content-description-actions {
-        font-size:14px;
-    }
-    .order__item-header-warehouse-label,.order__item-header-warehouse-value {
-        font-size: 12px;
-    }
-    .order__item-header-address-label, .order__item-header-address-value {
-        font-size: 14px;
-    }
-    .order__item-product-image-container {
-        aspect-ratio: 1;
-        width: 40px;
-        height: 40px;
-    }
-    .order__item-product-title, .order__item-product-article {
-        font-size: 12px;
-    }
-    .order__item-prop-label, .order__item-prop-value {
-        font-size: 10px;
-        font-weight: 500;
-    }
-    .order__footer-label{
-        font-size: 14px;
-    }
-    .order__footer-value {
-        font-size: 16px;
-    }
-    .order__footer {
-        padding: 0 16px 16px;
-    }
-    .order {
-        padding: 16px;
-    }
-    .order__header {
-        margin-bottom: 24px;
-    }
-    .order__footer-divider{
-        margin-top: 0;
-        margin-bottom: 16px;
-    }
-    .order__item-content-comment-add {
-      height: 24px;
-      font-size: 10px;
-    }
-    .order__item-content .cart__item-sales{
-      padding: 0 0 16px 48px;
-    }
-    .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open){
-      font-size: 10px;
-      line-height: 12px;
-      gap: 4px;
-    }
-    .order__item-content .cart__item-sales-label.cart__item-sales-label-open{
-      font-size: 10px;
-      line-height: 12px;
-      gap: 4px;
-    }
-    .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) i{
-      margin-top: -2px;
-      font-size: 7px;
-    }
-    .order__item-content .cart__item-sales-label-open i{
-      margin-top:0px;
-      font-size: 7px;
-    }
-    .order__item-content .cart__item-sales-item-name{
-      font-size: 10px;
-      line-height: 12px;
-    }
-    .order__item-content .cart__item-sales-item-name:before{
-      top: 5px;
-    }
-    .order__item-content .cart__item-sales-item-values{
-      font-size: 9px;
-      line-height: 11px;
-    }
+  .order__header-title {
+    font-size: 14px;
+  }
+  .order__item .order__item-product-title {
+    max-width: 266px;
+  }
+  .order__sheet {
+    width: 622px;
+  }
+  .order__item-content-top-right {
+    align-items: end;
+  }
+  .order__item-prop-label,
+  .order__item-prop-value {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .order__item-prop-divider {
+    display: block;
+  }
+  .cart__item-header-button {
+    display: block;
+  }
+  .order__item-content .cart__item-header-button {
+    font-size: 14px;
+  }
+  .order__item-header-delete {
+    font-size: 14px;
+    aspect-ratio: 1;
+    width: 20px;
+    height: 20px;
+  }
+  .order__item-buy,
+  .order__footer-actions-buy {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 16px;
+    height: 24px;
+    min-height: 24px;
+  }
+  .order__item-content-bottom-left {
+    align-items: flex-start;
+    gap: 4px;
+    flex-direction: row;
+  }
+  .order__item-product-price {
+    text-align: right;
+    font-size: 16px;
+  }
+  .order__item-content-description-actions {
+    font-size: 14px;
+  }
+  .order__item-header-warehouse-label,
+  .order__item-header-warehouse-value {
+    font-size: 12px;
+  }
+  .order__item-header-address-label,
+  .order__item-header-address-value {
+    font-size: 14px;
+  }
+  .order__item-product-image-container {
+    aspect-ratio: 1;
+    width: 40px;
+    height: 40px;
+  }
+  .order__item-product-title,
+  .order__item-product-article {
+    font-size: 12px;
+  }
+  .order__item-prop-label,
+  .order__item-prop-value {
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .order__footer-label {
+    font-size: 14px;
+  }
+  .order__footer-value {
+    font-size: 16px;
+  }
+  .order__footer {
+    padding: 0 16px 16px;
+  }
+  .order {
+    padding: 16px;
+  }
+  .order__header {
+    margin-bottom: 24px;
+  }
+  .order__footer-divider {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+  .order__item-content-comment-add {
+    height: 24px;
+    font-size: 10px;
+  }
+  .order__item-content .cart__item-sales {
+    padding: 0 0 16px 48px;
+  }
+  .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) {
+    font-size: 10px;
+    line-height: 12px;
+    gap: 4px;
+  }
+  .order__item-content .cart__item-sales-label.cart__item-sales-label-open {
+    font-size: 10px;
+    line-height: 12px;
+    gap: 4px;
+  }
+  .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) i {
+    margin-top: -2px;
+    font-size: 7px;
+  }
+  .order__item-content .cart__item-sales-label-open i {
+    margin-top: 0px;
+    font-size: 7px;
+  }
+  .order__item-content .cart__item-sales-item-name {
+    font-size: 10px;
+    line-height: 12px;
+  }
+  .order__item-content .cart__item-sales-item-name:before {
+    top: 5px;
+  }
+  .order__item-content .cart__item-sales-item-values {
+    font-size: 9px;
+    line-height: 11px;
+  }
 }
 @media (width <= 1024px) {
-    .order__header-title {
-        font-size: 14px;
-    }
-    .order__item .order__item-product-title {
-        max-width: 292px;
-    }
-    .order__sheet {
-        width: 622px;
-    }
-    .order__item-content-top-right {
-        align-items: end;
-    }
-    .order__item-prop-label, .order__item-prop-value {
-        font-size: 14px;
-        font-weight: 500;
-    }
-    .order__item-prop-divider {
-        display: block;
-    }
-    .cart__item-header-button {
-        display: block;
-    }
-    .order__item-content .cart__item-header-button {
-        font-size: 14px;
-    }
-    .order__item-header-delete {
-        font-size: 14px;
-        aspect-ratio: 1;
-        width: 20px;
-        height: 20px;
-    }
-    .order__item-buy,.order__footer-actions-buy {
-        font-size: 10px;
-        font-weight: 600;
-        padding: 4px 16px;
-        height: 24px;
-        min-height: 24px;
-    }
-    .order__item-content-bottom-left {
-        align-items: flex-start;
-        gap: 4px;
-        flex-direction: row;
-    }
-    .order__item-product-price {
-        text-align: right;
-        font-size: 16px;
-    }
-    .order__item-content-description-actions {
-        font-size:14px;
-    }
-    .order__item-header-warehouse-label,.order__item-header-warehouse-value {
-        font-size: 10px;
-    }
-    .order__item-header-address-label, .order__item-header-address-value {
-        font-size: 10px;
-    }
-    .order__item-product-image-container {
-        aspect-ratio: 1;
-        width: 40px;
-        height: 40px;
-    }
-    .order__item-product-title, .order__item-product-article {
-        font-size: 12px;
-    }
-    .order__item-prop-label, .order__item-prop-value {
-        font-size: 10px;
-        font-weight: 500;
-    }
-    .order__footer-label{
-        font-size: 14px;
-    }
-    .order__footer-value {
-        font-size: 16px;
-    }
-    .order__footer {
-        padding: 0 16px 16px;
-    }
-    .order {
-        padding: 16px;
-    }
-    .order__item-header-badge-image-container {
-        width: 18px;
-        height: 18px;
-    }
-    .order__item-product-price {
-        font-size: 14px;
-        font-weight: 600;
-    }
-    .order__item-product-counter{
-      width: 121px;
-    }
-    .order__footer-divider{
-        margin-top: 0;
-        margin-bottom: 24px;
-    }
-    .cart__item-sales-item{
-      padding-right: 36px;
-    }
+  .order__header-title {
+    font-size: 14px;
+  }
+  .order__item .order__item-product-title {
+    max-width: 292px;
+  }
+  .order__sheet {
+    width: 622px;
+  }
+  .order__item-content-top-right {
+    align-items: end;
+  }
+  .order__item-prop-label,
+  .order__item-prop-value {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .order__item-prop-divider {
+    display: block;
+  }
+  .cart__item-header-button {
+    display: block;
+  }
+  .order__item-content .cart__item-header-button {
+    font-size: 14px;
+  }
+  .order__item-header-delete {
+    font-size: 14px;
+    aspect-ratio: 1;
+    width: 20px;
+    height: 20px;
+  }
+  .order__item-buy,
+  .order__footer-actions-buy {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 16px;
+    height: 24px;
+    min-height: 24px;
+  }
+  .order__item-content-bottom-left {
+    align-items: flex-start;
+    gap: 4px;
+    flex-direction: row;
+  }
+  .order__item-product-price {
+    text-align: right;
+    font-size: 16px;
+  }
+  .order__item-content-description-actions {
+    font-size: 14px;
+  }
+  .order__item-header-warehouse-label,
+  .order__item-header-warehouse-value {
+    font-size: 10px;
+  }
+  .order__item-header-address-label,
+  .order__item-header-address-value {
+    font-size: 10px;
+  }
+  .order__item-product-image-container {
+    aspect-ratio: 1;
+    width: 40px;
+    height: 40px;
+  }
+  .order__item-product-title,
+  .order__item-product-article {
+    font-size: 12px;
+  }
+  .order__item-prop-label,
+  .order__item-prop-value {
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .order__footer-label {
+    font-size: 14px;
+  }
+  .order__footer-value {
+    font-size: 16px;
+  }
+  .order__footer {
+    padding: 0 16px 16px;
+  }
+  .order {
+    padding: 16px;
+  }
+  .order__item-header-badge-image-container {
+    width: 18px;
+    height: 18px;
+  }
+  .order__item-product-price {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .order__item-product-counter {
+    width: 121px;
+  }
+  .order__footer-divider {
+    margin-top: 0;
+    margin-bottom: 24px;
+  }
+  .cart__item-sales-item {
+    padding-right: 36px;
+  }
 }
-@media (width <= 800px){
+@media (width <= 800px) {
   .order__sheet {
     width: 90%;
     min-height: 70%;
   }
-  .order__header{
+  .order__header {
     border-bottom: none;
   }
   .order__header-title {
@@ -1690,23 +1787,26 @@ export default {
     max-height: 16px;
     min-height: 16px !important;
   }
-  .order__item-header-warehouse-label, .order__item-header-warehouse-value {
+  .order__item-header-warehouse-label,
+  .order__item-header-warehouse-value {
     font-size: 8px;
   }
-  .order__item-header-delete,.cart__item-header-button {
+  .order__item-header-delete,
+  .cart__item-header-button {
     font-size: 10px !important;
     width: 14px;
     height: 14px;
     display: flex;
     justify-content: end;
   }
-  .order__item-header-address-label, .order__item-header-address-value {
+  .order__item-header-address-label,
+  .order__item-header-address-value {
     font-size: 8px;
   }
   .order__item-header {
     gap: 9px;
   }
-  .order__item-content{
+  .order__item-content {
     padding: 8px 0;
     border-top: 0.5px solid #75757540;
   }
@@ -1717,7 +1817,8 @@ export default {
     width: 38px;
     height: 100%;
   }
-  .order__item-product-title, .order__item-product-article {
+  .order__item-product-title,
+  .order__item-product-article {
     font-size: 9px;
   }
   .order__item-product-price {
@@ -1731,7 +1832,7 @@ export default {
     line-height: 11px;
     margin-bottom: 4px;
   }
-  .cart-no-discount{
+  .cart-no-discount {
     font-size: 9px;
     line-height: 11px;
   }
@@ -1764,16 +1865,18 @@ export default {
   .order__item .order__item-content-bottom {
     margin-top: 30px;
   }
-  .order__item-prop-label, .order__item-prop-value {
+  .order__item-prop-label,
+  .order__item-prop-value {
     font-size: 9px;
   }
   .order__item-content-bottom-left {
     align-items: center;
   }
-  .order__item-content-bottom-left .d-divider{
+  .order__item-content-bottom-left .d-divider {
     height: 8px;
   }
-  .order__item-buy, .order__footer-actions-buy {
+  .order__item-buy,
+  .order__footer-actions-buy {
     font-size: 9px;
   }
   .order__footer {
@@ -1794,7 +1897,7 @@ export default {
     font-size: 10px;
     align-items: center;
   }
-  .order__item-content-description-actions .d-divider{
+  .order__item-content-description-actions .d-divider {
     height: 7px;
   }
   .order__item-content-description-container {
@@ -1807,50 +1910,49 @@ export default {
   .order__footer-right {
     gap: 8px;
   }
-  .order__item-content .cart__item-sales{
+  .order__item-content .cart__item-sales {
     padding: 0 33px 16px 46px;
-
   }
-  .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open){
+  .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) {
     font-size: 9px;
     line-height: 11px;
     gap: 4px;
   }
-  .order__item-content .cart__item-sales-label.cart__item-sales-label-open{
+  .order__item-content .cart__item-sales-label.cart__item-sales-label-open {
     font-size: 9px;
     line-height: 11px;
     gap: 4px;
   }
-  .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) i{
+  .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) i {
     margin-top: -2px;
     font-size: 7px;
   }
-  .order__item-content .cart__item-sales-label-open i{
-    margin-top:0px;
+  .order__item-content .cart__item-sales-label-open i {
+    margin-top: 0px;
     font-size: 7px;
   }
-  .order__item-content .cart__item-sales-item-name{
+  .order__item-content .cart__item-sales-item-name {
     font-size: 9px;
     line-height: 11px;
   }
-  .order__item-content .cart__item-sales-item-name:before{
+  .order__item-content .cart__item-sales-item-name:before {
     top: 5px;
   }
-  .order__item-content .cart__item-sales-item-values{
+  .order__item-content .cart__item-sales-item-values {
     font-size: 8px;
     line-height: 10px;
   }
 }
 @media (width <= 600px) {
-  .order__header{
+  .order__header {
     width: calc(100% + 32px);
     margin-left: -16px;
     min-height: 40px;
-    margin-top:-16px;
+    margin-top: -16px;
     border-radius: 10px 10px 0 0;
     padding: 9px 44px;
   }
-  .order__item-content-description-container{
+  .order__item-content-description-container {
     padding: 0 0px 16px;
   }
   .order__item-content-comment {
@@ -1878,25 +1980,26 @@ export default {
     max-height: 24px;
     min-height: 24px !important;
   }
-  .order__item-list{
+  .order__item-list {
     width: calc(100% + 32px);
     margin-left: -16px;
   }
-  .order__item{
+  .order__item {
     width: calc(100% - 1px);
     margin-left: 0px;
     padding: 16px 44px;
   }
-  .order__item-header{
+  .order__item-header {
     padding: 0;
   }
-  .order__item-header-top{
+  .order__item-header-top {
     align-items: start;
   }
-  .order__item-header-warehouse-label, .order__item-header-warehouse-value {
+  .order__item-header-warehouse-label,
+  .order__item-header-warehouse-value {
     font-size: 9px;
   }
-  .order__item-header-warehouse-label{
+  .order__item-header-warehouse-label {
     padding-left: 4px;
   }
   .order__item-header-left {
@@ -1905,7 +2008,7 @@ export default {
   .order__item-header {
     gap: 4px;
   }
-  .order__item-header{
+  .order__item-header {
     border-bottom: none;
     margin-bottom: 8px;
   }
@@ -1920,17 +2023,17 @@ export default {
     max-width: 98px;
     height: 24px;
   }
-  .order__item-product-price-rrc{
+  .order__item-product-price-rrc {
     flex-direction: row;
   }
-  .order__item-product-price-rrc p:first-child{
+  .order__item-product-price-rrc p:first-child {
     padding-right: 8px;
     border-right: 0.5px solid #75757575;
   }
-  .order__item-product-price-rrc p:last-child{
+  .order__item-product-price-rrc p:last-child {
     padding-left: 8px;
   }
-  .order__item-product-price{
+  .order__item-product-price {
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -1941,14 +2044,15 @@ export default {
   .order__item-content-comment {
     margin: 16px 0 0 0;
   }
-  .order__item-content-bottom{
+  .order__item-content-bottom {
     padding: 0;
     margin: 24px 0 !important;
   }
-  .order__item-footer{
+  .order__item-footer {
     padding: 0;
   }
-  .order__item-buy,.order__footer-actions-buy{
+  .order__item-buy,
+  .order__footer-actions-buy {
     width: 100%;
     padding: 7px 29px;
     font-size: 14px;
@@ -1965,15 +2069,15 @@ export default {
     font-size: 10px;
     line-height: 12px;
   }
-  .mst__alert{
+  .mst__alert {
     margin-bottom: 16px;
   }
-  .order__footer{
+  .order__footer {
     width: calc(100% + 32px);
     margin-left: -16px;
     padding: 0 44px;
   }
-  .order__footer-content{
+  .order__footer-content {
     padding-top: 16px;
     gap: 16px;
   }
@@ -1983,57 +2087,57 @@ export default {
   .order__footer-value {
     font-size: 14px;
   }
-  .order__item-content .cart__item-sales{
+  .order__item-content .cart__item-sales {
     padding: 16px 0 8px;
   }
-  .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open){
+  .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) {
     font-size: 10px;
     line-height: 12px;
     gap: 4px;
   }
-  .order__item-content .cart__item-sales-label.cart__item-sales-label-open{
+  .order__item-content .cart__item-sales-label.cart__item-sales-label-open {
     font-size: 10px;
     line-height: 12px;
     gap: 4px;
   }
-  .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) i{
+  .order__item-content .cart__item-sales-label:not(.cart__item-sales-label-open) i {
     margin-top: -2px;
     font-size: 7px;
   }
-  .order__item-content .cart__item-sales-label-open i{
-    margin-top:0px;
+  .order__item-content .cart__item-sales-label-open i {
+    margin-top: 0px;
     font-size: 7px;
   }
-  .order__item-content .cart__item-sales-item-name{
+  .order__item-content .cart__item-sales-item-name {
     font-size: 10px;
     line-height: 12px;
   }
-  .order__item-content .cart__item-sales-item-name:before{
+  .order__item-content .cart__item-sales-item-name:before {
     top: 5px;
   }
-  .order__item-content .cart__item-sales-item-values{
+  .order__item-content .cart__item-sales-item-values {
     font-size: 10px;
     line-height: 12px;
     text-align: left;
     padding-left: 0;
   }
-  .cart__item-sales-item{
+  .cart__item-sales-item {
     flex-direction: column;
     align-items: start !important;
     gap: 4px;
   }
-  .cart__item-sales-item{
+  .cart__item-sales-item {
     margin-top: 16px;
   }
 }
 @media (width <= 400px) {
-  .order__header{
+  .order__header {
     padding: 9px 28px;
   }
-  .order__footer{
+  .order__footer {
     padding: 0 28px;
   }
-  .order__item{
+  .order__item {
     padding: 16px 28px;
   }
 }
