@@ -2406,7 +2406,7 @@
       border-radius: 6px;
       overflow: hidden auto;
 
-      padding: 16px var(--cart-padding-x);
+      padding: 16px var(--cart-padding-x) 30px;
       max-height: 70%;
     }
   }
@@ -2507,7 +2507,7 @@
     font-size: 16px;
     font-weight: 600;
 
-    margin-top: 8px;
+    //  margin-top: 8px;
     margin-bottom: 24px;
     width: calc(100% - 16px * 2);
     height: 36px;

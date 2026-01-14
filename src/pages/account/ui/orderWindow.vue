@@ -43,7 +43,11 @@
           -->
           <!-- Список товаров -->
           <div class="order__item-list" v-if="Object.keys(basketStore).length > 1">
-            <div v-for="(org, org_id) in basketStore.data" :key="org_id">
+            <div
+              v-for="(org, org_id) in basketStore.data"
+              :key="org_id"
+              class="order__item-list-cont"
+            >
               <div
                 class="order__item"
                 v-for="(warehouse, warehouse_id) in org.data"
@@ -1390,6 +1394,11 @@ export default {
 .order__item-content .cart__item-sales-item-value:not(:first-child)::before {
   content: ';';
   margin-right: 8px;
+}
+.order__item-list-cont {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 }
 @media (width <= 1920px) {
   .order {

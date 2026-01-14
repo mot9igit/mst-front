@@ -571,6 +571,12 @@ export default {
     height: auto;
     min-height: 21px;
   }
+  .cart__list {
+    padding: 16px var(--cart-padding-x) 30px;
+  }
+  .cart__buy {
+    margin-top: 0px;
+  }
   .cart__list-order-edit {
     background-color: #ededed;
     border-radius: 24px 24px 0 0;
