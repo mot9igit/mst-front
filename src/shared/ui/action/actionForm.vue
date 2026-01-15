@@ -3789,7 +3789,7 @@ export default {
           items[0].save_data.properties.type_pricing.key == '0' &&
           items[0].save_data.properties.type_price.guid != '0'
         ) {
-          this.modals.priceType = '1'
+          this.modals.priceType = 'items'
           this.modals.priceStep = 1
           this.modals.typePrice = 2
           this.productsSelectedData.type_price = items[0].save_data.properties.type_price
@@ -3803,7 +3803,7 @@ export default {
           items[0].save_data.properties.type_formula.key != '0' ||
           items[0].save_data.properties.type_pricing.key != '0'
         ) {
-          this.modals.priceType = ''
+          this.modals.priceType = 'items'
           this.modals.priceStep = 1
           this.modals.typePrice = 1
           this.productsSelectedData.type_pricing = items[0].save_data.properties.type_pricing
@@ -3827,7 +3827,7 @@ export default {
               this.productsSelectedData.type_formula = this.type_formula[i]
             }
           }
-          this.productsSelectedData.sale_value = Number(items[0].save_data.sale_value)
+          this.productsSelectedData.sale_value = items[0].save_data.sale_value
         }
       }
     },
