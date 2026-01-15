@@ -215,13 +215,15 @@
                       :key="new Date().getTime() + '_1_' + product?.key"
                     />
                     <div class="order__item-product-price nowrap">
-                      <p>{{ product.cost.toLocaleString('ru') }} ₽</p>
+                      <p v-if="product.cost > 0">{{ product.cost.toLocaleString('ru') }} ₽</p>
                       <div class="order__item-product-price-rrc">
                         <p v-if="product.cost.rrc_discount > 0">
                           -{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ
                         </p>
                         <p v-else class="cart-no-discount">Без скидки от РРЦ</p>
-                        <p>{{ product.price.toLocaleString('ru') }} ₽ за ед.</p>
+                        <p v-if="product.price > 0">
+                          {{ product.price.toLocaleString('ru') }} ₽ за ед.
+                        </p>
                       </div>
                     </div>
                   </div>

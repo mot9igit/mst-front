@@ -73,6 +73,7 @@
             <div v-for="(store, store_index) in org.data" :key="store_index">
               <div
                 class="cart__item dart-mb-1"
+                :class="{ 'cart__item-noactive': product.count > Number(product.available) }"
                 v-for="(product, product_index) in store.data"
                 :key="product_index"
               >
@@ -100,34 +101,86 @@
                 <p class="cart__item-title">{{ product.name }}</p>
                 <p class="cart__item-article">Арт: {{ product.article }}</p>
 
-                <div class="cart__item-sales" v-if="(product.action && !product.triggers.length) || (product.action && product.triggers.length && org.cart_data.enabled && product.triggers.filter(item => org.cart_data.enabled?.includes(item)))">
-                  <button class="cart__item-sales-label" @click.prevent="salesActive(product.key)" :class="{'cart__item-sales-label-open' : sales_active[product.key] == true}">Примененные акции<i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sales_active[product.key] == true}"></i></button>
+                <div
+                  class="cart__item-sales"
+                  v-if="
+                    (product.action?.length && !product.triggers.length) ||
+                    (product.action?.length &&
+                      product.triggers.length &&
+                      org.cart_data.enabled.length &&
+                      product.triggers.filter((item) => org.cart_data.enabled?.includes(item))
+                        .length)
+                  "
+                >
+                  <button
+                    class="cart__item-sales-label"
+                    @click.prevent="salesActive(product.key)"
+                    :class="{ 'cart__item-sales-label-open': sales_active[product.key] == true }"
+                  >
+                    Примененные акции<i
+                      class="d-icon-angle-rounded-bottom product-card__seller-button-icon"
+                      :class="{
+                        'product-card__seller-button-icon-open': sales_active[product.key] == true,
+                      }"
+                    ></i>
+                  </button>
+
                   <div class="cart__item-sales-container" v-if="sales_active[product.key] == true">
-                    <div class="cart__item-sales-item" v-for="(sale, ind) in product.action" :key="ind">
+                    <div
+                      class="cart__item-sales-item"
+                      v-for="(sale, ind) in product.action"
+                      :key="ind"
+                    >
                       <router-link
+                        v-if="sale.enabled == 1"
                         target="_blank"
                         :to="{
                           name: 'purchasesAction',
                           params: { action_id: sale.action_id },
                         }"
                       >
-                      <p class="cart__item-sales-item-name">{{ sale.name }}</p>
+                        <p class="cart__item-sales-item-name">{{ sale.name }}</p>
                       </router-link>
-                      <p class="cart__item-sales-item-values">
-                        <span class="cart__item-sales-item-value" v-if="sale.type != 3">Индивидуальная скидка</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.percent_num > 0">{{ sale.percent_num }}% Скидка</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2">Под реализацию</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2">{{sale.delay_type == 1 && sale.delay > 0
-                          ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'
-                          : 'Предоплата'}}
+                      <p class="cart__item-sales-item-values" v-if="sale.enabled == 1">
+                        <span class="cart__item-sales-item-value" v-if="sale.type != 3"
+                          >Индивидуальная скидка</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.percent_num > 0"
+                          >{{ sale.percent_num }}% Скидка</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2"
+                          >Под реализацию {{ sale.delay > 0 ? '- ' + sale.delay + 'дн' : '' }}</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2"
+                          >{{
+                            sale.delay_type == 1 && sale.delay > 0
+                              ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'
+                              : 'Предоплата'
+                          }}
                         </span>
-                        <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2">Бесплатная доставка</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.condition_min_sum > 0">Мин. общ. сумма - {{ sale.condition_min_sum }} ₽</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.condition_SKU > 0">Мин. кол-во SKU - {{ sale.condition_SKU }} шт</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.condition_min_count > 0">Мин. общ. кол-во товаров - {{ sale.condition_min_count }} шт</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.min_count > 1">Мин. кол-во товаров - {{ sale.min_count }} шт</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.multiplicity > 1">Кратность - {{ sale.multiplicity }} шт</span>
-                        <span class="cart__item-sales-item-value" v-if="sale.integration == 1">Интеграция с MachineStore</span>
+                        <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2"
+                          >Бесплатная доставка</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.condition_min_sum > 0"
+                          >Мин. общ. сумма - {{ sale.condition_min_sum }} ₽</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.condition_SKU > 0"
+                          >Мин. кол-во SKU - {{ sale.condition_SKU }} шт</span
+                        >
+                        <span
+                          class="cart__item-sales-item-value"
+                          v-if="sale.condition_min_count > 0"
+                          >Мин. общ. кол-во товаров - {{ sale.condition_min_count }} шт</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.min_count > 1"
+                          >Мин. кол-во товаров - {{ sale.min_count }} шт</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.multiplicity > 1"
+                          >Кратность - {{ sale.multiplicity }} шт</span
+                        >
+                        <span class="cart__item-sales-item-value" v-if="sale.integration == 1"
+                          >Интеграция с MachineStore</span
+                        >
                       </p>
                     </div>
                   </div>
@@ -147,7 +200,7 @@
                     :key="new Date().getTime() + '_' + product?.key"
                   />
 
-                  <span class="cart__item-footer-value">
+                  <span class="cart__item-footer-value" v-if="product.price > 0">
                     {{ product.price.toLocaleString('ru') }} ₽
                   </span>
                 </div>
@@ -187,15 +240,16 @@
           type="button"
           class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
           @click.prevent=""
-          >
+        >
           Отмена
         </button>
-        <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
-          @click.prevent="">
+        <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          @click.prevent=""
+        >
           Принять
         </button>
       </div>
-
     </customModal>
   </teleport>
 </template>
@@ -232,10 +286,10 @@ export default {
       basketOfferProductRemove: 'offer/basketOfferProductRemove',
       basketOfferProductUpdate: 'offer/basketOfferProductUpdate',
     }),
-    salesActive(key){
-      if(key in this.sales_active){
+    salesActive(key) {
+      if (key in this.sales_active) {
         this.sales_active[key] = !this.sales_active[key]
-      }else{
+      } else {
         this.sales_active[key] = true
       }
     },

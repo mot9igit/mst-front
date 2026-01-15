@@ -138,6 +138,7 @@
                   "
                 >
                   <button
+                    v-if="sale.enabled == 1"
                     class="cart__item-sales-label"
                     @click.prevent="salesActive(product.key)"
                     :class="{ 'cart__item-sales-label-open': sales_active[product.key] == true }"
@@ -672,7 +673,8 @@ export default {
 .cart__item-noactive .cart__item-badge,
 .cart__item-noactive .cart__item-title,
 .cart__item-noactive .cart__item-article,
-.cart__item-noactive .cart__item-footer {
+.cart__item-noactive .cart__item-footer,
+.cart__item-noactive .cart__item-sales {
   opacity: 0.3;
 }
 @media (width <= 1024px) {

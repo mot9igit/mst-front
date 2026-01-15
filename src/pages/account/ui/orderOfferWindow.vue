@@ -112,6 +112,7 @@
                 <div class="d-divider d-divider--full d-divider--big order__item-divider"></div>
                 <div
                   class="order__item-content"
+                  :class="{ 'order__item-noactive': product.count > Number(product.available) }"
                   v-for="(product, product_key) in warehouse.data"
                   :key="product_key"
                 >
@@ -135,13 +136,17 @@
                       </div>
                     </div>
                     <div class="order__item-content-top-right">
-                      <span class="order__item-product-price"
+                      <span class="order__item-product-price" v-if="product.cost > 0"
                         >{{ product.cost.toLocaleString('ru') }} ₽</span
                       >
                       <div class="order__item-product-price-rrc">
-                        <p v-if="product.prices.rrc_discount > 0">-{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ</p>
+                        <p v-if="product.prices.rrc_discount > 0">
+                          -{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ
+                        </p>
                         <p v-else class="cart-no-discount">Без скидки от РРЦ</p>
-                        <p>{{ product.price.toLocaleString('ru') }} ₽ за ед.</p>
+                        <p v-if="product.price > 0">
+                          {{ product.price.toLocaleString('ru') }} ₽ за ед.
+                        </p>
                       </div>
                       <Counter
                         :classPrefix="'order__item-product'"
@@ -180,51 +185,109 @@
                       :key="new Date().getTime() + '_1_' + product?.key"
                     />
                     <div class="order__item-product-price nowrap">
-
-                      <p>{{ product.cost.toLocaleString('ru') }} ₽</p>
+                      <p v-if="product.cost > 0">{{ product.cost.toLocaleString('ru') }} ₽</p>
                       <div class="order__item-product-price-rrc">
-                        <p v-if="product.cost.rrc_discount > 0">-{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ</p>
+                        <p v-if="product.cost.rrc_discount > 0">
+                          -{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ
+                        </p>
                         <p v-else class="cart-no-discount">Без скидки от РРЦ</p>
-                        <p>{{ product.price.toLocaleString('ru') }} ₽ за ед.</p>
+                        <p v-if="product.price > 0">
+                          {{ product.price.toLocaleString('ru') }} ₽ за ед.
+                        </p>
                       </div>
-
                     </div>
                   </div>
 
-                  <div class="cart__item-sales" v-if="(product.action && !product.triggers) || (product.action && product.triggers && org.cart_data.enabled && product.triggers.filter(item => org.cart_data.enabled?.includes(item)))">
-                    <button class="cart__item-sales-label" @click.prevent="salesActive(product.key)" :class="{'cart__item-sales-label-open' : sales_active[product.key] == true}">Примененные акции<i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sales_active[product.key] == true}"></i></button>
-                    <div class="cart__item-sales-container" v-if="sales_active[product.key] == true">
-                      <div class="cart__item-sales-item" v-for="(sale, ind) in product.action" :key="ind">
+                  <div
+                    class="cart__item-sales"
+                    v-if="
+                      (product.action?.length && !product.triggers.length) ||
+                      (product.action?.length &&
+                        product.triggers.length &&
+                        org.cart_data.enabled.length &&
+                        product.triggers.filter((item) => org.cart_data.enabled?.includes(item))
+                          .length)
+                    "
+                  >
+                    <button
+                      class="cart__item-sales-label"
+                      @click.prevent="salesActive(product.key)"
+                      :class="{ 'cart__item-sales-label-open': sales_active[product.key] == true }"
+                    >
+                      Примененные акции<i
+                        class="d-icon-angle-rounded-bottom product-card__seller-button-icon"
+                        :class="{
+                          'product-card__seller-button-icon-open':
+                            sales_active[product.key] == true,
+                        }"
+                      ></i>
+                    </button>
+                    <div
+                      class="cart__item-sales-container"
+                      v-if="sales_active[product.key] == true"
+                    >
+                      <div
+                        class="cart__item-sales-item"
+                        v-for="(sale, ind) in product.action"
+                        :key="ind"
+                      >
                         <!-- <a class="cart__item-sales-item-name" :href="'/' + $route.params.id + '/purchases/actions/' + sale.id" tagret="_blank">{{ sale.name }}</a> -->
                         <router-link
+                          v-if="sale.enabled == 1"
                           target="_blank"
                           :to="{
                             name: 'purchasesAction',
                             params: { action_id: sale.action_id },
                           }"
                         >
-                        <p class="cart__item-sales-item-name">{{ sale.name }}</p>
+                          <p class="cart__item-sales-item-name">{{ sale.name }}</p>
                         </router-link>
-                        <p class="cart__item-sales-item-values">
-                          <span class="cart__item-sales-item-value" v-if="sale.type != 3">Индивидуальная скидка</span>
-                          <span class="cart__item-sales-item-value" v-if="sale.percent_num > 0">{{ sale.percent_num }}% Скидка</span>
-                          <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2">Под реализацию</span>
-                          <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2">{{sale.delay_type == 1 && sale.delay > 0
-                            ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'
-                            : 'Предоплата'}}
+                        <p class="cart__item-sales-item-values" v-if="sale.enabled == 1">
+                          <span class="cart__item-sales-item-value" v-if="sale.type != 3"
+                            >Индивидуальная скидка</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.percent_num > 0"
+                            >{{ sale.percent_num }}% Скидка</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2"
+                            >Под реализацию</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2"
+                            >{{
+                              sale.delay_type == 1 && sale.delay > 0
+                                ? Number(sale.delay).toFixed(0) + ' дн. отсрочки'
+                                : 'Предоплата'
+                            }}
                           </span>
-                          <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2">Бесплатная доставка</span>
-                          <span class="cart__item-sales-item-value" v-if="sale.condition_min_sum > 0">Мин. общ. сумма - {{ sale.condition_min_sum }} ₽</span>
-                          <span class="cart__item-sales-item-value" v-if="sale.condition_SKU > 0">Мин. кол-во SKU - {{ sale.condition_SKU }} шт</span>
-                          <span class="cart__item-sales-item-value" v-if="sale.condition_min_count > 0">Мин. общ. кол-во товаров - {{ sale.condition_min_count }} шт</span>
-                          <span class="cart__item-sales-item-value" v-if="sale.min_count > 1">Мин. кол-во товаров - {{ sale.min_count }} шт</span>
-                          <span class="cart__item-sales-item-value" v-if="sale.multiplicity > 1">Кратность - {{ sale.multiplicity }} шт</span>
-                          <span class="cart__item-sales-item-value" v-if="sale.integration == 1">Интеграция с MachineStore</span>
+                          <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2"
+                            >Бесплатная доставка</span
+                          >
+                          <span
+                            class="cart__item-sales-item-value"
+                            v-if="sale.condition_min_sum > 0"
+                            >Мин. общ. сумма - {{ sale.condition_min_sum }} ₽</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.condition_SKU > 0"
+                            >Мин. кол-во SKU - {{ sale.condition_SKU }} шт</span
+                          >
+                          <span
+                            class="cart__item-sales-item-value"
+                            v-if="sale.condition_min_count > 0"
+                            >Мин. общ. кол-во товаров - {{ sale.condition_min_count }} шт</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.min_count > 1"
+                            >Мин. кол-во товаров - {{ sale.min_count }} шт</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.multiplicity > 1"
+                            >Кратность - {{ sale.multiplicity }} шт</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.integration == 1"
+                            >Интеграция с MachineStore</span
+                          >
                         </p>
                       </div>
                     </div>
                   </div>
-
                 </div>
                 <div class="order__item-content-bottom">
                   <div class="order__item-content-bottom-left">
@@ -253,7 +316,6 @@
                     </div>
                   </div>
                   <div class="order__item-content-bottom-right">
-
                     <!--
                       <div
                         class="d-divider d-divider--vertical order__item-content-bottom-right-divider"
@@ -265,7 +327,6 @@
                   </div>
                 </div>
                 <div class="order__item-footer">
-
                   <!--
                     <div
                       class="d-divider d-divider--vertical order__item-content-bottom-right-divider"
@@ -282,7 +343,7 @@
           <!-- Итого -->
           <div class="order__footer" v-if="Object.keys(this.basketStore).length > 1">
             <div class="d-divider d-divider--full order__footer-divider"></div>
-             <!-- <div class="order__footer-content order__footer-content-date">
+            <!-- <div class="order__footer-content order__footer-content-date">
               <div class="order__footer-left">
                 <p class="order__footer-label-date">Укажите дату окончания действия предложения</p>
               </div>
@@ -342,7 +403,6 @@
               </div>
 
               <div class="order__footer-top">
-
                 <p class="order__footer-label">Итого</p>
                 <p class="order__footer-value">
                   {{ this.basketStore.cart_data.cost.toLocaleString('ru') }} ₽
@@ -399,12 +459,12 @@
         Да, очистить!
       </button>
     </customModal>
-    <customModal v-model="this.showChangedCount" class="clear_cart">
-      <b>На складе не хватает товара</b>
+    <customModal v-model="this.showChangedCount" class="clear_cart cart_not-avialable">
+      <h3>На складе не хватает товара</h3>
       <p>
-        Пока вы формировали предложение, у Поставщиков изменилось количество товаров на складе. Мы внесли
-        изменения в ваше предложение в соответствии с остатками продукции на складах. Вам необходимо
-        проверить предложение и отправить его снова.
+        Пока вы формировали предложение, у Поставщиков изменилось количество товаров на складе. Мы
+        внесли изменения в ваше предложение в соответствии с остатками продукции на складах. Вам
+        необходимо проверить предложение и отправить его снова.
       </p>
       <div class="basket-change__info">
         <div class="basket-change__h2">Нет на складе:</div>
@@ -425,8 +485,10 @@
                       </div>
                     </div>
                     <div class="basket-change__product-right">
-                      Нет в наличии: <br />
-                      {{ item.available }} шт. <span>из {{ item.count }} шт</span>
+                      <span class="basket-change__product-right-label">В наличии:</span>
+                      <span class="basket-change__product-right-value"
+                        >{{ item.available }} шт из {{ item.count }} шт</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -446,7 +508,7 @@
           class="d-button d-button-primary d-button-primary-small"
           @click.prevent="
             () => {
-              offerCreate(this.showChangedId)
+              offerCreate()
               this.showChangedCount = false
             }
           "
@@ -464,11 +526,10 @@ import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
 import Toast from 'primevue/toast'
 
-
 export default {
   name: 'orderOfferWindow',
   emits: ['close', 'catalogUpdate', 'offerSubmit'],
-  components: { Loader, customModal, Counter,  Toast },
+  components: { Loader, customModal, Counter, Toast },
   props: {
     active: {
       type: Boolean,
@@ -491,7 +552,7 @@ export default {
       },
       error: false,
       now: '',
-      sales_active: {}
+      sales_active: {},
     }
   },
   computed: {
@@ -499,8 +560,6 @@ export default {
       basketOffer: 'offer/basketOffer',
       basketOfferWarehouse: 'offer/basketOfferWarehouse',
     }),
-
-
   },
   methods: {
     ...mapActions({
@@ -510,10 +569,10 @@ export default {
       basketOfferProductUpdate: 'offer/basketOfferProductUpdate',
       offerSubmit: 'offer/offerSubmit',
     }),
-    salesActive(key){
-      if(key in this.sales_active){
+    salesActive(key) {
+      if (key in this.sales_active) {
         this.sales_active[key] = !this.sales_active[key]
-      }else{
+      } else {
         this.sales_active[key] = true
       }
     },
@@ -523,11 +582,13 @@ export default {
     clearCart() {
       this.loading = true
       this.showClearBasketModal = false
-      this.basketOfferClear({ org_id: this.id_clear_org, store_id: this.id_clear_store }).then(() => {
-        this.id_clear_org = 0
-        this.$emit('catalogUpdate')
-        this.updateBasket()
-      })
+      this.basketOfferClear({ org_id: this.id_clear_org, store_id: this.id_clear_store }).then(
+        () => {
+          this.id_clear_org = 0
+          this.$emit('catalogUpdate')
+          this.updateBasket()
+        },
+      )
     },
     clearBasketProduct(org_id, store_id, key, product) {
       this.loading = true
@@ -641,36 +702,43 @@ export default {
       })
     },
     offerCreate() {
+      //  if(this.form.end_date == null) {
+      //    this.error = true
+      //    this.$toast.add({ severity: 'error', summary: "Ошибка", detail: "Укажите дату окончания предложения", life: 3000 });
+      //    return
+      //  }else{
+      this.loading = true
+      let date = this.form.end_date
 
-    //  if(this.form.end_date == null) {
-    //    this.error = true
-    //    this.$toast.add({ severity: 'error', summary: "Ошибка", detail: "Укажите дату окончания предложения", life: 3000 });
-    //    return
-    //  }else{
-        this.loading = true
-        let date = this.form.end_date
-
-         this.offerSubmit({ date_end: date }).then((res) => {
-           if (res.data.success) {
-           this.loading = false
-      //       // this.$route.push({
-      //       //   // на предложения
-			//       // });
-            this.$toast.add({ severity: 'success', summary: "Предложение создано", detail: "Вы успешно отправили предложение!", life: 3000 });
-            // this.id_clear_org = this.$route.params.id_org_from
-            // this.id_clear_store = this.basketOfferWarehouse
-            // this.clearCart({ org_id: this.id_clear_org, store_id: this.id_clear_store })
-            this.getBasketOffer()
-            this.$emit('offerSubmit')
-            this.$emit('close')
-           }
-           else{
-             this.$toast.add({ severity: 'error', summary: "Ошибка", detail: "Произошла ошибка! Попробуйте оформить предложение позже!", life: 3000 });
-             return
-           }
-       })
-    //  }
-
+      this.offerSubmit({ date_end: date }).then((res) => {
+        if (res.data.success) {
+          this.loading = false
+          //       // this.$route.push({
+          //       //   // на предложения
+          //       // });
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Предложение создано',
+            detail: 'Вы успешно отправили предложение!',
+            life: 3000,
+          })
+          // this.id_clear_org = this.$route.params.id_org_from
+          // this.id_clear_store = this.basketOfferWarehouse
+          // this.clearCart({ org_id: this.id_clear_org, store_id: this.id_clear_store })
+          this.getBasketOffer()
+          this.$emit('offerSubmit')
+          this.$emit('close')
+        } else {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Произошла ошибка! Попробуйте оформить предложение позже!',
+            life: 3000,
+          })
+          return
+        }
+      })
+      //  }
     },
   },
   mounted() {
@@ -729,31 +797,30 @@ export default {
         this.basketStore = {}
       }
     },
-
   },
 }
 </script>
 <style lang="scss">
-.order__footer-content-date{
+.order__footer-content-date {
   margin-bottom: 20px;
 }
-.order__footer-label-date{
+.order__footer-label-date {
   color: #757575;
   font-size: 16px;
   font-weight: 500;
   max-width: 300px;
 }
-.d-input-error-right{
+.d-input-error-right {
   justify-content: flex-end;
   margin-top: -10px;
 }
 .offer__sheet-wrapper .order__footer-divider {
-    --d-divider-margin: 16px 48px;
+  --d-divider-margin: 16px 48px;
 }
 .offer__sheet-wrapper .order__item-list {
-    padding-bottom: 150px;
+  padding-bottom: 150px;
 }
-.offer__sheet-wrapper .order__item{
+.offer__sheet-wrapper .order__item {
   margin-bottom: 40px;
 }
 </style>
