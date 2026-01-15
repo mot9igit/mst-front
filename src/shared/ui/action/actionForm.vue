@@ -1,5 +1,4 @@
 <template>
-
   <section class="promotions" id="promotions">
     <Toast />
     <Loader v-if="loading" />
@@ -61,15 +60,13 @@
         </label>
 
         <div class="d-divider d-divider--vertical"></div>
-        <button class="d-icon-wrapper d-icon-wrapper--big"
-        @click.prevent="copySubmit()">
+        <button class="d-icon-wrapper d-icon-wrapper--big" @click.prevent="copySubmit()">
           <i class="d-icon-copy promotions__icon"></i>
         </button>
         <!--<div class="d-divider d-divider--vertical"></div>
         <button class="d-icon-wrapper d-icon-wrapper--big">
           <i class="d-icon-trash promotions__icon"></i>
         </button>-->
-
       </div>
     </div>
 
@@ -3348,7 +3345,7 @@ export default {
     if (this.$route.params.action) {
       this.getAction().then(() => {
         this.loading = false
-        if(this.action.delay_type == 2){
+        if (this.action.delay_type == 2) {
           this.form.postponementPeriod = this.action.delay
         }
         if (this.form.store_id) {
@@ -3756,7 +3753,7 @@ export default {
       })
     },
     settings(items, type) {
-      // console.log(items)
+      //console.log(items)
       this.modals.priceType = type
       this.productsSelected = items
       this.modals.price_step = 0
@@ -3785,6 +3782,52 @@ export default {
             }
           })
           this.productsSelectedData.sale_value = Number(items[0].save_data.new_price)
+        }
+        // Если уже есть установленные значения скидки - проставляем их в окно
+        if (
+          items[0].save_data.properties.type_formula.key == '0' &&
+          items[0].save_data.properties.type_pricing.key == '0' &&
+          items[0].save_data.properties.type_price.guid != '0'
+        ) {
+          this.modals.priceType = '1'
+          this.modals.priceStep = 1
+          this.modals.typePrice = 2
+          this.productsSelectedData.type_price = items[0].save_data.properties.type_price
+          for (let i = 0; i < this.productsPrices.length; i++) {
+            if (this.productsPrices[i].guid == this.productsSelectedData.type_price.guid) {
+              this.productsSelectedData.type_price = this.productsPrices[i]
+            }
+          }
+        }
+        if (
+          items[0].save_data.properties.type_formula.key != '0' ||
+          items[0].save_data.properties.type_pricing.key != '0'
+        ) {
+          this.modals.priceType = ''
+          this.modals.priceStep = 1
+          this.modals.typePrice = 1
+          this.productsSelectedData.type_pricing = items[0].save_data.properties.type_pricing
+
+          for (let i = 0; i < this.type_pricing.length; i++) {
+            if (this.type_pricing[i].key == this.productsSelectedData.type_pricing.key) {
+              this.productsSelectedData.type_pricing = this.type_pricing[i]
+            }
+          }
+          this.productsSelectedData.type_price = items[0].save_data.properties.type_price
+          for (let i = 0; i < this.productsPrices.length; i++) {
+            if (this.productsPrices[i].guid == this.productsSelectedData.type_price.guid) {
+              this.productsSelectedData.type_price = this.productsPrices[i]
+            }
+          }
+          this.productsSelectedData.type_formula = items[0].save_data.properties.type_formula
+          for (let i = 0; i < this.type_formula.length; i++) {
+            if (
+              Number(this.type_formula[i].key) == Number(this.productsSelectedData.type_formula.key)
+            ) {
+              this.productsSelectedData.type_formula = this.type_formula[i]
+            }
+          }
+          this.productsSelectedData.sale_value = Number(items[0].save_data.sale_value)
         }
       }
     },
@@ -3964,7 +4007,6 @@ export default {
       save_data.type = this.type
       save_data.type_sale = this.typeSale
       this.setAction(save_data).then(() => {
-
         this.loading = false
         if (this.type == 1) {
           this.$router.push({ name: 'wholesalePrices', params: { id: this.$route.params.id } })
@@ -3978,74 +4020,80 @@ export default {
       this.loading = true
 
       const save_data = this.copyForm
-      if(Object.keys(this.action.image).length){
+      if (Object.keys(this.action.image).length) {
         save_data.set_image = true
       }
       save_data.type = this.action.type
       save_data.type_sale = this.action.type_sale
       this.$confirm.require({
-            message: 'Вы действительно хотите скопировать акцию №'+ this.$route.params.action +'?',
-            header: 'Копирование акции',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-              this.copyAction(save_data).then((res) => {
-
-                if(res.data.success){
-                  let new_id = res.data.data.data.id
-                  this.$toast.add({
-                    severity: 'success',
-                    summary: 'Копирование акции',
-                    detail: 'Акция скопирована успешно! Создана акция №' + new_id,
-                    life: 3000,
-                  })
-                  this.$confirm.require({
-                      message: 'Акция №'+ this.$route.params.action +' успешно скопирована! Перейти на страницу созданной акции №'+ new_id +'?',
-                      header: 'Копирование акции',
-                      icon: 'pi pi-exclamation-triangle',
-                      accept: () => {
-
-                        if (this.type == 1) {
-                          this.$router.push({ name: 'wholesaleSale', params: { id: this.$route.params.id, action: new_id, } })
-                          this.getAction().then(() => {
-                            this.loading = false
-                          })
-                        }
-                        if (this.type == 2) {
-                          this.$router.push({ name: 'retailSale', params: { id: this.$route.params.id, action: new_id, } })
-                          this.getAction().then(() => {
-                            this.loading = false
-                          })
-                        }
-
-                      },
-                      reject: () => {
-                        this.loading = false
-                      },
-                    })
-
-                }else{
-                  this.$toast.add({
-                    severity: 'error',
-                    summary: 'Копирование акции',
-                    detail: 'Не удалось скопировать акцию!',
-                    life: 3000,
-                  }),
-                  this.loading = false
-                }
-
+        message: 'Вы действительно хотите скопировать акцию №' + this.$route.params.action + '?',
+        header: 'Копирование акции',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.copyAction(save_data).then((res) => {
+            if (res.data.success) {
+              let new_id = res.data.data.data.id
+              this.$toast.add({
+                severity: 'success',
+                summary: 'Копирование акции',
+                detail: 'Акция скопирована успешно! Создана акция №' + new_id,
+                life: 3000,
               })
-            },
-            reject: () => {
+              this.$confirm.require({
+                message:
+                  'Акция №' +
+                  this.$route.params.action +
+                  ' успешно скопирована! Перейти на страницу созданной акции №' +
+                  new_id +
+                  '?',
+                header: 'Копирование акции',
+                icon: 'pi pi-exclamation-triangle',
+                accept: () => {
+                  if (this.type == 1) {
+                    this.$router.push({
+                      name: 'wholesaleSale',
+                      params: { id: this.$route.params.id, action: new_id },
+                    })
+                    this.getAction().then(() => {
+                      this.loading = false
+                    })
+                  }
+                  if (this.type == 2) {
+                    this.$router.push({
+                      name: 'retailSale',
+                      params: { id: this.$route.params.id, action: new_id },
+                    })
+                    this.getAction().then(() => {
+                      this.loading = false
+                    })
+                  }
+                },
+                reject: () => {
+                  this.loading = false
+                },
+              })
+            } else {
               this.$toast.add({
                 severity: 'error',
                 summary: 'Копирование акции',
-                detail: 'Действие отклонено',
+                detail: 'Не удалось скопировать акцию!',
                 life: 3000,
               }),
-                  this.loading = false
-            },
+                (this.loading = false)
+            }
+          })
+        },
+        reject: () => {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Копирование акции',
+            detail: 'Действие отклонено',
+            life: 3000,
           }),
-          this.loading = false
+            (this.loading = false)
+        },
+      }),
+        (this.loading = false)
     },
     unActivateOrganization() {
       setTimeout(() => (this.search.organizationSuggestionsShow = false), 250)
@@ -4515,8 +4563,8 @@ export default {
 }
 </script>
 <style lang="scss">
-.d-field-wrapper  .p-editor {
-    max-width: 100%;
+.d-field-wrapper .p-editor {
+  max-width: 100%;
 }
 .text-left {
   text-align: left;
@@ -4794,9 +4842,9 @@ body {
     }
   }
 }
-.promotions__card-value{
-    overflow: hidden;
-    word-break: break-all;
+.promotions__card-value {
+  overflow: hidden;
+  word-break: break-all;
 }
 .promotions__card-dates {
   .promotions__card-value-container {

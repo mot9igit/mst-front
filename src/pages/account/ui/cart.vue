@@ -138,7 +138,6 @@
                   "
                 >
                   <button
-                    v-if="sale.enabled == 1"
                     class="cart__item-sales-label"
                     @click.prevent="salesActive(product.key)"
                     :class="{ 'cart__item-sales-label-open': sales_active[product.key] == true }"

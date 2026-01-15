@@ -140,8 +140,24 @@
             <td class="d-table__col">
               <div class="flex-center flex-center--vertical">
                 <p class="promotions__card-text promotions__card-text--bold">Скидка</p>
-                <p class="product-table-card__text">
-                  {{ product.save_data.type_price ? 'по типу цены' : 'по формуле' }}
+                <p
+                  class="product-table-card__text"
+                  v-if="
+                    product.save_data?.properties?.type_price?.guid == '0' &&
+                    product.save_data?.properties?.type_pricing?.key == '0' &&
+                    product.save_data?.properties?.type_formula?.key == '0'
+                  "
+                >
+                  не задана
+                </p>
+                <p class="product-table-card__text" v-else>
+                  {{
+                    product.save_data?.properties?.type_formula.key == '0' &&
+                    product.save_data?.properties?.type_pricing.key == '0' &&
+                    product.save_data?.properties?.type_price?.guid.length > 1
+                      ? 'по типу цены'
+                      : 'задана вручную'
+                  }}
                 </p>
               </div>
             </td>
