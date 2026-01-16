@@ -22,7 +22,7 @@
     </button>
     <ul
       class="d-search__suggestions"
-      v-if="this.showSearchSuggestions"
+      v-if="this.showSearchSuggestions && this.searchSuggestions.length"
       :class="{
         ['d-search__suggestions--active']: this.showSearchSuggestions,
       }"
@@ -34,6 +34,7 @@
         @click="
           () => {
             this.search = suggestion.name
+            this.article = suggestion.article
             this.toSearch()
           }
         "
@@ -47,6 +48,17 @@
         </div>
       </li>
     </ul>
+    <div
+      class="d-search__suggestions"
+      v-else-if="this.showSearchSuggestions && !this.searchSuggestions.length"
+      :class="{
+        ['d-search__suggestions--active']: this.showSearchSuggestions,
+      }"
+    >
+      <div class="d-search__suggestion-card-nofound">
+        <span class="d-search__suggestion-card__title-nofound">Товары не найдены</span>
+      </div>
+    </div>
   </form>
 </template>
 <script>
@@ -61,6 +73,7 @@ export default {
       showSearchSuggestions: false,
       searchSuggestions: [],
       searchTimer: null,
+      article: null,
     }
   },
   props: {
@@ -89,12 +102,16 @@ export default {
         this.$router.push({
           name: 'purchasesCatalogSearchOffer',
           query: {
-            search: this.search,
+            search: this.article ? this.article : this.search,
           },
         })
       } else {
-        this.$router.push({ name: 'purchasesCatalogSearch', query: { search: this.search } })
+        this.$router.push({
+          name: 'purchasesCatalogSearch',
+          query: { search: this.article ? this.article : this.search },
+        })
       }
+      this.article = null
     },
 
     async searchProducts() {
@@ -111,6 +128,7 @@ export default {
       } else {
         response = await this.getOptProductsSearch(data)
       }
+      this.article = null
       return response.data.data.items
     },
     debounce(func, delay) {
@@ -250,5 +268,15 @@ export default {
   min-height: 50px;
   max-height: 50px;
   object-fit: cover;
+}
+.d-search__suggestion-card-nofound {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  padding: 16px;
+}
+.d-search__suggestion-card__title-nofound {
+  font-size: 12px;
+  color: #757575;
 }
 </style>
