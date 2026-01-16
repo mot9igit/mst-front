@@ -3078,6 +3078,31 @@
           </table>
         </div>
       </customModal>
+      <customModal v-model="this.modals.no_add" class="products_no_add">
+        <template v-slot:title>Нельзя добавить {{ modals.no_add_info.cat_name }}!</template>
+        <p class="no_add_p" v-if="modals.no_add_info.cat_name == 'коллекцию'">
+          Товары из коллекции "{{ modals.no_add_info?.name }}" уже добавлены в акцию
+        </p>
+        <div class="cont_no_add">
+          <div class="prod-card">
+            <img :src="modals.no_add_info.product.image" alt="" class="prod-card__img" />
+            <div class="prod__content">
+              <span class="prod-card__title">{{ modals.no_add_info.product.name }}</span>
+              <span class="prod-card__article">арт. {{ modals.no_add_info.product.article }}</span>
+            </div>
+          </div>
+          <p class="no_add_p" v-if="modals.no_add_info.cat_name == 'товар'">
+            Товар уже включен в коллекцию "{{ modals.no_add_info?.name }}"
+          </p>
+          <button
+            class="d-button d-button-primary d-button-primary-small d-button--sm-shadow d-ib no_add_button"
+            type="button"
+            @click.prevent="((this.modals.no_add = false), (this.modals.no_add_info = []))"
+          >
+            Ok
+          </button>
+        </div>
+      </customModal>
     </teleport>
   </section>
 </template>
@@ -3159,6 +3184,8 @@ export default {
         productsFile: false,
         region: false,
         organization: false,
+        no_add: false,
+        no_add_info: [],
       },
       // Поиск
       search: {
@@ -3296,6 +3323,7 @@ export default {
         start_date: '',
         end_date: '',
         nodeadline: 0,
+        check_collection: false,
         adv: {
           active: false,
           place: {},
@@ -3579,8 +3607,10 @@ export default {
         filter: this.form.product_groups[id].filter,
         page: this.form.product_groups[id].page,
         perpage: this.per_page,
+        check: this.check_collection,
       }).then((res) => {
         this.form.product_groups[id].products = res.data
+        this.check_collection = false
       })
     },
     paginateGroupProduct(data) {
@@ -3689,8 +3719,14 @@ export default {
     },
     selectProduct(data) {
       this.productLoading = true
-      this.setSelectedProduct(data.id).then(() => {
-        this.updateProductList()
+      this.setSelectedProduct(data.id).then((res) => {
+        if (res.data.data.success == false) {
+          this.modals.no_add_info = res.data.data.data
+          this.modals.no_add = true
+          this.productLoading = false
+        } else {
+          this.updateProductList()
+        }
       })
     },
     selectCollection(data) {
@@ -3706,6 +3742,7 @@ export default {
           saleValue: 0,
           typeFormul: null,
         }
+        this.check_collection = true
         this.updateGroups(data.id)
         this.selected_group = {}
       }
@@ -5178,5 +5215,43 @@ body {
 .regions-submit {
   display: flex;
   justify-content: center;
+}
+
+.prod-card {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+}
+.prod__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.prod-card__title {
+  font-size: 16px;
+  line-height: 18px;
+  font-weight: 600;
+  text-align: left;
+}
+.prod-card__article {
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 400;
+  color: #757575;
+}
+.prod-card__img {
+  max-height: 80px;
+  border-radius: 6px;
+}
+.no_add_p {
+  margin: 24px auto;
+}
+.cont_no_add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 0;
 }
 </style>

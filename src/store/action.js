@@ -47,7 +47,7 @@ export default {
       const response = await api.action.setAction(data)
       return response
     },
-        // Копирование акции
+    // Копирование акции
     async copyAction(store, data) {
       console.log(data)
       data.id = router.currentRoute._value.params.id
@@ -257,7 +257,7 @@ export default {
       return response
     },
     // Берем товары Группы
-    async getGroupProducts({ commit }, { group_id, filter, page, perpage }) {
+    async getGroupProducts({ commit }, { group_id, filter, page, perpage, check }) {
       const data = {
         id: router.currentRoute._value.params.id,
         action: 'get/products',
@@ -265,6 +265,7 @@ export default {
         filter: filter,
         page: page,
         perpage: perpage,
+        check: check,
       }
       const response = await api.action.getGroupProducts(data)
       if (response) {
