@@ -62,7 +62,7 @@
                 <i class="d-icon-catalog header__catalog-icon"></i>
                 <span class="header__catalog-text">Каталог</span>
               </button>
-              <SearchField></SearchField>
+              <SearchField :searchUpdater="searchUpdater"></SearchField>
             </div>
             <a
               href="#"
@@ -84,12 +84,15 @@
               }}</span>
             </button>
 
-            <button class="d-button d-button-secondary d-button-rounded header__notification"
-            @click.prevent="showNotificationsModal = true">
+            <button
+              class="d-button d-button-secondary d-button-rounded header__notification"
+              @click.prevent="showNotificationsModal = true"
+            >
               <i class="d-icon-bell header__notification-icon"></i>
-              <div class="status" v-if="notificationsAll.no_read != 0">+{{ notificationsAll.no_read ? notificationsAll.no_read : 0 }}</div>
+              <div class="status" v-if="notificationsAll.no_read != 0">
+                +{{ notificationsAll.no_read ? notificationsAll.no_read : 0 }}
+              </div>
             </button>
-
           </div>
         </div>
       </div>
@@ -100,7 +103,8 @@
             <button class="header__vendor-button" @click.prevent="toggleOfferVendor">
               <i class="d-icon-trolley header__vendor-icon"></i>
               <span class="header__vendor-value"
-                >{{ this.optVendorsSelected.total }} из {{ this.vendorOfferAvailable.totalAll }}</span
+                >{{ this.optVendorsSelected.total }} из
+                {{ this.vendorOfferAvailable.totalAll }}</span
               >
             </button>
           </div>
@@ -145,7 +149,6 @@
             <i class="d-icon-pen2 header__address-edit-icon"></i>
           </span>
         </button>
-
       </div>
     </header>
   </div>
@@ -166,13 +169,12 @@
     </customModal>
   </teleport>
 
-    <customModal
-          v-model="showNotificationsModal"
-          class="notifications__modal"
-        >
-        <notificationsWindow :reload="reloadNotificationsModal" @reloadSuccess="this.reloadNotificationsModal = false"/>
-    </customModal>
-
+  <customModal v-model="showNotificationsModal" class="notifications__modal">
+    <notificationsWindow
+      :reload="reloadNotificationsModal"
+      @reloadSuccess="this.reloadNotificationsModal = false"
+    />
+  </customModal>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -183,7 +185,6 @@ import changeAddressWindow from './changeAddressWindow.vue'
 import requirement from './requirement.vue'
 import notificationsWindow from './notificationsWindow.vue'
 import Toast from 'primevue/toast'
-
 
 export default {
   name: 'ProfileHeaderOffer',
@@ -205,8 +206,24 @@ export default {
       data_start: new Date(),
     }
   },
-  emits: ['toggleCatalog', 'toggleOfferVendor', 'toggleCart', 'showRequipments', 'notifications', 'notificationsMobile', 'offerNow'],
-  components: { Loader, customModal, changeAddressWindow, SearchField, requirement, Toast, notificationsWindow },
+  emits: [
+    'toggleCatalog',
+    'toggleOfferVendor',
+    'toggleCart',
+    'showRequipments',
+    'notifications',
+    'notificationsMobile',
+    'offerNow',
+  ],
+  components: {
+    Loader,
+    customModal,
+    changeAddressWindow,
+    SearchField,
+    requirement,
+    Toast,
+    notificationsWindow,
+  },
   props: {
     active: {
       type: Boolean,
@@ -223,22 +240,23 @@ export default {
     offer: {
       type: Boolean,
       default: false,
-    }
+    },
+    searchUpdater: {
+      type: Boolean,
+      default: false,
+    },
   },
   mounted() {
-
-      this.getFromOrgStores().then(() => {
-        this.storeActive = this.fromOrgStores.items[0].id
-        this.getOrgBasketOfferStore({
-          active_store: this.storeActive
-        }).then(() => {
-          this.getBasketOffer()
-        })
-        this.getOptVendorOffer()
-        this.getAllNotifications()
-       })
-
-
+    this.getFromOrgStores().then(() => {
+      this.storeActive = this.fromOrgStores.items[0].id
+      this.getOrgBasketOfferStore({
+        active_store: this.storeActive,
+      }).then(() => {
+        this.getBasketOffer()
+      })
+      this.getOptVendorOffer()
+      this.getAllNotifications()
+    })
 
     // mobile header
     let elem = document.querySelector('.main')
@@ -256,9 +274,9 @@ export default {
     // уведомления
     if (this.$route.params.id) {
       this.intervalId = setInterval(() => {
-        this.fetchNotification();
-      }, 40000);
-      this.fetchNotification();
+        this.fetchNotification()
+      }, 40000)
+      this.fetchNotification()
     }
   },
   computed: {
@@ -323,17 +341,17 @@ export default {
       this.loading.changeBasketStore = true
       this.storeActive = id
       this.getOrgBasketOfferStore({
-          active_store: this.storeActive
+        active_store: this.storeActive,
       }).then(() => {
         this.getBasketOffer()
       })
 
       // this.setOrgBasketStore(id).then(() => {
       //   // this.getBasket()
-        this.loading.changeBasketStore = false
-        this.showChangeAddressModal = false
-        //window.location.reload()
-    //  })
+      this.loading.changeBasketStore = false
+      this.showChangeAddressModal = false
+      //window.location.reload()
+      //  })
     },
     updateCart() {
       if (Object.keys(this.basketOffer).length > 1) {
@@ -350,25 +368,30 @@ export default {
       }
     },
 
-    fetchNotification(){
+    fetchNotification() {
       this.getNewNotification({
-        data_start: this.data_start
+        data_start: this.data_start,
       }).then((res) => {
-                for (let i = 0; i < res.data.data?.total; i++) {
-                    setTimeout(() => {
-                        let title = res.data.data.items[i].title;
-                        this.$toast.add({ severity: 'secondary', summary: title, detail: res.data.data.items[i].text, info: res.data.data.items[i], life: 7000 });
-                    }, i * 500);
-                    if(this.showNotificationsModal == true){
-                      this.reloadNotificationsModal = true
-                    }
-                    this.getAllNotifications()
-                }
-            });
+        for (let i = 0; i < res.data.data?.total; i++) {
+          setTimeout(() => {
+            let title = res.data.data.items[i].title
+            this.$toast.add({
+              severity: 'secondary',
+              summary: title,
+              detail: res.data.data.items[i].text,
+              info: res.data.data.items[i],
+              life: 7000,
+            })
+          }, i * 500)
+          if (this.showNotificationsModal == true) {
+            this.reloadNotificationsModal = true
+          }
+          this.getAllNotifications()
+        }
+      })
 
-      this.data_start = new Date();
+      this.data_start = new Date()
     },
-
   },
   watch: {
     basketOffer() {
@@ -384,38 +407,36 @@ export default {
       this.getFromOrgStores().then(() => {
         this.storeActive = this.fromOrgStores.items[0].id
         this.getOrgBasketOfferStore({
-          active_store: this.storeActive
+          active_store: this.storeActive,
         })
         this.getBasketOffer()
         this.getAllNotifications()
       })
     },
-    'showNotificationsModal': function(newVal){
-      if(newVal == false){
-          this.readAllNotifications()
-          this.getAllNotifications()
-        }
-      if(newVal != this.mobileNotificationsShow){
+    showNotificationsModal: function (newVal) {
+      if (newVal == false) {
+        this.readAllNotifications()
+        this.getAllNotifications()
+      }
+      if (newVal != this.mobileNotificationsShow) {
         this.$emit('notificationsMobile', this.showNotificationsModal)
       }
     },
-    notificationsAll: function(newVal){
+    notificationsAll: function (newVal) {
       this.$emit('notifications', newVal.no_read)
     },
-    mobileNotificationsShow: function(newVal){
-      if(this.showNotificationsModal != newVal){
+    mobileNotificationsShow: function (newVal) {
+      if (this.showNotificationsModal != newVal) {
         this.showNotificationsModal = newVal
       }
-
     },
-    '$route.matched[5].name': function(newVal){
-       this.getOrgBasketStore()
+    '$route.matched[5].name': function (newVal) {
+      this.getOrgBasketStore()
     },
-    offer: function(newVal){
+    offer: function (newVal) {
       this.isOffer = newVal
-    }
-
-  }
+    },
+  },
 }
 </script>
 <style lang="scss">
@@ -439,49 +460,48 @@ export default {
     }
   }
 }
-.notifications__modal-header{
+.notifications__modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: -24px;
 }
-.notifications__modal-header-buttons{
+.notifications__modal-header-buttons {
   display: flex;
   align-items: center;
   justify-content: end;
   gap: 8px;
   max-width: 350px;
-  width:320px;
+  width: 320px;
   margin-right: 42px;
 }
-.notifications__modal-header-buttons button{
+.notifications__modal-header-buttons button {
   min-width: calc(50% - 4px);
   max-width: calc(50% - 4px);
   width: calc(50% - 4px);
   font-size: 16px;
   font-weight: 500;
 }
-.notifications__modal-cansel{
+.notifications__modal-cansel {
   color: #757575;
 }
-.notifications__modal-container{
+.notifications__modal-container {
   width: 100%;
   padding-right: 20px;
 }
-.notifications__modal-container h4{
+.notifications__modal-container h4 {
   font-weight: 600;
   font-size: 14px;
   line-height: 18px;
   color: #757575;
   margin: 20px 0;
-
 }
-.notifications__modal-list{
+.notifications__modal-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-.notifications__modal-item{
+.notifications__modal-item {
   width: 100%;
   height: auto;
   min-height: 115px;
@@ -491,47 +511,48 @@ export default {
   padding: 16px 16px 16px 19px;
   position: relative;
 }
-.notifications__modal-list-new .notifications__modal-item:after{
+.notifications__modal-list-new .notifications__modal-item:after {
   content: '';
-  position:absolute;
+  position: absolute;
   width: 8px;
   height: 8px;
   border-radius: 8px;
   top: 5px;
   left: 5px;
-  background-color:#f92c0d;
-
+  background-color: #f92c0d;
 }
-.notifications__modal-item-header{
+.notifications__modal-item-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.notifications__modal-list .header__notification-icon{
-  width:20px;
-  height:20px;
+.notifications__modal-list .header__notification-icon {
+  width: 20px;
+  height: 20px;
   font-size: 14px;
 }
-.notifications__modal-list-new .header__notification-icon{
-   color:#f92c0d
+.notifications__modal-list-new .header__notification-icon {
+  color: #f92c0d;
 }
-.notifications__modal-list-old .header__notification-icon{
-   color:#757575;
+.notifications__modal-list-old .header__notification-icon {
+  color: #757575;
 }
-.notifications__modal-item-header-left{
+.notifications__modal-item-header-left {
   font-weight: 500;
   font-size: 12px;
   line-height: 123%;
   color: #757575;
 }
-.notifications__modal-item .std-notification__header,.notifications__modal-item h6,.notifications__modal-item .std-notification__span{
-  display:none;
+.notifications__modal-item .std-notification__header,
+.notifications__modal-item h6,
+.notifications__modal-item .std-notification__span {
+  display: none;
 }
-.notifications__modal-item .std-notification__content{
+.notifications__modal-item .std-notification__content {
   margin-top: 8px;
   color: #757575;
 }
-.notifications__modal-container-empty{
-  margin-top:30px;
+.notifications__modal-container-empty {
+  margin-top: 30px;
 }
 </style>

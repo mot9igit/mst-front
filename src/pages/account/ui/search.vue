@@ -63,6 +63,12 @@ export default {
       searchTimer: null,
     }
   },
+  props: {
+    searchUpdater: {
+      type: Boolean,
+      default: false,
+    },
+  },
   methods: {
     ...mapActions({
       getOptProductsSearch: 'catalog/getOptProductsSearch',
@@ -102,7 +108,7 @@ export default {
       let response = {}
       if (this.$router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer') {
         response = await this.getOfferOptProductsSearch(data)
-      }else{
+      } else {
         response = await this.getOptProductsSearch(data)
       }
       return response.data.data.items
@@ -122,13 +128,11 @@ export default {
       if ((newVal.length < 3 && newVal.length > 0) || newVal == this.$route.query.search) {
         this.showSearchSuggestions = false
         return
-      }else{
-          if(newVal.length == 0){
-            this.toSearch()
-          }
+      } else {
+        if (newVal.length == 0) {
+          this.toSearch()
+        }
       }
-
-
 
       this.showSearchSuggestions = !!newVal
 
@@ -141,8 +145,16 @@ export default {
       if (this.$route.query.search) {
         this.showSearchSuggestions = false
         this.search = this.$route.query.search
-      }else{
+      } else {
         this.search = ''
+      }
+    },
+    searchUpdater: function (newVal) {
+      if (newVal == true) {
+        this.debounce(async () => {
+          // console.log(await this.searchProducts());
+          this.searchSuggestions = await this.searchProducts()
+        }, 300)
       }
     },
   },
@@ -235,8 +247,8 @@ export default {
   }
 }
 .d-search .d-search__suggestions .d-search__suggestion-card img {
-    min-height: 50px;
-    max-height: 50px;
-    object-fit: cover;
+  min-height: 50px;
+  max-height: 50px;
+  object-fit: cover;
 }
 </style>

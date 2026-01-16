@@ -24,6 +24,7 @@
       :mobileRequipments="mobileRequipments"
       :active="toggleMenu"
       :mobileNotificationsShow="mobileNotificationsShow"
+      :searchUpdater="searchUpdater"
     ></ProfileHeader>
     <ProfileHeaderOffer
       v-else-if="this.$route.params.id && this.$route.params.id_org_from"
@@ -38,6 +39,7 @@
       :active="toggleMenu"
       :mobileNotificationsShow="mobileNotificationsShow"
       :offer="isOffer"
+      :searchUpdater="searchUpdater"
     ></ProfileHeaderOffer>
 
     <main class="main">
@@ -66,12 +68,14 @@
         :active="this.toggleVendors"
         @close="changeVendorsWindowClose()"
         @catalogUpdate="catalogUpdate()"
+        @vendorCheck="vendorCheck()"
       />
       <changeVendorsOfferWindow
         :offer="isOffer"
         :active="this.toggleOfferVendors"
         @close="changeVendorsOfferWindowClose()"
         @catalogUpdate="catalogUpdate()"
+        @vendorCheck="vendorCheck()"
       />
 
       <teleport to="body">
@@ -177,7 +181,6 @@ export default {
       type: String,
       default: '',
     },
-
   },
   data() {
     return {
@@ -195,13 +198,17 @@ export default {
       isOffer: false,
       toggleOrderOfferWindow: false,
       toggleOfferVendors: false,
+      searchUpdater: false,
     }
   },
   mounted() {
-        (function(w,d,u){
-                var s=d.createElement('script');s.async=true;s.src=u+'?'+(Date.now()/60000|0);
-                var h=d.getElementsByTagName('script')[0];h.parentNode.insertBefore(s,h);
-        })(window,document,'https://cdn-ru.bitrix24.ru/b22921142/crm/site_button/loader_7_76ynno.js');
+    ;(function (w, d, u) {
+      var s = d.createElement('script')
+      s.async = true
+      s.src = u + '?' + ((Date.now() / 60000) | 0)
+      var h = d.getElementsByTagName('script')[0]
+      h.parentNode.insertBefore(s, h)
+    })(window, document, 'https://cdn-ru.bitrix24.ru/b22921142/crm/site_button/loader_7_76ynno.js')
     this.getSessionUser()
     this.getOrg().then((response) => {
       console.log(response)
@@ -236,18 +243,13 @@ export default {
             this.$router.push({ name: 'OrgAdd' })
           }
         }
-        if(this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'){
+        if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
           this.isOffer = true
-        }else{
+        } else {
           this.isOffer = false
-
         }
-
       }
     })
-
-
-
   },
   computed: {
     ...mapGetters({
@@ -276,6 +278,12 @@ export default {
         this.catalogUpdater = false
       }, 500)
     },
+    vendorCheck() {
+      this.searchUpdater = true
+      setTimeout(() => {
+        this.searchUpdater = false
+      }, 500)
+    },
     toggleCatalog() {
       this.toggleMenu = !this.toggleMenu
     },
@@ -291,7 +299,7 @@ export default {
     mobileCatalog() {
       this.mobileCatalogShow = true
     },
-    mobileNotifications(){
+    mobileNotifications() {
       this.mobileNotificationsShow = !this.mobileNotificationsShow
     },
     showRequip() {
@@ -314,7 +322,7 @@ export default {
     changeVendorsWindowClose() {
       this.toggleVendors = false
     },
-    changeVendorsOfferWindowClose(){
+    changeVendorsOfferWindowClose() {
       this.toggleOfferVendors = false
     },
     changeOrderWindowClose() {
@@ -323,10 +331,10 @@ export default {
     changeOrderOfferWindowClose() {
       this.toggleOrderOfferWindow = false
     },
-    offerVendor(){
-      if(this.$route.matched[5].name == 'WholesaleClientsOffer'){
+    offerVendor() {
+      if (this.$route.matched[5].name == 'WholesaleClientsOffer') {
         this.isOffer = true
-      }else{
+      } else {
         this.isOffer = false
       }
     },
@@ -341,7 +349,7 @@ export default {
       document.execCommand('copy')
       window.getSelection().removeAllRanges()
     },
-    notificationsCol(data){
+    notificationsCol(data) {
       this.notificationsNoRead = data
     },
   },
@@ -384,10 +392,10 @@ export default {
     basket: function (newVal) {
       this.cartCount = newVal.cart_data?.sku_count ? newVal.cart_data.sku_count : 0
     },
-    '$route.matched': function(newVal) {
-      if(newVal[5] && newVal[5].name == 'WholesaleClientsOffer'){
+    '$route.matched': function (newVal) {
+      if (newVal[5] && newVal[5].name == 'WholesaleClientsOffer') {
         this.isOffer = true
-      }else{
+      } else {
         this.isOffer = false
         this.toggleOrderOfferWindow = false
       }

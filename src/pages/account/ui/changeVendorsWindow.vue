@@ -404,6 +404,7 @@ export default {
           }).then(() => {
             this.loading = false
             this.$emit('catalogUpdate')
+            this.$emit('vendorCheck')
           })
         })
       })
@@ -449,19 +450,19 @@ export default {
     changeStores(org_id, store_id, active) {
       //если снимаем галочку
       let col_active_stores = 0
-      if(active == false){
+      if (active == false) {
         //проверяем, остались ли активные склады, кроме этого
-        for(let i = 0; i < this.optVendorsSelected.items.length; i++){
-          if(this.optVendorsSelected.items[i].id == org_id){
-            for(let ii = 0; ii < this.optVendorsSelected.items[i].stores.length; ii++){
-              if(this.optVendorsSelected.items[i].stores[ii].active){
+        for (let i = 0; i < this.optVendorsSelected.items.length; i++) {
+          if (this.optVendorsSelected.items[i].id == org_id) {
+            for (let ii = 0; ii < this.optVendorsSelected.items[i].stores.length; ii++) {
+              if (this.optVendorsSelected.items[i].stores[ii].active) {
                 col_active_stores++
               }
             }
           }
         }
       }
-      if((active == false && col_active_stores > 0) || active == true){
+      if ((active == false && col_active_stores > 0) || active == true) {
         this.toggleVendorStores({
           active: active,
           org_id: org_id,
@@ -483,8 +484,9 @@ export default {
           })
           this.vendorForm.selected = []
           this.$emit('catalogUpdate')
+          this.$emit('vendorCheck')
         })
-      }else{
+      } else {
         this.changeOpts(org_id, 0)
       }
     },
@@ -518,6 +520,7 @@ export default {
             })
             this.vendorForm.selected = []
             this.$emit('catalogUpdate')
+            this.$emit('vendorCheck')
           })
           .catch((result) => {
             console.log(result)
@@ -533,13 +536,13 @@ export default {
     },
   },
   watch: {
-    offer: function(newVal){
-      if(newVal == true){
+    offer: function (newVal) {
+      if (newVal == true) {
         this.close()
       }
     },
-    '$route.matched': function(newVal) {
-      if(newVal[5] && newVal[5].name == 'WholesaleClientsOffer'){
+    '$route.matched': function (newVal) {
+      if (newVal[5] && newVal[5].name == 'WholesaleClientsOffer') {
         this.close()
       }
     },

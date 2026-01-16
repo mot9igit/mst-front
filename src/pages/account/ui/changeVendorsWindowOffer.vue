@@ -24,14 +24,17 @@
                 Выбранные поставщики
               </p>
 
-
               <div class="vendor-change__selected-list">
                 <!-- Карточка выбранного поставщика -->
-                 <!-- <div v-if="error" class="d-input-error vendor-change-error">
+                <!-- <div v-if="error" class="d-input-error vendor-change-error">
                     <i class="d-icon-warning d-input-error__icon"></i>
                     <span class="d-input-error__text">Вы должны выбрать хотя бы один склад</span>
                   </div> -->
-                <div class="vendor-change__selected-item" v-for="item in vendorOfferSelected.items" :key="item.id">
+                <div
+                  class="vendor-change__selected-item"
+                  v-for="item in vendorOfferSelected.items"
+                  :key="item.id"
+                >
                   <!-- Верхушка -->
                   <div class="vendor-change__selected-item-header">
                     <div class="vendor-change__selected-item-title-container">
@@ -49,7 +52,6 @@
                       <p class="vendor-change__selected-item-title">
                         {{ item.name }}
                       </p>
-
                     </div>
                     <button
                       class="vendor-change__selected-item-delete-button"
@@ -91,10 +93,7 @@
 
                   <!-- Данные склада -->
 
-                  <div
-                    class="vendor-change__selected-item-footer"
-                    v-if="item.stores"
-                  >
+                  <div class="vendor-change__selected-item-footer" v-if="item.stores">
                     <div
                       class="d-radio__wrapper vendor-change__selected-item-radio-wrapper"
                       v-for="store in item.stores"
@@ -138,11 +137,10 @@
             <!-- Список подключенных поставщиков -->
             <p
               class="vendor-change__block-title vendor-change__connected-title vendor-change__connected-title--1280"
-
             >
               Список подключенных поставщиков
             </p>
-            <div class="vendor-change__block vendor-change__connected" >
+            <div class="vendor-change__block vendor-change__connected">
               <!-- Заголовок -->
               <p class="vendor-change__block-title vendor-change__connected-title">
                 Список подключенных поставщиков
@@ -257,7 +255,6 @@
   </div>
 </template>
 <script>
-
 import { mapActions, mapGetters } from 'vuex'
 import { Checkbox } from 'primevue'
 import Paginate from 'vuejs-paginate-next'
@@ -277,7 +274,6 @@ export default {
   },
   emits: ['vendorCheck', 'catalogUpdate', 'close'],
   components: {
-
     Checkbox,
     Loader,
     Paginate,
@@ -292,7 +288,6 @@ export default {
         selected: [],
       },
       multisupplier: true,
-
     }
   },
   computed: {
@@ -337,10 +332,10 @@ export default {
   },
   mounted() {
     this.getOptVendorsOfferSelected({
-            filter: '',
-            page: this.pageSelected,
-            perpage: this.cfg.vendors.perpage,
-          })
+      filter: '',
+      page: this.pageSelected,
+      perpage: this.cfg.vendors.perpage,
+    })
   },
   methods: {
     ...mapActions({
@@ -391,6 +386,7 @@ export default {
           }).then(() => {
             this.loading = false
             this.$emit('catalogUpdate')
+            this.$emit('vendorCheck')
           })
         })
       })
@@ -437,12 +433,12 @@ export default {
       console.log(active)
       //если снимаем галочку
       let col_active_stores = 0
-      if(active == false){
+      if (active == false) {
         //проверяем, остались ли активные склады, кроме этого
-        for(let i = 0; i < this.vendorOfferSelected.items.length; i++){
-          if(this.vendorOfferSelected.items[i].id == org_id){
-            for(let ii = 0; ii < this.vendorOfferSelected.items[i].stores.length; ii++){
-              if(this.vendorOfferSelected.items[i].stores[ii].active){
+        for (let i = 0; i < this.vendorOfferSelected.items.length; i++) {
+          if (this.vendorOfferSelected.items[i].id == org_id) {
+            for (let ii = 0; ii < this.vendorOfferSelected.items[i].stores.length; ii++) {
+              if (this.vendorOfferSelected.items[i].stores[ii].active) {
                 col_active_stores++
                 console.log(col_active_stores)
               }
@@ -450,7 +446,7 @@ export default {
           }
         }
       }
-      if(active == false && col_active_stores > 0 || active == true){
+      if ((active == false && col_active_stores > 0) || active == true) {
         this.toggleVendorStores({
           active: active,
           org_id: org_id,
@@ -472,11 +468,11 @@ export default {
           })
           this.vendorForm.selected = []
           this.$emit('catalogUpdate')
+          this.$emit('vendorCheck')
         })
-      }else{
+      } else {
         this.changeOpts(org_id, 0)
       }
-
     },
     checkVendors() {
       let error = true
@@ -508,6 +504,7 @@ export default {
             })
             this.vendorForm.selected = []
             this.$emit('catalogUpdate')
+            this.$emit('vendorCheck')
           })
           .catch((result) => {
             console.log(result)
@@ -525,21 +522,18 @@ export default {
       clearTimeout(this.searchPTimer)
       this.searchPTimer = setTimeout(func, delay)
     },
-
   },
   watch: {
-
-    offer: function(newVal){
-      if(newVal == false){
+    offer: function (newVal) {
+      if (newVal == false) {
         this.close()
       }
     },
-    '$route.matched': function(newVal) {
-      if(newVal[5] && newVal[5].name != 'WholesaleClientsOffer'){
+    '$route.matched': function (newVal) {
+      if (newVal[5] && newVal[5].name != 'WholesaleClientsOffer') {
         this.close()
       }
     },
-
   },
 }
 </script>

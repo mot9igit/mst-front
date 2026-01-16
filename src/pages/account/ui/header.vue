@@ -62,7 +62,7 @@
                 <i class="d-icon-catalog header__catalog-icon"></i>
                 <span class="header__catalog-text">Каталог</span>
               </button>
-              <SearchField></SearchField>
+              <SearchField :searchUpdater="searchUpdater"> </SearchField>
             </div>
             <a
               href="#"
@@ -201,7 +201,7 @@ export default {
         requirement: false,
       },
       data_start: new Date(),
-      isOffer: false
+      isOffer: false,
     }
   },
   emits: [
@@ -234,17 +234,17 @@ export default {
       type: Boolean,
       default: false,
     },
+    searchUpdater: {
+      type: Boolean,
+      default: false,
+    },
   },
   mounted() {
-
-
-      this.getOrgStores().then(() => {
-        this.getOrgBasketStore()
-        this.getBasket()
-        this.getAllNotifications()
-      })
-
-
+    this.getOrgStores().then(() => {
+      this.getOrgBasketStore()
+      this.getBasket()
+      this.getAllNotifications()
+    })
 
     // mobile header
     let elem = document.querySelector('.main')
