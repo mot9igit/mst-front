@@ -29,17 +29,15 @@
         </button>
 
         <ul class="d-search__suggestions" v-if="this.suggestionsShow">
-          <li
-            class="d-search__suggestion"
-            v-for="suggestion in collectionsAvailable.items"
-            :key="suggestion.id"
-          >
-            <div class="d-search__suggestion-card" @click="selectCollection(suggestion)">
-              <div class="d-search__suggestion-card__content">
-                <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
+          <div v-for="suggestion in collectionsAvailable.items" :key="suggestion.id">
+            <li class="d-search__suggestion" v-if="!collections.hasOwnProperty(suggestion.id)">
+              <div class="d-search__suggestion-card" @click="selectCollection(suggestion)">
+                <div class="d-search__suggestion-card__content">
+                  <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
+                </div>
               </div>
-            </div>
-          </li>
+            </li>
+          </div>
         </ul>
       </form>
     </div>
@@ -165,8 +163,24 @@
                       <td class="d-table__col">
                         <div class="flex-center flex-center--vertical">
                           <p class="promotions__card-text promotions__card-text--bold">Скидка</p>
-                          <p class="product-table-card__text">
-                            {{ product.save_data.type_price ? 'по типу цены' : 'по формуле' }}
+                          <p
+                            class="product-table-card__text"
+                            v-if="
+                              el.type_price == '0' &&
+                              el.type_formula == '0' &&
+                              el.type_pricing == '0'
+                            "
+                          >
+                            не задана
+                          </p>
+                          <p class="product-table-card__text" v-else>
+                            {{
+                              el.properties?.type_price?.guid.length &&
+                              el.properties.type_formula == '0' &&
+                              el.properties.type_pricing == '0'
+                                ? 'по типу цены'
+                                : 'задана вручную'
+                            }}
                           </p>
                         </div>
                       </td>

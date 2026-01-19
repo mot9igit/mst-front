@@ -3081,14 +3081,14 @@
       <customModal v-model="this.modals.no_add" class="products_no_add">
         <template v-slot:title>Нельзя добавить {{ modals.no_add_info.cat_name }}!</template>
         <p class="no_add_p" v-if="modals.no_add_info.cat_name == 'коллекцию'">
-          Товары из коллекции "{{ modals.no_add_info?.name }}" уже добавлены в акцию
+          Коллекция "{{ modals.no_add_info?.name }}" содержит уже добавленные в акцию товары:
         </p>
         <div class="cont_no_add">
-          <div class="prod-card">
-            <img :src="modals.no_add_info.product.image" alt="" class="prod-card__img" />
+          <div class="prod-card" v-for="(item, index) in modals.no_add_info.product" :key="index">
+            <img :src="site_url_prefix + item.image" alt="" class="prod-card__img" />
             <div class="prod__content">
-              <span class="prod-card__title">{{ modals.no_add_info.product.name }}</span>
-              <span class="prod-card__article">арт. {{ modals.no_add_info.product.article }}</span>
+              <span class="prod-card__title">{{ item.name }}</span>
+              <span class="prod-card__article">арт. {{ item.article }}</span>
             </div>
           </div>
           <p class="no_add_p" v-if="modals.no_add_info.cat_name == 'товар'">
@@ -3398,6 +3398,7 @@ export default {
             store_id: this.form.store_id,
             filter: '',
           })
+
           this.getActiveActions()
         }
       })
@@ -3609,8 +3610,17 @@ export default {
         perpage: this.per_page,
         check: this.check_collection,
       }).then((res) => {
-        this.form.product_groups[id].products = res.data
-        this.check_collection = false
+        if (this.check_collection == true && res.data.success == false) {
+          if (this.form.product_groups[id].price == 'key') {
+            delete this.form.product_groups[id]
+          }
+          this.modals.no_add_info = res.data.data
+          this.modals.no_add = true
+          this.check_collection = false
+        } else {
+          this.form.product_groups[id].products = res.data
+          this.check_collection = false
+        }
       })
     },
     paginateGroupProduct(data) {
@@ -3740,7 +3750,7 @@ export default {
           prices: null,
           price: 'key',
           saleValue: 0,
-          typeFormul: null,
+          typeFormula: null,
         }
         this.check_collection = true
         this.updateGroups(data.id)
@@ -3801,6 +3811,48 @@ export default {
             this.type_pricing[key].disabledkey = true
           }
         })
+        let id = items[0]
+        let group = this.form.product_groups[id].properties
+        if (
+          group.type_price.guid != '0' ||
+          group.type_formula == '0' ||
+          group.type_pricing == '0'
+        ) {
+          this.modals.priceStep = 1
+          this.modals.typePrice = 2
+          this.productsSelectedData.type_price = group.type_price
+          for (let i = 0; i < this.productsPrices.length; i++) {
+            if (this.productsPrices[i].guid == group.type_price.guid) {
+              this.productsSelectedData.type_price = this.productsPrices[i]
+            }
+          }
+        }
+        if (group.type_formula != '0' || group.type_pricing != '0') {
+          this.modals.priceStep = 1
+          this.modals.typePrice = 1
+          this.productsSelectedData.type_pricing = group.type_pricing
+
+          for (let i = 0; i < this.type_pricing.length; i++) {
+            if (this.type_pricing[i].key == group.type_pricing.key) {
+              this.productsSelectedData.type_pricing = this.type_pricing[i]
+            }
+          }
+          this.productsSelectedData.type_price = group.type_price
+          for (let i = 0; i < this.productsPrices.length; i++) {
+            if (this.productsPrices[i].guid == this.productsSelectedData.type_price.guid) {
+              this.productsSelectedData.type_price = this.productsPrices[i]
+            }
+          }
+          this.productsSelectedData.type_formula = group.type_formula
+          for (let i = 0; i < this.type_formula.length; i++) {
+            if (
+              Number(this.type_formula[i].key) == Number(this.productsSelectedData.type_formula.key)
+            ) {
+              this.productsSelectedData.type_formula = this.type_formula[i]
+            }
+          }
+          this.productsSelectedData.sale_value = group.sale_value
+        }
       }
       this.modals.price = true
       if (items.length == 1 && type != 'group') {
@@ -4009,6 +4061,10 @@ export default {
           type: this.modals.priceType,
           products: this.productsSelected,
           data: this.productsSelectedData,
+        }
+        if (this.modals.priceType == 'group') {
+          let id = this.productsSelected[0]
+          this.form.product_groups[id].properties = this.productsSelectedData
         }
         this.setSelectedProductData(data).then(() => {
           this.resetDiscountFormula()
@@ -5221,7 +5277,7 @@ body {
   display: flex;
   gap: 16px;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
 }
 .prod__content {
   display: flex;
@@ -5250,8 +5306,12 @@ body {
 .cont_no_add {
   display: flex;
   flex-direction: column;
-  align-items: center;
-
-  gap: 0;
+  align-items: start;
+  justify-content: center;
+  gap: 16px;
+}
+.d-ib {
+  display: inline-block;
+  margin: 0 auto;
 }
 </style>
