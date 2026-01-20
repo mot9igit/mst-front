@@ -667,6 +667,7 @@
                   <div class="d-category" v-if="this.form.offer">
                     Доступно только в предложениях
                   </div>
+                  <!-- <div class="d-category" v-if="this.form.complect">Комплект</div> -->
                 </div>
               </div>
               <div class="promotions__card-header-right">
@@ -700,6 +701,7 @@
                 <div class="d-badge d-badge--filled" v-if="this.form.offer">
                   Доступно только в предложениях
                 </div>
+                <!-- <div class="d-badge d-badge--filled" v-if="this.form.complect">Комплект</div> -->
               </div>
               <div class="promotions__card-block-wrapper">
                 <div class="promotions__card-value-container promotions__card-block">
@@ -1943,6 +1945,32 @@
                         </p>
                       </div>
                     </div>
+                    <!-- Акция, действующая при покупке всего комплекта 
+                    <div
+                      class="d-radio__wrapper d-radio__wrapper--1200-start promo-master__radio-wrapper"
+                    >
+                      <label class="d-switch" for="negative-promo3">
+                        <input
+                          type="checkbox"
+                          name="negative-promo3"
+                          id="negative-promo3"
+                          v-model="this.form.complect"
+                          class="d-switch__input"
+                        />
+                        <div class="d-switch__circle"></div>
+                      </label>
+                      <div class="d-switch__label-container">
+                        <label
+                          for="negative-promo3"
+                          class="d-switch__label d-switch__label--regular"
+                          >Комплект
+                        </label>
+                        <p class="d-description">
+                          Для применения акции необходимо положить все товары акции в корзину с
+                          учетом настроенного минимального количества
+                        </p>
+                      </div>
+                    </div>-->
                   </div>
                 </div>
                 <!-- 7 ЭТАП - Условия участия в акции: Совместимость -->
@@ -3334,6 +3362,7 @@ export default {
         end_date: '',
         nodeadline: 0,
         check_collection: false,
+        complect: false,
         adv: {
           active: false,
           place: {},
@@ -4566,6 +4595,7 @@ export default {
         this.form.description = newVal.description
         this.form.comment = newVal.comment
         this.form.store_id = newVal.store_ids
+        this.form.complect = newVal.complect
         this.form.client_id = String(newVal.client_id)
         if (newVal.image) {
           this.form.adv.files.max.original_href = newVal.image.image
