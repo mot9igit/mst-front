@@ -3086,7 +3086,15 @@
         </p>
         <div class="cont_no_add">
           <div class="prod-card" v-for="(item, index) in modals.no_add_info.product" :key="index">
-            <img :src="site_url_prefix + item.image" alt="" class="prod-card__img" />
+            <img
+              :src="
+                item.image == 'https://dev.mst.tools/assets/content/images/nopic.svg'
+                  ? item.image
+                  : site_url_prefix + item.image
+              "
+              alt=""
+              class="prod-card__img"
+            />
             <div class="prod__content">
               <span class="prod-card__title">{{ item.name }}</span>
               <span class="prod-card__article">арт. {{ item.article }}</span>
@@ -5371,5 +5379,8 @@ body {
 .d-ib {
   display: inline-block;
   margin: 0 auto;
+}
+.regions .d-search__suggestion-card__img {
+  width: 50px !important;
 }
 </style>
