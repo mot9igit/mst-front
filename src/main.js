@@ -18,7 +18,15 @@ import ConfirmationService from 'primevue/confirmationservice'
 import ToastService from 'primevue/toastservice'
 import PrimeButton from 'primevue/button'
 import mdiVue from 'mdi-vue/v3'
-import * as mdijs from '@mdi/js'
+import {
+  mdiClose,
+  mdiEye,
+  mdiEyeClosed,
+  mdiCheckCircleOutline,
+  mdiSortAscending,
+  mdiSortDescending,
+  mdiSort,
+} from '@mdi/js'
 import { createVfm } from 'vue-final-modal'
 
 const app = createApp(App)
@@ -41,22 +49,22 @@ const MyPreset = definePreset(Aura, {
     },
     colorScheme: {
       dark: {
-          surface: {
-              0: '#282828',
-              50: '{zinc.50}',
-              100: '{zinc.100}',
-              200: '#282828',
-              300: '{zinc.300}',
-              400: '{zinc.400}',
-              500: '{zinc.500}',
-              600: '{zinc.600}',
-              700: '#dedede',
-              800: '#ffffff',
-              900: '#ffffff',
-              950: '#ffffff'
-          }
+        surface: {
+          0: '#282828',
+          50: '{zinc.50}',
+          100: '{zinc.100}',
+          200: '#282828',
+          300: '{zinc.300}',
+          400: '{zinc.400}',
+          500: '{zinc.500}',
+          600: '{zinc.600}',
+          700: '#dedede',
+          800: '#ffffff',
+          900: '#ffffff',
+          950: '#ffffff',
+        },
       },
-    }
+    },
   },
 })
 
@@ -233,7 +241,15 @@ app.use(
 app.use(ApiPlugin)
 app.use(LoadPlugin)
 app.use(mdiVue, {
-  icons: mdijs,
+  icons: {
+    mdiClose,
+    mdiCheckCircleOutline,
+    mdiEye,
+    mdiEyeClosed,
+    mdiSort,
+    mdiSortAscending,
+    mdiSortDescending,
+  },
 })
 app.mount('#app')
 
