@@ -1,5 +1,5 @@
 <template>
-  <Toast/>
+  <Toast />
   <section class="shipments wholesaleoffer__content" id="shipments">
     <div class="d-top">
       <Breadcrumbs />
@@ -12,32 +12,31 @@
 
           <div class="d-top-order-container-date-created">от {{ offer.date }}</div>
         </div>
-        <div class="d-badge2 d-badge2--fit d-button--sm-shadow order-card__status" :style="
-          'background-color: #' +
-          status.color
-        "
-        v-if="(Object.keys(status).length != 0)"
-      >
-        {{ status.name }}</div>
+        <div
+          class="d-badge2 d-badge2--fit d-button--sm-shadow order-card__status"
+          :style="'background-color: #' + status.color"
+          v-if="Object.keys(status).length != 0"
+        >
+          {{ status.name }}
+        </div>
       </div>
-     <div class="d-top-order-container-right">
+      <div class="d-top-order-container-right">
         <!-- <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>-->
-    <div class="d-top-order-container-buttons">
-
-    <button
-      v-if="status.api_key != 'offer_accept'"
-      @click.prevent="cancelOffer()"
-      class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action">
-      <span class="catalog__head-item-text">Отозвать предложение</span>
-		</button>
-    <!-- <button
+        <div class="d-top-order-container-buttons">
+          <button
+            v-if="status.api_key != 'offer_accept'"
+            @click.prevent="cancelOffer()"
+            class="d-button d-button-primary d-button-primary-small d-button--sm-shadow order-card__action"
+          >
+            <span class="catalog__head-item-text">Отозвать предложение</span>
+          </button>
+          <!-- <button
       v-if="status.api_key == 'offer_accept' && offer.order_id != 0"
       @click.prevent="routeToOrder(offer.order_id)"
       class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs">
       <span class="catalog__head-item-text">Перейти к заказу № {{ offer.order_id }}</span>
 		</button> -->
-
-    </div>
+        </div>
       </div>
     </div>
     <div class="d-top-order-container-info">
@@ -57,7 +56,6 @@
           <div class="order-card__orderinfo-grid-text-down">
             ({{ this.offer?.initiator_user_name != '' ? this.offer?.initiator_user_name : '' }})
           </div>
-
         </div>
         <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Поставщик</div>
@@ -88,12 +86,18 @@
         <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.offer?.delay != 0  ? Number.parseInt(this.offer?.delay) + ' дн.' : '-' }}
+            {{ this.offer?.delay != 0 ? Number.parseInt(this.offer?.delay) + ' дн.' : '-' }}
           </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Оплата доставки</div>
-          <div class="order-card__orderinfo-grid-text">{{ this.offer?.delivery_payer && this.offer?.delivery_payer == 1 ? 'Поставщик' : 'Покупатель' }}</div>
+          <div class="order-card__orderinfo-grid-text">
+            {{
+              this.offer?.delivery_payer && this.offer?.delivery_payer == 1
+                ? 'Поставщик'
+                : 'Покупатель'
+            }}
+          </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
@@ -117,7 +121,6 @@
         @paginate="paginate"
       />
     </div>
-
   </section>
 </template>
 
@@ -168,7 +171,6 @@ export default {
           class: 'cell_centeralign',
         },
       },
-
     }
   },
   props: {
@@ -182,27 +184,27 @@ export default {
     },
   },
   methods: {
-  ...mapActions({
+    ...mapActions({
       getOffer: 'wholesale/getOffer',
       unsetOffer: 'wholesale/unsetOffer',
       deleteOffer: 'wholesale/deleteOffer',
     }),
-    cancelOffer(){
+    cancelOffer() {
       this.$confirm.require({
         message: 'Вы уверены, что хотите удалить предложение №' + this.offer.id + '?',
         header: 'Удаление предложение',
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
           this.loading = true
-          this.deleteOffer({offer_id: this.$route.params.offer_id}).then((response) => {
+          this.deleteOffer({ offer_id: this.$route.params.offer_id }).then((response) => {
             if (response.data.data.success) {
               this.$toast.add({
                 severity: 'success',
                 summary: 'Удаление прошло успешно',
                 life: 3000,
               })
-                this.loading = false
-                this.$router.push({ name: 'wholesaleOffers'})
+              this.loading = false
+              this.$router.push({ name: 'wholesaleOffers' })
             } else {
               this.loading = false
               this.$toast.add({
@@ -224,15 +226,15 @@ export default {
         },
       })
     },
-    routeToOrder(order){
+    routeToOrder(order) {
       this.$router.push({
         name: 'wholesaleOrder',
         params: {
           id: this.$route.params.id,
-          order_id: order
-        }})
-    }
-
+          order_id: order,
+        },
+      })
+    },
   },
   mounted() {
     this.getOffer({
@@ -254,18 +256,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-    .d-badge2 {
-        background: #282828;
-        border-radius: 41px;
-        padding: 3px 12px;
-        font-style: normal;
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 18px;
-        text-align: center;
-        color: #ededed;
-        min-height: 24px;
-        min-width: 146px;
-    }
-</style>
+<style lang="scss"></style>
