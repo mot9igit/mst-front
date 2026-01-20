@@ -166,16 +166,19 @@
                           <p
                             class="product-table-card__text"
                             v-if="
-                              el.type_price == '0' &&
-                              el.type_formula == '0' &&
-                              el.type_pricing == '0'
+                              (el.type_price == '0' &&
+                                el.type_formula == '0' &&
+                                el.type_pricing == '0') ||
+                              (el.properties?.type_price == '0' &&
+                                el.properties?.type_formula == '0' &&
+                                el.properties?.type_pricing == '0')
                             "
                           >
                             не задана
                           </p>
                           <p class="product-table-card__text" v-else>
                             {{
-                              el.properties?.type_price?.guid.length &&
+                              el.properties?.type_price?.guid?.length &&
                               el.properties.type_formula == '0' &&
                               el.properties.type_pricing == '0'
                                 ? 'по типу цены'

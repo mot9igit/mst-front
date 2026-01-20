@@ -2833,6 +2833,7 @@
                     inputId="horizontal-buttons"
                     :step="0.1"
                     :min="Number(0)"
+                    :max="this.modals.max_sale"
                     @update:modelValue="updateFormula()"
                     incrementButtonIcon="pi pi-plus"
                     decrementButtonIcon="pi pi-minus"
@@ -3186,6 +3187,7 @@ export default {
         organization: false,
         no_add: false,
         no_add_info: [],
+        max_sale: null,
       },
       // Поиск
       search: {
@@ -3430,6 +3432,7 @@ export default {
       setSelectedProductData: 'action/setSelectedProductData',
       toggleAction: 'action/toggleAction',
       copyAction: 'action/copyAction',
+      delGroup: 'action/delGroup',
     }),
     addDelayItem() {
       this.form.delay.push({ percent: 0, day: 0 })
@@ -3604,11 +3607,11 @@ export default {
     updateGroups(id) {
       console.log('updateGroups', this.form.product_groups[id])
       this.getGroupProducts({
-        group_id: id,
+        group_id: String(id),
         filter: this.form.product_groups[id].filter,
         page: this.form.product_groups[id].page,
         perpage: this.per_page,
-        check: this.check_collection,
+        check: this.check_collection == true ? this.check_collection == true : '',
       }).then((res) => {
         if (this.check_collection == true && res.data.success == false) {
           if (this.form.product_groups[id].price == 'key') {
@@ -3648,6 +3651,9 @@ export default {
       this.form.product_groups = Object.fromEntries(
         Object.entries(this.form.product_groups).filter(([key]) => key !== id.toString()),
       )
+      this.delGroup({
+        group_id: id,
+      })
     },
     isUsed(number) {
       const data = this.visibleMasterSteps.find((element) => element === number)
@@ -3750,7 +3756,13 @@ export default {
           prices: null,
           price: 'key',
           saleValue: 0,
-          typeFormula: null,
+          typeFormul: null,
+          properties: {
+            type_price: '0',
+            type_pricing: '0',
+            type_formula: '0',
+            sale_value: '0',
+          },
         }
         this.check_collection = true
         this.updateGroups(data.id)
@@ -3813,11 +3825,7 @@ export default {
         })
         let id = items[0]
         let group = this.form.product_groups[id].properties
-        if (
-          group.type_price.guid != '0' ||
-          group.type_formula == '0' ||
-          group.type_pricing == '0'
-        ) {
+        if (group.type_price != '0' && group.type_formula == '0' && group.type_pricing == '0') {
           this.modals.priceStep = 1
           this.modals.typePrice = 2
           this.productsSelectedData.type_price = group.type_price
@@ -3827,7 +3835,7 @@ export default {
             }
           }
         }
-        if (group.type_formula != '0' || group.type_pricing != '0') {
+        if (group.type_formula != '0' && group.type_pricing != '0') {
           this.modals.priceStep = 1
           this.modals.typePrice = 1
           this.productsSelectedData.type_pricing = group.type_pricing
@@ -3835,6 +3843,13 @@ export default {
           for (let i = 0; i < this.type_pricing.length; i++) {
             if (this.type_pricing[i].key == group.type_pricing.key) {
               this.productsSelectedData.type_pricing = this.type_pricing[i]
+            }
+          }
+          if (this.type_pricing != 0 && !this.type_pricing.key) {
+            for (let i = 0; i < this.type_pricing.length; i++) {
+              if (this.type_pricing[i].key == group.type_pricing) {
+                this.productsSelectedData.type_pricing = this.type_pricing[i]
+              }
             }
           }
           this.productsSelectedData.type_price = group.type_price
@@ -3849,6 +3864,13 @@ export default {
               Number(this.type_formula[i].key) == Number(this.productsSelectedData.type_formula.key)
             ) {
               this.productsSelectedData.type_formula = this.type_formula[i]
+            }
+          }
+          if (this.type_pricing != 0 && !this.type_pricing.key) {
+            for (let i = 0; i < this.type_formula.length; i++) {
+              if (this.type_formula[i].key == group.type_formula) {
+                this.productsSelectedData.type_formula = this.type_formula[i]
+              }
             }
           }
           this.productsSelectedData.sale_value = group.sale_value
@@ -3960,6 +3982,7 @@ export default {
       })
     },
     updateFormula() {
+      this.modals.max_sale = null
       if (this.productsSelected.length == 1 && this.modals.priceType != 'group') {
         var base_price = this.productsSelected[0].price
         var rrc_price = this.productsSelected[0].price
@@ -3976,6 +3999,7 @@ export default {
             }
           })
         }
+
         // console.log(base_price)
         if (this.modals.typePrice == 2) {
           this.productsSelected[0].save_data.new_price = base_price
@@ -4013,6 +4037,13 @@ export default {
             if (this.productsSelectedData.type_pricing?.key == 2) {
               // Рубли
               if (this.productsSelectedData.type_formula?.key == 0) {
+                this.modals.max_sale = Number(base_price - 1).toFixed(2)
+                if (this.modals.max_sale < 0) {
+                  this.modals.max_sale = 0
+                }
+                if (this.productsSelectedData.sale_value > this.modals.max_sale) {
+                  this.productsSelectedData.sale_value = this.modals.max_sale
+                }
                 this.productsSelected[0].save_data.new_price =
                   base_price - this.productsSelectedData.sale_value
                 this.productsSelected[0].save_data.sale =
@@ -4020,6 +4051,10 @@ export default {
               }
               // Проценты
               if (this.productsSelectedData.type_formula?.key == 1) {
+                this.modals.max_sale = 99
+                if (this.productsSelectedData.sale_value > this.modals.max_sale) {
+                  this.productsSelectedData.sale_value = this.modals.max_sale
+                }
                 const koeff = (100 - Number(this.productsSelectedData.sale_value)) * 0.01
                 this.productsSelected[0].save_data.new_price = Number(base_price * koeff).toFixed(2)
                 this.productsSelected[0].save_data.sale =
@@ -4028,6 +4063,10 @@ export default {
             }
             // Фиксированная
             if (this.productsSelectedData.type_pricing?.key == 3) {
+              this.modals.max_sale = null
+              if (this.productsSelectedData.sale_value > this.modals.max_sale) {
+                this.productsSelectedData.sale_value = this.modals.max_sale
+              }
               this.productsSelected[0].save_data.new_price = this.productsSelectedData.sale_value
               this.productsSelected[0].save_data.sale =
                 ((rrc_price - this.productsSelected[0].save_data.new_price) / rrc_price) * 100
@@ -4041,12 +4080,30 @@ export default {
           this.productsSelected[0].save_data.sale,
         ).toFixed(2)
       }
+      if (this.modals.priceType == 'group') {
+        if (
+          this.modals.typePrice == 1 &&
+          this.productsSelectedData.type_formula?.key == 1 &&
+          this.productsSelectedData.type_pricing?.key == 2
+        ) {
+          this.modals.max_sale = 99
+          if (this.productsSelectedData.sale_value > this.modals.max_sale) {
+            this.productsSelectedData.sale_value = this.modals.max_sale
+          }
+        }
+      }
     },
     closeDialogPriceBtn() {
       ;(this.modals.priceType = ''), (this.productsSelectedData = {})
     },
     closeDialogPrice() {
       if (this.modals.priceStep === 0) {
+        if (this.modals.priceType == 'group' && this.modals.typePrice == 2) {
+          this.productsSelectedData.type_pricing = '0'
+          this.productsSelectedData.sale_value = '0'
+          this.productsSelectedData.type_formula = '0'
+        }
+
         this.modals.priceStep = 1
       } else {
         this.modals.priceStep = 0
@@ -4079,6 +4136,7 @@ export default {
       this.productsSelectedData.type_price = {}
       this.productsSelectedData.type_formula = {}
       this.productsSelectedData.sale_value = null
+      this.modals.max_sale = null
     },
     filterOrganizations(value) {
       console.log(value)

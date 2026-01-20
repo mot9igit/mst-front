@@ -273,6 +273,16 @@ export default {
       }
       return response.data
     },
+    // Удаление группы
+    async delGroup(store, { group_id }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        group_id: group_id,
+        action: 'sale/delete/group',
+      }
+      const response = await api.action.getGroupProducts(data)
+      return response
+    },
   },
   mutations: {
     SET_ACTION: (state, data) => {
