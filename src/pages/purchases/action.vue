@@ -233,6 +233,10 @@
           <div class="promotions__card-header-left">
             <i class="d-icon-check-list promotions__card-icon"></i>
             <p class="promotions__card-title">Условия участия в акции</p>
+            <div class="d-category__container ml-44 hidden-1200">
+              <div class="d-category" v-if="sale.offer">Доступно только в предложениях</div>
+              <div class="d-category" v-if="sale.complect">Комплект</div>
+            </div>
           </div>
         </div>
         <div class="promotions__card-content promotions__card-last">
@@ -278,6 +282,14 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="sale_seeall-button" v-if="sale.complect > 0">
+      <button
+        @click.prevent=""
+        class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
+      >
+        <div class="d-button__text">Посмотреть все товары акции в каталоге</div>
+      </button>
     </div>
     <BaseTable
       :items_data="salesProducts.items"
@@ -341,6 +353,21 @@ export default {
         },
         sale: {
           label: 'Скидка от РРЦ, %',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        price: {
+          label: 'Цена со скидкой за шт, ₽',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        min_count: {
+          label: 'Минимальное количество',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        multiplicity: {
+          label: 'Кратность',
           type: 'text',
           class: 'cell_centeralign',
         },
@@ -555,5 +582,12 @@ export default {
 .promotions .promotions__card,
 .promotions .promotions__card-container {
   height: 100%;
+}
+.sale_seeall-button {
+  width: 100%;
+  margin: 40px 0 24px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
 }
 </style>

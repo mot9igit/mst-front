@@ -590,9 +590,9 @@
               <div v-if="item.integration == 1">
                 <i class="d-icon-shuffle product-card__buy-icon"></i>Интеграция с MachineStore
               </div>
-              <!-- <div v-if="item.complect > 0">
+              <div v-if="item.complect > 0">
                 <i class="d-icon-boxes-2 product-card__buy-icon"></i>Комплект
-              </div> -->
+              </div>
             </div>
           </div>
 
