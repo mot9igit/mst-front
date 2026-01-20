@@ -167,8 +167,10 @@
 
           <div class="clients__card-top-right">
             <div class="clients__card-top-right-top">
-
-             <button  @click.prevent="createOffer(item)" class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
+              <button
+                @click.prevent="createOffer(item)"
+                class="d-button d-button-primary d-button--sm-shadow clients__card-offer"
+              >
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
@@ -268,17 +270,17 @@
             </div>
           </div>
           <div class="clients__card-right-right d-col-10">
-           <div
-              class="d-col-18 ">
-
-            <!--  clients__devider"
+            <div class="d-col-18">
+              <!--  clients__devider"
             >-->
 
-               <button @click.prevent="createOffer(item)" class="d-button d-button-primary d-button--sm-shadow clients__card-offer">
+              <button
+                @click.prevent="createOffer(item)"
+                class="d-button d-button-primary d-button--sm-shadow clients__card-offer"
+              >
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
               </button>
-
             </div>
             <div class="clients__card-action-container">
               <button
@@ -415,7 +417,7 @@ export default {
       getManagers: 'wholesale/getManagers',
       getStores: 'wholesale/getStores',
       deleteOrgProfile: 'wholesale/deleteOrgProfile',
-      createOfferExtended: 'offer/createOfferExtended'
+      createOfferExtended: 'offer/createOfferExtended',
     }),
     setFilter(type = '0') {
       if (type === 'filter') {
@@ -479,18 +481,17 @@ export default {
     },
     createOffer(data) {
       this.createOfferExtended({
-        id: data.id
+        id: data.id,
       }).then(() => {
-        this.$router.push({
-          name: 'WholesaleClientsOffer',
-          params: { id: this.$route.params.id, id_org_from: data.id },
-        }).then(() => {
-          window.location.reload()
-        })
-
+        this.$router
+          .push({
+            name: 'WholesaleClientsOffer',
+            params: { id: this.$route.params.id, id_org_from: data.id },
+          })
+          .then(() => {
+            window.location.reload()
+          })
       })
-
-
     },
     deleteClient(data) {
       this.loading = true
@@ -583,167 +584,4 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-.clients__card,
-.clients__card-data,
-.clients__card-right,
-.clients__card-right-left,
-.clients__card-right-right {
-  gap: 0;
-}
-.clients__card-info-content {
-  padding-right: 12px;
-}
-.clients__card-inn {
-  padding-right: 12px;
-  padding-left: 12px;
-}
-.clients__card-contact-container {
-  padding-right: 12px;
-  padding-left: 20px;
-}
-.clients__devider:before {
-  content: '';
-  position: absolute;
-  top: calc(50% - 10px);
-  right: 0;
-
-  width: 0.5px;
-  height: 20px;
-  background-color: #75757575;
-}
-.clients__filters-input select {
-  width: 100%;
-}
-.clients__filters-radio-wrapper
-  .p-checkbox-checked:not(.p-disabled):has(.p-checkbox-input:hover)
-  .p-checkbox-box,
-.clients__filters-radio-wrapper .p-checkbox-checked .p-checkbox-box,
-.p-multiselect-overlay
-  .p-checkbox-checked:not(.p-disabled):has(.p-checkbox-input:hover)
-  .p-checkbox-box,
-.p-multiselect-overlay .p-checkbox-checked .p-checkbox-box {
-  border-color: rgba(249, 44, 13, 1);
-  background: rgba(249, 44, 13, 1);
-}
-.clients__filters-input-actions .d-icon-wrapper:hover,
-.clients__filters-input-actions .d-icon-wrapper--active {
-  background-color: transparent;
-  box-shadow: none;
-  color: var(--d-icon-wrapper-color-hover);
-}
-.clients__filters-input-actions button:first-child {
-  cursor: default;
-}
-.clients__filters-input .p-multiselect {
-  background: transparent;
-  border: none;
-}
-.clients__filters-input-multiselect .clients__filters-input-actions {
-  position: absolute;
-  right: 20px;
-}
-.clients__filters-input-multiselect .p-multiselect-label {
-  padding-right: 35px;
-  padding-left: 0;
-}
-.clients__filters-input-multiselect .p-multiselect-dropdown {
-  color: #757575;
-}
-.clients__filters-input .dart-form-group {
-  width: 100%;
-}
-.clients__filters-input {
-  max-width: 350px;
-}
-.page-item .page-link {
-  cursor: pointer;
-}
-.clients__card-right-right .clients__card-action-container {
-  justify-content: end;
-}
-.clients-form__modal .modal-content {
-  max-width: 700px;
-}
-.clients-info__label {
-  display: flex;
-  align-items: center;
-  margin: 40px 0;
-  gap: 12px;
-}
-.clients-button__container {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-.clients-button__container .clients-info__button {
-  min-width: 150px;
-}
-.clients__card-price {
-  margin-left: -8px;
-}
-.clients__card-vendor {
-  margin-left: 12px;
-}
-@media (width <= 1536px) {
-  .clients__card .clients__card-inn:first-child::before {
-    display: none;
-  }
-}
-@media (width <= 1280px) {
-  .clients__devider:before {
-    display: none;
-  }
-  .clients__card-vendor {
-    margin-left: 170px;
-  }
-  .clients__card-price-container .clients__card-price:nth-child(2) {
-    margin-left: 8px;
-  }
-}
-@media (width <= 1024px) {
-  .clients__card-top-right-top {
-    justify-content: end;
-  }
-  .clients__card-vendor {
-    margin-left: 0px;
-  }
-}
-@media (width <= 600px) {
-  .clients__card-bottom .clients__card-price-container {
-    display: none;
-  }
-  .clients__card-right-left {
-    flex-direction: column;
-    gap: 16px;
-    width: 100%;
-    padding-right: 0px;
-    padding-left: 0px;
-  }
-  .clients__card-right-left .d-col-12 {
-    width: 100%;
-    padding-right: 0px;
-    padding-left: 0px;
-  }
-  .clients__card-price {
-    font-size: 10px;
-    padding: 4px 8px;
-    height: 24px;
-  }
-  .clients__card-price-container {
-    justify-content: space-between;
-  }
-  .clients__card-price {
-    margin-left: 0px;
-    margin-right: 0px;
-    min-width: calc(50% - 4px);
-    justify-content: center;
-  }
-  .clients__card-price-container .clients__card-price:nth-child(2) {
-    margin-left: 0px;
-  }
-  .clients__card-right-right {
-    width: 100%;
-  }
-}
-</style>
+<style lang="scss"></style>

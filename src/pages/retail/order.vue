@@ -259,39 +259,4 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-.codeWindow {
-  .modal__title {
-    margin: 24px 48px 0 0;
-  }
-  .modal__content {
-    padding-bottom: 0;
-  }
-  .modal-content {
-    max-width: 344px;
-    img {
-      max-width: 70px;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      .p-inputotp {
-        justify-content: center;
-      }
-      .p-inputtext {
-        border: 1px solid #757575;
-      }
-    }
-    .buttons-container {
-      width: 100%;
-      text-align: center;
-      margin-top: 24px;
-      .d-button {
-        display: inline-block;
-        box-shadow: none;
-      }
-    }
-  }
-}
-</style>
+<style lang="scss"></style>

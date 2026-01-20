@@ -195,7 +195,10 @@
           Ok
         </button>
       </customModal>
-      <customModal v-model="modalActiveActions" class="product-card-actions__modal-all product-card-actions-product__modal-all">
+      <customModal
+        v-model="modalActiveActions"
+        class="product-card-actions__modal-all product-card-actions-product__modal-all"
+      >
         <saleWindow :product="productOrder" :orderInfo="orderInfo"></saleWindow>
         <button
           class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-actions-product__modal-all-button"
@@ -301,7 +304,7 @@ export default {
       },
       modalActiveActions: false,
       productOrder: [],
-      orderInfo: {}
+      orderInfo: {},
     }
   },
   props: {
@@ -337,7 +340,7 @@ export default {
           this.loading = false
         })
     },
-    saleModal(data){
+    saleModal(data) {
       this.modalActiveActions = true
       this.productOrder = data
     },
@@ -377,40 +380,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.d-badge2 {
-  background: #282828;
-  border-radius: 41px;
-  padding: 3px 12px;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 18px;
-  text-align: center;
-  color: #ededed;
-  min-height: 24px;
-  min-width: 146px;
-}
-.order-card__ordercomment-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.order-card__ordercomment {
-  margin: 0px 9% 0px 0;
-}
-.product-card-actions-product__modal-all-button{
-  margin: 40px auto 0;
-}
-.product-card-actions-product__modal-all .product-card__seller{
-  cursor: auto;
-}
-.product-card-actions-product__modal-all .product-card__price-container-all{
-  width: 100%;
-}
-@media (width <= 1280px) {
-  .shipments.optorder__content .d-top-order-container {
-    align-items: start;
-  }
-}
-</style>
+<style lang="scss"></style>

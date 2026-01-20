@@ -168,43 +168,4 @@ export default {
   watch: {},
 }
 </script>
-<style lang="scss">
-.retailorders__content .dart-row {
-  justify-content: end;
-}
-.retailorders__content .dart-mb-1 {
-  margin-bottom: 40px;
-}
-.retailorders__content .p-inputtext {
-  width: 100%;
-}
-.retailorders__content .form_input_group:after {
-  content: '\e003';
-  font-family: 'Iconly' !important;
-  position: absolute;
-  font-size: 16.8px;
-  top: calc(50% - 8.4px);
-  right: 20px;
-}
-.retailorders__content .p-inputtext {
-  padding-right: 40px;
-  box-shadow: none;
-  border: 0.2px solid #75757575;
-}
-.retailorders__content .p-inputtext:enabled:focus {
-  border-color: #f92c0d;
-}
-.retailorders__content .p-floatlabel:has(input:focus) label,
-.retailorders__content .p-floatlabel:has(input:-webkit-autofill) label,
-.retailorders__content .p-floatlabel:has(textarea:focus) label,
-.retailorders__content .p-floatlabel:has(.p-inputwrapper-focus) label {
-  color: #f92c0d;
-}
-.retailorders__content .d-table__col,
-.retailorders__content .d-table__row:first-child > .d-table__col {
-  padding: 16px;
-}
-.nowrap a, .nowrap {
-  white-space: nowrap;
-}
-</style>
+<style lang="scss"></style>

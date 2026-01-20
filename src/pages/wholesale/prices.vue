@@ -325,35 +325,4 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-.wholesaleprices {
-  .v-table {
-    margin-top: 24px;
-  }
-  .dart-form-group {
-    margin-bottom: 0;
-  }
-  .ml-2 {
-    margin-left: 8px;
-  }
-}
-.d-flex {
-  display: flex;
-}
-.d-flex-end {
-  justify-content: end;
-}
-.d-gap-12 {
-  gap: 12px;
-}
-.d-inline-block {
-  display: inline-block;
-  width: auto;
-}
-.promotions__card-collection-tabs-wrapper {
-  overflow: hidden;
-}
-.d-button-wholesaleprices {
-  width: auto;
-}
-</style>
+<style lang="scss"></style>

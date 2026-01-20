@@ -1,50 +1,50 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import notFound from '../pages/not-found/index.vue'
-import SignIn from '../pages/sign-in/index.vue'
-import Account from '../pages/account/index.vue'
-import Organization from '../pages/org/index.vue'
-import userProfile from '../pages/profile/index.vue'
-import OrgAdd from '../pages/org/add.vue'
-import Purchases from '../pages/purchases/index.vue'
-import PurchasesOrders from '../pages/purchases/orders.vue'
-import PurchasesOrder from '../pages/purchases/order.vue'
-import PurchasesOffers from '../pages/purchases/offers.vue'
-import PurchasesOffer from '../pages/purchases/offer.vue'
-import PurchasesCatalog from '../pages/purchases/сatalog.vue'
-import PurchasesVendors from '../pages/purchases/vendors.vue'
-import PurchasesAction from '../pages/purchases/action.vue'
-import Wholesale from '../pages/wholesale/index.vue'
-import WholesaleOrders from '../pages/wholesale/orders.vue'
-import WholesaleOrder from '../pages/wholesale/order.vue'
-import WholesaleOffers from '../pages/wholesale/offers.vue'
-import WholesaleOffer from '../pages/wholesale/offer.vue'
-import WholesalePrices from '../pages/wholesale/prices.vue'
-import WholesaleSaleNew from '../pages/wholesale/saleNew.vue'
-import WholesaleClients from '../pages/wholesale/clients.vue'
-import WholesaleClientsAdd from '../pages/wholesale/clientsAdd.vue'
-import WholesaleClientsOffer from '../pages/wholesale/clientsOffer.vue'
-import WholesaleShipments from '../pages/wholesale/shipments.vue'
-import Retail from '../pages/retail/index.vue'
-import RetailOrders from '../pages/retail/orders.vue'
-import RetailOrder from '../pages/retail/order.vue'
-import RetailActions from '../pages/retail/actions.vue'
-import retailSaleNew from '../pages/retail/saleNew.vue'
-import RetailBalance from '../pages/retail/balance.vue'
-import RetailCompareProducts from '../pages/retail/compareProducts.vue'
-import RetailCompareStoreProducts from '../pages/retail/compareStoreProducts.vue'
-import Warehouse from '../pages/warehouse/index.vue'
-import WarehouseReview from '../pages/warehouse/review.vue'
-import WarehouseReviewStore from '../pages/warehouse/reviewStore.vue'
-import WarehouseStoreSettings from '../pages/warehouse/storeSettings.vue'
-import WarehouseCollections from '../pages/warehouse/collections.vue'
-import WarehouseCollection from '../pages/warehouse/collection.vue'
-import WarehouseCustomization from '../pages/warehouse/customization.vue'
-import ProfileCard from '../pages/org/card.vue'
-import ProfileStuff from '../pages/org/staff.vue'
-import ProfileStuffEdit from '../pages/org/staffEdit.vue'
-import ProfileStuffCreate from '../pages/org/staffCreate.vue'
-import ProfileAccess from '../pages/org/access.vue'
-import ProfileHash from '../pages/profile/profileHash.vue'
+// import notFound from '../pages/not-found/index.vue'
+// import SignIn from '../pages/sign-in/index.vue'
+// import Account from '../pages/account/index.vue'
+// import Organization from '../pages/org/index.vue'
+// import userProfile from '../pages/profile/index.vue'
+// import OrgAdd from '../pages/org/add.vue'
+// import Purchases from '../pages/purchases/index.vue'
+// import PurchasesOrders from '../pages/purchases/orders.vue'
+// import PurchasesOrder from '../pages/purchases/order.vue'
+// import PurchasesOffers from '../pages/purchases/offers.vue'
+// import PurchasesOffer from '../pages/purchases/offer.vue'
+// import PurchasesCatalog from '../pages/purchases/сatalog.vue'
+// import PurchasesVendors from '../pages/purchases/vendors.vue'
+// import PurchasesAction from '../pages/purchases/action.vue'
+// import Wholesale from '../pages/wholesale/index.vue'
+// import WholesaleOrders from '../pages/wholesale/orders.vue'
+// import WholesaleOrder from '../pages/wholesale/order.vue'
+// import WholesaleOffers from '../pages/wholesale/offers.vue'
+// import WholesaleOffer from '../pages/wholesale/offer.vue'
+// import WholesalePrices from '../pages/wholesale/prices.vue'
+// import WholesaleSaleNew from '../pages/wholesale/saleNew.vue'
+// import WholesaleClients from '../pages/wholesale/clients.vue'
+// import WholesaleClientsAdd from '../pages/wholesale/clientsAdd.vue'
+// import WholesaleClientsOffer from '../pages/wholesale/clientsOffer.vue'
+// import WholesaleShipments from '../pages/wholesale/shipments.vue'
+// import Retail from '../pages/retail/index.vue'
+// import RetailOrders from '../pages/retail/orders.vue'
+// import RetailOrder from '../pages/retail/order.vue'
+// import RetailActions from '../pages/retail/actions.vue'
+// import retailSaleNew from '../pages/retail/saleNew.vue'
+// import RetailBalance from '../pages/retail/balance.vue'
+// import RetailCompareProducts from '../pages/retail/compareProducts.vue'
+// import RetailCompareStoreProducts from '../pages/retail/compareStoreProducts.vue'
+// import Warehouse from '../pages/warehouse/index.vue'
+// import WarehouseReview from '../pages/warehouse/review.vue'
+// import WarehouseReviewStore from '../pages/warehouse/reviewStore.vue'
+// import WarehouseStoreSettings from '../pages/warehouse/storeSettings.vue'
+// import WarehouseCollections from '../pages/warehouse/collections.vue'
+// import WarehouseCollection from '../pages/warehouse/collection.vue'
+// import WarehouseCustomization from '../pages/warehouse/customization.vue'
+// import ProfileCard from '../pages/org/card.vue'
+// import ProfileStuff from '../pages/org/staff.vue'
+// import ProfileStuffEdit from '../pages/org/staffEdit.vue'
+// import ProfileStuffCreate from '../pages/org/staffCreate.vue'
+// import ProfileAccess from '../pages/org/access.vue'
+// import ProfileHash from '../pages/profile/profileHash.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,7 +52,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: SignIn,
+      component: () => import('../pages/sign-in/index.vue'),
       meta: {
         breadcrumb: {
           label: 'Авторизация',
@@ -74,7 +74,7 @@ const router = createRouter({
           name: 'account',
           props: true,
           label: 'Профиль',
-          component: Account,
+          component: () => import('../pages/account/index.vue'),
           meta: {
             breadcrumb: {
               label: 'Аккаунт',
@@ -94,21 +94,21 @@ const router = createRouter({
                   name: 'profile',
                   props: true,
                   label: 'Профиль изменения данных',
-                  component: userProfile,
+                  component: () => import('../pages/profile/index.vue'),
                 },
                 {
                   path: ':hash',
                   name: 'profileHash',
                   props: true,
                   label: 'Профиль изменения данных',
-                  component: ProfileHash,
+                  component: () => import('../pages/profile/profileHash.vue'),
                 },
                 {
                   path: 'orgAdd',
                   name: 'OrgAdd',
                   props: true,
                   label: 'Создание Организации',
-                  component: OrgAdd,
+                  component: () => import('../pages/org/add.vue'),
                 },
               ],
             },
@@ -125,7 +125,7 @@ const router = createRouter({
                   name: 'org',
                   props: true,
                   label: 'Организация',
-                  component: Organization,
+                  component: () => import('../pages/org/index.vue'),
                 },
                 {
                   path: 'purchases',
@@ -147,14 +147,14 @@ const router = createRouter({
                           props: true,
                           name: 'purchasesCatalogIndexPage',
                           label: 'Закупки',
-                          component: Purchases,
+                          component: () => import('../pages/purchases/index.vue'),
                         },
                         {
                           path: ':category_id',
                           name: 'purchasesCatalog',
                           props: true,
                           label: 'Оптовый каталог',
-                          component: PurchasesCatalog,
+                          component: () => import('../pages/purchases/сatalog.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Каталог',
@@ -172,7 +172,7 @@ const router = createRouter({
                             {
                               path: '',
                               name: 'purchasesCatalogWarehouse',
-                              component: PurchasesCatalog,
+                              component: () => import('../pages/purchases/сatalog.vue'),
                               label: 'Каталог поставщика',
                             },
                             {
@@ -187,7 +187,7 @@ const router = createRouter({
                                   path: '',
                                   name: 'purchasesCatalogWarehouseCategory',
                                   label: 'Мой оптовик',
-                                  component: PurchasesCatalog,
+                                  component: () => import('../pages/purchases/сatalog.vue'),
                                 },
                               ],
                             },
@@ -202,14 +202,14 @@ const router = createRouter({
                               label: 'Потребность',
                             },
                           },
-                          component: PurchasesCatalog,
+                          component: () => import('../pages/purchases/сatalog.vue'),
                         },
                         {
                           path: 'search',
                           name: 'purchasesCatalogSearch',
                           props: true,
                           label: 'Оптовый каталог',
-                          component: PurchasesCatalog,
+                          component: () => import('../pages/purchases/сatalog.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Поиск',
@@ -223,7 +223,7 @@ const router = createRouter({
                       name: 'purchasesAction',
                       props: true,
                       label: 'Акция',
-                      component: PurchasesAction,
+                      component: () => import('../pages/purchases/action.vue'),
                       meta: {
                         breadcrumb: {
                           label: 'Акция',
@@ -243,14 +243,14 @@ const router = createRouter({
                           name: 'purchasesOrders',
                           props: true,
                           label: 'Заказы',
-                          component: PurchasesOrders,
+                          component: () => import('../pages/purchases/orders.vue'),
                         },
                         {
                           path: ':order_id',
                           name: 'purchasesOrder',
                           props: true,
                           label: 'Заказы',
-                          component: PurchasesOrder,
+                          component: () => import('../pages/purchases/order.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Мой заказ',
@@ -272,14 +272,14 @@ const router = createRouter({
                           name: 'purchasesOffers',
                           props: true,
                           label: 'Заказы',
-                          component: PurchasesOffers,
+                          component: () => import('../pages/purchases/offers.vue'),
                         },
                         {
                           path: ':offer_id',
                           name: 'purchasesOffer',
                           props: true,
                           label: 'Предложение',
-                          component: PurchasesOffer,
+                          component: () => import('../pages/purchases/offer.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Предложение',
@@ -293,7 +293,7 @@ const router = createRouter({
                       name: 'purchasesVendors',
                       props: true,
                       label: 'Мои поставщики',
-                      component: PurchasesVendors,
+                      component: () => import('../pages/purchases/vendors.vue'),
                       meta: {
                         breadcrumb: {
                           label: 'Мои поставщики',
@@ -317,7 +317,7 @@ const router = createRouter({
                       redirect: { name: 'wholesaleOrders' },
                       props: true,
                       label: 'Оптовые продажи',
-                      component: Wholesale,
+                      component: () => import('../pages/wholesale/index.vue'),
                     },
                     {
                       path: 'orders',
@@ -332,14 +332,14 @@ const router = createRouter({
                           name: 'wholesaleOrders',
                           props: true,
                           label: 'Заказы',
-                          component: WholesaleOrders,
+                          component: () => import('../pages/wholesale/orders.vue'),
                         },
                         {
                           path: ':order_id',
                           name: 'wholesaleOrder',
                           props: true,
                           label: 'Заказы',
-                          component: WholesaleOrder,
+                          component: () => import('../pages/wholesale/order.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Оптовый заказ',
@@ -361,14 +361,14 @@ const router = createRouter({
                           name: 'wholesaleOffers',
                           props: true,
                           label: 'Мои предложения',
-                          component: WholesaleOffers,
+                          component: () => import('../pages/wholesale/offers.vue'),
                         },
                         {
                           path: ':offer_id',
                           name: 'wholesaleOffer',
                           props: true,
                           label: 'Предложение',
-                          component: WholesaleOffer,
+                          component: () => import('../pages/wholesale/offer.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Предложение',
@@ -390,14 +390,14 @@ const router = createRouter({
                           name: 'wholesalePrices',
                           props: true,
                           label: 'Оптовые цены',
-                          component: WholesalePrices,
+                          component: () => import('../pages/wholesale/prices.vue'),
                         },
                         {
                           path: 'new',
                           name: 'wholesaleSaleNew',
                           props: true,
                           label: 'Акция',
-                          component: WholesaleSaleNew,
+                          component: () => import('../pages/wholesale/saleNew.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Создание акции',
@@ -409,7 +409,7 @@ const router = createRouter({
                           name: 'wholesaleSale',
                           props: true,
                           label: 'Акция',
-                          component: WholesaleSaleNew,
+                          component: () => import('../pages/wholesale/saleNew.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Редактирование акции',
@@ -431,14 +431,14 @@ const router = createRouter({
                           props: true,
                           name: 'wholesaleClients',
                           label: 'Клиенты',
-                          component: WholesaleClients,
+                          component: () => import('../pages/wholesale/clients.vue'),
                         },
                         {
                           path: 'add',
                           props: true,
                           name: 'WholesaleClientsAdd',
                           label: 'Клиенты',
-                          component: WholesaleClientsAdd,
+                          component: () => import('../pages/wholesale/clientsAdd.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Создание виртуальной организации',
@@ -450,7 +450,7 @@ const router = createRouter({
                           props: true,
                           name: 'WholesaleClientsEdit',
                           label: 'Клиенты',
-                          component: WholesaleClientsAdd,
+                          component: () => import('../pages/wholesale/clientsAdd.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Создание виртуальной организации',
@@ -471,14 +471,14 @@ const router = createRouter({
                               props: true,
                               name: 'WholesalesOfferClient',
                               label: 'Предложение',
-                              component: WholesaleClientsOffer,
+                              component: () => import('../pages/wholesale/clientsOffer.vue'),
                             },
                             {
                               path: 'search',
                               name: 'purchasesCatalogSearchOffer',
                               props: true,
                               label: 'Оптовый каталог для предложения',
-                              component: PurchasesCatalog,
+                              component: () => import('../pages/purchases/сatalog.vue'),
                               meta: {
                                 breadcrumb: {
                                   label: 'Поиск',
@@ -494,14 +494,14 @@ const router = createRouter({
                                   label: 'Потребность',
                                 },
                               },
-                              component: PurchasesCatalog,
+                              component: () => import('../pages/purchases/сatalog.vue'),
                             },
                             {
                               path: 'catalog/:category_id',
                               name: 'purchasesOfferCatalog',
                               props: true,
                               label: 'Оптовый каталог',
-                              component: PurchasesCatalog,
+                              component: () => import('../pages/purchases/сatalog.vue'),
                               meta: {
                                 breadcrumb: {
                                   label: 'Каталог',
@@ -520,7 +520,7 @@ const router = createRouter({
                                 {
                                   path: '',
                                   name: 'purchasesWarehouseOfferCatalog',
-                                  component: PurchasesCatalog,
+                                  component: () => import('../pages/purchases/сatalog.vue'),
                                   label: 'Каталог поставщика',
                                 },
                                 {
@@ -536,7 +536,7 @@ const router = createRouter({
                                       path: '',
                                       name: 'purchasesOfferCatalogWarehouseCategory',
                                       label: 'Мой оптовик',
-                                      component: PurchasesCatalog,
+                                      component: () => import('../pages/purchases/сatalog.vue'),
                                     },
                                   ],
                                 },
@@ -551,7 +551,7 @@ const router = createRouter({
                       name: 'wholesaleShipments',
                       props: true,
                       label: 'Отгрузки',
-                      component: WholesaleShipments,
+                      component: () => import('../pages/wholesale/shipments.vue'),
                       meta: {
                         breadcrumb: {
                           label: 'Отгрузки',
@@ -575,7 +575,7 @@ const router = createRouter({
                       name: 'retailIndex',
                       redirect: { name: 'retailOrders' },
                       label: 'Розничные продажи',
-                      component: Retail,
+                      component: () => import('../pages/retail/index.vue'),
                     },
                     {
                       path: 'orders',
@@ -590,14 +590,14 @@ const router = createRouter({
                           name: 'retailOrders',
                           props: true,
                           label: 'Заказы',
-                          component: RetailOrders,
+                          component: () => import('../pages/retail/orders.vue'),
                         },
                         {
                           path: ':order_id',
                           name: 'retailOrder',
                           props: true,
-                          label: 'Заказы',
-                          component: RetailOrder,
+                          label: 'Заказ',
+                          component: () => import('../pages/retail/order.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Розничные заказ',
@@ -618,15 +618,15 @@ const router = createRouter({
                           path: '',
                           name: 'retailActions',
                           props: true,
-                          label: 'Оптовые цены',
-                          component: RetailActions,
+                          label: 'Розничные акции',
+                          component: () => import('../pages/retail/actions.vue'),
                         },
                         {
                           path: 'new',
                           name: 'retailSaleNew',
                           props: true,
                           label: 'Акция',
-                          component: retailSaleNew,
+                          component: () => import('../pages/retail/saleNew.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Создание акции',
@@ -638,7 +638,7 @@ const router = createRouter({
                           name: 'retailSale',
                           props: true,
                           label: 'Акция',
-                          component: retailSaleNew,
+                          component: () => import('../pages/retail/saleNew.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Редактирование акции',
@@ -652,7 +652,7 @@ const router = createRouter({
                       name: 'retailBalance',
                       props: true,
                       label: 'Баланс',
-                      component: RetailBalance,
+                      component: () => import('../pages/retail/balance.vue'),
                       meta: {
                         breadcrumb: {
                           label: 'Баланс',
@@ -672,14 +672,14 @@ const router = createRouter({
                           name: 'retailCompareProducts',
                           props: true,
                           label: 'Сопоставление товаров',
-                          component: RetailCompareProducts,
+                          component: () => import('../pages/retail/compareProducts.vue'),
                         },
                         {
                           path: ':store_id',
                           name: 'retailCompareStoreProducts',
                           props: true,
                           label: 'Сопоставление товаров на складе',
-                          component: RetailCompareStoreProducts,
+                          component: () => import('../pages/retail/compareStoreProducts.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Сопоставление товаров на складе',
@@ -704,7 +704,7 @@ const router = createRouter({
                       props: true,
                       name: 'warehouseIndex',
                       label: 'Мой склад',
-                      component: Warehouse,
+                      component: () => import('../pages/warehouse/index.vue'),
                     },
                     {
                       path: 'review',
@@ -719,14 +719,14 @@ const router = createRouter({
                           name: 'warehouseReview',
                           props: true,
                           label: 'Анализ склада',
-                          component: WarehouseReview,
+                          component: () => import('../pages/warehouse/review.vue'),
                         },
                         {
                           path: ':store_id',
                           name: 'warehouseReviewStore',
                           props: true,
                           label: 'Статистика склада',
-                          component: WarehouseReviewStore,
+                          component: () => import('../pages/warehouse/reviewStore.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Статистика склада',
@@ -738,7 +738,7 @@ const router = createRouter({
                           name: 'warehouseStoreSettings',
                           props: true,
                           label: 'Настройки склада',
-                          component: WarehouseStoreSettings,
+                          component: () => import('../pages/warehouse/storeSettings.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Настройки склада',
@@ -760,14 +760,14 @@ const router = createRouter({
                           name: 'WarehouseCollections',
                           props: true,
                           label: 'Коллекции товара',
-                          component: WarehouseCollections,
+                          component: () => import('../pages/warehouse/collections.vue'),
                         },
                         {
                           path: 'new',
                           name: 'WarehouseCollectionNew',
                           props: true,
                           label: 'Коллекция товара',
-                          component: WarehouseCollection,
+                          component: () => import('../pages/warehouse/collection.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Создание коллекции',
@@ -779,7 +779,7 @@ const router = createRouter({
                           name: 'WarehouseCollection',
                           props: true,
                           label: 'Коллекция товара',
-                          component: WarehouseCollection,
+                          component: () => import('../pages/warehouse/collection.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Редактирование коллекции',
@@ -793,7 +793,7 @@ const router = createRouter({
                       name: 'warehouseCustomization',
                       props: true,
                       label: 'Настройки склада',
-                      component: WarehouseCustomization,
+                      component: () => import('../pages/warehouse/customization.vue'),
                       meta: {
                         breadcrumb: {
                           label: 'Настройки склада',
@@ -817,14 +817,14 @@ const router = createRouter({
                       props: true,
                       name: 'organizationIndexPage',
                       label: 'Моя компания',
-                      component: Organization,
+                      component: () => import('../pages/org/index.vue'),
                     },
                     {
                       path: 'card',
                       name: 'profileCard',
                       props: true,
                       label: 'Карточка компании',
-                      component: ProfileCard,
+                      component: () => import('../pages/org/card.vue'),
                       meta: {
                         breadcrumb: {
                           label: 'Карточка компании',
@@ -844,14 +844,14 @@ const router = createRouter({
                           name: 'profileStuff',
                           props: true,
                           label: 'Сотрудники',
-                          component: ProfileStuff,
+                          component: () => import('../pages/org/staff.vue'),
                         },
                         {
                           path: ':manager_id',
                           name: 'profileStuffEdit',
                           props: true,
                           label: 'Редактирование сотрудника',
-                          component: ProfileStuffEdit,
+                          component: () => import('../pages/org/staffEdit.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Редактирование сотрудника',
@@ -863,7 +863,7 @@ const router = createRouter({
                           name: 'profileStuffCreate',
                           props: true,
                           label: 'Создание сотрудника',
-                          component: ProfileStuffCreate,
+                          component: () => import('../pages/org/staffCreate.vue'),
                           meta: {
                             breadcrumb: {
                               label: 'Создание сотрудника',
@@ -877,7 +877,7 @@ const router = createRouter({
                       name: 'profileAccess',
                       props: true,
                       label: 'Политики доступа',
-                      component: ProfileAccess,
+                      component: () => import('../pages/org/access.vue'),
                       meta: {
                         breadcrumb: {
                           label: 'Политики доступа',
@@ -895,7 +895,7 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       name: '404',
-      component: notFound,
+      component: () => import('../pages/not-found/index.vue'),
       meta: {
         breadcrumb: {
           label: 'Не найдено',

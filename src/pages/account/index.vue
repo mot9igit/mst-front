@@ -403,48 +403,4 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-body {
-  overflow: hidden;
-  button {
-    color: inherit;
-  }
-}
-header button,
-aside button {
-  color: #282828;
-}
-.content {
-  background-color: #ededed;
-  max-width: calc(100% - 84px);
-  .header__wrapper {
-    position: relative;
-    z-index: 2;
-  }
-  main {
-    position: relative;
-    z-index: 1;
-  }
-  @media (width > 600px) {
-    .header__wrapper {
-      display: block;
-    }
-  }
-}
-.text-center {
-  text-align: center;
-}
-#app {
-  .p-inputtext {
-    background: #fff;
-  }
-  .d-modal2__actions-start {
-    justify-content: flex-start;
-  }
-}
-@media (max-width: 600px) {
-  .content {
-    max-width: 100%;
-  }
-}
-</style>
+<style lang="scss"></style>
