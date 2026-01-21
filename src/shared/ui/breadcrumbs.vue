@@ -90,127 +90,130 @@ export default {
     updateCrumbs() {
       this.crumbs = []
       const currentRoute = router.currentRoute.value
-      const fullPath = currentRoute.matched[currentRoute.matched.length - 1].path
-      const pathRoutes = fullPath.split('/')
-      const pathRoutesWithId = currentRoute.fullPath.split('/')
-      const routeMatched = this.$route.matched
+      if (currentRoute.fullPath != '/') {
+        // console.log(currentRoute)
+        const fullPath = currentRoute.matched[currentRoute.matched.length - 1].path
+        const pathRoutes = fullPath.split('/')
+        const pathRoutesWithId = currentRoute.fullPath.split('/')
+        const routeMatched = this.$route.matched
 
-      // console.log(pathRoutes)
-      // console.log(pathRoutesWithId)
-      // console.log(routeMatched)
+        // console.log(pathRoutes)
+        // console.log(pathRoutesWithId)
+        // console.log(routeMatched)
 
-      pathRoutes.forEach((route, index) => {
-        // console.log(route)
-        if (
-          route == '/' ||
-          route == '' ||
-          (!route.startsWith(':') &&
-            !routeMatched.find(
-              (matchedRoute) => matchedRoute.path === pathRoutes.slice(0, index + 1).join('/'),
-            )?.meta.breadcrumb?.label)
-        ) {
-          return
-        }
-        if (route.startsWith(':')) {
-          switch (route) {
-            case ':action_id': {
-              this.crumbs.push({
-                name: this.sale.name,
-                path: pathRoutesWithId.join('/'),
-                type: 'purchasesCatalog',
-                params: currentRoute.params,
-              })
-              break
-            }
-            case ':category_id': {
-              const parents = this.getCategoriesCatItemParents(4, currentRoute.params.category_id)
-              parents?.forEach((parent) => {
-                pathRoutesWithId[pathRoutesWithId.length - 1] = parent.id
+        pathRoutes.forEach((route, index) => {
+          // console.log(route)
+          if (
+            route == '/' ||
+            route == '' ||
+            (!route.startsWith(':') &&
+              !routeMatched.find(
+                (matchedRoute) => matchedRoute.path === pathRoutes.slice(0, index + 1).join('/'),
+              )?.meta.breadcrumb?.label)
+          ) {
+            return
+          }
+          if (route.startsWith(':')) {
+            switch (route) {
+              case ':action_id': {
                 this.crumbs.push({
-                  name: parent?.pagetitle,
+                  name: this.sale.name,
                   path: pathRoutesWithId.join('/'),
                   type: 'purchasesCatalog',
                   params: currentRoute.params,
                 })
-              })
-              break
-            }
-            case ':warehouse_cat_id': {
-              const parents = this.getWarehouseCatItemParents(
-                'warehouse_org_' + currentRoute.params.org_w_id,
-                'warehouse_org_' +
-                  currentRoute.params.org_w_id +
-                  '_' +
-                  currentRoute.params.warehouse_cat_id,
-              )
-              // console.log(parents)
-              parents?.forEach((parent, i) => {
-                const param = {
-                  id: currentRoute.params.id,
-                }
-                if (Object.prototype.hasOwnProperty.call(parent, 'org_w_id')) {
-                  param.org_w_id = parent.org_w_id
-                }
-                if (Object.prototype.hasOwnProperty.call(parent, 'warehouse_id')) {
-                  param.warehouse_id = parent.warehouse_id
-                }
-                if (Object.prototype.hasOwnProperty.call(parent, 'id')) {
-                  if (parent.id != 'all') {
-                    param.warehouse_cat_id = parent.id
-                  }
-                }
-                const len = pathRoutesWithId.length - (parents.length - i - 1)
-                if (
-                  Object.prototype.hasOwnProperty.call(param, 'warehouse_cat_id') &&
-                  i == parents.length - 1
-                ) {
-                  pathRoutesWithId[pathRoutesWithId.length - 1] = param.warehouse_cat_id
-                }
-                this.crumbs.push({
-                  name: parent?.pagetitle,
-                  path: pathRoutesWithId.slice(0, len).join('/'),
-                  type: 'purchasesCatalogWarehouse',
-                  params: param,
+                break
+              }
+              case ':category_id': {
+                const parents = this.getCategoriesCatItemParents(4, currentRoute.params.category_id)
+                parents?.forEach((parent) => {
+                  pathRoutesWithId[pathRoutesWithId.length - 1] = parent.id
+                  this.crumbs.push({
+                    name: parent?.pagetitle,
+                    path: pathRoutesWithId.join('/'),
+                    type: 'purchasesCatalog',
+                    params: currentRoute.params,
+                  })
                 })
-              })
-              break
-            }
-            case ':order_id': {
-              if (Object.prototype.hasOwnProperty.call(this.order, 'order')) {
+                break
+              }
+              case ':warehouse_cat_id': {
+                const parents = this.getWarehouseCatItemParents(
+                  'warehouse_org_' + currentRoute.params.org_w_id,
+                  'warehouse_org_' +
+                    currentRoute.params.org_w_id +
+                    '_' +
+                    currentRoute.params.warehouse_cat_id,
+                )
+                // console.log(parents)
+                parents?.forEach((parent, i) => {
+                  const param = {
+                    id: currentRoute.params.id,
+                  }
+                  if (Object.prototype.hasOwnProperty.call(parent, 'org_w_id')) {
+                    param.org_w_id = parent.org_w_id
+                  }
+                  if (Object.prototype.hasOwnProperty.call(parent, 'warehouse_id')) {
+                    param.warehouse_id = parent.warehouse_id
+                  }
+                  if (Object.prototype.hasOwnProperty.call(parent, 'id')) {
+                    if (parent.id != 'all') {
+                      param.warehouse_cat_id = parent.id
+                    }
+                  }
+                  const len = pathRoutesWithId.length - (parents.length - i - 1)
+                  if (
+                    Object.prototype.hasOwnProperty.call(param, 'warehouse_cat_id') &&
+                    i == parents.length - 1
+                  ) {
+                    pathRoutesWithId[pathRoutesWithId.length - 1] = param.warehouse_cat_id
+                  }
+                  this.crumbs.push({
+                    name: parent?.pagetitle,
+                    path: pathRoutesWithId.slice(0, len).join('/'),
+                    type: 'purchasesCatalogWarehouse',
+                    params: param,
+                  })
+                })
+                break
+              }
+              case ':order_id': {
+                if (Object.prototype.hasOwnProperty.call(this.order, 'order')) {
+                  this.crumbs.push({
+                    name: '№ ' + this.order.order.num,
+                    path: pathRoutesWithId.slice(0, index + 1).join('/'),
+                  })
+                }
+                break
+              }
+              case ':id':
+              case ':requirement_id': {
                 this.crumbs.push({
-                  name: '№ ' + this.order.order.num,
+                  name: this.getRouteName(currentRoute, route),
                   path: pathRoutesWithId.slice(0, index + 1).join('/'),
                 })
+                break
               }
-              break
+              default:
+                // this.crumbs.push({
+                //   name: this.getRouteName(currentRoute, route),
+                //   path: pathRoutesWithId.slice(0, index + 1).join('/'),
+                // })
+                break
             }
-            case ':id':
-            case ':requirement_id': {
+          } else {
+            const label = routeMatched.find(
+              (matchedRoute) => matchedRoute.path === pathRoutes.slice(0, index + 1).join('/'),
+            )?.meta.breadcrumb?.label
+            if (label) {
               this.crumbs.push({
-                name: this.getRouteName(currentRoute, route),
+                name: label,
                 path: pathRoutesWithId.slice(0, index + 1).join('/'),
               })
-              break
             }
-            default:
-              // this.crumbs.push({
-              //   name: this.getRouteName(currentRoute, route),
-              //   path: pathRoutesWithId.slice(0, index + 1).join('/'),
-              // })
-              break
           }
-        } else {
-          const label = routeMatched.find(
-            (matchedRoute) => matchedRoute.path === pathRoutes.slice(0, index + 1).join('/'),
-          )?.meta.breadcrumb?.label
-          if (label) {
-            this.crumbs.push({
-              name: label,
-              path: pathRoutesWithId.slice(0, index + 1).join('/'),
-            })
-          }
-        }
-      })
+        })
+      }
     },
     getRouteName(currentRoute, param) {
       // console.log("Current route: ", currentRoute);
@@ -265,7 +268,6 @@ export default {
       if (catItem?.parent == 0) return
 
       let parents = this.getAllParents(stopId, catItem, [], this.optCatalog)
-      // console.log('Searched catItem', parents)
       parents.push(catItem)
       return parents
     },
@@ -294,6 +296,9 @@ export default {
       this.updateCrumbs()
     },
     orgActive: function () {
+      this.updateCrumbs()
+    },
+    $route() {
       this.updateCrumbs()
     },
   },
