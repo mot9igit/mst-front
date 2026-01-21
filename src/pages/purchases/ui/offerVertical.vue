@@ -579,9 +579,9 @@
                 <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка
                 {{ item.percent_num }}%
               </div>
-              <!-- <div v-if="item.complect > 0">
+              <div v-if="item.complect > 0">
                 <i class="d-icon-boxes-2 product-card__buy-icon"></i>Комплект
-              </div> -->
+              </div>
               <div v-if="item.delivery_type == 2">
                 <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
               </div>
