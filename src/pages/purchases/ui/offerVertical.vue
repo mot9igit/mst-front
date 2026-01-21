@@ -87,7 +87,7 @@
             <div class="product-card__count">
               <div class="product-card__count-value">
                 <span class="product-card__count-label">В наличии: </span>
-                <span v-if="offer.remains_abstract != offer.available">{{
+                <span v-if="offer.remains_abstract && offer.remains_abstract != offer.available">{{
                   offer.remains_abstract
                 }}</span>
                 <span v-else>{{ offer.available }} шт</span>
@@ -106,7 +106,10 @@
                 class="product-card__count-value product-card__count-value-require"
                 v-if="offer.requirement"
               >
-                <span class="product-card__count-label">Ваша потребность: </span>
+                <span class="product-card__count-label"
+                  ><span v-if="this.$route.name == 'purchasesCatalogComplect'">В комплекте</span
+                  ><span v-else>Ваша потребность</span>:
+                </span>
                 -{{ Number(offer.requirement.count) }} шт
               </div>
             </div>

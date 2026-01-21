@@ -285,11 +285,19 @@
     </div>
     <div class="sale_seeall-button" v-if="sale.complect > 0">
       <button
-        @click.prevent=""
+        @click.prevent="
+          this.$router.push({ name: 'purchasesCatalogComplect', params: { action_id: sale.id } })
+        "
         class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
       >
         <div class="d-button__text">Посмотреть все товары акции в каталоге</div>
       </button>
+    </div>
+    <div class="sale_seeall-button" v-if="sale.complect > 0 && salesProducts.no_available > 0">
+      <p>
+        В данный момент не все товары из комплекта есть в наличии, поэтому акция не может быть
+        применена
+      </p>
     </div>
     <BaseTable
       :items_data="salesProducts.items"
@@ -589,5 +597,9 @@ export default {
   display: flex;
   justify-content: end;
   align-items: center;
+}
+.sale_seeall-button p {
+  color: #757575;
+  width: 35%;
 }
 </style>

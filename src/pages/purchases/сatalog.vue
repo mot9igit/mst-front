@@ -118,6 +118,9 @@
         </div>
       </div>
     </div>
+    <h2 v-if="this.$route.name == 'purchasesCatalogComplect'" class="products__top-title">
+      Товары по акции "{{ opt_products?.action?.name }}" от {{ opt_products?.action?.org_name }}
+    </h2>
     <product
       v-for="item in opt_products.items"
       :key="item.id"
@@ -234,6 +237,9 @@ export default {
       ) {
         data.search = this.$route.query.search
       }
+      if (this.$route.name == 'purchasesCatalogComplect') {
+        data.action_id = this.$route.params.action_id
+      }
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         this.getBasketOffer()
         data.search = this.$route.query.search
@@ -268,6 +274,9 @@ export default {
       if (this.$route.name == 'purchasesCatalogSearch') {
         data.search = this.$route.query.search
       }
+      if (this.$route.name == 'purchasesCatalogComplect') {
+        data.action_id = this.$route.params.action_id
+      }
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         data.search = this.$route.query.search
         this.getOfferOptProducts(data).then(() => {
@@ -299,6 +308,9 @@ export default {
       if (this.$route.name == 'purchasesCatalogSearch') {
         data.search = this.$route.query.search
       }
+      if (this.$route.name == 'purchasesCatalogComplect') {
+        data.action_id = this.$route.params.action_id
+      }
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         data.search = this.$route.query.search
         this.getOfferOptProducts(data).then(() => {
@@ -326,6 +338,9 @@ export default {
       if (this.$route.name == 'purchasesCatalogSearch') {
         data.search = this.$route.query.search
       }
+      if (this.$route.name == 'purchasesCatalogComplect') {
+        data.action_id = this.$route.params.action_id
+      }
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         data.search = this.$route.query.search
         this.getOfferOptProducts(data).then(() => {
@@ -350,6 +365,9 @@ export default {
     }
     if (this.$route.name == 'purchasesOfferCatalogRequirement') {
       data.req = this.$route.query.requirement_id
+    }
+    if (this.$route.name == 'purchasesCatalogComplect') {
+      data.action_id = this.$route.params.action_id
     }
     if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
       data.search = this.$route.query.search
@@ -422,4 +440,8 @@ export default {
   },
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.products__top-title {
+  margin-bottom: 40px;
+}
+</style>

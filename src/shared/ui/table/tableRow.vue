@@ -1,5 +1,12 @@
 <template>
-  <tr v-if="Object.keys(link_row).length === 0" class="d-table__row" :class="{'d-table__row-padding' : classRow}">
+  <tr
+    v-if="Object.keys(link_row).length === 0"
+    class="d-table__row"
+    :class="{
+      'd-table__row-padding': classRow,
+      'd-table__row-noactive': row_data.no_available == 1,
+    }"
+  >
     <v-table-cell
       v-for="(row, index) in keys"
       :key="index"
@@ -22,7 +29,14 @@
       @saleModal="saleModal"
     />
   </tr>
-  <tr v-else class="d-table__row" :class="{'d-table__row-padding' : classRow}">
+  <tr
+    v-else
+    class="d-table__row"
+    :class="{
+      'd-table__row-padding': classRow,
+      'd-table__row-noactive': row_data.no_available == 1,
+    }"
+  >
     <v-table-cell
       v-for="(row, index) in keys"
       :key="index"
@@ -72,7 +86,7 @@ export default {
     'disapproveElem',
     'editNumber',
     'actionCell',
-    "saleModal",
+    'saleModal',
   ],
   props: {
     editMode: {
@@ -111,8 +125,8 @@ export default {
   },
   computed: {},
   methods: {
-    rowClass(s){
-      if(s == true){
+    rowClass(s) {
+      if (s == true) {
         this.classRow = true
       }
     },
@@ -145,10 +159,10 @@ export default {
       this.$emit('editNumber', object)
       // console.log(object)
     },
-    actionCell(data){
+    actionCell(data) {
       this.$emit('actionCell', data)
     },
-    saleModal(data){
+    saleModal(data) {
       this.$emit('saleModal', data)
     },
     linkParams() {
@@ -188,5 +202,8 @@ export default {
 // }
 .name {
   text-align: left;
+}
+.d-table__row-noactive .cell_value:not(.actions) {
+  opacity: 0.3;
 }
 </style>

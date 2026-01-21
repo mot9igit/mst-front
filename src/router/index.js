@@ -205,6 +205,17 @@ const router = createRouter({
                           component: () => import('../pages/purchases/сatalog.vue'),
                         },
                         {
+                          path: 'complect/:action_id',
+                          name: 'purchasesCatalogComplect',
+                          props: true,
+                          meta: {
+                            breadcrumb: {
+                              label: 'Комплект',
+                            },
+                          },
+                          component: () => import('../pages/purchases/сatalog.vue'),
+                        },
+                        {
                           path: 'search',
                           name: 'purchasesCatalogSearch',
                           props: true,
