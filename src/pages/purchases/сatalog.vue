@@ -442,6 +442,6 @@ export default {
 </script>
 <style lang="scss">
 .products__top-title {
-  margin-bottom: 40px;
+  margin-bottom: 48px;
 }
 </style>
