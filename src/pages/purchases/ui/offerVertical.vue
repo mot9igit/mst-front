@@ -51,7 +51,7 @@
             <!-- Блок с ценой и акциями -->
             <div class="product-card__price-container">
               <!-- Цена товара -->
-              <div class="product-card__price" v-if="this.$route.name == 'purchasesCatalogComplect'">
+              <div class="product-card__price" v-if="this.$route.name == 'purchasesCatalogComplect' &&  offer.min_price?.price_complect > 0">
                 <p
                   class="product-card__price-value-discounted"
                 >

@@ -118,9 +118,27 @@
         </div>
       </div>
     </div>
-    <h2 v-if="this.$route.name == 'purchasesCatalogComplect'" class="products__top-title">
-      Товары по акции "{{ opt_products?.action?.name }}" от {{ opt_products?.action?.org_name }}
-    </h2>
+    <div class="catalog-top_button"  v-if="!loading && (this.$route.name == 'purchasesCatalogComplect' || this.$route.name == 'purchasesCatalogRequirement')">
+      <h2 v-if="this.$route.name == 'purchasesCatalogComplect'" class="products__top-title">
+        Товары по акции "{{ opt_products?.action?.name }}" от {{ opt_products?.action?.org_name }}
+      </h2>
+      <h2 v-if="this.$route.name == 'purchasesCatalogRequirement'" class="products__top-title">
+        Товары из потребности "{{ opt_products?.name }}"
+      </h2>  
+      <div class="catalog-top_button-cont">
+        <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
+        :disabled="opt_products.total_no_available > 0 && this.$route.name == 'purchasesCatalogComplect'">
+          <div class="d-button__text">
+                  <i class="d-icon-cart product-card__buy-icon"></i>
+                  Добавить все товары в корзину
+                </div>
+        </button>
+        <p v-if="opt_products.total_no_available > 0 && this.$route.name == 'purchasesCatalogComplect'">В данный момент не все товары из комплекта есть в наличии, поэтому акция не может быть
+        применена</p>
+        <p v-if="opt_products.total_no_available > 0 && this.$route.name == 'purchasesCatalogRequirement'">Обратите внимание, не все товары из потребности есть в наличии! В корзину попадут только товары, которые есть в наличии на данный момент</p>
+      </div>
+    </div>
+    
     <product
       v-for="item in opt_products.items"
       :key="item.id"
@@ -443,5 +461,26 @@ export default {
 <style lang="scss">
 .products__top-title {
   margin-bottom: 48px;
+}
+.catalog-top_button{
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 24px;
+}
+.catalog-top_button h2{
+  max-width: 60%;
+}
+.catalog-top_button-cont{
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: end;
+  gap: 24px;
+}
+.catalog-top_button-cont p{
+  max-width: 80%;
+  color: #757575;
+  text-align: right;
 }
 </style>
