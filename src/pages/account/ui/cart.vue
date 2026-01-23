@@ -15,7 +15,11 @@
     </button>
     <div class="cart__content">
       <Loader v-if="loading" />
-      <div class="cart__tools cart__tools--desktop" v-if="Object.keys(basketStore).length > 1">
+      <div
+        class="cart__tools cart__tools--desktop"
+        v-if="Object.keys(basketStore).length > 1 && basketStore.cart_data?.cost > 0"
+        :data-length="Object.keys(basketStore).length"
+      >
         <!--
           <button
             class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small cart__tools-button"
@@ -68,7 +72,10 @@
         </div>
       </div>
       <div class="product-list">
-        <div class="cart__list" v-if="Object.keys(basketStore).length > 1">
+        <div
+          class="cart__list"
+          v-if="Object.keys(basketStore).length > 1 && basketStore.cart_data?.cost > 0"
+        >
           <div class="dart-mb-1" v-for="(org, index) in basketStore.data" :key="index">
             <div v-for="(store, store_index) in org.data" :key="store_index">
               <div class="mst__alert blue center_alert" v-if="store.type == 'order' && store.data">
@@ -239,7 +246,7 @@
       </div>
       <div class="cart__list">
         <button
-          v-if="Object.keys(basketStore).length"
+          v-if="Object.keys(basketStore).length && basketStore.cart_data?.cost > 0"
           class="d-button d-button-primary d-button-primary-small cart__buy"
           @click.prevent="toggleOrder"
         >

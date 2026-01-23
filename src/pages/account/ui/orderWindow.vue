@@ -6,6 +6,7 @@
         class="d-sheet d-sheet--active order__sheet"
         :class="{ order: order }"
         data-sheet="order"
+        :data-order="order"
       >
         <Loader v-if="this.loading"></Loader>
         <div class="d-sheet__content order" v-if="!order">
@@ -779,6 +780,7 @@ export default {
       }
     },
     close() {
+      this.order = ''
       this.$emit('close')
     },
     clearCart() {
@@ -952,10 +954,12 @@ export default {
             })
             this.$emit('orderSubmit', nums.join(', '))
             this.order = nums.join(', ')
-            this.getBasket()
-            this.loading = false
-            this.showChangedId = ''
-            this.showChangedIdStore = ''
+            console.log(this.order)
+            this.getBasket().then(() => {
+              this.loading = false
+              this.showChangedId = ''
+              this.showChangedIdStore = ''
+            })
           })
         }
       })
@@ -1074,13 +1078,12 @@ export default {
       }
     },
     basket(newVal) {
-      if (Object.keys(this.basket).length > 1) {
+      if (Object.keys(newVal).length > 1) {
         if (
           Object.prototype.hasOwnProperty.call(newVal.data, this.basketWarehouse) &&
           this.basketWarehouse
         ) {
           this.basketStore = newVal.data[this.basketWarehouse]
-          this.order = ''
         } else {
           this.basketStore = {}
         }
