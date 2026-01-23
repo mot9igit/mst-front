@@ -51,7 +51,14 @@
             <!-- Блок с ценой и акциями -->
             <div class="product-card__price-container">
               <!-- Цена товара -->
-              <div class="product-card__price">
+              <div class="product-card__price" v-if="this.$route.name == 'purchasesCatalogComplect'">
+                <p
+                  class="product-card__price-value-discounted"
+                >
+                  от {{ offer.min_price?.price_complect.toLocaleString('ru') }} ₽
+                </p>
+              </div>
+              <div class="product-card__price" v-else>
                 <p
                   class="product-card__price-value-discounted"
                   v-if="
@@ -61,6 +68,7 @@
                 >
                   от {{ offer.min_price.price.toLocaleString('ru') }} ₽
                 </p>
+                
                 <p class="product-card__price-value-discounted" v-else>
                   {{ offer.price.toLocaleString('ru') }} ₽
                 </p>
