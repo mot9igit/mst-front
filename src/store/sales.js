@@ -33,7 +33,10 @@ export default {
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         offset: new Date().getTimezoneOffset(),
         is_action: isAction ? true : false,
-        extended_name: router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
+        extended_name:
+          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+            ? 'offer'
+            : 'cart',
       }
       const response = await api.sales.getSales(data)
       if (response) {
@@ -48,9 +51,10 @@ export default {
     async getSalesBanners({ commit }) {
       const data = {
         action: 'get/banners',
-        id:  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-             ? router.currentRoute._value.params.id_org_from
-             : router.currentRoute._value.params.id,
+        id:
+          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+            ? router.currentRoute._value.params.id_org_from
+            : router.currentRoute._value.params.id,
       }
       const response = await api.sales.getSales(data)
       if (response) {
@@ -58,13 +62,14 @@ export default {
       }
       return response
     },
-    async getSalesProducts({ commit }, { actionId, page, perpage }) {
+    async getSalesProducts({ commit }, { actionId, page, perpage, view }) {
       const data = {
         action: 'get/products',
         action_id: actionId,
         page: page,
         perpage: perpage,
         id: router.currentRoute._value.params.id,
+        view: view,
       }
       const response = await api.sales.getSalesProducts(data)
       if (response) {

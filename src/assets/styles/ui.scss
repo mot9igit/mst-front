@@ -2219,16 +2219,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background-color: #fbfbfb;
   border-radius: 30px;
-  box-shadow: 0px 4px 13.4px 0px #00000042;
-
   color: #282828;
   font-size: 16px;
   font-weight: 500;
-
-  padding: 8px 16px;
+  border: 1px solid #282828;
+  padding: 7px 16px;
   height: 40px;
   width: fit-content;
 
@@ -4548,7 +4544,7 @@
   }
 }
 
-.mst__alert{
+.mst__alert {
   width: 100%;
   display: flex;
   align-items: center;
@@ -4561,11 +4557,11 @@
   line-height: 18px;
   margin-bottom: 8px;
 }
-.center_alert{
+.center_alert {
   text-align: center;
   justify-content: center;
 }
-.mst__alert a{
+.mst__alert a {
   text-decoration: underline;
   font-family: 'Geist';
   font-style: normal;
@@ -4573,83 +4569,82 @@
   font-size: 14px;
   line-height: 18px;
 }
-.mst__alert a:hover{
+.mst__alert a:hover {
   text-decoration: none;
 }
-.mst__alert.blue{
-  background-color: #6C7ABF4D;
-  color:#2E468C;
+.mst__alert.blue {
+  background-color: #6c7abf4d;
+  color: #2e468c;
 }
-.mst__alert.grey{
-  background-color: #ededed4D;
-  color:#757575;
+.mst__alert.grey {
+  background-color: #ededed4d;
+  color: #757575;
 }
-  @media (width <=1280px) {
-    .mst__alert{
-      font-size: 12px;
-      line-height: 14px;
-    }
-
-    .mst__alert a{
-      font-size: 12px;
-      line-height: 14px;
-    }
+@media (width <=1280px) {
+  .mst__alert {
+    font-size: 12px;
+    line-height: 14px;
   }
-    @media (width <=1024px) {
-    .mst__alert{
-      font-size: 10px;
-      line-height: 12px;
-    }
 
-    .mst__alert a{
-      font-size: 10px;
-      line-height: 12px;
-    }
+  .mst__alert a {
+    font-size: 12px;
+    line-height: 14px;
   }
-      @media (width <=600px) {
-    .mst__alert{
-      font-size: 14px;
-      line-height: 16px;
-    }
+}
+@media (width <=1024px) {
+  .mst__alert {
+    font-size: 10px;
+    line-height: 12px;
+  }
 
-    .mst__alert a{
-      font-size: 14px;
-      line-height: 16px;
-    }
+  .mst__alert a {
+    font-size: 10px;
+    line-height: 12px;
   }
+}
+@media (width <=600px) {
+  .mst__alert {
+    font-size: 14px;
+    line-height: 16px;
+  }
+
+  .mst__alert a {
+    font-size: 14px;
+    line-height: 16px;
+  }
+}
 // TREESELECT
 
 .dart-form-group .vue3-treeselect .vue3-treeselect__control {
-    background: #fff;
-    border: 1px solid #75757575;
-    border-radius: 5px;
-    display: table;
-    height: 39px;
-    padding-left: 5px;
-    padding-right: 5px;
-    table-layout: fixed;
-    transition-duration: .2s;
-    transition-property: border-color, box-shadow, width, height, background-color, opacity;
-    transition-timing-function: cubic-bezier(.215,.61,.355,1);
-    width: 100%;
+  background: #fff;
+  border: 1px solid #75757575;
+  border-radius: 5px;
+  display: table;
+  height: 39px;
+  padding-left: 5px;
+  padding-right: 5px;
+  table-layout: fixed;
+  transition-duration: 0.2s;
+  transition-property: border-color, box-shadow, width, height, background-color, opacity;
+  transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  width: 100%;
 }
 .dart-form-group .vue3-treeselect svg {
-    fill: #282828 !important;
+  fill: #282828 !important;
 }
-.dart-form-group .vue3-treeselect .vue3-treeselect__x-container:hover svg, .dart-form-group .vue3-treeselect .vue3-treeselect__icon:hover svg,
+.dart-form-group .vue3-treeselect .vue3-treeselect__x-container:hover svg,
+.dart-form-group .vue3-treeselect .vue3-treeselect__icon:hover svg,
 .dart-form-group .vue3-treeselect .vue3-treeselect__control-arrow:hover svg {
-    fill: #f92c0d !important;
+  fill: #f92c0d !important;
 }
 .dart-form-group .vue3-treeselect__multi-value-item {
-    background: #ededed;
-    border: 1px solid transparent;
-    border-radius: 2px;
-    color: #757575;
-    cursor: default;
-    display: inline-table;
-    font-size: 12px;
-    padding: 2px 0;
-    vertical-align: top;
+  background: #ededed;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  color: #757575;
+  cursor: default;
+  display: inline-table;
+  font-size: 12px;
+  padding: 2px 0;
+  vertical-align: top;
 }
-
-

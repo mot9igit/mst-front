@@ -449,6 +449,7 @@ export default {
       } else {
         this.getSalesProducts({
           actionId: this.$route.params.action_id,
+          view: 1,
           perpage: this.pagination_items_per_page,
           page: this.page,
         })

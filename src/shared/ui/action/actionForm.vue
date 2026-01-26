@@ -667,7 +667,7 @@
                   <div class="d-category" v-if="this.form.offer">
                     Доступно только в предложениях
                   </div>
-                  <div class="d-category" v-if="this.form.complect">Комплект</div>
+                  <!-- <div class="d-category" v-if="this.form.complect">Комплект</div> -->
                 </div>
               </div>
               <div class="promotions__card-header-right">
@@ -701,7 +701,7 @@
                 <div class="d-badge d-badge--filled" v-if="this.form.offer">
                   Доступно только в предложениях
                 </div>
-                <div class="d-badge d-badge--filled" v-if="this.form.complect">Комплект</div>
+                <!-- <div class="d-badge d-badge--filled" v-if="this.form.complect">Комплект</div> -->
               </div>
               <div class="promotions__card-block-wrapper">
                 <div class="promotions__card-value-container promotions__card-block">
@@ -1946,7 +1946,7 @@
                       </div>
                     </div>
                     <!-- Акция, действующая при покупке всего комплекта -->
-                    <div
+                    <!-- <div
                       class="d-radio__wrapper d-radio__wrapper--1200-start promo-master__radio-wrapper"
                     >
                       <label class="d-switch" for="negative-promo3">
@@ -1970,7 +1970,7 @@
                           учетом настроенного минимального количества
                         </p>
                       </div>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
                 <!-- 7 ЭТАП - Условия участия в акции: Совместимость -->
@@ -3933,9 +3933,9 @@ export default {
         }
         // Если уже есть установленные значения скидки - проставляем их в окно
         if (
-          items[0].save_data.properties.type_formula.key == '0' &&
-          items[0].save_data.properties.type_pricing.key == '0' &&
-          items[0].save_data.properties.type_price.guid != '0'
+          items[0].save_data?.properties?.type_formula?.key == '0' &&
+          items[0].save_data?.properties?.type_pricing?.key == '0' &&
+          items[0].save_data?.properties?.type_price?.guid != '0'
         ) {
           this.modals.priceType = 'items'
           this.modals.priceStep = 1

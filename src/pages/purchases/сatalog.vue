@@ -118,27 +118,71 @@
         </div>
       </div>
     </div>
-    <div class="catalog-top_button"  v-if="!loading && (this.$route.name == 'purchasesCatalogComplect' || this.$route.name == 'purchasesCatalogRequirement')">
+    <div
+      class="catalog-top_button"
+      v-if="
+        !loading &&
+        (this.$route.name == 'purchasesCatalogComplect' ||
+          this.$route.name == 'purchasesCatalogRequirement')
+      "
+    >
       <h2 v-if="this.$route.name == 'purchasesCatalogComplect'" class="products__top-title">
-        Товары по акции "{{ opt_products?.action?.name }}" от {{ opt_products?.action?.org_name }}
+        Товары по акции "{{ opt_products?.action?.name }}"
+        <p>от {{ opt_products?.action?.org_name }}</p>
       </h2>
       <h2 v-if="this.$route.name == 'purchasesCatalogRequirement'" class="products__top-title">
         Товары из потребности "{{ opt_products?.name }}"
-      </h2>  
-      <div class="catalog-top_button-cont">
-        <button class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
-        :disabled="opt_products.total_no_available > 0 && this.$route.name == 'purchasesCatalogComplect'">
+      </h2>
+      <div
+        class="catalog-top_button-cont"
+        v-if="
+          this.$route.name == 'purchasesCatalogRequirement' ||
+          this.$route.name == 'purchasesCatalogComplect'
+        "
+      >
+        <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
+          :disabled="
+            (this.$route.name == 'purchasesCatalogRequirement' &&
+              opt_products?.total == opt_products?.total_no_available) ||
+            (this.$route.name == 'purchasesCatalogComplect' && opt_products?.total_no_available > 0)
+          "
+          @click.prevent="addAll()"
+        >
           <div class="d-button__text">
-                  <i class="d-icon-cart product-card__buy-icon"></i>
-                  Добавить все товары в корзину
-                </div>
+            <i class="d-icon-cart product-card__buy-icon"></i>
+            Все в корзину
+          </div>
         </button>
-        <p v-if="opt_products.total_no_available > 0 && this.$route.name == 'purchasesCatalogComplect'">В данный момент не все товары из комплекта есть в наличии, поэтому акция не может быть
-        применена</p>
-        <p v-if="opt_products.total_no_available > 0 && this.$route.name == 'purchasesCatalogRequirement'">Обратите внимание, не все товары из потребности есть в наличии! В корзину попадут только товары, которые есть в наличии на данный момент</p>
+        <p
+          v-if="
+            opt_products.total_no_available > 0 && this.$route.name == 'purchasesCatalogComplect'
+          "
+        >
+          В данный момент не все товары из комплекта есть в наличии, поэтому акция не может быть
+          применена
+        </p>
+        <p
+          v-if="
+            opt_products.total_no_available > 0 &&
+            this.$route.name == 'purchasesCatalogRequirement' &&
+            opt_products?.total != opt_products?.total_no_available
+          "
+        >
+          Обратите внимание, не все товары из потребности есть в наличии! В корзину попадут только
+          товары, которые есть в наличии на данный момент
+        </p>
+        <p
+          v-if="
+            this.$route.name == 'purchasesCatalogRequirement' &&
+            opt_products?.total == opt_products?.total_no_available
+          "
+        >
+          В наличии нет товаров из потребности
+        </p>
       </div>
     </div>
-    
+
     <product
       v-for="item in opt_products.items"
       :key="item.id"
@@ -372,6 +416,20 @@ export default {
         })
       }
     },
+    addAll() {
+      let addItems = []
+      if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+        for (var item in this.opt_products.items) {
+          for (var store in this.opt_products.items[item].stores) {
+            if (this.opt_products.items[item].stores[store].remains_abstract > 0) {
+              this.opt_products.items[item].stores[store]
+              addItems.push(this.opt_products.items[item])
+            }
+          }
+        }
+        console.log(addItems)
+      }
+    },
   },
   mounted() {
     const data = {
@@ -462,25 +520,40 @@ export default {
 .products__top-title {
   margin-bottom: 48px;
 }
-.catalog-top_button{
+.catalog-top_button {
   display: flex;
   justify-content: space-between;
   align-items: start;
   margin-bottom: 24px;
 }
-.catalog-top_button h2{
-  max-width: 60%;
+.catalog-top_button h2 {
+  max-width: 50%;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 31px;
+  color: #282828;
 }
-.catalog-top_button-cont{
+.catalog-top_button h2 p {
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 26px;
+  letter-spacing: -0.01em;
+  color: #757575;
+}
+.catalog-top_button-cont {
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: end;
-  gap: 24px;
+  gap: 16px;
 }
-.catalog-top_button-cont p{
+.catalog-top_button-cont p {
   max-width: 80%;
   color: #757575;
   text-align: right;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: -0.01em;
 }
 </style>

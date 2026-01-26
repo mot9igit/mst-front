@@ -51,10 +51,14 @@
             <!-- Блок с ценой и акциями -->
             <div class="product-card__price-container">
               <!-- Цена товара -->
-              <div class="product-card__price" v-if="this.$route.name == 'purchasesCatalogComplect' &&  offer.min_price?.price_complect > 0">
-                <p
-                  class="product-card__price-value-discounted"
-                >
+              <div
+                class="product-card__price"
+                v-if="
+                  this.$route.name == 'purchasesCatalogComplect' &&
+                  offer.min_price?.price_complect > 0
+                "
+              >
+                <p class="product-card__price-value-discounted">
                   от {{ offer.min_price?.price_complect.toLocaleString('ru') }} ₽
                 </p>
               </div>
@@ -68,7 +72,7 @@
                 >
                   от {{ offer.min_price.price.toLocaleString('ru') }} ₽
                 </p>
-                
+
                 <p class="product-card__price-value-discounted" v-else>
                   {{ offer.price.toLocaleString('ru') }} ₽
                 </p>
@@ -114,10 +118,7 @@
                 class="product-card__count-value product-card__count-value-require"
                 v-if="offer.requirement"
               >
-                <span class="product-card__count-label"
-                  ><span v-if="this.$route.name == 'purchasesCatalogComplect'">В комплекте</span
-                  ><span v-else>Ваша потребность</span>:
-                </span>
+                <span class="product-card__count-label"><span>Ваша потребность</span>: </span>
                 -{{ Number(offer.requirement.count) }} шт
               </div>
             </div>
@@ -586,13 +587,12 @@
           <!-- Дополнительная информация -->
           <div class="product-card__stat-list-cont">
             <div class="product-card__stat-list">
+              <!-- <div v-if="item.complect > 0" class="d-category">Комплект</div> -->
               <div v-if="item.percent_num > 0">
                 <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка
                 {{ item.percent_num }}%
               </div>
-              <div v-if="item.complect > 0">
-                <i class="d-icon-boxes-2 product-card__buy-icon"></i>Комплект
-              </div>
+
               <div v-if="item.delivery_type == 2">
                 <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
               </div>
@@ -1582,6 +1582,9 @@ export default {
   display: flex;
   gap: 8px;
   align-items: center;
+}
+.product-card-actions__modal-all .d-category {
+  height: 32px;
 }
 .product-card__icon-summ {
   width: 13px;
