@@ -520,11 +520,6 @@
             </p>
             <div class="product-card-actions__modal-all-item-action-button">
               <div>
-                <!--несовместима-->
-                <i
-                  class="d-icon-info product-card__actions-icon-info"
-                  v-if="this.mainActionsData[item.action_id] == false && !allOff"
-                ></i>
                 <div
                   class="d-switch"
                   @click.prevent="checkAction(Number(item.action_id))"
@@ -544,7 +539,15 @@
                     class="d-switch__input"
                     v-model="mainActionsData[Number(item.action_id)]"
                   />
-                  <div class="d-switch__circle"></div>
+                  <div class="d-switch__circle">
+                    <!--несовместима-->
+                    <div
+                      class="product-card__actions-icon-info"
+                      v-if="this.mainActionsData[item.action_id] == false && !allOff"
+                    >
+                      !
+                    </div>
+                  </div>
                 </div>
                 <!--крест-->
                 <i
@@ -587,7 +590,7 @@
           <!-- Дополнительная информация -->
           <div class="product-card__stat-list-cont">
             <div class="product-card__stat-list">
-              <!-- <div v-if="item.complect > 0" class="d-category">Комплект</div> -->
+              <div v-if="item.complect > 0" class="d-category">Комплект</div>
               <div v-if="item.percent_num > 0">
                 <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка
                 {{ item.percent_num }}%
@@ -678,7 +681,7 @@ export default {
     }
   },
   components: { customModal, Counter },
-  emits: ['updateBasket', 'updateCatalog'],
+  emits: ['updateBasket', 'updateCatalog', 'counter'],
   props: {
     offer: {
       type: Object,
@@ -796,6 +799,23 @@ export default {
             this.count_min = this.count
           }
         }
+
+        // потребность
+        if (
+          this.$route.matched[5] &&
+          this.$route.matched[5].name == 'purchasesCatalogRequirement'
+        ) {
+          if (this.step == 1) {
+            this.count_min > Number(this.offer.count)
+              ? (this.count = this.count_min)
+              : (this.count = Number(this.offer.count))
+          } else {
+            this.count < Number(this.offer.count) ? (this.count = Number(this.offer.count)) : ''
+          }
+          let obj = { item: this.offer, count: this.count }
+          obj.item.data = this.offerData
+          this.$emit('counter', obj)
+        }
       }
     }
   },
@@ -812,15 +832,39 @@ export default {
     ElemCount(object) {
       if (object.value == object.min) {
         this.count = object.value
+        if (
+          this.$route.matched[5] &&
+          this.$route.matched[5].name == 'purchasesCatalogRequirement'
+        ) {
+          let obj = { item: this.offer, count: this.count }
+          obj.item.data = this.offerData
+          this.$emit('counter', obj)
+        }
         return
       }
       if (object.value > Number(object.max)) {
         this.modal_remain = true
       } else {
         this.count = object.value
+        if (
+          this.$route.matched[5] &&
+          this.$route.matched[5].name == 'purchasesCatalogRequirement'
+        ) {
+          let obj = { item: this.offer, count: this.count }
+          obj.item.data = this.offerData
+          this.$emit('counter', obj)
+        }
       }
       if (object.value < object.min) {
         this.count = this.count_min
+        if (
+          this.$route.matched[5] &&
+          this.$route.matched[5].name == 'purchasesCatalogRequirement'
+        ) {
+          let obj = { item: this.offer, count: this.count }
+          obj.item.data = this.offerData
+          this.$emit('counter', obj)
+        }
         return
       }
     },
@@ -924,12 +968,36 @@ export default {
           this.count_min = this.count
         }
       }
+      // потребность
+      if (this.$route.matched[5] && this.$route.matched[5].name == 'purchasesCatalogRequirement') {
+        if (this.step == 1) {
+          this.count_min > Number(this.offer.count)
+            ? (this.count = this.count_min)
+            : (this.count = Number(this.offer.count))
+        } else {
+          this.count < Number(this.offer.count) ? (this.count = Number(this.offer.count)) : ''
+        }
+        let obj = { item: this.offer, count: this.count }
+        obj.item.data = this.offerData
+        this.$emit('counter', obj)
+      }
     },
     checkAction(ind) {
       if (this.mainActionsData[ind]) {
         this.mainActionsData[ind] = false
         this.allOff = true
-        this.count = 1
+        // потребность
+        if (
+          this.$route.matched[5] &&
+          this.$route.matched[5].name == 'purchasesCatalogRequirement'
+        ) {
+          this.count = Number(this.offer.count)
+          let obj = { item: this.offer, count: this.count }
+          obj.item.data = this.offerData
+          this.$emit('counter', obj)
+        } else {
+          this.count = 1
+        }
         this.activeConflict = {}
       } else {
         for (var ii in this.mainActionsData) {
@@ -983,6 +1051,24 @@ export default {
                       this.count_min = this.count
                     }
                   }
+                  // потребность
+                  if (
+                    this.$route.matched[5] &&
+                    this.$route.matched[5].name == 'purchasesCatalogRequirement'
+                  ) {
+                    if (this.step == 1) {
+                      this.count_min > Number(this.offer.count)
+                        ? (this.count = this.count_min)
+                        : (this.count = Number(this.offer.count))
+                    } else {
+                      this.count < Number(this.offer.count)
+                        ? (this.count = Number(this.offer.count))
+                        : ''
+                    }
+                    let obj = { item: this.offer, count: this.count }
+                    obj.item.data = this.offerData
+                    this.$emit('counter', obj)
+                  }
                 }
               }
             }
@@ -1004,10 +1090,32 @@ export default {
             Number(this.activeConflict.multiplicity) <= 1 ||
             Number(this.activeConflict.min_count) <= 1
           ) {
-            this.count = 1
+            // потребность
+            if (
+              this.$route.matched[5] &&
+              this.$route.matched[5].name == 'purchasesCatalogRequirement'
+            ) {
+              this.count = Number(this.offer.count)
+              let obj = { item: this.offer, count: this.count }
+              obj.item.data = this.offerData
+              this.$emit('counter', obj)
+            } else {
+              this.count = 1
+            }
           }
         } else {
-          this.count = 1
+          // потребность
+          if (
+            this.$route.matched[5] &&
+            this.$route.matched[5].name == 'purchasesCatalogRequirement'
+          ) {
+            this.count = Number(this.offer.count)
+            let obj = { item: this.offer, count: this.count }
+            obj.item.data = this.offerData
+            this.$emit('counter', obj)
+          } else {
+            this.count = 1
+          }
         }
       }
     },
@@ -1557,10 +1665,23 @@ export default {
   font-size: 18px;
   color: #97bc71;
 }
+.d-switch__circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .product-card__actions-icon-info {
-  font-size: 18px;
-  color: #f92c0d;
+  font-size: 12px;
+  color: #fff;
   font-weight: 600;
+  z-index: 10;
+  position: relative;
+  height: 100%;
+  min-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center !important;
+  text-align: center;
 }
 .product-card__vertical .d-button__text {
   gap: 8px;
@@ -2334,6 +2455,9 @@ export default {
     align-items: center;
     margin-top: 11px;
   }
+  .product-card__actions-icon-info {
+    font-size: 10px;
+  }
 }
 @media (width <=1150px) {
   .product-card__vertical .products__list {
@@ -2790,7 +2914,9 @@ export default {
   .product-card-actions__modal-all .d-button__text {
     gap: 8px;
   }
-  .product-card__actions-icon-info,
+  .product-card__actions-icon-info {
+    font-size: 9px;
+  }
   .product-card__actions-icon-auto {
     font-size: 16px;
   }
@@ -3139,7 +3265,9 @@ export default {
   .product-card-actions__modal-all .d-button__text {
     gap: 8px;
   }
-  .product-card__actions-icon-info,
+  .product-card__actions-icon-info {
+    font-size: 9px;
+  }
   .product-card__actions-icon-auto {
     font-size: 16px;
   }
@@ -3564,7 +3692,17 @@ export default {
     --d-switch-height: 14px;
     --d-switch-thumb-width: 10px;
   }
-  .product-card__actions-icon-info,
+  .product-card__actions-icon-info {
+    font-size: 8px;
+  }
+  .product-card-actions__modal-all
+    .product-card-actions__modal-all-item-action-button
+    .d-switch
+    div:not(.d-switch) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
   .product-card__actions-icon-auto {
     font-size: 13px;
   }
@@ -4151,7 +4289,9 @@ export default {
     --d-switch-height: 20px;
     --d-switch-thumb-width: 16px;
   }
-  .product-card__actions-icon-info,
+  .product-card__actions-icon-info {
+    font-size: 10px;
+  }
   .product-card__actions-icon-auto {
     font-size: 13px;
   }

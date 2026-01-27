@@ -189,6 +189,7 @@
       :product="item"
       @updateBasket="updateBasket()"
       @updateCatalog="updateCatalog()"
+      @counter="counter"
     />
     <div class="d-pagination-wrap" v-if="pagesCount > 1">
       <paginate
@@ -205,6 +206,10 @@
       </paginate>
     </div>
   </section>
+
+  <customModal v-model="this.modalConflicts" class="product-card-actions__modal-all">
+    <allSalesWindow :offers="addItemsConflicts" @counter="counter" />
+  </customModal>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -212,11 +217,13 @@ import breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Paginate from 'vuejs-paginate-next'
 import Loader from '@/shared/ui/Loader.vue'
 import product from './ui/product.vue'
+import customModal from '@/shared/ui/Modal.vue'
+import allSalesWindow from './ui/allSalesWindow.vue'
 
 export default {
   name: 'purchasesCatalog',
   inject: ['catalogUpdater'],
-  components: { breadcrumbs, Loader, Paginate, product },
+  components: { breadcrumbs, Loader, Paginate, product, customModal, allSalesWindow },
   props: {
     id: {
       type: String,
@@ -279,6 +286,9 @@ export default {
           value: false,
         },
       ],
+      addItems: {},
+      addItemsConflicts: {},
+      modalConflicts: false,
     }
   },
   methods: {
@@ -287,6 +297,7 @@ export default {
       getOfferOptProducts: 'offer/getOfferOptProducts',
       getBasket: 'basket/getBasket',
       getBasketOffer: 'offer/getBasketOffer',
+      basketProductAdd: 'basket/basketProductAdd',
     }),
     updateBasket() {
       const data = {
@@ -417,18 +428,19 @@ export default {
       }
     },
     addAll() {
-      let addItems = []
-      if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-        for (var item in this.opt_products.items) {
-          for (var store in this.opt_products.items[item].stores) {
-            if (this.opt_products.items[item].stores[store].remains_abstract > 0) {
-              this.opt_products.items[item].stores[store]
-              addItems.push(this.opt_products.items[item])
-            }
-          }
+      this.addItemsConflicts = {}
+      for (var item in this.addItems) {
+        if (this.addItems[item].item.conflicts?.length > 1) {
+          this.addItemsConflicts[item] = this.addItems[item]
         }
-        console.log(addItems)
       }
+      if (Object.keys(this.addItemsConflicts).length) {
+        this.modalConflicts = true
+      }
+    },
+    counter(obj) {
+      let i = obj.item.remain_id
+      this.addItems[i] = obj
     },
   },
   mounted() {

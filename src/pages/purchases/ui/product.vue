@@ -55,6 +55,7 @@
           :offerData="product"
           @updateBasket="updateBasket()"
           @updateCatalog="updateCatalog()"
+          @counter="counter"
         />
       </div>
       <div class="products__list" v-else-if="product.stores && $route.params.id_org_from">
@@ -70,10 +71,9 @@
     </div>
   </div>
 
-    <customModal v-model="this.modalProduct" class="product-modal__info">
-      <productInfoWindow :product="product" />
-    </customModal>
-
+  <customModal v-model="this.modalProduct" class="product-modal__info">
+    <productInfoWindow :product="product" />
+  </customModal>
 </template>
 <script>
 import offer from './offerVertical.vue'
@@ -84,7 +84,7 @@ import productInfoWindow from './productInfoWindow.vue'
 
 export default {
   name: 'productComponent',
-  emits: ['updateBasket', 'updateCatalog'],
+  emits: ['updateBasket', 'updateCatalog', 'counter'],
   data() {
     return {
       modalProduct: false,
@@ -124,6 +124,9 @@ export default {
     },
     updateCatalog() {
       this.$emit('updateCatalog')
+    },
+    counter(object) {
+      this.$emit('counter', object)
     },
   },
 }
