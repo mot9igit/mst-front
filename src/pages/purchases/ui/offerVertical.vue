@@ -596,7 +596,7 @@
                 {{ item.percent_num }}%
               </div>
 
-              <div v-if="item.delivery_type == 2">
+              <div v-if="item.payer == 1">
                 <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
               </div>
               <div v-if="item.delay_type == 2 && item.delay > 0">
@@ -1490,7 +1490,8 @@ export default {
   gap: 2px;
   flex-direction: column;
   align-items: end;
-  width: max-content;
+  width: 100%;
+  padding-right: 24px;
 }
 .product-card-actions__modal-all .product-card__seller-cont {
   position: relative;

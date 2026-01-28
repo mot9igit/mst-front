@@ -207,8 +207,17 @@
     </div>
   </section>
 
-  <customModal v-model="this.modalConflicts" class="product-card-actions__modal-all">
-    <allSalesWindow :offers="addItemsConflicts" @counter="counter" />
+  <customModal
+    v-model="this.modalConflicts"
+    class="product-card-actions__modal-all product-card-actions__modal-all-buy_all"
+  >
+    <allSalesWindow
+      :offers="addItemsConflicts"
+      :noconflicts="noconflicts"
+      @windowClose="this.modalConflicts = false"
+      @updateBasket="updateBasket()"
+      @updateCatalog="updateCatalog()"
+    />
   </customModal>
 </template>
 <script>
@@ -288,6 +297,7 @@ export default {
       ],
       addItems: {},
       addItemsConflicts: {},
+      noconflicts: {},
       modalConflicts: false,
     }
   },
@@ -299,6 +309,7 @@ export default {
       getBasketOffer: 'offer/getBasketOffer',
       basketProductAdd: 'basket/basketProductAdd',
     }),
+
     updateBasket() {
       const data = {
         page: this.page,
@@ -429,9 +440,23 @@ export default {
     },
     addAll() {
       this.addItemsConflicts = {}
+      this.noconflicts = {}
       for (var item in this.addItems) {
-        if (this.addItems[item].item.conflicts?.length > 1) {
-          this.addItemsConflicts[item] = this.addItems[item]
+        if (
+          this.addItems[item].item.price == 0 ||
+          Number(this.addItems[item].item.remains_abstract) == 0
+        ) {
+          this.noconflicts[item] = this.addItems[item]
+          this.noconflicts[item].count = 0
+        } else {
+          if (
+            this.addItems[item].item.conflicts &&
+            this.addItems[item].item.conflicts?.length > 1
+          ) {
+            this.addItemsConflicts[item] = this.addItems[item]
+          } else {
+            this.noconflicts[item] = this.addItems[item]
+          }
         }
       }
       if (Object.keys(this.addItemsConflicts).length) {
