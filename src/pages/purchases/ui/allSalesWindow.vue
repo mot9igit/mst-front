@@ -389,7 +389,7 @@
     <button
       @click.prevent="addBasketAll()"
       class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
-      :class="{ 'd-button--loading': this.loading }"
+      :disabled="!buttonActive"
     >
       <div class="d-button__text">
         <i class="d-icon-cart product-card__buy-icon"></i>
@@ -397,12 +397,33 @@
       </div>
     </button>
   </div>
+  <customModal v-model="this.modalAll" class="product-card-actions__modal-all-confirm">
+    <h3>Конфликт акций</h3>
+    <p>Применить акцию "{{ editNow.name }}" ко всем товарам?</p>
+    <div class="product-card-actions__modal-all-buttons">
+      <button
+        type="button"
+        href="#"
+        class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy-cancel product-card-vertical__buy"
+        @click.prevent="checkAll()"
+      >
+        <div class="d-button__text">Применить ко всем</div>
+      </button>
+      <button
+        @click.prevent="(checkOne(editNow.action_id, editNow.remain_id), (this.modalAll = false))"
+        class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
+      >
+        <div class="d-button__text">Применить к одному</div>
+      </button>
+    </div>
+  </customModal>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 import Counter from '@/shared/ui/CounterNoAdd.vue'
 import Loader from '@/shared/ui/Loader.vue'
+import customModal from '@/shared/ui/Modal.vue'
 
 export default {
   name: 'allSalesWindow',
@@ -415,10 +436,16 @@ export default {
       allOff: {},
       counts: {},
       activeConflict: {},
+      editNow: {},
+      modalAll: false,
+      actionsRemains: {},
+      checked: {},
+      buttonActive: false,
+      errors: '',
     }
   },
   emits: ['windowClose', 'updateCatalog', 'updateBasket'],
-  components: { Counter, Loader },
+  components: { Counter, Loader, customModal },
   props: {
     offers: {
       type: Object,
@@ -448,20 +475,32 @@ export default {
         for (var r_id in this.offers) {
           // собираем конфликты
           this.modalActionsData[r_id] = this.offers[r_id].item.conflicts
-          // выбираем активный конфликт
-          let conf = this.modalActionsData[r_id]
-          for (var ic in conf) {
-            if (conf[ic].active) {
-              this.activeConflict[r_id] = conf[ic]
-            }
+          // выставляем пустой активный конфликт
+          //let conf = this.modalActionsData[r_id]
+          // for (var ic in conf) {
+          //   if (conf[ic].active) {
+          //     this.activeConflict[r_id] = conf[ic]
+          //   }
+          // }
+          this.activeConflict[r_id] = {
+            actions: [],
+            actions_ids: [],
+            active: false,
+            delay: null,
+            delay_type: null,
+            min_count: 1,
+            multiplicity: 1,
+            payer: 0,
+            price: this.modalActionsData[r_id][0].prices.rrc,
+            prices: [],
           }
           // проставляем состояние окошка информации о продавце
           this.seller_info[r_id] = false
           // проставляем количество из каунтеров в данный момент
           this.counts[r_id] = { count: this.offers[r_id].count }
-          // проставляем состояние переключателей (первый включен)
-          this.allOff[r_id] = false
-          // собираем массив главных акций и устанавливаем активную
+          // проставляем состояние переключателей (все выключены)
+          this.allOff[r_id] = true
+          // собираем массив главных акций и устанавливаем их все неактивными
           if (this.activeConflict[r_id]?.actions_ids) {
             let item = JSON.parse(JSON.stringify(this.activeConflict[r_id].actions_ids))
             for (var iitem in item) {
@@ -472,14 +511,25 @@ export default {
             let data = {}
             for (var ima in act_ids) {
               data[act_ids[ima]] = false
-              if (item.includes(Number(act_ids[ima]))) {
-                data[act_ids[ima]] = true
-              } else {
-                data[act_ids[ima]] = false
-              }
-              this.mainActionsData[r_id] = data
+              // if (item.includes(Number(act_ids[ima]))) {
+              //   data[act_ids[ima]] = true
+              // } else {
+              //   data[act_ids[ima]] = false
+              // }
+            }
+            this.mainActionsData[r_id] = data
+          }
+          // формируем массив action_id: remain_ids
+          let mains = this.mainActionsData[r_id]
+          for (var act in mains) {
+            if (!this.actionsRemains[act]) {
+              this.actionsRemains[act] = r_id
+            } else {
+              this.actionsRemains[act] = this.actionsRemains[act] + '/' + r_id
             }
           }
+          // формируем массив продуктов с отмеченными акциями
+          this.checked[r_id] = false
           // устанавливаем минимальное количество, количество и кратность в зависимости от того, какая акция выбрана
           if (
             Number(this.activeConflict[r_id].multiplicity) >
@@ -527,13 +577,13 @@ export default {
             this.$route.matched[5] &&
             this.$route.matched[5].name == 'purchasesCatalogRequirement'
           ) {
-            if (this.step == 1) {
-              this.counts[r_id].count_min > Number(this.offers[r_id].item.count)
+            if (this.counts[r_id].step == 1) {
+              this.counts[r_id].count_min > Number(this.offers[r_id].count)
                 ? (this.counts[r_id].count = this.counts[r_id].count_min)
-                : (this.counts[r_id].count = Number(this.offers[r_id].item.count))
+                : (this.counts[r_id].count = Number(this.offers[r_id].count))
             } else {
-              this.counts[r_id].count < Number(this.offers[r_id].item.count)
-                ? (this.counts[r_id].count = Number(this.offers[r_id].item.count))
+              this.counts[r_id].count < Number(this.offers[r_id].count)
+                ? (this.counts[r_id].count = Number(this.offers[r_id].count))
                 : ''
             }
           }
@@ -557,7 +607,6 @@ export default {
         return
       }
     },
-
     addBasketAll() {
       this.loading = true
       let data = {}
@@ -581,188 +630,237 @@ export default {
           key: item.key,
           actions: conf,
         }
-        // this.basketProductAdd(data).then((response) => {
-        //   this.loading = false
-        //   if (!response?.data?.data?.success && response?.data?.data?.message) {
-        //     this.$toast.add({
-        //       severity: 'error',
-        //       summary: 'Ошибка',
-        //       detail: response?.data?.data?.message,
-        //       life: 3000,
-        //     })
-        //   }
-        //   this.$emit('updateCatalog')
-        //   this.$emit('updateBasket')
-        // })
       }
-      for (var rem_id in this.noconflicts) {
-        let conf = {}
-        if (this.noconflicts[rem_id].count > 0) {
-          let item = this.noconflicts[rem_id].item
-          if (item.conflicts && item.conflicts.length == 1) {
-            conf = item.conflicts[0].actions
-            item.price = item.conflicts[0].price
-            item.payer = item.conflicts[0].payer ? item.conflicts[0].payer : 0
-            item.delay = item.conflicts[0].delay ? item.conflicts[0].delay : 0
-            item.delay_type = item.conflicts[0].delay_type ? item.conflicts[0].delay_type : 1
-          }
+      if (this.noconflicts.length) {
+        for (var rem_id in this.noconflicts) {
+          let conf = {}
+          if (this.noconflicts[rem_id].count > 0) {
+            let item = this.noconflicts[rem_id].item
+            if (item.conflicts && item.conflicts.length == 1) {
+              conf = item.conflicts[0].actions
+              item.price = item.conflicts[0].price
+              item.payer = item.conflicts[0].payer ? item.conflicts[0].payer : 0
+              item.delay = item.conflicts[0].delay ? item.conflicts[0].delay : 0
+              item.delay_type = item.conflicts[0].delay_type ? item.conflicts[0].delay_type : 1
+            }
 
-          data[rem_id] = {
-            org_id: item.org_id,
-            store_id: item.store_id,
-            id_remain: rem_id,
-            count: this.noconflicts[rem_id].count,
-            key: item.key,
-            actions: conf,
+            data[rem_id] = {
+              org_id: item.org_id,
+              store_id: item.store_id,
+              id_remain: rem_id,
+              count: this.noconflicts[rem_id].count,
+              key: item.key,
+              actions: conf,
+            }
           }
         }
-
-        this.addBasketOne(data).then((res) => {
-          console.log(res)
-          if (res.error < res.total) {
-            this.$toast.add({
-              severity: 'success',
-              summary: 'Выполнено',
-              detail: 'Добавлено в корзину ' + res.success + ' товаров из ' + res.total,
-              life: 3000,
-            })
-            this.loading = false
-
-            this.$emit('updateCatalog')
-            this.$emit('updateBasket')
-          } else {
-            this.$toast.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: 'Ошибка добавления в корзину',
-              life: 3000,
-            })
-          }
-          this.loading = false
-          this.$emit('updateCatalog')
-          this.$emit('updateBasket')
-          this.$emit('windowClose')
-        })
       }
+      this.addBasketOne(data).then((res) => {
+        console.log(res)
+        if (res.length == 0) {
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Выполнено',
+            detail: 'Товары добавлены в корзину',
+            life: 3000,
+          })
+        } else {
+          let mess = ''
+          for (var r in res) {
+            if (!mess.includes(res[r])) {
+              if (mess.length > 0) {
+                mess = mess + ', '
+              }
+              mess = mess + res[r]
+            }
+          }
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: mess,
+            life: 3000,
+          })
+        }
+        this.loading = false
+        this.$emit('updateCatalog')
+        this.$emit('updateBasket')
+        this.$emit('windowClose')
+      })
     },
     async addBasketOne(data) {
-      let error = 0
-      let success = 0
-      let total = Object.keys(data).length
       for (var r_id in data) {
         this.basketProductAdd(data[r_id]).then((response) => {
-          if (response.data.data.success) {
-            success++
-          } else {
-            error++
+          if (!response?.data?.data?.success && response?.data?.data?.message) {
+            if (!this.errors.includes(response?.data?.data?.message)) {
+              if (this.errors.length > 0) {
+                this.errors = this.errors + ', '
+              }
+              this.errors = this.errors + response?.data?.data?.message
+            }
           }
         })
       }
-      return { total: total, error: error, success: success }
+
+      return this.errors
     },
     checkAction(ind, r_id) {
       let data = this.mainActionsData[r_id]
       if (data[ind]) {
         this.mainActionsData[r_id][ind] = false
         this.allOff[r_id] = true
+        this.checked[r_id] = false
         // потребность
         if (
           this.$route.matched[5] &&
           this.$route.matched[5].name == 'purchasesCatalogRequirement'
         ) {
-          this.counts[r_id].count = Number(this.offers[r_id].item.count)
+          this.counts[r_id].count = Number(this.offers[r_id].count)
         } else {
           this.counts[r_id].count = 1
         }
         this.activeConflict[r_id] = {}
+        this.checkControl()
       } else {
         for (var ii in this.mainActionsData[r_id]) {
           if (ii == ind) {
-            this.mainActionsData[r_id][ii] = true
-            this.allOff[r_id] = false
-            // выставляем новый активный конфликт
             for (var ic in this.offers[r_id].item.conflicts) {
               if (this.offers[r_id].item.conflicts[ic] !== undefined) {
                 if (this.offers[r_id].item.conflicts[ic].actions_ids.includes(ii)) {
-                  this.activeConflict[r_id] = this.offers[r_id].item.conflicts[ic]
-
-                  if (
-                    Number(this.activeConflict[r_id].multiplicity) >
-                      Number(this.activeConflict[r_id].min_count) &&
-                    Number(this.activeConflict[r_id].multiplicity) > 1
-                  ) {
-                    this.counts[r_id].count = Number(this.activeConflict.multiplicity)
-                    this.counts[r_id].step = Number(this.activeConflict.multiplicity)
-                    this.counts[r_id].count_min = Number(this.activeConflict.multiplicity)
-                  } else {
-                    if (
-                      Number(this.activeConflict[r_id].multiplicity) <=
-                        Number(this.activeConflict[r_id].min_count) &&
-                      Number(this.activeConflict[r_id].multiplicity) > 1
-                    ) {
-                      if (
-                        !(
-                          Number(this.activeConflict[r_id].min_count) %
-                          Number(this.activeConflict[r_id].multiplicity)
-                        )
-                      ) {
-                        this.counts[r_id].count = Number(this.activeConflict[r_id].min_count)
-                        this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
-                        this.counts[r_id].count_min = Number(this.activeConflict[r_id].min_count)
-                      } else {
-                        this.counts[r_id].count =
-                          Number(this.activeConflict[r_id].min_count) +
-                          Number(this.activeConflict[r_id].multiplicity) -
-                          (Number(this.activeConflict[r_id].min_count) %
-                            Number(this.activeConflict[r_id].multiplicity))
-                        this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
-                        this.counts[r_id].count_min = this.counts[r_id].count
+                  let editsNow = this.offers[r_id].item.conflicts[ic].actions
+                  for (var iii in editsNow) {
+                    if (editsNow[iii].action_id == ind) {
+                      this.editNow = editsNow[iii]
+                      let col = this.actionsRemains[ind].split('/')
+                      let c = 0
+                      for (var k in col) {
+                        if (this.checked[col[k]] == false && col[k] != r_id) {
+                          c++
+                        }
                       }
-                    } else {
-                      this.counts[r_id].count =
-                        Number(this.activeConflict[r_id].min_count) > 0
-                          ? Number(this.activeConflict[r_id].min_count)
-                          : 1
-                      this.counts[r_id].step = 1
-                      this.counts[r_id].count_min = this.counts[r_id].count
-                    }
-                  }
-                  // потребность
-                  if (
-                    this.$route.matched[5] &&
-                    this.$route.matched[5].name == 'purchasesCatalogRequirement'
-                  ) {
-                    if (this.counts[r_id].step == 1) {
-                      this.counts[r_id].count_min > Number(this.offers[r_id].item.count)
-                        ? (this.counts[r_id].count = this.counts[r_id].count_min)
-                        : (this.counts[r_id].count = Number(this.offers[r_id].item.count))
-                    } else {
-                      this.counts[r_id].count < Number(this.offers[r_id].item.count)
-                        ? (this.counts[r_id].count = Number(this.offers[r_id].item.count))
-                        : ''
+                      if (c > 0) {
+                        this.modalAll = true
+                      } else {
+                        this.checkOne(ind, r_id)
+                      }
                     }
                   }
                 }
               }
             }
-          } else {
-            this.mainActionsData[r_id][ii] = false
           }
         }
+      }
+    },
+    checkAll() {
+      let action_id = this.editNow.action_id
+      let remain_ids = this.actionsRemains[action_id].split('/')
+      for (var r_id in remain_ids) {
+        this.checkOne(action_id, remain_ids[r_id])
+      }
+      this.modalAll = false
+    },
+    checkOne(ind, r_id) {
+      for (var ii in this.mainActionsData[r_id]) {
+        if (ii == ind) {
+          this.mainActionsData[r_id][ii] = true
+          this.allOff[r_id] = false
+          // выставляем новый активный конфликт
+          for (var ic in this.offers[r_id].item.conflicts) {
+            if (this.offers[r_id].item.conflicts[ic] !== undefined) {
+              if (this.offers[r_id].item.conflicts[ic].actions_ids.includes(ii)) {
+                this.activeConflict[r_id] = this.offers[r_id].item.conflicts[ic]
+
+                if (
+                  Number(this.activeConflict[r_id].multiplicity) >
+                    Number(this.activeConflict[r_id].min_count) &&
+                  Number(this.activeConflict[r_id].multiplicity) > 1
+                ) {
+                  this.counts[r_id].count = Number(this.activeConflict.multiplicity)
+                  this.counts[r_id].step = Number(this.activeConflict.multiplicity)
+                  this.counts[r_id].count_min = Number(this.activeConflict.multiplicity)
+                } else {
+                  if (
+                    Number(this.activeConflict[r_id].multiplicity) <=
+                      Number(this.activeConflict[r_id].min_count) &&
+                    Number(this.activeConflict[r_id].multiplicity) > 1
+                  ) {
+                    if (
+                      !(
+                        Number(this.activeConflict[r_id].min_count) %
+                        Number(this.activeConflict[r_id].multiplicity)
+                      )
+                    ) {
+                      this.counts[r_id].count = Number(this.activeConflict[r_id].min_count)
+                      this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
+                      this.counts[r_id].count_min = Number(this.activeConflict[r_id].min_count)
+                    } else {
+                      this.counts[r_id].count =
+                        Number(this.activeConflict[r_id].min_count) +
+                        Number(this.activeConflict[r_id].multiplicity) -
+                        (Number(this.activeConflict[r_id].min_count) %
+                          Number(this.activeConflict[r_id].multiplicity))
+                      this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
+                      this.counts[r_id].count_min = this.counts[r_id].count
+                    }
+                  } else {
+                    this.counts[r_id].count =
+                      Number(this.activeConflict[r_id].min_count) > 0
+                        ? Number(this.activeConflict[r_id].min_count)
+                        : 1
+                    this.counts[r_id].step = 1
+                    this.counts[r_id].count_min = this.counts[r_id].count
+                  }
+                }
+                // потребность
+                if (
+                  this.$route.matched[5] &&
+                  this.$route.matched[5].name == 'purchasesCatalogRequirement'
+                ) {
+                  if (this.counts[r_id].step == 1) {
+                    this.counts[r_id].count_min > Number(this.offers[r_id].count)
+                      ? (this.counts[r_id].count = this.counts[r_id].count_min)
+                      : (this.counts[r_id].count = Number(this.offers[r_id].count))
+                  } else {
+                    this.counts[r_id].count < Number(this.offers[r_id].count)
+                      ? (this.counts[r_id].count = Number(this.offers[r_id].count))
+                      : ''
+                  }
+                }
+              }
+            }
+          }
+        } else {
+          this.mainActionsData[r_id][ii] = false
+        }
+      }
+      this.checked[r_id] = true
+      this.checkControl()
+    },
+    checkControl() {
+      let col = 0
+      this.buttonActive = false
+      for (var r_id in this.checked) {
+        if (this.checked[r_id] == true) {
+          col++
+        }
+      }
+      if (col == Object.keys(this.checked).length) {
+        this.buttonActive = true
       }
     },
   },
   watch: {
     offers: function (newVal) {
-      for (var r_id in newVal) {
-        this.modalActionsData[r_id] = newVal[r_id].item.conflicts
-      }
+      this.setValues()
     },
   },
 }
 </script>
 
 <style lang="scss">
+.product-card-actions__modal-all-buy_all .modal__content {
+  min-height: 90%;
+}
 .product-card-actions__modal-all-buy_all
   .product-card-actions__modal-all-header-product-container:first-child {
   border-bottom: 1px solid #75757575;
@@ -784,11 +882,22 @@ export default {
   overflow-y: hidden;
 }
 .product-card-actions__modal-all-buy_all .product-card__count-label {
-  font-weight: 600;
-  color: #282828;
+  font-weight: 400;
+  color: #757575;
 }
 .product-card-actions__modal-all-buy_all .redder {
   color: #f92c0d;
+}
+.product-card-actions__modal-all-buy_all .product-card__count-value-require,
+.product-card-actions__modal-all-buy_all .product-card__count-value-require span {
+  font-weight: 500;
+  color: #282828;
+}
+.product-card-actions__modal-all-buy_all .product-card__count-label,
+.product-card-actions__modal-all-buy_all .redder,
+.product-card-actions__modal-all-buy_all .product-card__count-value-require,
+.product-card-actions__modal-all-buy_all .product-card__count-value-require span {
+  font-size: 16px;
 }
 .product-card-actions__modal-all-buy_all .product-card__count-value-require {
   display: flex;
@@ -799,11 +908,6 @@ export default {
   gap: 4px;
   background: #ededed;
   border-radius: 36px;
-}
-.product-card-actions__modal-all-buy_all .product-card__count-value-require,
-.product-card-actions__modal-all-buy_all .product-card__count-value-require span {
-  font-weight: 600;
-  color: #282828;
 }
 .product-card-actions__modal-all-buttons {
   display: flex;
@@ -831,5 +935,46 @@ export default {
   color: #fff;
   background-color: #282828;
   border: 1px solid #282828;
+}
+.product-card-actions__modal-all-buy_all .product-card__count {
+  padding-top: 8px;
+}
+.product-card-actions__modal-all-confirm h3 {
+  margin-top: -21px;
+  margin-bottom: 8px;
+}
+.product-card-actions__modal-all-confirm .product-card-actions__modal-all-buttons {
+  position: relative;
+  padding-bottom: 0;
+}
+.product-card-actions__modal-all-confirm .modal__content {
+  padding-bottom: 0;
+}
+@media (width <=1280px) {
+  .product-card-actions__modal-all-buy_all .product-card__count {
+    padding-top: 4px;
+  }
+  .product-card-actions__modal-all-buy_all .product-card__count-label,
+  .product-card-actions__modal-all-buy_all .redder,
+  .product-card-actions__modal-all-buy_all .product-card__count-value-require,
+  .product-card-actions__modal-all-buy_all .product-card__count-value-require span {
+    font-size: 9px;
+  }
+}
+@media (width <=700px) {
+  .product-card-actions__modal-all-buy_all .product-card__count-label,
+  .product-card-actions__modal-all-buy_all .redder,
+  .product-card-actions__modal-all-buy_all .product-card__count-value-require,
+  .product-card-actions__modal-all-buy_all .product-card__count-value-require span {
+    font-size: 8px;
+  }
+}
+@media (width <=600px) {
+  .product-card-actions__modal-all-buy_all .product-card__count-label,
+  .product-card-actions__modal-all-buy_all .redder,
+  .product-card-actions__modal-all-buy_all .product-card__count-value-require,
+  .product-card-actions__modal-all-buy_all .product-card__count-value-require span {
+    font-size: 12px;
+  }
 }
 </style>
