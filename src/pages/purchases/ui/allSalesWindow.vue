@@ -609,6 +609,7 @@ export default {
     },
     addBasketAll() {
       this.loading = true
+      this.errors = ''
       let data = {}
       for (var r_id in this.offers) {
         let conf = {}
@@ -655,9 +656,14 @@ export default {
           }
         }
       }
-      this.addBasketOne(data).then((res) => {
-        console.log(res)
-        if (res.length == 0) {
+      this.addBasketOne(data).then(() => {
+        setTimeout(() => {
+          this.afterAddBasket()
+        }, 500)
+      })
+    },
+    afterAddBasket(){
+      if (this.errors == '') {
           this.$toast.add({
             severity: 'success',
             summary: 'Выполнено',
@@ -665,27 +671,18 @@ export default {
             life: 3000,
           })
         } else {
-          let mess = ''
-          for (var r in res) {
-            if (!mess.includes(res[r])) {
-              if (mess.length > 0) {
-                mess = mess + ', '
-              }
-              mess = mess + res[r]
-            }
-          }
           this.$toast.add({
             severity: 'error',
             summary: 'Ошибка',
-            detail: mess,
+            detail: this.errors + " Не все товары были добавлены в корзину",
             life: 3000,
           })
         }
         this.loading = false
+        
         this.$emit('updateCatalog')
         this.$emit('updateBasket')
         this.$emit('windowClose')
-      })
     },
     async addBasketOne(data) {
       for (var r_id in data) {
@@ -700,8 +697,6 @@ export default {
           }
         })
       }
-
-      return this.errors
     },
     checkAction(ind, r_id) {
       let data = this.mainActionsData[r_id]
