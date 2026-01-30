@@ -674,7 +674,7 @@ export default {
           this.$toast.add({
             severity: 'error',
             summary: 'Ошибка',
-            detail: this.errors + " Не все товары были добавлены в корзину",
+            detail: "Не все товары были добавлены в корзину: " + this.errors,
             life: 3000,
           })
         }

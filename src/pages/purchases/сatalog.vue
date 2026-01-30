@@ -145,7 +145,7 @@
           :disabled="
             (this.$route.name == 'purchasesCatalogRequirement' &&
               opt_products?.total == opt_products?.total_no_available) ||
-            (this.$route.name == 'purchasesCatalogComplect' && opt_products?.total_no_available > 0)
+            (this.$route.name == 'purchasesCatalogComplect' && opt_products?.total == opt_products?.total_no_available)
           "
           @click.prevent="addAll()"
         >
@@ -179,6 +179,14 @@
           "
         >
           В наличии нет товаров из потребности
+        </p>
+        <p
+          v-if="
+            this.$route.name == 'purchasesCatalogComplect' &&
+            opt_products?.total == opt_products?.total_no_available
+          "
+        >
+          В наличии нет товаров из комплекта
         </p>
       </div>
     </div>
@@ -481,6 +489,7 @@ export default {
     }
     if (this.$route.name == 'purchasesCatalogComplect') {
       data.action_id = this.$route.params.action_id
+
     }
     if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
       data.search = this.$route.query.search
@@ -491,9 +500,17 @@ export default {
     } else {
       this.getOptProducts(data).then(() => {
         this.opt_products = this.optProducts
+        if(Object.keys(this.opt_products.items).length && this.$route.name != 'purchasesOfferCatalogRequirement'){
+          for(var i in this.opt_products.items){
+            let id = this.opt_products.items[i].remain_id
+            this.addItems[id] = {item: this.opt_products.items[i], count: Number(this.opt_products.items[i].count)}
+            this.addItems[id].item.data = this.addItems[id].item
+          }
+        }
         this.loading = false
       })
     }
+    
   },
   computed: {
     ...mapGetters({
