@@ -152,9 +152,9 @@
                 </p>
                 <p class="product-table-card__text" v-else>
                   {{
-                    product.save_data?.properties?.type_formula.key == '0' &&
-                    product.save_data?.properties?.type_pricing.key == '0' &&
-                    product.save_data?.properties?.type_price?.guid.length > 1
+                    product.save_data?.properties?.type_formula?.key == '0' &&
+                    product.save_data?.properties?.type_pricing?.key == '0' &&
+                    product.save_data?.properties?.type_price?.guid?.length > 1
                       ? 'по типу цены'
                       : 'задана вручную'
                   }}

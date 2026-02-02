@@ -575,16 +575,17 @@ export default {
           // потребность
           if (
             this.$route.matched[5] &&
-            this.$route.matched[5].name == 'purchasesCatalogRequirement'
+            (this.$route.matched[5].name == 'purchasesCatalogRequirement' ||
+              this.$route.matched[5].name == 'purchasesCatalogComplect')
           ) {
             if (this.counts[r_id].step == 1) {
               this.counts[r_id].count_min > Number(this.offers[r_id].count)
                 ? (this.counts[r_id].count = this.counts[r_id].count_min)
                 : (this.counts[r_id].count = Number(this.offers[r_id].count))
             } else {
-              this.counts[r_id].count < Number(this.offers[r_id].count)
-                ? (this.counts[r_id].count = Number(this.offers[r_id].count))
-                : ''
+              if (this.counts[r_id].count < Number(this.offers[r_id].count)) {
+                this.counts[r_id].count = Number(this.offers[r_id].count)
+              }
             }
           }
         }
@@ -662,27 +663,27 @@ export default {
         }, 500)
       })
     },
-    afterAddBasket(){
+    afterAddBasket() {
       if (this.errors == '') {
-          this.$toast.add({
-            severity: 'success',
-            summary: 'Выполнено',
-            detail: 'Товары добавлены в корзину',
-            life: 3000,
-          })
-        } else {
-          this.$toast.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: "Не все товары были добавлены в корзину: " + this.errors,
-            life: 3000,
-          })
-        }
-        this.loading = false
-        
-        this.$emit('updateCatalog')
-        this.$emit('updateBasket')
-        this.$emit('windowClose')
+        this.$toast.add({
+          severity: 'success',
+          summary: 'Выполнено',
+          detail: 'Товары добавлены в корзину',
+          life: 3000,
+        })
+      } else {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не все товары были добавлены в корзину: ' + this.errors,
+          life: 3000,
+        })
+      }
+      this.loading = false
+
+      this.$emit('updateCatalog')
+      this.$emit('updateBasket')
+      this.$emit('windowClose')
     },
     async addBasketOne(data) {
       for (var r_id in data) {
@@ -704,10 +705,11 @@ export default {
         this.mainActionsData[r_id][ind] = false
         this.allOff[r_id] = true
         this.checked[r_id] = false
-        // потребность
+        // потребность или комплект
         if (
           this.$route.matched[5] &&
-          this.$route.matched[5].name == 'purchasesCatalogRequirement'
+          (this.$route.matched[5].name == 'purchasesCatalogRequirement' ||
+            this.$route.matched[5].name == 'purchasesCatalogComplect')
         ) {
           this.counts[r_id].count = Number(this.offers[r_id].count)
         } else {
@@ -770,9 +772,9 @@ export default {
                     Number(this.activeConflict[r_id].min_count) &&
                   Number(this.activeConflict[r_id].multiplicity) > 1
                 ) {
-                  this.counts[r_id].count = Number(this.activeConflict.multiplicity)
-                  this.counts[r_id].step = Number(this.activeConflict.multiplicity)
-                  this.counts[r_id].count_min = Number(this.activeConflict.multiplicity)
+                  this.counts[r_id].count = Number(this.activeConflict[r_id].multiplicity)
+                  this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
+                  this.counts[r_id].count_min = Number(this.activeConflict[r_id].multiplicity)
                 } else {
                   if (
                     Number(this.activeConflict[r_id].multiplicity) <=
@@ -816,9 +818,9 @@ export default {
                       ? (this.counts[r_id].count = this.counts[r_id].count_min)
                       : (this.counts[r_id].count = Number(this.offers[r_id].count))
                   } else {
-                    this.counts[r_id].count < Number(this.offers[r_id].count)
-                      ? (this.counts[r_id].count = Number(this.offers[r_id].count))
-                      : ''
+                    if (this.counts[r_id].count < Number(this.offers[r_id].count)) {
+                      this.counts[r_id].count = Number(this.offers[r_id].count)
+                    }
                   }
                 }
               }
