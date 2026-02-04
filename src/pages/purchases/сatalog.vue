@@ -222,6 +222,7 @@
     <allSalesWindow
       :offers="addItemsConflicts"
       :noconflicts="noconflicts"
+      :complect="optProducts?.complect"
       @windowClose="this.modalConflicts = false"
       @updateBasket="updateBasket()"
       @updateCatalog="updateCatalog()"

@@ -417,6 +417,9 @@
       </button>
     </div>
   </customModal>
+  <customModal v-model="this.modalAfterComplect" class="product-card-actions__modal-all product-card-actions__modal-all-buy_all">
+    <simpleSalesWindow :all_offers="afterComplect" @close="afterComplect = {}, modalAfterComplect = false, saveData = {}" @select="addBasketAfterComplect"/>
+  </customModal>
 </template>
 
 <script>
@@ -424,6 +427,7 @@ import { mapActions } from 'vuex'
 import Counter from '@/shared/ui/CounterNoAdd.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
+import simpleSalesWindow from './simpleSalesWindow.vue'
 
 export default {
   name: 'allSalesWindow',
@@ -442,10 +446,13 @@ export default {
       checked: {},
       buttonActive: false,
       errors: '',
+      afterComplect: {},
+      modalAfterComplect: false,
+      saveData: {},
     }
   },
   emits: ['windowClose', 'updateCatalog', 'updateBasket'],
-  components: { Counter, Loader, customModal },
+  components: { Counter, Loader, customModal, simpleSalesWindow },
   props: {
     offers: {
       type: Object,
@@ -454,6 +461,12 @@ export default {
       },
     },
     noconflicts: {
+      type: Object,
+      default: () => {
+        return {}
+      },
+    },
+    complect: {
       type: Object,
       default: () => {
         return {}
@@ -611,56 +624,119 @@ export default {
     addBasketAll() {
       this.loading = true
       this.errors = ''
-      let data = {}
-      for (var r_id in this.offers) {
-        let conf = {}
-        let item = this.offers[r_id].item
-        if (!this.allOff[r_id]) {
-          conf = this.activeConflict[r_id].actions
-          item.price = this.activeConflict[r_id].price
-          item.payer = this.activeConflict[r_id].payer ? this.activeConflict[r_id].payer : 0
-          item.delay = this.activeConflict[r_id].delay ? this.activeConflict[r_id].delay : 0
-          item.delay_type = this.activeConflict[r_id].delay_type
-            ? this.activeConflict[r_id].delay_type
-            : 1
-        }
-        data[r_id] = {
-          org_id: item.org_id,
-          store_id: item.store_id,
-          id_remain: r_id,
-          count: this.counts[r_id].count,
-          key: item.key,
-          actions: conf,
+      // проверяем, все ли товары хотят положить в корзину с нашей акцией c комплектом
+      this.afterComplect = {}
+      let col_complect = Object.keys(this.complect).length
+      
+      for(var k in this.offers){
+        if(this.activeConflict[k].actions_ids.includes(this.$route.params.action_id)){
+          col_complect--
+          console.log(col_complect)
         }
       }
-      if (this.noconflicts.length) {
-        for (var rem_id in this.noconflicts) {
-          let conf = {}
-          if (this.noconflicts[rem_id].count > 0) {
-            let item = this.noconflicts[rem_id].item
-            if (item.conflicts && item.conflicts.length == 1) {
-              conf = item.conflicts[0].actions
-              item.price = item.conflicts[0].price
-              item.payer = item.conflicts[0].payer ? item.conflicts[0].payer : 0
-              item.delay = item.conflicts[0].delay ? item.conflicts[0].delay : 0
-              item.delay_type = item.conflicts[0].delay_type ? item.conflicts[0].delay_type : 1
+      if(col_complect == 0){
+        for(var k in this.complect){
+          if(this.complect[k] < this.counts[k].count){
+            this.afterComplect[k] = this.offers[k]
+            this.afterComplect[k].count = this.counts[k].count - this.complect[k]
+          }
+        }
+      }
+          let data = {}
+          for (var r_id in this.offers) {
+            let conf = {}
+            let item = this.offers[r_id].item
+            if (!this.allOff[r_id]) {
+              conf = this.activeConflict[r_id].actions
+              item.price = this.activeConflict[r_id].price
+              item.payer = this.activeConflict[r_id].payer ? this.activeConflict[r_id].payer : 0
+              item.delay = this.activeConflict[r_id].delay ? this.activeConflict[r_id].delay : 0
+              item.delay_type = this.activeConflict[r_id].delay_type
+                ? this.activeConflict[r_id].delay_type
+                : 1
             }
-
-            data[rem_id] = {
+            let col = 0
+            if(r_id in this.afterComplect){
+              col = this.complect[r_id]
+            }else{
+              col = this.counts[r_id].count
+            }
+            data[r_id] = {
               org_id: item.org_id,
               store_id: item.store_id,
-              id_remain: rem_id,
-              count: this.noconflicts[rem_id].count,
+              id_remain: r_id,
+              count: col,
               key: item.key,
               actions: conf,
             }
           }
-        }
-      }
-      this.addBasketOne(data).then(() => {
-        setTimeout(() => {
-          this.afterAddBasket()
-        }, 500)
+          if (this.noconflicts.length) {
+            for (var rem_id in this.noconflicts) {
+              let conf = {}
+              if (this.noconflicts[rem_id].count > 0) {
+                if(this.noconflicts[rem_id].count <= this.complect[rem_id]){
+                  let item = this.noconflicts[rem_id].item
+                  if (item.conflicts && item.conflicts.length == 1) {
+                    conf = item.conflicts[0].actions
+                    item.price = item.conflicts[0].price
+                    item.payer = item.conflicts[0].payer ? item.conflicts[0].payer : 0
+                    item.delay = item.conflicts[0].delay ? item.conflicts[0].delay : 0
+                    item.delay_type = item.conflicts[0].delay_type ? item.conflicts[0].delay_type : 1
+                  }
+
+                  data[rem_id] = {
+                    org_id: item.org_id,
+                    store_id: item.store_id,
+                    id_remain: rem_id,
+                    count: this.noconflicts[rem_id].count,
+                    key: item.key,
+                    actions: conf,
+                  }
+                }else{
+                  let item = this.noconflicts[rem_id].item
+                  if (item.conflicts && item.conflicts.length == 1) {
+                    conf = item.conflicts[0].actions
+                    item.price = item.conflicts[0].price
+                    item.payer = item.conflicts[0].payer ? item.conflicts[0].payer : 0
+                    item.delay = item.conflicts[0].delay ? item.conflicts[0].delay : 0
+                    item.delay_type = item.conflicts[0].delay_type ? item.conflicts[0].delay_type : 1
+                  }
+
+                  data[rem_id] = {
+                    org_id: item.org_id,
+                    store_id: item.store_id,
+                    id_remain: rem_id,
+                    count: this.complect[rem_id],
+                    key: item.key,
+                    actions: conf,
+                  }
+                  this.afterComplect[rem_id].item = item
+                  this.afterComplect[rem_id].count = this.noconflicts[rem_id].count - this.complect[rem_id]
+                }
+              }
+                
+            }
+          }
+          if(!Object.keys(this.afterComplect).length){
+            this.addBasketOne(data).then(() => {
+              setTimeout(() => {
+                this.afterAddBasket()
+              }, 500)
+            })
+          }else{
+            this.loading = false
+            this.saveData = data
+            this.modalAfterComplect = true
+          }
+    },
+    addBasketAfterComplect(data){
+      this.loading = true
+      this.addBasketOne(this.saveData).then(() => {
+        this.addBasketOne(data).then(() => {
+              setTimeout(() => {
+                this.afterAddBasket()
+              }, 500)
+        })
       })
     },
     afterAddBasket() {
@@ -699,6 +775,7 @@ export default {
         })
       }
     },
+   
     checkAction(ind, r_id) {
       let data = this.mainActionsData[r_id]
       if (data[ind]) {
@@ -850,6 +927,7 @@ export default {
     offers: function (newVal) {
       this.setValues()
     },
+    
   },
 }
 </script>
