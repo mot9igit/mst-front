@@ -136,10 +136,11 @@
       <div
         class="catalog-top_button-cont"
         v-if="
-          this.$route.name == 'purchasesCatalogRequirement' ||
-          this.$route.name == 'purchasesCatalogComplect'
+          this.$route.name == 'purchasesCatalogRequirement'
         "
       >
+      <!-- ||
+          this.$route.name == 'purchasesCatalogComplect'-->
         <button
           class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
           :disabled="
@@ -154,14 +155,14 @@
             Все в корзину
           </div>
         </button>
-        <p
+        <!-- <p
           v-if="
             opt_products.total_no_available > 0 && this.$route.name == 'purchasesCatalogComplect'
           "
         >
           В данный момент не все товары из комплекта есть в наличии, поэтому акция не может быть
           применена
-        </p>
+        </p> -->
         <p
           v-if="
             opt_products.total_no_available > 0 &&
@@ -180,14 +181,14 @@
         >
           В наличии нет товаров из потребности
         </p>
-        <p
+        <!-- <p
           v-if="
             this.$route.name == 'purchasesCatalogComplect' &&
             opt_products?.total == opt_products?.total_no_available
           "
         >
           В наличии нет товаров из комплекта
-        </p>
+        </p> -->
       </div>
     </div>
 
@@ -223,6 +224,8 @@
       :offers="addItemsConflicts"
       :noconflicts="noconflicts"
       :complect="optProducts?.complect"
+      :complects_avalable="optProducts?.complects_available"
+      
       @windowClose="this.modalConflicts = false"
       @updateBasket="updateBasket()"
       @updateCatalog="updateCatalog()"
@@ -308,6 +311,8 @@ export default {
       addItemsConflicts: {},
       noconflicts: {},
       modalConflicts: false,
+      errors: '',
+   
     }
   },
   methods: {
@@ -470,6 +475,75 @@ export default {
       }
       if (Object.keys(this.addItemsConflicts).length) {
         this.modalConflicts = true
+      }else{
+            let data = {}
+            if(Object.keys(this.noconflicts).length){
+              for (var r_id in this.noconflicts) {
+                if (this.noconflicts[r_id].count > 0) {
+                  let conf = {}
+                  let item = this.noconflicts[r_id].item
+                  if (item.conflicts && item.conflicts.length == 1) {
+                      conf = item.conflicts[0].actions
+                      item.price = item.conflicts[0].price
+                      item.payer = item.conflicts[0].payer ? item.conflicts[0].payer : 0
+                      item.delay = item.conflicts[0].delay ? item.conflicts[0].delay : 0
+                      item.delay_type = item.conflicts[0].delay_type ? item.conflicts[0].delay_type : 1
+                  }
+                  let col = this.noconflicts[r_id].count
+                  
+                  data[r_id] = {
+                    org_id: item.org_id,
+                    store_id: item.store_id,
+                    id_remain: r_id,
+                    count: col,
+                    key: item.key,
+                    actions: conf,
+                  }
+                }   
+            }
+            }
+            
+            this.addBasketOne(data).then(() => {
+              setTimeout(() => {
+                this.afterAddBasket()
+              }, 500)
+            })
+      }
+    },
+    afterAddBasket() {
+      if (this.errors == '') {
+        this.$toast.add({
+          severity: 'success',
+          summary: 'Выполнено',
+          detail: 'Товары добавлены в корзину',
+          life: 3000,
+        })
+      } else {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не все товары были добавлены в корзину: ' + this.errors,
+          life: 3000,
+        })
+      }
+      this.loading = false
+
+      this.updateCatalog()
+      this.updateBasket()
+      
+    },
+    async addBasketOne(data) {
+      for (var r_id in data) {
+        this.basketProductAdd(data[r_id]).then((response) => {
+          if (!response?.data?.data?.success && response?.data?.data?.message) {
+            if (!this.errors.includes(response?.data?.data?.message)) {
+              if (this.errors.length > 0) {
+                this.errors = this.errors + ', '
+              }
+              this.errors = this.errors + response?.data?.data?.message
+            }
+          }
+        })
       }
     },
     counter(obj) {

@@ -283,7 +283,7 @@
         </div>
       </div>
     </div>
-    <div class="sale_seeall-button" v-if="sale.complect > 0">
+    <!-- <div class="sale_seeall-button" v-if="sale.complect > 0">
       <button
         @click.prevent="
           this.$router.push({ name: 'purchasesCatalogComplect', params: { action_id: sale.id } })
@@ -298,7 +298,7 @@
         В данный момент не все товары из комплекта есть в наличии, поэтому акция не может быть
         применена
       </p>
-    </div>
+    </div> -->
     <BaseTable
       :items_data="salesProducts.items"
       :total="salesProducts.total"
@@ -364,11 +364,11 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
-        price: {
-          label: 'Цена со скидкой за шт, ₽',
-          type: 'text',
-          class: 'cell_centeralign',
-        },
+        // price: {
+        //   label: 'Цена со скидкой за шт, ₽',
+        //   type: 'text',
+        //   class: 'cell_centeralign',
+        // },
         min_count: {
           label: 'Минимальное количество',
           type: 'text',
