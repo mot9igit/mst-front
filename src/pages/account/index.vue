@@ -17,7 +17,7 @@
       v-if="this.$route.params.id && !this.$route.params.id_org_from"
       @toggleCatalog="toggleCatalog"
       @toggleVendor="toggleVendor"
-      @toggleCart="toggleCart"
+      @toggleOrder="toggleOrder"
       @showRequipments="showRequip()"
       @notifications="notificationsCol"
       @notificationsMobile="mobileNotifications()"
@@ -30,7 +30,7 @@
       v-else-if="this.$route.params.id && this.$route.params.id_org_from"
       @toggleCatalog="toggleCatalog"
       @toggleOfferVendor="toggleOfferVendor"
-      @toggleCart="toggleCart"
+      @toggleOrder="toggleOrderOffer"
       @showRequipments="showRequip()"
       @notifications="notificationsCol"
       @notificationsMobile="mobileNotifications()"
@@ -46,7 +46,7 @@
       <div class="content-wrapper main__content-wrapper">
         <router-view> </router-view>
       </div>
-      <teleport to="body">
+      <!-- <teleport to="body">
         <ProfileCart
           v-if="this.$route.params.id && !this.$route.params.id_org_from"
           @toggleCart="toggleCart()"
@@ -61,7 +61,7 @@
           @catalogUpdate="catalogUpdate()"
           :active="toggleShoppingCart"
         />
-      </teleport>
+      </teleport> -->
 
       <changeVendorsWindow
         :offer="isOffer"
@@ -312,11 +312,11 @@ export default {
       this.toggleShoppingCart = !this.toggleShoppingCart
     },
     toggleOrder() {
-      this.toggleShoppingCart = false
+      //this.toggleShoppingCart = false
       this.toggleOrderWindow = !this.toggleOrderWindow
     },
     toggleOrderOffer() {
-      this.toggleShoppingCart = false
+      //this.toggleShoppingCart = false
       this.toggleOrderOfferWindow = !this.toggleOrderOfferWindow
     },
     changeVendorsWindowClose() {

@@ -76,7 +76,7 @@
           <div class="header__right">
             <button
               class="d-button d-button-secondary d-button-rounded header__cart"
-              @click.prevent="toggleCart()"
+              @click.prevent="toggleOrder()"
             >
               <i class="d-icon-cart header__cart-icon"></i>
               <span class="cart-badge">{{
@@ -207,7 +207,7 @@ export default {
   emits: [
     'toggleCatalog',
     'toggleVendor',
-    'toggleCart',
+    'toggleOrder',
     'showRequipments',
     'notifications',
     'notificationsMobile',
@@ -322,8 +322,8 @@ export default {
     toggleVendor() {
       this.$emit('toggleVendor')
     },
-    toggleCart() {
-      this.$emit('toggleCart')
+    toggleOrder() {
+      this.$emit('toggleOrder')
     },
     cancel(close) {
       close()
