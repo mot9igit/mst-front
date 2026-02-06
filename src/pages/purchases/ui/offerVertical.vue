@@ -801,6 +801,7 @@ export default {
         }
 
         // потребность
+        
         if (
           this.$route.matched[5] &&
           this.$route.matched[5].name == 'purchasesCatalogRequirement'
@@ -810,8 +811,20 @@ export default {
               ? (this.count = this.count_min)
               : (this.count = Number(this.offer.count))
           } else {
-            this.count < Number(this.offer.count) ? (this.count = Number(this.offer.count)) : ''
+            if (this.count < Number(this.offer.count)) {
+              this.count = Number(this.offer.count)
+            }
           }
+          let obj = { item: this.offer, count: this.count }
+          obj.item.data = this.offerData
+          this.$emit('counter', obj)
+        }
+      }else{
+        if (
+          this.$route.matched[5] &&
+          this.$route.matched[5].name == 'purchasesCatalogRequirement'
+        ) {
+          this.count = Number(this.offer.count)
           let obj = { item: this.offer, count: this.count }
           obj.item.data = this.offerData
           this.$emit('counter', obj)

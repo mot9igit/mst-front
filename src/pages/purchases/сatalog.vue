@@ -145,7 +145,7 @@
           class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
           :disabled="
             (this.$route.name == 'purchasesCatalogRequirement' &&
-              opt_products?.total == opt_products?.total_no_available) ||
+              opt_products?.total == opt_products?.no_available_products) ||
             (this.$route.name == 'purchasesCatalogComplect' && opt_products?.total == opt_products?.total_no_available)
           "
           @click.prevent="addAll()"
@@ -167,7 +167,7 @@
           v-if="
             opt_products.total_no_available > 0 &&
             this.$route.name == 'purchasesCatalogRequirement' &&
-            opt_products?.total != opt_products?.total_no_available
+            (opt_products?.total != opt_products?.total_no_available) || (opt_products?.total == opt_products?.total_no_available && opt_products?.total_no_available > opt_products?.no_available_productsnp)
           "
         >
           Обратите внимание, не все товары из потребности есть в наличии! В корзину попадут только
@@ -176,7 +176,7 @@
         <p
           v-if="
             this.$route.name == 'purchasesCatalogRequirement' &&
-            opt_products?.total == opt_products?.total_no_available
+            opt_products?.total == opt_products?.no_available_products
           "
         >
           В наличии нет товаров из потребности
@@ -578,8 +578,12 @@ export default {
         if(Object.keys(this.opt_products.items).length && this.$route.name != 'purchasesOfferCatalogRequirement'){
           for(var i in this.opt_products.items){
             let id = this.opt_products.items[i].remain_id
-            this.addItems[id] = {item: this.opt_products.items[i], count: Number(this.opt_products.items[i].count)}
-            this.addItems[id].item.data = this.addItems[id].item
+            if(this.$route.name != 'purchasesCatalogRequirement'){
+              
+              this.addItems[id] = {item: this.opt_products.items[i], count: Number(this.opt_products.items[i].count)}
+              this.addItems[id].item.data = this.addItems[id].item
+            }
+            
           }
         }
         this.loading = false
