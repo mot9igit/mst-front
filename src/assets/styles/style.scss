@@ -2536,6 +2536,7 @@ aside button {
 .order__item-content-comment-add {
     font-weight: 500;
     font-size: 12px;
+    line-height: 14px;
     height: 32px;
     min-height: 32px;
     max-height: 32px;
@@ -3126,6 +3127,8 @@ aside button {
     }
     .order__item-content-comment-add {
         height: 24px;
+        min-height: 24px;
+        max-height: 24px;
         font-size: 10px;
     }
     .order__item-content .cart__item-sales {
@@ -3489,6 +3492,8 @@ aside button {
     }
     .order__item-content-comment-add {
         height: 24px;
+        min-height: 24px;
+        max-height: 24px;
         font-size: 9px;
     }
     .order__item-content-comment-add i {
