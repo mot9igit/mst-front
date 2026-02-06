@@ -742,6 +742,15 @@ export default {
     },
   },
   mounted() {
+    document.addEventListener('click', (event) => {
+      if (
+        !event.target.closest('.order__sheet') &&
+        !event.target.closest('.header__cart') &&
+        this.active === true
+      ) {
+        this.$emit('close')
+      }
+    })
     this.now = new Date()
     this.getBasketOffer().then(() => {
       this.loading = false

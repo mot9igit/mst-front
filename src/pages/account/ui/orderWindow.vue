@@ -1049,6 +1049,15 @@ export default {
     },
   },
   mounted() {
+    document.addEventListener('click', (event) => {
+      if (
+        !event.target.closest('.order__sheet') &&
+        !event.target.closest('.header__cart') &&
+        this.active === true
+      ) {
+        this.$emit('close')
+      }
+    })
     this.getBasket().then(() => {
       this.loading = false
     })
@@ -1064,8 +1073,12 @@ export default {
     } else {
       this.basketStore = {}
     }
+
+    
+
   },
   watch: {
+    
     basketStore(newVal) {
       if (Object.keys(newVal).length) {
         this.loading = false
@@ -1102,6 +1115,7 @@ export default {
         this.basketStore = {}
       }
     },
+
   },
 }
 </script>
