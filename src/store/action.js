@@ -2,365 +2,365 @@ import api from '@/shared/api/api'
 import router from '../router'
 
 export default {
-  namespaced: true,
-  state: {
-    action: {},
-    actionAdvPages: [],
-    actionAdvPlaces: [],
-    productsAvailable: [],
-    productsSelected: [],
-    complectsAvailable: [],
-    complectsSelected: [],
-    productGroups: [],
-    activeActions: [],
-    productsPrices: [],
-    groupProducts: [],
-    productPrices: [],
-  },
-  actions: {
-    // Берем акцию ID из URL
-    async getAction({ commit }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        action_id: router.currentRoute._value.params.action,
-        action: 'get',
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        offset: new Date().getTimezoneOffset(),
-        extended_name:
-          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-            ? 'offer'
-            : 'cart',
-      }
-      const response = await api.action.getAction(data)
-      if (response) {
-        commit('SET_ACTION', response.data)
-      }
-      return response
+    namespaced: true,
+    state: {
+        action: {},
+        actionAdvPages: [],
+        actionAdvPlaces: [],
+        productsAvailable: [],
+        productsSelected: [],
+        complectsAvailable: [],
+        complectsSelected: [],
+        productGroups: [],
+        activeActions: [],
+        productsPrices: [],
+        groupProducts: [],
+        productPrices: [],
     },
-    // Сохранение данных акции
-    async setAction(store, data) {
-      console.log(data)
-      data.id = router.currentRoute._value.params.id
-      data.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-      data.offset = new Date().getTimezoneOffset()
-      data.action = 'save'
-      const response = await api.action.setAction(data)
-      return response
+    actions: {
+        // Берем акцию ID из URL
+        async getAction({ commit }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                action_id: router.currentRoute._value.params.action,
+                action: 'get',
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                offset: new Date().getTimezoneOffset(),
+                extended_name: router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ?
+                    'offer' :
+                    'cart',
+            }
+            const response = await api.action.getAction(data)
+            if (response) {
+                commit('SET_ACTION', response.data)
+            }
+            return response
+        },
+        // Сохранение данных акции
+        async setAction(store, data) {
+            console.log(data)
+            data.id = router.currentRoute._value.params.id
+            data.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+            data.offset = new Date().getTimezoneOffset()
+            data.action = 'save'
+            const response = await api.action.setAction(data)
+            return response
+        },
+        // Копирование акции
+        async copyAction(store, data) {
+            console.log(data)
+            data.id = router.currentRoute._value.params.id
+            data.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+            data.offset = new Date().getTimezoneOffset()
+            data.action = 'save'
+            data.copy = true
+            const response = await api.action.setAction(data)
+            return response
+        },
+        // Включение/Отключение акции
+        async toggleAction(store, { action_id }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                action_id: action_id,
+                action: 'off/on',
+            }
+            const response = await api.action.toggleAction(data)
+            return response
+        },
+        // Удаление акции
+        async delAction(store, { action_id }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                action_id: action_id,
+                action: 'delete',
+            }
+            const response = await api.action.delAction(data)
+            return response
+        },
+        // Чистим данные
+        async unsetAction({ commit }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                action: 'unset/data',
+            }
+            const response = await api.action.unsetAction(data)
+            if (response) {
+                commit('UNSET_ACTION')
+            }
+            return response
+        },
+        // Берем страницы рекламы
+        async getActionAdvPages({ commit }, { type }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                type: type,
+                action: 'get/adv/pages',
+            }
+            const response = await api.action.getActionAdvPages(data)
+            if (response) {
+                commit('SET_ACTION_ADV_PAGES', response.data)
+            }
+            return response
+        },
+        // Берем места рекламы
+        async getActionAdvPlaces({ commit }, { type }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                type: type,
+                action: 'get/adv/places',
+            }
+            const response = await api.action.getActionAdvPlaces(data)
+            if (response) {
+                commit('SET_ACTION_ADV_PLACES', response.data)
+            }
+            return response
+        },
+        // Берем все доступные Акции
+        async getAllActions({ commit }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                action_id: router.currentRoute._value.params.action, 
+                action: 'get/all',
+            }
+            const response = await api.action.getAllActions(data)
+            if (response) {
+                commit('SET_ALL_ACTIONS', response.data)
+            }
+            return response
+        },
+        // Берем доступные товары
+        async getAvailableProducts({ commit }, { store_id, filter, filtersdata, page, perpage, type }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                action: 'product/get',
+                stores_ids: store_id,
+                filter: filter,
+                filtersdata: filtersdata,
+                page: page,
+                perpage: perpage,
+                type: type,
+            }
+            const response = await api.action.getAvailableProducts(data)
+            if (response) {
+                if (response.data.data.type == 1) {
+                    commit('SET_AVAILABLE_PRODUCTS', response.data)
+                }
+                if (response.data.data.type == 2) {
+                    commit('SET_SELECTED_PRODUCTS', response.data)
+                }
+            }
+            return response
+        },
+        // Загрузка файла с Товарами
+        async uploadProductsFile(store, { file, store_id }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                action: 'upload/products/file',
+                store_id: store_id,
+                file: file,
+                type: 'b2b',
+            }
+            const response = await api.action.uploadProductsFile(data)
+            return response
+        },
+        // Сохраняем данные товаров
+        async setSelectedProductData(store, { type, products, data }) {
+            const sendData = {
+                id: router.currentRoute._value.params.id,
+                action: 'product/set/data',
+                type: type,
+                products: products,
+                data: data,
+            }
+            const response = await api.action.setSelectedProductData(sendData)
+            return response
+        },
+        // Снимаем отметку у Товара
+        async setDeselectedProduct(store, id) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                action: 'product/set/deselected',
+                remain_id: id,
+            }
+            const response = await api.action.setDeselectedProduct(data)
+            return response
+        },
+        // Отмечаем Товар
+        async setSelectedProduct(store, id) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                action: 'product/set/selected',
+                remain_id: id,
+            }
+            const response = await api.action.setSelectedProduct(data)
+            return response
+        },
+        // Берем доступные комплекты
+        async getAvailableComplects({ commit }, { store_id, filter, page, perpage, type }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                action: 'complect/get',
+                store_id: store_id,
+                filter: filter,
+                page: page,
+                perpage: perpage,
+                type: type,
+            }
+            const response = await api.action.getAvailableProducts(data)
+            if (response) {
+                if (response.data.data.type == 1) {
+                    commit('SET_AVAILABLE_COMPLECTS', response.data)
+                }
+                if (response.data.data.type == 2) {
+                    commit('SET_SELECTED_COMPLECTS', response.data)
+                }
+            }
+            return response
+        },
+        // Берем доступные Группы Товаров
+        async getProductGroups({ commit }, { store_id, filter }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                action: 'get',
+                store_id: store_id,
+                filter: filter,
+            }
+            const response = await api.action.getProductGroups(data)
+            if (response) {
+                commit('SET_PRODUCT_GROUPS', response.data)
+            }
+            return response
+        },
+        // Берем активные Акции
+        async getActiveActions({ commit }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                action: 'get/actions/active',
+            }
+            const response = await api.action.getActiveActions(data)
+            if (response) {
+                commit('SET_ACTIVE_ACTIONS', response.data)
+            }
+            return response
+        },
+        // Берем цены Товаров
+        async getProductsPrices({ commit }, { store_id }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                action: 'get/type/prices',
+                store_id: store_id,
+            }
+            const response = await api.action.getProductsPrices(data)
+            if (response) {
+                commit('SET_PRODUCTS_PRICES', response.data)
+            }
+            return response
+        },
+        // Берем товары Группы
+        async getGroupProducts({ commit }, { group_id, filter, page, perpage, check }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                action: 'get/products',
+                group_id: group_id,
+                filter: filter,
+                page: page,
+                perpage: perpage,
+                check: check,
+            }
+            const response = await api.action.getGroupProducts(data)
+            if (response) {
+                commit('SET_GROUP_PRODUCTS', response.data)
+            }
+            return response.data
+        },
+        // Удаление группы
+        async delGroup(store, { group_id }) {
+            const data = {
+                id: router.currentRoute._value.params.id,
+                group_id: group_id,
+                action: 'sale/delete/group',
+            }
+            const response = await api.action.getGroupProducts(data)
+            return response
+        },
     },
-    // Копирование акции
-    async copyAction(store, data) {
-      console.log(data)
-      data.id = router.currentRoute._value.params.id
-      data.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-      data.offset = new Date().getTimezoneOffset()
-      data.action = 'save'
-      data.copy = true
-      const response = await api.action.setAction(data)
-      return response
+    mutations: {
+        SET_ACTION: (state, data) => {
+            state.action = data.data
+        },
+        UNSET_ACTION: (state) => {
+            state.action = {}
+        },
+        SET_ACTION_ADV_PAGES: (state, data) => {
+            state.actionAdvPages = data.data
+        },
+        SET_ACTION_ADV_PLACES: (state, data) => {
+            state.actionAdvPlaces = data.data
+        },
+        SET_ALL_ACTIONS: (state, data) => {
+            state.allActions = data.data
+        },
+        SET_AVAILABLE_PRODUCTS: (state, data) => {
+            state.productsAvailable = data.data
+        },
+        SET_SELECTED_PRODUCTS: (state, data) => {
+            state.productsSelected = data.data
+        },
+        SET_AVAILABLE_COMPLECTS: (state, data) => {
+            state.complectsAvailable = data.data
+        },
+        SET_SELECTED_COMPLECTS: (state, data) => {
+            state.complectsSelected = data.data
+        },
+        SET_PRODUCT_GROUPS: (state, data) => {
+            state.productGroups = data.data
+        },
+        SET_ACTIVE_ACTIONS: (state, data) => {
+            state.activeActions = data.data
+        },
+        SET_PRODUCTS_PRICES: (state, data) => {
+            state.productsPrices = data.data
+        },
+        SET_GROUP_PRODUCTS: (state, data) => {
+            state.groupProducts = data.data
+        },
     },
-    // Включение/Отключение акции
-    async toggleAction(store, { action_id }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        action_id: action_id,
-        action: 'off/on',
-      }
-      const response = await api.action.toggleAction(data)
-      return response
+    getters: {
+        action(state) {
+            return state.action
+        },
+        actionAdvPages(state) {
+            return state.actionAdvPages
+        },
+        actionAdvPlaces(state) {
+            return state.actionAdvPlaces
+        },
+        allActions(state) {
+            return state.allActions
+        },
+        productsAvailable(state) {
+            return state.productsAvailable
+        },
+        productsSelected(state) {
+            return state.productsSelected
+        },
+        complectsAvailable(state) {
+            return state.complectsAvailable
+        },
+        complectsSelected(state) {
+            return state.complectsSelected
+        },
+        productGroups(state) {
+            return state.productGroups
+        },
+        activeActions(state) {
+            return state.activeActions
+        },
+        productsPrices(state) {
+            return state.productsPrices
+        },
+        groupProducts(state) {
+            return state.groupProducts
+        },
     },
-    // Удаление акции
-    async delAction(store, { action_id }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        action_id: action_id,
-        action: 'delete',
-      }
-      const response = await api.action.delAction(data)
-      return response
-    },
-    // Чистим данные
-    async unsetAction({ commit }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        action: 'unset/data',
-      }
-      const response = await api.action.unsetAction(data)
-      if (response) {
-        commit('UNSET_ACTION')
-      }
-      return response
-    },
-    // Берем страницы рекламы
-    async getActionAdvPages({ commit }, { type }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        type: type,
-        action: 'get/adv/pages',
-      }
-      const response = await api.action.getActionAdvPages(data)
-      if (response) {
-        commit('SET_ACTION_ADV_PAGES', response.data)
-      }
-      return response
-    },
-    // Берем места рекламы
-    async getActionAdvPlaces({ commit }, { type }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        type: type,
-        action: 'get/adv/places',
-      }
-      const response = await api.action.getActionAdvPlaces(data)
-      if (response) {
-        commit('SET_ACTION_ADV_PLACES', response.data)
-      }
-      return response
-    },
-    // Берем все доступные Акции
-    async getAllActions({ commit }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        action: 'get/all',
-      }
-      const response = await api.action.getAllActions(data)
-      if (response) {
-        commit('SET_ALL_ACTIONS', response.data)
-      }
-      return response
-    },
-    // Берем доступные товары
-    async getAvailableProducts({ commit }, { store_id, filter, filtersdata, page, perpage, type }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        action: 'product/get',
-        stores_ids: store_id,
-        filter: filter,
-        filtersdata: filtersdata,
-        page: page,
-        perpage: perpage,
-        type: type,
-      }
-      const response = await api.action.getAvailableProducts(data)
-      if (response) {
-        if (response.data.data.type == 1) {
-          commit('SET_AVAILABLE_PRODUCTS', response.data)
-        }
-        if (response.data.data.type == 2) {
-          commit('SET_SELECTED_PRODUCTS', response.data)
-        }
-      }
-      return response
-    },
-    // Загрузка файла с Товарами
-    async uploadProductsFile(store, { file, store_id }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        action: 'upload/products/file',
-        store_id: store_id,
-        file: file,
-        type: 'b2b',
-      }
-      const response = await api.action.uploadProductsFile(data)
-      return response
-    },
-    // Сохраняем данные товаров
-    async setSelectedProductData(store, { type, products, data }) {
-      const sendData = {
-        id: router.currentRoute._value.params.id,
-        action: 'product/set/data',
-        type: type,
-        products: products,
-        data: data,
-      }
-      const response = await api.action.setSelectedProductData(sendData)
-      return response
-    },
-    // Снимаем отметку у Товара
-    async setDeselectedProduct(store, id) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        action: 'product/set/deselected',
-        remain_id: id,
-      }
-      const response = await api.action.setDeselectedProduct(data)
-      return response
-    },
-    // Отмечаем Товар
-    async setSelectedProduct(store, id) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        action: 'product/set/selected',
-        remain_id: id,
-      }
-      const response = await api.action.setSelectedProduct(data)
-      return response
-    },
-    // Берем доступные комплекты
-    async getAvailableComplects({ commit }, { store_id, filter, page, perpage, type }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        action: 'complect/get',
-        store_id: store_id,
-        filter: filter,
-        page: page,
-        perpage: perpage,
-        type: type,
-      }
-      const response = await api.action.getAvailableProducts(data)
-      if (response) {
-        if (response.data.data.type == 1) {
-          commit('SET_AVAILABLE_COMPLECTS', response.data)
-        }
-        if (response.data.data.type == 2) {
-          commit('SET_SELECTED_COMPLECTS', response.data)
-        }
-      }
-      return response
-    },
-    // Берем доступные Группы Товаров
-    async getProductGroups({ commit }, { store_id, filter }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        action: 'get',
-        store_id: store_id,
-        filter: filter,
-      }
-      const response = await api.action.getProductGroups(data)
-      if (response) {
-        commit('SET_PRODUCT_GROUPS', response.data)
-      }
-      return response
-    },
-    // Берем активные Акции
-    async getActiveActions({ commit }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        action: 'get/actions/active',
-      }
-      const response = await api.action.getActiveActions(data)
-      if (response) {
-        commit('SET_ACTIVE_ACTIONS', response.data)
-      }
-      return response
-    },
-    // Берем цены Товаров
-    async getProductsPrices({ commit }, { store_id }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        action: 'get/type/prices',
-        store_id: store_id,
-      }
-      const response = await api.action.getProductsPrices(data)
-      if (response) {
-        commit('SET_PRODUCTS_PRICES', response.data)
-      }
-      return response
-    },
-    // Берем товары Группы
-    async getGroupProducts({ commit }, { group_id, filter, page, perpage, check }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        action: 'get/products',
-        group_id: group_id,
-        filter: filter,
-        page: page,
-        perpage: perpage,
-        check: check,
-      }
-      const response = await api.action.getGroupProducts(data)
-      if (response) {
-        commit('SET_GROUP_PRODUCTS', response.data)
-      }
-      return response.data
-    },
-    // Удаление группы
-    async delGroup(store, { group_id }) {
-      const data = {
-        id: router.currentRoute._value.params.id,
-        group_id: group_id,
-        action: 'sale/delete/group',
-      }
-      const response = await api.action.getGroupProducts(data)
-      return response
-    },
-  },
-  mutations: {
-    SET_ACTION: (state, data) => {
-      state.action = data.data
-    },
-    UNSET_ACTION: (state) => {
-      state.action = {}
-    },
-    SET_ACTION_ADV_PAGES: (state, data) => {
-      state.actionAdvPages = data.data
-    },
-    SET_ACTION_ADV_PLACES: (state, data) => {
-      state.actionAdvPlaces = data.data
-    },
-    SET_ALL_ACTIONS: (state, data) => {
-      state.allActions = data.data
-    },
-    SET_AVAILABLE_PRODUCTS: (state, data) => {
-      state.productsAvailable = data.data
-    },
-    SET_SELECTED_PRODUCTS: (state, data) => {
-      state.productsSelected = data.data
-    },
-    SET_AVAILABLE_COMPLECTS: (state, data) => {
-      state.complectsAvailable = data.data
-    },
-    SET_SELECTED_COMPLECTS: (state, data) => {
-      state.complectsSelected = data.data
-    },
-    SET_PRODUCT_GROUPS: (state, data) => {
-      state.productGroups = data.data
-    },
-    SET_ACTIVE_ACTIONS: (state, data) => {
-      state.activeActions = data.data
-    },
-    SET_PRODUCTS_PRICES: (state, data) => {
-      state.productsPrices = data.data
-    },
-    SET_GROUP_PRODUCTS: (state, data) => {
-      state.groupProducts = data.data
-    },
-  },
-  getters: {
-    action(state) {
-      return state.action
-    },
-    actionAdvPages(state) {
-      return state.actionAdvPages
-    },
-    actionAdvPlaces(state) {
-      return state.actionAdvPlaces
-    },
-    allActions(state) {
-      return state.allActions
-    },
-    productsAvailable(state) {
-      return state.productsAvailable
-    },
-    productsSelected(state) {
-      return state.productsSelected
-    },
-    complectsAvailable(state) {
-      return state.complectsAvailable
-    },
-    complectsSelected(state) {
-      return state.complectsSelected
-    },
-    productGroups(state) {
-      return state.productGroups
-    },
-    activeActions(state) {
-      return state.activeActions
-    },
-    productsPrices(state) {
-      return state.productsPrices
-    },
-    groupProducts(state) {
-      return state.groupProducts
-    },
-  },
 }
