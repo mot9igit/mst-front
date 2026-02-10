@@ -1,5 +1,6 @@
 <template>
   <section class="products" id="products">
+    <Toast />
     <Loader v-if="loading" />
     <div class="products__top-wrapper" v-else>
       <div class="products__top">
@@ -133,20 +134,16 @@
       <h2 v-if="this.$route.name == 'purchasesCatalogRequirement'" class="products__top-title">
         Товары из потребности "{{ opt_products?.name }}"
       </h2>
-      <div
-        class="catalog-top_button-cont"
-        v-if="
-          this.$route.name == 'purchasesCatalogRequirement'
-        "
-      >
-      <!-- ||
+      <div class="catalog-top_button-cont" v-if="this.$route.name == 'purchasesCatalogRequirement'">
+        <!-- ||
           this.$route.name == 'purchasesCatalogComplect'-->
         <button
           class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
           :disabled="
             (this.$route.name == 'purchasesCatalogRequirement' &&
               opt_products?.total == opt_products?.no_available_products) ||
-            (this.$route.name == 'purchasesCatalogComplect' && opt_products?.total == opt_products?.total_no_available)
+            (this.$route.name == 'purchasesCatalogComplect' &&
+              opt_products?.total == opt_products?.total_no_available)
           "
           @click.prevent="addAll()"
         >
@@ -165,9 +162,11 @@
         </p> -->
         <p
           v-if="
-            opt_products.total_no_available > 0 &&
-            this.$route.name == 'purchasesCatalogRequirement' &&
-            (opt_products?.total != opt_products?.total_no_available) || (opt_products?.total == opt_products?.total_no_available && opt_products?.total_no_available > opt_products?.no_available_productsnp)
+            (opt_products.total_no_available > 0 &&
+              this.$route.name == 'purchasesCatalogRequirement' &&
+              opt_products?.total != opt_products?.total_no_available) ||
+            (opt_products?.total == opt_products?.total_no_available &&
+              opt_products?.total_no_available > opt_products?.no_available_productsnp)
           "
         >
           Обратите внимание, не все товары из потребности есть в наличии! В корзину попадут только
@@ -225,7 +224,6 @@
       :noconflicts="noconflicts"
       :complect="optProducts?.complect"
       :complects_avalable="optProducts?.complects_available"
-      
       @windowClose="this.modalConflicts = false"
       @updateBasket="updateBasket()"
       @updateCatalog="updateCatalog()"
@@ -240,11 +238,12 @@ import Loader from '@/shared/ui/Loader.vue'
 import product from './ui/product.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import allSalesWindow from './ui/allSalesWindow.vue'
+import Toast from 'primevue/toast'
 
 export default {
   name: 'purchasesCatalog',
   inject: ['catalogUpdater'],
-  components: { breadcrumbs, Loader, Paginate, product, customModal, allSalesWindow },
+  components: { breadcrumbs, Loader, Paginate, product, customModal, allSalesWindow, Toast },
   props: {
     id: {
       type: String,
@@ -312,16 +311,16 @@ export default {
       noconflicts: {},
       modalConflicts: false,
       errors: '',
-   
     }
   },
   methods: {
     ...mapActions({
       getOptProducts: 'catalog/getOptProducts',
+      getOptProductsReqAll: 'catalog/getOptProductsReqAll',
       getOfferOptProducts: 'offer/getOfferOptProducts',
       getBasket: 'basket/getBasket',
       getBasketOffer: 'offer/getBasketOffer',
-      basketProductAdd: 'basket/basketProductAdd',
+      basketProductAddAll: 'basket/basketProductAddAll',
     }),
 
     updateBasket() {
@@ -455,42 +454,54 @@ export default {
     addAll() {
       this.addItemsConflicts = {}
       this.noconflicts = {}
-      for (var item in this.addItems) {
-        if (
-          this.addItems[item].item.price == 0 ||
-          Number(this.addItems[item].item.remains_abstract) == 0
-        ) {
-          this.noconflicts[item] = this.addItems[item]
-          this.noconflicts[item].count = 0
-        } else {
-          if (
-            this.addItems[item].item.conflicts &&
-            this.addItems[item].item.conflicts?.length > 1
-          ) {
-            this.addItemsConflicts[item] = this.addItems[item]
-          } else {
-            this.noconflicts[item] = this.addItems[item]
+      let data = {}
+      this.loading = true
+      if (
+        this.opt_products.items.length < this.opt_products.total &&
+        this.$route.name == 'purchasesCatalogRequirement'
+      ) {
+        this.getOptProductsReqAll().then(() => {
+          for (var id in this.reqProducts) {
+            if (!Object.keys(this.addItems).includes(id)) {
+              //let art = this.reqProducts[id].item.article
+              this.addItems[id] = this.reqProducts[id]
+              this.addItems[id].item.data = this.addItems[id].item
+            }
           }
-        }
-      }
-      if (Object.keys(this.addItemsConflicts).length) {
-        this.modalConflicts = true
-      }else{
-            let data = {}
-            if(Object.keys(this.noconflicts).length){
+          for (var item in this.addItems) {
+            if (
+              Number(this.addItems[item].item.price) > 0 &&
+              Number(this.addItems[item].count) > 0
+            ) {
+              if (
+                this.addItems[item].item.conflicts &&
+                this.addItems[item].item.conflicts?.length > 1
+              ) {
+                this.addItemsConflicts[item] = this.addItems[item]
+              } else {
+                this.noconflicts[item] = this.addItems[item]
+              }
+            }
+          }
+          if (Object.keys(this.addItemsConflicts).length) {
+            this.modalConflicts = true
+          } else {
+            if (Object.keys(this.noconflicts).length) {
               for (var r_id in this.noconflicts) {
                 if (this.noconflicts[r_id].count > 0) {
                   let conf = {}
                   let item = this.noconflicts[r_id].item
                   if (item.conflicts && item.conflicts.length == 1) {
-                      conf = item.conflicts[0].actions
-                      item.price = item.conflicts[0].price
-                      item.payer = item.conflicts[0].payer ? item.conflicts[0].payer : 0
-                      item.delay = item.conflicts[0].delay ? item.conflicts[0].delay : 0
-                      item.delay_type = item.conflicts[0].delay_type ? item.conflicts[0].delay_type : 1
+                    conf = item.conflicts[0].actions
+                    item.price = item.conflicts[0].price
+                    item.payer = item.conflicts[0].payer ? item.conflicts[0].payer : 0
+                    item.delay = item.conflicts[0].delay ? item.conflicts[0].delay : 0
+                    item.delay_type = item.conflicts[0].delay_type
+                      ? item.conflicts[0].delay_type
+                      : 1
                   }
                   let col = this.noconflicts[r_id].count
-                  
+
                   data[r_id] = {
                     org_id: item.org_id,
                     store_id: item.store_id,
@@ -499,15 +510,123 @@ export default {
                     key: item.key,
                     actions: conf,
                   }
-                }   
+                }
+              }
             }
-            }
-            
-            this.addBasketOne(data).then(() => {
-              setTimeout(() => {
-                this.afterAddBasket()
-              }, 500)
+            this.basketProductAddAll({ items: data }).then((res) => {
+              if (res.data.data) {
+                this.errors = res.data.data
+                if (this.errors == '') {
+                  this.$toast.add({
+                    severity: 'success',
+                    summary: 'Выполнено!',
+                    detail: 'Товары добавлены в корзину',
+                    life: 3000,
+                  })
+                } else {
+                  this.$toast.add({
+                    severity: 'secondary',
+                    summary: 'Товары добавлены в корзину!',
+                    detail: this.errors,
+                    life: 3000,
+                  })
+                }
+                this.loading = false
+
+                this.updateCatalog()
+                this.updateBasket()
+              } else {
+                this.$toast.add({
+                  severity: 'error',
+                  summary: 'Ошибка',
+                  detail: 'Не удалось положить товары в корзину',
+                  life: 3000,
+                })
+                this.loading = false
+
+                this.updateCatalog()
+                this.updateBasket()
+              }
             })
+          }
+        })
+      } else {
+        for (var item in this.addItems) {
+          if (Number(this.addItems[item].item.price) > 0 && Number(this.addItems[item].count) > 0) {
+            if (
+              this.addItems[item].item.conflicts &&
+              this.addItems[item].item.conflicts?.length > 1
+            ) {
+              this.addItemsConflicts[item] = this.addItems[item]
+            } else {
+              this.noconflicts[item] = this.addItems[item]
+            }
+          }
+        }
+        if (Object.keys(this.addItemsConflicts).length) {
+          this.modalConflicts = true
+        } else {
+          if (Object.keys(this.noconflicts).length) {
+            for (var r_id in this.noconflicts) {
+              if (this.noconflicts[r_id].count > 0) {
+                let conf = {}
+                let item = this.noconflicts[r_id].item
+                if (item.conflicts && item.conflicts.length == 1) {
+                  conf = item.conflicts[0].actions
+                  item.price = item.conflicts[0].price
+                  item.payer = item.conflicts[0].payer ? item.conflicts[0].payer : 0
+                  item.delay = item.conflicts[0].delay ? item.conflicts[0].delay : 0
+                  item.delay_type = item.conflicts[0].delay_type ? item.conflicts[0].delay_type : 1
+                }
+                let col = this.noconflicts[r_id].count
+
+                data[r_id] = {
+                  org_id: item.org_id,
+                  store_id: item.store_id,
+                  id_remain: r_id,
+                  count: col,
+                  key: item.key,
+                  actions: conf,
+                }
+              }
+            }
+          }
+          this.basketProductAddAll({ items: data }).then((res) => {
+            if (res.data.data) {
+              this.errors = res.data.data
+              if (this.errors == '') {
+                this.$toast.add({
+                  severity: 'success',
+                  summary: 'Выполнено!',
+                  detail: 'Товары добавлены в корзину',
+                  life: 3000,
+                })
+              } else {
+                this.$toast.add({
+                  severity: 'secondary',
+                  summary: 'Товары добавлены в корзину!',
+                  detail: this.errors,
+                  life: 3000,
+                })
+              }
+              this.loading = false
+
+              this.updateCatalog()
+              this.updateBasket()
+            } else {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: 'Не удалось положить товары в корзину',
+                life: 3000,
+              })
+              this.loading = false
+
+              this.updateCatalog()
+              this.updateBasket()
+            }
+          })
+        }
       }
     },
     afterAddBasket() {
@@ -522,7 +641,7 @@ export default {
         this.$toast.add({
           severity: 'error',
           summary: 'Ошибка',
-          detail: 'Не все товары были добавлены в корзину: ' + this.errors,
+          detail: this.errors,
           life: 3000,
         })
       }
@@ -530,7 +649,6 @@ export default {
 
       this.updateCatalog()
       this.updateBasket()
-      
     },
     async addBasketOne(data) {
       for (var r_id in data) {
@@ -543,6 +661,7 @@ export default {
               this.errors = this.errors + response?.data?.data?.message
             }
           }
+          console.log(r_id)
         })
       }
     },
@@ -564,7 +683,6 @@ export default {
     }
     if (this.$route.name == 'purchasesCatalogComplect') {
       data.action_id = this.$route.params.action_id
-
     }
     if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
       data.search = this.$route.query.search
@@ -575,25 +693,15 @@ export default {
     } else {
       this.getOptProducts(data).then(() => {
         this.opt_products = this.optProducts
-        if(Object.keys(this.opt_products.items).length && this.$route.name != 'purchasesOfferCatalogRequirement'){
-          for(var i in this.opt_products.items){
-            let id = this.opt_products.items[i].remain_id
-            if(this.$route.name != 'purchasesCatalogRequirement'){
-              
-              this.addItems[id] = {item: this.opt_products.items[i], count: Number(this.opt_products.items[i].count)}
-              this.addItems[id].item.data = this.addItems[id].item
-            }
-            
-          }
-        }
+
         this.loading = false
       })
     }
-    
   },
   computed: {
     ...mapGetters({
       optProducts: 'catalog/optProducts',
+      reqProducts: 'catalog/reqProducts',
       optOfferProducts: 'offer/optOfferProducts',
       orgActive: 'org/orgActive',
       optVendorsAvailable: 'org/optVendorsAvailable',

@@ -801,7 +801,7 @@ export default {
         }
 
         // потребность
-        
+
         if (
           this.$route.matched[5] &&
           this.$route.matched[5].name == 'purchasesCatalogRequirement'
@@ -819,7 +819,7 @@ export default {
           obj.item.data = this.offerData
           this.$emit('counter', obj)
         }
-      }else{
+      } else {
         if (
           this.$route.matched[5] &&
           this.$route.matched[5].name == 'purchasesCatalogRequirement'

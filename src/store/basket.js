@@ -12,11 +12,11 @@ export default {
       const data = {
         action: 'basket/get',
         extended_name: 'cart',
-         //  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
+        //  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
         id: router.currentRoute._value.params.id,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id_org_from
-          //   : router.currentRoute._value.params.id,
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+        //   ? router.currentRoute._value.params.id_org_from
+        //   : router.currentRoute._value.params.id,
       }
       const response = await api.basket.getBasket(data)
       if (response) {
@@ -30,9 +30,9 @@ export default {
         extended_name: 'cart',
         //  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
         id: router.currentRoute._value.params.id,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id_org_from
-          //   : router.currentRoute._value.params.id,
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+        //   ? router.currentRoute._value.params.id_org_from
+        //   : router.currentRoute._value.params.id,
         org_id: org_id,
         store_id: store_id,
       }
@@ -45,9 +45,9 @@ export default {
         extended_name: 'cart',
         //  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
         id: router.currentRoute._value.params.id,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id_org_from
-          //   : router.currentRoute._value.params.id,
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+        //   ? router.currentRoute._value.params.id_org_from
+        //   : router.currentRoute._value.params.id,
         org_id: org_id,
         store_id: store_id,
         key: key,
@@ -62,9 +62,9 @@ export default {
         extended_name: 'cart',
         //  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
         id: router.currentRoute._value.params.id,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id_org_from
-          //   : router.currentRoute._value.params.id,
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+        //   ? router.currentRoute._value.params.id_org_from
+        //   : router.currentRoute._value.params.id,
 
         org_id: org_id,
         store_id: store_id,
@@ -75,15 +75,25 @@ export default {
       const response = await api.basket.basketProductAdd(data)
       return response
     },
+    async basketProductAddAll(store, { items }) {
+      const data = {
+        action: 'basket/add/all',
+        extended_name: 'cart',
+        id: router.currentRoute._value.params.id,
+        items: items,
+      }
+      const response = await api.basket.basketProductAdd(data)
+      return response
+    },
     async basketProductUpdate(store, { org_id, store_id, key, id_remain, count, actions, accept }) {
       const data = {
         action: 'basket/update',
         extended_name: 'cart',
         //  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
         id: router.currentRoute._value.params.id,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id_org_from
-          //   : router.currentRoute._value.params.id,
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+        //   ? router.currentRoute._value.params.id_org_from
+        //   : router.currentRoute._value.params.id,
         org_id: org_id,
         store_id: store_id,
         id_remain: id_remain,
@@ -111,9 +121,9 @@ export default {
       const data = {
         action: 'get/active/basket/warehouse',
         id: router.currentRoute._value.params.id,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id_org_from
-          //   : router.currentRoute._value.params.id,
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+        //   ? router.currentRoute._value.params.id_org_from
+        //   : router.currentRoute._value.params.id,
       }
       const response = await api.basket.getBasket(data)
       if (response) {

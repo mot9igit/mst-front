@@ -1052,6 +1052,7 @@ export default {
     document.addEventListener('click', (event) => {
       if (
         !event.target.closest('.order__sheet') &&
+        !event.target.closest('.order-card__modal-comment') &&
         !event.target.closest('.header__cart') &&
         this.active === true
       ) {
@@ -1073,12 +1074,8 @@ export default {
     } else {
       this.basketStore = {}
     }
-
-    
-
   },
   watch: {
-    
     basketStore(newVal) {
       if (Object.keys(newVal).length) {
         this.loading = false
@@ -1115,7 +1112,6 @@ export default {
         this.basketStore = {}
       }
     },
-
   },
 }
 </script>

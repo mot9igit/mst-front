@@ -8,6 +8,7 @@ export default {
     optCatalog: [],
     optCatalogTree: [],
     optCatalogWarehouse: [],
+    reqProducts: {},
   },
   actions: {
     async getOptCatalog({ commit }) {
@@ -122,10 +123,27 @@ export default {
       }
       return response
     },
+    async getOptProductsReqAll({ commit }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        id_org_from: null,
+        req: router.currentRoute._value.params.requirement_id,
+        action: 'get/products/req/all',
+      }
+      const response = await api.catalog.getOptProducts(data)
+      if (response) {
+        commit('SET_OPT_PRODUCTS_REQ_ALL', response.data)
+      }
+      return response
+    },
   },
+
   mutations: {
     SET_OPT_PRODUCTS: (state, data) => {
       state.optProducts = data.data
+    },
+    SET_OPT_PRODUCTS_REQ_ALL: (state, data) => {
+      state.reqProducts = data.data
     },
     SET_OPT_CATALOG: (state, data) => {
       state.optCatalog = data.data
@@ -149,6 +167,9 @@ export default {
     },
     optProducts(state) {
       return state.optProducts
+    },
+    reqProducts(state) {
+      return state.reqProducts
     },
   },
 }

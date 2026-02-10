@@ -745,6 +745,7 @@ export default {
     document.addEventListener('click', (event) => {
       if (
         !event.target.closest('.order__sheet') &&
+        !event.target.closest('.order-card__modal-comment') &&
         !event.target.closest('.header__cart') &&
         this.active === true
       ) {
