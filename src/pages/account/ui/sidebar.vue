@@ -521,14 +521,14 @@ export default {
       if (sh.clientWidth > 1024) {
         setTimeout(() => {
           this.active = false
-        }, 100)
+        }, 200)
       }
     })
     sidebar.addEventListener('mouseleave', () => {
       if (sh.clientWidth > 1024) {
         setTimeout(() => {
           this.active = true
-        }, 100)
+        }, 200)
       }
     })
 

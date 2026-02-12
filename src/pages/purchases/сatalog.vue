@@ -125,7 +125,8 @@
         !loading &&
         (this.$route.name == 'purchasesCatalogComplect' ||
           this.$route.name == 'purchasesCatalogRequirement' ||
-          this.$route.name == 'purchasesOfferCatalog')
+          this.$route.name == 'purchasesOfferCatalog' ||
+          this.$route.name == 'purchasesCatalogSearchOffer')
       "
     >
       <h2 v-if="this.$route.name == 'purchasesCatalogComplect'" class="products__top-title">
@@ -135,7 +136,13 @@
       <h2 v-if="this.$route.name == 'purchasesCatalogRequirement'" class="products__top-title">
         Товары из потребности "{{ opt_products?.name }}"
       </h2>
-      <h2 v-if="this.$route.name == 'purchasesOfferCatalog'" class="products__top-title">
+      <h2
+        v-if="
+          this.$route.name == 'purchasesOfferCatalog' ||
+          this.$route.name == 'purchasesCatalogSearchOffer'
+        "
+        class="products__top-title"
+      >
         Предложение для {{ opt_products?.org_from?.name }}
       </h2>
       <div class="catalog-top_button-cont" v-if="this.$route.name == 'purchasesCatalogRequirement'">
