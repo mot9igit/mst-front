@@ -26,7 +26,7 @@ export default {
       }
       return response
     },
-    async getOrgBasketOfferStore({ commit }, { active_store } ) {
+    async getOrgBasketOfferStore({ commit }, { active_store }) {
       const data = {
         action: 'get/warehouse/basket/offer',
         id_org_from: router.currentRoute._value.params.id_org_from,
@@ -41,8 +41,8 @@ export default {
     async getBasketOffer({ commit }) {
       const data = {
         action: 'basket/get',
-        extended_name:'offer',
-        id: router.currentRoute._value.params.id_org_from
+        extended_name: 'offer',
+        id: router.currentRoute._value.params.id_org_from,
       }
       const response = await api.basket.getBasket(data)
       if (response) {
@@ -54,7 +54,7 @@ export default {
       const data = {
         action: 'basket/clear',
         extended_name: 'offer',
-        id:  router.currentRoute._value.params.id_org_from,
+        id: router.currentRoute._value.params.id_org_from,
         org_id: org_id,
         store_id: store_id,
       }
@@ -124,7 +124,7 @@ export default {
         action: 'get/offer/vendor',
         extended_name: 'offer',
         type: 1,
-        filter: filter
+        filter: filter,
       }
       const response = await api.offer.getOptVendorOffer(data)
       if (response) {
@@ -292,6 +292,20 @@ export default {
       }
       return response
     },
+    async setOfferBasketComment(store, { store_id, org_id, org_store, comment, set }) {
+      const data = {
+        action: 'basket/set/comment',
+        id: router.currentRoute._value.params.id,
+        store_id: store_id,
+        org_id: org_id,
+        org_store: org_store,
+        comment: comment,
+        set: set,
+        extended_name: 'offer',
+      }
+      const response = api.offer.getOffers(data)
+      return response
+    },
   },
   mutations: {
     SET_FROM_ORG_STORES: (state, data) => {
@@ -321,7 +335,6 @@ export default {
     SET_OFFER_REVIEW: (state, data) => {
       state.cartCleaner = data.data
     },
-
   },
   getters: {
     fromOrgStores(state) {

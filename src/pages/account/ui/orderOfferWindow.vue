@@ -250,7 +250,8 @@
                             >{{ sale.percent_num }}% Скидка</span
                           >
                           <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2"
-                            >Под реализацию</span
+                            >Под реализацию
+                            {{ sale.delay > 0 ? '- ' + sale.delay + 'дн' : '' }}</span
                           >
                           <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2"
                             >{{
@@ -286,6 +287,53 @@
                           >
                         </p>
                       </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="order__item-content-comment">
+                  <button
+                    class="d-button d-button-quaternary d-button-quaternary-small order__item-content-comment-add"
+                    @click.prevent="
+                      ((modalComment = true),
+                      (modalCommentOrg = org_id),
+                      (modalCommentStore = warehouse_id),
+                      (modalCommentText = ''))
+                    "
+                    v-if="!warehouse.comment"
+                  >
+                    Добавить комментарий
+                    <i class="d-icon-plus"></i>
+                  </button>
+                  <div class="order__item-content-description-container" v-else>
+                    <div class="order__item-content-description-header">
+                      <p class="order__item-prop-label order__item-comment-weight">Комментарий:</p>
+                      <div class="order__item-content-description-actions">
+                        <button
+                          class="order__item-content-description-actions-button"
+                          @click.prevent="
+                            ((modalComment = true),
+                            (modalCommentOrg = org_id),
+                            (modalCommentStore = warehouse_id),
+                            (modalCommentText = warehouse.comment))
+                          "
+                        >
+                          <i class="d-icon-pen2"></i>
+                        </button>
+                        <div class="d-divider d-divider--vertical"></div>
+                        <button
+                          class="order__item-content-description-actions-button"
+                          @click.prevent="
+                            ((modalCommentDelete = true),
+                            (modalCommentOrg = org_id),
+                            (modalCommentStore = warehouse_id))
+                          "
+                        >
+                          <i class="d-icon-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="order__item-prop-value order__item-comment-weight order--comment">
+                      {{ prepareComment(warehouse.comment) }}
                     </div>
                   </div>
                 </div>
@@ -517,6 +565,59 @@
         </div>
       </div>
     </customModal>
+    <customModal v-model="modalComment" class="order-card__modal-comment">
+      <h3>Введите комментарий к заказу</h3>
+      <Editor
+        v-model="this.modalCommentText"
+        id="description"
+        editorStyle="height: 248px"
+        variant="simple"
+        @text-change="this.error = ''"
+      />
+      <div v-if="error != ''" class="d-input-error vendor-change-error">
+        <i class="d-icon-warning d-input-error__icon"></i>
+        <span class="d-input-error__text">{{ error }}</span>
+      </div>
+      <div class="order-card__modal-buttons">
+        <button
+          type="button"
+          href="#"
+          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
+          @click.prevent="((modalCommentText = ''), (modalComment = false))"
+        >
+          Отмена
+        </button>
+        <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          @click.prevent="saveComment"
+        >
+          Сохранить
+        </button>
+      </div>
+    </customModal>
+    <customModal
+      v-model="modalCommentDelete"
+      class="order-card__modal-comment order-card__modal-comment-del"
+    >
+      <h3>Удалить комментарий?</h3>
+
+      <div class="order-card__modal-buttons">
+        <button
+          type="button"
+          href="#"
+          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
+          @click.prevent="modalCommentDelete = false"
+        >
+          Отмена
+        </button>
+        <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          @click.prevent="deleteComment"
+        >
+          Удалить
+        </button>
+      </div>
+    </customModal>
   </teleport>
 </template>
 <script>
@@ -525,11 +626,12 @@ import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
 import Toast from 'primevue/toast'
+import Editor from 'primevue/editor'
 
 export default {
   name: 'orderOfferWindow',
   emits: ['close', 'catalogUpdate', 'offerSubmit'],
-  components: { Loader, customModal, Counter, Toast },
+  components: { Loader, customModal, Counter, Toast, Editor },
   props: {
     active: {
       type: Boolean,
@@ -553,6 +655,11 @@ export default {
       error: false,
       now: '',
       sales_active: {},
+      modalComment: false,
+      modalCommentOrg: 0,
+      modalCommentStore: 0,
+      modalCommentText: '',
+      modalCommentDelete: false,
     }
   },
   computed: {
@@ -568,6 +675,7 @@ export default {
       basketOfferProductRemove: 'offer/basketOfferProductRemove',
       basketOfferProductUpdate: 'offer/basketOfferProductUpdate',
       offerSubmit: 'offer/offerSubmit',
+      setOfferBasketComment: 'offer/setOfferBasketComment',
     }),
     salesActive(key) {
       if (key in this.sales_active) {
@@ -740,6 +848,89 @@ export default {
       })
       //  }
     },
+    saveComment() {
+      if (this.modalCommentText != '' && this.modalCommentText != '<p></p>') {
+        this.loading = true
+        this.setOfferBasketComment({
+          store_id: this.basketWarehouse,
+          org_id: this.modalCommentOrg,
+          org_store: this.modalCommentStore,
+          comment: this.modalCommentText,
+          set: 'set',
+        }).then((res) => {
+          if (res.data.success) {
+            this.$toast.add({
+              severity: 'success',
+              summary: 'Успешно!',
+              detail: 'Комментарий успешно обновлен!',
+              life: 3000,
+            })
+            this.error = ''
+            this.modalCommentText = ''
+            this.modalCommentOrg = 0
+            this.modalCommentStore = 0
+            this.modalComment = false
+            this.getBasketOffer()
+            this.loading = false
+          } else {
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Произошла ошибка!',
+              detail: 'Комментарий не обновлен! Попробуйте добавить комментарий еще раз',
+              life: 3000,
+            })
+            this.loading = false
+          }
+        })
+      } else {
+        this.error = 'Введите комментарий!'
+        return
+      }
+    },
+    prepareComment(code) {
+      let new_string = code.replace(/<(.|\n)*?>/g, '')
+      new_string = new_string.replace(/\&nbsp;/g, ' ')
+      new_string = new_string.replace(/\n/g, ' ')
+      if (new_string.length > 120) {
+        new_string = new_string.substring(0, 120) + '...'
+      }
+      return new_string
+    },
+    deleteComment() {
+      this.loading = true
+      this.setOfferBasketComment({
+        store_id: this.basketWarehouse,
+        org_id: this.modalCommentOrg,
+        org_store: this.modalCommentStore,
+        comment: '',
+        set: 'unset',
+      }).then((res) => {
+        if (res.data.success) {
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Успешно!',
+            detail: 'Комментарий успешно удален!',
+            life: 3000,
+          })
+          this.error = ''
+          this.modalCommentText = ''
+          this.modalCommentOrg = 0
+          this.modalCommentStore = 0
+          this.modalComment = false
+          this.modalCommentDelete = false
+          this.getBasketOffer()
+          this.loading = false
+        } else {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Произошла ошибка!',
+            detail: 'Комментарий не удален! Попробуйте еще раз',
+            life: 3000,
+          })
+          this.loading = false
+        }
+      })
+    },
   },
   mounted() {
     document.addEventListener('click', (event) => {
@@ -770,19 +961,19 @@ export default {
     }
   },
   watch: {
-    basketStore(newVal) {
-      if (Object.keys(newVal).length) {
-        this.loading = false
-      } else {
-        this.loading = false
-        if (!this.order) {
-          this.$emit('close')
-        }
-        this.$emit('catalogUpdate')
-      }
-    },
+    // basketStore(newVal) {
+    //   if (Object.keys(newVal).length) {
+    //     this.loading = false
+    //   } else {
+    //     this.loading = false
+    //     if (!this.order) {
+    //       this.$emit('close')
+    //     }
+    //     this.$emit('catalogUpdate')
+    //   }
+    // },
     basketOffer(newVal) {
-      if (Object.keys(this.basketOffer).length > 1) {
+      if (Object.keys(newVal).length > 1) {
         if (
           Object.prototype.hasOwnProperty.call(newVal.data, this.basketOfferWarehouse) &&
           this.basketOfferWarehouse

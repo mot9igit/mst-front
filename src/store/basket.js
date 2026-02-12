@@ -150,6 +150,7 @@ export default {
         org_store: org_store,
         comment: comment,
         set: set,
+        extended_name: 'cart',
       }
       const response = await api.basket.setOrgBasketStore(data)
       return response
