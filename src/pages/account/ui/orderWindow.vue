@@ -549,13 +549,26 @@
         </div>
         <div class="order" v-else>
           <div class="order__header">
-            <h3 class="order__header-title">Заказ #{{ order }} оформлен!</h3>
+            <h3 class="order__header-title">Заказ №{{ order }} оформлен!</h3>
             <button class="order__header-close" @click.prevent="close()">
               <i class="d-icon-times-flat"></i>
             </button>
           </div>
           <div class="order__orders">
-            <p>В ближайшее время с Вами свяжутся наши менеджеры.</p>
+            <p>
+              Отследить изменение статусов заказа и скачать счет вы можете на странице
+              <router-link
+                :to="{
+                  name: 'purchasesOrders',
+                  params: {
+                    id: this.$route.params.id,
+                  },
+                }"
+                class="order__link"
+              >
+                Мои заказы
+              </router-link>
+            </p>
             <img class="k-order-img" src="/images/order.png" alt="" />
           </div>
         </div>

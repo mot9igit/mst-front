@@ -3,8 +3,8 @@
   <aside class="sidebar" id="sidebar" :class="{ 'sidebar--full': !active }">
     <div
       class="sidebar__inner sidebar__inner--desktop"
-      @click.prevent="clickAround()"
       id="sidebar__inner--desktop"
+      @click.prevent="clickAround()"
     >
       <div class="sidebar__content-wrapper">
         <div class="sidebar__logo-wrapper">
@@ -20,16 +20,18 @@
             >
           </router-link>
           <div class="sidebar__block sidebar__toggle-block sidebar__logo-toggle">
-            <button class="sidebar__toggle" @click.prevent="sidebarToggle()">
-              <i class="sidebar__toggle-icon d-icon-arrow"></i>
+            <!-- <button class="sidebar__toggle" @click.prevent="sidebarToggle()"> -->
+            <button class="sidebar__toggle" @click.prevent="iconClick()">
+              <i class="sidebar__toggle-icon d-icon-burger"></i>
               <i class="sidebar__toggle-icon d-icon-times-flat"></i>
             </button>
           </div>
         </div>
         <div class="sidebar__content">
           <div class="sidebar__block sidebar__toggle-block">
-            <button class="sidebar__toggle" @click.prevent="sidebarToggle()">
-              <i class="d-icon-arrow sidebar__toggle-icon"></i>
+            <!-- <button class="sidebar__toggle" @click.prevent="sidebarToggle()"> -->
+            <button class="sidebar__toggle" @click.prevent="iconClick()">
+              <i class="d-icon-burger sidebar__toggle-icon"></i>
             </button>
           </div>
 
@@ -205,7 +207,9 @@
           <li class="sidebar__block sidebar__item">
             <button class="sidebar__item-button" @click.prevent="notificationsOpen()">
               <i class="d-icon-bell-solid sidebar__item-icon"></i>
-              <div class="status" v-if="notificationsNoRead != 0">+{{ notificationsNoRead ? notificationsNoRead : 0 }}</div>
+              <div class="status" v-if="notificationsNoRead != 0">
+                +{{ notificationsNoRead ? notificationsNoRead : 0 }}
+              </div>
             </button>
           </li>
           <li class="sidebar__block sidebar__item">
@@ -325,9 +329,9 @@ export default {
       type: Boolean,
       default: false,
     },
-     notificationsNoRead: {
+    notificationsNoRead: {
       type: Number,
-      default: 0
+      default: 0,
     },
     mobileNotificationsShow: {
       type: Boolean,
@@ -349,7 +353,7 @@ export default {
       deleteUser: 'user/deleteUser',
       getSessionUser: 'user/getSessionUser',
     }),
-    notificationsOpen(){
+    notificationsOpen() {
       this.showNotifications = !this.showNotifications
       this.$emit('showNotifications')
       if (this.showCatalog === true) {
@@ -372,7 +376,6 @@ export default {
         this.showCart = false
         this.$emit('showCart')
       }
-
     },
     catalogOpen() {
       this.isMobile = localStorage.getItem('global.isMobile')
@@ -384,8 +387,6 @@ export default {
         this.showCart = false
         this.$emit('showCart')
       }
-
-
     },
     cartOpen() {
       this.showCart = !this.showCart
@@ -394,7 +395,6 @@ export default {
         this.showCatalog = false
         this.$emit('showCatalog')
       }
-
     },
     showOrgs() {
       this.showChangeOrgModal = !this.showChangeOrgModal
@@ -410,6 +410,7 @@ export default {
     },
     sidebarToggle() {
       this.isMobile = localStorage.getItem('global.isMobile')
+
       if (this.isMobile === true) {
         this.active = !this.active
       } else {
@@ -417,15 +418,17 @@ export default {
         localStorage.setItem('sidebar.position', Number(this.active))
       }
     },
-
     clickAround() {
       document.addEventListener('click', (event) => {
         let sidebarElement = document.getElementById('sidebar__inner--desktop')
-        if (sidebarElement && !sidebarElement.contains(event.target)) {
-          if (this.active === false) {
-            if (this.isMobile === 'false') {
-              this.active = !this.active
-              localStorage.setItem('sidebar.position', Number(this.active))
+        let sh = document.querySelector('#app')
+        if (sh.clientWidth <= 1024 && sh.clientWidth > 600) {
+          if (sidebarElement && !sidebarElement.contains(event.target)) {
+            if (this.active === false) {
+              if (this.isMobile === 'false') {
+                this.active = !this.active
+                localStorage.setItem('sidebar.position', Number(this.active))
+              }
             }
           }
         }
@@ -472,6 +475,13 @@ export default {
         life: 3000,
       })
     },
+    iconClick() {
+      let sh = document.querySelector('#app')
+      if (sh.clientWidth <= 1024) {
+        console.log(sh.clientWidth)
+        this.sidebarToggle()
+      }
+    },
     //screenToggle(){
     //  this.isMobile = localStorage.getItem('global.isMobile')
     //  if((this.active === true || this.active === '1' || this.active === '0') && this.isMobile === 'false'){
@@ -504,17 +514,23 @@ export default {
       this.active = 1
     }
 
+    let sidebar = document.getElementById('sidebar')
+    let sh = document.querySelector('#app')
 
-      //  let sidebar = document.querySelector('#sidebar')
-      //  sidebar.addEventListener('mouseover', function() {
-      //   sidebar.classList.add('sidebar--full')
-      //   this.active = true
-      // });
-      //  sidebar.addEventListener('mouseout', function() {
-      //   sidebar.classList.remove('sidebar--full')
-      //   this.active = false
-      // });
-
+    sidebar.addEventListener('mouseenter', () => {
+      if (sh.clientWidth > 1024) {
+        setTimeout(() => {
+          this.active = false
+        }, 100)
+      }
+    })
+    sidebar.addEventListener('mouseleave', () => {
+      if (sh.clientWidth > 1024) {
+        setTimeout(() => {
+          this.active = true
+        }, 100)
+      }
+    })
 
     this.setOrgs()
 
@@ -526,7 +542,10 @@ export default {
           document.querySelector('.sidebar__inner--desktop').classList.add('sidebar--mobile')
           localStorage.setItem('global.isMobile', true)
         } else {
-          setTimeout(document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile'), 500)
+          setTimeout(
+            document.querySelector('.sidebar__inner--desktop').classList.remove('sidebar--mobile'),
+            500,
+          )
           localStorage.setItem('global.isMobile', false)
         }
       },

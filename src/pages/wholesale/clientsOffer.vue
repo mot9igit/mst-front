@@ -1,7 +1,7 @@
 <template>
   <section class="promos" id="promos">
     <div class="promos__header">
-      <h1 class="promos__header-title">Предложение</h1>
+      <h1 class="promos__header-title">Предложение для {{ orgName.name }}</h1>
       <!--
         <button class="d-select promos__header-select">
           <span class="d-select__title">Акции по брендам</span>
@@ -173,6 +173,7 @@ export default {
   },
   components: { Swiper, SwiperSlide, customModal, addVendorWindow },
   mounted() {
+    this.getOrgName()
     this.getSalesBanners()
     this.getOpts({
       page: 0,
@@ -180,12 +181,12 @@ export default {
       filter: 0,
       filtersdata: 0,
     })
-
   },
   methods: {
     ...mapActions({
       getSalesBanners: 'sales/getSalesBanners',
       getOpts: 'purchases/getOpts',
+      getOrgName: 'org/getOrgName',
     }),
     close() {
       this.modalAdd = false
@@ -206,6 +207,7 @@ export default {
     ...mapGetters({
       salesBanners: 'sales/salesBanners',
       opts: 'purchases/opts',
+      orgName: 'org/orgName',
     }),
     getCount() {
       return this.salesBanners.count
@@ -237,6 +239,4 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

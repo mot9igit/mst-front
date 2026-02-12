@@ -21,6 +21,7 @@ export default {
     },
     manager: {},
     optPrices: {},
+    orgName: [],
   },
   actions: {
     async getOrg({ commit }) {
@@ -41,6 +42,17 @@ export default {
             router.push({ name: 'OrgAdd' })
           }
         }
+      }
+      return response
+    },
+    async getOrgName({ commit }) {
+      const data = {
+        action: 'get/org/name',
+        id: router.currentRoute._value.params.id_org_from,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_ORG_NAME', response.data)
       }
       return response
     },
@@ -89,18 +101,18 @@ export default {
     async getOptVendorsAvailable({ commit }, { filter, page, perpage }) {
       const data = {
         id: router.currentRoute._value.params.id,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id_org_from
-          //   : router.currentRoute._value.params.id,
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+        //   ? router.currentRoute._value.params.id_org_from
+        //   : router.currentRoute._value.params.id,
         type: 0,
         filter: filter,
         page: page,
         perpage: perpage,
         action: 'get/vendors',
         id_org_from: null,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id
-          //   : null,
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+        //   ? router.currentRoute._value.params.id
+        //   : null,
         extended_name: 'cart',
         //  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
       }
@@ -113,19 +125,19 @@ export default {
     async getOptVendorsSelected({ commit }, { page, perpage }) {
       const data = {
         id: router.currentRoute._value.params.id,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id_org_from
-          //   : router.currentRoute._value.params.id,
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+        //   ? router.currentRoute._value.params.id_org_from
+        //   : router.currentRoute._value.params.id,
         type: 1,
         page: page,
         perpage: perpage,
         action: 'get/vendors',
         id_org_from: null,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id
-          //   : null,
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+        //   ? router.currentRoute._value.params.id
+        //   : null,
         extended_name: 'cart',
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
       }
       const response = await api.org.getOptVendors(data)
       if (response) {
@@ -140,9 +152,9 @@ export default {
         extended_name: 'cart',
         //  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
         id: router.currentRoute._value.params.id,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id_org_from
-          //   : router.currentRoute._value.params.id,
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+        //   ? router.currentRoute._value.params.id_org_from
+        //   : router.currentRoute._value.params.id,
         org_id: org_id,
         store_id: store_id,
       }
@@ -157,9 +169,9 @@ export default {
         extended_name: 'cart',
         //  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
         store: router.currentRoute._value.params.id,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id_org_from
-          //   : router.currentRoute._value.params.id,
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+        //   ? router.currentRoute._value.params.id_org_from
+        //   : router.currentRoute._value.params.id,
       }
       const response = await api.org.toggleOpts(data)
       return response
@@ -170,9 +182,9 @@ export default {
         extended_name: 'cart',
         //  router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
         store: router.currentRoute._value.params.id,
-          // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
-          //   ? router.currentRoute._value.params.id_org_from
-          //   : router.currentRoute._value.params.id,
+        // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+        //   ? router.currentRoute._value.params.id_org_from
+        //   : router.currentRoute._value.params.id,
       }
       if (Object.prototype.hasOwnProperty.call(sendData, 'id')) {
         data.id = sendData.id
@@ -237,8 +249,8 @@ export default {
     },
     async getOptPrises({ commit }) {
       const data = {
-        action: "get/type/prices",
-				store_id: router.currentRoute._value.params.store_id,
+        action: 'get/type/prices',
+        store_id: router.currentRoute._value.params.store_id,
       }
       const response = await api.org.getOptPrises(data)
       if (response) {
@@ -248,10 +260,10 @@ export default {
     },
     async setOrgSettings(store, { settings }) {
       const data = {
-        action: "set/organization/settings",
-        type: "organization",
+        action: 'set/organization/settings',
+        type: 'organization',
         id: router.currentRoute._value.params.id,
-				store_id: router.currentRoute._value.params.store_id,
+        store_id: router.currentRoute._value.params.store_id,
         settings: settings,
       }
       const response = await api.org.setOrgSettings(data)
@@ -262,6 +274,9 @@ export default {
   mutations: {
     SET_ORG: (state, data) => {
       state.orgs = data.data
+    },
+    SET_ORG_NAME: (state, data) => {
+      state.orgName = data.data
     },
     SET_ACTIVE_ORG: (state, data) => {
       state.orgActive = data
@@ -287,7 +302,6 @@ export default {
     SET_OPT_PRICES: (state, data) => {
       state.optPrices = data.data
     },
-
   },
   getters: {
     orgActive(state) {
@@ -295,6 +309,9 @@ export default {
     },
     orgs(state) {
       return state.orgs
+    },
+    orgName(state) {
+      return state.orgName
     },
     orgStores(state) {
       return state.orgStores
