@@ -295,7 +295,7 @@ export default {
     async setOfferBasketComment(store, { store_id, org_id, org_store, comment, set }) {
       const data = {
         action: 'basket/set/comment',
-        id: router.currentRoute._value.params.id,
+        id: router.currentRoute._value.params.id_org_from,
         store_id: store_id,
         org_id: org_id,
         org_store: org_store,
