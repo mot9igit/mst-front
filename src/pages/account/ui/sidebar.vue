@@ -22,7 +22,7 @@
           <div class="sidebar__block sidebar__toggle-block sidebar__logo-toggle">
             <!-- <button class="sidebar__toggle" @click.prevent="sidebarToggle()"> -->
             <button class="sidebar__toggle" @click.prevent="iconClick()">
-              <i class="sidebar__toggle-icon d-icon-burger"></i>
+              <!-- <i class="sidebar__toggle-icon d-icon-burger"></i> -->
               <i class="sidebar__toggle-icon d-icon-times-flat"></i>
             </button>
           </div>
@@ -30,9 +30,9 @@
         <div class="sidebar__content">
           <div class="sidebar__block sidebar__toggle-block">
             <!-- <button class="sidebar__toggle" @click.prevent="sidebarToggle()"> -->
-            <button class="sidebar__toggle" @click.prevent="iconClick()">
+            <!-- <button class="sidebar__toggle" @click.prevent="iconClick()">
               <i class="d-icon-burger sidebar__toggle-icon"></i>
-            </button>
+            </button> -->
           </div>
 
           <div class="sidebar__info">
