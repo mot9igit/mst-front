@@ -60,29 +60,30 @@
         <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Поставщик</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.offer?.initiator_org_name != '' ? this.offer?.initiator_org_name : '' }}
+            {{ this.offer?.from_org_name != '' ? this.offer?.org_name : '' }}
           </div>
           <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
-            ИНН: {{ this.offer?.org_inn != '' ? this.offer?.org_inn : '-' }}
+            ИНН: {{ this.offer?.from_org_inn != '' ? this.offer?.org_inn : '' }}
           </div>
           <div class="order-card__orderinfo-grid-text-down">
             <b>Магазин/склад:</b>
-            {{ this.offer?.from_org_store != '' ? this.offer?.from_org_store : '-' }}
+            {{ this.offer?.store_name != '' ? this.offer?.org_store_name : '-' }}
           </div>
         </div>
         <div class="order-card__orderinfo-grid d-col-md-4">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.offer?.from_org_name != '' ? this.offer?.from_org_name : '' }}
+            {{ this.offer?.initiator_org_name != '' ? this.offer?.from_org_name : '' }}
           </div>
           <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
-            ИНН: {{ this.offer?.from_org_inn != '' ? this.offer?.from_org_inn : '' }}
+            ИНН: {{ this.offer?.org_inn != '' ? this.offer?.from_org_inn : '-' }}
           </div>
           <div class="order-card__orderinfo-grid-text-down">
             <b>Магазин/склад:</b>
-            {{ this.offer?.store_name != '' ? this.offer?.store_name : '-' }}
+            {{ this.offer?.from_org_store != '' ? this.offer?.store_name : '-' }}
           </div>
         </div>
+
         <div class="order-card__orderinfo-grid d-col-md-3">
           <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
           <div class="order-card__orderinfo-grid-text">

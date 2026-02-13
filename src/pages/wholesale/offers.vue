@@ -1,5 +1,8 @@
 <template>
-  <section class="shipments wholesaleorders__content wholesaleoffers__content" id="shipments">
+  <section
+    class="shipments wholesaleorders__content myorders__content orders_table wholesaleoffers__content"
+    id="shipments"
+  >
     <div class="d-top">
       <Breadcrumbs />
     </div>
@@ -19,6 +22,18 @@
       @viewElem="viewOffer"
       @deleteElem="delOffer"
     />
+    <!-- <MinTable
+      :items_data="offers.items"
+      :total="offers.total"
+      :pagination_items_per_page="this.pagination_items_per_page"
+      :pagination_offset="this.pagination_offset"
+      :page="this.page"
+      :table_data="this.table_data"
+      :filters="this.filters"
+      @filter="filter"
+      @sort="filter"
+      @paginate="paginate"
+    /> -->
   </section>
 </template>
 <script>
@@ -26,10 +41,11 @@ import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
+import MinTable from '@/shared/ui/tableMin/table.vue'
 
 export default {
   name: 'wholesaleOffers',
-  components: { Breadcrumbs, BaseTable, Loader },
+  components: { Breadcrumbs, BaseTable, Loader, MinTable },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -59,7 +75,7 @@ export default {
       },
       table_data: {
         id: {
-          label: 'Номер',
+          label: '№',
           type: 'link',
           link_to: 'wholesaleOffer',
           link_params: {
@@ -78,6 +94,8 @@ export default {
             offer_id: 'id',
           },
           sort: true,
+          sort_desc: 'Дата заказа от новых к старым',
+          sort_asc: 'Дата заказа от старых к новым',
           class: 'cell_centeralign',
         },
         // date_end: {
@@ -91,18 +109,19 @@ export default {
         //   sort: true,
         //   class: 'cell_centeralign',
         // },
-        store_name: {
-          label: 'Склад поставщика',
+        seller_name: {
+          label: 'Поставщик',
           type: 'link',
           link_to: 'wholesaleOffer',
           link_params: {
             id: this.$route.params.id,
             offer_id: 'id',
           },
-          sort: true,
+
           class: 'cell_centeralign',
+          items: ['seller_name', 'seller_inn', 'seller_address'],
         },
-        from_org_name: {
+        buyer_org_name: {
           label: 'Покупатель',
           type: 'link',
           link_to: 'wholesaleOffer',
@@ -110,12 +129,13 @@ export default {
             id: this.$route.params.id,
             offer_id: 'id',
           },
-          sort: true,
+
           class: 'cell_centeralign nowrap',
+          items: ['buyer_name', 'buyer_inn', 'buyer_address'],
         },
         initiator: {
           label: 'Инициатор',
-          type: 'link',
+          type: 'html',
           link_to: 'wholesaleOffer',
           link_params: {
             id: this.$route.params.id,
@@ -131,30 +151,38 @@ export default {
             id: this.$route.params.id,
             offer_id: 'id',
           },
-          sort: true,
+
           class: 'cell_centeralign nowrap',
         },
         status_name: {
           label: 'Статус',
           type: 'status',
           sort: true,
+          sort_asc: 'Статус от новых к выполненным',
+          sort_desc: 'Статус от выполненным к новым',
           class: 'cell_centeralign',
         },
-        actions: {
-          label: 'Действия',
-          type: 'actions',
-          sort: false,
-          available: {
-            view: {
-              icon: 'pi pi-eye',
-              label: 'Просмотреть',
-            },
-            delete: {
-              icon: 'pi pi-trash',
-              label: 'Удалить',
-            },
-          },
+        comment: {
+          label: 'Комментарий',
+          type: 'prepare-html',
+
+          class: 'cell_centeralign order-table_comment',
         },
+        // actions: {
+        //   label: 'Действия',
+        //   type: 'actions',
+        //   sort: false,
+        //   available: {
+        //     view: {
+        //       icon: 'pi pi-eye',
+        //       label: 'Просмотреть',
+        //     },
+        //     delete: {
+        //       icon: 'pi pi-trash',
+        //       label: 'Удалить',
+        //     },
+        //   },
+        // },
       },
     }
   },
@@ -170,7 +198,7 @@ export default {
       this.loading = true
       this.unsetOffers()
       this.page = 1
-      if(data.filtersdata.status){
+      if (data.filtersdata.status) {
         data.filterstatus = data.filtersdata.status
       }
       this.getOffers(data).then(() => {
@@ -185,15 +213,16 @@ export default {
         this.loading = false
       })
     },
-    viewOffer(data){
+    viewOffer(data) {
       this.$router.push({
         name: 'wholesaleOffer',
         params: {
           id: this.$route.params.id,
-          offer_id: data.id
-        }})
+          offer_id: data.id,
+        },
+      })
     },
-    delOffer(data){
+    delOffer(data) {
       console.log(data)
       this.$confirm.require({
         message: 'Вы уверены, что хотите удалить предложение №' + data.id + '?',
@@ -201,8 +230,8 @@ export default {
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
           this.deleteOffer({ offer_id: data.id }).then((response) => {
-              if (response.data.success) {
-                this.$toast.add({
+            if (response.data.success) {
+              this.$toast.add({
                 severity: 'success',
                 summary: 'Удаление прошло успешно',
                 life: 3000,
@@ -257,6 +286,4 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

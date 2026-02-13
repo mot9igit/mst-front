@@ -852,7 +852,7 @@ export default {
       if (this.modalCommentText != '' && this.modalCommentText != '<p></p>') {
         this.loading = true
         this.setOfferBasketComment({
-          store_id: this.basketWarehouse,
+          store_id: this.basketOfferWarehouse,
           org_id: this.modalCommentOrg,
           org_store: this.modalCommentStore,
           comment: this.modalCommentText,
