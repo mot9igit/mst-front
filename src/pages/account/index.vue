@@ -12,7 +12,7 @@
     @isMobile="mobileCatalog()"
     @showRequipment="showRequip()"
   ></ProfileSidebar>
-  <div class="content">
+  <div class="content" id="content">
     <ProfileHeader
       v-if="this.$route.params.id && !this.$route.params.id_org_from"
       @toggleCatalog="toggleCatalog"

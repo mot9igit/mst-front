@@ -405,12 +405,12 @@ aside button {
     max-width: 100%;
   }
 }
-// .sidebar--full .sidebar__toggle-icon,
-// .sidebar__toggle-icon {
-//   transform: scaleX(1.2);
-//   font-size: 20px;
-//   font-weight: 500;
-// }
+.sidebar--full .sidebar__toggle-icon,
+.sidebar__toggle-icon {
+  transform: scaleX(1.2);
+  font-size: 20px;
+  font-weight: 500;
+}
 // clients
 .clients__card,
 .clients__card-data,
@@ -7233,6 +7233,6 @@ aside button {
   }
 }
 .sidebar--full {
-  // width: var(--sidebar-full-width);
+  width: var(--sidebar-full-width);
   // position: absolute;
 }
