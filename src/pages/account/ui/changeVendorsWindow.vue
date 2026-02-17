@@ -1,11 +1,13 @@
 <template>
-  <div class="d-sheet__overlay vendor-change__sheet-overlay" :class="{ active: active }">
+
+  <div class="d-sheet__overlay vendor-change__sheet-overlay" :class="{ active: active }" id="vendor-change__sheet-overlay">
     <div class="d-sheet__wrapper vendor-change__sheet-wrapper" v-if="optVendorsAvailable.items">
-      <div class="d-sheet d-sheet--active vendor-change__sheet" data-sheet="vendor-change">
+      <div class="d-sheet d-sheet--active vendor-change__sheet" id="vendor-change-cont">
         <Loader v-if="this.loading" />
+        <div class="d-sheet__resize-content" id="vendor-resizer"><i class="resize-icon d-icon-burger"></i></div>
         <div class="d-sheet__content vendor-change">
           <!-- Яндекс карта -->
-          <div class="vendor-change__map">
+          <div class="vendor-change__map" id="vendor-change-map">
             <div class="yandex-map vendor-change__map-image" v-if="optVendorsAvailable.items">
               <yandex-map v-model="map" :settings="mapSettings" height="100%">
                 <yandex-map-default-features-layer />
@@ -33,6 +35,14 @@
                   </div>
                 </template>
               </yandex-map>
+              <button class="vendor-change__map-button d-button d-button-tertiary">
+                <div class="vendor-change__map-button-icons">
+                  <i class="d-icon-angle-rounded-left vendor-change__close-button-icon"></i>
+                  <i class="d-icon-minus vendor-change__close-button-icon"></i>
+                  <i class="d-icon-angle-rounded-right vendor-change__close-button-icon"></i>
+                </div>
+                Расширить карту
+              </button>
             </div>
           </div>
 
@@ -355,6 +365,42 @@ export default {
       return pages
     },
   },
+  mounted() {
+    // резайз карты
+    let handle = document.getElementById('vendor-resizer')
+    let cont = document.getElementById('vendor-change-cont')
+    let map = document.getElementById('vendor-change-map')
+    let maxCont = document.getElementById('vendor-change__sheet-overlay')
+    const duration = cont.style.transitionDuration
+    const max = parseInt(window.getComputedStyle(maxCont).width, 10)
+    const min = parseInt(window.getComputedStyle(cont).width, 10)
+
+    handle.addEventListener('mousedown', e => {
+      e.preventDefault();
+      const startX = e.pageX
+      const startWidth = parseInt(window.getComputedStyle(cont).width, 10)
+      const startMap = parseInt(window.getComputedStyle(map).width, 10)
+      
+
+      const Resize = (e) => {
+          let sh = startWidth - e.pageX + startX
+          if(sh < max - 50 && sh > min){
+            cont.style.width = (startWidth - e.pageX + startX) + 'px'
+            cont.style.transitionDuration = '0s'
+            map.style.width = (startMap - e.pageX + startX) + 'px'
+          }
+      }
+
+      const stopResize = () => {
+        cont.style.transitionDuration = duration
+        document.documentElement.removeEventListener('mousemove', Resize)
+        document.documentElement.removeEventListener('mouseup', stopResize)
+      }
+
+      document.documentElement.addEventListener('mousemove', Resize)
+      document.documentElement.addEventListener('mouseup', stopResize)  
+    })
+  },
   methods: {
     ...mapActions({
       toggleOptsVisible: 'org/toggleOptsVisible',
@@ -577,9 +623,18 @@ export default {
 @media (width <= 1920px) {
   .vendor-change__sheet {
     padding: 20px;
-    width: 940px;
+    width: 1070px;
+  }
+  .vendor-change__map {
+    width: 413px;
+  }
+  .vendor-change__content{
+    width: 598px;
+    max-width: 598px;
+    min-width: 598px;
   }
 }
+
 .d-sheet {
   backdrop-filter: blur(17.5px);
 }
@@ -594,5 +649,44 @@ export default {
   .p-checkbox-box {
   border-color: rgba(249, 44, 13, 1);
   background: rgba(249, 44, 13, 1);
+}
+
+.d-sheet__resize-content{
+  position: absolute;
+  top: calc(50% - 10px);
+  left: 5px;
+  cursor: ew-resize;
+}
+.resize-icon {
+  transform: rotate(90deg) scaleX(2.2);
+  color: #757575;
+  font-size: 9px;
+}
+@media (width <= 1280px) {
+.d-sheet__resize-content{
+  display: none;
+}
+}
+.vendor-change__map-image{
+  position: relative;
+}
+.vendor-change__map-button{
+  position: absolute;
+  bottom: 10px;
+  right: 8px;
+  width: auto;
+  font-size:14px;
+  height: 32px;
+  min-height: 32px;
+  padding: 7px 16px;
+}
+.vendor-change__map-button-icons  i:not(:nth-child(2)){
+  position: absolute;
+}
+.vendor-change__map-button-icons{
+  transform: rotate(-45deg)
+}
+.vendor-change__map-button-icons i:first-child{
+  
 }
 </style>
