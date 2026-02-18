@@ -818,6 +818,11 @@ export default {
     padding: 4px 16px;
   }
 }
+@media (width <= 1024px) and (width > 880px){
+  .d-sheet__overlay.active {
+    top: 0;
+  }
+}
 @media (width <= 1024px) and (width > 600px) {
     .vendor-change__sheet, #vendor-change-cont {
         width: auto;
