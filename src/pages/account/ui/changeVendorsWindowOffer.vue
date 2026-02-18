@@ -562,12 +562,12 @@ export default {
     transition: all 0.2s ease;
   }
 }
-@media (width <= 3000px) {
-  .vendor-change__sheet {
-    padding: 20px;
-    width: 940px;
-  }
-}
+// @media (width <= 3000px) {
+//   .vendor-change__sheet {
+//     padding: 20px;
+//     width: 940px;
+//   }
+// }
 .d-sheet {
   backdrop-filter: blur(17.5px);
 }
