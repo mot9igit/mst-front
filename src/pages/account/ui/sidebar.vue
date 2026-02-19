@@ -517,7 +517,17 @@ export default {
     let sidebar = document.getElementById('sidebar')
     let content = document.getElementById('content')
     let sh = document.querySelector('#app')
-
+    let fullSidebar = document.querySelector('.sidebar--full');  
+    
+    fullSidebar.addEventListener('mouseenter', () => {  
+      this.active = false
+      content.classList.add('sidebar--margin');
+    });  
+    fullSidebar.addEventListener('mouseleave', () => {  
+      this.active = true 
+      content.classList.remove('sidebar--margin');
+    });  
+    
     sidebar.addEventListener('mouseenter', () => {
       if (sh.clientWidth > 1024) {
         setTimeout(() => {
