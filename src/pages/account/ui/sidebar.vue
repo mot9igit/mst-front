@@ -410,13 +410,20 @@ export default {
     },
     sidebarToggle() {
       this.isMobile = localStorage.getItem('global.isMobile')
-
+      let content = document.getElementById('content')
+      if(this.active === false){
+        content.classList.remove('sidebar--margin')
+      }else{
+        content.classList.add('sidebar--margin')
+      }
+                
       if (this.isMobile === true) {
         this.active = !this.active
       } else {
         this.active = !this.active
         localStorage.setItem('sidebar.position', Number(this.active))
       }
+
     },
     clickAround() {
       document.addEventListener('click', (event) => {
@@ -714,6 +721,11 @@ aside {
     display: flex !important;
     width: auto;
 }
+}
+@media (width <= 600px){
+  .sidebar--margin{
+    margin-left: 0;
+  }
 }
 
 </style>
