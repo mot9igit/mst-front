@@ -63,7 +63,9 @@
     0% {
       transform: translateX(-100%);
     }
-
+                                                                                                                                50% {
+                                                                                                                                  transform: translateX(-100%);
+                                                                                                                                }
     100% {
       transform: translateX(0);
     }
@@ -114,9 +116,9 @@
       transition: translate 0.2s ease-in-out;
 
       animation-name: sidebar-in;
-      animation-duration: 0.2s;
+      animation-duration: 0.3s;
       animation-timing-function: ease-in-out;
-      animation-fill-mode: forwards;
+      animation-fill-mode: both;
 
       background-color: #ffffff8c;
       backdrop-filter: blur(30px);

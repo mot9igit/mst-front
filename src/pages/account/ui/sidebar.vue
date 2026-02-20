@@ -30,9 +30,9 @@
         <div class="sidebar__content">
           <div class="sidebar__block sidebar__toggle-block">
             <!-- <button class="sidebar__toggle" @click.prevent="sidebarToggle()"> -->
-            <!-- <button class="sidebar__toggle" @click.prevent="iconClick()">
+            <button class="sidebar__toggle" @click.prevent="iconClick()">
               <i class="d-icon-burger sidebar__toggle-icon"></i>
-            </button> -->
+            </button> 
           </div>
 
           <div class="sidebar__info">
@@ -427,6 +427,8 @@ export default {
             if (this.active === false) {
               if (this.isMobile === 'false') {
                 this.active = !this.active
+                let content = document.getElementById('content')
+                content.classList.remove('sidebar--margin')
                 localStorage.setItem('sidebar.position', Number(this.active))
               }
             }
@@ -478,7 +480,14 @@ export default {
     iconClick() {
       let sh = document.querySelector('#app')
       if (sh.clientWidth <= 1024) {
-        console.log(sh.clientWidth)
+        let content = document.getElementById('content')
+        if(this.active){
+          content.classList.add('sidebar--margin')
+        }else{
+          content.classList.remove('sidebar--margin')
+        }
+        
+        
         this.sidebarToggle()
       }
     },
@@ -513,37 +522,30 @@ export default {
     if (isMob === true) {
       this.active = 1
     }
-
+    
     let sidebar = document.getElementById('sidebar')
     let content = document.getElementById('content')
     let sh = document.querySelector('#app')
-    let fullSidebar = document.querySelector('.sidebar--full');  
+    let fullSidebar = document.getElementById('sidebar__inner--desktop')
+   let i = 0
+      
+    sh.addEventListener('mousemove', (e) => {
     
-    fullSidebar.addEventListener('mouseenter', () => {  
-      this.active = false
-      content.classList.add('sidebar--margin');
-    });  
-    fullSidebar.addEventListener('mouseleave', () => {  
-      this.active = true 
-      content.classList.remove('sidebar--margin');
-    });  
-    
-    sidebar.addEventListener('mouseenter', () => {
-      if (sh.clientWidth > 1024) {
-        setTimeout(() => {
-          this.active = false
-          content.classList.add('sidebar--margin');
-        }, 300)
+      if (sh.clientWidth > 1024 && e.clientX <= sidebar.clientWidth && e.clientX > 2 && i==0) {
+            setTimeout(() => {
+              content.classList.add('sidebar--margin')
+              this.active = false
+              i = 1
+            }, 500)   
+      }
+      if (sh.clientWidth > 1024 && e.clientX > fullSidebar.clientWidth && i==1) {
+            
+              this.active = true
+              content.classList.remove('sidebar--margin')
+              i=0      
       }
     })
-    sidebar.addEventListener('mouseleave', () => {
-      if (sh.clientWidth > 1024) {
-        setTimeout(() => {
-          this.active = true
-          content.classList.remove('sidebar--margin');
-        }, 300)
-      }
-    })
+    
 
     this.setOrgs()
 
@@ -707,4 +709,11 @@ aside {
 .sidebar--full{
   position: absolute;
 }
+@media (width <= 1024px){
+  .sidebar__logo-toggle {
+    display: flex !important;
+    width: auto;
+}
+}
+
 </style>
