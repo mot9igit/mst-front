@@ -154,9 +154,10 @@
           <sidebarMenu
             :activeOrganization="activeOrganization"
             :toggle="Boolean(active)"
-            @sidebarToggle="sidebarToggle()"
+            
             v-if="this.$route.params.id"
           />
+          <!--@sidebarToggle="sidebarToggle()"-->
           <div class="sidebar__divider sidebar__bottom-divider sidebar__visible"></div>
         </div>
       </div>
@@ -534,7 +535,7 @@ export default {
     let content = document.getElementById('content')
     let sh = document.querySelector('#app')
     let fullSidebar = document.getElementById('sidebar__inner--desktop')
-   let i = 0
+    let i = 0
       
     sh.addEventListener('mousemove', (e) => {
     

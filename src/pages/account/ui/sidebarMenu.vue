@@ -44,8 +44,9 @@
             <router-link
               class="sidebar__item-list-item-content"
               :to="subitem.to"
-              @click.prevent="HideSidebar()"
+              
             >
+            <!--@click.prevent="HideSidebar()"-->
               <i
                 class="sidebar__item-list-item-icon d-icon-doc"
                 v-if="subitem.icon == '' || subitem.icon == undefined"
