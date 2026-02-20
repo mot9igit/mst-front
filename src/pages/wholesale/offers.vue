@@ -130,7 +130,7 @@ export default {
             offer_id: 'id',
           },
 
-          class: 'cell_centeralign nowrap',
+          class: 'cell_centeralign',
           items: ['buyer_name', 'buyer_inn', 'buyer_address'],
         },
         initiator: {
@@ -286,4 +286,39 @@ export default {
   },
 }
 </script>
-<style lang="scss"></style>
+
+<style lang="scss">
+.wholesaleoffers__content .vue3-treeselect__placeholder, .vue3-treeselect__single-value {
+    font-size: 16px;
+    line-height: 32px;
+  }
+@media (width <= 1580px){
+  .wholesaleoffers__content .vue3-treeselect__placeholder, .vue3-treeselect__single-value {
+    font-size: 16px;
+    line-height: 32px;
+  }
+}
+@media (width <= 1280px){
+  .wholesaleoffers__content .vue3-treeselect__control{
+    max-height: 30px;
+    height: 30px;
+  }
+  .wholesaleoffers__content .vue3-treeselect__placeholder, .vue3-treeselect__single-value {
+    font-size: 12px;
+    line-height: 28px;
+  }
+}
+@media (width <= 1024px){
+  .wholesaleoffers__content .dart-form-group .vue3-treeselect .vue3-treeselect__control,.wholesaleoffers__content .vue3-treeselect__control{
+    max-height: 24px;
+    height: 24px;
+  }
+  .wholesaleoffers__content .dart-form-group .vue3-treeselect__multi-value-item {
+    font-size: 8px;
+  }
+  .wholesaleoffers__content .vue3-treeselect__placeholder, .vue3-treeselect__single-value {
+    font-size: 9px;
+    line-height: 22px;
+  }
+}
+</style>
