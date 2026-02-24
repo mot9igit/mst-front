@@ -201,6 +201,25 @@
         </p> -->
       </div>
     </div>
+    <!-- Фильтры по наличию -->
+    <div class="catalog-top_filters" v-if="!loading">
+      <div class="catalog-top_filters-item" v-for="(item, index) in filters" :key="index">
+        <Checkbox
+          @value-change="changeFilter(index)"
+          v-model="this.filters[index].value"
+          :binary="true"
+          :inputId="'catalog-' + index"
+          :name="'catalog-' + index"
+          :value="true"
+        />
+        <label
+          :for="'catalog-' + index"
+          class="catalog-top_filters-label"
+          :class="{ 'catalog-top_filters-label--active': this.filters[index].value }"
+          >{{ item.placeholder }}
+        </label>
+      </div>
+    </div>
 
     <product
       v-for="item in opt_products.items"
@@ -250,11 +269,21 @@ import product from './ui/product.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import allSalesWindow from './ui/allSalesWindow.vue'
 import Toast from 'primevue/toast'
+import { Checkbox } from 'primevue'
 
 export default {
   name: 'purchasesCatalog',
   inject: ['catalogUpdater'],
-  components: { breadcrumbs, Loader, Paginate, product, customModal, allSalesWindow, Toast },
+  components: {
+    breadcrumbs,
+    Loader,
+    Paginate,
+    product,
+    customModal,
+    allSalesWindow,
+    Toast,
+    Checkbox,
+  },
   props: {
     id: {
       type: String,
@@ -271,7 +300,26 @@ export default {
   },
   data() {
     return {
-      filters: {},
+      filters: {
+        all: {
+          name: 'Все товары',
+          placeholder: 'Все товары',
+          value: true,
+          type: 'checkbox',
+        },
+        available: {
+          name: 'В наличии',
+          placeholder: 'В наличии',
+          value: false,
+          type: 'checkbox',
+        },
+        no_available: {
+          name: 'Отсутствуют',
+          placeholder: 'Отсутствуют',
+          value: false,
+          type: 'checkbox',
+        },
+      },
       show_order: false,
       show_filters: false,
       loading: true,
@@ -458,6 +506,41 @@ export default {
       } else {
         this.getOptProducts(data).then(() => {
           this.opt_products = this.optProducts
+          this.loading = false
+        })
+      }
+    },
+    changeFilter(index) {
+      this.loading = true
+      for (var i in this.filters) {
+        if (i == index) {
+          this.filters[i].value = true
+        } else {
+          this.filters[i].value = false
+        }
+      }
+      const data = {
+        page: 1,
+        perpage: this.per_page,
+        filters: this.filters,
+      }
+      if (this.$route.name == 'purchasesCatalogSearch') {
+        data.search = this.$route.query.search
+      }
+      if (this.$route.name == 'purchasesCatalogComplect') {
+        data.action_id = this.$route.params.action_id
+      }
+      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
+        data.search = this.$route.query.search
+        this.getOfferOptProducts(data).then(() => {
+          this.opt_products = this.optOfferProducts
+
+          this.loading = false
+        })
+      } else {
+        this.getOptProducts(data).then(() => {
+          this.opt_products = this.optProducts
+
           this.loading = false
         })
       }
@@ -708,6 +791,7 @@ export default {
         this.loading = false
       })
     }
+    this.filters.all.value = true
   },
   computed: {
     ...mapGetters({
@@ -807,5 +891,257 @@ export default {
   font-size: 14px;
   line-height: 16px;
   letter-spacing: -0.01em;
+}
+
+// фильтры в наличии
+.catalog-top_filters {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 24px;
+  padding-bottom: 41px;
+}
+.catalog-top_filters-item {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 8px;
+  padding-right: 8px;
+}
+.catalog-top_filters-item .p-checkbox {
+  width: 24px;
+  height: 24px;
+}
+.catalog-top_filters-item .p-checkbox-input {
+  width: 24px;
+  height: 24px;
+  border-radius: 24px;
+  opacity: 1;
+  border: 1px solid #757575;
+  transition: all 0.2s ease;
+}
+.catalog-top_filters-item .p-checkbox-input:hover,
+.catalog-top_filters-item .p-checkbox-input:checked {
+  border-color: #f92c0d;
+}
+.catalog-top_filters-item .p-checkbox .p-checkbox-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  border: none;
+  background: transparent;
+  margin-top: 2px;
+  margin-left: 2px;
+}
+.catalog-top_filters-item .p-checkbox-checked .p-checkbox-box {
+  background: #f92c0d;
+}
+.catalog-top_filters-item .p-checkbox-checked .p-checkbox-box svg {
+  display: none;
+}
+.catalog-top_filters-item .catalog-top_filters-label {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  color: #282828;
+  cursor: pointer;
+}
+.catalog-top_filters-label--active {
+  font-weight: 600 !important;
+}
+@media (width <= 1536px) {
+  // фильтры в наличии
+  .catalog-top_filters {
+    gap: 24px;
+    padding-bottom: 44px;
+  }
+  .catalog-top_filters-item {
+    gap: 8px;
+    padding-right: 0px;
+  }
+  .catalog-top_filters-item .p-checkbox {
+    width: 22px;
+    height: 22px;
+  }
+  .catalog-top_filters-item .p-checkbox-input {
+    width: 22px;
+    height: 22px;
+    border-radius: 22px;
+  }
+  .catalog-top_filters-item .p-checkbox .p-checkbox-box {
+    width: 18px;
+    height: 18px;
+    border-radius: 18px;
+    margin-top: 2px;
+    margin-left: 2px;
+  }
+  .catalog-top_filters-item .catalog-top_filters-label {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+  }
+}
+@media (width <= 1280px) {
+  // фильтры в наличии
+  .catalog-top_filters {
+    gap: 24px;
+    padding-bottom: 31px;
+  }
+  .catalog-top_filters-item {
+    gap: 8px;
+    padding-right: 0px;
+  }
+  .catalog-top_filters-item .p-checkbox {
+    width: 16px;
+    height: 16px;
+  }
+  .catalog-top_filters-item .p-checkbox-input {
+    width: 16px;
+    height: 16px;
+    border-radius: 16px;
+  }
+  .catalog-top_filters-item .p-checkbox .p-checkbox-box {
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+    margin-top: 2px;
+    margin-left: 2px;
+  }
+  .catalog-top_filters-item .catalog-top_filters-label {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+  }
+}
+@media (width <= 1024px) {
+  // фильтры в наличии
+  .catalog-top_filters {
+    gap: 24px;
+    padding-bottom: 28px;
+  }
+  .catalog-top_filters-item {
+    gap: 8px;
+    padding-right: 0px;
+  }
+  .catalog-top_filters-item .p-checkbox {
+    width: 16px;
+    height: 16px;
+  }
+  .catalog-top_filters-item .p-checkbox-input {
+    width: 16px;
+    height: 16px;
+    border-radius: 16px;
+  }
+  .catalog-top_filters-item .p-checkbox .p-checkbox-box {
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+    margin-top: 2px;
+    margin-left: 2px;
+  }
+  .catalog-top_filters-item .catalog-top_filters-label {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+  }
+}
+@media (width <= 800px) {
+  // фильтры в наличии
+  .catalog-top_filters {
+    gap: 24px;
+    padding-bottom: 28px;
+  }
+  .catalog-top_filters-item {
+    gap: 8px;
+    padding-right: 0px;
+  }
+  .catalog-top_filters-item .p-checkbox {
+    width: 16px;
+    height: 16px;
+  }
+  .catalog-top_filters-item .p-checkbox-input {
+    width: 16px;
+    height: 16px;
+    border-radius: 16px;
+  }
+  .catalog-top_filters-item .p-checkbox .p-checkbox-box {
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+    margin-top: 2px;
+    margin-left: 2px;
+  }
+  .catalog-top_filters-item .catalog-top_filters-label {
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 12px;
+  }
+}
+@media (width <= 700px) {
+  // фильтры в наличии
+  .catalog-top_filters {
+    gap: 24px;
+    padding-bottom: 20px;
+  }
+  .catalog-top_filters-item {
+    gap: 8px;
+    padding-right: 0px;
+  }
+  .catalog-top_filters-item .p-checkbox {
+    width: 16px;
+    height: 16px;
+  }
+  .catalog-top_filters-item .p-checkbox-input {
+    width: 16px;
+    height: 16px;
+    border-radius: 16px;
+  }
+  .catalog-top_filters-item .p-checkbox .p-checkbox-box {
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+    margin-top: 2px;
+    margin-left: 2px;
+  }
+  .catalog-top_filters-item .catalog-top_filters-label {
+    font-weight: 500;
+    font-size: 8px;
+    line-height: 10px;
+  }
+}
+@media (width <= 600px) {
+  // фильтры в наличии
+  .catalog-top_filters {
+    gap: 18px;
+    padding-bottom: 0px;
+    margin-bottom: 32px;
+    width: max-content;
+    overflow-x: scroll;
+  }
+  .catalog-top_filters-item {
+    gap: 8px;
+    padding-right: 0px;
+  }
+  .catalog-top_filters-item .p-checkbox {
+    width: 24px;
+    height: 24px;
+  }
+  .catalog-top_filters-item .p-checkbox-input {
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+  }
+  .catalog-top_filters-item .p-checkbox .p-checkbox-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    margin-top: 2px;
+    margin-left: 2px;
+  }
+  .catalog-top_filters-item .catalog-top_filters-label {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+  }
 }
 </style>

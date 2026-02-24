@@ -5540,6 +5540,7 @@ aside button {
     font-size: 11px;
   }
   .product-card__vertical .d-button__text {
+    display: flex;
     gap: 8px;
     font-size: 10px;
   }
@@ -7270,7 +7271,7 @@ aside button {
   }
 }
 
-.promos__banners-row--small>div {
+.promos__banners-row--small > div {
   margin-bottom: 16px;
 }
 
@@ -7543,88 +7544,88 @@ aside button {
     line-height: 31px;
   }
 
-    .clients-form__modal-main .clients-form__modal {
-      height: calc(100vh - 190px);
-    }
-  
-    .clients-form__modal-main .p-inputotp,
-    .clients-form__modal-main .clients-form__modal-buttons {
-      justify-content: space-between;
-      width: 100%;
-    }
-  
-    .clients-form__modal-main .d-input-error {
-      margin-top: -24px;
-    }
-  
-    .clients-form__modal-main .clients-form__modal-buttons {
-      flex-direction: column-reverse;
-    }
-  
-    .clients-form__modal-main .clients__filters-create {
-      min-width: 100%;
-    }
-    }
-  
-    @media (width <=440px) {
-      .clients-form__modal-main .p-inputotp-input {
-        width: 33px;
-        height: 43px;
-      }
-    }
-  
-    @media (width <=320px) {
-      .promos__novendors {
-        padding: 0 30px;
-        width: 100%;
-      }
-  
-      .clients-form__modal-main .p-inputotp-input {
-        width: 23px;
-        height: 33px;
-      }
-    }
-        .wholesaleorders__content .dart-row {
-          justify-content: end;
-          margin-top: -39px;
-        }
-    
-        .wholesaleorders__content .dart-mb-1 {
-          margin-bottom: 40px;
-        }
-    
-        .wholesaleorders__content .p-inputtext {
-          width: 100%;
-        }
-    
-        .wholesaleorders__content .form_input_group:after {
-          content: '\e01d';
-          font-family: 'Iconly' !important;
-          position: absolute;
-          font-size: 16.8px;
-          top: calc(50% - 8.4px);
-          right: 20px;
-          color: #757575;
-        }
-    
-        .wholesaleorders__content .p-inputtext {
-          padding-right: 40px;
-          box-shadow: none;
-          border: 0.2px solid #75757575;
-        }
-    
-        .wholesaleorders__content .p-inputtext:enabled:focus {
-          border-color: #f92c0d;
-        }
-    
-        .wholesaleorders__content .p-floatlabel:has(input:focus) label,
-        .wholesaleorders__content .p-floatlabel:has(input:-webkit-autofill) label,
-        .wholesaleorders__content .p-floatlabel:has(textarea:focus) label,
-        .wholesaleorders__content .p-floatlabel:has(.p-inputwrapper-focus) label {
-          color: #f92c0d;
-        }
-    
-        .wholesaleorders__content .d-table__col,
-        .wholesaleorders__content .d-table__row:first-child>.d-table__col {
-          padding: 16px;
-        }
+  .clients-form__modal-main .clients-form__modal {
+    height: calc(100vh - 190px);
+  }
+
+  .clients-form__modal-main .p-inputotp,
+  .clients-form__modal-main .clients-form__modal-buttons {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .clients-form__modal-main .d-input-error {
+    margin-top: -24px;
+  }
+
+  .clients-form__modal-main .clients-form__modal-buttons {
+    flex-direction: column-reverse;
+  }
+
+  .clients-form__modal-main .clients__filters-create {
+    min-width: 100%;
+  }
+}
+
+@media (width <=440px) {
+  .clients-form__modal-main .p-inputotp-input {
+    width: 33px;
+    height: 43px;
+  }
+}
+
+@media (width <=320px) {
+  .promos__novendors {
+    padding: 0 30px;
+    width: 100%;
+  }
+
+  .clients-form__modal-main .p-inputotp-input {
+    width: 23px;
+    height: 33px;
+  }
+}
+.wholesaleorders__content .dart-row {
+  justify-content: end;
+  margin-top: -39px;
+}
+
+.wholesaleorders__content .dart-mb-1 {
+  margin-bottom: 40px;
+}
+
+.wholesaleorders__content .p-inputtext {
+  width: 100%;
+}
+
+.wholesaleorders__content .form_input_group:after {
+  content: '\e01d';
+  font-family: 'Iconly' !important;
+  position: absolute;
+  font-size: 16.8px;
+  top: calc(50% - 8.4px);
+  right: 20px;
+  color: #757575;
+}
+
+.wholesaleorders__content .p-inputtext {
+  padding-right: 40px;
+  box-shadow: none;
+  border: 0.2px solid #75757575;
+}
+
+.wholesaleorders__content .p-inputtext:enabled:focus {
+  border-color: #f92c0d;
+}
+
+.wholesaleorders__content .p-floatlabel:has(input:focus) label,
+.wholesaleorders__content .p-floatlabel:has(input:-webkit-autofill) label,
+.wholesaleorders__content .p-floatlabel:has(textarea:focus) label,
+.wholesaleorders__content .p-floatlabel:has(.p-inputwrapper-focus) label {
+  color: #f92c0d;
+}
+
+.wholesaleorders__content .d-table__col,
+.wholesaleorders__content .d-table__row:first-child > .d-table__col {
+  padding: 16px;
+}
