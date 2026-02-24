@@ -136,15 +136,25 @@
       <h2 v-if="this.$route.name == 'purchasesCatalogRequirement'" class="products__top-title">
         Товары из потребности "{{ opt_products?.name }}"
       </h2>
-      <h2
+      <h1
+        class="promos__header-title"
         v-if="
           this.$route.name == 'purchasesOfferCatalog' ||
           this.$route.name == 'purchasesCatalogSearchOffer'
         "
-        class="products__top-title"
       >
-        Предложение для {{ opt_products?.org_from?.name }}
-      </h2>
+        Предложение для
+        <div class="d-badge2 d-badge2--fit order__item-header-badge">
+          <div class="order__item-header-badge-image-container">
+            <img
+              :src="opt_products?.org_from?.image"
+              :alt="opt_products?.org_from?.name"
+              class="order__item-header-badge-image"
+            />
+          </div>
+          <p class="order__item-header-badge-text">{{ opt_products?.org_from?.name }}</p>
+        </div>
+      </h1>
       <div class="catalog-top_button-cont" v-if="this.$route.name == 'purchasesCatalogRequirement'">
         <!-- ||
           this.$route.name == 'purchasesCatalogComplect'-->

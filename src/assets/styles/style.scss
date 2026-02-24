@@ -411,6 +411,9 @@ aside button {
   font-size: 20px;
   font-weight: 500;
 }
+.order__item-header-badge-text {
+  font-weight: 600;
+}
 // clients
 .clients__card,
 .clients__card-data,
@@ -7628,4 +7631,66 @@ aside button {
 .wholesaleorders__content .d-table__col,
 .wholesaleorders__content .d-table__row:first-child > .d-table__col {
   padding: 16px;
+}
+// заголовок в предложениях
+.order__header-title .d-badge2 {
+  background: #ededed;
+  margin-top: 8px;
+}
+.promos__header-title .d-badge2 {
+  background: #ededed;
+  min-width: auto;
+  height: 32px;
+}
+.promos__header-title {
+  display: flex;
+  gap: 16px;
+  justify-content: start;
+  align-items: center;
+  font-size: 24px;
+  line-height: 32px;
+  margin-bottom: 24px;
+}
+.promos__header-title .order__item-header-badge-image {
+  border-radius: 50%;
+}
+@media (width <= 1536px) {
+  .promos__header-title .d-badge2 {
+    height: 30px;
+  }
+  .promos__header-title {
+    gap: 16px;
+    font-size: 20px;
+    line-height: 30px;
+  }
+}
+@media (width <= 1280px) {
+  .promos__header-title .d-badge2 {
+    height: 24px;
+  }
+  .promos__header-title {
+    gap: 8px;
+    font-size: 18px;
+    line-height: 24px;
+  }
+}
+@media (width <= 1024px) {
+  .promos__header-title .d-badge2 {
+    height: 24px;
+  }
+  .promos__header-title {
+    gap: 8px;
+    font-size: 12px;
+    line-height: 24px;
+  }
+}
+@media (width <= 600px) {
+  .promos__header-title .d-badge2 {
+    height: 24px;
+  }
+  .promos__header-title {
+    gap: 8px;
+    font-size: 16px;
+    line-height: 24px;
+  }
 }

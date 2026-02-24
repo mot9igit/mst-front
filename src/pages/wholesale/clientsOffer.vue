@@ -1,7 +1,15 @@
 <template>
   <section class="promos" id="promos">
     <div class="promos__header">
-      <h1 class="promos__header-title">Предложение для {{ orgName.name }}</h1>
+      <h1 class="promos__header-title">
+        Предложение для
+        <div class="d-badge2 d-badge2--fit order__item-header-badge">
+          <div class="order__item-header-badge-image-container">
+            <img :src="orgName.image" :alt="orgName.name" class="order__item-header-badge-image" />
+          </div>
+          <p class="order__item-header-badge-text">{{ orgName.name }}</p>
+        </div>
+      </h1>
       <!--
         <button class="d-select promos__header-select">
           <span class="d-select__title">Акции по брендам</span>

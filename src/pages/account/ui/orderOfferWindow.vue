@@ -11,7 +11,19 @@
         <div class="d-sheet__content order" v-if="!order">
           <!-- Шапка -->
           <div class="order__header">
-            <h3 class="order__header-title">Оформление предложения</h3>
+            <h3 class="order__header-title">
+              Оформление предложения
+              <div class="d-badge2 d-badge2--fit order__item-header-badge">
+                <div class="order__item-header-badge-image-container">
+                  <img
+                    :src="orgName.image"
+                    :alt="orgName.name"
+                    class="order__item-header-badge-image"
+                  />
+                </div>
+                <p class="order__item-header-badge-text">{{ orgName.name }}</p>
+              </div>
+            </h3>
             <button class="order__header-close" @click.prevent="close()">
               <i class="d-icon-times-flat"></i>
             </button>
@@ -666,6 +678,7 @@ export default {
     ...mapGetters({
       basketOffer: 'offer/basketOffer',
       basketOfferWarehouse: 'offer/basketOfferWarehouse',
+      orgName: 'org/orgName',
     }),
   },
   methods: {
@@ -676,6 +689,7 @@ export default {
       basketOfferProductUpdate: 'offer/basketOfferProductUpdate',
       offerSubmit: 'offer/offerSubmit',
       setOfferBasketComment: 'offer/setOfferBasketComment',
+      getOrgName: 'org/getOrgName',
     }),
     salesActive(key) {
       if (key in this.sales_active) {
@@ -944,6 +958,7 @@ export default {
       }
     })
     this.now = new Date()
+    this.getOrgName()
     this.getBasketOffer().then(() => {
       this.loading = false
     })
