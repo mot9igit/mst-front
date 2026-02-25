@@ -862,11 +862,7 @@ export default {
         this.updateCatalog()
       }
     },
-    modalConflicts: function (newVal) {
-      if (!newVal) {
-        this.loading = false
-      }
-    },
+
     $route() {
       this.updatePage(0)
       // if (this.$route.params.warehouse_id) {
