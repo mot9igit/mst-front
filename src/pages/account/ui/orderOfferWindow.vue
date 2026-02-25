@@ -175,7 +175,7 @@
                     </div>
                     <a
                       href="#"
-                      class="cart__item-header-button"
+                      class="cart__item-header-button noclose_click"
                       @click="
                         clearBasketProduct(org.org_data.id, warehouse_id, product_key, product)
                       "
@@ -439,12 +439,13 @@
                 </p>
                 <div class="order__footer-actions">
                   <button
-                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy"
+                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy order__footer-actions-buy--light noclose_click"
                     @click.prevent="
                       () => {
                         if (this.basketOffer?.cart_data?.not_available) {
                           this.showChangedCount = true
                           this.showChangedId = 'all'
+                          this.action = 'offer'
                         } else {
                           offerCreate('all')
                         }
@@ -452,6 +453,22 @@
                     "
                   >
                     Отправить предложение
+                  </button>
+                  <button
+                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy noclose_click"
+                    @click.prevent="
+                      () => {
+                        if (this.basketOffer?.cart_data?.not_available) {
+                          this.showChangedCount = true
+                          this.showChangedId = 'all'
+                          this.action = 'order'
+                        } else {
+                          orderCreate('all')
+                        }
+                      }
+                    "
+                  >
+                    Отправить заказ
                   </button>
                   <!--
                     <div class="d-divider d-divider--vertical order__footer-actions-divider"></div>
@@ -471,12 +488,13 @@
               <div class="order__footer-bottom">
                 <div class="order__footer-actions">
                   <button
-                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy"
+                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy order__footer-actions-buy--light noclose_click"
                     @click.prevent="
                       () => {
                         if (this.basketStore?.cart_data?.not_available) {
                           this.showChangedCount = true
                           this.showChangedId = 'all'
+                          this.action = 'offer'
                         } else {
                           offerCreate('all')
                         }
@@ -484,6 +502,22 @@
                     "
                   >
                     Отправить предложение
+                  </button>
+                  <button
+                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy noclose_click"
+                    @click.prevent="
+                      () => {
+                        if (this.basketStore?.cart_data?.not_available) {
+                          this.showChangedCount = true
+                          this.showChangedId = 'all'
+                          this.action = 'order'
+                        } else {
+                          orderCreate('all')
+                        }
+                      }
+                    "
+                  >
+                    Отправить заказ
                   </button>
                   <!--
                   <div class="d-divider d-divider--vertical order__footer-actions-divider"></div>
@@ -515,7 +549,10 @@
     <customModal v-model="this.showClearBasketModal" class="clear_cart">
       <b>Вы уверены, что хотите очистить корзину?</b>
       <p>Это действие невозможно будет отменить</p>
-      <button class="d-button d-button-primary d-button-primary-small" @click="this.clearCart()">
+      <button
+        class="d-button d-button-primary d-button-primary-small noclose_click"
+        @click="this.clearCart()"
+      >
         Да, очистить!
       </button>
     </customModal>
@@ -559,16 +596,16 @@
       </div>
       <div class="basket-change__buttons">
         <div
-          class="d-button d-button-primary d-button-primary-small"
+          class="d-button d-button-primary d-button-primary-small noclose_click"
           @click="this.showChangedCount = false"
         >
           Проверить предложение
         </div>
         <div
-          class="d-button d-button-primary d-button-primary-small"
+          class="d-button d-button-primary d-button-primary-small noclose_click"
           @click.prevent="
             () => {
-              offerCreate()
+              this.action == 'offer' ? offerCreate() : orderCreate()
               this.showChangedCount = false
             }
           "
@@ -578,7 +615,7 @@
       </div>
     </customModal>
     <customModal v-model="modalComment" class="order-card__modal-comment">
-      <h3>Введите комментарий к заказу</h3>
+      <h3>Введите комментарий</h3>
       <Editor
         v-model="this.modalCommentText"
         id="description"
@@ -594,13 +631,13 @@
         <button
           type="button"
           href="#"
-          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
+          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel noclose_click"
           @click.prevent="((modalCommentText = ''), (modalComment = false))"
         >
           Отмена
         </button>
         <button
-          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow noclose_click"
           @click.prevent="saveComment"
         >
           Сохранить
@@ -617,13 +654,13 @@
         <button
           type="button"
           href="#"
-          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
+          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel noclose_click"
           @click.prevent="modalCommentDelete = false"
         >
           Отмена
         </button>
         <button
-          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow noclose_click"
           @click.prevent="deleteComment"
         >
           Удалить
@@ -672,6 +709,7 @@ export default {
       modalCommentStore: 0,
       modalCommentText: '',
       modalCommentDelete: false,
+      action: '',
     }
   },
   computed: {
@@ -690,6 +728,7 @@ export default {
       offerSubmit: 'offer/offerSubmit',
       setOfferBasketComment: 'offer/setOfferBasketComment',
       getOrgName: 'org/getOrgName',
+      createOrder: 'offer/createOrder',
     }),
     salesActive(key) {
       if (key in this.sales_active) {
@@ -862,6 +901,34 @@ export default {
       })
       //  }
     },
+    async orderCreate() {
+      this.loading = true
+
+      this.createOrder({ store_id: this.basketOfferWarehouse }).then((res) => {
+        if (res.data.success) {
+          this.loading = false
+
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Заказ создан',
+            detail: 'Вы успешно отправили заказ!',
+            life: 3000,
+          })
+
+          this.getBasketOffer()
+          this.$emit('offerSubmit')
+          this.$emit('close')
+        } else {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Произошла ошибка! Попробуйте оформить предложение позже!',
+            life: 3000,
+          })
+          return
+        }
+      })
+    },
     saveComment() {
       if (this.modalCommentText != '' && this.modalCommentText != '<p></p>') {
         this.loading = true
@@ -952,6 +1019,7 @@ export default {
         !event.target.closest('.order__sheet') &&
         !event.target.closest('.order-card__modal-comment') &&
         !event.target.closest('.header__cart') &&
+        !event.target.closest('.noclose_click') &&
         this.active === true
       ) {
         this.$emit('close')
@@ -1038,5 +1106,21 @@ export default {
 }
 .offer__sheet-wrapper .order__item {
   margin-bottom: 40px;
+}
+.order__item-header-badge-image {
+  border-radius: 24px;
+}
+.order__footer-actions {
+  gap: 8px;
+}
+.order__footer-actions-buy--light {
+  background-color: #fff;
+  color: #282828;
+  border: 1px solid #282828;
+}
+.order__footer-actions-buy--light:hover {
+  background-color: #282828;
+  color: #fff;
+  border: 1px solid #282828;
 }
 </style>
