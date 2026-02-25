@@ -586,7 +586,8 @@ export default {
             ) {
               if (
                 this.addItems[item].item.conflicts &&
-                this.addItems[item].item.conflicts?.length > 1
+                this.addItems[item].item.conflicts?.length > 1 &&
+                this.addItems[item].item.available > 0
               ) {
                 this.addItemsConflicts[item] = this.addItems[item]
               } else {
@@ -599,7 +600,7 @@ export default {
           } else {
             if (Object.keys(this.noconflicts).length) {
               for (var r_id in this.noconflicts) {
-                if (this.noconflicts[r_id].count > 0) {
+                if (this.noconflicts[r_id].count > 0 && this.noconflicts[r_id].item.available > 0) {
                   let conf = {}
                   let item = this.noconflicts[r_id].item
                   if (item.conflicts && item.conflicts.length == 1) {
@@ -779,6 +780,7 @@ export default {
     counter(obj) {
       let i = obj.item.remain_id
       this.addItems[i] = obj
+      this.addItems[i].count = Number(obj.item.count)
     },
   },
   mounted() {
@@ -858,6 +860,11 @@ export default {
     catalogUpdater: function (newVal) {
       if (newVal) {
         this.updateCatalog()
+      }
+    },
+    modalConflicts: function (newVal) {
+      if (!newVal) {
+        this.loading = false
       }
     },
     $route() {
