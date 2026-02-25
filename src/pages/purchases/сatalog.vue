@@ -425,6 +425,13 @@ export default {
       let cart = {}
       this.order_id = order_id
       this.page = 1
+      for (var i in this.filters) {
+        if (i == 'all') {
+          this.filters[i].value = true
+        } else {
+          this.filters[i].value = false
+        }
+      }
       this.loading = true
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         cart = this.basketOffer
