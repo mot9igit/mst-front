@@ -464,7 +464,6 @@ export default {
           this.loading = false
         })
       }
-      console.log(Object.keys(this.addItems).length)
     },
     pagClickCallback(pageNum) {
       let cart = {}
