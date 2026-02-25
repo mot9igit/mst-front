@@ -425,6 +425,8 @@ export default {
       let cart = {}
       this.order_id = order_id
       this.page = 1
+      this.addItems = {}
+
       for (var i in this.filters) {
         if (i == 'all') {
           this.filters[i].value = true
@@ -462,6 +464,7 @@ export default {
           this.loading = false
         })
       }
+      console.log(Object.keys(this.addItems).length)
     },
     pagClickCallback(pageNum) {
       let cart = {}
@@ -780,7 +783,6 @@ export default {
     counter(obj) {
       let i = obj.item.remain_id
       this.addItems[i] = obj
-      this.addItems[i].count = Number(obj.item.count)
     },
   },
   mounted() {
@@ -806,7 +808,15 @@ export default {
     } else {
       this.getOptProducts(data).then(() => {
         this.opt_products = this.optProducts
-
+        for (var i in this.opt_products.items) {
+          let stores = this.opt_products.items[i].stores
+          for (var s in stores) {
+            let r_id = stores[s].remain_id
+            this.addItems[r_id] = {}
+            this.addItems[r_id].item = stores[s]
+            this.addItems[r_id].count = Number(stores[s].count)
+          }
+        }
         this.loading = false
       })
     }
@@ -840,7 +850,17 @@ export default {
   },
   watch: {
     optProducts: function (newVal) {
+      this.addItems = {}
       this.opt_products = newVal
+      for (var i in this.opt_products.items) {
+        let stores = this.opt_products.items[i].stores
+        for (var s in stores) {
+          let r_id = stores[s].remain_id
+          this.addItems[r_id] = {}
+          this.addItems[r_id].item = stores[s]
+          this.addItems[r_id].count = Number(stores[s].count)
+        }
+      }
     },
     optOfferProducts: function (newVal) {
       this.opt_products = newVal
@@ -864,10 +884,18 @@ export default {
     },
 
     $route() {
+      //this.addItems = {}
       this.updatePage(0)
+      //console.log(Object.keys(this.addItems).length)
       // if (this.$route.params.warehouse_id) {
       // 	this.get_opt_warehouse().then((this.opt_warehouse = this.optwarehouse));
       // }
+    },
+    '$route.params.requirement_id': function (oldVal, newVal) {
+      if (oldVal != newVal) {
+        this.addItems = {}
+        this.updatePage(0)
+      }
     },
   },
 }
