@@ -130,7 +130,7 @@ const router = createRouter({
                 {
                   path: 'purchases',
                   name: 'purchases',
-                  redirect: { name: 'purchasesCatalogIndexPage' },
+                  redirect: { name: 'purchasesVendors' },
                   meta: {
                     breadcrumb: {
                       label: 'Закупки',

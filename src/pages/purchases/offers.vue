@@ -1,5 +1,8 @@
 <template>
-  <section class="shipments" id="shipments">
+  <section
+    class="shipments wholesaleorders__content myorders__content orders_table wholesaleoffers__content"
+    id="shipments"
+  >
     <div class="myorders__content">
       <div class="d-top">
         <Breadcrumbs />
@@ -18,6 +21,18 @@
         @sort="filter"
         @paginate="paginate"
       />
+      <!-- <MinTable
+        :items_data="offers.items"
+        :total="offers.total"
+        :pagination_items_per_page="this.pagination_items_per_page"
+        :pagination_offset="this.pagination_offset"
+        :page="this.page"
+        :table_data="this.table_data"
+        :filters="this.filters"
+        @filter="filter"
+        @sort="filter"
+        @paginate="paginate"
+      /> -->
     </div>
   </section>
 </template>
@@ -26,10 +41,11 @@ import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
+import MinTable from '@/shared/ui/tableMin/table.vue'
 
 export default {
   name: 'purchasesOffers',
-  components: { Breadcrumbs, BaseTable, Loader },
+  components: { Breadcrumbs, BaseTable, Loader, MinTable },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -59,7 +75,7 @@ export default {
       },
       table_data: {
         id: {
-          label: 'Номер',
+          label: '№',
           type: 'link',
           link_to: 'purchasesOffer',
           link_params: {
@@ -78,21 +94,12 @@ export default {
             offer_id: 'id',
           },
           sort: true,
+          sort_desc: 'Дата заказа от новых к старым',
+          sort_asc: 'Дата заказа от старых к новым',
           class: 'cell_centeralign',
         },
-        // date_end: {
-        //   label: 'Дата окончания предложения',
-        //   type: 'link',
-        //   link_to: 'purchasesOffer',
-        //   link_params: {
-        //     id: this.$route.params.id,
-        //     offer_id: 'id',
-        //   },
-        //   sort: true,
-        //   class: 'cell_centeralign',
-        // },
-        initiator: {
-          label: 'Инициатор',
+        seller_name: {
+          label: 'Поставщик',
           type: 'link',
           link_to: 'purchasesOffer',
           link_params: {
@@ -100,8 +107,9 @@ export default {
             offer_id: 'id',
           },
           class: 'cell_centeralign',
+          items: ['seller_name', 'seller_inn', 'seller_address'],
         },
-        from_org_name: {
+        buyer_org_name: {
           label: 'Покупатель',
           type: 'link',
           link_to: 'purchasesOffer',
@@ -109,18 +117,17 @@ export default {
             id: this.$route.params.id,
             offer_id: 'id',
           },
-          sort: true,
-          class: 'cell_centeralign nowrap',
+          class: 'cell_centeralign',
+          items: ['buyer_name', 'buyer_inn', 'buyer_address'],
         },
-        store_name: {
-          label: 'Склад покупателя',
-          type: 'link',
+        initiator: {
+          label: 'Инициатор',
+          type: 'html',
           link_to: 'purchasesOffer',
           link_params: {
             id: this.$route.params.id,
             offer_id: 'id',
           },
-          sort: true,
           class: 'cell_centeralign',
         },
         cost: {
@@ -131,14 +138,22 @@ export default {
             id: this.$route.params.id,
             offer_id: 'id',
           },
-          sort: true,
+
           class: 'cell_centeralign nowrap',
         },
         status_name: {
           label: 'Статус',
           type: 'status',
           sort: true,
-          class: 'cell_centeralign',
+          sort_asc: 'Статус от новых к выполненным',
+          sort_desc: 'Статус от выполненным к новым',
+          class: 'cell_centeralign  cell_order-status',
+        },
+        comment: {
+          label: 'Комментарий',
+          type: 'prepare-html',
+
+          class: 'cell_centeralign order-table_comment',
         },
       },
     }
@@ -154,7 +169,7 @@ export default {
       this.loading = true
       this.unsetOffers()
       this.page = 1
-      if(data.filtersdata.status){
+      if (data.filtersdata.status) {
         data.filterstatus = data.filtersdata.status
       }
       this.getOffers(data).then(() => {
@@ -193,70 +208,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.myorders__content .dart-row {
-  justify-content: end;
-  margin-top: -39px;
-}
-.myorders__content .dart-mb-1 {
-  margin-bottom: 40px;
-}
-.myorders__content .p-inputtext {
-  width: 100%;
-}
-.myorders__content .form_input_group:after {
-  content: '\e01d';
-  font-family: 'Iconly' !important;
-  position: absolute;
-  font-size: 16.8px;
-  top: calc(50% - 8.4px);
-  right: 20px;
-}
-.myorders__content .p-inputtext {
-  padding-right: 40px;
-  box-shadow: none;
-  border: 0.2px solid #75757575;
-}
-.myorders__content .p-inputtext:enabled:focus {
-  border-color: #f92c0d;
-}
-.myorders__content .p-floatlabel:has(input:focus) label,
-.myorders__content .p-floatlabel:has(input:-webkit-autofill) label,
-.myorders__content .p-floatlabel:has(textarea:focus) label,
-.myorders__content .p-floatlabel:has(.p-inputwrapper-focus) label {
-  color: #f92c0d;
-}
-.myorders__content .d-table__col,
-.myorders__content .d-table__row:first-child > .d-table__col {
-  padding: 16px;
-}
-.cell_org-data .multyitem_cell {
-  width: fit-content;
-  padding: 0;
-  margin: 0;
-  display: inline-block;
-  margin-right: 3px;
-}
-.cell_org-data .multyitem_cell:first-child::after {
-  content: ',';
-  position: relative;
-}
-
-.cell_initiatior-data .multyitem_cell {
-  display: block;
-}
-.cell_initiatior-data .multyitem_cell:last-child span::before {
-  content: '(';
-  position: relative;
-}
-.cell_initiatior-data .multyitem_cell:last-child span::after {
-  content: ')';
-  position: relative;
-}
-.myorders__content .dart-form-group, .wholesaleoffers__content .dart-form-group{
-  margin-bottom: 0;
-}
-.myorders__content .p-select, .wholesaleoffers__content .p-select{
-  min-width:100%;
-}
-</style>
+<style lang="scss"></style>

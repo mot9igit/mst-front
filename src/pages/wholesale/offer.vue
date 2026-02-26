@@ -41,69 +41,111 @@
     </div>
     <div class="d-top-order-container-info">
       <h3>Информация о заказе</h3>
-      <div class="order-card__orderinfo dart-row">
-        <div class="order-card__orderinfo-grid d-col-md-3">
+      <div class="order-card__orderinfo order-card__orderinfo-line1">
+        <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Сумма</div>
-          <div class="order-card__orderinfo-grid-text">
+          <div class="order-card__orderinfo-grid-text nowrap">
             {{ this.offer?.cost != '' ? this.offer?.cost : '-' }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-4">
+
+        <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Инициатор</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.offer?.initiator_org_name != '' ? this.offer?.initiator_org_name : '' }}
           </div>
-          <div class="order-card__orderinfo-grid-text-down">
+          <div
+            class="order-card__orderinfo-grid-text-down order-card__orderinfo-grid-text-down-min"
+          >
             ({{ this.offer?.initiator_user_name != '' ? this.offer?.initiator_user_name : '' }})
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-4">
+
+        <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Поставщик</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.offer?.from_org_name != '' ? this.offer?.org_name : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
-            ИНН: {{ this.offer?.from_org_inn != '' ? this.offer?.org_inn : '' }}
+            {{ this.offer?.seller_name != '' ? this.offer?.seller_name : '' }} ИНН:
+            {{ this.offer?.seller_inn != '' ? this.offer?.seller_inn : '-' }}
           </div>
           <div class="order-card__orderinfo-grid-text-down">
-            <b>Магазин/склад:</b>
-            {{ this.offer?.store_name != '' ? this.offer?.org_store_name : '-' }}
-          </div>
-        </div>
-        <div class="order-card__orderinfo-grid d-col-md-4">
-          <div class="order-card__orderinfo-grid-lable">Покупатель</div>
-          <div class="order-card__orderinfo-grid-text">
-            {{ this.offer?.initiator_org_name != '' ? this.offer?.from_org_name : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text order-card__orderinfo-grid-text-nomarg">
-            ИНН: {{ this.offer?.org_inn != '' ? this.offer?.from_org_inn : '-' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text-down">
-            <b>Магазин/склад:</b>
-            {{ this.offer?.from_org_store != '' ? this.offer?.store_name : '-' }}
+            <b>Склад {{ this.offer?.seller_w_id ? ' #' + this.offer?.seller_w_id : '' }}</b>
+            <p>{{ this.offer?.seller_w_address ? this.offer?.seller_w_address : '' }}</p>
           </div>
         </div>
 
-        <div class="order-card__orderinfo-grid d-col-md-3">
-          <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
+        <div class="order-card__orderinfo-grid">
+          <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.offer?.delay != 0 ? Number.parseInt(this.offer?.delay) + ' дн.' : '-' }}
+            {{ this.offer?.buyer_name != '' ? this.offer?.buyer_name : '' }} ИНН:
+            {{ this.offer?.buyer_inn != '' ? this.offer?.buyer_inn : '' }}
+          </div>
+          <div class="order-card__orderinfo-grid-text-down">
+            <b>Склад {{ this.offer?.buyer_w_id ? ' #' + this.offer?.buyer_w_id : '' }}</b>
+            <p>{{ this.offer?.buyer_w_address ? this.offer?.buyer_w_address : '' }}</p>
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-3">
-          <div class="order-card__orderinfo-grid-lable">Оплата доставки</div>
-          <div class="order-card__orderinfo-grid-text">
+
+        <div class="order-card__orderinfo-grid">
+          <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
+          <div class="order-card__orderinfo-grid-text" v-if="this.offer?.delay_text">
+            {{ this.offer?.delay_text }}
+          </div>
+          <div class="order-card__orderinfo-grid-text" v-else>
             {{
-              this.offer?.delivery_payer && this.offer?.delivery_payer == 1
-                ? 'Поставщик'
-                : 'Покупатель'
+              this.offer?.delay != '' && Number.parseInt(this.offer?.delay) != 0
+                ? Number.parseInt(this.offer?.delay)
+                  ? this.offer?.delay + 'дн.'
+                  : this.offer?.delay
+                : '0дн.'
             }}
           </div>
         </div>
-        <div class="order-card__orderinfo-grid d-col-md-3">
+
+        <div class="order-card__orderinfo-grid">
+          <div class="order-card__orderinfo-grid-lable">Оплата доставки</div>
+          <div class="order-card__orderinfo-grid-text">{{ this.offer?.payer }}</div>
+        </div>
+
+        <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
           <div class="order-card__orderinfo-grid-text">
-            {{ this.offer?.day_delivery ? this.offer?.day_delivery : '?' }} дн.
+            {{ this.offer?.day_delivery }}дн. ({{ this.offer?.delivery_date }})
+          </div>
+        </div>
+      </div>
+      <div class="order-card__orderinfo order-card__orderinfo-line2">
+        <div class="order-card__orderinfo-grid">
+          <div class="order-card__orderinfo-grid-lable">Отсрочка</div>
+          <div class="order-card__orderinfo-grid-text" v-if="this.offer?.delay_text">
+            {{ this.offer?.delay_text }}
+          </div>
+          <div class="order-card__orderinfo-grid-text" v-else>
+            {{
+              this.offer?.delay != '' && Number.parseInt(this.offer?.delay) != 0
+                ? Number.parseInt(this.offer?.delay)
+                  ? this.offer?.delay + 'дн.'
+                  : this.offer?.delay
+                : '0дн.'
+            }}
+          </div>
+        </div>
+
+        <div class="order-card__orderinfo-grid">
+          <div class="order-card__orderinfo-grid-lable">Оплата доставки</div>
+          <div class="order-card__orderinfo-grid-text">{{ this.offer?.payer }}</div>
+        </div>
+
+        <div class="order-card__orderinfo-grid">
+          <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
+          <div class="order-card__orderinfo-grid-text">
+            {{ this.offer?.day_delivery }}дн. ({{ this.offer?.delivery_date }})
+          </div>
+        </div>
+
+        <div class="order-card__ordercomment">
+          <div class="order-card__ordercomment-container" v-if="offer.comment">
+            <div class="order-card__orderinfo-grid-lable">Комментарий:</div>
+            <div v-html="offer.comment"></div>
           </div>
         </div>
       </div>

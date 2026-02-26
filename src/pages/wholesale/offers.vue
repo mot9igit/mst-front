@@ -19,8 +19,6 @@
       @filter="filter"
       @sort="filter"
       @paginate="paginate"
-      @viewElem="viewOffer"
-      @deleteElem="delOffer"
     />
     <!-- <MinTable
       :items_data="offers.items"
@@ -98,17 +96,6 @@ export default {
           sort_asc: 'Дата заказа от старых к новым',
           class: 'cell_centeralign',
         },
-        // date_end: {
-        //   label: 'Дата окончания предложения',
-        //   type: 'link',
-        //   link_to: 'wholesaleOffer',
-        //   link_params: {
-        //     id: this.$route.params.id,
-        //     offer_id: 'id',
-        //   },
-        //   sort: true,
-        //   class: 'cell_centeralign',
-        // },
         seller_name: {
           label: 'Поставщик',
           type: 'link',
@@ -160,7 +147,7 @@ export default {
           sort: true,
           sort_asc: 'Статус от новых к выполненным',
           sort_desc: 'Статус от выполненным к новым',
-          class: 'cell_centeralign',
+          class: 'cell_centeralign  cell_order-status',
         },
         comment: {
           label: 'Комментарий',
@@ -288,35 +275,40 @@ export default {
 </script>
 
 <style lang="scss">
-.wholesaleoffers__content .vue3-treeselect__placeholder, .vue3-treeselect__single-value {
-    font-size: 16px;
-    line-height: 32px;
-  }
-@media (width <= 1580px){
-  .wholesaleoffers__content .vue3-treeselect__placeholder, .vue3-treeselect__single-value {
+.wholesaleoffers__content .vue3-treeselect__placeholder,
+.vue3-treeselect__single-value {
+  font-size: 16px;
+  line-height: 32px;
+}
+@media (width <= 1580px) {
+  .wholesaleoffers__content .vue3-treeselect__placeholder,
+  .vue3-treeselect__single-value {
     font-size: 16px;
     line-height: 32px;
   }
 }
-@media (width <= 1280px){
-  .wholesaleoffers__content .vue3-treeselect__control{
+@media (width <= 1280px) {
+  .wholesaleoffers__content .vue3-treeselect__control {
     max-height: 30px;
     height: 30px;
   }
-  .wholesaleoffers__content .vue3-treeselect__placeholder, .vue3-treeselect__single-value {
+  .wholesaleoffers__content .vue3-treeselect__placeholder,
+  .vue3-treeselect__single-value {
     font-size: 12px;
     line-height: 28px;
   }
 }
-@media (width <= 1024px){
-  .wholesaleoffers__content .dart-form-group .vue3-treeselect .vue3-treeselect__control,.wholesaleoffers__content .vue3-treeselect__control{
+@media (width <= 1024px) {
+  .wholesaleoffers__content .dart-form-group .vue3-treeselect .vue3-treeselect__control,
+  .wholesaleoffers__content .vue3-treeselect__control {
     max-height: 24px;
     height: 24px;
   }
   .wholesaleoffers__content .dart-form-group .vue3-treeselect__multi-value-item {
     font-size: 8px;
   }
-  .wholesaleoffers__content .vue3-treeselect__placeholder, .vue3-treeselect__single-value {
+  .wholesaleoffers__content .vue3-treeselect__placeholder,
+  .vue3-treeselect__single-value {
     font-size: 9px;
     line-height: 22px;
   }
