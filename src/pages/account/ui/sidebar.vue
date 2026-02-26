@@ -9,12 +9,7 @@
       <div class="sidebar__content-wrapper">
         <div class="sidebar__logo-wrapper">
           <router-link
-            :to="{
-              name: 'purchasesVendors',
-              params: {
-                id: this.$route.params.id,
-              },
-            }"
+            :to="'/' + this.$route.params.id + '/purchases/vendors'"
             class="sidebar__logo-container"
             @click.prevent="!active ? sidebarToggle() : ''"
           >
