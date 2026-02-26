@@ -576,7 +576,7 @@
     </div>
   </div>
   <teleport to="body">
-    <customModal v-model="this.salesModal" class="sales_cart">
+    <customModal v-model="this.salesModal" class="sales_cart noclose_click">
       <div v-if="actionSale == 0">
         <h3>Внимание, отключение акций!</h3>
         <p>Акция: {{ saleOff }} будет отключена</p>
@@ -589,21 +589,21 @@
       <div class="sales_cart-buttons">
         <button
           type="button"
-          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
+          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel noclose_click"
           @click.prevent="this.salesModal = false"
           v-if="actionSale == 0"
         >
           Отмена
         </button>
         <button
-          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow noclose_click"
           @click.prevent="((accept = 1), ElemCount(countObject), (salesModal = false))"
         >
           Принять
         </button>
       </div>
     </customModal>
-    <customModal v-model="modalComment" class="order-card__modal-comment">
+    <customModal v-model="modalComment" class="order-card__modal-comment noclose_click">
       <h3>Введите комментарий к заказу</h3>
       <Editor
         v-model="this.modalCommentText"
@@ -620,13 +620,13 @@
         <button
           type="button"
           href="#"
-          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
+          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel noclose_click"
           @click.prevent="((modalCommentText = ''), (modalComment = false))"
         >
           Отмена
         </button>
         <button
-          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow noclose_click"
           @click.prevent="saveComment"
         >
           Сохранить
@@ -635,7 +635,7 @@
     </customModal>
     <customModal
       v-model="modalCommentDelete"
-      class="order-card__modal-comment order-card__modal-comment-del"
+      class="order-card__modal-comment order-card__modal-comment-del noclose_click"
     >
       <h3>Удалить комментарий?</h3>
 
@@ -643,27 +643,33 @@
         <button
           type="button"
           href="#"
-          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel"
+          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel noclose_click"
           @click.prevent="modalCommentDelete = false"
         >
           Отмена
         </button>
         <button
-          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow noclose_click"
           @click.prevent="deleteComment"
         >
           Удалить
         </button>
       </div>
     </customModal>
-    <customModal v-model="this.showClearBasketModal" class="clear_cart">
+    <customModal v-model="this.showClearBasketModal" class="clear_cart noclose_click">
       <b>Вы уверены, что хотите очистить корзину?</b>
       <p>Это действие невозможно будет отменить</p>
-      <button class="d-button d-button-primary d-button-primary-small" @click="this.clearCart()">
+      <button
+        class="d-button d-button-primary d-button-primary-small noclose_click"
+        @click="this.clearCart()"
+      >
         Да, очистить!
       </button>
     </customModal>
-    <customModal v-model="this.showChangedCount" class="clear_cart cart_not-avialable">
+    <customModal
+      v-model="this.showChangedCount"
+      class="clear_cart cart_not-avialable noclose_click"
+    >
       <h3>На складе не хватает товара</h3>
       <p>
         Пока вы формировали заказ, у Поставщиков изменилось количество товаров на складе. Мы внесли
@@ -703,13 +709,13 @@
       </div>
       <div class="basket-change__buttons">
         <div
-          class="d-button d-button-primary d-button-primary-small"
+          class="d-button d-button-primary d-button-primary-small noclose_click"
           @click="this.showChangedCount = false"
         >
           Проверить заказ
         </div>
         <div
-          class="d-button d-button-primary d-button-primary-small"
+          class="d-button d-button-primary d-button-primary-small noclose_click"
           @click.prevent="
             () => {
               this.order_to_basket = true
@@ -1067,6 +1073,7 @@ export default {
         !event.target.closest('.order__sheet') &&
         !event.target.closest('.order-card__modal-comment') &&
         !event.target.closest('.header__cart') &&
+        !event.target.closest('.noclose_click') &&
         this.active === true
       ) {
         this.$emit('close')
