@@ -9,7 +9,12 @@
       <div class="sidebar__content-wrapper">
         <div class="sidebar__logo-wrapper">
           <router-link
-            :to="'/' + this.$route.params.id + '/purchases/catalog'"
+            :to="{
+              name: 'purchasesVendors',
+              params: {
+                id: this.$route.params.id,
+              },
+            }"
             class="sidebar__logo-container"
             @click.prevent="!active ? sidebarToggle() : ''"
           >
@@ -32,7 +37,7 @@
             <!-- <button class="sidebar__toggle" @click.prevent="sidebarToggle()"> -->
             <button class="sidebar__toggle" @click.prevent="iconClick()">
               <i class="d-icon-burger sidebar__toggle-icon"></i>
-            </button> 
+            </button>
           </div>
 
           <div class="sidebar__info">
@@ -154,7 +159,6 @@
           <sidebarMenu
             :activeOrganization="activeOrganization"
             :toggle="Boolean(active)"
-            
             v-if="this.$route.params.id"
           />
           <!--@sidebarToggle="sidebarToggle()"-->
@@ -412,19 +416,18 @@ export default {
     sidebarToggle() {
       this.isMobile = localStorage.getItem('global.isMobile')
       let content = document.getElementById('content')
-      if(this.active === false){
+      if (this.active === false) {
         content.classList.remove('sidebar--margin')
-      }else{
+      } else {
         content.classList.add('sidebar--margin')
       }
-                
+
       if (this.isMobile === true) {
         this.active = !this.active
       } else {
         this.active = !this.active
         localStorage.setItem('sidebar.position', Number(this.active))
       }
-
     },
     clickAround() {
       document.addEventListener('click', (event) => {
@@ -489,13 +492,12 @@ export default {
       let sh = document.querySelector('#app')
       if (sh.clientWidth <= 1024) {
         let content = document.getElementById('content')
-        if(this.active){
+        if (this.active) {
           content.classList.add('sidebar--margin')
-        }else{
+        } else {
           content.classList.remove('sidebar--margin')
         }
-        
-        
+
         this.sidebarToggle()
       }
     },
@@ -530,30 +532,27 @@ export default {
     if (isMob === true) {
       this.active = 1
     }
-    
+
     let sidebar = document.getElementById('sidebar')
     let content = document.getElementById('content')
     let sh = document.querySelector('#app')
     let fullSidebar = document.getElementById('sidebar__inner--desktop')
     let i = 0
-      
+
     sh.addEventListener('mousemove', (e) => {
-    
-      if (sh.clientWidth > 1024 && e.clientX <= sidebar.clientWidth && e.clientX > 2 && i==0) {
-            setTimeout(() => {
-              content.classList.add('sidebar--margin')
-              this.active = false
-              i = 1
-            }, 500)   
+      if (sh.clientWidth > 1024 && e.clientX <= sidebar.clientWidth && e.clientX > 2 && i == 0) {
+        setTimeout(() => {
+          content.classList.add('sidebar--margin')
+          this.active = false
+          i = 1
+        }, 500)
       }
-      if (sh.clientWidth > 1024 && e.clientX > fullSidebar.clientWidth && i==1) {
-            
-              this.active = true
-              content.classList.remove('sidebar--margin')
-              i=0      
+      if (sh.clientWidth > 1024 && e.clientX > fullSidebar.clientWidth && i == 1) {
+        this.active = true
+        content.classList.remove('sidebar--margin')
+        i = 0
       }
     })
-    
 
     this.setOrgs()
 
@@ -711,22 +710,21 @@ aside {
   height: 32px;
   width: 100%;
 }
-.sidebar--margin{
+.sidebar--margin {
   margin-left: var(--sidebar-width);
 }
-.sidebar--full{
+.sidebar--full {
   position: absolute;
 }
-@media (width <= 1024px){
+@media (width <= 1024px) {
   .sidebar__logo-toggle {
     display: flex !important;
     width: auto;
+  }
 }
-}
-@media (width <= 600px){
-  .sidebar--margin{
+@media (width <= 600px) {
+  .sidebar--margin {
     margin-left: 0;
   }
 }
-
 </style>
