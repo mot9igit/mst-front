@@ -41,12 +41,8 @@
             v-for="(subitem, index) in item.children"
             :key="index"
           >
-            <router-link
-              class="sidebar__item-list-item-content"
-              :to="subitem.to"
-              
-            >
-            <!--@click.prevent="HideSidebar()"-->
+            <router-link class="sidebar__item-list-item-content" :to="subitem.to">
+              <!--@click.prevent="HideSidebar()"-->
               <i
                 class="sidebar__item-list-item-icon d-icon-doc"
                 v-if="subitem.icon == '' || subitem.icon == undefined"
@@ -126,11 +122,11 @@ export default {
           collapse: this.collapsed('purchases'),
           to: { name: 'purchases', params: { id: this.$route.params.id } },
           children: [
-            {
-              name: 'Оптовый каталог',
-              icon: 'd-icon-doc',
-              to: { name: 'purchasesCatalogIndex', params: { id: this.$route.params.id } },
-            },
+            // {
+            //   name: 'Оптовый каталог',
+            //   icon: 'd-icon-doc',
+            //   to: { name: 'purchasesCatalogIndex', params: { id: this.$route.params.id } },
+            // },
             {
               name: 'Мои заказы',
               icon: 'd-icon-cart',

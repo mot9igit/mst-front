@@ -117,7 +117,7 @@
           <div class="clients__card-top">
             <div class="clients__card-info">
               <div class="clients__card-info-image-container">
-                <img src="/icons/spo-logo.svg" alt="" class="clients__card-info-image" />
+                <img :src="item.image" alt="" class="clients__card-info-image" />
               </div>
               <div class="clients__card-info-content">
                 <p class="clients__card-info-title">{{ item.name }}</p>
@@ -419,14 +419,4 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
-.clients__card-right-right {
-  justify-content: end;
-}
-.modal__content .clients-info__label {
-  margin: 40px 0 20px;
-}
-.modal__content .d-button {
-  margin-top: 40px;
-}
-</style>
+<style lang="scss" scoped></style>
