@@ -7779,3 +7779,114 @@ aside button {
 .shipments .clients__card {
   margin-top: 0 !important;
 }
+.products-collection-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.collection__block-conditions-category-actions .p-multiselect {
+  width: 100%;
+  max-width: 300px;
+}
+
+.collection__block-conditions-category-actions .p-treeselect {
+  width: 100%;
+  max-width: 400px;
+}
+
+.collection__block {
+  gap: 54px;
+}
+.collection__block-title-wrapper {
+  max-width: 348px;
+}
+.collection__block-inner {
+  gap: 54px;
+}
+.d-tab2--active {
+  font-weight: 500;
+}
+.collection__block-container .p-tablist-tab-list {
+  background: none;
+  border: none;
+}
+.collection__block-container .p-tabpanels {
+  padding: 0 0 0 0 !important;
+}
+.collection__block-conditions {
+  flex-direction: row;
+}
+.collection__block-radio-container {
+  width: auto;
+}
+.collection__block--alt {
+  gap: 16px;
+}
+.collection__modal .modal-content {
+  max-width: 764px;
+  padding-bottom: 16px;
+}
+.collection__modal h2 {
+  margin-top: -24px;
+  margin-bottom: 32px;
+}
+.collection__modal .chip {
+  background: #ededed;
+  border-radius: 30px;
+  border: none !important;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 21px;
+  color: #282828;
+  padding: 0px !important;
+  margin: 0 16px 0 0 !important;
+  transition: all 0.2s ease;
+}
+.collection__modal .chips {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.collection__modal .chip.collection__modal-chip-active {
+  background: #f92c0d;
+  color: #ededed;
+}
+.collection__modal .chip button {
+  width: 100%;
+  min-width: 100%;
+  padding: 10px 24px;
+}
+.collection__modal-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 38px;
+}
+.collection__modal-buttons button {
+  max-width: 100px;
+  min-width: 100px;
+}
+.collection__modal-cansel {
+  background: #fbfbfb;
+  border: 1px solid #282828;
+  color: #282828;
+}
+.collection__modal-cansel:hover {
+  background: #282828;
+  color: #fbfbfb;
+}
+.collection__block .p-tabpanel {
+  width: 100%;
+  min-width: 100%;
+}
+.collection__upload-title-wrapper i {
+  font-size: 40px;
+  color: #75757575;
+}
+.collection__search {
+  margin-top: 32px;
+  padding: 1px 2px 2px 0px;
+}
+.d-table__wrapper {
+  width: 100%;
+}

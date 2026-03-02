@@ -473,18 +473,18 @@ export default {
         console.log(data)
       this.canselOptOrder(data).then((res) => {
         this.loading = false
-        if (res.data.data.success) {
+        if (res.data.success) {
           this.$toast.add({
             severity: 'success',
             summary: 'Заказ успешно отменен!',
-            detail: res.data.data.message,
+            detail: res.data.message,
             life: 3000,
           })
         } else {
           this.$toast.add({
             severity: 'error',
             summary: 'Ошибка',
-            detail: res.data.data.message,
+            detail: res.data.message,
             life: 3000,
           })
         }
