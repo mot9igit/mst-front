@@ -396,6 +396,7 @@ export default {
       const data = {
         page: this.page,
         perpage: this.per_page,
+        filters: this.filters,
       }
       if (
         this.$route.name == 'purchasesCatalogSearch' ||
@@ -509,6 +510,7 @@ export default {
       const data = {
         page: this.page,
         perpage: this.per_page,
+        filters: this.filters,
       }
       if (this.$route.name == 'purchasesCatalogSearch') {
         data.search = this.$route.query.search
