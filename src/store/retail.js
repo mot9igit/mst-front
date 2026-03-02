@@ -17,6 +17,7 @@ export default {
     report_copo_all: [],
     cardstatus: [],
     msproducts: [],
+    stores: [],
   },
   actions: {
     async getOrders({ commit }, { filter, sort, page, perpage, type }) {
@@ -225,6 +226,17 @@ export default {
       }
       return response
     },
+    async getRetailStores({ commit }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action: 'get/filter/stores',
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_ORDERS_STORES', response.data)
+      }
+      return response
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },
@@ -300,6 +312,9 @@ export default {
     SET_MSPRODUCTS: (state, data) => {
       state.msproducts = data.data
     },
+    SET_ORDERS_STORES: (state, data) => {
+      state.stores = data.data.stores
+    },
   },
   getters: {
     orders(state) {
@@ -334,6 +349,9 @@ export default {
     },
     msproducts(state) {
       return state.msproducts
+    },
+    stores(state) {
+      return state.stores
     },
   },
 }

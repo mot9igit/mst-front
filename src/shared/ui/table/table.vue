@@ -37,6 +37,7 @@
             </option>
           </select>
         </div>
+
         <div class="dart-form-group" v-if="ffilter.type == 'dropdown'">
           <SelectInput
             v-model="filtersdata[i]"
@@ -170,8 +171,8 @@
                 <a class="sort" href="#" v-if="row.sort" @click.prevent="sorting(index)">
                   <span class="d-row-label">{{ row.label }}</span>
                   <span v-if="this.sort[index]" class="d-table-sort-active">
-                    <i class="d-icon-swap swap-rotate" v-if="this.sort[index].dir == 'ASC'" ></i>
-                    <i class="d-icon-swap" v-else ></i>
+                    <i class="d-icon-swap swap-rotate" v-if="this.sort[index].dir == 'ASC'"></i>
+                    <i class="d-icon-swap" v-else></i>
                     <!-- <mdicon name="sort-ascending" size="18" v-if="this.sort[index].dir == 'ASC'" />
                     <mdicon name="sort-descending" size="18" v-else /> -->
                   </span>
@@ -276,7 +277,7 @@ export default {
     'disapproveElem',
     'editNumber',
     'actionCell',
-    "saleModal",
+    'saleModal',
   ],
   components: {
     vTableRow,
@@ -495,7 +496,7 @@ export default {
     actionCell(data) {
       this.$emit('actionCell', data)
     },
-    saleModal(data){
+    saleModal(data) {
       this.$emit('saleModal', data)
     },
     // filterglobalTable(checked) {
@@ -812,87 +813,86 @@ tbody {
 .sort .d-table-sort {
   line-height: 140%;
 }
-.d-table-sort{
+.d-table-sort {
   display: inline-block;
   width: 24px;
   min-width: 24px;
   height: 24px;
-  background: #3E3E3E;
+  background: #3e3e3e;
   border-radius: 50px;
   padding-top: 1.5px;
-  color: #FBFBFB;
+  color: #fbfbfb;
 }
-.d-table-sort i{
+.d-table-sort i {
   transform: rotate(90deg);
   font-size: 10.5px;
 }
-.d-table-sort-active{
+.d-table-sort-active {
   display: inline-block;
   width: 24px;
   min-width: 24px;
   height: 24px;
-  background: #FBFBFB;
+  background: #fbfbfb;
   border-radius: 50px;
   padding-top: 2px;
   color: #282828;
 }
-.d-table-sort-active i{
+.d-table-sort-active i {
   font-size: 12px;
 }
-.d-row-label{
+.d-row-label {
   line-height: 123%;
 }
-.sort{
-  display:flex;
+.sort {
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
 }
-.swap-rotate{
+.swap-rotate {
   transform: scale(-1, 1);
 }
 @media (width <= 1280px) {
-  .d-table-sort{
+  .d-table-sort {
     width: 20px;
     min-width: 20px;
     height: 20px;
     padding-left: 1px;
     padding-top: 1.5px;
-
   }
-  .d-table-sort i{
+  .d-table-sort i {
     font-size: 9px;
   }
-  .d-table-sort-active{
+  .d-table-sort-active {
     width: 20px;
     min-width: 20px;
     height: 20px;
     padding-left: 0.5px;
     padding-top: 2px;
   }
-  .d-table-sort-active i{
+  .d-table-sort-active i {
     font-size: 9.5px;
   }
 }
 @media (width <= 1024px) {
-  .d-table-sort{
+  .d-table-sort {
     width: 16px;
     min-width: 16px;
     height: 16px;
     padding-left: 1px;
     padding-top: 0.5px;
   }
-  .d-table-sort i{
+  .d-table-sort i {
     font-size: 7px;
   }
-  .d-table-sort-active{
+  .d-table-sort-active {
     width: 16px;
     min-width: 16px;
     height: 16px;
     padding-left: 0.5px;
     padding-top: 0.5px;
   }
-  .d-table-sort-active i{
+  .d-table-sort-active i {
     font-size: 7.5px;
   }
 }
