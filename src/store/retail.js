@@ -19,10 +19,10 @@ export default {
     msproducts: [],
   },
   actions: {
-    async getOrders({ commit }, { filter, sort, page, perpage }) {
+    async getOrders({ commit }, { filter, sort, page, perpage, type }) {
       const data = {
         id: router.currentRoute._value.params.id,
-        type: router.currentRoute._value.params.type,
+        type: type,
         filter: filter,
         page: page,
         sort: sort,

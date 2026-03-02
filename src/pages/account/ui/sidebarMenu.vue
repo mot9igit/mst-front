@@ -190,6 +190,11 @@ export default {
               icon: 'd-icon-doc',
               to: { name: 'retailOrders', params: { id: this.$route.params.id } },
             },
+            // {
+            //   name: 'Заказы RFBS',
+            //   icon: 'd-icon-RS',
+            //   to: { name: 'retailOrdersRFBS', params: { id: this.$route.params.id } },
+            // },
             {
               name: 'Акции',
               icon: 'd-icon-percent-rounded',
@@ -299,5 +304,11 @@ export default {
 
 .sidebar__item-list-item .router-link-active {
   color: #f92c0d;
+}
+
+.d-icon-RS:before {
+  content: 'RS';
+  font-family: 'Geist';
+  font-weight: 500;
 }
 </style>

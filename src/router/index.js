@@ -600,18 +600,47 @@ const router = createRouter({
                           path: '',
                           name: 'retailOrders',
                           props: true,
-                          label: 'Заказы',
+                          label: 'Заказы МС',
                           component: () => import('../pages/retail/orders.vue'),
                         },
                         {
                           path: ':order_id',
                           name: 'retailOrder',
                           props: true,
-                          label: 'Заказ',
+                          label: 'Заказ МС',
                           component: () => import('../pages/retail/order.vue'),
                           meta: {
                             breadcrumb: {
-                              label: 'Розничные заказ',
+                              label: 'Розничный заказ',
+                            },
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      path: 'ordersRFBS',
+                      meta: {
+                        breadcrumb: {
+                          label: 'Pаказы RFBS',
+                        },
+                      },
+                      children: [
+                        {
+                          path: '',
+                          name: 'retailOrdersRFBS',
+                          props: true,
+                          label: 'Заказы RFBS',
+                          component: () => import('../pages/retail/ordersRFBS.vue'),
+                        },
+                        {
+                          path: ':order_id',
+                          name: 'retailOrderRFBS',
+                          props: true,
+                          label: 'Заказ RFBS',
+                          component: () => import('../pages/retail/orderRFBS.vue'),
+                          meta: {
+                            breadcrumb: {
+                              label: 'Розничный заказ RFBS',
                             },
                           },
                         },
