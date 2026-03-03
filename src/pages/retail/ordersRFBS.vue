@@ -5,8 +5,9 @@
     </div>
 
     <h1>Заказы RFBS</h1>
+    <Loader v-if="loading" />
     <BaseTable
-      v-if="!loading"
+      v-else
       :items_data="orders.orders"
       :total="orders.total"
       :pagination_items_per_page="this.pagination_items_per_page"
@@ -24,10 +25,11 @@
 import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
+import Loader from '@/shared/ui/Loader.vue'
 
 export default {
   name: 'RetailOrdersRFBS',
-  components: { Breadcrumbs, BaseTable },
+  components: { Breadcrumbs, BaseTable, Loader },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -171,13 +173,19 @@ export default {
     },
   },
   mounted() {
-    this.getRetailStores()
+    this.getRetailStores().then(() => {
+      setTimeout(() => {
+        this.loading = false
+      }, 5000)
+    })
     this.getOrders({
       page: this.page,
       perpage: this.pagination_items_per_page,
       type: 'RFBS',
     }).then(() => {
-      this.loading = false
+      setTimeout(() => {
+        this.loading = false
+      }, 500)
     })
   },
   computed: {
