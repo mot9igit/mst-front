@@ -31,7 +31,10 @@
       <div v-html="value[cell_key]"></div>
     </div>
     <div class="cell_value" v-else-if="cell_data.type == 'prepare-html'" :class="cell_data.class">
-      <div class="d-table-html" :class="{'d-table-html-text' : value[cell_key]}"><p class="cell_data-label" v-if="value[cell_key]">{{cell_data.label}}:</p>{{ prepareHtml(value[cell_key]) }} </div>
+      <div class="d-table-html" :class="{ 'd-table-html-text': value[cell_key] }">
+        <p class="cell_data-label" v-if="value[cell_key]">{{ cell_data.label }}:</p>
+        {{ prepareHtml(value[cell_key]) }}
+      </div>
     </div>
     <div class="cell_value" v-else-if="cell_data.type == 'gist'" :class="cell_data.class">
       <Chart
@@ -128,13 +131,28 @@
     </div>
     <div
       class="cell_value"
+      v-if="cell_data.type == 'img_link' && cell_data.image"
+      :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
+    >
+      <div class="d-table-image-cell">
+        <img :src="value[cell_data.image]" class="cell-flex-d-table2__info-header-image-item" />
+        <p class="d-table2__info-header-title">{{ value[cell_key] }}</p>
+      </div>
+    </div>
+
+    <div
+      class="cell_value"
       :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'sales'"
     >
-      <div class="order-product-actions" @click.prevent="this.$emit('saleModal', value)" v-if="countSales(value[cell_key]) > 0">
-          <div>{{ countSales(value[cell_key]) }}</div><div>Смотреть</div>
+      <div
+        class="order-product-actions"
+        @click.prevent="this.$emit('saleModal', value)"
+        v-if="countSales(value[cell_key]) > 0"
+      >
+        <div>{{ countSales(value[cell_key]) }}</div>
+        <div>Смотреть</div>
       </div>
-
     </div>
     <div
       class="cell_value"
@@ -176,14 +194,9 @@
       :class="cell_key == 'cell_status' ? 'cell_status' + cell_data.class : cell_data.class"
       v-else-if="cell_data.type == 'status'"
     >
-      <div class="cell--status"
-        :style="
-          'color: #fff;background-color: #' +
-          value.status_color
-        "
-      >
+      <div class="cell--status" :style="'color: #fff;background-color: #' + value.status_color">
         {{ value['status_name'] }}
-  </div>
+      </div>
     </div>
     <div
       class="cell_value"
@@ -401,25 +414,24 @@ export default {
     actionCell(id) {
       this.$emit('actionCell', id)
     },
-    prepareHtml(code){
-      if(code){
+    prepareHtml(code) {
+      if (code) {
         let new_string = code.replace(/<(.|\n)*?>/g, '')
         new_string = new_string.replace(/\&nbsp;/g, ' ')
         new_string = new_string.replace(/\n/g, '')
-        if(new_string.length > 120){
-          new_string = new_string.substring(0,120)+"..."
+        if (new_string.length > 120) {
+          new_string = new_string.substring(0, 120) + '...'
         }
         this.$emit('rowClass', true)
         return new_string
-      }else{
+      } else {
         return ''
       }
-
     },
-    countSales(sale){
+    countSales(sale) {
       let count = 0
-      for(var i in sale){
-        if(sale[i].enabled == 1){
+      for (var i in sale) {
+        if (sale[i].enabled == 1) {
           count++
         }
       }
@@ -541,57 +553,67 @@ export default {
 .p-buttonset {
   white-space: nowrap;
 }
-.d-table-html{
+.d-table-html {
   width: 100%;
-    position: relative;
-    word-wrap: break-word;
-    text-wrap: wrap;
-    white-space: pre-wrap; /* css-3 */
-    white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
-    white-space: -pre-wrap; /* Opera 4-6 */
-    white-space: -o-pre-wrap; /* Opera 7 */
-    overflow-wrap: break-word;
-    overflow: hidden;
+  position: relative;
+  word-wrap: break-word;
+  text-wrap: wrap;
+  white-space: pre-wrap; /* css-3 */
+  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  overflow-wrap: break-word;
+  overflow: hidden;
 }
-.cell--status{
+.cell--status {
   font-size: 12px;
-  line-height:14px;
+  line-height: 14px;
   padding: 3px 9px;
-  font-weight:600;
+  font-weight: 600;
   border-radius: 41px;
 }
 .order-product-actions {
-    display: flex;
-    gap: 0;
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  gap: 0;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
 }
-.order-product-actions div{
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 18px;
-    color: #282828;
-    background: #CDF0A9;
-    border-radius: 4px;
-    padding: 3px 5px;
+.order-product-actions div {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 18px;
+  color: #282828;
+  background: #cdf0a9;
+  border-radius: 4px;
+  padding: 3px 5px;
 }
-.order-product-actions div:first-child{
-    padding: 3px 8px;
+.order-product-actions div:first-child {
+  padding: 3px 8px;
 }
 @media (width <= 1536px) {
-    .shipments .order-product-actions div {
-        font-size: 12px;
-    }
+  .shipments .order-product-actions div {
+    font-size: 12px;
+  }
 }
 @media (width <= 1280px) {
-    .shipments .order-product-actions div {
-        font-size: 10px;
-    }
+  .shipments .order-product-actions div {
+    font-size: 10px;
+  }
 }
 @media (width <= 1024px) {
-    .shipments .order-product-actions div {
-        font-size: 8px;
-    }
+  .shipments .order-product-actions div {
+    font-size: 8px;
+  }
+}
+.d-table-image-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.d-table-image-cell img {
+  width: 16px;
+  height: 16px;
+  border-radius: 30px;
 }
 </style>

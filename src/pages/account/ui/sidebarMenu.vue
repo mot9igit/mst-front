@@ -186,15 +186,15 @@ export default {
           to: { name: 'retailOrders', params: { id: this.$route.params.id } },
           children: [
             {
-              name: 'Заказы',
+              name: 'Заказы МС',
               icon: 'd-icon-doc',
               to: { name: 'retailOrders', params: { id: this.$route.params.id } },
             },
-            // {
-            //   name: 'Заказы RFBS',
-            //   icon: 'd-icon-RS',
-            //   to: { name: 'retailOrdersRFBS', params: { id: this.$route.params.id } },
-            // },
+            {
+              name: 'Заказы RFBS',
+              icon: 'd-icon-RS',
+              to: { name: 'retailOrdersRFBS', params: { id: this.$route.params.id } },
+            },
             {
               name: 'Акции',
               icon: 'd-icon-percent-rounded',

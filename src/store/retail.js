@@ -18,6 +18,8 @@ export default {
     cardstatus: [],
     msproducts: [],
     stores: [],
+    deliveries: [],
+    statuses: [],
   },
   actions: {
     async getOrders({ commit }, { filter, sort, page, perpage, type }) {
@@ -237,6 +239,28 @@ export default {
       }
       return response
     },
+    async getRetailDeliveries({ commit }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action: 'get/filter/dels',
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_ORDERS_DELS', response.data)
+      }
+      return response
+    },
+    async getRetailStatuses({ commit }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action: 'get/filter/status',
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_ORDERS_STATUSES', response.data)
+      }
+      return response
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },
@@ -313,7 +337,13 @@ export default {
       state.msproducts = data.data
     },
     SET_ORDERS_STORES: (state, data) => {
-      state.stores = data.data.stores
+      state.stores = data.data
+    },
+    SET_ORDERS_DELS: (state, data) => {
+      state.deliveries = data.data
+    },
+    SET_ORDERS_STATUSES: (state, data) => {
+      state.statuses = data.data
     },
   },
   getters: {
@@ -352,6 +382,12 @@ export default {
     },
     stores(state) {
       return state.stores
+    },
+    deliveries(state) {
+      return state.deliveries
+    },
+    statuses(state) {
+      return state.statuses
     },
   },
 }

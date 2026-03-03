@@ -122,6 +122,7 @@
             :fluid="true"
             @select="setFilter"
           /> -->
+
           <TreeSelect
             v-model="filtersdata[i]"
             :multiple="true"
@@ -130,6 +131,26 @@
             valueFormat="id"
             :limit="1"
             :limitText="(count) => `и еще ${count}`"
+            @select="setFilter"
+            @deselect="setFilter"
+          />
+        </div>
+        <div class="dart-form-group" v-if="ffilter.type == 'round_tree'">
+          <!-- <TreeSelect
+            v-model="filtersdata[i]"
+            appendTo="self"
+            :options="ffilter.values"
+            :maxSelectedLabels="3"
+            selectionMode="single"
+            :placeholder="ffilter.placeholder"
+            class="w-full"
+            :fluid="true"
+            @select="setFilter"
+          /> -->
+          <roundSelect
+            :name="i"
+            :options="ffilter.values"
+            :placeholder="ffilter.placeholder"
             @select="setFilter"
             @deselect="setFilter"
           />
@@ -259,6 +280,7 @@ import AutoComplete from 'primevue/autocomplete'
 import Checkbox from 'primevue/checkbox'
 import InputNumber from 'primevue/inputnumber'
 import Skeleton from 'primevue/skeleton'
+import roundSelect from '../roundSelect.vue'
 
 export default {
   name: 'v-table',
@@ -292,6 +314,7 @@ export default {
     Checkbox,
     InputText,
     FloatLabel,
+    roundSelect,
   },
   props: {
     editMode: {
@@ -518,7 +541,7 @@ export default {
     // 	}));
     // },
     setFilter(type = '0') {
-      // console.log(type)
+      //console.log(type)
       if (type === 'filter') {
         if (this.filter.length >= 3 || this.filter.length === 0) {
           setTimeout(() => {
