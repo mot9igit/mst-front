@@ -151,8 +151,8 @@
             :name="i"
             :options="ffilter.values"
             :placeholder="ffilter.placeholder"
-            @select="setFilter"
-            @deselect="setFilter"
+            @select="setFilters"
+            @deselect="setFilters"
           />
         </div>
         <div class="dart-form-group" v-if="ffilter.type == 'checkbox'">
@@ -540,6 +540,19 @@ export default {
     // 		checked: checked || this.selectedItems.includes(item.id)
     // 	}));
     // },
+    setFilterS(data) {
+      //console.log(type)
+      setTimeout(() => {
+        this.$emit('filter', {
+          filter: this.filter,
+          filtersdata: toRaw(this.filtersdata),
+          filters: data,
+          sort: this.sort,
+          page: 1,
+          perpage: this.pagination_items_per_page,
+        })
+      })
+    },
     setFilter(type = '0') {
       //console.log(type)
       if (type === 'filter') {
@@ -565,6 +578,18 @@ export default {
           })
         }, 500)
       }
+    },
+    setFilters(data) {
+      setTimeout(() => {
+        this.$emit('filter', {
+          filter: this.filter,
+          filtersdata: toRaw(this.filtersdata),
+          filters: data,
+          sort: this.sort,
+          page: 1,
+          perpage: this.pagination_items_per_page,
+        })
+      })
     },
     sorting(key) {
       if (Object.prototype.hasOwnProperty.call(this.sort, key)) {

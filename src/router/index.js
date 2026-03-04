@@ -621,7 +621,7 @@ const router = createRouter({
                       path: 'ordersRFBS',
                       meta: {
                         breadcrumb: {
-                          label: 'Pаказы RFBS',
+                          label: 'Заказы RFBS',
                         },
                       },
                       children: [
@@ -640,7 +640,7 @@ const router = createRouter({
                           component: () => import('../pages/retail/orderRFBS.vue'),
                           meta: {
                             breadcrumb: {
-                              label: 'Розничный заказ RFBS',
+                              label: 'Заказ RFBS',
                             },
                           },
                         },

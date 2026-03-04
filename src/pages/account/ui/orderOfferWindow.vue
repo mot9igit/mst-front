@@ -454,7 +454,7 @@
                   >
                     Отправить предложение
                   </button>
-                  <button
+                  <!-- <button
                     class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy noclose_click"
                     @click.prevent="
                       () => {
@@ -469,7 +469,7 @@
                     "
                   >
                     Отправить заказ
-                  </button>
+                  </button> -->
                   <!--
                     <div class="d-divider d-divider--vertical order__footer-actions-divider"></div>
                     <button class="order__footer-actions-upload">

@@ -236,7 +236,10 @@
                         product.triggers.length &&
                         org.cart_data.enabled.length &&
                         product.triggers.filter((item) => org.cart_data.enabled?.includes(item))
-                          .length)
+                          .length) ||
+                      (product.action?.length &&
+                        product.triggers.length &&
+                        product.action?.length > product.triggers.length)
                     "
                   >
                     <button
@@ -244,7 +247,8 @@
                       @click.prevent="salesActive(product.key)"
                       :class="{ 'cart__item-sales-label-open': sales_active[product.key] == true }"
                     >
-                      Примененные акции<i
+                      Примененные акции
+                      <i
                         class="d-icon-angle-rounded-bottom product-card__seller-button-icon"
                         :class="{
                           'product-card__seller-button-icon-open':

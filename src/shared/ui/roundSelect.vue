@@ -22,7 +22,11 @@
         :for="index + '_option'"
         class="d-round-tree_select-label"
         @click.prevent="
-          ((activeName = item.label), (active = true), (activeList = false), this.$emit('select'))
+          ((activeName = item.label),
+          (activeIndex = item.id),
+          (active = true),
+          (activeList = false),
+          this.$emit('select', data))
         "
       >
         <input type="checkbox" :id="index + '_option'" class="d-round-tree_select-checkbox" />
@@ -38,7 +42,9 @@
     ></div>
     <i
       class="d-round-tree_button-icon d-icon d-icon-times"
-      @click.prevent="(((active = false), (activeName = '')), this.$emit('deselect'))"
+      @click.prevent="
+        (((active = false), (activeName = '')), (activeIndex = null), this.$emit('deselect', data))
+      "
     ></i>
   </div>
 </template>
@@ -67,6 +73,8 @@ export default {
       activeList: false,
       active: false,
       activeName: '',
+      activeIndex: null,
+      data: {},
     }
   },
   emits: ['select', 'deselect'],
@@ -96,7 +104,12 @@ export default {
     clickAround() {},
   },
   mounted() {},
-  watch: {},
+  watch: {
+    activeIndex: function (newVal) {
+      this.data = {}
+      this.data[this.name] = newVal
+    },
+  },
 }
 </script>
 

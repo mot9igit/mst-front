@@ -55,88 +55,13 @@ export default {
           name: 'Склад',
           placeholder: 'Склад',
           type: 'round_tree',
-          values: [
-            {
-              id: '53',
-              name: '№53 МСТ',
-              data: '№53 МСТ',
-              label: '№53 МСТ',
-              key: '53',
-              image: 'https://dev.mst.tools/assets/content/about-1.jpg',
-            },
-
-            {
-              id: '49',
-              name: '№49 Alteco',
-              data: '№49 Alteco',
-              label: '№49 Alteco',
-              key: '49',
-              image: 'https://dev.mst.tools/assets/content/about-1.jpg',
-            },
-            {
-              id: '84',
-              name: '№84 КЛС-Трейд',
-              data: '№84 КЛС-Трейд',
-              label: '№84 КЛС-Трейд',
-              key: '84',
-              image: 'https://dev.mst.tools/assets/content/about-1.jpg',
-            },
-            {
-              id: '87',
-              name: '№87 Майтол Рус',
-              data: '№87 Майтол Рус',
-              label: '№87 Майтол Рус',
-              key: '87',
-              image: 'https://dev.mst.tools/assets/content/about-1.jpg',
-            },
-            {
-              id: '512',
-              name: '№512 МСТ || Челябинск',
-              data: '№512 МСТ || Челябинск',
-              label: '№512 МСТ || Челябинск',
-              key: '512',
-              image: 'https://dev.mst.tools/assets/content/about-1.jpg',
-            },
-          ],
+          values: this.stores,
         },
         delivery: {
           name: 'Доставка',
           placeholder: 'Доставка',
           type: 'round_tree',
-          values: [
-            {
-              id: '1',
-              name: null,
-              data: 'Самовывоз',
-              label: 'Самовывоз',
-              key: '1',
-              image: null,
-            },
-            {
-              id: '2',
-              name: null,
-              data: 'Курьером до квартиры',
-              label: 'Курьером до квартиры',
-              key: '2',
-              image: '',
-            },
-            {
-              id: '3',
-              name: null,
-              data: 'Доставка в пункт выдачи',
-              label: 'Доставка в пункт выдачи',
-              key: '3',
-              image: '',
-            },
-            {
-              id: '4',
-              name: null,
-              data: 'Экспресс доставка',
-              label: 'Экспресс доставка',
-              key: '4',
-              image: '',
-            },
-          ],
+          values: this.deliveries,
         },
       },
       table_data: {
@@ -211,22 +136,12 @@ export default {
         rfbs_name: {
           label: 'Источник',
           type: 'img_link',
-          link_to: 'retailOrderRFBS',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
           class: 'cell_centeralign',
           image: 'rfbs_img',
         },
         store_name: {
           label: 'Продавец',
           type: 'img_link',
-          link_to: 'retailOrderRFBS',
-          link_params: {
-            id: this.$route.params.id,
-            order_id: 'id',
-          },
           class: 'cell_centeralign',
           image: 'store_img',
         },
@@ -282,16 +197,27 @@ export default {
     },
   },
 
-  watch: {},
+  watch: {
+    stores: function (newVal) {
+      this.filters.store_id.values = newVal
+    },
+    deliveries: function (newVal) {
+      this.filters.delivery.values = newVal
+    },
+    statuses: function (newVal) {
+      this.filters.status_id.values = newVal
+    },
+  },
 }
 </script>
 <style lang="scss">
 .rfbs_content.retailorders__content.retailorders__content .v-table {
-  margin-top: 0px;
+  margin-top: -40px;
 }
 .orders__content .dart-form-group {
   display: flex;
   justify-content: end;
+  padding-bottom: 8px;
 }
 .orders__content .d-col-xl-6 {
   width: auto !important;
