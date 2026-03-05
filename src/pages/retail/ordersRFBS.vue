@@ -222,4 +222,7 @@ export default {
 .orders__content .d-col-xl-6 {
   width: auto !important;
 }
+.rfbs_content:not(.order_content) .dart-mb-1 {
+  margin-bottom: 40px;
+}
 </style>

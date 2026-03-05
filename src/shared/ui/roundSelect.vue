@@ -12,27 +12,28 @@
     </div>
   </button>
   <div
-    class="d-round-tree_select"
+    class="d-round-tree_select-cont"
     v-if="!active && activeList"
     :id="name"
     @mouseleave="((active = false), (activeList = false))"
   >
-    <div class="d-round-tree_select-item" v-for="(item, index) in options" :key="index">
-      <lable
-        :for="index + '_option'"
-        class="d-round-tree_select-label"
-        @click.prevent="
-          ((activeName = item.label),
-          (activeIndex = item.id),
-          (active = true),
-          (activeList = false),
-          this.$emit('select', data))
-        "
-      >
-        <input type="checkbox" :id="index + '_option'" class="d-round-tree_select-checkbox" />
-        <img :src="item.image" class="d-round-tree_select-img" v-if="item.image" />
-        {{ item.label }}</lable
-      >
+    <div class="d-round-tree_select">
+      <div class="d-round-tree_select-item" v-for="(item, index) in options" :key="index">
+        <span
+          class="d-round-tree_select-label"
+          @click.prevent="
+            ((activeName = item.label),
+            (activeIndex = item.id),
+            (active = true),
+            (activeList = false),
+            this.$emit('select', data))
+          "
+        >
+          <input type="checkbox" :id="index + '_option'" class="d-round-tree_select-checkbox" />
+          <img :src="item.image" class="d-round-tree_select-img" v-if="item.image" />
+          {{ item.label }}</span
+        >
+      </div>
     </div>
   </div>
   <div class="d-round-tree_cancel" v-if="active">
@@ -89,10 +90,16 @@ export default {
       if (this.activeList === true) {
         let opt = document.getElementById(this.name)
         let sh = document.querySelector('.shipments').clientWidth
+        let v = opt.clientHeight
+        let w = opt.clientWidth
         let m = opt.getBoundingClientRect()
         let min = sh - m.left
-
-        if (min < 314) {
+        if (v > w) {
+          let cont = opt.getElementsByClassName('d-round-tree_select')[0]
+          cont.style.maxHeight = w + 'px'
+          cont.style.overflowY = 'scroll'
+        }
+        if (min < w) {
           opt.style.right = '0'
           opt.style.opacity = '1'
         } else {
@@ -159,20 +166,27 @@ export default {
   color: #f92c0d;
   margin-top: 3px;
 }
-.d-round-tree_select {
+.d-round-tree_select-cont {
   position: absolute;
   z-index: 100;
   width: auto;
   min-width: 314px;
   height: auto;
-  top: 48px;
+  top: 0;
   opacity: 0;
+  padding-top: 48px;
+}
+.d-round-tree_select {
   //left: 0;
   background: #ffffff;
   box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
   border-radius: 9px;
   padding: 8px;
   transition: 0.2s;
+  //max-height: 314px;
+  //overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: #757575;
 }
 .d-round-tree_select-item {
   height: 32px;

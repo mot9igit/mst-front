@@ -33,7 +33,7 @@
       </div>
     </div>
     <div class="d-top-order-container-info" v-if="!loading">
-      <div class="order-card__orderinfo order-card__orderinfo-line1">
+      <div class="order-card__orderinfo order-card__orderinfo-line4">
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Покупатель</div>
           <div class="order-card__orderinfo-grid-text">
@@ -120,7 +120,19 @@
           </div>
         </div>
       </div>
-      <!-- <div class="order-card__orderinfo order-card__orderinfo-line2"></div> -->
+      <div
+        class="order-card__orderinfo order-card__orderinfo-line3"
+        v-if="order.order?.comment != null && order.order?.comment != ''"
+      >
+        <div class="order-card__orderinfo-grid">
+          <div class="order-card__orderinfo-grid-lable">Комментарий</div>
+          <div
+            class="order-card__orderinfo-grid-text order-card__orderinfo-grid-lable--ordercomment"
+          >
+            {{ order.order?.comment }}
+          </div>
+        </div>
+      </div>
     </div>
     <div class="d-order-container" v-if="!loading">
       <BaseTable
@@ -229,7 +241,7 @@ export default {
     .d-top-order-container-buttons button {
       box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.2588235294);
     }
-    .order-card__orderinfo-line1 {
+    .order-card__orderinfo-line4 {
       display: grid;
       grid-template-columns: 139fr 264fr 223fr 150fr 150fr 201fr 100fr 168fr 126fr;
       grid-template-rows: 100%;
@@ -239,7 +251,7 @@ export default {
     .d-top-order-container-info {
       border-bottom: none;
     }
-    .order-card__orderinfo {
+    .order-card__orderinfo:last-child {
       padding-bottom: 64px;
     }
     .dart-mb-1 {
@@ -286,6 +298,11 @@ export default {
       color: #ededed;
       min-height: 24px;
       min-width: auto;
+    }
+    .order-card__orderinfo-grid-lable--ordercomment.order-card__orderinfo-grid-text {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 21px;
     }
   }
 }
