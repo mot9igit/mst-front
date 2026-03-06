@@ -153,6 +153,12 @@
         <div>{{ countSales(value[cell_key]) }}</div>
         <div>Смотреть</div>
       </div>
+      <div
+        class="d-table2__info-header-title"
+        v-if="countSales(value[cell_key]) == 0 && value.options.length"
+      >
+        {{ value.options }}
+      </div>
     </div>
     <div
       class="cell_value"

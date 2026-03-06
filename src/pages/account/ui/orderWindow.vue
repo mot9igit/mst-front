@@ -267,7 +267,7 @@
                       >
                         <!-- <a class="cart__item-sales-item-name" :href="'/' + $route.params.id + '/purchases/actions/' + sale.id" tagret="_blank">{{ sale.name }}</a> -->
                         <router-link
-                          v-if="sale.enabled == 1"
+                          v-if="sale.enabled == 1 && sale.action_id != 0"
                           target="_blank"
                           :to="{
                             name: 'purchasesAction',
@@ -276,6 +276,9 @@
                         >
                           <p class="cart__item-sales-item-name">{{ sale.name }}</p>
                         </router-link>
+                        <div v-if="sale.enabled == 1 && sale.action_id == 0">
+                          <p class="cart__item-sales-item-name">{{ sale.name }}</p>
+                        </div>
                         <p class="cart__item-sales-item-values" v-if="sale.enabled == 1">
                           <span class="cart__item-sales-item-value" v-if="sale.type != 3"
                             >Индивидуальная скидка</span
