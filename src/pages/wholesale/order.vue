@@ -316,6 +316,10 @@ export default {
       type: Number,
       default: 0,
     },
+    refreshOrderPage: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     ...mapActions({
@@ -375,6 +379,18 @@ export default {
       this.orderInfo.payer = newVal.payer
       this.orderInfo.delay_type = newVal.delay_type
       this.orderInfo.delay = newVal.delay
+    },
+    refreshOrderPage: function (newVal) {
+      if (newVal == true) {
+        this.loading = true
+        this.getOrder({
+          page: this.page,
+          perpage: this.pagination_items_per_page,
+          order_id: this.$route.params.order_id,
+        }).then(() => {
+          this.loading = false
+        })
+      }
     },
   },
 }

@@ -22,11 +22,12 @@ export default {
     statuses: [],
   },
   actions: {
-    async getOrders({ commit }, { filter, sort, page, perpage, type }) {
+    async getOrders({ commit }, { filter, filtersdata, sort, page, perpage, type }) {
       const data = {
         id: router.currentRoute._value.params.id,
         type: type,
         filter: filter,
+        filtersdata: filtersdata,
         page: page,
         sort: sort,
         perpage: perpage,

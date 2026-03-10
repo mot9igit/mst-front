@@ -44,7 +44,7 @@
 
     <main class="main">
       <div class="content-wrapper main__content-wrapper">
-        <router-view> </router-view>
+        <router-view @toggleOrder="toggleOrder" :refreshOrderPage="refreshOrderPage"> </router-view>
       </div>
       <!-- <teleport to="body">
         <ProfileCart
@@ -83,6 +83,7 @@
           :active="this.toggleOrderWindow"
           @close="changeOrderWindowClose()"
           @catalogUpdate="catalogUpdate()"
+          @orderEdit="orderEdit()"
         />
         <OrderOfferWindow
           :active="this.toggleOrderOfferWindow"
@@ -113,12 +114,12 @@ import { mapActions, mapGetters } from 'vuex'
 import ProfileSidebar from './ui/sidebar.vue'
 import ProfileHeader from './ui/header.vue'
 import ProfileCatalogMenu from './ui/catalogMenu.vue'
-import ProfileCart from './ui/cart.vue'
+//import ProfileCart from './ui/cart.vue'
 import changeVendorsWindow from './ui/changeVendorsWindow.vue'
 import OrderWindow from './ui/orderWindow.vue'
 import ProfileHeaderOffer from './ui/headerOffer.vue'
 import ProfileOfferCatalogMenu from './ui/catalogMenuOffer.vue'
-import ProfileCartOffer from './ui/cartOffer.vue'
+//import ProfileCartOffer from './ui/cartOffer.vue'
 import OrderOfferWindow from './ui/orderOfferWindow.vue'
 import changeVendorsOfferWindow from './ui/changeVendorsWindowOffer.vue'
 
@@ -199,6 +200,7 @@ export default {
       toggleOrderOfferWindow: false,
       toggleOfferVendors: false,
       searchUpdater: false,
+      refreshOrderPage: false,
     }
   },
   mounted() {
@@ -352,6 +354,12 @@ export default {
     notificationsCol(data) {
       this.notificationsNoRead = data
     },
+    orderEdit() {
+      this.refreshOrderPage = true
+      setTimeout(() => {
+        this.refreshOrderPage = false
+      }, 500)
+    },
   },
   provide() {
     return {
@@ -362,12 +370,12 @@ export default {
     ProfileSidebar,
     ProfileHeader,
     ProfileCatalogMenu,
-    ProfileCart,
+    //ProfileCart,
     OrderWindow,
     changeVendorsWindow,
     ProfileHeaderOffer,
     ProfileOfferCatalogMenu,
-    ProfileCartOffer,
+    //ProfileCartOffer,
     OrderOfferWindow,
     changeVendorsOfferWindow,
   },

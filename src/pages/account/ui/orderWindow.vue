@@ -747,7 +747,7 @@ import Toast from 'primevue/toast'
 
 export default {
   name: 'orderWindow',
-  emits: ['close', 'catalogUpdate', 'orderSubmit'],
+  emits: ['close', 'catalogUpdate', 'orderSubmit', 'orderEdit'],
   components: { Loader, customModal, Counter, Editor, Toast },
   props: {
     active: {
@@ -781,6 +781,7 @@ export default {
       accept: 0,
       actionSale: 0,
       order_to_basket: false,
+      edits: [],
     }
   },
   computed: {
@@ -948,6 +949,16 @@ export default {
           this.showChangedIdStore = warehouse_id
         } else {
           // orderSubmitApi
+          if (
+            this.edits?.length &&
+            (this.$route.name == 'purchasesOrder' || this.$route.name == 'wholesaleOrder')
+          ) {
+            for (var id in this.edits) {
+              if (this.$route.params.order_id == this.edits[id]) {
+                this.$emit('orderEdit')
+              }
+            }
+          }
           this.orderSubmitApi({ orgId: orgId, warehouse_id: warehouse_id }).then((response) => {
             let arr = []
             console.log(response)
@@ -1105,7 +1116,15 @@ export default {
   watch: {
     basketStore(newVal) {
       if (Object.keys(newVal).length) {
+        this.edits = []
         this.loading = false
+        for (var org in newVal.data) {
+          for (var store in newVal.data[org].data) {
+            if (newVal.data[org].data[store].type == 'order') {
+              this.edits.push(newVal.data[org].data[store].id)
+            }
+          }
+        }
       } else {
         this.loading = false
         if (!this.order) {

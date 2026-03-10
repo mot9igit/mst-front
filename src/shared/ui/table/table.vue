@@ -152,7 +152,6 @@
             :options="ffilter.values"
             :placeholder="ffilter.placeholder"
             @select="setFilters"
-            @deselect="setFilters"
           />
         </div>
         <div class="dart-form-group" v-if="ffilter.type == 'checkbox'">
@@ -540,19 +539,7 @@ export default {
     // 		checked: checked || this.selectedItems.includes(item.id)
     // 	}));
     // },
-    setFilterS(data) {
-      //console.log(type)
-      setTimeout(() => {
-        this.$emit('filter', {
-          filter: this.filter,
-          filtersdata: toRaw(this.filtersdata),
-          filters: data,
-          sort: this.sort,
-          page: 1,
-          perpage: this.pagination_items_per_page,
-        })
-      })
-    },
+
     setFilter(type = '0') {
       //console.log(type)
       if (type === 'filter') {
@@ -581,14 +568,25 @@ export default {
     },
     setFilters(data) {
       setTimeout(() => {
-        this.$emit('filter', {
-          filter: this.filter,
-          filtersdata: toRaw(this.filtersdata),
-          filters: data,
-          sort: this.sort,
-          page: 1,
-          perpage: this.pagination_items_per_page,
-        })
+        console.log(data)
+        for (var name in data) {
+          if (data[name] == null) {
+            delete this.filtersdata[name]
+          } else {
+            this.filtersdata[name] = data[name]
+          }
+        }
+        this.$emit(
+          'filter',
+          {
+            filter: this.filter,
+            filtersdata: toRaw(this.filtersdata),
+            sort: this.sort,
+            page: 1,
+            perpage: this.pagination_items_per_page,
+          },
+          200,
+        )
       })
     },
     sorting(key) {

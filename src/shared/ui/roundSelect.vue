@@ -25,8 +25,7 @@
             ((activeName = item.label),
             (activeIndex = item.id),
             (active = true),
-            (activeList = false),
-            this.$emit('select', data))
+            (activeList = false))
           "
         >
           <input type="checkbox" :id="index + '_option'" class="d-round-tree_select-checkbox" />
@@ -43,9 +42,7 @@
     ></div>
     <i
       class="d-round-tree_button-icon d-icon d-icon-times"
-      @click.prevent="
-        (((active = false), (activeName = '')), (activeIndex = null), this.$emit('deselect', data))
-      "
+      @click.prevent="(((active = false), (activeName = '')), (activeIndex = null))"
     ></i>
   </div>
 </template>
@@ -78,7 +75,7 @@ export default {
       data: {},
     }
   },
-  emits: ['select', 'deselect'],
+  emits: ['select'],
   methods: {
     showOptions() {
       this.activeList = !this.activeList
@@ -115,6 +112,7 @@ export default {
     activeIndex: function (newVal) {
       this.data = {}
       this.data[this.name] = newVal
+      this.$emit('select', this.data)
     },
   },
 }

@@ -394,7 +394,12 @@ export default {
       type: Number,
       default: 0,
     },
+    refreshOrderPage: {
+      type: Boolean,
+      default: false,
+    },
   },
+  emits: ['toggleOrder'],
   methods: {
     ...mapActions({
       getOptOrder: 'purchases/getOptOrder',
@@ -523,6 +528,7 @@ export default {
           }).then(() => {
             this.getBasket()
             this.loading = false
+            this.$emit('toggleOrder')
           })
         },
         reject: () => {
@@ -573,6 +579,18 @@ export default {
       this.orderInfo.payer = newVal.payer
       this.orderInfo.delay_type = newVal.delay_type
       this.orderInfo.delay = newVal.delay
+    },
+    refreshOrderPage: function (newVal) {
+      if (newVal == true) {
+        this.loading = true
+        this.getOptOrder({
+          page: this.page,
+          perpage: this.pagination_items_per_page,
+          order_id: this.$route.params.order_id,
+        }).then(() => {
+          this.loading = false
+        })
+      }
     },
   },
 }

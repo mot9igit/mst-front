@@ -45,7 +45,7 @@ export default {
       loading: true,
       page: 1,
       filters: {
-        status_id: {
+        status: {
           name: 'Статус',
           placeholder: 'Статус',
           type: 'round_tree',
@@ -205,7 +205,7 @@ export default {
       this.filters.delivery.values = newVal
     },
     statuses: function (newVal) {
-      this.filters.status_id.values = newVal
+      this.filters.status.values = newVal
     },
   },
 }
