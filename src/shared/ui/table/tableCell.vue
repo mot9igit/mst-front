@@ -155,9 +155,9 @@
       </div>
       <div
         class="d-table2__info-header-title"
-        v-if="countSales(value[cell_key]) == 0 && value.options.length"
+        v-if="countSales(value[cell_key]) == 0 && value.options"
       >
-        {{ value.options }}
+        {{ value.options != null ? value.options : '' }}
       </div>
     </div>
     <div
