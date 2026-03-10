@@ -155,9 +155,13 @@
       </div>
       <div
         class="d-table2__info-header-title"
-        v-if="countSales(value[cell_key]) == 0 && value.options"
+        v-if="
+          countSales(value[cell_key]) == 0 &&
+          (value.options != null ||
+            (value.options == null && value.rrc_discount != 'Без скидки от РРЦ'))
+        "
       >
-        {{ value.options != null ? value.options : '' }}
+        {{ value.options != null ? value.options : 'Цена изменена поставщиком' }}
       </div>
     </div>
     <div
