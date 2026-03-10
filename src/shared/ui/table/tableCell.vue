@@ -437,7 +437,7 @@ export default {
     countSales(sale) {
       let count = 0
       for (var i in sale) {
-        if (sale[i].enabled == 1) {
+        if (sale[i].enabled == 1 && sale[i].action_id != 0) {
           count++
         }
       }
