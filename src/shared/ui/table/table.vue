@@ -135,24 +135,48 @@
             @deselect="setFilter"
           />
         </div>
-        <div class="dart-form-group" v-if="ffilter.type == 'round_tree'">
-          <!-- <TreeSelect
+        <div class="dart-form-group dart-form-tree-group" v-if="ffilter.type == 'round_tree'">
+          <MultiSelect
             v-model="filtersdata[i]"
-            appendTo="self"
             :options="ffilter.values"
-            :maxSelectedLabels="3"
-            selectionMode="single"
-            :placeholder="ffilter.placeholder"
-            class="w-full"
-            :fluid="true"
+            :optionLabel="ffilter.label"
+            filter
+            variant="filled"
+            :placeholder="ffilter.name"
+            :maxSelectedLabels="0"
+            :selectedItemsLabel="
+              ffilter.selectedLabel + ': ' + (filtersdata[i]?.length ? filtersdata[i].length : 0)
+            "
+            showClear="true"
+            :filterPlaceholder="'Найти ' + ffilter.searchLabel"
+            class="d-round-multyselect"
+            :id="i + '_button'"
+            @show="showOver(i)"
             @select="setFilter"
-          /> -->
-          <roundSelect
-            :name="i"
-            :options="ffilter.values"
-            :placeholder="ffilter.placeholder"
-            @select="setFilters"
-          />
+          >
+            <!-- :overlayClass="'d-round-multyselect-overlay'" -->
+            <template #option="slotProps">
+              <div class="d-round-multyselect-overlay-item">
+                <img
+                  :alt="slotProps.option.name"
+                  :src="slotProps.option.image"
+                  v-if="slotProps.option.image"
+                />
+                <div>{{ slotProps.option.name }}</div>
+              </div>
+            </template>
+
+            <template #footer>
+              <div class="d-round-multyselect-overlay-footer">
+                <button
+                  class="d-button d-button-primary d-button-primary-small"
+                  @click="hideOver()"
+                >
+                  Готово
+                </button>
+              </div>
+            </template>
+          </MultiSelect>
         </div>
         <div class="dart-form-group" v-if="ffilter.type == 'checkbox'">
           <div class="flex align-items-center gap-1">
@@ -279,7 +303,7 @@ import AutoComplete from 'primevue/autocomplete'
 import Checkbox from 'primevue/checkbox'
 import InputNumber from 'primevue/inputnumber'
 import Skeleton from 'primevue/skeleton'
-import roundSelect from '../roundSelect.vue'
+import MultiSelect from 'primevue/multiselect'
 
 export default {
   name: 'v-table',
@@ -313,7 +337,7 @@ export default {
     Checkbox,
     InputText,
     FloatLabel,
-    roundSelect,
+    MultiSelect,
   },
   props: {
     editMode: {
@@ -386,6 +410,7 @@ export default {
       },
       filteredVendor: null,
       all_check: false,
+      isOver: false,
     }
   },
   computed: {
@@ -639,6 +664,32 @@ export default {
         }
         this.filteredVendors = this.getVendors(data)
       }
+    },
+    hideOver() {
+      let over = document.getElementsByClassName('d-round-multyselect-overlay')
+      let buttons = document.getElementsByClassName('d-round-multyselect')
+      console.log(buttons)
+      over[0].style.display = 'none'
+      for (var i in buttons) {
+        buttons[i].classList.remove('p-inputwrapper-focus')
+        buttons[i].classList.remove('p-multiselect-open')
+      }
+    },
+    showOver(i) {
+      // let over = document.getElementsByClassName('d-round-multyselect-overlay')
+      // let menu = document.getElementById('sidebar__inner--desktop').clientWidth
+      // let sh = document.querySelector('.shipments').clientWidth
+      // let n = i + '_button'
+      // let button = document.getElementById(n)
+      // let but = button.getBoundingClientRect().left
+      // let ov = over[0].clientWidth
+      // let min = sh - but
+      // console.log(min)
+      // if (min < ov) {
+      //   over[0].style.insetInlineStart = sh - ov + 'px'
+      // } else {
+      //   over[0].style.insetInlineStart = but + 'px'
+      // }
     },
   },
   mounted() {
@@ -941,5 +992,206 @@ tbody {
   .d-table-sort-active i {
     font-size: 7.5px;
   }
+}
+.d-round-multyselect.p-multiselect {
+  width: auto;
+  height: 40px;
+  background: #ededed !important;
+  border-radius: 53px;
+  border: none;
+  padding: 8px 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  transition: 0.2s;
+}
+.p-inputwrapper-filled.d-round-multyselect {
+  width: max-content;
+  height: 40px;
+  background: #282828 !important;
+  border-radius: 53px;
+  padding: 8px 16px;
+  transition: 0.2s;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  transition: 0.2s;
+}
+.d-round-multyselect .p-multiselect-label {
+  padding: 0 8px 0 0;
+  color: #282828 !important;
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 21px;
+  position: relative;
+}
+.d-round-multyselect .p-multiselect-label:after {
+  content: '';
+  width: 1px;
+  height: 11px;
+  background-color: #757575;
+  display: block;
+  position: absolute;
+  top: 5px;
+  right: 0;
+}
+.d-round-multyselect.p-inputwrapper-filled .p-multiselect-label {
+  color: #fff !important;
+}
+.d-round-multyselect.p-inputwrapper-filled .p-multiselect-dropdown {
+  display: none !important;
+}
+.d-round-multyselect .p-multiselect-clear-icon {
+  color: #fff !important;
+  position: relative;
+  top: 0;
+  margin-top: 0;
+  inset-inline-end: 0;
+}
+.d-round-multyselect .p-multiselect-dropdown {
+  color: #757575;
+  width: 24px;
+  height: 21px;
+  transition: 0.2s;
+}
+.d-round-multyselect .p-multiselect-dropdown .p-icon {
+  width: 10px;
+  height: 10px;
+  margin-top: 1px;
+  transition: 0.2s;
+}
+.d-round-multyselect.p-multiselect-open .p-multiselect-dropdown .p-icon {
+  width: 10px;
+  height: 10px;
+  transform: rotate(-180deg);
+  color: #f92c0d;
+  margin-top: 1px;
+}
+.d-round-multyselect.p-inputwrapper-filled .p-icon {
+  width: 12px;
+  height: 12px;
+}
+.d-round-multyselect-overlay {
+  background: #ffffff;
+  box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26) !important;
+  border-radius: 9px !important;
+  border: none !important;
+  transition: 0.2s;
+  max-height: 364px;
+  max-width: 298px;
+  width: 298px;
+  min-width: 298px;
+  scrollbar-width: thin;
+  margin-top: 8px !important;
+}
+.d-round-multyselect-overlay .p-checkbox {
+  align-items: center;
+}
+.d-round-multyselect-overlay .p-checkbox-box {
+  background: #fff;
+  border-radius: 3px;
+  border: 1px solid #757575;
+  width: 16px;
+  height: 16px;
+  box-shadow: none;
+}
+.d-round-multyselect-overlay
+  .p-checkbox:not(.p-disabled):has(.p-checkbox-input:hover)
+  .p-checkbox-box {
+  border-color: #757575;
+}
+.d-round-multyselect-overlay .p-multiselect-list {
+  padding: 8px;
+}
+.d-round-multyselect-overlay .p-multiselect-option {
+  background: #fff;
+  color: #757575;
+  height: 48px;
+  font-size: 16px;
+  white-space: wrap;
+  padding: 5px 8px;
+  gap: 16px;
+  border-bottom: 0.5px solid rgba(117, 117, 117, 0.1);
+}
+.d-round-multyselect-overlay
+  .p-multiselect-option:not(.p-multiselect-option-selected):not(.p-disabled).p-focus {
+  background: transparent;
+  color: #757575;
+}
+.d-round-multyselect-overlay .p-checkbox-icon {
+  font-size: 12px;
+  width: 12px;
+  height: 12px;
+}
+.d-round-multyselect-overlay .p-iconfield .p-inputtext:not(:last-child) {
+  padding-inline-end: 0;
+}
+.d-round-multyselect-overlay .p-inputtext.p-variant-filled,
+.d-round-multyselect-overlay .p-inputtext.p-variant-filled:enabled:hover {
+  background: #ededed;
+}
+.d-round-multyselect-overlay .p-inputtext::placeholder {
+  font-size: 14px;
+  line-height: 20px;
+  color: #757575;
+  font-weight: 400;
+}
+.d-round-multyselect-overlay .p-inputtext {
+  font-family: inherit;
+  font-feature-settings: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  color: #757575;
+  padding-block: 10px;
+  padding-inline: 16px;
+  border: none;
+  border-radius: 9px;
+  outline-color: transparent;
+  box-shadow: none;
+}
+.d-round-multyselect-overlay .p-inputicon {
+  display: none;
+}
+.d-round-multyselect-overlay-item {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 8px;
+}
+.d-round-multyselect-overlay-item img {
+  width: 24px;
+  height: 24px;
+}
+.d-round-multyselect-overlay-footer {
+  height: 48px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(11.4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  bottom: -9px;
+  left: 0;
+  width: 100%;
+  padding: 8px;
+  border-radius: 0px 0px 9px 9px;
+}
+.d-round-multyselect-overlay .p-multiselect-list-container {
+  padding-bottom: 48px;
+  border-radius: 0px 0px 9px 9px;
+
+  scrollbar-width: thin;
+}
+.d-round-multyselect-overlay-footer button {
+  box-shadow: none;
+  width: 100%;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  color: #ededed;
 }
 </style>

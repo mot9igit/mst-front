@@ -113,7 +113,7 @@
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Доход</div>
           <div class="order-card__orderinfo-grid-image-text">
-            <div class="order-card__orderinfo-grid-text">
+            <div class="order-card__orderinfo-grid-text nowrap">
               {{ order.order?.cost != '' ? order.order?.cost : '-' }}
             </div>
             <div class="order-card__orderinfo-badge">-10%</div>
