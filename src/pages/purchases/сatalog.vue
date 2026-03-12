@@ -214,20 +214,48 @@
     <!-- Фильтры по наличию -->
     <div class="catalog-top_filters" v-if="!loading">
       <div class="catalog-top_filters-item" v-for="(item, index) in filters" :key="index">
-        <Checkbox
-          @value-change="changeFilter(index)"
-          v-model="this.filters[index].value"
-          :binary="true"
-          :inputId="'catalog-' + index"
-          :name="'catalog-' + index"
-          :value="true"
-        />
+  
+          <Checkbox
+            @value-change="changeFilter(index)"
+            v-model="this.filters[index].value"
+            :binary="true"
+            :inputId="'catalog-' + index"
+            :name="'catalog-' + index"
+            :value="true"
+            v-if="item.type == 'checkbox'"
+          />
+
+        <div v-if="item.type == 'switch' && this.$route.matched[5].name == 'WholesaleClientsOffer'" class="d-switch">
+          <input
+          
+            type="checkbox"
+            binary="true"
+            class="d-switch__input"
+            v-model="this.filters[index].value"
+            :id="'catalog-' + index"
+                  />
+            <div class="d-switch__circle">
+            </div>
+            
+        </div>
+
         <label
-          :for="'catalog-' + index"
-          class="catalog-top_filters-label"
-          :class="{ 'catalog-top_filters-label--active': this.filters[index].value }"
-          >{{ item.placeholder }}
+            v-if="item.type == 'checkbox' || item.type == 'switch'"
+            :for="'catalog-' + index"
+            class="catalog-top_filters-label"
+            :class="{ 'catalog-top_filters-label--active': this.filters[index].value }"
+            >{{ item.placeholder }}
         </label>
+
+        <DatePicker
+          v-if="item.type == 'datepicker' && this.$route.matched[5].name == 'WholesaleClientsOffer'"
+          v-model="this.filters[index].value"
+          dateFormat="dd.mm.yy"
+          placeholder="Выберите дату прихода"
+          :manualInput="false"
+          showIcon
+        />
+
       </div>
     </div>
 
@@ -280,6 +308,7 @@ import customModal from '@/shared/ui/Modal.vue'
 import allSalesWindow from './ui/allSalesWindow.vue'
 import Toast from 'primevue/toast'
 import { Checkbox } from 'primevue'
+import DatePicker from 'primevue/datepicker'
 
 export default {
   name: 'purchasesCatalog',
@@ -293,6 +322,7 @@ export default {
     allSalesWindow,
     Toast,
     Checkbox,
+    DatePicker
   },
   props: {
     id: {
@@ -329,6 +359,20 @@ export default {
           value: false,
           type: 'checkbox',
         },
+        show_offers: {
+          name: 'Отображение карточек',
+          placeholder: 'Отображение карточек',
+          value: false,
+          type: 'switch',
+        },
+        dates: {
+          name: 'Продажи за период',
+          placeholder: 'Продажи за период',
+          value: false,
+          type: 'datepicker',
+          startDate: '',
+          endDate: '',
+        }
       },
       show_order: false,
       show_filters: false,
