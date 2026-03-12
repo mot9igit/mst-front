@@ -45,30 +45,30 @@ export default {
       loading: true,
       page: 1,
       filters: {
-        status: {
-          name: 'Статус',
-          placeholder: 'Статус',
-          type: 'round_tree',
-          searchLabel: 'в статусах',
-          selectedLabel: 'Статусов',
-          values: this.statuses,
-        },
-        store_id: {
-          name: 'Склад',
-          placeholder: 'Склад',
-          type: 'round_tree',
-          searchLabel: 'склад',
-          selectedLabel: 'Складов',
-          values: this.stores,
-        },
-        delivery: {
-          name: 'Доставка',
-          placeholder: 'Доставка',
-          type: 'round_tree',
-          searchLabel: 'в доставках',
-          selectedLabel: 'Доставка',
-          values: this.deliveries,
-        },
+        // status: {
+        //   name: 'Статус',
+        //   placeholder: 'Статус',
+        //   type: 'round_tree',
+        //   searchLabel: 'в статусах',
+        //   selectedLabel: 'Статусов',
+        //   values: this.statuses,
+        // },
+        // store_id: {
+        //   name: 'Склад',
+        //   placeholder: 'Склад',
+        //   type: 'round_tree',
+        //   searchLabel: 'склад',
+        //   selectedLabel: 'Складов',
+        //   values: this.stores,
+        // },
+        // delivery: {
+        //   name: 'Доставка',
+        //   placeholder: 'Доставка',
+        //   type: 'round_tree',
+        //   searchLabel: 'в доставках',
+        //   selectedLabel: 'Доставка',
+        //   values: this.deliveries,
+        // },
       },
       table_data: {
         num: {
@@ -230,5 +230,8 @@ export default {
 }
 .rfbs_content:not(.order_content) .dart-mb-1 {
   margin-bottom: 40px;
+}
+.rfbs_content h1{
+  margin-bottom: 47px;
 }
 </style>
