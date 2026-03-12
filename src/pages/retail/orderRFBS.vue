@@ -24,10 +24,11 @@
       <div class="d-top-order-container-right">
         <div class="d-top-order-container-buttons">
           <button
+          v-if="order.order?.transition_anchor"
+            @click="order.order?.stage_check_code ? orderCheckCode() : orderChangeStage()"
             class="d-button d-button-primary d-button-primary-small d-button--sm-shadow order-card__action"
           >
-            <i class="item-list-item-icon d-icon-download"></i>
-            <span class="catalog__head-item-text">Скачать заказ</span>
+            <span class="catalog__head-item-text">{{ order.order?.transition_anchor }}</span>
           </button>
         </div>
       </div>
@@ -143,16 +144,69 @@
       />
     </div>
   </section>
+
+<teleport to="body">
+    <customModal v-model="this.modals.code" class="codeWindow">
+      <template v-slot:title>Введите код</template>
+      <form action="#" @submit.prevent="formSubmit">
+        <InputOtp v-model="code" :length="6" integerOnly />
+        <div class="buttons-container">
+          <button class="d-button d-button-primary d-button-primary-small" type="submit">
+            Проверить
+          </button>
+        </div>
+      </form>
+    </customModal>
+    <customModal v-model="this.modals.codeAccepted" class="codeWindow">
+      <template v-slot:title>Код принят</template>
+      <div class="text-center">
+        <img src="/icons/check.svg" alt="" class="order-secret__img" />
+      </div>
+      <div class="buttons-container">
+        <button
+          class="d-button d-button-primary d-button-primary-small"
+          @click="
+            () => {
+              this.modals.codeAccepted = false
+            }
+          "
+        >
+          Ок
+        </button>
+      </div>
+    </customModal>
+    <customModal v-model="this.modals.codeNotAccepted" class="codeWindow">
+      <template v-slot:title>Код не принят</template>
+      <div class="text-center">
+        <img src="/icons/not-check.svg" alt="" class="order-secret__img" />
+      </div>
+      <div class="buttons-container">
+        <button
+          class="d-button d-button-primary d-button-primary-small"
+          @click="
+            () => {
+              this.modals.codeNotAccepted = false
+            }
+          "
+        >
+          Ок
+        </button>
+      </div>
+    </customModal>
+  </teleport>
+
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
+import InputOtp from 'primevue/inputotp'
+import customModal from '@/shared/ui/Modal.vue'
 
 export default {
   name: 'RetailOrderRFBS',
-  components: { Breadcrumbs, BaseTable, Loader },
+  components: { Breadcrumbs, BaseTable, customModal, InputOtp, Loader },
   props: {
     id: {
       type: String,
@@ -167,6 +221,12 @@ export default {
     return {
       loading: true,
       page: 1,
+      modals: {
+        code: false,
+        codeAccepted: false,
+        codeNotAccepted: false,
+      },
+      code: '',
       table_data: {
         image: {
           label: 'Фото',
@@ -206,7 +266,38 @@ export default {
     ...mapActions({
       getOrder: 'retail/getOrder',
       unsetOrder: 'retail/unsetOrder',
+      changeStatus: 'retail/changeStatus',
+      checkCode: 'retail/checkCode',
     }),
+    async formSubmit() {
+      const data = await this.checkCode({
+        code: this.code,
+      })
+      this.response = data.data.data
+      if (this.response.success) {
+        this.orderChangeStage()
+        this.modals.code = false
+        this.code = ''
+        this.modals.codeAccepted = true
+      } else {
+        this.modals.code = false
+        this.code = ''
+        this.modals.codeNotAccepted = true
+      }
+    },
+    orderCheckCode() {
+      this.modals.code = true
+    },
+    orderChangeStage() {
+      this.loading = !false
+      this.changeStatus()
+        .then(() => {
+          this.loading = !true
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
   },
   mounted() {
     this.getOrder({
