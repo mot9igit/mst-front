@@ -212,50 +212,67 @@
       </div>
     </div>
     <!-- Фильтры по наличию -->
-    <div class="catalog-top_filters" v-if="!loading">
+    <div
+      class="catalog-top_filters"
+      v-if="!loading"
+      :class="{
+        'catalog-top_purch-filters': this.$route.matched[5].name != 'WholesaleClientsOffer',
+      }"
+    >
       <div class="catalog-top_filters-item" v-for="(item, index) in filters" :key="index">
-  
-          <Checkbox
-            @value-change="changeFilter(index)"
-            v-model="this.filters[index].value"
-            :binary="true"
-            :inputId="'catalog-' + index"
-            :name="'catalog-' + index"
-            :value="true"
-            v-if="item.type == 'checkbox'"
-          />
+        <Checkbox
+          @value-change="changeFilter(index)"
+          v-model="this.filters[index].value"
+          :binary="true"
+          :inputId="'catalog-' + index"
+          :name="'catalog-' + index"
+          :value="true"
+          v-if="item.type == 'checkbox'"
+        />
 
-        <div v-if="item.type == 'switch' && this.$route.matched[5].name == 'WholesaleClientsOffer'" class="d-switch">
+        <div
+          v-if="item.type == 'switch' && this.$route.matched[5].name == 'WholesaleClientsOffer'"
+          class="d-switch catalog-filter-switch"
+          @click="this.filters[index].value = !this.filters[index].value"
+        >
           <input
-          
             type="checkbox"
             binary="true"
             class="d-switch__input"
             v-model="this.filters[index].value"
             :id="'catalog-' + index"
-                  />
-            <div class="d-switch__circle">
-            </div>
-            
+          />
+          <div class="d-switch__circle"></div>
         </div>
 
         <label
-            v-if="item.type == 'checkbox' || item.type == 'switch'"
-            :for="'catalog-' + index"
-            class="catalog-top_filters-label"
-            :class="{ 'catalog-top_filters-label--active': this.filters[index].value }"
-            >{{ item.placeholder }}
+          v-if="
+            item.type == 'checkbox' ||
+            (item.type == 'switch' && this.$route.matched[5].name == 'WholesaleClientsOffer')
+          "
+          :for="'catalog-' + index"
+          class="catalog-top_filters-label"
+          :class="{
+            'catalog-top_filters-label--active': this.filters[index].value,
+            'catalog-filter-switch-lable': item.type == 'switch',
+          }"
+          >{{ item.placeholder }}
         </label>
 
         <DatePicker
           v-if="item.type == 'datepicker' && this.$route.matched[5].name == 'WholesaleClientsOffer'"
           v-model="this.filters[index].value"
+          @hide="changeFilter(index)"
           dateFormat="dd.mm.yy"
-          placeholder="Выберите дату прихода"
+          :placeholder="item.placeholder"
           :manualInput="false"
+          :maxDate="date_now"
           showIcon
+          showClear
+          iconDisplay="input"
+          selectionMode="range"
+          class="catalog-filters-dates"
         />
-
       </div>
     </div>
 
@@ -263,6 +280,8 @@
       v-for="item in opt_products.items"
       :key="item.id"
       :product="item"
+      :showOffers="show_offers"
+      :showDates="filters.dates.value"
       @updateBasket="updateBasket()"
       @updateCatalog="updateCatalog()"
       @counter="counter"
@@ -322,7 +341,7 @@ export default {
     allSalesWindow,
     Toast,
     Checkbox,
-    DatePicker
+    DatePicker,
   },
   props: {
     id: {
@@ -362,20 +381,19 @@ export default {
         show_offers: {
           name: 'Отображение карточек',
           placeholder: 'Отображение карточек',
-          value: false,
+          value: true,
           type: 'switch',
         },
         dates: {
           name: 'Продажи за период',
           placeholder: 'Продажи за период',
-          value: false,
+          value: null,
           type: 'datepicker',
-          startDate: '',
-          endDate: '',
-        }
+        },
       },
       show_order: false,
       show_filters: false,
+      show_offers: true,
       loading: true,
       loading_elems: [],
       reloading: false,
@@ -424,6 +442,7 @@ export default {
       noconflicts: {},
       modalConflicts: false,
       errors: '',
+      date_now: '',
     }
   },
   methods: {
@@ -479,6 +498,8 @@ export default {
           this.filters[i].value = false
         }
       }
+      this.filters.dates.value = null
+      this.filters.show_offers.value = true
       this.loading = true
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         cart = this.basketOffer
@@ -577,13 +598,18 @@ export default {
     },
     changeFilter(index) {
       this.loading = true
-      for (var i in this.filters) {
-        if (i == index) {
-          this.filters[i].value = true
-        } else {
-          this.filters[i].value = false
+      if (index != 'dates') {
+        for (var i in this.filters) {
+          if (i == index && i != 'show_offers') {
+            this.filters[i].value = true
+          } else {
+            if (i != 'show_offers') {
+              this.filters[i].value = false
+            }
+          }
         }
       }
+
       const data = {
         page: 1,
         perpage: this.per_page,
@@ -831,6 +857,7 @@ export default {
     },
   },
   mounted() {
+    this.date_now = new Date()
     const data = {
       page: this.page,
       perpage: this.per_page,
@@ -942,6 +969,9 @@ export default {
         this.updatePage(0)
       }
     },
+    'filters.show_offers.value': function (newVal) {
+      this.show_offers = newVal
+    },
   },
 }
 </script>
@@ -1035,12 +1065,93 @@ export default {
 .catalog-top_filters-item .catalog-top_filters-label {
   font-weight: 500;
   font-size: 14px;
-  line-height: 18px;
+  line-height: 22px;
   color: #282828;
   cursor: pointer;
 }
 .catalog-top_filters-label--active {
   font-weight: 600 !important;
+}
+.catalog-filter-switch-lable:before,
+.catalog-top_filters-item:nth-child(4):before {
+  content: '';
+  width: 1px;
+  height: 16px;
+  background-color: #757575;
+  display: block;
+  position: absolute;
+  top: 3px;
+}
+.catalog-filter-switch-lable:before {
+  right: 0;
+}
+.catalog-top_filters-item:nth-child(4):before {
+  left: 0;
+}
+.catalog-top_filters-item:nth-child(4) {
+  position: relative;
+  padding-right: 32px;
+  padding-left: 32px;
+}
+
+.catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext {
+  color: #fff;
+  background: #282828 !important;
+}
+.catalog-filters-dates:not(.p-inputwrapper-focus) .p-inputtext {
+  color: #282828 !important;
+  background: #ededed !important;
+}
+.catalog-filters-dates .p-inputtext {
+  font-size: 14px;
+  line-height: 18px;
+  padding-block: 11px;
+  padding-inline: 16px 22px;
+  border: none;
+  border-radius: 53px;
+  box-shadow: none;
+  cursor: pointer;
+}
+.catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext::placeholder {
+  font-size: 14px;
+  line-height: 18px;
+  color: #fff;
+}
+.catalog-filters-dates .p-inputtext::placeholder {
+  font-size: 14px;
+  line-height: 18px;
+  color: #282828;
+}
+.catalog-filters-dates.p-inputwrapper-focus.p-focus .p-datepicker-input-icon-container {
+  color: #fff;
+}
+.catalog-filters-dates .p-datepicker-input-icon-container {
+  color: #282828;
+  padding-left: 14px;
+  padding-right: 4px;
+  display: flex;
+  align-items: center;
+  height: 16px;
+}
+.catalog-filters-dates .p-datepicker-input-icon-container .p-icon {
+  width: 12px;
+  height: 14px;
+}
+.catalog-filters-dates .p-datepicker-input-icon-container::before {
+  content: '';
+  width: 1px;
+  height: 11px;
+  background-color: #757575;
+  display: block;
+  position: absolute;
+  top: 3px;
+  left: 0;
+}
+.catalog-top_purch-filters .catalog-top_filters-item:before {
+  display: none;
+}
+.p-datepicker-day-selected-range {
+  color: #fff !important;
 }
 @media (width <= 1536px) {
   // фильтры в наличии

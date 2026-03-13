@@ -1,7 +1,7 @@
 <template>
   <!-- <div class="product-item"> -->
   <div class="product-item product-item-vertical">
-    <div class="products__header">
+    <div class="products__header" :class="{ 'products__header--nooffer': !showOffers }">
       <!-- Левая часть шапки страницы -->
       <div
         class="products__header-left"
@@ -24,8 +24,8 @@
           <i class="d-icon-arrow-right products__header-description-button-icon"></i>
         </button>
       </div>
-      <!-- Правая часть шапки страницы -->
-      <div class="products__header-right">
+      <!-- Правая часть шапки страницы закупки-->
+      <div class="products__header-right" v-if="$route.matched[5].name != 'WholesaleClientsOffer'">
         <!-- Элемент статистики -->
         <div class="products__stat">
           <span class="products__stat-value">{{ product.our_forecast }}</span>
@@ -44,8 +44,23 @@
           <p class="products__stat-label">Скорость продаж</p>
         </div>
       </div>
+      <!-- Правая часть шапки страницы предложения-->
+      <div class="products__header-right" v-else>
+        <!-- Элемент статистики -->
+        <div class="products__stat">
+          <span class="products__stat-value">{{ product.our_available }}</span>
+          <p class="products__stat-label">Остаток на вашем складе</p>
+        </div>
+        <div class="d-divider d-divider--vertical d-divider--big products__stat-divider"></div>
+        <!-- Элемент статистики -->
+        <div class="products__stat">
+          <span class="products__stat-value">{{ product.client_purchase_speed }}</span>
+          <p class="products__stat-label">Продаж за {{ showDates ? 'период' : '30 дн' }} в шт.</p>
+        </div>
+      </div>
     </div>
-    <div class="products__list-wrapper product-card__vertical">
+
+    <div class="products__list-wrapper product-card__vertical" v-if="showOffers">
       <!--<div class="products__list-wrapper">-->
       <div class="products__list" v-if="product.stores && !$route.params.id_org_from">
         <offer
@@ -98,6 +113,14 @@ export default {
         return {}
       },
     },
+    showOffers: {
+      type: Boolean,
+      default: true,
+    },
+    showDates: {
+      type: Array,
+      default: null,
+    },
   },
 
   components: {
@@ -142,6 +165,7 @@ export default {
 .products__header-description-button {
   height: 70px;
   width: 20px;
+  min-width: 20px;
   background: #ededed;
   border-radius: 0px 12px 12px 0px;
   align-items: center;
@@ -356,10 +380,15 @@ export default {
 .galleryThumbs img {
   cursor: pointer;
 }
+.products__header--nooffer {
+  padding-bottom: 40px !important;
+  border-bottom: 1px solid #75757550;
+}
 @media (width <= 1280px) {
   .products__header-description-button {
     height: 50px;
     width: 15px;
+    min-width: 15px;
     background: #ededed;
     border-radius: 0px 12px 12px 0px;
     .products__header-description-button-icon {
@@ -475,6 +504,7 @@ export default {
   .products__header-description-button {
     height: 40px;
     width: 12px;
+    min-width: 12px;
     background: #ededed;
     border-radius: 0px 6px 6px 0px;
     .products__header-description-button-icon {
@@ -611,6 +641,7 @@ export default {
   .products__header-description-button {
     height: 35px;
     width: 12px;
+    min-width: 12px;
     background: #ededed;
     border-radius: 0px 6px 6px 0px;
     .products__header-description-button-icon {

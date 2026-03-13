@@ -4476,6 +4476,17 @@ aside button {
   justify-content: center !important;
   text-align: center;
 }
+@media (width <=1920px) and (width >=900px) {
+  .product-item-vertical .products__title {
+    min-width: 528px;
+  }
+}
+@media (width <=900px) and (width >=700px) {
+  .product-item-vertical .products__title {
+    min-width: 228px;
+    max-width: 228px;
+  }
+}
 .product-card__vertical .d-button__text {
   gap: 8px;
 }
