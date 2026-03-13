@@ -584,7 +584,7 @@ export default {
   background: rgba(249, 44, 13, 1);
 }
 .d-sheet__overlay-500 {
-  width: 500px !important;
+  width: 630px !important;
 }
 .vendor-change-error {
   margin-bottom: 16px;
