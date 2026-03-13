@@ -125,8 +125,7 @@
         !loading &&
         (this.$route.name == 'purchasesCatalogComplect' ||
           this.$route.name == 'purchasesCatalogRequirement' ||
-          this.$route.name == 'purchasesOfferCatalog' ||
-          this.$route.name == 'purchasesCatalogSearchOffer')
+          this.$route.matched[5].name == 'WholesaleClientsOffer')
       "
     >
       <h2 v-if="this.$route.name == 'purchasesCatalogComplect'" class="products__top-title">
@@ -138,10 +137,7 @@
       </h2>
       <h1
         class="promos__header-title"
-        v-if="
-          this.$route.name == 'purchasesOfferCatalog' ||
-          this.$route.name == 'purchasesCatalogSearchOffer'
-        "
+        v-if="this.$route.matched[5].name == 'WholesaleClientsOffer'"
       >
         Предложение для
         <div class="d-badge2 d-badge2--fit order__item-header-badge">
@@ -272,7 +268,24 @@
           iconDisplay="input"
           selectionMode="range"
           class="catalog-filters-dates"
-        />
+        >
+          <template #footer>
+            <div class="catalog-filters-dates-overlay-footer">
+              <button
+                class="d-button d-button-primary d-button-primary-small d-button-clear-dates"
+                @click.prevent="this.filters[index].value = null"
+              >
+                Сбросить
+              </button>
+              <button
+                class="d-button d-button-primary d-button-primary-small"
+                @click.prevent="changeFilter(index)"
+              >
+                Готово
+              </button>
+            </div>
+          </template>
+        </DatePicker>
       </div>
     </div>
 
@@ -1152,6 +1165,21 @@ export default {
 }
 .p-datepicker-day-selected-range {
   color: #fff !important;
+}
+.catalog-filters-dates-overlay-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 8px 0;
+}
+.catalog-filters-dates-overlay-footer button {
+  width: 100%;
+  box-shadow: none;
+}
+.d-button-clear-dates {
+  background-color: #fff;
+  color: #282828;
 }
 @media (width <= 1536px) {
   // фильтры в наличии
