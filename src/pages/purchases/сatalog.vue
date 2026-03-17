@@ -137,7 +137,7 @@
       </h2>
       <h1
         class="promos__header-title"
-        v-if="this.$route.matched[5].name == 'WholesaleClientsOffer'"
+        v-if="this.$route.matched[5].name == 'WholesaleClientsOffer' && !loading"
       >
         Предложение для
         <div class="d-badge2 d-badge2--fit order__item-header-badge">
