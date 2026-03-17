@@ -18,7 +18,7 @@ export default {
         page: page,
         perpage: perpage,
         matrix:
-          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? true : false,
+          router.currentRoute._value.matched[5].name == 'WholesaleClientsOffer' ? true : false,
       }
       const response = await api.requirements.getRequirements(sendData)
       if (response) {
@@ -30,10 +30,9 @@ export default {
       const sendData = {
         action: 'set',
         id: router.currentRoute._value.params.id,
-        id_org_from: router.currentRoute?._value.params?.id_org_from
-          ? router.currentRoute?._value.params?.id_org_from
-          : null,
         data: data,
+        matrix:
+          router.currentRoute._value.matched[5].name == 'WholesaleClientsOffer' ? true : false,
       }
       const response = await api.requirements.setRequirement(sendData)
       return response

@@ -43,10 +43,9 @@
       <customModal v-model="modals.createRequirement" class="need-modal-create">
         <template v-slot:title>Загрузка потребности</template>
         <div class="need__notice need-vendor__notice">
-            Обратите внимание! Данная потребность будет привязана к складу доставки.
-          </div>
+          Обратите внимание! Данная потребность будет привязана к складу доставки.
+        </div>
         <form @submit.prevent="formRequirementsSubmit" :class="{ loading: loading }">
-
           <div
             class="dart-form-group dart-mb-2"
             :class="{
@@ -130,14 +129,13 @@
           </div>
         </form>
       </customModal>
-      <customModal v-model="modals.requirementsView"  class="need-modal-view">
+      <customModal v-model="modals.requirementsView" class="need-modal-view">
         <template v-slot:title>Выберите Поставщика</template>
         <div class="need__notice need-vendor__notice">
-            Для того, чтобы посмотреть предложения согласно Вашей Потребности, необходимо выбрать
-            Поставщика для просмотра.
-          </div>
+          Для того, чтобы посмотреть предложения согласно Вашей Потребности, необходимо выбрать
+          Поставщика для просмотра.
+        </div>
         <form @submit.prevent="formRequirementsViewSubmit" :class="{ loading: loading }">
-
           <div
             class="dart-form-group dart-mb-2"
             :class="{
@@ -416,11 +414,16 @@ export default {
       }
     },
     viewReq(data) {
-      this.modals.requirementsView = true
-      this.formRequirementsView.requirement = data
-      if (data.warehouse) {
-        this.formRequirementsView.warehouse = data.warehouse
+      if(this.$route.matched[5].name == 'WholesaleClientsOffer'){
+        this.formRequirementsView.warehouse =
+      }else{
+        this.modals.requirementsView = true
+        this.formRequirementsView.requirement = data
+        if (data.warehouse) {
+          this.formRequirementsView.warehouse = data.warehouse
+        }
       }
+
     },
     deleteReq(data) {
       this.$confirm.require({
