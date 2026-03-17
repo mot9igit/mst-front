@@ -232,7 +232,6 @@ export default {
       type: Boolean,
       default: false,
     },
-
   },
   data() {
     return {
@@ -333,13 +332,13 @@ export default {
                 detail: response.data.message,
                 life: 3000,
               })
-              if(!this.offer){
+              if (!this.offer) {
                 this.$router.push({
                   name: 'purchasesCatalogRequirement',
                   params: { requirement_id: this.formRequirementsView.requirement.id + '_req' },
                   query: { timestamp: Date.now() },
                 })
-              }else{
+              } else {
                 this.$router.push({
                   name: 'purchasesOfferCatalogRequirement',
                   params: { requirement_id: this.formRequirementsView.requirement.id + '_req' },
@@ -414,16 +413,11 @@ export default {
       }
     },
     viewReq(data) {
-      if(this.$route.matched[5].name == 'WholesaleClientsOffer'){
-        this.formRequirementsView.warehouse =
-      }else{
-        this.modals.requirementsView = true
-        this.formRequirementsView.requirement = data
-        if (data.warehouse) {
-          this.formRequirementsView.warehouse = data.warehouse
-        }
+      this.modals.requirementsView = true
+      this.formRequirementsView.requirement = data
+      if (data.warehouse) {
+        this.formRequirementsView.warehouse = data.warehouse
       }
-
     },
     deleteReq(data) {
       this.$confirm.require({
