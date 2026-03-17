@@ -151,13 +151,20 @@
           <p class="order__item-header-badge-text">{{ opt_products?.org_from?.name }}</p>
         </div>
       </h1>
-      <div class="catalog-top_button-cont" v-if="this.$route.name == 'purchasesCatalogRequirement'">
+      <div
+        class="catalog-top_button-cont"
+        v-if="
+          this.$route.name == 'purchasesCatalogRequirement' ||
+          this.$route.name == 'purchasesOfferCatalogRequirement'
+        "
+      >
         <!-- ||
           this.$route.name == 'purchasesCatalogComplect'-->
         <button
           class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
           :disabled="
-            (this.$route.name == 'purchasesCatalogRequirement' &&
+            ((this.$route.name == 'purchasesCatalogRequirement' ||
+              this.$route.name == 'purchasesOfferCatalogRequirement') &&
               opt_products?.total == opt_products?.no_available_products) ||
             (this.$route.name == 'purchasesCatalogComplect' &&
               opt_products?.total == opt_products?.total_no_available)
@@ -180,7 +187,8 @@
         <p
           v-if="
             (opt_products.total_no_available > 0 &&
-              this.$route.name == 'purchasesCatalogRequirement' &&
+              (this.$route.name == 'purchasesCatalogRequirement' ||
+                this.$route.name == 'purchasesOfferCatalogRequirement') &&
               opt_products?.total != opt_products?.total_no_available) ||
             (opt_products?.total == opt_products?.total_no_available &&
               opt_products?.total_no_available > opt_products?.no_available_productsnp)
@@ -191,7 +199,8 @@
         </p>
         <p
           v-if="
-            this.$route.name == 'purchasesCatalogRequirement' &&
+            (this.$route.name == 'purchasesCatalogRequirement' ||
+              this.$route.name == 'purchasesOfferCatalogRequirement') &&
             opt_products?.total == opt_products?.no_available_products
           "
         >
@@ -486,6 +495,7 @@ export default {
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         this.getBasketOffer()
         data.search = this.$route.query.search
+        data.active_store = this.basketOfferWarehouse
         this.getOfferOptProducts(data).then(() => {
           this.opt_products = this.optOfferProducts
           this.loading = false
@@ -533,6 +543,7 @@ export default {
       }
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         data.search = this.$route.query.search
+        data.active_store = this.basketOfferWarehouse
         this.getOfferOptProducts(data).then(() => {
           this.opt_products = this.optOfferProducts
           this.loading = false
@@ -567,6 +578,7 @@ export default {
       }
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         data.search = this.$route.query.search
+        data.active_store = this.basketOfferWarehouse
         this.getOfferOptProducts(data).then(() => {
           this.opt_products = this.optOfferProducts
           this.loading = false
@@ -598,6 +610,7 @@ export default {
       }
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         data.search = this.$route.query.search
+        data.active_store = this.basketOfferWarehouse
         this.getOfferOptProducts(data).then(() => {
           this.opt_products = this.optOfferProducts
           this.loading = false
@@ -636,6 +649,7 @@ export default {
       }
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         data.search = this.$route.query.search
+        data.active_store = this.basketOfferWarehouse
         this.getOfferOptProducts(data).then(() => {
           this.opt_products = this.optOfferProducts
 
@@ -886,6 +900,7 @@ export default {
     }
     if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
       data.search = this.$route.query.search
+      data.active_store = this.basketOfferWarehouse
       this.getOfferOptProducts(data).then(() => {
         this.opt_products = this.optOfferProducts
         this.loading = false

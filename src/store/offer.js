@@ -197,7 +197,7 @@ export default {
       }
     },
 
-    async getOfferOptProductsSearch(store, { page, perpage, search }) {
+    async getOfferOptProductsSearch(store, { page, perpage, search, active_store }) {
       let req = null
       if (router.currentRoute._value.params.req) {
         req = router.currentRoute._value.params.req
@@ -212,11 +212,15 @@ export default {
         req: req,
         perpage: perpage,
         action: 'get/products/all_sales',
+        active_store: active_store,
       }
       const response = await api.catalog.getOptProducts(data)
       return response
     },
-    async getOfferOptProducts({ commit }, { filters, page, perpage, basket, search }) {
+    async getOfferOptProducts(
+      { commit },
+      { filters, page, perpage, basket, search, active_store },
+    ) {
       let cat = 0
       if (
         router.currentRoute._value.params.warehouse_id &&
@@ -251,6 +255,7 @@ export default {
         perpage: perpage,
         action: 'get/products/all_sales',
         basket: basket,
+        active_store: active_store,
       }
       const response = await api.catalog.getOptProducts(data)
       if (response) {
