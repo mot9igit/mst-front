@@ -613,10 +613,10 @@ export default {
       this.loading = true
       if (index != 'dates') {
         for (var i in this.filters) {
-          if (i == index && i != 'show_offers') {
+          if (i == index && i != 'show_offers' && i != 'dates') {
             this.filters[i].value = true
           } else {
-            if (i != 'show_offers') {
+            if (i != 'show_offers' && i != 'dates') {
               this.filters[i].value = false
             }
           }
