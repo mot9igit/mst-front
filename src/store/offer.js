@@ -50,22 +50,24 @@ export default {
       }
       return response
     },
-    async basketOfferClear(store, { org_id, store_id }) {
+    async basketOfferClear(store, { org_id, cart_store, store_id }) {
       const data = {
         action: 'basket/clear',
         extended_name: 'offer',
         id: router.currentRoute._value.params.id_org_from,
+        cart_store: cart_store,
         org_id: org_id,
         store_id: store_id,
       }
       const response = await api.basket.basketClear(data)
       return response
     },
-    async basketOfferProductRemove(store, { org_id, store_id, key, product }) {
+    async basketOfferProductRemove(store, { org_id, cart_store, store_id, key, product }) {
       const data = {
         action: 'basket/remove',
         extended_name: 'offer',
         id: router.currentRoute._value.params.id_org_from,
+        cart_store: cart_store,
         org_id: org_id,
         store_id: store_id,
         key: key,
@@ -92,7 +94,10 @@ export default {
       const response = await api.basket.basketProductAdd(data)
       return response
     },
-    async basketOfferProductUpdate(store, { org_id, store_id, key, id_remain, count, actions }) {
+    async basketOfferProductUpdate(
+      store,
+      { org_id, store_id, key, id_remain, count, actions, cart_store },
+    ) {
       const data = {
         action: 'basket/update',
         extended_name: 'offer',
@@ -103,6 +108,7 @@ export default {
         count: count,
         key: key,
         actions: actions,
+        cart_store: cart_store,
       }
       const response = await api.basket.basketProductUpdate(data)
       return response
@@ -267,12 +273,12 @@ export default {
       }
       return response
     },
-    async offerSubmit(store, { date_end }) {
+    async offerSubmit(store, { cart_store }) {
       const data = {
         action: 'create/offer',
         id: router.currentRoute._value.params.id,
         id_org_from: router.currentRoute._value.params.id_org_from,
-        date_end: date_end,
+        cart_store: cart_store,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       }
       const response = await api.offer.offerSubmit(data)

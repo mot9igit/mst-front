@@ -302,7 +302,10 @@ export default {
     clearCart() {
       this.loading = true
       this.showClearBasketModal = false
-      this.basketOfferClear({ org_id: this.id_clear_org }).then(() => {
+      this.basketOfferClear({
+        org_id: this.id_clear_org,
+        cart_store: this.basketOfferWarehouse,
+      }).then(() => {
         this.id_clear_org = 0
         this.$emit('catalogUpdate')
         this.updateBasket()
@@ -315,6 +318,7 @@ export default {
         store_id: store_id,
         key: key,
         product: product,
+        cart_store: this.basketOfferWarehouse,
       }
       this.basketOfferProductRemove(data).then((response) => {
         this.$emit('catalogUpdate')
@@ -381,6 +385,7 @@ export default {
           count: object.value,
           key: object.item.product.key,
           actions: object.item.product.actions,
+          cart_store: this.basketOfferWarehouse,
         }
         this.basketOfferProductUpdate(data).then((response) => {
           // console.log(response)
