@@ -7,10 +7,10 @@
         <template v-slot:title>Потребности</template>
         <div>
           <Loader v-if="loading" />
-          <div class="need__notice need-vendor__notice">
+          <!-- <div class="need__notice need-vendor__notice">
             Обратите внимание! Здесь отображаются только те потребности, которые привязаны к Складу
             доставки.
-          </div>
+          </div> -->
           <BaseTable
             :filters="this.filters"
             :items_data="requirements.items"

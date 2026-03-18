@@ -35,6 +35,7 @@
       @notifications="notificationsCol"
       @notificationsMobile="mobileNotifications()"
       @offerNow="offerVendor()"
+      @activeStore="activeStore()"
       :mobileRequipments="mobileRequipments"
       :active="toggleMenu"
       :mobileNotificationsShow="mobileNotificationsShow"
@@ -86,6 +87,7 @@
           @orderEdit="orderEdit()"
         />
         <OrderOfferWindow
+          :store_active="this.store"
           :active="this.toggleOrderOfferWindow"
           @close="changeOrderOfferWindowClose()"
           @catalogUpdate="catalogUpdate()"
@@ -201,6 +203,7 @@ export default {
       toggleOfferVendors: false,
       searchUpdater: false,
       refreshOrderPage: false,
+      store: 0,
     }
   },
   mounted() {
@@ -359,6 +362,9 @@ export default {
       setTimeout(() => {
         this.refreshOrderPage = false
       }, 500)
+    },
+    activeStore(data) {
+      this.store = data
     },
   },
   provide() {

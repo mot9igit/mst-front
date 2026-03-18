@@ -74,7 +74,10 @@ export default {
       const response = await api.basket.basketProductRemove(data)
       return response
     },
-    async basketOfferProductAdd(store, { org_id, store_id, id_remain, count, actions }) {
+    async basketOfferProductAdd(
+      store,
+      { org_id, store_id, id_remain, count, actions, cart_store },
+    ) {
       const data = {
         action: 'basket/add',
         extended_name: 'offer',
@@ -84,6 +87,7 @@ export default {
         id_remain: id_remain,
         count: count,
         actions: actions,
+        cart_store: cart_store,
       }
       const response = await api.basket.basketProductAdd(data)
       return response

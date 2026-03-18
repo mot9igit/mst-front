@@ -214,6 +214,7 @@ export default {
     'notifications',
     'notificationsMobile',
     'offerNow',
+    'activeStore',
   ],
   components: {
     Loader,
@@ -394,10 +395,11 @@ export default {
     },
   },
   watch: {
-    basketOffer() {
+    basketOfferWarehouse: function (newVal) {
+      this.$emit('activeStore', newVal)
       this.updateCart()
     },
-    basketOfferWarehouse() {
+    basketOffer() {
       this.updateCart()
     },
     mobileRequipments: function (newVal) {

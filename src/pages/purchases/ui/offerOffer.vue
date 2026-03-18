@@ -622,7 +622,7 @@
   </teleport>
 </template>
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/CounterNoAdd.vue'
 
@@ -773,7 +773,11 @@ export default {
       }
     }
   },
-  computed: {},
+  computed: {
+    ...mapGetters({
+      basketOfferWarehouse: 'offer/basketOfferWarehouse',
+    }),
+  },
   methods: {
     ...mapActions({
       basketOfferProductAdd: 'offer/basketOfferProductAdd',
@@ -819,6 +823,7 @@ export default {
           count: count,
           key: item.key,
           actions: conf,
+          cart_store: this.basketOfferWarehouse,
         }
         this.basketOfferProductAdd(data).then((response) => {
           this.loading = false
@@ -853,6 +858,7 @@ export default {
         count: count,
         key: item.key,
         actions: conf,
+        cart_store: this.basketOfferWarehouse,
       }
       this.basketOfferProductAdd(data).then((response) => {
         this.loading = false

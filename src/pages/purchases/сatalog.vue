@@ -963,6 +963,7 @@ export default {
       this.updatePage(0)
     },
     basketOfferWarehouse: function () {
+      this.getBasketOffer()
       this.updatePage(0)
     },
     orgActive: function () {

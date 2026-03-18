@@ -690,6 +690,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    activeStore: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -1084,6 +1088,9 @@ export default {
       } else {
         this.basketStore = {}
       }
+    },
+    activeStore: function (newVal) {
+      this.basketStore = this.basketOffer.data[newVal]
     },
   },
 }
