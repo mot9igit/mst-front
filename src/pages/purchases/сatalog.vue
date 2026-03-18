@@ -151,13 +151,20 @@
           <p class="order__item-header-badge-text">{{ opt_products?.org_from?.name }}</p>
         </div>
       </h1>
-      <div class="catalog-top_button-cont" v-if="this.$route.name == 'purchasesCatalogRequirement'">
+      <div
+        class="catalog-top_button-cont"
+        v-if="
+          this.$route.name == 'purchasesCatalogRequirement' ||
+          this.$route.name == 'purchasesOfferCatalogRequirement'
+        "
+      >
         <!-- ||
           this.$route.name == 'purchasesCatalogComplect'-->
         <button
           class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
           :disabled="
-            (this.$route.name == 'purchasesCatalogRequirement' &&
+            ((this.$route.name == 'purchasesCatalogRequirement' ||
+              this.$route.name == 'purchasesOfferCatalogRequirement') &&
               opt_products?.total == opt_products?.no_available_products) ||
             (this.$route.name == 'purchasesCatalogComplect' &&
               opt_products?.total == opt_products?.total_no_available)
@@ -180,9 +187,12 @@
         <p
           v-if="
             (opt_products.total_no_available > 0 &&
-              this.$route.name == 'purchasesCatalogRequirement' &&
+              (this.$route.name == 'purchasesCatalogRequirement' ||
+                this.$route.name == 'purchasesOfferCatalogRequirement') &&
               opt_products?.total != opt_products?.total_no_available) ||
             (opt_products?.total == opt_products?.total_no_available &&
+              (this.$route.name == 'purchasesCatalogRequirement' ||
+                this.$route.name == 'purchasesOfferCatalogRequirement') &&
               opt_products?.total_no_available > opt_products?.no_available_productsnp)
           "
         >
@@ -191,7 +201,8 @@
         </p>
         <p
           v-if="
-            this.$route.name == 'purchasesCatalogRequirement' &&
+            (this.$route.name == 'purchasesCatalogRequirement' ||
+              this.$route.name == 'purchasesOfferCatalogRequirement') &&
             opt_products?.total == opt_products?.no_available_products
           "
         >
@@ -661,9 +672,14 @@ export default {
       this.loading = true
       if (
         this.opt_products.items.length < this.opt_products.total &&
-        this.$route.name == 'purchasesCatalogRequirement'
+        (this.$route.name == 'purchasesCatalogRequirement' ||
+          this.$route.name == 'purchasesOfferCatalogRequirement')
       ) {
-        this.getOptProductsReqAll().then(() => {
+        let sstore = 0
+        if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+          sstore = this.basketOfferWarehouse
+        }
+        this.getOptProductsReqAll({ cart_store: sstore }).then(() => {
           for (var id in this.reqProducts) {
             if (!Object.keys(this.addItems).includes(id)) {
               //let art = this.reqProducts[id].item.article
@@ -717,7 +733,12 @@ export default {
                 }
               }
             }
-            this.basketProductAddAll({ items: data }).then((res) => {
+            let store = 0
+            if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+              store = this.basketOfferWarehouse
+            }
+            const data_all = { items: data, cart_store: store }
+            this.basketProductAddAll(data_all).then((res) => {
               if (res.data.data) {
                 this.errors = res.data.data
                 if (this.errors == '') {
@@ -795,7 +816,14 @@ export default {
               }
             }
           }
-          this.basketProductAddAll({ items: data }).then((res) => {
+          let store = 0
+          if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+            store = this.basketOfferWarehouse
+          }
+          const data_all = { items: data, cart_store: store }
+
+          this.basketProductAddAll(data_all).then((res) => {
+            console.log(res)
             if (res.data.data) {
               this.errors = res.data.data
               if (this.errors == '') {
@@ -825,7 +853,6 @@ export default {
                 life: 3000,
               })
               this.loading = false
-
               this.updateCatalog()
               this.updateBasket()
             }
@@ -955,6 +982,15 @@ export default {
     },
     optOfferProducts: function (newVal) {
       this.opt_products = newVal
+      for (var i in this.opt_products.items) {
+        let stores = this.opt_products.items[i].stores
+        for (var s in stores) {
+          let r_id = stores[s].remain_id
+          this.addItems[r_id] = {}
+          this.addItems[r_id].item = stores[s]
+          this.addItems[r_id].count = Number(stores[s].count)
+        }
+      }
     },
     optVendorsAvailable: function () {
       this.updatePage(0)
@@ -1027,7 +1063,7 @@ export default {
   gap: 16px;
 }
 .catalog-top_button-cont p {
-  max-width: 80%;
+  max-width: 60%;
   color: #757575;
   text-align: right;
   font-weight: 500;

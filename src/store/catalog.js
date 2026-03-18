@@ -123,12 +123,20 @@ export default {
       }
       return response
     },
-    async getOptProductsReqAll({ commit }) {
+    async getOptProductsReqAll({ commit }, cart_store) {
       const data = {
         id: router.currentRoute._value.params.id,
-        id_org_from: null,
+        id_org_from:
+          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+            ? router.currentRoute._value.params.id_org_from
+            : null,
         req: router.currentRoute._value.params.requirement_id,
         action: 'get/products/req/all',
+        cart_store: cart_store,
+        extended_name:
+          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+            ? 'offer'
+            : 'cart',
       }
       const response = await api.catalog.getOptProducts(data)
       if (response) {

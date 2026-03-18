@@ -75,13 +75,21 @@ export default {
       const response = await api.basket.basketProductAdd(data)
       return response
     },
-    async basketProductAddAll(store, { items }) {
+    async basketProductAddAll(store, { items, cart_store }) {
       const data = {
         action: 'basket/add/all',
-        extended_name: 'cart',
-        id: router.currentRoute._value.params.id,
+        extended_name:
+          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+            ? 'offer'
+            : 'cart',
+        id:
+          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+            ? router.currentRoute._value.params.id_org_from
+            : router.currentRoute._value.params.id,
         items: items,
+        cart_store: cart_store,
       }
+
       const response = await api.basket.basketProductAdd(data)
       return response
     },

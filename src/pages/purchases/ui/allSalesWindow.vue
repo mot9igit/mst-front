@@ -13,8 +13,8 @@
           <!-- Изображение товара -->
           <div class="product-card__image-container">
             <img
-              :src="item.item.data.image"
-              :alt="item.item.data.pagetitle"
+              :src="item.item?.data?.image"
+              :alt="item.item?.data?.pagetitle"
               class="product-card__image"
             />
           </div>
@@ -23,7 +23,7 @@
             <!-- Название и артикул товара -->
             <div class="product-card__info-text">
               <p class="product-card__title">
-                {{ item.item.data.pagetitle }}
+                {{ item.item?.data?.pagetitle }}
               </p>
               <p class="product-card__article">Арт: {{ item.item.article }}</p>
             </div>
@@ -417,8 +417,15 @@
       </button>
     </div>
   </customModal>
-  <customModal v-model="this.modalAfterComplect" class="product-card-actions__modal-all product-card-actions__modal-all-buy_all">
-    <simpleSalesWindow :all_offers="afterComplect" @close="afterComplect = {}, modalAfterComplect = false, saveData = {}" @select="addBasketAfterComplect"/>
+  <customModal
+    v-model="this.modalAfterComplect"
+    class="product-card-actions__modal-all product-card-actions__modal-all-buy_all"
+  >
+    <simpleSalesWindow
+      :all_offers="afterComplect"
+      @close="((afterComplect = {}), (modalAfterComplect = false), (saveData = {}))"
+      @select="addBasketAfterComplect"
+    />
   </customModal>
 </template>
 
@@ -476,13 +483,10 @@ export default {
       type: Number,
       default: 0,
     },
-  
-    
   },
   mounted() {
-    if(this.addAllBeforeWindow == true){
-      
-        this.addBasketAll()
+    if (this.addAllBeforeWindow == true) {
+      this.addBasketAll()
     }
     this.setValues().then(() => {
       this.loading = false
@@ -598,8 +602,9 @@ export default {
           // потребность
           if (
             this.$route.matched[5] &&
-            (this.$route.matched[5].name == 'purchasesCatalogRequirement' ||
-              this.$route.matched[5].name == 'purchasesCatalogComplect')
+            (this.$route.name == 'purchasesCatalogRequirement' ||
+              this.$route.name == 'purchasesOfferCatalogRequirement' ||
+              this.$route.name == 'purchasesCatalogComplect')
           ) {
             if (this.counts[r_id].step == 1) {
               this.counts[r_id].count_min > Number(this.offers[r_id].count)
@@ -632,148 +637,145 @@ export default {
       }
     },
     addBasketAll() {
-          this.loading = true
-          this.errors = ''
-          this.afterComplect = {}
-          // проверяем, все ли товары хотят положить в корзину с нашей акцией c комплектом
-          // if(this.$route.matched[5].name == 'purchasesCatalogComplect'){
-            
-          //   let col_complect = Object.keys(this.complect).length
-            
-          //   for(var k in this.offers){
-          //     if(this.activeConflict[k].actions_ids.includes(this.$route.params.action_id)){
-          //       col_complect--
-          //     }
-          //   }
-          //   if (this.noconflicts.length) {
-          //     for (var rem_id in this.noconflicts) {
-          //       if(this.noconflicts[rem_id].item.conflicts && this.noconflicts[rem_id].item.conflicts[0].actions_ids.includes(this.$route.params.action_id)){
-          //         col_complect--
-          //       }
-          //     }
-          //   }
-          //     // если все товары есть в наличии и все кладут с акцией с комплектом, нужнo проверить, какие товары кладутся 
-          //   // свыше указанного количества в комплекте
-            
-          //   if(col_complect == 0 && this.complects_avalable > 0){
-          //     // проверяем, сколько комплектов кладет пользователь
-          //     let cols_offers = {}
-          //     for(var r_id in this.offers){
-          //       cols_offers[r_id] = parseInt(this.counts[r_id].count / this.complect[r_id])
-          //     }
-          //     if (this.noconflicts.length) {
-          //       for (var r_id in this.noconflicts) {
-          //         cols_offers[r_id] = parseInt(this.noconflicts[r_id].count / this.complect[r_id])
-          //       }
-          //     } 
-          //     //по всем товарам выбираем минимальное количество комплектов
-          //       let min = Math.min.apply(null, Object.keys(cols_offers).map(function ( key ) { return cols_offers[key]; }))
-          //       if(min > this.complects_avalable){
-          //         min = this.complects_avalable
-          //       }
-          //       console.log(min)
-          //       //формируем массив товаров, которые кладем в корзину с другими акциями
-          //       for(var r_id in this.offers){
-          //         if(this.complect[r_id] * min < this.counts[r_id].count){
-          //           this.afterComplect[r_id] = this.offers[r_id]
-          //           this.afterComplect[r_id].count = this.counts[r_id].count - this.complect[r_id] * min
-          //         }
-          //       }
-          //       if (this.noconflicts.length) {
-          //         for(var r_id in this.noconflicts){
-          //           if(this.complect[r_id] * min < this.noconflicts[r_id].count){
-          //             this.afterComplect[r_id] = this.noconflicts[r_id]
-          //             this.afterComplect[r_id].count = this.noconflicts[r_id].count - this.complect[r_id] * min
-          //           }
-          //         }
-          //       }
-          //   }
-          // }
-          
-          
+      this.loading = true
+      this.errors = ''
+      this.afterComplect = {}
+      // проверяем, все ли товары хотят положить в корзину с нашей акцией c комплектом
+      // if(this.$route.matched[5].name == 'purchasesCatalogComplect'){
 
-          
-          let data = {}
-          if (Object.keys(this.offers).length) {
-            for (var r_id in this.offers) {
-              let conf = {}
-              let item = this.offers[r_id].item
-              if (!this.allOff[r_id]) {
-                conf = this.activeConflict[r_id].actions
-                item.price = this.activeConflict[r_id].price
-                item.payer = this.activeConflict[r_id].payer ? this.activeConflict[r_id].payer : 0
-                item.delay = this.activeConflict[r_id].delay ? this.activeConflict[r_id].delay : 0
-                item.delay_type = this.activeConflict[r_id].delay_type
-                  ? this.activeConflict[r_id].delay_type
-                  : 1
-              }
-              // let col = 0
-              // if(this.afterComplect.length && r_id in this.afterComplect){
-              //   col = this.counts[r_id].count - this.afterComplect[r_id].count
-              // }else{
-              let  col = this.counts[r_id].count
-              //}
-              data[r_id] = {
-                org_id: item.org_id,
-                store_id: item.store_id,
-                id_remain: r_id,
-                count: col,
-                key: item.key,
-                actions: conf,
-              }
-            }
+      //   let col_complect = Object.keys(this.complect).length
+
+      //   for(var k in this.offers){
+      //     if(this.activeConflict[k].actions_ids.includes(this.$route.params.action_id)){
+      //       col_complect--
+      //     }
+      //   }
+      //   if (this.noconflicts.length) {
+      //     for (var rem_id in this.noconflicts) {
+      //       if(this.noconflicts[rem_id].item.conflicts && this.noconflicts[rem_id].item.conflicts[0].actions_ids.includes(this.$route.params.action_id)){
+      //         col_complect--
+      //       }
+      //     }
+      //   }
+      //     // если все товары есть в наличии и все кладут с акцией с комплектом, нужнo проверить, какие товары кладутся
+      //   // свыше указанного количества в комплекте
+
+      //   if(col_complect == 0 && this.complects_avalable > 0){
+      //     // проверяем, сколько комплектов кладет пользователь
+      //     let cols_offers = {}
+      //     for(var r_id in this.offers){
+      //       cols_offers[r_id] = parseInt(this.counts[r_id].count / this.complect[r_id])
+      //     }
+      //     if (this.noconflicts.length) {
+      //       for (var r_id in this.noconflicts) {
+      //         cols_offers[r_id] = parseInt(this.noconflicts[r_id].count / this.complect[r_id])
+      //       }
+      //     }
+      //     //по всем товарам выбираем минимальное количество комплектов
+      //       let min = Math.min.apply(null, Object.keys(cols_offers).map(function ( key ) { return cols_offers[key]; }))
+      //       if(min > this.complects_avalable){
+      //         min = this.complects_avalable
+      //       }
+      //       console.log(min)
+      //       //формируем массив товаров, которые кладем в корзину с другими акциями
+      //       for(var r_id in this.offers){
+      //         if(this.complect[r_id] * min < this.counts[r_id].count){
+      //           this.afterComplect[r_id] = this.offers[r_id]
+      //           this.afterComplect[r_id].count = this.counts[r_id].count - this.complect[r_id] * min
+      //         }
+      //       }
+      //       if (this.noconflicts.length) {
+      //         for(var r_id in this.noconflicts){
+      //           if(this.complect[r_id] * min < this.noconflicts[r_id].count){
+      //             this.afterComplect[r_id] = this.noconflicts[r_id]
+      //             this.afterComplect[r_id].count = this.noconflicts[r_id].count - this.complect[r_id] * min
+      //           }
+      //         }
+      //       }
+      //   }
+      // }
+
+      let data = {}
+      if (Object.keys(this.offers).length) {
+        for (var r_id in this.offers) {
+          let conf = {}
+          let item = this.offers[r_id].item
+          if (!this.allOff[r_id]) {
+            conf = this.activeConflict[r_id].actions
+            item.price = this.activeConflict[r_id].price
+            item.payer = this.activeConflict[r_id].payer ? this.activeConflict[r_id].payer : 0
+            item.delay = this.activeConflict[r_id].delay ? this.activeConflict[r_id].delay : 0
+            item.delay_type = this.activeConflict[r_id].delay_type
+              ? this.activeConflict[r_id].delay_type
+              : 1
           }
-          if (Object.keys(this.noconflicts).length) {
-            for (var r_id in this.noconflicts) {
-              let conf = {}
-              if (this.noconflicts[r_id].count > 0) {
-                let conf = {}
-                let item = this.noconflicts[r_id].item
-                if (item.conflicts.length == 1) {
-                    conf = item.conflicts[0].actions
-                    item.price = item.conflicts[0].price
-                    item.payer = item.conflicts[0].payer ? item.conflicts[0].payer : 0
-                    item.delay = item.conflicts[0].delay ? item.conflicts[0].delay : 0
-                    item.delay_type = item.conflicts[0].delay_type ? item.conflicts[0].delay_type : 1
-                }
-                // let col = 0
-                // if(this.afterComplect.length && r_id in this.afterComplect){
-                //   col = this.noconflicts[r_id].count - this.afterComplect[r_id].count
-                // }else{
-                let  col = this.noconflicts[r_id].count
-                //}
-                data[r_id] = {
-                  org_id: item.org_id,
-                  store_id: item.store_id,
-                  id_remain: r_id,
-                  count: col,
-                  key: item.key,
-                  actions: conf,
-                }
-              }   
-            }
-          }
-          
-          //if(!Object.keys(this.afterComplect).length){
-            console.log(data)
-            this.addBasketOne(data).then(() => {
-              setTimeout(() => {
-                this.afterAddBasket()
-              }, 500)
-            })
+          // let col = 0
+          // if(this.afterComplect.length && r_id in this.afterComplect){
+          //   col = this.counts[r_id].count - this.afterComplect[r_id].count
           // }else{
-          //   this.loading = false
-          //   this.saveData = data
-          //   this.modalAfterComplect = true
-          // }
+          let col = this.counts[r_id].count
+          //}
+          data[r_id] = {
+            org_id: item.org_id,
+            store_id: item.store_id,
+            id_remain: r_id,
+            count: col,
+            key: item.key,
+            actions: conf,
+          }
+        }
+      }
+      if (Object.keys(this.noconflicts).length) {
+        for (var r_id in this.noconflicts) {
+          let conf = {}
+          if (this.noconflicts[r_id].count > 0) {
+            let conf = {}
+            let item = this.noconflicts[r_id].item
+            if (item.conflicts.length == 1) {
+              conf = item.conflicts[0].actions
+              item.price = item.conflicts[0].price
+              item.payer = item.conflicts[0].payer ? item.conflicts[0].payer : 0
+              item.delay = item.conflicts[0].delay ? item.conflicts[0].delay : 0
+              item.delay_type = item.conflicts[0].delay_type ? item.conflicts[0].delay_type : 1
+            }
+            // let col = 0
+            // if(this.afterComplect.length && r_id in this.afterComplect){
+            //   col = this.noconflicts[r_id].count - this.afterComplect[r_id].count
+            // }else{
+            let col = this.noconflicts[r_id].count
+            //}
+            data[r_id] = {
+              org_id: item.org_id,
+              store_id: item.store_id,
+              id_remain: r_id,
+              count: col,
+              key: item.key,
+              actions: conf,
+            }
+          }
+        }
+      }
+
+      //if(!Object.keys(this.afterComplect).length){
+      console.log(data)
+      this.addBasketOne(data).then(() => {
+        setTimeout(() => {
+          this.afterAddBasket()
+        }, 500)
+      })
+      // }else{
+      //   this.loading = false
+      //   this.saveData = data
+      //   this.modalAfterComplect = true
+      // }
     },
-    addBasketAfterComplect(data){
+    addBasketAfterComplect(data) {
       this.loading = true
       this.addBasketOne(this.saveData).then(() => {
         this.addBasketOne(data).then(() => {
-              setTimeout(() => {
-                this.afterAddBasket()
-              }, 500)
+          setTimeout(() => {
+            this.afterAddBasket()
+          }, 500)
         })
       })
     },
@@ -813,7 +815,7 @@ export default {
         })
       }
     },
-   
+
     checkAction(ind, r_id) {
       let data = this.mainActionsData[r_id]
       if (data[ind]) {
@@ -823,8 +825,9 @@ export default {
         // потребность или комплект
         if (
           this.$route.matched[5] &&
-          (this.$route.matched[5].name == 'purchasesCatalogRequirement' ||
-            this.$route.matched[5].name == 'purchasesCatalogComplect')
+          (this.$route.name == 'purchasesCatalogRequirement' ||
+            this.$route.name == 'purchasesOfferCatalogRequirement' ||
+            this.$route.name == 'purchasesCatalogComplect')
         ) {
           this.counts[r_id].count = Number(this.offers[r_id].count)
         } else {
@@ -926,7 +929,9 @@ export default {
                 // потребность
                 if (
                   this.$route.matched[5] &&
-                  this.$route.matched[5].name == 'purchasesCatalogRequirement'
+                  (this.$route.name == 'purchasesCatalogRequirement' ||
+                    this.$route.name == 'purchasesOfferCatalogRequirement' ||
+                    this.$route.name == 'purchasesCatalogComplect')
                 ) {
                   if (this.counts[r_id].step == 1) {
                     this.counts[r_id].count_min > Number(this.offers[r_id].count)
@@ -965,7 +970,6 @@ export default {
     offers: function (newVal) {
       this.setValues()
     },
-   
   },
 }
 </script>
