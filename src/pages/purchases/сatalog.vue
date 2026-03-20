@@ -234,7 +234,12 @@
           :inputId="'catalog-' + index"
           :name="'catalog-' + index"
           :value="true"
-          v-if="item.type == 'checkbox'"
+          v-if="
+            (item.type == 'checkbox' && index != 'sales') ||
+            (item.type == 'checkbox' &&
+              index == 'sales' &&
+              this.$route.matched[5].name == 'WholesaleClientsOffer')
+          "
         />
 
         <div
@@ -254,7 +259,10 @@
 
         <label
           v-if="
-            item.type == 'checkbox' ||
+            (item.type == 'checkbox' && index != 'sales') ||
+            (item.type == 'checkbox' &&
+              index == 'sales' &&
+              this.$route.matched[5].name == 'WholesaleClientsOffer') ||
             (item.type == 'switch' && this.$route.matched[5].name == 'WholesaleClientsOffer')
           "
           :for="'catalog-' + index"
@@ -402,6 +410,12 @@ export default {
           value: false,
           type: 'checkbox',
         },
+        sales: {
+          name: 'Только с продажами',
+          placeholder: 'Только с продажами',
+          value: false,
+          type: 'checkbox',
+        },
         show_offers: {
           name: 'Отображение карточек',
           placeholder: 'Отображение карточек',
@@ -525,6 +539,7 @@ export default {
       }
       this.filters.dates.value = null
       this.filters.show_offers.value = true
+      this.filters.sales.value = false
       this.loading = true
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         cart = this.basketOffer
@@ -626,12 +641,12 @@ export default {
     },
     changeFilter(index) {
       this.loading = true
-      if (index != 'dates') {
+      if (index != 'dates' && index != 'sales') {
         for (var i in this.filters) {
-          if (i == index && i != 'show_offers' && i != 'dates') {
+          if (i == index && i != 'show_offers' && i != 'dates' && i != 'sales') {
             this.filters[i].value = true
           } else {
-            if (i != 'show_offers' && i != 'dates') {
+            if (i != 'show_offers' && i != 'dates' && i != 'sales') {
               this.filters[i].value = false
             }
           }
@@ -729,16 +744,13 @@ export default {
                     count: col,
                     key: item.key,
                     actions: conf,
+                    cart_store: this.basketOfferWarehouse,
                   }
                 }
               }
             }
-            let store = 0
-            if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-              store = this.basketOfferWarehouse
-            }
-            const data_all = { items: data, cart_store: store }
-            this.basketProductAddAll(data_all).then((res) => {
+
+            this.basketProductAddAll(data).then((res) => {
               if (res.data.data) {
                 this.errors = res.data.data
                 if (this.errors == '') {
@@ -812,17 +824,13 @@ export default {
                   count: col,
                   key: item.key,
                   actions: conf,
+                  cart_store: this.basketOfferWarehouse,
                 }
               }
             }
           }
-          let store = 0
-          if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-            store = this.basketOfferWarehouse
-          }
-          const data_all = { items: data, cart_store: store }
 
-          this.basketProductAddAll(data_all).then((res) => {
+          this.basketProductAddAll(data).then((res) => {
             console.log(res)
             if (res.data.data) {
               this.errors = res.data.data
@@ -1129,7 +1137,7 @@ export default {
   font-weight: 600 !important;
 }
 .catalog-filter-switch-lable:before,
-.catalog-top_filters-item:nth-child(4):before {
+.catalog-top_filters-item:nth-child(5):before {
   content: '';
   width: 1px;
   height: 16px;
@@ -1141,10 +1149,10 @@ export default {
 .catalog-filter-switch-lable:before {
   right: 0;
 }
-.catalog-top_filters-item:nth-child(4):before {
+.catalog-top_filters-item:nth-child(5):before {
   left: 0;
 }
-.catalog-top_filters-item:nth-child(4) {
+.catalog-top_filters-item:nth-child(5) {
   position: relative;
   padding-right: 32px;
   padding-left: 32px;
