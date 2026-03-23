@@ -282,6 +282,7 @@ export default {
       default: 0,
     },
   },
+  emits: ['toggleOrder'],
   methods: {
     ...mapActions({
       getOffer: 'purchases/getOffer',
@@ -295,10 +296,11 @@ export default {
       this.loading = true
       this.unsetOffer()
       this.page = data.page
-      ;(data.offer_id = this.$route.params.offer_id),
-        this.getOffer(data).then(() => {
-          this.loading = false
-        })
+      data.offer_id = this.$route.params.offer_id
+
+      this.getOffer(data).then(() => {
+        this.loading = false
+      })
     },
     saleModal(data) {
       this.modalActiveActions = true
@@ -306,7 +308,7 @@ export default {
     },
     acceptOfferClick() {
       this.$confirm.require({
-        message: 'Вы уверены, что хотите добавить предложение №' + this.offer.id + ' в корзину?',
+        message: 'Товары из предложения №' + this.offer.id + ' будут добавлены в вашу корзину',
         header: 'Принять предложение',
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
@@ -333,8 +335,10 @@ export default {
                       this.getOffer({
                         offer_id: this.$route.params.offer_id,
                       })
-                      this.getBasket()
-                      this.loading = false
+                      this.getBasket().then(() => {
+                        this.$emit('toggleOrder')
+                        this.loading = false
+                      })
                     } else {
                       this.loading = false
                       this.$toast.add({
@@ -366,8 +370,10 @@ export default {
                     summary: 'Предложение добавлено в корзину',
                     life: 3000,
                   })
-                  this.getBasket()
-                  this.loading = false
+                  this.getBasket().then(() => {
+                    this.$emit('toggleOrder')
+                    this.loading = false
+                  })
                 } else {
                   this.loading = false
                   this.$toast.add({
@@ -445,6 +451,8 @@ export default {
   mounted() {
     this.getOffer({
       offer_id: this.$route.params.offer_id,
+      page: this.page,
+      perpage: this.pagination_items_per_page,
     }).then(() => {
       this.loading = false
       this.orderInfo.seller_name = this.offer.seller_name

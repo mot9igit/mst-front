@@ -753,41 +753,43 @@ export default {
               }
             }
 
-            this.basketProductAddAll(data).then((res) => {
-              if (res.data.data) {
-                this.errors = res.data.data
-                if (this.errors == '') {
-                  this.$toast.add({
-                    severity: 'success',
-                    summary: 'Выполнено!',
-                    detail: 'Товары добавлены в корзину',
-                    life: 3000,
-                  })
+            this.basketProductAddAll({ items: data, cart_store: this.basketOfferWarehouse }).then(
+              (res) => {
+                if (res.data.data) {
+                  this.errors = res.data.data
+                  if (this.errors == '') {
+                    this.$toast.add({
+                      severity: 'success',
+                      summary: 'Выполнено!',
+                      detail: 'Товары добавлены в корзину',
+                      life: 3000,
+                    })
+                  } else {
+                    this.$toast.add({
+                      severity: 'secondary',
+                      summary: 'Товары добавлены в корзину!',
+                      detail: this.errors,
+                      life: 3000,
+                    })
+                  }
+                  this.loading = false
+
+                  this.updateCatalog()
+                  this.updateBasket()
                 } else {
                   this.$toast.add({
-                    severity: 'secondary',
-                    summary: 'Товары добавлены в корзину!',
-                    detail: this.errors,
+                    severity: 'error',
+                    summary: 'Ошибка',
+                    detail: 'Не удалось положить товары в корзину',
                     life: 3000,
                   })
+                  this.loading = false
+
+                  this.updateCatalog()
+                  this.updateBasket()
                 }
-                this.loading = false
-
-                this.updateCatalog()
-                this.updateBasket()
-              } else {
-                this.$toast.add({
-                  severity: 'error',
-                  summary: 'Ошибка',
-                  detail: 'Не удалось положить товары в корзину',
-                  life: 3000,
-                })
-                this.loading = false
-
-                this.updateCatalog()
-                this.updateBasket()
-              }
-            })
+              },
+            )
           }
         })
       } else {
@@ -833,41 +835,43 @@ export default {
             }
           }
 
-          this.basketProductAddAll(data).then((res) => {
-            console.log(res)
-            if (res.data.data) {
-              this.errors = res.data.data
-              if (this.errors == '') {
-                this.$toast.add({
-                  severity: 'success',
-                  summary: 'Выполнено!',
-                  detail: 'Товары добавлены в корзину',
-                  life: 3000,
-                })
+          this.basketProductAddAll({ items: data, cart_store: this.basketOfferWarehouse }).then(
+            (res) => {
+              console.log(res)
+              if (res.data.data) {
+                this.errors = res.data.data
+                if (this.errors == '') {
+                  this.$toast.add({
+                    severity: 'success',
+                    summary: 'Выполнено!',
+                    detail: 'Товары добавлены в корзину',
+                    life: 3000,
+                  })
+                } else {
+                  this.$toast.add({
+                    severity: 'secondary',
+                    summary: 'Товары добавлены в корзину!',
+                    detail: this.errors,
+                    life: 3000,
+                  })
+                }
+                this.loading = false
+
+                this.updateCatalog()
+                this.updateBasket()
               } else {
                 this.$toast.add({
-                  severity: 'secondary',
-                  summary: 'Товары добавлены в корзину!',
-                  detail: this.errors,
+                  severity: 'error',
+                  summary: 'Ошибка',
+                  detail: 'Не удалось положить товары в корзину',
                   life: 3000,
                 })
+                this.loading = false
+                this.updateCatalog()
+                this.updateBasket()
               }
-              this.loading = false
-
-              this.updateCatalog()
-              this.updateBasket()
-            } else {
-              this.$toast.add({
-                severity: 'error',
-                summary: 'Ошибка',
-                detail: 'Не удалось положить товары в корзину',
-                life: 3000,
-              })
-              this.loading = false
-              this.updateCatalog()
-              this.updateBasket()
-            }
-          })
+            },
+          )
         }
       }
     },
