@@ -430,7 +430,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import Counter from '@/shared/ui/CounterNoAdd.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
@@ -492,10 +492,15 @@ export default {
       this.loading = false
     })
   },
-  computed: {},
+  computed: {
+    ...mapGetters({
+      basketOfferWarehouse: 'offer/basketOfferWarehouse',
+    }),
+  },
   methods: {
     ...mapActions({
       basketProductAdd: 'basket/basketProductAdd',
+      basketOfferProductAdd: 'offer/basketOfferProductAdd',
     }),
     async setValues() {
       if (Object.keys(this.offers).length) {
@@ -722,6 +727,7 @@ export default {
             count: col,
             key: item.key,
             actions: conf,
+            cart_store: this.basketOfferWarehouse,
           }
         }
       }
@@ -751,6 +757,7 @@ export default {
               count: col,
               key: item.key,
               actions: conf,
+              cart_store: this.basketOfferWarehouse,
             }
           }
         }
@@ -803,16 +810,29 @@ export default {
     },
     async addBasketOne(data) {
       for (var r_id in data) {
-        this.basketProductAdd(data[r_id]).then((response) => {
-          if (!response?.data?.data?.success && response?.data?.data?.message) {
-            if (!this.errors.includes(response?.data?.data?.message)) {
-              if (this.errors.length > 0) {
-                this.errors = this.errors + ', '
+        if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+          this.basketOfferProductAdd(data[r_id]).then((response) => {
+            if (!response?.data?.data?.success && response?.data?.data?.message) {
+              if (!this.errors.includes(response?.data?.data?.message)) {
+                if (this.errors.length > 0) {
+                  this.errors = this.errors + ', '
+                }
+                this.errors = this.errors + response?.data?.data?.message
               }
-              this.errors = this.errors + response?.data?.data?.message
             }
-          }
-        })
+          })
+        } else {
+          this.basketProductAdd(data[r_id]).then((response) => {
+            if (!response?.data?.data?.success && response?.data?.data?.message) {
+              if (!this.errors.includes(response?.data?.data?.message)) {
+                if (this.errors.length > 0) {
+                  this.errors = this.errors + ', '
+                }
+                this.errors = this.errors + response?.data?.data?.message
+              }
+            }
+          })
+        }
       }
     },
 
@@ -966,6 +986,7 @@ export default {
       }
     },
   },
+
   watch: {
     offers: function (newVal) {
       this.setValues()

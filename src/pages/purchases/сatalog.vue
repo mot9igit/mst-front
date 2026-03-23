@@ -686,7 +686,7 @@ export default {
       let data = {}
       this.loading = true
       if (
-        this.opt_products.items.length < this.opt_products.total &&
+        this.opt_products.items.length <= this.opt_products.total &&
         (this.$route.name == 'purchasesCatalogRequirement' ||
           this.$route.name == 'purchasesOfferCatalogRequirement')
       ) {
@@ -699,6 +699,9 @@ export default {
             if (!Object.keys(this.addItems).includes(id)) {
               //let art = this.reqProducts[id].item.article
               this.addItems[id] = this.reqProducts[id]
+              this.addItems[id].item.data = this.addItems[id].item
+            }
+            if (this.$route.name == 'purchasesOfferCatalogRequirement') {
               this.addItems[id].item.data = this.addItems[id].item
             }
           }
