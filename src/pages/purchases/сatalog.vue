@@ -151,14 +151,9 @@
           <p class="order__item-header-badge-text">{{ opt_products?.org_from?.name }}</p>
         </div>
       </h1>
-      <div
-        class="catalog-top_button-cont"
-        v-if="
-          this.$route.name == 'purchasesCatalogRequirement' ||
-          this.$route.name == 'purchasesOfferCatalogRequirement'
-        "
-      >
+      <div class="catalog-top_button-cont" v-if="this.$route.name == 'purchasesCatalogRequirement'">
         <!-- ||
+          this.$route.name == 'purchasesOfferCatalogRequirement'||
           this.$route.name == 'purchasesCatalogComplect'-->
         <button
           class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
@@ -306,6 +301,16 @@
           </template>
         </DatePicker>
       </div>
+      <!-- <button
+        class="order__footer-actions-upload"
+        title="Скачать отчет по продажам в Excel"
+        @click.prevent="createReport()"
+        v-if="
+          this.$route.matched[5].name == 'WholesaleClientsOffer' && optOfferProducts.items.length
+        "
+      >
+        <i class="d-icon-upload2"></i>
+      </button> -->
     </div>
 
     <product
@@ -410,12 +415,12 @@ export default {
           value: false,
           type: 'checkbox',
         },
-        sales: {
-          name: 'Только с продажами',
-          placeholder: 'Только с продажами',
-          value: false,
-          type: 'checkbox',
-        },
+        // sales: {
+        //   name: 'Только с продажами',
+        //   placeholder: 'Только с продажами',
+        //   value: false,
+        //   type: 'checkbox',
+        // },
         show_offers: {
           name: 'Отображение карточек',
           placeholder: 'Отображение карточек',
@@ -488,12 +493,38 @@ export default {
       getOptProducts: 'catalog/getOptProducts',
       getOptProductsReqAll: 'catalog/getOptProductsReqAll',
       getOfferOptProducts: 'offer/getOfferOptProducts',
+      getAllOfferOptProducts: 'offer/getAllOfferOptProducts',
       getBasket: 'basket/getBasket',
       getBasketOffer: 'offer/getBasketOffer',
       basketProductAddAll: 'basket/basketProductAddAll',
+      getSalesReport: 'catalog/getSalesReport',
     }),
-
+    createReport() {
+      const data = {
+        filters: this.filters,
+      }
+      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
+        data.search = this.$route.query.search
+        data.active_store = this.basketOfferWarehouse
+        this.loading = true
+        this.getAllOfferOptProducts(data).then((res) => {
+          if (res.data.success) {
+            let prop = {
+              products: this.optAllOfferProducts,
+              active_store: this.basketOfferWarehouse,
+              dates: this.filters.dates.value,
+            }
+            this.getSalesReport(prop).then(() => {
+              this.loading = false
+            })
+          } else {
+            this.loading = false
+          }
+        })
+      }
+    },
     updateBasket() {
+      this.getAllOfferOptProducts({})
       const data = {
         page: this.page,
         perpage: this.per_page,
@@ -960,6 +991,7 @@ export default {
       optProducts: 'catalog/optProducts',
       reqProducts: 'catalog/reqProducts',
       optOfferProducts: 'offer/optOfferProducts',
+      optAllOfferProducts: 'offer/optAllOfferProducts',
       orgActive: 'org/orgActive',
       optVendorsAvailable: 'org/optVendorsAvailable',
       optVendorsSelected: 'org/optVendorsSelected',

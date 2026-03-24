@@ -435,19 +435,19 @@ export default {
     return {
       orgprofile: {
         contact: {
-          required: helpers.withMessage('Поле обязательно для заполнения', () => {
-            return this.orgprofile.contact
-          }),
+          // required: helpers.withMessage('Поле обязательно для заполнения', () => {
+          //   return this.orgprofile.contact
+          // }),
         },
         email: {
-          required: helpers.withMessage('Поле обязательно для заполнения', () => {
-            return this.orgprofile.email
-          }),
+          // required: helpers.withMessage('Поле обязательно для заполнения', () => {
+          //   return this.orgprofile.email
+          // }),
         },
         phone: {
-          required: helpers.withMessage('Поле обязательно для заполнения', () => {
-            return this.orgprofile.phone
-          }),
+          // required: helpers.withMessage('Поле обязательно для заполнения', () => {
+          //   return this.orgprofile.phone
+          // }),
         },
       },
       form: {

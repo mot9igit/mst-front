@@ -144,6 +144,22 @@ export default {
       }
       return response
     },
+
+    async getSalesReport(store, { products, dates, active_store }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        id_org_from:
+          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+            ? router.currentRoute._value.params.id_org_from
+            : null,
+        action: 'get/sales/report',
+        products: products,
+        active_store: active_store,
+        dates: dates,
+      }
+      const response = await api.catalog.getOptProducts(data)
+      return response
+    },
   },
 
   mutations: {

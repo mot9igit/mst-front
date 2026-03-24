@@ -10,6 +10,7 @@ export default {
     vendorOfferAvailable: {},
     vendorOfferSelected: {},
     optOfferProducts: {},
+    optAllOfferProducts: {},
     optOfferCatalog: {},
     optOfferWarehouseCatalog: {},
     cartCleaner: [],
@@ -332,6 +333,46 @@ export default {
       const response = api.offer.getOffers(data)
       return response
     },
+    async getAllOfferOptProducts({ commit }, { filters, search, active_store }) {
+      let cat = 0
+      if (
+        router.currentRoute._value.params.warehouse_id &&
+        !router.currentRoute._value.params.warehouse_cat_id
+      ) {
+        cat = 'all'
+      }
+      if (
+        !router.currentRoute._value.params.warehouse_id &&
+        !router.currentRoute._value.params.warehouse_cat_id
+      ) {
+        cat = router.currentRoute._value.params.category_id
+      }
+      let req = null
+      if (router.currentRoute._value.params.requirement_id) {
+        req = router.currentRoute._value.params.requirement_id
+        cat = 'all'
+      }
+      const data = {
+        id: router.currentRoute._value.params.id_org_from,
+        id_org_from: router.currentRoute._value.params.id,
+        type: router.currentRoute._value.params.type,
+        filters: filters,
+        category_id: cat,
+        org_w_id: router.currentRoute._value.params.org_w_id,
+        warehouse_id: router.currentRoute._value.params.warehouse_id,
+        warehouse_cat_id: router.currentRoute._value.params.warehouse_cat_id,
+        search: search,
+        extended_name: 'offer',
+        req: req,
+        action: 'get/all/offer/products',
+        active_store: active_store,
+      }
+      const response = await api.catalog.getOptProducts(data)
+      if (response) {
+        commit('SET_ALL_OFFER_OPT_PRODUCTS', response.data)
+      }
+      return response
+    },
   },
   mutations: {
     SET_FROM_ORG_STORES: (state, data) => {
@@ -351,6 +392,9 @@ export default {
     },
     SET_OFFER_OPT_PRODUCTS: (state, data) => {
       state.optOfferProducts = data.data
+    },
+    SET_ALL_OFFER_OPT_PRODUCTS: (state, data) => {
+      state.optAllOfferProducts = data.data
     },
     SET_OPT_OFFER_CATALOG: (state, data) => {
       state.optOfferCatalog = data.data
@@ -380,6 +424,9 @@ export default {
     },
     optOfferProducts(state) {
       return state.optOfferProducts
+    },
+    optAllOfferProducts(state) {
+      return state.optAllOfferProducts
     },
     optOfferCatalog(state) {
       return state.optOfferCatalog
