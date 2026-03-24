@@ -503,6 +503,7 @@ export default {
       getBasketOffer: 'offer/getBasketOffer',
       basketProductAddAll: 'basket/basketProductAddAll',
       getSalesReport: 'catalog/getSalesReport',
+      unsetAllOfferOptProducts: 'offer/unsetAllOfferOptProducts',
     }),
     createReport() {
       const data = {
@@ -548,6 +549,7 @@ export default {
               life: 3000,
             })
           }
+          this.unsetAllOfferOptProducts()
         })
       }
     },

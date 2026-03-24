@@ -373,6 +373,9 @@ export default {
       }
       return response
     },
+    unsetAllOfferOptProducts({ commit }) {
+      commit('UNSET_ALL_OFFER_OPT_PRODUCTS')
+    },
   },
   mutations: {
     SET_FROM_ORG_STORES: (state, data) => {
@@ -395,6 +398,9 @@ export default {
     },
     SET_ALL_OFFER_OPT_PRODUCTS: (state, data) => {
       state.optAllOfferProducts = data.data
+    },
+    UNSET_ALL_OFFER_OPT_PRODUCTS: (state) => {
+      state.optAllOfferProducts = {}
     },
     SET_OPT_OFFER_CATALOG: (state, data) => {
       state.optOfferCatalog = data.data
