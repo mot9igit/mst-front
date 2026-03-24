@@ -151,9 +151,14 @@
           <p class="order__item-header-badge-text">{{ opt_products?.org_from?.name }}</p>
         </div>
       </h1>
-      <div class="catalog-top_button-cont" v-if="this.$route.name == 'purchasesCatalogRequirement'">
+      <div
+        class="catalog-top_button-cont"
+        v-if="
+          this.$route.name == 'purchasesCatalogRequirement' ||
+          this.$route.name == 'purchasesOfferCatalogRequirement'
+        "
+      >
         <!-- ||
-          this.$route.name == 'purchasesOfferCatalogRequirement'||
           this.$route.name == 'purchasesCatalogComplect'-->
         <button
           class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
@@ -415,12 +420,12 @@ export default {
           value: false,
           type: 'checkbox',
         },
-        // sales: {
-        //   name: 'Только с продажами',
-        //   placeholder: 'Только с продажами',
-        //   value: false,
-        //   type: 'checkbox',
-        // },
+        sales: {
+          name: 'Только с продажами',
+          placeholder: 'Только с продажами',
+          value: false,
+          type: 'checkbox',
+        },
         show_offers: {
           name: 'Отображение карточек',
           placeholder: 'Отображение карточек',
