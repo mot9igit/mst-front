@@ -306,7 +306,7 @@
           </template>
         </DatePicker>
       </div>
-      <!-- <button
+      <button
         class="order__footer-actions-upload"
         title="Скачать отчет по продажам в Excel"
         @click.prevent="createReport()"
@@ -315,7 +315,7 @@
         "
       >
         <i class="d-icon-upload2"></i>
-      </button> -->
+      </button>
     </div>
 
     <product
@@ -519,11 +519,34 @@ export default {
               active_store: this.basketOfferWarehouse,
               dates: this.filters.dates.value,
             }
-            this.getSalesReport(prop).then(() => {
-              this.loading = false
+            this.getSalesReport(prop).then((response) => {
+              if (response.data.data.filename) {
+                this.loading = false
+                let loc = response.data.data.filename
+                var downloadLink = document.createElement('a')
+                downloadLink.href = loc
+                downloadLink.setAttribute('download', loc)
+                downloadLink.setAttribute('target', '_blank')
+                //console.log(downloadLink)
+                downloadLink.click()
+              } else {
+                this.loading = false
+                this.$toast.add({
+                  severity: 'error',
+                  summary: 'Ошибка',
+                  detail: 'Не удалось скачать отчет по продажам!',
+                  life: 3000,
+                })
+              }
             })
           } else {
             this.loading = false
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: 'Не удалось скачать отчет по продажам!',
+              life: 3000,
+            })
           }
         })
       }
