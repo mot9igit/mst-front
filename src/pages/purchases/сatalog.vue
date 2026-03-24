@@ -1105,6 +1105,11 @@ export default {
     'filters.show_offers.value': function (newVal) {
       this.show_offers = newVal
     },
+    'filters.dates.value': function (newVal) {
+      for (var d in newVal) {
+        newVal[d] = new Date(newVal[d].getTime() - newVal[d].getTimezoneOffset() * 60000)
+      }
+    },
   },
 }
 </script>
