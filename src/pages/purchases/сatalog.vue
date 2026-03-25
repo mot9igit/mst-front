@@ -234,18 +234,17 @@
           :inputId="'catalog-' + index"
           :name="'catalog-' + index"
           :value="true"
-          v-if="
-            (item.type == 'checkbox' && index != 'sales') ||
-            (item.type == 'checkbox' &&
-              index == 'sales' &&
-              this.$route.matched[5].name == 'WholesaleClientsOffer')
-          "
+          v-if="item.type == 'checkbox'"
         />
 
         <div
           v-if="item.type == 'switch' && this.$route.matched[5].name == 'WholesaleClientsOffer'"
           class="d-switch catalog-filter-switch"
-          @click="this.filters[index].value = !this.filters[index].value"
+          @click="
+            index == 'show_offers'
+              ? (this.filters[index].value = !this.filters[index].value)
+              : changeFilter(index)
+          "
         >
           <input
             type="checkbox"
@@ -259,10 +258,7 @@
 
         <label
           v-if="
-            (item.type == 'checkbox' && index != 'sales') ||
-            (item.type == 'checkbox' &&
-              index == 'sales' &&
-              this.$route.matched[5].name == 'WholesaleClientsOffer') ||
+            item.type == 'checkbox' ||
             (item.type == 'switch' && this.$route.matched[5].name == 'WholesaleClientsOffer')
           "
           :for="'catalog-' + index"
@@ -307,14 +303,16 @@
         </DatePicker>
       </div>
       <button
-        class="order__footer-actions-upload"
+        class="catalog_filters_upload_button"
         title="Скачать отчет по продажам в Excel"
         @click.prevent="createReport()"
         v-if="
           this.$route.matched[5].name == 'WholesaleClientsOffer' && optOfferProducts.items.length
         "
       >
-        <i class="d-icon-upload2"></i>
+        Скачать отчет
+        <div class="d-divider d-divider--vertical d-button-divider"></div>
+        <i class="d-icon-upload2 catalog_filters_upload_icon"></i>
       </button>
     </div>
 
@@ -424,7 +422,7 @@ export default {
           name: 'Только с продажами',
           placeholder: 'Только с продажами',
           value: false,
-          type: 'checkbox',
+          type: 'switch',
         },
         show_offers: {
           name: 'Отображение карточек',
@@ -704,7 +702,7 @@ export default {
       this.loading = true
       if (index != 'dates' && index != 'sales') {
         for (var i in this.filters) {
-          if (i == index && i != 'show_offers' && i != 'dates' && i != 'sales') {
+          if (i == index && i != 'show_offers' && i != 'dates') {
             this.filters[i].value = true
           } else {
             if (i != 'show_offers' && i != 'dates' && i != 'sales') {
@@ -713,7 +711,9 @@ export default {
           }
         }
       }
-
+      if (index == 'sales') {
+        this.filters[index].value = !this.filters[index].value
+      }
       const data = {
         page: 1,
         perpage: this.per_page,
@@ -1253,12 +1253,14 @@ export default {
 .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext::placeholder {
   font-size: 14px;
   line-height: 18px;
+  font-weight: 500;
   color: #fff;
 }
 .catalog-filters-dates .p-inputtext::placeholder {
   font-size: 14px;
   line-height: 18px;
   color: #282828;
+  font-weight: 500;
 }
 .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-datepicker-input-icon-container {
   color: #fff;
@@ -1305,6 +1307,35 @@ export default {
 .d-button-clear-dates {
   background-color: #fff;
   color: #282828;
+}
+.catalog_filters_upload_button {
+  display: flex;
+  min-width: max-content;
+  align-items: center;
+  gap: 8px;
+  background-color: #ededed;
+  border-radius: 30px;
+  height: 40px;
+  max-height: 40px;
+  padding: 8px 16px;
+  position: relative;
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  color: #282828;
+}
+.catalog_filters_upload_button:hover {
+  background-color: #282828;
+  color: #ededed;
+}
+.d-button-divider {
+  height: 11px;
+  color: #757575;
+  padding: 0;
+  margin: 0;
+  opacity: 1;
 }
 @media (width <= 1536px) {
   // фильтры в наличии
