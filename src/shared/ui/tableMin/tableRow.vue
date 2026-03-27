@@ -1,16 +1,29 @@
 <template>
-
-  <router-link class="d-table-min__row"
-  :to="{ name: keys.id.link_to, params: {id: this.$route.params.id, order_id: row_data.id}, props: keys.id.link_props }"
+  {{ console.log() }}
+  <router-link
+    class="d-table-min__row"
+    :to="
+      this.$route.params.order_id
+        ? {
+            name: keys.id.link_to,
+            params: { id: this.$route.params.id, order_id: row_data.id },
+            props: keys.id.link_props,
+          }
+        : {
+            name: keys.id.link_to,
+            params: { id: this.$route.params.id, offer_id: row_data.id },
+            props: keys.id.link_props,
+          }
+    "
   >
-  <div class="d-table-min__header">
-      <div class="d-table-min__col-id">№ {{ row_data.id }} </div>
-      <div class="d-table-min__col-status"><span :style="
-              'color: #fff;background-color: #' +
-              row_data.status_color
-            ">{{ row_data.status_name }}</span>
+    <div class="d-table-min__header">
+      <div class="d-table-min__col-id">№ {{ row_data.id }}</div>
+      <div class="d-table-min__col-status">
+        <span :style="'color: #fff;background-color: #' + row_data.status_color">{{
+          row_data.status_name
+        }}</span>
       </div>
-  </div>
+    </div>
 
     <v-table-cell
       v-for="(row, index) in keys"
@@ -22,7 +35,6 @@
     />
   </router-link>
   <slot name="add_data"></slot>
-
 </template>
 
 <script>
@@ -30,11 +42,8 @@ import vTableCell from './tableCell.vue'
 
 export default {
   name: 'v-table-row',
-  emits: [
-
-  ],
+  emits: [],
   props: {
-
     row_data: {
       type: Object,
       default: () => {
@@ -53,7 +62,6 @@ export default {
         return {}
       },
     },
-
   },
   data() {
     return {
@@ -62,8 +70,8 @@ export default {
   },
   computed: {},
   methods: {
-    rowClass(s){
-      if(s == true){
+    rowClass(s) {
+      if (s == true) {
         this.classRow = true
       }
     },
@@ -96,7 +104,7 @@ export default {
       this.$emit('editNumber', object)
       // console.log(object)
     },
-    actionCell(data){
+    actionCell(data) {
       this.$emit('actionCell', data)
     },
     linkParams() {
@@ -137,7 +145,7 @@ export default {
 .name {
   text-align: left;
 }
-.d-table-min__header{
+.d-table-min__header {
   display: flex;
   align-items: center;
   justify-content: start;

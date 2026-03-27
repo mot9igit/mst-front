@@ -156,30 +156,45 @@
       <div class="d-table-min">
         <div class="d-table-min__head">
           <div class="d-table-min__row-sort">
-            <button class="d-table-min__row-sort-label" @click.prevent="sort_active = !sort_active">Сортировка <i class="d-icon-angle-rounded-bottom product-card__seller-button-icon" :class="{'product-card__seller-button-icon-open' : sort_active == true}"></i></button>
-              <div class="d-table-min__row-sort-list" v-if="sort_active">
-                <div v-for="(row, index) in sort_list" :key="index" class="d-table-min__head-col">
-
-                  <div  v-if="row.sort && row.sort_asc" class="d-table-min__row-sort-list-item">
-                    <Checkbox :id="'sort_ASC' + index"  :name="'sort_ASC' + index" :value="'sort_ASC' + index" v-model="checked" @click.prevent="sortingP(index, 'ASC')" />
-                    <label :for="'sort_ASC' + index">{{ row.sort_asc }}</label>
-                  </div>
-                  <div  v-if="row.sort && row.sort_desc" class="d-table-min__row-sort-list-item">
-                    <Checkbox :id="'sort_DESC' + index" name="'sort_DESC' + index" :value="'sort_DESC' + index" v-model="checked"  @click.prevent="sortingP(index, 'DESC')" />
-                    <label :for="'sort_DESC' + index">{{ row.sort_desc }}</label>
-                  </div>
-                  <!-- <div  v-if="row.sort && !row.sort_desc && !row.sort_desc" class="d-table-min__row-sort-list-item">
+            <button class="d-table-min__row-sort-label" @click.prevent="sort_active = !sort_active">
+              Сортировка
+              <i
+                class="d-icon-angle-rounded-bottom product-card__seller-button-icon"
+                :class="{ 'product-card__seller-button-icon-open': sort_active == true }"
+              ></i>
+            </button>
+            <div class="d-table-min__row-sort-list" v-if="sort_active">
+              <div v-for="(row, index) in sort_list" :key="index" class="d-table-min__head-col">
+                <div v-if="row.sort && row.sort_asc" class="d-table-min__row-sort-list-item">
+                  <Checkbox
+                    :id="'sort_ASC' + index"
+                    :name="'sort_ASC' + index"
+                    :value="'sort_ASC' + index"
+                    v-model="checked"
+                    @click.prevent="sortingP(index, 'ASC')"
+                  />
+                  <label :for="'sort_ASC' + index">{{ row.sort_asc }}</label>
+                </div>
+                <div v-if="row.sort && row.sort_desc" class="d-table-min__row-sort-list-item">
+                  <Checkbox
+                    :id="'sort_DESC' + index"
+                    name="'sort_DESC' + index"
+                    :value="'sort_DESC' + index"
+                    v-model="checked"
+                    @click.prevent="sortingP(index, 'DESC')"
+                  />
+                  <label :for="'sort_DESC' + index">{{ row.sort_desc }}</label>
+                </div>
+                <!-- <div  v-if="row.sort && !row.sort_desc && !row.sort_desc" class="d-table-min__row-sort-list-item">
                     <input type="radio" :id="'sort_' + index" :value="index"  v-model="checked" @click.prevent="sorting(index)" />
                     <label :for="'sort_' + index">{{ row.label }}</label>
                   </div> -->
-                </div>
               </div>
-
+            </div>
           </div>
         </div>
 
         <div v-if="total != -1" class="d-table-min__body">
-
           <!-- v-for="row in items_data" -->
           <v-table-row
             v-for="row in localItems"
@@ -201,7 +216,6 @@
             :link_row="link_row"
           />
         </div>
-
       </div>
       <div class="d-pagination-wrap" v-if="pagesCount > 1">
         <paginate
@@ -245,15 +259,7 @@ import Skeleton from 'primevue/skeleton'
 
 export default {
   name: 'v-table',
-  emits: [
-
-    'clickElem',
-    'filter',
-    'sort',
-    'paginate',
-    'setAllCheck',
-
-  ],
+  emits: ['clickElem', 'filter', 'sort', 'paginate', 'setAllCheck'],
   components: {
     vTableRow,
     // vTableFilter,
@@ -269,7 +275,6 @@ export default {
     FloatLabel,
   },
   props: {
-
     items_data: {
       type: Array,
       default: () => [],
@@ -338,7 +343,7 @@ export default {
       all_check: false,
       sort_list: {},
       checked: [],
-      sort_active: false
+      sort_active: false,
     }
   },
   computed: {
@@ -526,47 +531,46 @@ export default {
       })
     },
     sortingP(key, dirP) {
-        let id = 'sort_' + dirP + key
-        if(this.checked[0] == id){
-          this.sort = {}
-          this.checked = []
-          this.$emit('sort', {
-            filter: this.filter,
-            filtersdata: toRaw(this.filtersdata),
-            sort: '',
-            page: 1,
-            perpage: this.pagination_items_per_page,
-          })
-          this.sort_active = false
-        }else{
-            this.checked = []
-            this.checked.push('sort_' + dirP + key)
-            this.sort = {}
-            let sortASC = false
-            let sortDESC = false
-            if(dirP == 'ASC'){
-              sortASC = true
-              sortDESC = false
-            }else{
-              sortASC = false
-              sortDESC = true
-            }
-            this.sort[key] = {
-              dir: dirP,
-              sort_asc: sortASC,
-              sort_desc: sortDESC,
-              active: true,
-            }
-            this.sort_active = false
-          this.$emit('sort', {
-            filter: this.filter,
-            filtersdata: toRaw(this.filtersdata),
-            sort: toRaw(this.sort),
-            page: 1,
-            perpage: this.pagination_items_per_page,
-          })
+      let id = 'sort_' + dirP + key
+      if (this.checked[0] == id) {
+        this.sort = {}
+        this.checked = []
+        this.$emit('sort', {
+          filter: this.filter,
+          filtersdata: toRaw(this.filtersdata),
+          sort: '',
+          page: 1,
+          perpage: this.pagination_items_per_page,
+        })
+        this.sort_active = false
+      } else {
+        this.checked = []
+        this.checked.push('sort_' + dirP + key)
+        this.sort = {}
+        let sortASC = false
+        let sortDESC = false
+        if (dirP == 'ASC') {
+          sortASC = true
+          sortDESC = false
+        } else {
+          sortASC = false
+          sortDESC = true
         }
-
+        this.sort[key] = {
+          dir: dirP,
+          sort_asc: sortASC,
+          sort_desc: sortDESC,
+          active: true,
+        }
+        this.sort_active = false
+        this.$emit('sort', {
+          filter: this.filter,
+          filtersdata: toRaw(this.filtersdata),
+          sort: toRaw(this.sort),
+          page: 1,
+          perpage: this.pagination_items_per_page,
+        })
+      }
     },
     pagClickCallback(pageNum) {
       this.$emit('paginate', {
@@ -595,12 +599,11 @@ export default {
   },
   mounted() {
     Object.entries(this.table_data).forEach((entry) => {
-        const [key, value] = entry
-        if(value.sort){
-          this.sort_list[key] = value
-        }
-      })
-
+      const [key, value] = entry
+      if (value.sort) {
+        this.sort_list[key] = value
+      }
+    })
   },
   created() {
     // console.log(this.filters)
@@ -614,7 +617,6 @@ export default {
     }
   },
   watch: {
-
     items_data: {
       handler(newVal) {
         this.localItems = newVal
@@ -650,8 +652,6 @@ export default {
     filtersdata: function (newVal) {
       console.log(newVal)
     },
-
-
   },
 }
 </script>
@@ -781,88 +781,91 @@ tbody {
 .sort .d-table-sort {
   line-height: 140%;
 }
-.d-table-sort{
+.d-table-sort {
   display: inline-block;
   width: 24px;
   min-width: 24px;
   height: 24px;
-  background: #3E3E3E;
+  background: #3e3e3e;
   border-radius: 50px;
   padding-top: 1.5px;
-  color: #FBFBFB;
+  color: #fbfbfb;
 }
-.d-table-sort i{
+.d-table-sort i {
   transform: rotate(90deg);
   font-size: 10.5px;
 }
-.d-table-sort-active{
+.d-table-sort-active {
   display: inline-block;
   width: 24px;
   min-width: 24px;
   height: 24px;
-  background: #FBFBFB;
+  background: #fbfbfb;
   border-radius: 50px;
   padding-top: 2px;
   color: #282828;
 }
-.d-table-sort-active i{
+.d-table-sort-active i {
   font-size: 12px;
 }
-.d-row-label{
+.d-row-label {
   line-height: 123%;
 }
-.sort{
-  display:flex;
+.sort {
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
 }
-.swap-rotate{
+.swap-rotate {
   transform: scale(-1, 1);
 }
 @media (width <= 1280px) {
-  .d-table-sort{
+  .d-table-sort {
     width: 20px;
     min-width: 20px;
     height: 20px;
     padding-left: 1px;
     padding-top: 1.5px;
-
   }
-  .d-table-sort i{
+  .d-table-sort i {
     font-size: 9px;
   }
-  .d-table-sort-active{
+  .d-table-sort-active {
     width: 20px;
     min-width: 20px;
     height: 20px;
     padding-left: 0.5px;
     padding-top: 2px;
   }
-  .d-table-sort-active i{
+  .d-table-sort-active i {
     font-size: 9.5px;
   }
 }
 @media (width <= 1024px) {
-  .d-table-sort{
+  .d-table-sort {
     width: 16px;
     min-width: 16px;
     height: 16px;
     padding-left: 1px;
     padding-top: 0.5px;
   }
-  .d-table-sort i{
+  .d-table-sort i {
     font-size: 7px;
   }
-  .d-table-sort-active{
+  .d-table-sort-active {
     width: 16px;
     min-width: 16px;
     height: 16px;
     padding-left: 0.5px;
     padding-top: 0.5px;
   }
-  .d-table-sort-active i{
+  .d-table-sort-active i {
     font-size: 7.5px;
   }
+}
+.v-table-min .form_input_group,
+.v-table-min .dart-form-group {
+  display: none;
 }
 </style>

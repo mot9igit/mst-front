@@ -65,9 +65,7 @@
           </div>
         </div>
       </div>
-
       <div class="lk-staff-edit__operator">
-        <p class="lk-staff-edit__operator-title">Ответственный за клиентов</p>
         <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
           <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
             <Checkbox v-model="form.operator" :binary="true" />
@@ -76,154 +74,185 @@
             </label>
           </div>
         </div>
-        <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
-          <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
-            <Checkbox v-model="form.global" :binary="true" />
-            <label class="d-radio__label vendor-change__selected-item-radio-label">
-              Неограниченный круг клиентов
-            </label>
+      </div>
+
+      <Tabs class="lk-staff-edit__operator">
+        <TabList class="lk-staff-edit__operator">
+          <div class="d-tab2" :class="{ 'd-tab2--active': tab == 0 }" :value="0">
+            <button class="collection__tabs-link" @click.prevent="tab = 0">
+              <span>Ответственный за клиентов</span>
+            </button>
           </div>
-        </div>
-        <div v-if="!form.global" class="lk-staff-edit__regions-cont">
-          <div class="lk-staff-edit__regions">
-            <div class="chips">
-              <div class="chip" v-for="(item, index) in this.form.region" :key="item.code">
-                <i class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"></i>
-                <span>{{ item.name }}</span>
-                <a href="#" class="chip-close" @click.prevent="regionDel(index)"></a>
-              </div>
-            </div>
+          <div class="d-tab2" :class="{ 'd-tab2--active': tab == 1 }" :value="1">
+            <button class="collection__tabs-link" @click.prevent="tab = 1">
+              <span>Ответственный за поставщиков</span>
+            </button>
+          </div>
+        </TabList>
 
-            <form class="d-search d-search--alt">
-              <div class="d-input d-input--light lk-staff-edit__operator-search">
-                <input
-                  type="text"
-                  placeholder="Поиск региона"
-                  class="d-input__field lk-staff-edit__operator-search-field"
-                  v-model="search.region"
-                  @focus="search.regionSuggestionsShow = true"
-                  @blur="unActivateRegion()"
-                  @keypress.enter.prevent=""
-                />
+        <TabPanels>
+          <TabPanel v-if="tab == 0">
+            <div class="lk-staff-edit__operator">
+              <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
+                <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
+                  <Checkbox v-model="form.global" :binary="true" />
+                  <label class="d-radio__label vendor-change__selected-item-radio-label">
+                    Неограниченный круг клиентов
+                  </label>
+                </div>
               </div>
-
-              <ul class="d-search__suggestions" v-if="this.search.regionSuggestionsShow">
-                <li
-                  class="d-search__suggestion"
-                  v-for="suggestion in regions_all"
-                  :key="suggestion.code"
-                >
-                  <a
-                    href="#"
-                    class="d-search__suggestion-card"
-                    @click.prevent="
-                      () => {
-                        this.regionSelect(suggestion)
-                      }
-                    "
-                  >
-                    <div class="d-search__suggestion-card__content">
-                      <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
+              <div v-if="!form.global" class="lk-staff-edit__regions-cont">
+                <div class="lk-staff-edit__regions">
+                  <div class="chips">
+                    <div class="chip" v-for="(item, index) in this.form.region" :key="item.code">
+                      <i
+                        class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"
+                      ></i>
+                      <span>{{ item.name }}</span>
+                      <a href="#" class="chip-close" @click.prevent="regionDel(index, tab)"></a>
                     </div>
-                  </a>
-                </li>
-              </ul>
-            </form>
-          </div>
+                  </div>
 
-          <div class="lk-staff-edit__regions">
-            <div class="chips">
-              <div class="chip" v-for="(item, index) in this.form.city" :key="item.code">
-                <i class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"></i>
-                <span>{{ item.name }}</span>
-                <a href="#" class="chip-close" @click.prevent="cityDel(index)"></a>
-              </div>
-            </div>
-
-            <form class="d-search d-search--alt">
-              <div class="d-input d-input--light lk-staff-edit__operator-search">
-                <input
-                  type="text"
-                  placeholder="Поиск города"
-                  class="d-input__field lk-staff-edit__operator-search-field"
-                  v-model="search.city"
-                  @focus="search.citySuggestionsShow = true"
-                  @blur="unActivateCity()"
-                  @keypress.enter.prevent=""
-                />
-              </div>
-
-              <ul class="d-search__suggestions" v-if="this.search.citySuggestionsShow">
-                <li
-                  class="d-search__suggestion"
-                  v-for="suggestion in city_all"
-                  :key="suggestion.code"
-                >
-                  <a
-                    href="#"
-                    class="d-search__suggestion-card"
-                    @click.prevent="
-                      () => {
-                        this.citySelect(suggestion)
-                      }
-                    "
-                  >
-                    <div class="d-search__suggestion-card__content">
-                      <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
+                  <form class="d-search d-search--alt">
+                    <div class="d-input d-input--light lk-staff-edit__operator-search">
+                      <input
+                        type="text"
+                        placeholder="Поиск региона"
+                        class="d-input__field lk-staff-edit__operator-search-field"
+                        v-model="search.region"
+                        @focus="search.regionSuggestionsShow = true"
+                        @blur="unActivateRegion()"
+                        @keypress.enter.prevent=""
+                      />
                     </div>
-                  </a>
-                </li>
-              </ul>
-            </form>
-          </div>
 
-          <div class="lk-staff-edit__regions">
-            <div class="chips">
-              <div class="chip" v-for="(item, index) in this.form.org" :key="item.code">
-                <i class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"></i>
-                <span>{{ item.name }}</span>
-                <a href="#" class="chip-close" @click.prevent="orgDel(index)"></a>
-              </div>
-            </div>
+                    <ul class="d-search__suggestions" v-if="this.search.regionSuggestionsShow">
+                      <li
+                        class="d-search__suggestion"
+                        v-for="suggestion in regions_all"
+                        :key="suggestion.code"
+                      >
+                        <a
+                          href="#"
+                          class="d-search__suggestion-card"
+                          @click.prevent="
+                            () => {
+                              this.regionSelect(suggestion, tab)
+                            }
+                          "
+                        >
+                          <div class="d-search__suggestion-card__content">
+                            <span class="d-search__suggestion-card__title">{{
+                              suggestion.name
+                            }}</span>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </form>
+                </div>
 
-            <form class="d-search d-search--alt">
-              <div class="d-input d-input--light lk-staff-edit__operator-search">
-                <input
-                  type="text"
-                  placeholder="Поиск организаций"
-                  class="d-input__field lk-staff-edit__operator-search-field"
-                  v-model="search.org"
-                  @focus="search.orgSuggestionsShow = true"
-                  @blur="unActivateOrg()"
-                  @keypress.enter.prevent=""
-                />
-              </div>
-
-              <ul class="d-search__suggestions" v-if="this.search.orgSuggestionsShow">
-                <li
-                  class="d-search__suggestion"
-                  v-for="suggestion in organizations_all"
-                  :key="suggestion.code"
-                >
-                  <a
-                    href="#"
-                    class="d-search__suggestion-card"
-                    @click.prevent="
-                      () => {
-                        this.orgSelect(suggestion)
-                      }
-                    "
-                  >
-                    <div class="d-search__suggestion-card__content">
-                      <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
+                <div class="lk-staff-edit__regions">
+                  <div class="chips">
+                    <div class="chip" v-for="(item, index) in this.form.city" :key="item.code">
+                      <i
+                        class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"
+                      ></i>
+                      <span>{{ item.name }}</span>
+                      <a href="#" class="chip-close" @click.prevent="cityDel(index, tab)"></a>
                     </div>
-                  </a>
-                </li>
-              </ul>
-            </form>
-          </div>
+                  </div>
 
-          <!--<div class="lk-staff-edit__operator-address-wrapper">
+                  <form class="d-search d-search--alt">
+                    <div class="d-input d-input--light lk-staff-edit__operator-search">
+                      <input
+                        type="text"
+                        placeholder="Поиск города"
+                        class="d-input__field lk-staff-edit__operator-search-field"
+                        v-model="search.city"
+                        @focus="search.citySuggestionsShow = true"
+                        @blur="unActivateCity()"
+                        @keypress.enter.prevent=""
+                      />
+                    </div>
+
+                    <ul class="d-search__suggestions" v-if="this.search.citySuggestionsShow">
+                      <li
+                        class="d-search__suggestion"
+                        v-for="suggestion in city_all"
+                        :key="suggestion.code"
+                      >
+                        <a
+                          href="#"
+                          class="d-search__suggestion-card"
+                          @click.prevent="
+                            () => {
+                              this.citySelect(suggestion, tab)
+                            }
+                          "
+                        >
+                          <div class="d-search__suggestion-card__content">
+                            <span class="d-search__suggestion-card__title">{{
+                              suggestion.name
+                            }}</span>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </form>
+                </div>
+
+                <div class="lk-staff-edit__regions">
+                  <div class="chips">
+                    <div class="chip" v-for="(item, index) in this.form.org" :key="item.code">
+                      <i
+                        class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"
+                      ></i>
+                      <span>{{ item.name }}</span>
+                      <a href="#" class="chip-close" @click.prevent="orgDel(index, tab)"></a>
+                    </div>
+                  </div>
+
+                  <form class="d-search d-search--alt">
+                    <div class="d-input d-input--light lk-staff-edit__operator-search">
+                      <input
+                        type="text"
+                        placeholder="Поиск организаций"
+                        class="d-input__field lk-staff-edit__operator-search-field"
+                        v-model="search.org"
+                        @focus="search.orgSuggestionsShow = true"
+                        @blur="unActivateOrg()"
+                        @keypress.enter.prevent=""
+                      />
+                    </div>
+
+                    <ul class="d-search__suggestions" v-if="this.search.orgSuggestionsShow">
+                      <li
+                        class="d-search__suggestion"
+                        v-for="suggestion in organizations_all"
+                        :key="suggestion.code"
+                      >
+                        <a
+                          href="#"
+                          class="d-search__suggestion-card"
+                          @click.prevent="
+                            () => {
+                              this.orgSelect(suggestion, tab)
+                            }
+                          "
+                        >
+                          <div class="d-search__suggestion-card__content">
+                            <span class="d-search__suggestion-card__title">{{
+                              suggestion.name
+                            }}</span>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </form>
+                </div>
+
+                <!--<div class="lk-staff-edit__operator-address-wrapper">
           <p class="lk-staff-edit__operator-address">
             <i
             class="d-icon-location lk-staff-edit__operator-address-icon"
@@ -237,28 +266,256 @@
               </button>
             </div>
         </div>-->
-        </div>
-      </div>
+              </div>
+            </div>
 
-      <div class="lk-staff-edit__operator-notifications-wrapper">
-        <p class="lk-staff-edit__operator-title">Подписка на уведомления:</p>
-        <div
-          class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper"
-          v-for="(type, index) in notifications_types.items"
-          :key="index"
-        >
-          <Checkbox
-            v-model="form.notifications_types"
-            :binary="false"
-            :inputId="type.id"
-            :name="type.id"
-            :value="type.id"
-          />
-          <label :for="type.id" class="d-radio__label vendor-change__selected-item-radio-label">
-            {{ type.name }}
-          </label>
-        </div>
-      </div>
+            <div class="lk-staff-edit__operator-notifications-wrapper">
+              <p class="lk-staff-edit__operator-title">Подписка на уведомления:</p>
+              <div
+                class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper"
+                v-for="(type, index) in notifications_types.items"
+                :key="index"
+              >
+                <Checkbox
+                  v-model="form.notifications_types"
+                  :binary="false"
+                  :inputId="type.id"
+                  :name="type.id"
+                  :value="type.id"
+                />
+                <label
+                  :for="type.id"
+                  class="d-radio__label vendor-change__selected-item-radio-label"
+                >
+                  {{ type.name }}
+                </label>
+              </div>
+            </div>
+          </TabPanel>
+          <TabPanel v-else>
+            <div class="lk-staff-edit__operator">
+              <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
+                <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
+                  <Checkbox v-model="form.global_responsible" :binary="true" />
+                  <label class="d-radio__label vendor-change__selected-item-radio-label">
+                    Неограниченный круг клиентов
+                  </label>
+                </div>
+              </div>
+              <div v-if="!form.global_responsible" class="lk-staff-edit__regions-cont">
+                <div class="lk-staff-edit__regions">
+                  <div class="chips">
+                    <div
+                      class="chip"
+                      v-for="(item, index) in this.form.region_responsible"
+                      :key="item.code"
+                    >
+                      <i
+                        class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"
+                      ></i>
+                      <span>{{ item.name }}</span>
+                      <a href="#" class="chip-close" @click.prevent="regionDel(index, tab)"></a>
+                    </div>
+                  </div>
+
+                  <form class="d-search d-search--alt">
+                    <div class="d-input d-input--light lk-staff-edit__operator-search">
+                      <input
+                        type="text"
+                        placeholder="Поиск региона"
+                        class="d-input__field lk-staff-edit__operator-search-field"
+                        v-model="search.region_responsible"
+                        @focus="search.regionSuggestionsShow_responsible = true"
+                        @blur="unActivateRegion()"
+                        @keypress.enter.prevent=""
+                      />
+                    </div>
+
+                    <ul
+                      class="d-search__suggestions"
+                      v-if="this.search.regionSuggestionsShow_responsible"
+                    >
+                      <li
+                        class="d-search__suggestion"
+                        v-for="suggestion in regions_all_responsible"
+                        :key="suggestion.code"
+                      >
+                        <a
+                          href="#"
+                          class="d-search__suggestion-card"
+                          @click.prevent="
+                            () => {
+                              this.regionSelect(suggestion, tab)
+                            }
+                          "
+                        >
+                          <div class="d-search__suggestion-card__content">
+                            <span class="d-search__suggestion-card__title">{{
+                              suggestion.name
+                            }}</span>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </form>
+                </div>
+
+                <div class="lk-staff-edit__regions">
+                  <div class="chips">
+                    <div
+                      class="chip"
+                      v-for="(item, index) in this.form.city_responsible"
+                      :key="item.code"
+                    >
+                      <i
+                        class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"
+                      ></i>
+                      <span>{{ item.name }}</span>
+                      <a href="#" class="chip-close" @click.prevent="cityDel(index, tab)"></a>
+                    </div>
+                  </div>
+
+                  <form class="d-search d-search--alt">
+                    <div class="d-input d-input--light lk-staff-edit__operator-search">
+                      <input
+                        type="text"
+                        placeholder="Поиск города"
+                        class="d-input__field lk-staff-edit__operator-search-field"
+                        v-model="search.city_responsible"
+                        @focus="search.citySuggestionsShow_responsible = true"
+                        @blur="unActivateCity()"
+                        @keypress.enter.prevent=""
+                      />
+                    </div>
+
+                    <ul
+                      class="d-search__suggestions"
+                      v-if="this.search.citySuggestionsShow_responsible"
+                    >
+                      <li
+                        class="d-search__suggestion"
+                        v-for="suggestion in city_all_responsible"
+                        :key="suggestion.code"
+                      >
+                        <a
+                          href="#"
+                          class="d-search__suggestion-card"
+                          @click.prevent="
+                            () => {
+                              this.citySelect(suggestion, tab)
+                            }
+                          "
+                        >
+                          <div class="d-search__suggestion-card__content">
+                            <span class="d-search__suggestion-card__title">{{
+                              suggestion.name
+                            }}</span>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </form>
+                </div>
+
+                <div class="lk-staff-edit__regions">
+                  <div class="chips">
+                    <div
+                      class="chip"
+                      v-for="(item, index) in this.form.org_responsible"
+                      :key="item.code"
+                    >
+                      <i
+                        class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"
+                      ></i>
+                      <span>{{ item.name }}</span>
+                      <a href="#" class="chip-close" @click.prevent="orgDel(index, tab)"></a>
+                    </div>
+                  </div>
+
+                  <form class="d-search d-search--alt">
+                    <div class="d-input d-input--light lk-staff-edit__operator-search">
+                      <input
+                        type="text"
+                        placeholder="Поиск организаций"
+                        class="d-input__field lk-staff-edit__operator-search-field"
+                        v-model="search.org_responsible"
+                        @focus="search.orgSuggestionsShow_responsible = true"
+                        @blur="unActivateOrg()"
+                        @keypress.enter.prevent=""
+                      />
+                    </div>
+
+                    <ul
+                      class="d-search__suggestions"
+                      v-if="this.search.orgSuggestionsShow_responsible"
+                    >
+                      <li
+                        class="d-search__suggestion"
+                        v-for="suggestion in organizations_all_responsible"
+                        :key="suggestion.code"
+                      >
+                        <a
+                          href="#"
+                          class="d-search__suggestion-card"
+                          @click.prevent="
+                            () => {
+                              this.orgSelect(suggestion, tab)
+                            }
+                          "
+                        >
+                          <div class="d-search__suggestion-card__content">
+                            <span class="d-search__suggestion-card__title">{{
+                              suggestion.name
+                            }}</span>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </form>
+                </div>
+
+                <!--<div class="lk-staff-edit__operator-address-wrapper">
+          <p class="lk-staff-edit__operator-address">
+            <i
+            class="d-icon-location lk-staff-edit__operator-address-icon"
+            ></i>
+            <span>УрФО, Москва, ООО “Стин”, Пром хрень снаб</span>
+          </p>
+          <div class="lk-staff-edit__operator-address-actions">
+            <div class="d-divider d-divider--vertical lk-staff-edit__operator-address-actions-divider"></div>
+              <button class="lk-staff-edit__operator-address-actions-button">
+              <i class="d-icon-pen2"></i>
+              </button>
+            </div>
+        </div>-->
+              </div>
+            </div>
+
+            <div class="lk-staff-edit__operator-notifications-wrapper">
+              <p class="lk-staff-edit__operator-title">Подписка на уведомления:</p>
+              <div
+                class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper"
+                v-for="(type, index) in notifications_types.items"
+                :key="index"
+              >
+                <Checkbox
+                  v-model="form.notifications_types"
+                  :binary="false"
+                  :inputId="type.id"
+                  :name="type.id"
+                  :value="type.id"
+                />
+                <label
+                  :for="type.id"
+                  class="d-radio__label vendor-change__selected-item-radio-label"
+                >
+                  {{ type.name }}
+                </label>
+              </div>
+            </div>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </form>
   </section>
 </template>
@@ -269,16 +526,24 @@ import Loader from '@/shared/ui/Loader.vue'
 import { mapActions, mapGetters } from 'vuex'
 import Toast from 'primevue/toast'
 import Checkbox from 'primevue/checkbox'
+import Tabs from 'primevue/tabs'
+import TabPanels from 'primevue/tabpanels'
+import TabPanel from 'primevue/tabpanel'
+import TabList from 'primevue/tablist'
 
 export default {
   name: 'ProfileStaffForm',
-  components: { Breadcrumbs, Loader, Toast, Checkbox },
+  components: { Breadcrumbs, Loader, Toast, Checkbox, Tabs, TabPanels, TabPanel, TabList },
   data() {
     return {
       loading: true,
       regions_all: [],
       city_all: [],
       organizations_all: [],
+      regions_all_responsible: [],
+      city_all_responsible: [],
+      organizations_all_responsible: [],
+      tab: 0,
       tableData: [
         {
           name: 'name',
@@ -304,6 +569,10 @@ export default {
         city: [],
         org: [],
         global: false,
+        region_responsible: [],
+        city_responsible: [],
+        org_responsible: [],
+        global_responsible: false,
         operator: false,
         notifications_types: [],
       },
@@ -314,6 +583,12 @@ export default {
         regionSuggestionsShow: false,
         org: '',
         orgSuggestionsShow: false,
+        city_responsible: '',
+        citySuggestionsShow_responsible: false,
+        region_responsible: '',
+        regionSuggestionsShow_responsible: false,
+        org_responsible: '',
+        orgSuggestionsShow_responsible: false,
       },
       errors: {
         name: '',
@@ -332,15 +607,24 @@ export default {
           this.regions_all = this.regions.map(function (el) {
             return { name: el.label, code: el.key }
           })
+          this.regions_all_responsible = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
         })
         this.getCities({ exclude: [], filter: '' }).then(() => {
-          this.cities_all = this.cities.map(function (el) {
+          this.city_all = this.cities.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+          this.cities_all_responsible = this.cities.map(function (el) {
             return { name: el.label, code: el.key }
           })
           this.loading = false
         })
         this.getOrganizations({ exclude: [], filter: '' }).then(() => {
           this.organizations_all = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id }
+          })
+          this.organizations_all_responsible = this.organizations.map(function (el) {
             return { name: el.name, code: el.id }
           })
         })
@@ -353,15 +637,24 @@ export default {
         this.regions_all = this.regions.map(function (el) {
           return { name: el.label, code: el.key }
         })
+        this.regions_all_responsible = this.regions.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
       })
       this.getCities({ exclude: [], filter: '' }).then(() => {
-        this.cities_all = this.cities.map(function (el) {
+        this.city_all = this.cities.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
+        this.city_all_responsible = this.cities.map(function (el) {
           return { name: el.label, code: el.key }
         })
         this.loading = false
       })
       this.getOrganizations({ exclude: [], filter: '' }).then(() => {
         this.organizations_all = this.organizations.map(function (el) {
+          return { name: el.name, code: el.id }
+        })
+        this.organizations_all_responsible = this.organizations.map(function (el) {
           return { name: el.name, code: el.id }
         })
       })
@@ -382,68 +675,137 @@ export default {
       setManager: 'org/setManager',
       getNotificationsTypes: 'notifications/getNotificationsTypes',
     }),
-    regionSelect(item) {
-      this.form.region.push(item)
-      // Берем географию
-      this.getRegions({ exclude: this.form.region, filter: '' }).then(() => {
-        this.regions_all = this.regions.map(function (el) {
-          return { name: el.label, code: el.key }
+    regionSelect(item, tab) {
+      if (tab == 0) {
+        this.form.region.push(item)
+        // Берем географию
+        this.getRegions({ exclude: this.form.region, filter: '' }).then(() => {
+          this.regions_all = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
         })
-      })
-      this.search.region = ''
+        this.search.region = ''
+      } else {
+        this.form.region_responsible.push(item)
+        // Берем географию
+        this.getRegions({ exclude: this.form.region_responsible, filter: '' }).then(() => {
+          this.regions_all_responsible = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+        this.search.region_responsible = ''
+      }
     },
     unActivateRegion() {
-      setTimeout(() => (this.search.regionSuggestionsShow = false), 250)
+      setTimeout(() => {
+        this.search.regionSuggestionsShow = false
+        this.search.regionSuggestionsShow_responsible = false
+      }, 250)
     },
-    regionDel(index) {
-      this.form.region.splice(index, 1)
-      this.getRegions({ exclude: this.form.region, filter: '' }).then(() => {
-        this.regions_all = this.regions.map(function (el) {
-          return { name: el.label, code: el.key }
+    regionDel(index, tab) {
+      if (tab == 0) {
+        this.form.region.splice(index, 1)
+        this.getRegions({ exclude: this.form.region, filter: '' }).then(() => {
+          this.regions_all = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
         })
-      })
+      } else {
+        this.form.region_responsible.splice(index, 1)
+        this.getRegions({ exclude: this.form.region_responsible, filter: '' }).then(() => {
+          this.regions_all_responsible = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+      }
     },
-    citySelect(item) {
-      this.form.city.push(item)
-      // Берем географию
-      this.getCities({ exclude: this.form.city, filter: '' }).then(() => {
-        this.city_all = this.cities.map(function (el) {
-          return { name: el.label, code: el.key }
+    citySelect(item, tab) {
+      if (tab == 0) {
+        this.form.city.push(item)
+        // Берем географию
+        this.getCities({ exclude: this.form.city, filter: '' }).then(() => {
+          this.city_all = this.cities.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
         })
-      })
-      this.search.city = ''
+        this.search.city = ''
+      } else {
+        this.form.city_responsible.push(item)
+        // Берем географию
+        this.getCities({ exclude: this.form.city_responsible, filter: '' }).then(() => {
+          this.city_all_responsible = this.cities.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+        this.search.city_responsible = ''
+      }
     },
     unActivateCity() {
-      setTimeout(() => (this.search.citySuggestionsShow = false), 250)
+      setTimeout(() => {
+        this.search.citySuggestionsShow = false
+        this.search.citySuggestionsShow_responsible = false
+      }, 250)
     },
-    cityDel(index) {
-      this.form.city.splice(index, 1)
-      this.getCities({ exclude: this.form.city, filter: '' }).then(() => {
-        this.city_all = this.cities.map(function (el) {
-          return { name: el.label, code: el.key }
+    cityDel(index, tab) {
+      if (tab == 0) {
+        this.form.city.splice(index, 1)
+        this.getCities({ exclude: this.form.city, filter: '' }).then(() => {
+          this.city_all = this.cities.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
         })
-      })
+      } else {
+        this.form.city_responsible.splice(index, 1)
+        this.getCities({ exclude: this.form.city_responsible, filter: '' }).then(() => {
+          this.city_all_responsible = this.cities.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+      }
     },
-    orgSelect(item) {
-      this.form.org.push(item)
-      // Берем географию
-      this.getOrganizations({ exclude: this.form.org, filter: '' }).then(() => {
-        this.organizations_all = this.organizations.map(function (el) {
-          return { name: el.name, code: el.id }
+    orgSelect(item, tab) {
+      if (tab == 0) {
+        this.form.org.push(item)
+        // Берем географию
+        this.getOrganizations({ exclude: this.form.org, filter: '' }).then(() => {
+          this.organizations_all = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id }
+          })
         })
-      })
-      this.search.org = ''
+        this.search.org = ''
+      } else {
+        this.form.org_responsible.push(item)
+        // Берем географию
+        this.getOrganizations({ exclude: this.form.org_responsible, filter: '' }).then(() => {
+          this.organizations_all_responsible = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id }
+          })
+        })
+        this.search.org_responsible = ''
+      }
     },
     unActivateOrg() {
-      setTimeout(() => (this.search.orgSuggestionsShow = false), 250)
+      setTimeout(() => {
+        this.search.orgSuggestionsShow = false
+        this.search.orgSuggestionsShow_responsible = false
+      }, 250)
     },
-    orgDel(index) {
-      this.form.org.splice(index, 1)
-      this.getOrganizations({ exclude: this.form.org, filter: '' }).then(() => {
-        this.organizations_all = this.organizations.map(function (el) {
-          return { name: el.label, code: el.key }
+    orgDel(index, tab) {
+      if (tab == 0) {
+        this.form.org.splice(index, 1)
+        this.getOrganizations({ exclude: this.form.org, filter: '' }).then(() => {
+          this.organizations_all = this.organizations.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
         })
-      })
+      } else {
+        this.form.org_responsible.splice(index, 1)
+        this.getOrganizations({ exclude: this.form.org_responsible, filter: '' }).then(() => {
+          this.organizations_all_responsible = this.organizations.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+      }
     },
     debounce(func, delay) {
       clearTimeout(this.searchPTimer)
@@ -566,9 +928,15 @@ export default {
         this.regions_all = this.regions.map(function (el) {
           return { name: el.label, code: el.key }
         })
+        this.regions_all_responsible = this.regions.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
       })
       this.getCities({ exclude: this.form.city, filter: '' }).then(() => {
-        this.cities_all = this.cities.map(function (el) {
+        this.city_all = this.cities.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
+        this.city_all_responsible = this.cities.map(function (el) {
           return { name: el.label, code: el.key }
         })
         this.loading = false
@@ -577,10 +945,16 @@ export default {
         this.organizations_all = this.organizations.map(function (el) {
           return { name: el.name, code: el.id }
         })
+        this.organizations_all_responsible = this.organizations.map(function (el) {
+          return { name: el.name, code: el.id }
+        })
       })
     },
     regions: function (newVal) {
       this.regions_all = newVal.map(function (el) {
+        return { name: el.label, code: el.key }
+      })
+      this.regions_all_responsible = newVal.map(function (el) {
         return { name: el.label, code: el.key }
       })
     },
@@ -588,9 +962,15 @@ export default {
       this.city_all = newVal.map(function (el) {
         return { name: el.label, code: el.key }
       })
+      this.city_all_responsible = newVal.map(function (el) {
+        return { name: el.label, code: el.key }
+      })
     },
     organizations: function (newVal) {
       this.organizations_all = newVal.map(function (el) {
+        return { name: el.name, code: el.id, image: el.image }
+      })
+      this.organizations_all_responsible = newVal.map(function (el) {
         return { name: el.name, code: el.id, image: el.image }
       })
     },
@@ -647,8 +1027,65 @@ export default {
         })
       }, 300)
     },
+    'search.region_responsible': function (newVal, oldVal) {
+      if (newVal.length < 3 && oldVal.length < newVal.length) {
+        return
+      }
+      if (newVal.length < 3) {
+        newVal = ''
+      }
+      this.debounce(() => {
+        this.getRegions({ exclude: this.form.region_responsible, filter: newVal }).then(() => {
+          this.regions_all_responsible = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+      }, 300)
+    },
+    'search.city_responsible': function (newVal, oldVal) {
+      if (newVal.length < 3 && oldVal.length < newVal.length) {
+        return
+      }
+      if (newVal.length < 3) {
+        newVal = ''
+      }
+      this.debounce(() => {
+        this.getCities({ exclude: this.form.city_responsible, filter: newVal }).then(() => {
+          this.city_all_responsible = this.cities.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+      }, 300)
+    },
+    'search.org_responsible': function (newVal, oldVal) {
+      if (newVal.length < 3 && oldVal.length < newVal.length) {
+        return
+      }
+      if (newVal.length < 3) {
+        newVal = ''
+      }
+      this.debounce(() => {
+        this.getOrganizations({ exclude: this.form.org_responsible, filter: newVal }).then(() => {
+          this.organizations_all_responsible = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id }
+          })
+        })
+      }, 300)
+    },
   },
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.p-tablist-tab-list {
+  background-color: transparent;
+  border: none;
+  padding: 40px 0 24px;
+}
+.p-tablist-tab-list {
+  gap: 24px;
+}
+.p-tabpanels {
+  background-color: transparent;
+}
+</style>

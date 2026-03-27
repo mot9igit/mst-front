@@ -30,12 +30,13 @@
           >
             <span class="catalog__head-item-text">Отозвать предложение</span>
           </button>
-          <!-- <button
-      v-if="status.api_key == 'offer_accept' && offer.order_id != 0"
-      @click.prevent="routeToOrder(offer.order_id)"
-      class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs">
-      <span class="catalog__head-item-text">Перейти к заказу № {{ offer.order_id }}</span>
-		</button> -->
+          <button
+            v-if="status.api_key == 'offer_accept' && offer.order_id != 0"
+            @click.prevent="routeToOrder(offer.order_id)"
+            class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__docs"
+          >
+            <span class="catalog__head-item-text">Перейти к заказу № {{ offer.order_id }}</span>
+          </button>
         </div>
       </div>
     </div>
@@ -154,16 +155,42 @@
       <h3>Состав заказа</h3>
       <Loader v-if="loading" />
       <BaseTable
-        v-else
+        v-if="!loading"
         :items_data="offer.products"
-        :total="offer.products"
-        :table_data="this.table_data"
+        :total="offer.total"
         :pagination_items_per_page="this.pagination_items_per_page"
         :pagination_offset="this.pagination_offset"
         :page="this.page"
+        :table_data="this.table_data"
         @paginate="paginate"
+        @saleModal="saleModal"
+      />
+      <MinProductTable
+        v-if="!loading"
+        :items_data="offer.products"
+        :total="offer.total"
+        :pagination_items_per_page="this.pagination_items_per_page"
+        :pagination_offset="this.pagination_offset"
+        :page="this.page"
+        :table_data="this.table_data"
+        @paginate="paginate"
+        @saleModal="saleModal"
       />
     </div>
+    <Teleport to="body">
+      <customModal
+        v-model="modalActiveActions"
+        class="product-card-actions__modal-all product-card-actions-product__modal-all"
+      >
+        <saleWindow :product="productOrder" :orderInfo="orderInfo"></saleWindow>
+        <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-actions-product__modal-all-button"
+          @click.prevent="modalActiveActions = false"
+        >
+          Ok
+        </button>
+      </customModal>
+    </Teleport>
   </section>
 </template>
 
@@ -173,10 +200,13 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import Toast from 'primevue/toast'
+import saleWindow from '../purchases/ui/activeSalesWindow.vue'
+import customModal from '@/shared/ui/Modal.vue'
+import MinProductTable from '@/shared/ui/tableMinProduct/table.vue'
 
 export default {
   name: 'WholesaleOffer',
-  components: { Breadcrumbs, BaseTable, Loader, Toast },
+  components: { Breadcrumbs, BaseTable, Loader, customModal, Toast, MinProductTable, saleWindow },
   data() {
     return {
       loading: true,
@@ -189,7 +219,7 @@ export default {
           class: 'cell_centeralign',
         },
         name: {
-          label: 'Название',
+          label: 'Наименование',
           type: 'text',
           class: 'cell_centeralign',
         },
@@ -203,6 +233,16 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
+        rrc_discount: {
+          label: 'Скидка от РРЦ в %',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        actions: {
+          label: 'Примененные акции',
+          type: 'sales',
+          class: 'cell_centeralign',
+        },
         count: {
           label: 'Количество',
           type: 'text',
@@ -214,6 +254,9 @@ export default {
           class: 'cell_centeralign',
         },
       },
+      modalActiveActions: false,
+      productOrder: [],
+      orderInfo: {},
     }
   },
   props: {
@@ -232,6 +275,20 @@ export default {
       unsetOffer: 'wholesale/unsetOffer',
       deleteOffer: 'wholesale/deleteOffer',
     }),
+    paginate(data) {
+      this.loading = true
+      this.unsetOffer()
+      this.page = data.page
+      data.offer_id = this.$route.params.offer_id
+
+      this.getOffer(data).then(() => {
+        this.loading = false
+      })
+    },
+    saleModal(data) {
+      this.modalActiveActions = true
+      this.productOrder = data
+    },
     cancelOffer() {
       this.$confirm.require({
         message: 'Вы уверены, что хотите удалить предложение №' + this.offer.id + '?',
@@ -282,7 +339,17 @@ export default {
   mounted() {
     this.getOffer({
       offer_id: this.$route.params.offer_id,
-    }).then(() => (this.loading = false))
+      page: this.page,
+      perpage: this.pagination_items_per_page,
+    }).then(() => {
+      this.loading = false
+      this.orderInfo.seller_name = this.offer.seller_name
+      this.orderInfo.seller_img = this.offer.seller_image
+      this.orderInfo.delivery = this.offer.day_delivery
+      this.orderInfo.payer = this.offer.payer
+      this.orderInfo.delay_type = this.offer.delay_type
+      this.orderInfo.delay = this.offer.delay
+    })
   },
   computed: {
     ...mapGetters({
@@ -294,6 +361,12 @@ export default {
       this.status.name = newVal.status_name
       this.status.color = newVal.status_color
       this.status.api_key = newVal.api_key
+      this.orderInfo.seller_name = this.offer.seller_name
+      this.orderInfo.seller_img = this.offer.seller_image
+      this.orderInfo.delivery = this.offer.day_delivery
+      this.orderInfo.payer = this.offer.payer
+      this.orderInfo.delay_type = this.offer.delay_type
+      this.orderInfo.delay = this.offer.delay
     },
   },
 }

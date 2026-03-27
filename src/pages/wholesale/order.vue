@@ -53,11 +53,30 @@
 
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Инициатор</div>
-          <div class="order-card__orderinfo-grid-text">
-            {{ this.order?.initiator_org_name != '' ? this.order?.initiator_org_name : '' }}
-          </div>
-          <div class="order-card__orderinfo-grid-text-down">
-            ({{ this.order?.initiator_user_name != '' ? this.order?.initiator_user_name : '' }})
+          <router-link
+            v-if="this.order?.offer_id"
+            :to="{
+              name: 'wholesaleOffer',
+              params: {
+                id: this.$route.params.id,
+                offer_id: this.order.offer_id,
+              },
+            }"
+          >
+            <div class="order-card__orderinfo-grid-text">
+              {{ this.order?.initiator_org_name != '' ? this.order?.initiator_org_name : '' }}
+            </div>
+            <div class="order-card__orderinfo-grid-text-down">
+              ({{ this.order?.initiator_user_name != '' ? this.order?.initiator_user_name : '' }})
+            </div>
+          </router-link>
+          <div v-else>
+            <div class="order-card__orderinfo-grid-text">
+              {{ this.order?.initiator_org_name != '' ? this.order?.initiator_org_name : '' }}
+            </div>
+            <div class="order-card__orderinfo-grid-text-down">
+              ({{ this.order?.initiator_user_name != '' ? this.order?.initiator_user_name : '' }})
+            </div>
           </div>
         </div>
 

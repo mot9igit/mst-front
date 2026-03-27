@@ -21,7 +21,7 @@
         @sort="filter"
         @paginate="paginate"
       />
-      <!-- <MinTable
+      <MinTable
         :items_data="offers.items"
         :total="offers.total"
         :pagination_items_per_page="this.pagination_items_per_page"
@@ -32,7 +32,7 @@
         @filter="filter"
         @sort="filter"
         @paginate="paginate"
-      /> -->
+      />
     </div>
   </section>
 </template>
