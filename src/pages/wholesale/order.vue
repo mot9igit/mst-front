@@ -26,6 +26,30 @@
         <!-- <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>-->
         <div class="d-top-order-container-buttons">
           <button
+            class="order-card__action order-card__action-edit"
+            v-if="
+              status.api_key == 'new' ||
+              status.api_key == 'seller_started' ||
+              status.api_key == 'seller_accepted' ||
+              status.api_key == 'buyer_accepted'
+            "
+            @click.prevent="optOrderEdit()"
+          >
+            <i class="d-icon-pen2"></i>
+          </button>
+          <button
+            class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__cancel"
+            v-if="
+              status.api_key == 'new' ||
+              status.api_key == 'seller_started' ||
+              status.api_key == 'seller_accepted' ||
+              status.api_key == 'buyer_accepted'
+            "
+            @click.prevent="modalCancel = true"
+          >
+            <span class="catalog__head-item-text">Отменить заказ</span>
+          </button>
+          <button
             class="d-button d-button-tertiary d-button-tertiary-small order-card__action order-card__docs"
             @click.prevent="modalDocs = true"
             v-if="docs.length"
@@ -35,9 +59,6 @@
               >Документы <span v-if="docs.length">({{ docs.length }})</span></span
             >
           </button>
-          <!--<button  class="d-button d-button-primary d-button-primary-small d-button--sm-shadow  order-card__action">
-            <span class="catalog__head-item-text">Подтвердить заказ</span>
-          </button>-->
         </div>
       </div>
     </div>
@@ -226,6 +247,28 @@
           Ok
         </button>
       </customModal>
+      <customModal v-model="modalCancel" class="order-card__modal order-card__modal-cansel">
+        <h3>Отмена заказа № {{ this.$route.params.order_id }}</h3>
+        Вы уверены, что хотите отменить заказ № {{ this.$route.params.order_id }}?
+        <div class="collection__modal-buttons">
+          <button
+            type="button"
+            href="#"
+            class="d-button d-button-primary d-button--sm-shadow collection__modal-cansel"
+            @click.prevent="this.modalCancel = false"
+          >
+            Отмена
+          </button>
+          <button
+            type="button"
+            href="#"
+            class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
+            @click.prevent="cancelOrder()"
+          >
+            Ok
+          </button>
+        </div>
+      </customModal>
     </Teleport>
   </section>
 </template>
@@ -322,6 +365,7 @@ export default {
         },
       },
       modalActiveActions: false,
+      modalCancel: false,
       productOrder: [],
       orderInfo: {},
     }
@@ -340,10 +384,13 @@ export default {
       default: false,
     },
   },
+  emits: ['toggleOrderOffer', 'cartStore'],
   methods: {
     ...mapActions({
       getOrder: 'wholesale/getOrder',
       unsetOrder: 'wholesale/unsetOrder',
+      optOrderCancel: 'wholesale/optOrderCancel',
+      editOptOrder: 'wholesale/editOptOrder',
     }),
     docClick(data) {
       let loc = data.filename
@@ -366,6 +413,75 @@ export default {
     saleModal(data) {
       this.modalActiveActions = true
       this.productOrder = data
+    },
+    optOrderEdit() {
+      let head =
+        'Вы уверены, что хотите отредактировать заказ №' + this.$route.params.order_id + '?'
+      let mess =
+        'Перейти на страницу создания предложения для поставщика ' +
+        this.order?.buyer_name +
+        ', склад #' +
+        this.order?.buyer_w_id +
+        '?'
+      this.$confirm.require({
+        message: mess,
+        header: head,
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.loading = true
+          this.$emit('cartStore', this.order.warehouse_id)
+          this.editOptOrder({
+            order_id: this.$route.params.order_id,
+          }).then(() => {
+            this.loading = false
+            this.$router.push({
+              name: 'WholesalesOfferClient',
+              params: { id: this.$route.params.id, id_org_from: this.order.org_id },
+              query: { timestamp: Date.now() },
+            })
+
+            this.$emit('toggleOrderOffer')
+          })
+        },
+        reject: () => {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Редактирование заказа',
+            detail: 'Действие отклонено',
+            life: 3000,
+          })
+        },
+      })
+    },
+    cancelOrder() {
+      this.loading = true
+      let data = {}
+      data.order_id = this.$route.params.order_id
+      this.optOrderCancel(data).then((res) => {
+        this.loading = false
+        if (res.data.success) {
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Заказ успешно отменен!',
+            detail: res.data.message,
+            life: 3000,
+          })
+        } else {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: res.data.message,
+            life: 3000,
+          })
+        }
+        data.page = this.page
+        data.perpage = this.pagination_items_per_page
+        data.order_id = this.$route.params.order_id
+        this.getOrder(data).then(() => {
+          this.loading = false
+          this.modalCancel = false
+        })
+      })
     },
   },
   mounted() {

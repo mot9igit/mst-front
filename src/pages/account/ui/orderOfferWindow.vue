@@ -61,6 +61,19 @@
                 v-for="(warehouse, warehouse_id) in org.data"
                 :key="warehouse_id"
               >
+                <div class="mst__alert blue" v-if="warehouse.type == 'order' && warehouse.data">
+                  <router-link
+                    :to="{
+                      name: 'purchasesOrder',
+                      params: {
+                        id: this.$route.params.id,
+                        order_id: warehouse.id,
+                      },
+                    }"
+                  >
+                    В данный момент вы редактируете "Заказ #{{ warehouse.id }}"
+                  </router-link>
+                </div>
                 <div class="order__item-header">
                   <div class="order__item-header-top">
                     <div class="order__item-header-left">
@@ -441,7 +454,7 @@
                   <!-- class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy order__footer-actions-buy--light noclose_click" -->
 
                   <button
-                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy noclose_click"
+                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy order__footer-actions-buy--light noclose_click"
                     @click.prevent="
                       () => {
                         if (this.basketOffer?.cart_data?.not_available) {
@@ -456,7 +469,7 @@
                   >
                     Отправить предложение
                   </button>
-                  <!-- <button
+                  <button
                     class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy noclose_click"
                     @click.prevent="
                       () => {
@@ -471,7 +484,7 @@
                     "
                   >
                     Отправить заказ
-                  </button> -->
+                  </button>
                   <!--
                     <div class="d-divider d-divider--vertical order__footer-actions-divider"></div>
                     <button class="order__footer-actions-upload">
@@ -492,7 +505,7 @@
                   <!-- class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy order__footer-actions-buy--light noclose_click" -->
 
                   <button
-                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy noclose_click"
+                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy order__footer-actions-buy--light noclose_click"
                     @click.prevent="
                       () => {
                         if (this.basketStore?.cart_data?.not_available) {
@@ -507,7 +520,7 @@
                   >
                     Отправить предложение
                   </button>
-                  <!-- <button
+                  <button
                     class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy noclose_click"
                     @click.prevent="
                       () => {
@@ -522,7 +535,7 @@
                     "
                   >
                     Отправить заказ
-                  </button> -->
+                  </button>
                   <!--
                   <div class="d-divider d-divider--vertical order__footer-actions-divider"></div>
                   <button class="order__footer-actions-upload">
@@ -697,7 +710,7 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      loading: true,
       showClearBasketModal: false,
       showChangedCount: false,
       showChangedId: '',

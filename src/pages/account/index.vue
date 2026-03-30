@@ -41,11 +41,18 @@
       :mobileNotificationsShow="mobileNotificationsShow"
       :offer="isOffer"
       :searchUpdater="searchUpdater"
+      :cart_store="this.store"
     ></ProfileHeaderOffer>
 
     <main class="main">
       <div class="content-wrapper main__content-wrapper">
-        <router-view @toggleOrder="toggleOrder" :refreshOrderPage="refreshOrderPage"> </router-view>
+        <router-view
+          @toggleOrder="toggleOrder"
+          @toggleOrderOffer="toggleOrderOffer()"
+          @cartStore="activeStore"
+          :refreshOrderPage="refreshOrderPage"
+        >
+        </router-view>
       </div>
       <!-- <teleport to="body">
         <ProfileCart
@@ -364,6 +371,7 @@ export default {
       }, 500)
     },
     activeStore(data) {
+      console.log(data)
       this.store = data
     },
   },

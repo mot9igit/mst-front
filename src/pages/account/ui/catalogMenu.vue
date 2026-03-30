@@ -254,7 +254,6 @@ export default {
       type: Boolean,
       default: false,
     },
-
   },
 
   mounted() {
@@ -292,11 +291,11 @@ export default {
     },
     getMenu() {
       return [
-        {
-          name: 'Каталоги поставщиков',
-          icon: 'd-icon-catalog',
-          activeCatalog: false,
-        },
+        // {
+        //   name: 'Каталоги поставщиков',
+        //   icon: 'd-icon-catalog',
+        //   activeCatalog: false,
+        // },
         {
           name: 'Единый каталог',
           icon: 'd-icon-boxes',

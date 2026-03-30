@@ -246,10 +246,19 @@ export default {
       type: Boolean,
       default: false,
     },
+    cart_store: {
+      type: Number,
+      default: null,
+    },
   },
   mounted() {
     this.getFromOrgStores().then(() => {
-      this.storeActive = this.fromOrgStores.items[0].id
+      if (!this.cart_store) {
+        this.storeActive = this.fromOrgStores.items[0].id
+      } else {
+        this.storeActive = this.cart_store
+      }
+
       this.getOrgBasketOfferStore({
         active_store: this.storeActive,
       }).then(() => {

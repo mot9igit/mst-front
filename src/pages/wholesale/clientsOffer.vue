@@ -1,5 +1,6 @@
 <template>
   <section class="promos" id="promos">
+    <Loader v-if="this.loading"></Loader>
     <div class="promos__header">
       <h1 class="promos__header-title">
         Предложение для
@@ -167,6 +168,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/swiper.scss'
 import customModal from '@/shared/ui/Modal.vue'
 import addVendorWindow from '../account/ui/addVendorWindow.vue'
+import Loader from '@/shared/ui/Loader.vue'
 
 SwiperCore.use([Autoplay, Pagination])
 
@@ -176,12 +178,12 @@ export default {
   data() {
     return {
       modalAdd: false,
-      loading: false,
+      loading: true,
     }
   },
-  components: { Swiper, SwiperSlide, customModal, addVendorWindow },
+  components: { Swiper, SwiperSlide, customModal, addVendorWindow, Loader },
   mounted() {
-    this.getOrgName()
+    this.getOrgName().then(() => (this.loading = false))
     this.getSalesBanners()
     this.getOpts({
       page: 0,
