@@ -83,11 +83,11 @@
               <span>Ответственный за клиентов</span>
             </button>
           </div>
-          <div class="d-tab2" :class="{ 'd-tab2--active': tab == 1 }" :value="1">
+          <!-- <div class="d-tab2" :class="{ 'd-tab2--active': tab == 1 }" :value="1">
             <button class="collection__tabs-link" @click.prevent="tab = 1">
               <span>Ответственный за поставщиков</span>
             </button>
-          </div>
+          </div> -->
         </TabList>
 
         <TabPanels>
@@ -292,7 +292,7 @@
               </div>
             </div>
           </TabPanel>
-          <TabPanel v-else>
+          <!-- <TabPanel v-else>
             <div class="lk-staff-edit__operator">
               <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
                 <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
@@ -472,9 +472,9 @@
                       </li>
                     </ul>
                   </form>
-                </div>
+                </div> -->
 
-                <!--<div class="lk-staff-edit__operator-address-wrapper">
+          <!--<div class="lk-staff-edit__operator-address-wrapper">
           <p class="lk-staff-edit__operator-address">
             <i
             class="d-icon-location lk-staff-edit__operator-address-icon"
@@ -488,7 +488,7 @@
               </button>
             </div>
         </div>-->
-              </div>
+          <!-- </div>
             </div>
 
             <div class="lk-staff-edit__operator-notifications-wrapper">
@@ -513,7 +513,7 @@
                 </label>
               </div>
             </div>
-          </TabPanel>
+          </TabPanel> -->
         </TabPanels>
       </Tabs>
     </form>
