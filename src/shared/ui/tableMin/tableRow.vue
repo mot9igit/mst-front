@@ -3,7 +3,9 @@
   <router-link
     class="d-table-min__row"
     :to="
-      this.$route.params.order_id
+      this.$route.name == 'wholesaleOrders' ||
+      this.$route.name == 'purchasesOrders' ||
+      this.$route.name == 'retailOrders'
         ? {
             name: keys.id.link_to,
             params: { id: this.$route.params.id, order_id: row_data.id },

@@ -273,7 +273,7 @@
               <p class="lk-staff-edit__operator-title">Подписка на уведомления:</p>
               <div
                 class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper"
-                v-for="(type, index) in notifications_types.items"
+                v-for="(type, index) in notification_clients"
                 :key="index"
               >
                 <Checkbox
@@ -495,7 +495,7 @@
               <p class="lk-staff-edit__operator-title">Подписка на уведомления:</p>
               <div
                 class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper"
-                v-for="(type, index) in notifications_types.items"
+                v-for="(type, index) in notification_seller"
                 :key="index"
               >
                 <Checkbox
@@ -544,6 +544,8 @@ export default {
       city_all_responsible: [],
       organizations_all_responsible: [],
       tab: 0,
+      notification_clients: [],
+      notification_seller: [],
       tableData: [
         {
           name: 'name',
@@ -607,23 +609,30 @@ export default {
           this.regions_all = this.regions.map(function (el) {
             return { name: el.label, code: el.key }
           })
+        })
+        this.getRegions({ exclude: this.form.region_responsible, filter: '' }).then(() => {
           this.regions_all_responsible = this.regions.map(function (el) {
             return { name: el.label, code: el.key }
           })
         })
-        this.getCities({ exclude: [], filter: '' }).then(() => {
+        this.getCities({ exclude: this.form.city, filter: '' }).then(() => {
           this.city_all = this.cities.map(function (el) {
-            return { name: el.label, code: el.key }
-          })
-          this.cities_all_responsible = this.cities.map(function (el) {
             return { name: el.label, code: el.key }
           })
           this.loading = false
         })
-        this.getOrganizations({ exclude: [], filter: '' }).then(() => {
+        this.getCities({ exclude: this.form.city_responsible, filter: '' }).then(() => {
+          this.city_all_responsible = this.cities.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+          this.loading = false
+        })
+        this.getOrganizations({ exclude: this.form.org, filter: '' }).then(() => {
           this.organizations_all = this.organizations.map(function (el) {
             return { name: el.name, code: el.id }
           })
+        })
+        this.getOrganizations({ exclude: this.form.org_responsible, filter: '' }).then(() => {
           this.organizations_all_responsible = this.organizations.map(function (el) {
             return { name: el.name, code: el.id }
           })
@@ -637,23 +646,30 @@ export default {
         this.regions_all = this.regions.map(function (el) {
           return { name: el.label, code: el.key }
         })
+      })
+      this.getRegions({ exclude: this.form.region_responsible, filter: '' }).then(() => {
         this.regions_all_responsible = this.regions.map(function (el) {
           return { name: el.label, code: el.key }
         })
       })
-      this.getCities({ exclude: [], filter: '' }).then(() => {
+      this.getCities({ exclude: this.form.city, filter: '' }).then(() => {
         this.city_all = this.cities.map(function (el) {
           return { name: el.label, code: el.key }
         })
+        this.loading = false
+      })
+      this.getCities({ exclude: this.form.city_responsible, filter: '' }).then(() => {
         this.city_all_responsible = this.cities.map(function (el) {
           return { name: el.label, code: el.key }
         })
         this.loading = false
       })
-      this.getOrganizations({ exclude: [], filter: '' }).then(() => {
+      this.getOrganizations({ exclude: this.form.org, filter: '' }).then(() => {
         this.organizations_all = this.organizations.map(function (el) {
           return { name: el.name, code: el.id }
         })
+      })
+      this.getOrganizations({ exclude: this.form.org_responsible, filter: '' }).then(() => {
         this.organizations_all_responsible = this.organizations.map(function (el) {
           return { name: el.name, code: el.id }
         })
@@ -928,6 +944,8 @@ export default {
         this.regions_all = this.regions.map(function (el) {
           return { name: el.label, code: el.key }
         })
+      })
+      this.getRegions({ exclude: this.form.region_responsible, filter: '' }).then(() => {
         this.regions_all_responsible = this.regions.map(function (el) {
           return { name: el.label, code: el.key }
         })
@@ -936,6 +954,9 @@ export default {
         this.city_all = this.cities.map(function (el) {
           return { name: el.label, code: el.key }
         })
+        this.loading = false
+      })
+      this.getCities({ exclude: this.form.city_responsible, filter: '' }).then(() => {
         this.city_all_responsible = this.cities.map(function (el) {
           return { name: el.label, code: el.key }
         })
@@ -945,40 +966,56 @@ export default {
         this.organizations_all = this.organizations.map(function (el) {
           return { name: el.name, code: el.id }
         })
+      })
+      this.getOrganizations({ exclude: this.form.org_responsible, filter: '' }).then(() => {
         this.organizations_all_responsible = this.organizations.map(function (el) {
           return { name: el.name, code: el.id }
         })
       })
     },
-    regions: function (newVal) {
-      this.regions_all = newVal.map(function (el) {
-        return { name: el.label, code: el.key }
-      })
-      this.regions_all_responsible = newVal.map(function (el) {
-        return { name: el.label, code: el.key }
-      })
-    },
-    cities: function (newVal) {
-      this.city_all = newVal.map(function (el) {
-        return { name: el.label, code: el.key }
-      })
-      this.city_all_responsible = newVal.map(function (el) {
-        return { name: el.label, code: el.key }
-      })
-    },
-    organizations: function (newVal) {
-      this.organizations_all = newVal.map(function (el) {
-        return { name: el.name, code: el.id, image: el.image }
-      })
-      this.organizations_all_responsible = newVal.map(function (el) {
-        return { name: el.name, code: el.id, image: el.image }
-      })
-    },
+    // regions: function (newVal) {
+    //   this.regions_all = newVal.map(function (el) {
+    //     return { name: el.label, code: el.key }
+    //   })
+    //   this.regions_all_responsible = newVal.map(function (el) {
+    //     return { name: el.label, code: el.key }
+    //   })
+    // },
+    // cities: function (newVal) {
+    //   this.city_all = newVal.map(function (el) {
+    //     return { name: el.label, code: el.key }
+    //   })
+    //   this.city_all_responsible = newVal.map(function (el) {
+    //     return { name: el.label, code: el.key }
+    //   })
+    // },
+    // organizations: function (newVal) {
+    //   this.organizations_all = newVal.map(function (el) {
+    //     return { name: el.name, code: el.id, image: el.image }
+    //   })
+    //   this.organizations_all_responsible = newVal.map(function (el) {
+    //     return { name: el.name, code: el.id, image: el.image }
+    //   })
+    // },
     notifications_types: function (newVal) {
       if (!this.$route.params.manager_id) {
         this.form.notifications_types = []
         for (let i = 0; i < newVal.items.length; i++) {
           this.form.notifications_types.push(newVal.items[i].id)
+        }
+      }
+      this.notification_clients = []
+      this.notification_seller = []
+      for (let i = 0; i < newVal.items.length; i++) {
+        if (newVal.items[i].manager_type == 1) {
+          this.notification_clients.push(newVal.items[i])
+        } else {
+          if (newVal.items[i].manager_type == 2) {
+            this.notification_seller.push(newVal.items[i])
+          } else {
+            this.notification_clients.push(newVal.items[i])
+            this.notification_seller.push(newVal.items[i])
+          }
         }
       }
     },
@@ -1081,6 +1118,7 @@ export default {
   background-color: transparent;
   border: none;
   padding: 40px 0 24px;
+  border-color: transparent;
 }
 .p-tablist-tab-list {
   gap: 24px;

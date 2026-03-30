@@ -71,14 +71,15 @@
 
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Поставщик</div>
-          <div class="order-card__orderinfo-grid-text">
+          <div class="order-card__orderinfo-grid-text" v-if="this.offer?.seller_name">
             {{ this.offer?.seller_name != '' ? this.offer?.seller_name : '' }} ИНН:
             {{ this.offer?.seller_inn != '' ? this.offer?.seller_inn : '-' }}
           </div>
-          <div class="order-card__orderinfo-grid-text-down">
+          <div class="order-card__orderinfo-grid-text-down" v-if="this.offer?.seller_name">
             <b>Склад {{ this.offer?.seller_w_id ? ' #' + this.offer?.seller_w_id : '' }}</b>
             <p>{{ this.offer?.seller_w_address ? this.offer?.seller_w_address : '' }}</p>
           </div>
+          <div v-else></div>
         </div>
 
         <div class="order-card__orderinfo-grid">
