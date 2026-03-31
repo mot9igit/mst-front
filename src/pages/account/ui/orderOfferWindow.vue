@@ -64,7 +64,7 @@
                 <div class="mst__alert blue" v-if="warehouse.type == 'order' && warehouse.data">
                   <router-link
                     :to="{
-                      name: 'purchasesOrder',
+                      name: 'wholesaleOrder',
                       params: {
                         id: this.$route.params.id,
                         order_id: warehouse.id,
@@ -466,6 +466,7 @@
                         }
                       }
                     "
+                    v-if="!edit"
                   >
                     Отправить предложение
                   </button>
@@ -483,7 +484,7 @@
                       }
                     "
                   >
-                    Отправить заказ
+                    <span v-if="edit">Изменить заказ</span><span v-else>Отправить заказ</span>
                   </button>
                   <!--
                     <div class="d-divider d-divider--vertical order__footer-actions-divider"></div>
@@ -517,6 +518,7 @@
                         }
                       }
                     "
+                    v-if="!edit"
                   >
                     Отправить предложение
                   </button>
@@ -534,7 +536,7 @@
                       }
                     "
                   >
-                    Отправить заказ
+                    <span v-if="edit">Изменить заказ</span><span v-else>Отправить заказ</span>
                   </button>
                   <!--
                   <div class="d-divider d-divider--vertical order__footer-actions-divider"></div>
@@ -731,6 +733,7 @@ export default {
       modalCommentText: '',
       modalCommentDelete: false,
       action: '',
+      edit: null,
     }
   },
   computed: {
@@ -845,7 +848,7 @@ export default {
           id_remain: object.id,
           count: object.value,
           key: object.item.product.key,
-          actions: object.item.product.actions,
+          actions: object.item.product.action,
           cart_store: this.basketOfferWarehouse,
         }
         this.basketOfferProductUpdate(data).then((response) => {
@@ -927,21 +930,35 @@ export default {
     },
     async orderCreate() {
       this.loading = true
-
-      this.createOrder({ store_id: this.basketOfferWarehouse }).then((res) => {
+      let data = {
+        store_id: this.basketOfferWarehouse,
+      }
+      if (this.edit) {
+        data.edit_id = this.edit
+      }
+      this.createOrder(data).then((res) => {
         if (res.data.success) {
           this.loading = false
 
           this.$toast.add({
             severity: 'success',
-            summary: 'Заказ создан',
-            detail: 'Вы успешно отправили заказ!',
+            summary: !this.edit ? 'Заказ создан' : 'Заказ #' + this.edit + ' изменен!',
+            detail: !this.edit ? 'Вы успешно отправили заказ!' : 'Вы успешно изменили заказ!',
             life: 3000,
           })
 
           this.getBasketOffer()
           this.$emit('offerSubmit')
           this.$emit('close')
+          if (this.edit) {
+            this.$router.push({
+              name: 'wholesaleOrder',
+              params: {
+                id: this.$route.params.id,
+                order_id: this.edit,
+              },
+            })
+          }
         } else {
           this.$toast.add({
             severity: 'error',
@@ -1060,6 +1077,7 @@ export default {
         this.basketOfferWarehouse
       ) {
         this.basketStore = this.basketOffer[this.basketOfferWarehouse]
+        //console.log(this.basketStore)
       } else {
         this.basketStore = {}
       }
@@ -1068,17 +1086,25 @@ export default {
     }
   },
   watch: {
-    // basketStore(newVal) {
-    //   if (Object.keys(newVal).length) {
-    //     this.loading = false
-    //   } else {
-    //     this.loading = false
-    //     if (!this.order) {
-    //       this.$emit('close')
-    //     }
-    //     this.$emit('catalogUpdate')
-    //   }
-    // },
+    basketStore(newVal) {
+      // if (Object.keys(newVal).length) {
+      //   for (var org in newVal.data) {
+      //     for (var store in newVal.data[org]) {
+      //       if ('type' in newVal.data[org][store] && newVal.data[org][store].type == 'order') {
+      //         this.edit = true
+      //       }
+      //     }
+      //   }
+      //   this.loading = false
+      // }
+      // else {
+      //   this.loading = false
+      //   if (!this.order) {
+      //     this.$emit('close')
+      //   }
+      //   this.$emit('catalogUpdate')
+      // }
+    },
     basketOffer(newVal) {
       if (Object.keys(newVal).length > 1) {
         if (
@@ -1087,6 +1113,18 @@ export default {
         ) {
           this.basketStore = newVal.data[this.basketOfferWarehouse]
           this.order = ''
+          this.edit = null
+          for (var org in this.basketStore.data) {
+            console.log(this.basketStore.data[org])
+            for (var store in this.basketStore.data[org].data) {
+              if (
+                'type' in this.basketStore.data[org].data[store] &&
+                this.basketStore.data[org].data[store].type == 'order'
+              ) {
+                this.edit = this.basketStore.data[org].data[store].id
+              }
+            }
+          }
         } else {
           this.basketStore = {}
         }

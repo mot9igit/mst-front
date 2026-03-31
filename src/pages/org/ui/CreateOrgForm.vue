@@ -116,6 +116,26 @@
           <div
             class="dart-input-group"
             :class="{
+              error: v$.form.company.kpp.$errors.length,
+            }"
+          >
+            <Autocomplete
+              name="kpp"
+              class="dart-form-control"
+              type="company"
+              selectionType="single"
+              placeholder="КПП"
+              required
+              v-model="form.company.kpp"
+              @setSelection="form.company.data = $event"
+            />
+            <span class="error_desc" v-for="error of v$.form.company.kpp.$errors" :key="error.$uid">
+              {{ error.$message }}
+            </span>
+          </div>
+          <div
+            class="dart-input-group"
+            :class="{
               error: v$.form.company.data.value.$errors.length,
             }"
           >
@@ -276,6 +296,7 @@ export default {
         company: {
           data: { value: '' },
           inn: '',
+          kpp: '',
           warehouses: [
             {
               address: {
@@ -406,6 +427,7 @@ export default {
       console.log(newVal)
       this.orgprofile = newVal
       this.form.company.inn = newVal.requisites['0'].inn
+      this.form.company.kpp = newVal.requisites['0'].kpp
       this.form.company.data.value = newVal.requisites['0'].name
       if (newVal.warehouses) {
         const array1 = newVal.warehouses
@@ -455,6 +477,11 @@ export default {
           inn: {
             required: helpers.withMessage('Поле обязательно для заполнения', () => {
               return this.form.company.inn
+            }),
+          },
+          kpp: {
+            required: helpers.withMessage('Поле обязательно для заполнения', () => {
+              return this.form.company.kpp
             }),
           },
           data: {
