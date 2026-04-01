@@ -13,15 +13,26 @@
           <!-- Шапка -->
           <div class="order__header">
             <h3 class="order__header-title">Оформление заказа</h3>
-            <!-- <button
-              class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy order__clear-cart"
-              @click.prevent="close()"
-            >
-              Очистить всю корзину
-            </button> -->
-            <button class="order__header-close" @click.prevent="close()">
-              <i class="d-icon-times-flat"></i>
-            </button>
+            <div class="order__header-title-actions">
+              <button
+                class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy order__clear-cart noclose_click"
+                @click.prevent="
+                  ((this.id_clear_org = 0),
+                  (this.id_clear_store = 0),
+                  (this.showClearBasketModal = true))
+                "
+                v-if="Object.keys(this.basketStore).length > 1"
+              >
+                Очистить всю корзину
+              </button>
+              <div
+                v-if="Object.keys(this.basketStore).length > 1"
+                class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
+              ></div>
+              <button class="order__header-close" @click.prevent="close()">
+                <i class="d-icon-times-flat"></i>
+              </button>
+            </div>
           </div>
 
           <!-- Информация о плательщике -->
@@ -484,6 +495,25 @@
                     -->
                 </div>
               </div>
+            </div>
+          </div>
+          <div v-else class="order__item-list">
+            <div class="order__item-list-empty">
+              <img src="/icons/cart_empty.svg" alt="MST" class="" />
+              <h4>В корзине пока нет товаров</h4>
+              <p>Начните с подборок на главной странице или найдите нужный товар через поиск</p>
+              <button
+                class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy"
+                @click.prevent="
+                  (this.$router.push({
+                    name: 'purchasesCatalogSearch',
+                    query: { search: '' },
+                  }),
+                  close())
+                "
+              >
+                В каталог
+              </button>
             </div>
           </div>
 
