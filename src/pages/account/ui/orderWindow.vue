@@ -13,6 +13,12 @@
           <!-- Шапка -->
           <div class="order__header">
             <h3 class="order__header-title">Оформление заказа</h3>
+            <!-- <button
+              class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy order__clear-cart"
+              @click.prevent="close()"
+            >
+              Очистить всю корзину
+            </button> -->
             <button class="order__header-close" @click.prevent="close()">
               <i class="d-icon-times-flat"></i>
             </button>

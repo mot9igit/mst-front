@@ -7970,3 +7970,13 @@ body {
     }
   }
 }
+
+.order__clear-cart {
+  background-color: #282828;
+  color: #fff;
+  box-shadow: none;
+}
+.order__clear-cart:hover {
+  background-color: transparent;
+  color: #282828;
+}

@@ -1068,7 +1068,7 @@ export default {
                   // потребность
                   if (
                     this.$route.matched[6] &&
-                    this.$route.matched[6].name == 'purchasesOfferCatalogRequirement'
+                    this.$route.matched[6].name == 'purchasesCatalogRequirement'
                   ) {
                     if (this.step == 1) {
                       this.count_min > Number(this.offer.count)
