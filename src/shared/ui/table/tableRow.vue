@@ -5,7 +5,9 @@
     :class="{
       'd-table__row-padding': classRow,
       'd-table__row-noactive': row_data.no_available == 1,
+      'd-table__row-link': this.row_link,
     }"
+    @click.prevent="clickRow()"
   >
     <v-table-cell
       v-for="(row, index) in keys"
@@ -36,6 +38,7 @@
       'd-table__row-padding': classRow,
       'd-table__row-noactive': row_data.no_available == 1,
     }"
+    @click.prevent="clickRow()"
   >
     <v-table-cell
       v-for="(row, index) in keys"
@@ -121,6 +124,7 @@ export default {
   data() {
     return {
       classRow: false,
+      row_link: false,
     }
   },
   computed: {},
@@ -183,12 +187,41 @@ export default {
       }
       return linkparams
     },
+    clickRow() {
+      for (var name in this.keys) {
+        if (this.keys[name].type == 'link_all') {
+          console.log(this.keys[name].link_params)
+          let params = {}
+          for (const key in this.keys[name].link_params) {
+            if (
+              this.keys[name].link_params[key] !== 'id' &&
+              this.keys[name].link_params[key] !== 'store_id' &&
+              this.keys[name].link_params[key] !== 'vendor_id'
+            ) {
+              params[key] = this.keys[name].link_params[key]
+            } else {
+              params[key] = this.row_data[this.keys[name].link_params[key]]
+            }
+          }
+          this.$router.push({
+            name: this.keys[name].link_to,
+            params: params,
+            props: this.keys[name].link_props,
+          })
+        }
+      }
+    },
   },
   components: {
     vTableCell,
   },
   mounted() {
     // console.log(this.row_data)
+    for (var name in this.keys) {
+      if (this.keys[name].type == 'link_all') {
+        this.row_link = true
+      }
+    }
   },
 }
 </script>
@@ -205,5 +238,8 @@ export default {
 }
 .d-table__row-noactive .cell_value:not(.actions) {
   opacity: 0.3;
+}
+.d-table__row-link {
+  cursor: pointer;
 }
 </style>

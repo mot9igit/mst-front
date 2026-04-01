@@ -50,7 +50,7 @@ export default {
       table_data: {
         num: {
           label: 'Номер',
-          type: 'link',
+          type: 'link_all',
           link_to: 'retailOrder',
           link_params: {
             id: this.$route.params.id,

@@ -74,7 +74,7 @@ export default {
       table_data: {
         id: {
           label: '№',
-          type: 'link',
+          type: 'link_all',
           link_to: 'wholesaleOffer',
           link_params: {
             id: this.$route.params.id,

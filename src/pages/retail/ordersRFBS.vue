@@ -73,7 +73,7 @@ export default {
       table_data: {
         num: {
           label: 'Номер',
-          type: 'link',
+          type: 'link_all',
           link_to: 'retailOrderRFBS',
           link_params: {
             id: this.$route.params.id,
@@ -231,7 +231,7 @@ export default {
 .rfbs_content:not(.order_content) .dart-mb-1 {
   margin-bottom: 40px;
 }
-.rfbs_content h1{
+.rfbs_content h1 {
   margin-bottom: 47px;
 }
 </style>

@@ -18,17 +18,17 @@
       @paginate="paginate"
     />
     <MinTable
-        :items_data="orders.orders"
-        :total="orders.total"
-        :pagination_items_per_page="this.pagination_items_per_page"
-        :pagination_offset="this.pagination_offset"
-        :page="this.page"
-        :table_data="this.table_data"
-        :filters="this.filters"
-        @filter="filter"
-        @sort="filter"
-        @paginate="paginate"
-      />
+      :items_data="orders.orders"
+      :total="orders.total"
+      :pagination_items_per_page="this.pagination_items_per_page"
+      :pagination_offset="this.pagination_offset"
+      :page="this.page"
+      :table_data="this.table_data"
+      :filters="this.filters"
+      @filter="filter"
+      @sort="filter"
+      @paginate="paginate"
+    />
   </section>
 </template>
 <script>
@@ -65,7 +65,7 @@ export default {
       table_data: {
         id: {
           label: '№',
-          type: 'link',
+          type: 'link_all',
           link_to: 'wholesaleOrder',
           link_params: {
             id: this.$route.params.id,
@@ -120,7 +120,6 @@ export default {
         //   },
         //   class: 'cell_centeralign',
         // },
-
 
         initiator: {
           label: 'Инициатор',
@@ -211,7 +210,4 @@ export default {
   watch: {},
 }
 </script>
-<style lang="scss">
-
-
-</style>
+<style lang="scss"></style>

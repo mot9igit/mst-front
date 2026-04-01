@@ -16,7 +16,11 @@
     >
       <Checkbox v-model="isChecked" :binary="true" @change="toggleSelection(value.id)" />
     </div>
-    <div class="cell_value" v-else-if="cell_data.type == 'text'" :class="cell_data.class">
+    <div
+      class="cell_value"
+      v-else-if="cell_data.type == 'text' || cell_data.type == 'link_all'"
+      :class="cell_data.class"
+    >
       {{ value[cell_key] }}
       <div v-if="cell_data.description" class="cell_description">
         <span v-if="cell_data.description.type == 'field'">
