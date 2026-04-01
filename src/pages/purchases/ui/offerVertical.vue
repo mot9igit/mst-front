@@ -1065,18 +1065,28 @@ export default {
                     }
                   }
                   // потребность
+                  // потребность
                   if (
-                    this.$route.matched[5] &&
-                    this.$route.matched[5].name == 'purchasesCatalogRequirement'
+                    this.$route.matched[6] &&
+                    this.$route.matched[6].name == 'purchasesOfferCatalogRequirement'
                   ) {
                     if (this.step == 1) {
                       this.count_min > Number(this.offer.count)
                         ? (this.count = this.count_min)
                         : (this.count = Number(this.offer.count))
                     } else {
-                      this.count < Number(this.offer.count)
-                        ? (this.count = Number(this.offer.count))
-                        : ''
+                      if (this.step >= Number(this.offer.count)) {
+                        this.count = this.step
+                      } else {
+                        if (!(Number(this.step) % Number(this.offer.count))) {
+                          this.count = Number(this.offer.count)
+                        } else {
+                          this.count =
+                            Number(this.offer.count) +
+                            Number(this.step) -
+                            (Number(this.offer.count) % Number(this.step))
+                        }
+                      }
                     }
                     let obj = { item: this.offer, count: this.count }
                     obj.item.data = this.offerData

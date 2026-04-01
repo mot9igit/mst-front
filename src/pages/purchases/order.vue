@@ -29,7 +29,6 @@
             class="order-card__action order-card__action-edit"
             @click.prevent="editOrder()"
             v-if="status.editable"
-            :disabled="order.offer_id"
           >
             <i class="d-icon-pen2"></i>
           </button>
@@ -416,7 +415,7 @@ export default {
       default: false,
     },
   },
-  emits: ['toggleOrder'],
+  emits: ['toggleOrder', 'setStore'],
   methods: {
     ...mapActions({
       getOptOrder: 'purchases/getOptOrder',
@@ -538,15 +537,18 @@ export default {
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
           this.loading = true
-          this.setOrderEditToCart({
-            store_id: this.optorder.warehouse_id,
-            seller_id: this.optorder.seller_id,
-            seller_store_id: this.optorder.store_id,
-          }).then(() => {
-            this.getBasket()
-            this.loading = false
-            this.$emit('toggleOrder')
-          })
+          this.$emit('setStore', this.optorder.warehouse_id)
+          setTimeout(() => {
+            this.setOrderEditToCart({
+              store_id: this.optorder.warehouse_id,
+              seller_id: this.optorder.seller_id,
+              seller_store_id: this.optorder.store_id,
+            }).then(() => {
+              this.getBasket()
+              this.$emit('toggleOrder')
+              this.loading = false
+            })
+          }, 500)
         },
         reject: () => {
           this.$toast.add({

@@ -283,8 +283,12 @@ export default {
       type: Number,
       default: 0,
     },
+    refreshOrderPage: {
+      type: Boolean,
+      default: false,
+    },
   },
-  emits: ['toggleOrder'],
+  emits: ['toggleOrder', 'setStore'],
   methods: {
     ...mapActions({
       getOffer: 'purchases/getOffer',
@@ -315,78 +319,82 @@ export default {
         icon: 'pi pi-exclamation-triangle',
         accept: () => {
           this.loading = true
-          this.acceptOfferReview({
-            offer_id: this.offer.id,
-            store_id: this.basketWarehouse,
-          }).then((res) => {
-            if (res.data.data) {
-              this.$confirm.require({
-                message: res.data.data,
-                header: 'Принять предложение',
-                icon: 'pi pi-exclamation-triangle',
-                accept: () => {
-                  this.acceptOffer({
-                    offer_id: this.$route.params.offer_id,
-                  }).then((response) => {
-                    if (response.data.success) {
-                      this.$toast.add({
-                        severity: 'success',
-                        summary: 'Предложение добавлено в корзину',
-                        life: 3000,
-                      })
-                      this.getOffer({
-                        offer_id: this.$route.params.offer_id,
-                      })
-                      this.getBasket().then(() => {
-                        this.$emit('toggleOrder')
+          this.$emit('setStore', this.offer.store_id)
+
+          this.getBasket().then(() => {
+            this.acceptOfferReview({
+              offer_id: this.offer.id,
+              store_id: this.basketWarehouse,
+            }).then((res) => {
+              if (res.data.data) {
+                this.$confirm.require({
+                  message: res.data.data,
+                  header: 'Принять предложение',
+                  icon: 'pi pi-exclamation-triangle',
+                  accept: () => {
+                    this.acceptOffer({
+                      offer_id: this.$route.params.offer_id,
+                    }).then((response) => {
+                      if (response.data.success) {
+                        this.$toast.add({
+                          severity: 'success',
+                          summary: 'Предложение добавлено в корзину',
+                          life: 3000,
+                        })
+                        this.getOffer({
+                          offer_id: this.$route.params.offer_id,
+                        })
+                        this.getBasket().then(() => {
+                          this.$emit('toggleOrder')
+                          this.loading = false
+                        })
+                      } else {
                         this.loading = false
-                      })
-                    } else {
-                      this.loading = false
-                      this.$toast.add({
-                        severity: 'error',
-                        summary: 'Ошибка',
-                        detail: 'Произошла ошибка',
-                        life: 3000,
-                      })
-                    }
-                  })
-                },
-                reject: () => {
-                  this.$toast.add({
-                    severity: 'error',
-                    summary: 'Принять предложение',
-                    detail: 'Действие отклонено',
-                    life: 3000,
-                  })
-                  this.loading = false
-                },
-              })
-            } else {
-              this.acceptOffer({
-                offer_id: this.$route.params.offer_id,
-              }).then((response) => {
-                if (response.data.success) {
-                  this.$toast.add({
-                    severity: 'success',
-                    summary: 'Предложение добавлено в корзину',
-                    life: 3000,
-                  })
-                  this.getBasket().then(() => {
-                    this.$emit('toggleOrder')
+                        this.$toast.add({
+                          severity: 'error',
+                          summary: 'Ошибка',
+                          detail: 'Произошла ошибка',
+                          life: 3000,
+                        })
+                      }
+                    })
+                  },
+                  reject: () => {
+                    this.$toast.add({
+                      severity: 'error',
+                      summary: 'Принять предложение',
+                      detail: 'Действие отклонено',
+                      life: 3000,
+                    })
                     this.loading = false
-                  })
-                } else {
-                  this.loading = false
-                  this.$toast.add({
-                    severity: 'error',
-                    summary: 'Ошибка',
-                    detail: 'Произошла ошибка',
-                    life: 3000,
-                  })
-                }
-              })
-            }
+                  },
+                })
+              } else {
+                this.acceptOffer({
+                  offer_id: this.$route.params.offer_id,
+                }).then((response) => {
+                  if (response.data.success) {
+                    this.$toast.add({
+                      severity: 'success',
+                      summary: 'Предложение добавлено в корзину',
+                      life: 3000,
+                    })
+                    this.getBasket().then(() => {
+                      this.$emit('toggleOrder')
+                      this.loading = false
+                    })
+                  } else {
+                    this.loading = false
+                    this.$toast.add({
+                      severity: 'error',
+                      summary: 'Ошибка',
+                      detail: 'Произошла ошибка',
+                      life: 3000,
+                    })
+                  }
+                })
+              }
+            })
           })
         },
         reject: () => {
@@ -486,6 +494,24 @@ export default {
       this.orderInfo.payer = this.offer.payer
       this.orderInfo.delay_type = this.offer.delay_type
       this.orderInfo.delay = this.offer.delay
+    },
+    refreshOrderPage: function (newVal) {
+      if (newVal == true) {
+        this.loading = true
+        this.getOffer({
+          offer_id: this.$route.params.offer_id,
+          page: this.page,
+          perpage: this.pagination_items_per_page,
+        }).then(() => {
+          this.loading = false
+          this.orderInfo.seller_name = this.offer.seller_name
+          this.orderInfo.seller_img = this.offer.seller_image
+          this.orderInfo.delivery = this.offer.day_delivery
+          this.orderInfo.payer = this.offer.payer
+          this.orderInfo.delay_type = this.offer.delay_type
+          this.orderInfo.delay = this.offer.delay
+        })
+      }
     },
   },
 }

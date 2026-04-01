@@ -1054,9 +1054,18 @@ export default {
                         ? (this.count = this.count_min)
                         : (this.count = Number(this.offer.count))
                     } else {
-                      this.count < Number(this.offer.count)
-                        ? (this.count = Number(this.offer.count))
-                        : ''
+                      if (this.step >= Number(this.offer.count)) {
+                        this.count = this.step
+                      } else {
+                        if (!(Number(this.step) % Number(this.offer.count))) {
+                          this.count = Number(this.offer.count)
+                        } else {
+                          this.count =
+                            Number(this.offer.count) +
+                            Number(this.step) -
+                            (Number(this.offer.count) % Number(this.step))
+                        }
+                      }
                     }
                     let obj = { item: this.offer, count: this.count }
                     obj.item.data = this.offerData

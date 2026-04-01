@@ -211,6 +211,7 @@ export default {
     'showRequipments',
     'notifications',
     'notificationsMobile',
+    'clearStore',
   ],
   components: {
     Loader,
@@ -237,6 +238,10 @@ export default {
     searchUpdater: {
       type: Boolean,
       default: false,
+    },
+    store: {
+      type: Number,
+      default: null,
     },
   },
   mounted() {
@@ -407,6 +412,12 @@ export default {
     mobileNotificationsShow: function (newVal) {
       if (this.showNotificationsModal != newVal) {
         this.showNotificationsModal = newVal
+      }
+    },
+    store: function (newVal) {
+      if (newVal !== null && newVal != this.basketWarehouse) {
+        this.setOrgBasketStore(newVal)
+        this.$emit('clearStore')
       }
     },
     // '$route.matched[5].name': function(newVal){

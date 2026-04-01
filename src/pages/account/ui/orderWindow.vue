@@ -782,6 +782,7 @@ export default {
       actionSale: 0,
       order_to_basket: false,
       edits: [],
+      offers: [],
     }
   },
   computed: {
@@ -949,16 +950,7 @@ export default {
           this.showChangedIdStore = warehouse_id
         } else {
           // orderSubmitApi
-          if (
-            this.edits?.length &&
-            (this.$route.name == 'purchasesOrder' || this.$route.name == 'wholesaleOrder')
-          ) {
-            for (var id in this.edits) {
-              if (this.$route.params.order_id == this.edits[id]) {
-                this.$emit('orderEdit')
-              }
-            }
-          }
+
           this.orderSubmitApi({ orgId: orgId, warehouse_id: warehouse_id }).then((response) => {
             let arr = []
             console.log(response)
@@ -992,6 +984,23 @@ export default {
             this.$emit('orderSubmit', nums.join(', '))
             this.order = nums.join(', ')
             console.log(this.order)
+            if (
+              this.edits?.length &&
+              (this.$route.name == 'purchasesOrder' || this.$route.name == 'wholesaleOrder')
+            ) {
+              for (var id in this.edits) {
+                if (this.$route.params.order_id == this.edits[id]) {
+                  this.$emit('orderEdit')
+                }
+              }
+            }
+            if (this.offers?.length && this.$route.name == 'purchasesOffer') {
+              for (var i in this.offers) {
+                if (this.$route.params.offer_id == this.offers[i]) {
+                  this.$emit('orderEdit')
+                }
+              }
+            }
             this.getBasket().then(() => {
               this.loading = false
               this.showChangedId = ''
@@ -1117,11 +1126,15 @@ export default {
     basketStore(newVal) {
       if (Object.keys(newVal).length) {
         this.edits = []
+        this.offers = []
         this.loading = false
         for (var org in newVal.data) {
           for (var store in newVal.data[org].data) {
             if (newVal.data[org].data[store].type == 'order') {
               this.edits.push(newVal.data[org].data[store].id)
+            }
+            if (newVal.data[org].data[store].type == 'offer') {
+              this.offers.push(newVal.data[org].data[store].id)
             }
           }
         }

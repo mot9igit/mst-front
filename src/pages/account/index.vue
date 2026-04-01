@@ -21,10 +21,12 @@
       @showRequipments="showRequip()"
       @notifications="notificationsCol"
       @notificationsMobile="mobileNotifications()"
+      @clearStore="clearStore()"
       :mobileRequipments="mobileRequipments"
       :active="toggleMenu"
       :mobileNotificationsShow="mobileNotificationsShow"
       :searchUpdater="searchUpdater"
+      :store="purch_store"
     ></ProfileHeader>
     <ProfileHeaderOffer
       v-else-if="this.$route.params.id && this.$route.params.id_org_from"
@@ -49,6 +51,7 @@
         <router-view
           @toggleOrder="toggleOrder"
           @toggleOrderOffer="toggleOrderOffer()"
+          @setStore="setStore"
           @cartStore="activeStore"
           :refreshOrderPage="refreshOrderPage"
         >
@@ -211,6 +214,7 @@ export default {
       searchUpdater: false,
       refreshOrderPage: false,
       store: 0,
+      purch_store: null,
     }
   },
   mounted() {
@@ -373,6 +377,12 @@ export default {
     activeStore(data) {
       console.log(data)
       this.store = data
+    },
+    setStore(data) {
+      this.purch_store = data
+    },
+    clearStore() {
+      this.purch_store = null
     },
   },
   provide() {
