@@ -109,7 +109,7 @@
             {{
               allOff[remain_id] == true || activeConflict[remain_id].prices.rrc_discount == 0
                 ? 'Без скидки от РРЦ'
-                : activeConflict[remain_id].prices.rrc_discount
+                : activeConflict[remain_id].prices.rrc_discount > 0
                   ? '-' + activeConflict[remain_id]?.prices.rrc_discount + '% от РРЦ'
                   : '+' + activeConflict[remain_id]?.prices.rrc_discount * -1 + '% от РРЦ'
             }}
@@ -820,6 +820,7 @@ export default {
             this.loading = false
             this.updateCatalog()
             this.updateBasket()
+            this.$emit('windowClose')
           }
         },
       )
