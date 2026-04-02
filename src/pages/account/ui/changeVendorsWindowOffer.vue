@@ -271,6 +271,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    refresh: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['vendorCheck', 'catalogUpdate', 'close'],
   components: {
@@ -532,6 +536,15 @@ export default {
     '$route.matched': function (newVal) {
       if (newVal[5] && newVal[5].name != 'WholesaleClientsOffer') {
         this.close()
+      }
+    },
+    refresh: function (newVal) {
+      if (newVal == true) {
+        this.getOptVendorsOfferSelected({
+          filter: '',
+          page: this.pageSelected,
+          perpage: this.cfg.vendors.perpage,
+        })
       }
     },
   },

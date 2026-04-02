@@ -384,7 +384,7 @@ export default {
       default: false,
     },
   },
-  emits: ['toggleOrderOffer', 'cartStore'],
+  emits: ['toggleOrderOffer', 'cartStore', 'refreshVendors'],
   methods: {
     ...mapActions({
       getOrder: 'wholesale/getOrder',
@@ -437,10 +437,9 @@ export default {
             this.$router.push({
               name: 'WholesalesOfferClient',
               params: { id: this.$route.params.id, id_org_from: this.order.org_id },
-              query: { timestamp: Date.now() },
             })
-
             this.$emit('toggleOrderOffer')
+            this.$emit('refreshVendors')
           })
         },
         reject: () => {

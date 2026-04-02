@@ -8025,3 +8025,66 @@ body {
     margin-top: 16px;
   }
 }
+@media (width <= 1280px) {
+  .order__item-list-empty {
+    img {
+      width: 100px;
+      height: 80px;
+    }
+    h4 {
+      font-size: 14px;
+      line-height: 18px;
+      margin-top: 8px;
+    }
+    p {
+      max-width: 323px;
+      font-size: 12px;
+      line-height: 16px;
+    }
+    button {
+      margin-top: 8px;
+    }
+  }
+}
+@media (width <= 1024px) {
+  .order__item-list-empty {
+    img {
+      width: 80px;
+      height: 50px;
+    }
+    h4 {
+      font-size: 10px;
+      line-height: 12px;
+      margin-top: 8px;
+    }
+    p {
+      max-width: 90%;
+      font-size: 8px;
+      line-height: 10px;
+    }
+    button {
+      margin-top: 8px;
+    }
+  }
+}
+@media (width <= 700px) {
+  .order__item-list-empty {
+    img {
+      width: 120px;
+      height: 80px;
+    }
+    h4 {
+      font-size: 20px;
+      line-height: 22px;
+      margin-top: 24px;
+    }
+    p {
+      max-width: 90%;
+      font-size: 16px;
+      line-height: 20px;
+    }
+    button {
+      margin: 16px 24px 0;
+    }
+  }
+}

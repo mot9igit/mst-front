@@ -53,6 +53,7 @@
           @toggleOrderOffer="toggleOrderOffer()"
           @setStore="setStore"
           @cartStore="activeStore"
+          @refreshVendors="refreshVendors()"
           :refreshOrderPage="refreshOrderPage"
         >
         </router-view>
@@ -84,6 +85,7 @@
       <changeVendorsOfferWindow
         :offer="isOffer"
         :active="this.toggleOfferVendors"
+        :refresh="refresh_v"
         @close="changeVendorsOfferWindowClose()"
         @catalogUpdate="catalogUpdate()"
         @vendorCheck="vendorCheck()"
@@ -215,6 +217,7 @@ export default {
       refreshOrderPage: false,
       store: 0,
       purch_store: null,
+      refresh_v: false,
     }
   },
   mounted() {
@@ -383,6 +386,14 @@ export default {
     },
     clearStore() {
       this.purch_store = null
+    },
+    refreshVendors() {
+      setTimeout(() => {
+        this.refresh_v = true
+        setTimeout(() => {
+          this.refresh_v = false
+        }, 500)
+      }, 500)
     },
   },
   provide() {

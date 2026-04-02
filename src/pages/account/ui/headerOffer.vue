@@ -447,6 +447,11 @@ export default {
     offer: function (newVal) {
       this.isOffer = newVal
     },
+    cart_store: function (newVal) {
+      if (newVal != null) {
+        this.storeActive = newVal
+      }
+    },
   },
 }
 </script>

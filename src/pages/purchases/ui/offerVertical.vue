@@ -371,7 +371,9 @@
             {{
               allOff == true || activeConflict.prices.rrc_discount == 0
                 ? 'Без скидки от РРЦ'
-                : '-' + activeConflict.prices.rrc_discount + '% от РРЦ'
+                : activeConflict.prices.rrc_discount > 0
+                  ? '-' + activeConflict.prices.rrc_discount + '% от РРЦ'
+                  : '+' + activeConflict.prices.rrc_discount * -1 + '% от РРЦ'
             }}
           </p>
           <p class="product-card__p">
@@ -592,7 +594,8 @@
             <div class="product-card__stat-list">
               <div v-if="item.complect > 0" class="d-category">Комплект</div>
               <div v-if="item.percent_num > 0">
-                <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка
+                <i class="d-icon-percent-rounded product-card__buy-icon"></i
+                ><span v-if="item.pricing_type == 1">Наценка</span><span v-else>Скидка</span>
                 {{ item.percent_num }}%
               </div>
 
@@ -1067,24 +1070,26 @@ export default {
                   // потребность
                   // потребность
                   if (
-                    this.$route.matched[6] &&
-                    this.$route.matched[6].name == 'purchasesCatalogRequirement'
+                    this.$route.matched[5] &&
+                    this.$route.matched[5].name == 'purchasesCatalogRequirement'
                   ) {
-                    if (this.step == 1) {
+                    if (Number(this.activeConflict.multiplicity) == 1) {
                       this.count_min > Number(this.offer.count)
                         ? (this.count = this.count_min)
                         : (this.count = Number(this.offer.count))
                     } else {
-                      if (this.step >= Number(this.offer.count)) {
-                        this.count = this.step
+                      if (Number(this.activeConflict.multiplicity) >= Number(this.offer.count)) {
+                        this.count = Number(this.activeConflict.multiplicity)
                       } else {
-                        if (!(Number(this.step) % Number(this.offer.count))) {
+                        if (
+                          !(Number(this.activeConflict.multiplicity) % Number(this.offer.count))
+                        ) {
                           this.count = Number(this.offer.count)
                         } else {
                           this.count =
                             Number(this.offer.count) +
-                            Number(this.step) -
-                            (Number(this.offer.count) % Number(this.step))
+                            Number(this.activeConflict.multiplicity) -
+                            (Number(this.offer.count) % Number(this.activeConflict.multiplicity))
                         }
                       }
                     }
@@ -1132,7 +1137,25 @@ export default {
             this.$route.matched[5] &&
             this.$route.matched[5].name == 'purchasesCatalogRequirement'
           ) {
-            this.count = Number(this.offer.count)
+            //this.count = Number(this.offer.count)
+            if (Number(this.activeConflict.multiplicity) == 1) {
+              this.count_min > Number(this.offer.count)
+                ? (this.count = this.count_min)
+                : (this.count = Number(this.offer.count))
+            } else {
+              if (Number(this.activeConflict.multiplicity) >= Number(this.offer.count)) {
+                this.count = Number(this.activeConflict.multiplicity)
+              } else {
+                if (!(Number(this.activeConflict.multiplicity) % Number(this.offer.count))) {
+                  this.count = Number(this.offer.count)
+                } else {
+                  this.count =
+                    Number(this.offer.count) +
+                    Number(this.activeConflict.multiplicity) -
+                    (Number(this.offer.count) % Number(this.activeConflict.multiplicity))
+                }
+              }
+            }
             let obj = { item: this.offer, count: this.count }
             obj.item.data = this.offerData
             this.$emit('counter', obj)

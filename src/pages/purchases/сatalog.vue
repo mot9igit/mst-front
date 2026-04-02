@@ -354,6 +354,8 @@
       @windowClose="this.modalConflicts = false"
       @updateBasket="updateBasket()"
       @updateCatalog="updateCatalog()"
+      @toggleOrder="this.$emit('toggleOrder')"
+      @toggleOrderOffer="this.$emit('toggleOrderOffer')"
     />
   </customModal>
 </template>
@@ -372,6 +374,7 @@ import DatePicker from 'primevue/datepicker'
 export default {
   name: 'purchasesCatalog',
   inject: ['catalogUpdater'],
+  emits: ['toggleOrder', 'toggleOrderOffer'],
   components: {
     breadcrumbs,
     Loader,
@@ -833,8 +836,13 @@ export default {
                       life: 3000,
                     })
                   }
+                  if (this.$route.name == 'purchasesCatalogRequirement') {
+                    this.$emit('toggleOrder')
+                  }
+                  if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+                    this.$emit('toggleOrderOffer')
+                  }
                   this.loading = false
-
                   this.updateCatalog()
                   this.updateBasket()
                 } else {
@@ -916,10 +924,16 @@ export default {
                     life: 3000,
                   })
                 }
-                this.loading = false
 
                 this.updateCatalog()
                 this.updateBasket()
+                if (this.$route.name == 'purchasesCatalogRequirement') {
+                  this.$emit('toggleOrder')
+                }
+                if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+                  this.$emit('toggleOrderOffer')
+                }
+                this.loading = false
               } else {
                 this.$toast.add({
                   severity: 'error',

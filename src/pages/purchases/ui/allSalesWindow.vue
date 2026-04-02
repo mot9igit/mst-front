@@ -109,7 +109,9 @@
             {{
               allOff[remain_id] == true || activeConflict[remain_id].prices.rrc_discount == 0
                 ? 'Без скидки от РРЦ'
-                : '-' + activeConflict[remain_id]?.prices.rrc_discount + '% от РРЦ'
+                : activeConflict[remain_id].prices.rrc_discount
+                  ? '-' + activeConflict[remain_id]?.prices.rrc_discount + '% от РРЦ'
+                  : '+' + activeConflict[remain_id]?.prices.rrc_discount * -1 + '% от РРЦ'
             }}
           </p>
           <p class="product-card__p">
@@ -321,7 +323,8 @@
             <div class="product-card__stat-list">
               <div v-if="sale.complect > 0" class="d-category">Комплект</div>
               <div v-if="sale.percent_num > 0">
-                <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка
+                <i class="d-icon-percent-rounded product-card__buy-icon"></i
+                ><span v-if="sale.pricing_type == 1">Наценка</span><span v-else>Скидка</span>
                 {{ sale.percent_num }}%
               </div>
 
@@ -458,7 +461,7 @@ export default {
       saveData: {},
     }
   },
-  emits: ['windowClose', 'updateCatalog', 'updateBasket'],
+  emits: ['windowClose', 'updateCatalog', 'updateBasket', 'toggleOrder', 'toggleOrderOffer'],
   components: { Counter, Loader, customModal, simpleSalesWindow },
   props: {
     offers: {
@@ -501,6 +504,7 @@ export default {
     ...mapActions({
       basketProductAdd: 'basket/basketProductAdd',
       basketOfferProductAdd: 'offer/basketOfferProductAdd',
+      basketProductAddAll: 'basket/basketProductAddAll',
     }),
     async setValues() {
       if (Object.keys(this.offers).length) {
@@ -764,17 +768,61 @@ export default {
       }
 
       //if(!Object.keys(this.afterComplect).length){
-      console.log(data)
-      this.addBasketOne(data).then(() => {
-        setTimeout(() => {
-          this.afterAddBasket()
-        }, 500)
-      })
+      //console.log(data)
+      // this.addBasketOne(data).then(() => {
+      //   setTimeout(() => {
+      //     this.afterAddBasket()
+      //   }, 500)
+      // })
       // }else{
       //   this.loading = false
       //   this.saveData = data
       //   this.modalAfterComplect = true
       // }
+      //this.$emit('windowClose')
+      this.basketProductAddAll({ items: data, cart_store: this.basketOfferWarehouse }).then(
+        (res) => {
+          if (res.data.data) {
+            this.errors = res.data.data
+            if (this.errors == '') {
+              this.$toast.add({
+                severity: 'success',
+                summary: 'Выполнено!',
+                detail: 'Товары добавлены в корзину',
+                life: 3000,
+              })
+            } else {
+              this.$toast.add({
+                severity: 'secondary',
+                summary: 'Товары добавлены в корзину!',
+                detail: this.errors,
+                life: 3000,
+              })
+            }
+            // if (this.$route.name == 'purchasesCatalogRequirement') {
+            //   this.$emit('toggleOrder')
+            // }
+            // if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+            //   this.$emit('toggleOrderOffer')
+            // }
+
+            // this.loading = false
+            // this.updateCatalog()
+            // this.updateBasket()
+            this.afterAddBasket()
+          } else {
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: 'Не удалось положить товары в корзину',
+              life: 3000,
+            })
+            this.loading = false
+            this.updateCatalog()
+            this.updateBasket()
+          }
+        },
+      )
     },
     addBasketAfterComplect(data) {
       this.loading = true
@@ -787,25 +835,32 @@ export default {
       })
     },
     afterAddBasket() {
-      if (this.errors == '') {
-        this.$toast.add({
-          severity: 'success',
-          summary: 'Выполнено',
-          detail: 'Товары добавлены в корзину',
-          life: 3000,
-        })
-      } else {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Ошибка',
-          detail: 'Не все товары были добавлены в корзину: ' + this.errors,
-          life: 3000,
-        })
-      }
+      // if (this.errors == '') {
+      //   this.$toast.add({
+      //     severity: 'success',
+      //     summary: 'Выполнено',
+      //     detail: 'Товары добавлены в корзину',
+      //     life: 3000,
+      //   })
+      // } else {
+      //   this.$toast.add({
+      //     severity: 'error',
+      //     summary: 'Ошибка',
+      //     detail: 'Не все товары были добавлены в корзину: ' + this.errors,
+      //     life: 3000,
+      //   })
+      // }
       this.loading = false
 
       this.$emit('updateCatalog')
       this.$emit('updateBasket')
+
+      if (this.$route.name == 'purchasesCatalogRequirement') {
+        this.$emit('toggleOrder')
+      }
+      if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+        this.$emit('toggleOrderOffer')
+      }
       this.$emit('windowClose')
     },
     async addBasketOne(data) {
@@ -958,8 +1013,16 @@ export default {
                       ? (this.counts[r_id].count = this.counts[r_id].count_min)
                       : (this.counts[r_id].count = Number(this.offers[r_id].count))
                   } else {
-                    if (this.counts[r_id].count < Number(this.offers[r_id].count)) {
+                    // if (this.counts[r_id].count < Number(this.offers[r_id].count)) {
+                    //   this.counts[r_id].count = Number(this.offers[r_id].count)
+                    // }
+                    if (!(this.counts[r_id].step % Number(this.offers[r_id].count))) {
                       this.counts[r_id].count = Number(this.offers[r_id].count)
+                    } else {
+                      this.counts[r_id].count =
+                        Number(this.offers[r_id].count) +
+                        this.counts[r_id].step -
+                        (Number(this.offers[r_id].count) % this.counts[r_id].step)
                     }
                   }
                 }

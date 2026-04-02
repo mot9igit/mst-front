@@ -185,7 +185,12 @@
                         <p v-if="product.prices.rrc_discount > 0">
                           -{{ product.prices.rrc_discount.toLocaleString('ru') }}% от РРЦ
                         </p>
-                        <p v-else class="cart-no-discount">Без скидки от РРЦ</p>
+                        <p v-else-if="product.prices.rrc_discount == 0" class="cart-no-discount">
+                          Без скидки от РРЦ
+                        </p>
+                        <p v-else>
+                          +{{ (-1 * product.prices.rrc_discount).toLocaleString('ru') }}% от РРЦ
+                        </p>
                         <p v-if="product.price > 0">
                           {{ product.price.toLocaleString('ru') }} ₽ за ед.
                         </p>
@@ -289,7 +294,9 @@
                             >Индивидуальная скидка</span
                           >
                           <span class="cart__item-sales-item-value" v-if="sale.percent_num > 0"
-                            >{{ sale.percent_num }}% Скидка</span
+                            >{{ sale.percent_num }}%
+                            <span v-if="sale.pricing_type == 1">Наценка</span
+                            ><span v-else>Скидка</span></span
                           >
                           <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2"
                             >Под реализацию
