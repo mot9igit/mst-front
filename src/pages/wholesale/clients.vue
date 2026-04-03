@@ -169,6 +169,7 @@
             <div class="clients__card-top-right-top">
               <button
                 @click.prevent="createOffer(item)"
+                v-if="item.owner_id == 0"
                 class="d-button d-button-primary d-button--sm-shadow clients__card-offer"
               >
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
@@ -277,6 +278,7 @@
               <button
                 @click.prevent="createOffer(item)"
                 class="d-button d-button-primary d-button--sm-shadow clients__card-offer"
+                v-if="item.owner_id == 0"
               >
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение

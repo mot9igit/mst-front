@@ -454,7 +454,53 @@ export default {
     return { v$: useVuelidate() }
   },
   validations() {
-    return {
+    let all = {
+      orgprofile: {
+        contact: {
+          required: helpers.withMessage('Поле обязательно для заполнения', () => {
+            return this.orgprofile.contact
+          }),
+        },
+        email: {
+          required: helpers.withMessage('Поле обязательно для заполнения', () => {
+            return this.orgprofile.email
+          }),
+        },
+        phone: {
+          required: helpers.withMessage('Поле обязательно для заполнения', () => {
+            return this.orgprofile.phone
+          }),
+        },
+      },
+      form: {
+        company: {
+          inn: {
+            required: helpers.withMessage('Поле обязательно для заполнения', () => {
+              return this.form.company.inn
+            }),
+          },
+          kpp: {
+            required: helpers.withMessage('Поле обязательно для заполнения', () => {
+              return this.form.company.kpp
+            }),
+          },
+          data: {
+            value: {
+              required,
+            },
+          },
+          warehouses: {
+            required: helpers.withMessage('Выберите хотя бы один адрес', () => {
+              return (
+                this.form.company.warehouses.length &&
+                this.form.company.warehouses[0].address.value != ''
+              )
+            }),
+          },
+        },
+      },
+    }
+    let virt = {
       orgprofile: {
         contact: {
           // required: helpers.withMessage('Поле обязательно для заполнения', () => {
@@ -500,6 +546,7 @@ export default {
         },
       },
     }
+    return this.type == 2 ? virt : all
   },
 }
 </script>
