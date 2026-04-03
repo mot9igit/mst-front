@@ -739,7 +739,7 @@ export default {
         for (var r_id in this.noconflicts) {
           let conf = {}
           if (this.noconflicts[r_id].count > 0) {
-            let conf = {}
+            //let conf = {}
             let item = this.noconflicts[r_id].item
             if (item.conflicts.length == 1) {
               conf = item.conflicts[0].actions
@@ -782,7 +782,7 @@ export default {
       //this.$emit('windowClose')
       this.basketProductAddAll({ items: data, cart_store: this.basketOfferWarehouse }).then(
         (res) => {
-          if (res.data.data) {
+          if (res.data) {
             this.errors = res.data.data
             if (this.errors == '') {
               this.$toast.add({
