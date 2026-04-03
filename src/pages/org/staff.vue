@@ -61,7 +61,7 @@ export default {
         name: {
           label: '',
           type: 'text',
-          class: 'lk__card-bold d-col-4',
+          class: 'lk__card-bold d-col-3',
         },
         phone: {
           label: 'Рабочий телефон',
@@ -74,7 +74,7 @@ export default {
           label: 'Рабочий email',
           type: 'text',
           icon: 'd-icon-mail2 lk-staff__card-contact-icon',
-          class: 'd-col-4',
+          class: 'd-col-5',
           link: 'mailto:',
         },
         operator: {
@@ -255,6 +255,12 @@ export default {
 .lk-staff__all .v-box-table {
   margin-top: -80px;
 }
+.cell_value a {
+  display: flex;
+}
+.lk-staff__card-contact-container:nth-child(3) .cell_value {
+  overflow: hidden;
+}
 @media (width <= 1280px) {
   .lk-staff .clients__card {
     flex-direction: row;
@@ -326,10 +332,10 @@ export default {
     width: 10px;
   }
   .lk-staff__card-contact-label {
-    font-size: 9px;
+    font-size: 8px;
   }
   .lk-staff .p-floatlabel label {
-    font-size: 9px;
+    font-size: 8px;
   }
   .organization h1 {
     font-size: 12px;
@@ -344,14 +350,17 @@ export default {
   .lk-staff__card-contact-icon {
     font-size: 9px;
   }
-  .lk-staff__card-contact-container.d-col-5:first-child {
-    width: 15%;
+  .lk-staff__card-contact-container.lk-staff__card-contact-container.d-col-3:first-child:first-child {
+    width: 10%;
+  }
+  .lk-staff__card-contact-container.d-col-4 {
+    width: 20%;
   }
   .lk-staff__card-contact-container.d-col-5 {
-    width: 21%;
+    width: 20%;
   }
   .lk-staff__card-contact-container.d-col-2 {
-    width: 12%;
+    width: 10%;
   }
   .lk-staff .p-inputtext {
     padding-block: 2px;
@@ -369,12 +378,24 @@ export default {
     height: 12px;
   }
 }
-@media (width <= 600px) {
+@media (width <= 750px) {
   .lk-staff {
     margin-top: 140px;
   }
   .organization h1 {
     font-size: 16px;
+  }
+  .lk-staff__card-contact-value {
+    display: block;
+    width: max-content;
+    position: relative;
+    max-width: 100%;
+  }
+  .lk-staff__card-contact-icon {
+    float: left;
+  }
+  .lk-staff__card-contact-container:not(:first-child):before {
+    display: none;
   }
   .lk-staff__all .lk-staff__header {
     justify-content: start !important;

@@ -153,37 +153,35 @@
       <slot name="widgets"></slot>
     </div>
     <div class="d-table__wrapper" v-if="total != 0">
-
-
-        <div v-if="total != -1" class="clients__card-container">
-          <!-- v-for="row in items_data" -->
-          <v-table-row
-            v-for="row in localItems"
-            :key="row.id"
-            :row_data="row"
-            :keys="table_data"
-            :editMode="editMode"
-            :selectedItems="this.selectedItems"
-            @deleteElem="deleteElem"
-            @updateElem="updateElem"
-            @viewElem="viewElem"
-            @clickElem="clickElem"
-            @checkElem="checkElem"
-            @editElem="editElem"
-            @approveElem="approveElem"
-            @disapproveElem="disapproveElem"
-            @editNumber="editNumber"
-            @actionCell="actionCell"
-            :link_row="link_row"
-          />
-        </div>
-        <div v-else>
-          <div v-for="n in 10" :key="n" class="clients__card-container">
-            <div v-for="(row, index) in table_data" :key="index">
-              <Skeleton class="mb-2"></Skeleton>
-            </div>
+      <div v-if="total != -1" class="clients__card-container">
+        <!-- v-for="row in items_data" -->
+        <v-table-row
+          v-for="row in localItems"
+          :key="row.id"
+          :row_data="row"
+          :keys="table_data"
+          :editMode="editMode"
+          :selectedItems="this.selectedItems"
+          @deleteElem="deleteElem"
+          @updateElem="updateElem"
+          @viewElem="viewElem"
+          @clickElem="clickElem"
+          @checkElem="checkElem"
+          @editElem="editElem"
+          @approveElem="approveElem"
+          @disapproveElem="disapproveElem"
+          @editNumber="editNumber"
+          @actionCell="actionCell"
+          :link_row="link_row"
+        />
+      </div>
+      <div v-else>
+        <div v-for="n in 10" :key="n" class="clients__card-container">
+          <div v-for="(row, index) in table_data" :key="index">
+            <Skeleton class="mb-2"></Skeleton>
           </div>
         </div>
+      </div>
 
       <div class="d-pagination-wrap" v-if="pagesCount > 1">
         <paginate
@@ -772,7 +770,7 @@ tbody {
   }
 }
 .clients__card-container .dart-row {
-    margin-right: 0px;
-    margin-left: 0px;
+  margin-right: 0px;
+  margin-left: 0px;
 }
 </style>
