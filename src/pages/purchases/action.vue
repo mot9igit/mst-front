@@ -1,6 +1,6 @@
 <template>
   <Toast />
-  <section class="promo" id="promo">
+  <section class="promo sale_page" id="promo">
     <Loader v-if="loading" />
     <!-- Верхушка страницы -->
     <div class="d-top">
@@ -309,6 +309,7 @@
       :filters="this.filters"
       @paginate="paginate"
       @viewElem="viewProduct"
+      @filter="filter"
     />
   </section>
 </template>
@@ -341,7 +342,13 @@ export default {
         month: 'long',
         day: 'numeric',
       },
-      filters: {},
+      filters: {
+        name: {
+          name: 'Введите название товара',
+          placeholder: 'Введите название товара',
+          type: 'text',
+        },
+      },
       table_data: {
         image: {
           label: 'Фото',
@@ -482,11 +489,52 @@ export default {
         query: { search: item.article },
       })
     },
+    filter(data) {
+      console.log(data)
+      this.loading = true
+      this.unsetSelesProducts()
+      this.page = 1
+      const sendData = {
+        actionId: this.$route.params.action_id,
+        perpage: this.pagination_items_per_page,
+        page: this.page,
+        filter: data.filter,
+      }
+      this.getSalesProducts(sendData).then(() => {
+        this.loading = false
+      })
+    },
   },
   watch: {},
 }
 </script>
 <style lang="scss">
+.sale_page {
+  .dart-row {
+    margin-bottom: 32px;
+  }
+  .d-col-xl-6 {
+    min-width: 30%;
+    width: 30%;
+  }
+  .p-inputtext {
+    border-color: #75757575;
+    box-shadow: 0px 1px 0px 0px #75757575;
+    width: 100%;
+  }
+  .p-floatlabel label {
+    color: #757575;
+  }
+  .form_input_group:after {
+    content: '\e01d';
+    font-family: 'Iconly' !important;
+    position: absolute;
+    font-size: 16.8px;
+    top: calc(50% - 8.4px);
+    right: 20px;
+    color: #757575;
+  }
+}
 .promo__cards-wrap {
   & + .promo__cards-wrap {
     margin-top: 16px;

@@ -62,7 +62,7 @@ export default {
       }
       return response
     },
-    async getSalesProducts({ commit }, { actionId, page, perpage, view }) {
+    async getSalesProducts({ commit }, { actionId, page, perpage, view, filter }) {
       const data = {
         action: 'get/products',
         action_id: actionId,
@@ -70,6 +70,7 @@ export default {
         perpage: perpage,
         id: router.currentRoute._value.params.id,
         view: view,
+        filter: filter,
       }
       const response = await api.sales.getSalesProducts(data)
       if (response) {

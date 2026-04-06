@@ -218,102 +218,122 @@
         </p> -->
       </div>
     </div>
-    <!-- Фильтры по наличию -->
-    <div
-      class="catalog-top_filters"
-      v-if="!loading"
-      :class="{
-        'catalog-top_purch-filters': this.$route.matched[5].name != 'WholesaleClientsOffer',
-      }"
-    >
-      <div class="catalog-top_filters-item" v-for="(item, index) in filters" :key="index">
-        <Checkbox
-          @value-change="changeFilter(index)"
-          v-model="this.filters[index].value"
-          :binary="true"
-          :inputId="'catalog-' + index"
-          :name="'catalog-' + index"
-          :value="true"
-          v-if="item.type == 'checkbox'"
-        />
-
-        <div
-          v-if="item.type == 'switch' && this.$route.matched[5].name == 'WholesaleClientsOffer'"
-          class="d-switch catalog-filter-switch"
-          @click="
-            index == 'show_offers'
-              ? (this.filters[index].value = !this.filters[index].value)
-              : changeFilter(index)
-          "
-        >
-          <input
-            type="checkbox"
-            binary="true"
-            class="d-switch__input"
-            v-model="this.filters[index].value"
-            :id="'catalog-' + index"
-          />
-          <div class="d-switch__circle"></div>
-        </div>
-
-        <label
-          v-if="
-            item.type == 'checkbox' ||
-            (item.type == 'switch' && this.$route.matched[5].name == 'WholesaleClientsOffer')
-          "
-          :for="'catalog-' + index"
-          class="catalog-top_filters-label"
-          :class="{
-            'catalog-top_filters-label--active': this.filters[index].value,
-            'catalog-filter-switch-lable': item.type == 'switch',
-          }"
-          >{{ item.placeholder }}
-        </label>
-
-        <DatePicker
-          v-if="item.type == 'datepicker' && this.$route.matched[5].name == 'WholesaleClientsOffer'"
-          v-model="this.filters[index].value"
-          @hide="changeFilter(index)"
-          dateFormat="dd.mm.yy"
-          :placeholder="item.placeholder"
-          :manualInput="false"
-          :maxDate="date_now"
-          showIcon
-          showClear
-          iconDisplay="input"
-          selectionMode="range"
-          class="catalog-filters-dates"
-        >
-          <template #footer>
-            <div class="catalog-filters-dates-overlay-footer">
-              <button
-                class="d-button d-button-primary d-button-primary-small d-button-clear-dates"
-                @click.prevent="this.filters[index].value = null"
-              >
-                Сбросить
-              </button>
-              <button
-                class="d-button d-button-primary d-button-primary-small"
-                @click.prevent="changeFilter(index)"
-              >
-                Готово
-              </button>
-            </div>
-          </template>
-        </DatePicker>
-      </div>
-      <button
-        class="catalog_filters_upload_button"
-        title="Скачать отчет по продажам в Excel"
-        @click.prevent="createReport()"
-        v-if="
-          this.$route.matched[5].name == 'WholesaleClientsOffer' && optOfferProducts.items.length
-        "
+    <div class="catalog-top_filters-cont">
+      <!-- Фильтры по наличию -->
+      <div
+        class="catalog-top_filters"
+        v-if="!loading"
+        :class="{
+          'catalog-top_purch-filters': this.$route.matched[5].name != 'WholesaleClientsOffer',
+        }"
       >
-        Скачать отчет
-        <div class="d-divider d-divider--vertical d-button-divider"></div>
-        <i class="d-icon-upload2 catalog_filters_upload_icon"></i>
-      </button>
+        <div class="catalog-top_filters-item" v-for="(item, index) in filters" :key="index">
+          <Checkbox
+            @value-change="changeFilter(index)"
+            v-model="this.filters[index].value"
+            :binary="true"
+            :inputId="'catalog-' + index"
+            :name="'catalog-' + index"
+            :value="true"
+            v-if="item.type == 'checkbox'"
+          />
+
+          <div
+            v-if="item.type == 'switch' && this.$route.matched[5].name == 'WholesaleClientsOffer'"
+            class="d-switch catalog-filter-switch"
+            @click="
+              index == 'show_offers'
+                ? (this.filters[index].value = !this.filters[index].value)
+                : changeFilter(index)
+            "
+          >
+            <input
+              type="checkbox"
+              binary="true"
+              class="d-switch__input"
+              v-model="this.filters[index].value"
+              :id="'catalog-' + index"
+            />
+            <div class="d-switch__circle"></div>
+          </div>
+
+          <label
+            v-if="
+              item.type == 'checkbox' ||
+              (item.type == 'switch' && this.$route.matched[5].name == 'WholesaleClientsOffer')
+            "
+            :for="'catalog-' + index"
+            class="catalog-top_filters-label"
+            :class="{
+              'catalog-top_filters-label--active': this.filters[index].value,
+              'catalog-filter-switch-lable': item.type == 'switch',
+            }"
+            >{{ item.placeholder }}
+          </label>
+
+          <DatePicker
+            v-if="
+              item.type == 'datepicker' && this.$route.matched[5].name == 'WholesaleClientsOffer'
+            "
+            v-model="this.filters[index].value"
+            @hide="changeFilter(index)"
+            dateFormat="dd.mm.yy"
+            :placeholder="item.placeholder"
+            :manualInput="false"
+            :maxDate="date_now"
+            showIcon
+            showClear
+            iconDisplay="input"
+            selectionMode="range"
+            class="catalog-filters-dates"
+          >
+            <template #footer>
+              <div class="catalog-filters-dates-overlay-footer">
+                <button
+                  class="d-button d-button-primary d-button-primary-small d-button-clear-dates"
+                  @click.prevent="this.filters[index].value = null"
+                >
+                  Сбросить
+                </button>
+                <button
+                  class="d-button d-button-primary d-button-primary-small"
+                  @click.prevent="changeFilter(index)"
+                >
+                  Готово
+                </button>
+              </div>
+            </template>
+          </DatePicker>
+        </div>
+        <button
+          class="catalog_filters_upload_button"
+          title="Скачать отчет по продажам в Excel"
+          @click.prevent="createReport()"
+          v-if="
+            this.$route.matched[5].name == 'WholesaleClientsOffer' && optOfferProducts.items.length
+          "
+        >
+          Скачать отчет
+          <div class="d-divider d-divider--vertical d-button-divider"></div>
+          <i class="d-icon-upload2 catalog_filters_upload_icon"></i>
+        </button>
+      </div>
+      <div class="catalog-top_filters-right">
+        <div
+          class="catalog-top_filters-right-item"
+          :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
+          @click.prevent="active_design = 0"
+        >
+          <i class=""></i>
+        </div>
+        <div
+          class="catalog-top_filters-right-item"
+          :class="{ 'catalog-top_filters-right-item--active': active_design == 1 }"
+          @click.prevent="active_design = 1"
+        >
+          <i class=""></i>
+        </div>
+      </div>
     </div>
 
     <product
@@ -450,6 +470,7 @@ export default {
       order_id: 0,
       page: 1,
       per_page: 25,
+      active_design: 0,
       filter: [
         {
           type: 'checkbox',
@@ -1130,6 +1151,22 @@ export default {
 <style lang="scss">
 .products__top-title {
   margin-bottom: 48px;
+}
+.catalog-top_filters-cont {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  display: none;
+}
+.catalog-top_filters-right {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 32px;
+  background: #ededed;
+  border-radius: 35px;
 }
 .catalog-top_button {
   display: flex;
