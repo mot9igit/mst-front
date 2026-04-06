@@ -10,6 +10,7 @@ export default {
     regions: [],
     cities: [],
     organizations: [],
+    organizationsOpts: [],
     tags: [],
   },
   actions: {
@@ -103,6 +104,19 @@ export default {
       }
       return response
     },
+    async getOrganizationsOpts({ commit }, { exclude, filter }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        type: 'get/opts',
+        exclude: exclude,
+        filter: filter,
+      }
+      const response = await api.addition.getOrganizations(data)
+      if (response) {
+        commit('SET_ORGANIZATIONS_OPTS', response.data)
+      }
+      return response
+    },
     async getTags({ commit }, { store_id }) {
       const data = {
         action: 'get/tags',
@@ -138,6 +152,9 @@ export default {
     SET_ORGANIZATIONS: (state, data) => {
       state.organizations = data.data
     },
+    SET_ORGANIZATIONS_OPTS: (state, data) => {
+      state.organizationsOpts = data.data
+    },
     SET_TAGS: (state, data) => {
       state.tags = data.data
     },
@@ -163,6 +180,9 @@ export default {
     },
     organizations(state) {
       return state.organizations
+    },
+    organizationsOpts(state) {
+      return state.organizationsOpts
     },
     tags(state) {
       return state.tags

@@ -58,6 +58,21 @@
         Загрузить товары
       </button>
     </div>
+    <!-- <div
+      class="d-input d-input--light lk-about__info-input sale_products-filter"
+      v-if="productsSelected.total > 0"
+    >
+      <input
+        type="text"
+        id="sales_product_filter"
+        name="sales_product_filter"
+        v-model="filter"
+        @update="setFilter()"
+        placeholder="Введите название товара"
+        class="d-input__field lk-about__info-input-field"
+      />
+    </div> -->
+
     <div class="d-table__wrapper promotions__card-products" v-if="productsSelected.total > 0">
       <table class="d-table">
         <!-- <table class="d-table hidden-1200"> -->
@@ -637,6 +652,7 @@ export default {
     'changeMinCount',
     'openFileDialog',
     'settings',
+    'filterSaleProducts',
   ],
   props: {
     productsSelected: {
@@ -674,6 +690,7 @@ export default {
       checked_all: false,
       filter_table_global: false,
       filter_table: false,
+      filter: '',
     }
   },
   methods: {
@@ -749,6 +766,9 @@ export default {
       console.log(this.selected)
       this.$emit('settings', this.selected, type)
     },
+    setFilter() {
+      this.$emit('filterSaleProducts', this.filter)
+    },
   },
   computed: {
     pagesCount() {
@@ -786,4 +806,21 @@ export default {
   },
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.sale_products-filter {
+  width: 50%;
+  margin-bottom: 40px;
+}
+.lk-about__info-input.sale_products-filter:after {
+  content: '\e01d';
+  font-family: 'Iconly';
+  position: relative;
+  display: block;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: 0px;
+  margin-right: 9px;
+  font-size: 18px;
+  color: #757575;
+}
+</style>

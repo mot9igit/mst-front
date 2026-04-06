@@ -298,7 +298,7 @@
                 <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
                   <Checkbox v-model="form.global_responsible" :binary="true" />
                   <label class="d-radio__label vendor-change__selected-item-radio-label">
-                    Неограниченный круг клиентов
+                    Неограниченный круг поставщиков
                   </label>
                 </div>
               </div>
@@ -632,8 +632,8 @@ export default {
             return { name: el.name, code: el.id }
           })
         })
-        this.getOrganizations({ exclude: this.form.org_responsible, filter: '' }).then(() => {
-          this.organizations_all_responsible = this.organizations.map(function (el) {
+        this.getOrganizationsOpts({ exclude: this.form.org_responsible, filter: '' }).then(() => {
+          this.organizations_all_responsible = this.organizationsOpts.map(function (el) {
             return { name: el.name, code: el.id }
           })
         })
@@ -669,8 +669,8 @@ export default {
           return { name: el.name, code: el.id }
         })
       })
-      this.getOrganizations({ exclude: this.form.org_responsible, filter: '' }).then(() => {
-        this.organizations_all_responsible = this.organizations.map(function (el) {
+      this.getOrganizationsOpts({ exclude: this.form.org_responsible, filter: '' }).then(() => {
+        this.organizations_all_responsible = this.organizationsOpts.map(function (el) {
           return { name: el.name, code: el.id }
         })
       })
@@ -687,6 +687,7 @@ export default {
       getRegions: 'addition/getRegions',
       getCities: 'addition/getCities',
       getOrganizations: 'addition/getOrganizations',
+      getOrganizationsOpts: 'addition/getOrganizationsOpts',
       getManager: 'org/getManager',
       setManager: 'org/setManager',
       getNotificationsTypes: 'notifications/getNotificationsTypes',
@@ -792,8 +793,8 @@ export default {
       } else {
         this.form.org_responsible.push(item)
         // Берем географию
-        this.getOrganizations({ exclude: this.form.org_responsible, filter: '' }).then(() => {
-          this.organizations_all_responsible = this.organizations.map(function (el) {
+        this.getOrganizationsOpts({ exclude: this.form.org_responsible, filter: '' }).then(() => {
+          this.organizations_all_responsible = this.organizationsOpts.map(function (el) {
             return { name: el.name, code: el.id }
           })
         })
@@ -816,8 +817,8 @@ export default {
         })
       } else {
         this.form.org_responsible.splice(index, 1)
-        this.getOrganizations({ exclude: this.form.org_responsible, filter: '' }).then(() => {
-          this.organizations_all_responsible = this.organizations.map(function (el) {
+        this.getOrganizationsOpts({ exclude: this.form.org_responsible, filter: '' }).then(() => {
+          this.organizations_all_responsible = this.organizationsOpts.map(function (el) {
             return { name: el.label, code: el.key }
           })
         })
@@ -933,6 +934,7 @@ export default {
       regions: 'addition/regions',
       cities: 'addition/cities',
       organizations: 'addition/organizations',
+      organizationsOpts: 'addition/organizationsOpts',
       notifications_types: 'notifications/notifications_types',
       manager: 'org/manager',
     }),
@@ -967,8 +969,8 @@ export default {
           return { name: el.name, code: el.id }
         })
       })
-      this.getOrganizations({ exclude: this.form.org_responsible, filter: '' }).then(() => {
-        this.organizations_all_responsible = this.organizations.map(function (el) {
+      this.getOrganizationsOpts({ exclude: this.form.org_responsible, filter: '' }).then(() => {
+        this.organizations_all_responsible = this.organizationsOpts.map(function (el) {
           return { name: el.name, code: el.id }
         })
       })
@@ -1102,11 +1104,13 @@ export default {
         newVal = ''
       }
       this.debounce(() => {
-        this.getOrganizations({ exclude: this.form.org_responsible, filter: newVal }).then(() => {
-          this.organizations_all_responsible = this.organizations.map(function (el) {
-            return { name: el.name, code: el.id }
-          })
-        })
+        this.getOrganizationsOpts({ exclude: this.form.org_responsible, filter: newVal }).then(
+          () => {
+            this.organizations_all_responsible = this.organizationsOpts.map(function (el) {
+              return { name: el.name, code: el.id }
+            })
+          },
+        )
       }, 300)
     },
   },
