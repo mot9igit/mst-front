@@ -442,6 +442,7 @@ const router = createRouter({
                           props: true,
                           name: 'wholesaleClients',
                           label: 'Клиенты',
+
                           component: () => import('../pages/wholesale/clients.vue'),
                         },
                         {

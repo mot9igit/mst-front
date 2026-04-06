@@ -191,6 +191,10 @@ export default {
       filter: 0,
       filtersdata: 0,
     })
+    this.$router.push({
+      name: 'purchasesCatalogSearchOffer',
+      params: { id: this.$route.params.id, id_org_from: this.$route.params.id_org_from },
+    })
   },
   methods: {
     ...mapActions({

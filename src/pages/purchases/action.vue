@@ -361,6 +361,12 @@ export default {
           sort: true,
           class: 'cell_centeralign',
         },
+        article: {
+          label: 'Артикул',
+          type: 'text',
+
+          class: 'cell_centeralign',
+        },
         price_rrc: {
           label: 'РРЦ, ₽',
           type: 'text',

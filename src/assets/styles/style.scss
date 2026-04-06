@@ -3936,7 +3936,7 @@ aside button {
   width: 343px;
   background-color: #fff;
   border-radius: 16px;
-  box-shadow: none;
+  box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
   padding: 8px 9px;
   z-index: 1;
   overflow: visible;
@@ -4001,6 +4001,11 @@ aside button {
   display: flex;
   gap: 4px;
   align-items: center;
+
+  padding: 8px;
+
+  background: #ededed;
+  border-radius: 35px;
 }
 .product-card-vertical__promo-all .red-badge {
   background-color: #f92c0d;
@@ -4019,6 +4024,7 @@ aside button {
   color: #f92c0d;
   font-weight: 500;
   font-size: 12px;
+  display: none;
 }
 .product-card__vertical .product-card__title {
   font-size: 14px;

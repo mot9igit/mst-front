@@ -1,6 +1,9 @@
 <template>
   <!-- <div class="product-item"> -->
-  <div class="product-item product-item-vertical">
+  <div
+    class="product-item product-item-vertical"
+    :class="{ 'product-item product-item-vertical--table': active_design == 1 }"
+  >
     <div class="products__header" :class="{ 'products__header--nooffer': !showOffers }">
       <!-- Левая часть шапки страницы -->
       <div
@@ -121,6 +124,10 @@ export default {
       type: Array,
       default: null,
     },
+    active_design: {
+      type: Number,
+      default: 0,
+    },
   },
 
   components: {
@@ -155,6 +162,12 @@ export default {
 }
 </script>
 <style lang="scss">
+.products__header-left {
+  background-color: #fff;
+  max-width: 100% !important;
+  border-radius: 13px;
+  padding-left: 16px;
+}
 .products__header-left--active {
   cursor: pointer;
   transition: all 0.2s ease;

@@ -324,14 +324,14 @@
           :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
           @click.prevent="active_design = 0"
         >
-          <i class=""></i>
+          <img class="d-icon-catalog d-icon" src="/public/icons/icon_catalog_box.svg" />
         </div>
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 1 }"
           @click.prevent="active_design = 1"
         >
-          <i class=""></i>
+          <img class="d-icon-catalog d-icon" src="/public/icons/icon_catalog_table.svg" />
         </div>
       </div>
     </div>
@@ -342,6 +342,7 @@
       :product="item"
       :showOffers="show_offers"
       :showDates="filters.dates.value"
+      :active_design="active_design"
       @updateBasket="updateBasket()"
       @updateCatalog="updateCatalog()"
       @counter="counter"
@@ -1156,8 +1157,10 @@ export default {
   display: flex;
   align-items: start;
   justify-content: space-between;
-  display: none;
+  padding: 1px 2px;
+  //display: none;
 }
+
 .catalog-top_filters-right {
   display: flex;
   width: fit-content;
@@ -1167,6 +1170,33 @@ export default {
   height: 32px;
   background: #ededed;
   border-radius: 35px;
+}
+.catalog-top_filters-right-item {
+  width: 30px;
+  height: 30px;
+  aspect-ratio: 1;
+  background-color: transparent;
+  color: #757575;
+  border-radius: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.catalog-top_filters-right-item--active {
+  background-color: #282828;
+  color: #fff;
+}
+.catalog-top_filters-right-item .d-icon {
+  font-size: 14px;
+  width: 14px;
+  max-width: 14px;
+  height: 14px;
+  overflow: hidden;
+}
+.catalog-top_filters-right-item--active .d-icon {
+  filter: brightness(200%);
 }
 .catalog-top_button {
   display: flex;
