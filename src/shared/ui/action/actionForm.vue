@@ -3827,6 +3827,17 @@ export default {
     },
     filterProductsSelected(data) {
       console.log(data)
+      this.productLoading = true
+
+      this.getAvailableProducts({
+        store_id: this.form.store_id,
+        filter: data,
+        page: 1,
+        perpage: this.per_page,
+        type: 2,
+      }).then(() => {
+        this.productLoading = false
+      })
     },
     filterProductsAvailable(data) {
       this.productLoading = true

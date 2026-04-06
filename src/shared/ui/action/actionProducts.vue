@@ -58,16 +58,31 @@
         Загрузить товары
       </button>
     </div>
+    <div
+      class="d-field-container d-field-container--vertical d-field-container--long promotions__card-collection-search"
+      v-if="productsSelected.total > 0 || (filter != '' && productsSelected.total == 0)"
+    >
+      <p class="promotions__card-text">Поиск по товарам</p>
+      <form class="d-search">
+        <input
+          type="text"
+          placeholder="Наименование или артикул"
+          class="d-search__field"
+          v-model="filter"
+          @input="setFilter"
+        />
+      </form>
+    </div>
     <!-- <div
       class="d-input d-input--light lk-about__info-input sale_products-filter"
-      v-if="productsSelected.total > 0"
+      v-if="productsSelected.total > 0 || (filter != '' && productsSelected.total == 0)"
     >
       <input
         type="text"
         id="sales_product_filter"
         name="sales_product_filter"
         v-model="filter"
-        @update="setFilter()"
+        @input="setFilter"
         placeholder="Введите название товара"
         class="d-input__field lk-about__info-input-field"
       />
@@ -652,7 +667,6 @@ export default {
     'changeMinCount',
     'openFileDialog',
     'settings',
-    'filterSaleProducts',
   ],
   props: {
     productsSelected: {
@@ -767,7 +781,12 @@ export default {
       this.$emit('settings', this.selected, type)
     },
     setFilter() {
-      this.$emit('filterSaleProducts', this.filter)
+      if (this.filter.length >= 3 || this.filter.length === 0) {
+        this.debounce(() => {
+          this.$emit('filterProductsSelected', this.filter)
+          //console.log(this.filter)
+        }, 100)
+      }
     },
   },
   computed: {
