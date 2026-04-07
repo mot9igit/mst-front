@@ -3920,6 +3920,99 @@ aside button {
 }
 
 // каталог и окно всех акций
+
+// табличный вид каталога
+.product-item-vertical--table .product-card__vertical .products__list {
+  grid-template-columns: repeat(2, 736px);
+  align-items: flex-start;
+  justify-content: start;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+.product-item-vertical--table .product-card__vertical .product-card {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 16px;
+  // box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
+  box-shadow: none;
+  padding: 8px 16px 16px;
+  z-index: 1;
+  overflow: visible;
+  min-height: 291px;
+}
+.product-item-vertical--table .product-card__vertical .product-card__header {
+  margin-left: 184px;
+  width: 342px;
+}
+.product-item-vertical--table .product-card__vertical .product-card__info-container {
+  margin-top: -41px;
+}
+.product-item-vertical--table
+  .product-card__vertical
+  .product-card__info-container
+  .product-card__info {
+  display: grid;
+  grid-template-areas:
+    'A A A A A  C C C C C  C C C C C C C C C C'
+    'A A A A A  D D D D D  D D D D D D D D D D'
+    'A A A A A  D D D D D  D D D D D D D D D D'
+    'A A A A A  F F F F F  F F F F F F F F F F'
+    'A A A A A  G G G G G  G G G G G G G G G G'
+    'E E E E E  G G G G G  G G G G G G G G G G'
+    'E E E E E  B B B B B  H H H H H H H H H H'
+    'E E E E E  B B B B B  H H H H H H H H H H';
+  grid-template-columns: auto auto auto auto auto auto auto auto;
+  gap: 0px 0px;
+}
+.product-item-vertical--table .product-card__vertical .product-card__image-container {
+  grid-area: A;
+  display: inline-grid;
+  width: 164px;
+  height: 164px;
+  min-width: 164px;
+  min-height: 164px;
+  max-height: 164px;
+  margin: 0 auto;
+}
+.product-item-vertical--table .product-card__vertical .product-card__price {
+  grid-area: B;
+  display: inline-grid;
+}
+.product-item-vertical--table .product-card__vertical .product-card-vertical__promo-all-cont {
+  grid-area: C;
+  display: inline-grid;
+  justify-content: end;
+  width: 100%;
+}
+.product-item-vertical--table
+  .product-card__vertical
+  .product-card-vertical__promo-all-cont
+  .product-card-vertical__promo-all {
+  max-width: 111px;
+}
+.product-item-vertical--table .product-card__vertical .product-card__info-text {
+  grid-area: D;
+  display: inline-grid;
+}
+.product-item-vertical--table .product-card__vertical .product-card__count-value {
+  grid-area: E;
+  display: inline-grid;
+}
+.product-item-vertical--table
+  .product-card__vertical
+  .product-card__count-value.product-card__count-value-require {
+  grid-area: F;
+  display: inline-grid;
+}
+.product-item-vertical--table .product-card__vertical .product-card__stat-cont {
+  grid-area: G;
+  display: inline-grid;
+}
+.product-item-vertical--table .product-card__vertical .product-card__basket-button {
+  grid-area: H;
+  display: inline-grid;
+}
+// вертикальные карточки
 .product-card__vertical .products__list {
   grid-template-columns: repeat(4, 343px);
   align-items: flex-start;

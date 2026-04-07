@@ -71,6 +71,7 @@
           :key="new Date().getTime() + '_' + Number(item.id) + '_' + index"
           :offer="item"
           :offerData="product"
+          :active_design="active_design"
           @updateBasket="updateBasket()"
           @updateCatalog="updateCatalog()"
           @counter="counter"
@@ -82,6 +83,7 @@
           :key="new Date().getTime() + '_' + Number(item.id) + '_' + index"
           :offer="item"
           :offerData="product"
+          :active_design="active_design"
           @updateBasket="updateBasket()"
           @updateCatalog="updateCatalog()"
         />

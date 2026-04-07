@@ -324,14 +324,14 @@
           :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
           @click.prevent="active_design = 0"
         >
-          <img class="d-icon-catalog d-icon" src="/public/icons/icon_catalog_box.svg" />
+          <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_box.svg" />
         </div>
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 1 }"
           @click.prevent="active_design = 1"
         >
-          <img class="d-icon-catalog d-icon" src="/public/icons/icon_catalog_table.svg" />
+          <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
         </div>
       </div> -->
     </div>

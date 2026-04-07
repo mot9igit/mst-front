@@ -49,7 +49,7 @@
               <img :src="offerData.image" :alt="offerData.pagetitle" class="product-card__image" />
             </div>
             <!-- Блок с ценой и акциями -->
-            <div class="product-card__price-container">
+            <div class="product-card__price-container" v-if="active_design == 0">
               <!-- Цена товара -->
               <div
                 class="product-card__price"
@@ -87,6 +87,33 @@
                 <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
               </button>
             </div>
+            <!-- Цена товара -->
+            <div class="product-card__price" v-if="active_design == 1">
+              <p
+                class="product-card__price-value-discounted"
+                v-if="
+                  pricePrefix == true ||
+                  (Object.keys(modalActionsData).length == 1 && allOff == true)
+                "
+              >
+                от {{ offer.min_price.price.toLocaleString('ru') }} ₽
+              </p>
+              <p class="product-card__price-value-discounted" v-else>
+                {{ offer.price.toLocaleString('ru') }} ₽
+              </p>
+            </div>
+            <!-- Кнопка: "Все акции" -->
+            <div class="product-card-vertical__promo-all-cont" v-if="active_design == 1">
+              <button
+                v-if="Object.keys(offer.actions).length > 0 && offer.available > 0"
+                class="product-card-vertical__promo-all"
+                @click.prevent="modalActions = true"
+              >
+                Все акции <span class="red-badge">{{ Object.keys(offer.actions).length }}</span>
+                <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
+              </button>
+            </div>
+
             <!-- Название и артикул товара -->
             <div class="product-card__info-text">
               <p class="product-card__title">
@@ -96,7 +123,7 @@
             </div>
 
             <!-- Количество -->
-            <div class="product-card__count">
+            <div class="product-card__count" v-if="active_design == 0">
               <div class="product-card__count-value">
                 <span class="product-card__count-label">В наличии: </span>
                 <span v-if="offer.remains_abstract && offer.remains_abstract != offer.available">{{
@@ -121,6 +148,26 @@
                 <span class="product-card__count-label"><span>Ваша потребность</span>: </span>
                 -{{ Number(offer.requirement.count) }} шт
               </div>
+            </div>
+            <div class="product-card__count-value" v-if="active_design == 1">
+              <span class="product-card__count-label">В наличии: </span>
+              <span v-if="offer.remains_abstract && offer.remains_abstract != offer.available">{{
+                offer.remains_abstract
+              }}</span>
+              <span v-else>{{ offer.available }} шт</span>
+              <div v-if="offer.requirement" class="redder">
+                <span v-if="Number(offer.requirement.count) > Number(offer.available)"
+                  >Не хватает
+                  {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
+                >
+              </div>
+            </div>
+            <div
+              class="product-card__count-value product-card__count-value-require"
+              v-if="offer.requirement && active_design == 1"
+            >
+              <span class="product-card__count-label"><span>Ваша потребность</span>: </span>
+              -{{ Number(offer.requirement.count) }} шт
             </div>
             <!-- Дополнительная информация -->
             <div class="product-card__stat-cont">
@@ -697,6 +744,10 @@ export default {
       default: () => {
         return {}
       },
+    },
+    active_design: {
+      type: Number,
+      default: 0,
     },
   },
   mounted() {
