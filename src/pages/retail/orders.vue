@@ -83,7 +83,7 @@ export default {
         status: {
           label: 'Статус',
           type: 'status',
-          class: 'cell_centeralign',
+          class: 'cell_centeralign cell_order-status',
         },
         cost: {
           label: 'Сумма',

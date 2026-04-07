@@ -313,12 +313,12 @@
             this.$route.matched[5].name == 'WholesaleClientsOffer' && optOfferProducts.items.length
           "
         >
-          Скачать отчет
+          <span>Скачать отчет</span>
           <div class="d-divider d-divider--vertical d-button-divider"></div>
           <i class="d-icon-upload2 catalog_filters_upload_icon"></i>
         </button>
       </div>
-      <div class="catalog-top_filters-right">
+      <!-- <div class="catalog-top_filters-right">
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
@@ -333,7 +333,7 @@
         >
           <img class="d-icon-catalog d-icon" src="/public/icons/icon_catalog_table.svg" />
         </div>
-      </div>
+      </div> -->
     </div>
 
     <product
@@ -1485,11 +1485,11 @@ export default {
 @media (width <= 1024px) {
   // фильтры в наличии
   .catalog-top_filters {
-    gap: 24px;
+    gap: 16px;
     padding-bottom: 28px;
   }
   .catalog-top_filters-item {
-    gap: 8px;
+    gap: 4px;
     padding-right: 0px;
   }
   .catalog-top_filters-item .p-checkbox {
@@ -1497,21 +1497,55 @@ export default {
     height: 16px;
   }
   .catalog-top_filters-item .p-checkbox-input {
-    width: 16px;
-    height: 16px;
+    width: 12px;
+    height: 12px;
     border-radius: 16px;
   }
   .catalog-top_filters-item .p-checkbox .p-checkbox-box {
-    width: 12px;
-    height: 12px;
+    width: 8px;
+    height: 8px;
     border-radius: 12px;
     margin-top: 2px;
     margin-left: 2px;
   }
   .catalog-top_filters-item .catalog-top_filters-label {
     font-weight: 500;
-    font-size: 12px;
-    line-height: 14px;
+    font-size: 10px;
+    line-height: 10px;
+    width: min-content;
+  }
+  .d-switch {
+    --d-switch-width: 24px;
+    --d-switch-height: 16px;
+    --d-switch-thumb-width: 12px;
+  }
+  .catalog-top_filters-item:nth-child(5) {
+    position: relative;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+  .catalog-filters-dates .p-datepicker-input-icon-container::before {
+    display: none;
+  }
+  .catalog-filters-dates .p-datepicker-input-icon-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .p-datepicker:has(.p-datepicker-input-icon-container) .p-datepicker-input {
+    padding-inline-end: 14px;
+  }
+  .p-datepicker:has(.p-datepicker-input-icon-container) {
+    height: 32px;
+    width: 32px;
+  }
+  .catalog_filters_upload_button {
+    height: 32px;
+    width: 32px;
+    padding: 8px;
+  }
+  .catalog_filters_upload_button span,
+  .catalog_filters_upload_button .d-divider {
+    display: none;
   }
 }
 @media (width <= 800px) {

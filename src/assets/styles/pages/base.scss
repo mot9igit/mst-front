@@ -63,9 +63,9 @@
     0% {
       transform: translateX(-100%);
     }
-                                                                                                                                50% {
-                                                                                                                                  transform: translateX(-100%);
-                                                                                                                                }
+    50% {
+      transform: translateX(-100%);
+    }
     100% {
       transform: translateX(0);
     }
@@ -293,7 +293,7 @@
     .sidebar__toggle {
       aspect-ratio: 1;
       width: 40px;
-        height: 40px;
+      height: 40px;
 
       &-block {
         justify-content: flex-end;
@@ -826,7 +826,7 @@
 
   &__toggle {
     width: 40px;
-      height: 40px;
+    height: 40px;
 
     &-block {
       margin-bottom: 20px;
@@ -861,8 +861,10 @@
     &-logo {
       aspect-ratio: 1;
       object-fit: cover;
-      width: inherit;
-      height: inherit;
+      // width: inherit;
+      // height: inherit;
+      width: 30px !important;
+      height: 30px !important;
     }
   }
 
@@ -2159,7 +2161,7 @@
 
   &__cart {
     @media (width <=1024px) {
-      display: none;
+      //display: none;
     }
   }
 

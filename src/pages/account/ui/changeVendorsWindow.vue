@@ -1,10 +1,15 @@
 <template>
-
-  <div class="d-sheet__overlay vendor-change__sheet-overlay" :class="{ active: active }" id="vendor-change__sheet-overlay">
+  <div
+    class="d-sheet__overlay vendor-change__sheet-overlay"
+    :class="{ active: active }"
+    id="vendor-change__sheet-overlay"
+  >
     <div class="d-sheet__wrapper vendor-change__sheet-wrapper" v-if="optVendorsAvailable.items">
       <div class="d-sheet d-sheet--active vendor-change__sheet" id="vendor-change-cont">
         <Loader v-if="this.loading" />
-        <div class="d-sheet__resize-content" id="vendor-resizer" ><i class="resize-icon d-icon-burger"></i></div>
+        <div class="d-sheet__resize-content" id="vendor-resizer">
+          <i class="resize-icon d-icon-burger"></i>
+        </div>
         <div class="d-sheet__content vendor-change">
           <!-- Яндекс карта -->
           <div class="vendor-change__map" id="vendor-change-map">
@@ -35,7 +40,10 @@
                   </div>
                 </template>
               </yandex-map>
-              <button class="vendor-change__map-button d-button d-button-tertiary" @click.prevent="resizeMap()">
+              <button
+                class="vendor-change__map-button d-button d-button-tertiary"
+                @click.prevent="resizeMap()"
+              >
                 <div class="vendor-change__map-button-icons">
                   <div class="vendor-change__map-button-icons-cont">
                     <i class="d-icon-angle-rounded-bottom vendor-change__close-button-icon"></i>
@@ -43,7 +51,8 @@
                     <i class="d-icon-angle-rounded-bottom vendor-change__close-button-icon"></i>
                   </div>
                 </div>
-                <span v-if="mapMax == false">Расширить карту</span><span v-else>Свернуть карту</span>
+                <span v-if="mapMax == false">Расширить карту</span
+                ><span v-else>Свернуть карту</span>
               </button>
             </div>
           </div>
@@ -348,7 +357,6 @@ export default {
       minContSize: 0,
       maxContSize: 0,
       is_resize: false,
-      
     }
   },
   computed: {
@@ -387,8 +395,8 @@ export default {
     this.minMapSize = parseInt(window.getComputedStyle(map).width, 10)
     this.minVendorsSize = parseInt(window.getComputedStyle(vend).width, 10)
 
-    window.addEventListener('resize', e => {
-      e.preventDefault();
+    window.addEventListener('resize', (e) => {
+      e.preventDefault()
       let cont = document.getElementById('vendor-change-cont')
       let map = document.getElementById('vendor-change-map')
       cont.removeAttribute('style')
@@ -402,34 +410,32 @@ export default {
       // this.minVendorsSize = parseInt(window.getComputedStyle(vend).width, 10)
     })
 
-    handle.addEventListener('mousedown', e => {
-      e.preventDefault();
+    handle.addEventListener('mousedown', (e) => {
+      e.preventDefault()
       const startX = e.pageX
       const startWidth = parseInt(window.getComputedStyle(cont).width, 10)
       const startMap = parseInt(window.getComputedStyle(map).width, 10)
-      
 
       const Resize = (e) => {
-        
         let shi = parseInt(window.getComputedStyle(maxCont).width, 10)
-        if(shi != this.maxContSize){
+        if (shi != this.maxContSize) {
           // произошел ресайз окна
           this.maxContSize = parseInt(window.getComputedStyle(maxCont).width, 10)
           this.minContSize = parseInt(window.getComputedStyle(cont).width, 10)
           this.minMapSize = parseInt(window.getComputedStyle(map).width, 10)
           this.minVendorsSize = parseInt(window.getComputedStyle(vend).width, 10)
         }
-          let sh = startWidth - e.pageX + startX
-          if(sh < this.maxContSize - 50 && sh > this.minContSize){
-            if(sh > this.maxContSize - 55){
-              this.mapMax = true
-              }else{
-                this.mapMax = false
-                }
-            cont.style.width = (startWidth - e.pageX + startX) + 'px'
-            cont.style.transitionDuration = '0s'
-            map.style.width = (startMap - e.pageX + startX) + 'px'
+        let sh = startWidth - e.pageX + startX
+        if (sh < this.maxContSize - 50 && sh > this.minContSize) {
+          if (sh > this.maxContSize - 55) {
+            this.mapMax = true
+          } else {
+            this.mapMax = false
           }
+          cont.style.width = startWidth - e.pageX + startX + 'px'
+          cont.style.transitionDuration = '0s'
+          map.style.width = startMap - e.pageX + startX + 'px'
+        }
       }
 
       const stopResize = () => {
@@ -439,10 +445,8 @@ export default {
       }
 
       document.documentElement.addEventListener('mousemove', Resize)
-      document.documentElement.addEventListener('mouseup', stopResize)  
-      
+      document.documentElement.addEventListener('mouseup', stopResize)
     })
-
   },
   methods: {
     ...mapActions({
@@ -453,13 +457,13 @@ export default {
       toggleVendorStores: 'org/toggleVendorStores',
     }),
 
-    resizeMap(){
+    resizeMap() {
       // резайз карты
       let cont = document.getElementById('vendor-change-cont')
       let map = document.getElementById('vendor-change-map')
       let maxCont = document.getElementById('vendor-change__sheet-overlay')
       let sh = parseInt(window.getComputedStyle(maxCont).width, 10)
-      if(sh != this.maxContSize){
+      if (sh != this.maxContSize) {
         // произошел ресайз окна
         let vend = document.getElementById('vendor-change__content')
         this.maxContSize = parseInt(window.getComputedStyle(maxCont).width, 10)
@@ -468,22 +472,17 @@ export default {
         this.minVendorsSize = parseInt(window.getComputedStyle(vend).width, 10)
       }
 
+      let padding = this.minContSize - this.minMapSize - this.minVendorsSize
 
-      let padding = this.minContSize - this.minMapSize - this.minVendorsSize 
-      
-     
-      if(this.mapMax == false){
-        cont.style.width = (this.maxContSize - 51) + 'px'
-        map.style.width = (this.maxContSize - 51 - padding - this.minVendorsSize) + 'px' 
+      if (this.mapMax == false) {
+        cont.style.width = this.maxContSize - 51 + 'px'
+        map.style.width = this.maxContSize - 51 - padding - this.minVendorsSize + 'px'
         this.mapMax = true
-        
-      }else{
+      } else {
         cont.style.width = this.minContSize + 'px'
         map.style.width = this.minMapSize + 'px'
         this.mapMax = false
       }
-     
-      
     },
     close() {
       this.$emit('close')
@@ -697,30 +696,32 @@ export default {
   }
 }
 @media (width <= 1920px) {
-  .vendor-change__sheet, #vendor-change-cont {
+  .vendor-change__sheet,
+  #vendor-change-cont {
     width: 1070px;
   }
   .vendor-change__map {
     width: 413px;
   }
-  .vendor-change__content{
+  .vendor-change__content {
     width: 598px;
     max-width: 598px;
     min-width: 598px;
   }
 }
 @media (width <= 1536px) {
-    .vendor-change__map {
-        width: 229px;
-    }
-    .vendor-change__content{
-      width: auto;
-      max-width: auto;
-      min-width: auto;
-    }
-    .vendor-change__sheet, #vendor-change-cont {
-      width: 686px;
-    }
+  .vendor-change__map {
+    width: 229px;
+  }
+  .vendor-change__content {
+    width: auto;
+    max-width: auto;
+    min-width: auto;
+  }
+  .vendor-change__sheet,
+  #vendor-change-cont {
+    width: 686px;
+  }
 }
 .d-sheet {
   backdrop-filter: blur(17.5px);
@@ -738,7 +739,7 @@ export default {
   background: rgba(249, 44, 13, 1);
 }
 
-.d-sheet__resize-content{
+.d-sheet__resize-content {
   position: absolute;
   top: calc(50% - 10px);
   left: 5px;
@@ -752,89 +753,90 @@ export default {
 }
 
 @media (width <= 1024px) {
-.d-sheet__resize-content{
-  display: none;
+  .d-sheet__resize-content {
+    display: none;
+  }
 }
-}
-.vendor-change__map-image{
+.vendor-change__map-image {
   position: relative;
 }
-.vendor-change__map-button{
+.vendor-change__map-button {
   position: absolute;
   bottom: 10px;
   right: 8px;
   width: auto;
-  font-size:14px;
+  font-size: 14px;
   height: 32px;
   min-height: 32px;
   padding: 7px 16px;
 }
-.vendor-change__map-button-icons i{
+.vendor-change__map-button-icons i {
   position: absolute;
 }
-.vendor-change__map-button-icons{
+.vendor-change__map-button-icons {
   //transform: rotate(45deg);
   position: relative;
   width: 12px;
   height: 12px;
 }
-.vendor-change__map-button-icons i:first-child{
+.vendor-change__map-button-icons i:first-child {
   font-size: 8px;
   top: -1px;
   right: -1px;
   transform: rotate(-135deg);
 }
-.vendor-change__map-button-icons i:last-child{
+.vendor-change__map-button-icons i:last-child {
   font-size: 8px;
   bottom: 0px;
   left: 0px;
   transform: rotate(45deg);
 }
-.vendor-change__map-button-icons-cont{
+.vendor-change__map-button-icons-cont {
   position: absolute;
   width: 12px;
   height: 12px;
 }
-.vendor-change__close-button-line:before{
- content:"";
- width: 1px;
- height: 100%;
- background-color: #fff;
- position: absolute;
- top: 0;
- left: 50%;
- display: block;
- transform: rotate(45deg);
- transition-duration: 0.2s;
+.vendor-change__close-button-line:before {
+  content: '';
+  width: 1px;
+  height: 100%;
+  background-color: #fff;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: block;
+  transform: rotate(45deg);
+  transition-duration: 0.2s;
 }
-.vendor-change__map-button:hover .vendor-change__close-button-line:before{
+.vendor-change__map-button:hover .vendor-change__close-button-line:before {
   background-color: #282828;
 }
 @media (width <= 1280px) {
-  .vendor-change__map-button{
-    font-size:12px;
+  .vendor-change__map-button {
+    font-size: 12px;
     height: 24px;
     min-height: 24px;
     padding: 4px 16px;
   }
 }
-@media (width <= 1024px) and (width > 880px){
+@media (width <= 1024px) and (width > 880px) {
   .d-sheet__overlay.active {
     top: 0;
   }
 }
 @media (width <= 1024px) and (width > 600px) {
-    .vendor-change__sheet, #vendor-change-cont {
-        width: auto;
-        margin-left: 5%;
-        margin-top: calc((100vh - var(--header-height) - 640px)/2)
-    }
-    .vendor-change__sheet-wrapper {
-        height: 640px !important;
-        width: 90%;
-    }
-    .vendor-change__map-button{
-      display: none;
-    }
+  .vendor-change__sheet,
+  #vendor-change-cont {
+    width: auto;
+    margin-left: 5%;
+    //margin-top: calc((100vh - var(--header-height) - 640px)/2)
+  }
+  .vendor-change__sheet-wrapper {
+    height: 640px !important;
+    width: 90%;
+  }
+  .vendor-change__map-button {
+    display: none;
+  }
 }
 </style>

@@ -3415,8 +3415,12 @@ aside button {
 }
 
 @media (width <=800px) {
-  .order__sheet {
+  .d-sheet__wrapper {
     width: 90%;
+  }
+  .order__sheet {
+    width: 100%;
+    min-width: 100%;
     min-height: 70%;
   }
   .order__header {
@@ -3613,6 +3617,9 @@ aside button {
     min-width: 200px;
     max-width: 200px;
     width: 200px;
+  }
+  .order-card__modal-comment .modal-content h3 {
+    font-size: 14px;
   }
 }
 
@@ -3936,7 +3943,8 @@ aside button {
   width: 343px;
   background-color: #fff;
   border-radius: 16px;
-  box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
+  // box-shadow: 0px 4px 13.4px -5px rgba(0, 0, 0, 0.26);
+  box-shadow: none;
   padding: 8px 9px;
   z-index: 1;
   overflow: visible;
@@ -4002,10 +4010,10 @@ aside button {
   gap: 4px;
   align-items: center;
 
-  padding: 8px;
+  // padding: 8px;
 
-  background: #ededed;
-  border-radius: 35px;
+  // background: #ededed;
+  // border-radius: 35px;
 }
 .product-card-vertical__promo-all .red-badge {
   background-color: #f92c0d;
@@ -4024,7 +4032,7 @@ aside button {
   color: #f92c0d;
   font-weight: 500;
   font-size: 12px;
-  display: none;
+  //display: none;
 }
 .product-card__vertical .product-card__title {
   font-size: 14px;
@@ -5718,6 +5726,7 @@ aside button {
   }
   .product-card-actions__modal-all .product-card-vertical__buy .d-button__text {
     font-size: 10px;
+    display: flex;
   }
   .product-card-actions__modal-all .product-card__buy-icon {
     font-size: 9px;
@@ -6117,6 +6126,7 @@ aside button {
   }
   .product-card__vertical .product-card__basket-button .d-counter {
     width: auto;
+    min-width: 100px;
   }
   .product-card-vertical__buy {
     max-width: 102px;
@@ -8092,5 +8102,10 @@ body {
     button {
       margin: 16px 24px 0;
     }
+  }
+}
+@media (width <=1024px) {
+  .header__right {
+    gap: 8px;
   }
 }
