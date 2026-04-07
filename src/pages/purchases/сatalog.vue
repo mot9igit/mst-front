@@ -269,6 +269,15 @@
               'catalog-filter-switch-lable': item.type == 'switch',
             }"
             >{{ item.placeholder }}
+            <span
+              v-if="
+                (this.$route.name == 'purchasesCatalogRequirement' ||
+                  this.$route.name == 'purchasesOfferCatalogRequirement') &&
+                item.col &&
+                item.col >= 0
+              "
+              >({{ item.col }})</span
+            >
           </label>
 
           <DatePicker
@@ -423,24 +432,30 @@ export default {
   },
   data() {
     return {
+      count_all: null,
+      count_av: null,
+      count_no_av: null,
       filters: {
         all: {
           name: 'Все товары',
           placeholder: 'Все товары',
           value: true,
           type: 'checkbox',
+          col: this.count_all,
         },
         available: {
           name: 'В наличии',
           placeholder: 'В наличии',
           value: false,
           type: 'checkbox',
+          col: this.count_av,
         },
         no_available: {
           name: 'Отсутствуют',
           placeholder: 'Отсутствуют',
           value: false,
           type: 'checkbox',
+          col: this.count_no_av,
         },
         sales: {
           name: 'Только с продажами',
@@ -1033,6 +1048,9 @@ export default {
       data.active_store = this.basketOfferWarehouse
       this.getOfferOptProducts(data).then(() => {
         this.opt_products = this.optOfferProducts
+        if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+          this.count_all = Object.keys(this.optOfferProducts.requirement).length
+        }
         this.loading = false
       })
     } else {
@@ -1046,6 +1064,9 @@ export default {
             this.addItems[r_id].item = stores[s]
             this.addItems[r_id].count = Number(stores[s].count)
           }
+        }
+        if (this.$route.name == 'purchasesCatalogRequirement') {
+          this.count_all = Object.keys(this.optProducts.requirement).length
         }
         this.loading = false
       })
@@ -1092,6 +1113,11 @@ export default {
           this.addItems[r_id].count = Number(stores[s].count)
         }
       }
+      if (this.$route.name == 'purchasesCatalogRequirement') {
+        this.count_all = newVal.all.count_all
+        this.count_av = newVal.all.count_av
+        this.count_no_av = newVal.all.count_no_av
+      }
     },
     optOfferProducts: function (newVal) {
       this.opt_products = newVal
@@ -1103,6 +1129,11 @@ export default {
           this.addItems[r_id].item = stores[s]
           this.addItems[r_id].count = Number(stores[s].count)
         }
+      }
+      if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+        this.count_all = newVal.all.count_all
+        this.count_av = newVal.all.count_av
+        this.count_no_av = newVal.all.count_no_av
       }
     },
     optVendorsAvailable: function () {
@@ -1145,6 +1176,15 @@ export default {
       for (var d in newVal) {
         newVal[d] = new Date(newVal[d].getTime() - newVal[d].getTimezoneOffset() * 60000)
       }
+    },
+    count_all: function (newVal) {
+      this.filters.all.col = newVal
+    },
+    count_av: function (newVal) {
+      this.filters.available.col = newVal
+    },
+    count_no_av: function (newVal) {
+      this.filters.no_available.col = newVal
     },
   },
 }
@@ -1267,13 +1307,13 @@ export default {
   border-color: #f92c0d;
 }
 .catalog-top_filters-item .p-checkbox .p-checkbox-box {
-  width: 20px;
+  width: 19px;
   height: 20px;
   border-radius: 20px;
   border: none;
   background: transparent;
   margin-top: 2px;
-  margin-left: 2px;
+  margin-left: 3px;
 }
 .catalog-top_filters-item .p-checkbox-checked .p-checkbox-box {
   background: #f92c0d;
