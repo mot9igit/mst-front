@@ -278,6 +278,7 @@ export default {
       optVendorsSelected: 'org/optVendorsSelected',
       basket: 'basket/basket',
       basketWarehouse: 'basket/basketWarehouse',
+      user: 'user/user',
     }),
   },
   methods: {

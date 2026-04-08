@@ -104,6 +104,13 @@ const router = createRouter({
                   component: () => import('../pages/profile/profileHash.vue'),
                 },
                 {
+                  path: '/registration:hash',
+                  name: 'profileRegisterHash',
+                  props: true,
+                  label: 'Привязка организации по ссылке-приглашению',
+                  component: () => import('../pages/profile/profileRegisterHash.vue'),
+                },
+                {
                   path: 'orgAdd',
                   name: 'OrgAdd',
                   props: true,

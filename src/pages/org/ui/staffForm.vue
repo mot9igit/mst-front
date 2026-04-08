@@ -902,7 +902,7 @@ export default {
       } else {
         this.setManager({
           data: this.form,
-        }).then(() => {
+        }).then((res) => {
           if (this.$route.params.manager_id) {
             this.$toast.add({
               severity: 'success',
@@ -917,13 +917,22 @@ export default {
             })
           } else {
             this.loading = false
-            this.$toast.add({
-              severity: 'success',
-              summary: 'Сотрудник создан!',
-              detail: 'Вы успешно добавили нового сотрудника',
-              life: 3000,
-            })
-            this.$router.push({ name: 'profileStuff', params: { id: this.$route.params.id } })
+            if (res.data.data.success) {
+              this.$toast.add({
+                severity: 'success',
+                summary: 'Сотрудник создан!',
+                detail: 'Вы успешно добавили нового сотрудника',
+                life: 3000,
+              })
+              this.$router.push({ name: 'profileStuff', params: { id: this.$route.params.id } })
+            } else {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Ошибка!',
+                detail: 'Сотрудник с таким email уже привязан к организации',
+                life: 3000,
+              })
+            }
           }
         })
       }
