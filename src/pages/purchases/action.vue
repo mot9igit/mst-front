@@ -1,6 +1,6 @@
 <template>
   <Toast />
-  <section class="promo sale_page" id="promo">
+  <section class="promo sale_page shipments order_content" id="promo">
     <Loader v-if="loading" />
     <!-- Верхушка страницы -->
     <div class="d-top">
@@ -656,5 +656,10 @@ export default {
 .sale_seeall-button p {
   color: #757575;
   width: 35%;
+}
+@media (width <= 780px) {
+  .promo .v-table {
+    display: block;
+  }
 }
 </style>
