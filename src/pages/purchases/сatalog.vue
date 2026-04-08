@@ -269,7 +269,7 @@
               'catalog-filter-switch-lable': item.type == 'switch',
             }"
             >{{ item.placeholder }}
-            <span
+            <!--<span
               v-if="
                 (this.$route.name == 'purchasesCatalogRequirement' ||
                   this.$route.name == 'purchasesOfferCatalogRequirement') &&
@@ -277,7 +277,7 @@
                 item.col >= 0
               "
               >({{ item.col }})</span
-            >
+            >-->
           </label>
 
           <DatePicker
@@ -824,6 +824,7 @@ export default {
           }
           if (Object.keys(this.addItemsConflicts).length) {
             this.modalConflicts = true
+            this.loading = false
           } else {
             if (Object.keys(this.noconflicts).length) {
               for (var r_id in this.noconflicts) {
@@ -913,6 +914,7 @@ export default {
         }
         if (Object.keys(this.addItemsConflicts).length) {
           this.modalConflicts = true
+          this.loading = false
         } else {
           if (Object.keys(this.noconflicts).length) {
             for (var r_id in this.noconflicts) {
@@ -1048,9 +1050,9 @@ export default {
       data.active_store = this.basketOfferWarehouse
       this.getOfferOptProducts(data).then(() => {
         this.opt_products = this.optOfferProducts
-        if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-          this.count_all = Object.keys(this.optOfferProducts.requirement).length
-        }
+        // if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+        //   this.count_all = Object.keys(this.optOfferProducts.requirement).length
+        // }
         this.loading = false
       })
     } else {
@@ -1065,9 +1067,9 @@ export default {
             this.addItems[r_id].count = Number(stores[s].count)
           }
         }
-        if (this.$route.name == 'purchasesCatalogRequirement') {
-          this.count_all = Object.keys(this.optProducts.requirement).length
-        }
+        // if (this.$route.name == 'purchasesCatalogRequirement') {
+        //   this.count_all = Object.keys(this.optProducts.requirement).length
+        // }
         this.loading = false
       })
     }
@@ -1113,11 +1115,11 @@ export default {
           this.addItems[r_id].count = Number(stores[s].count)
         }
       }
-      if (this.$route.name == 'purchasesCatalogRequirement') {
-        this.count_all = newVal.all.count_all
-        this.count_av = newVal.all.count_av
-        this.count_no_av = newVal.all.count_no_av
-      }
+      // if (this.$route.name == 'purchasesCatalogRequirement') {
+      //   this.count_all = newVal.all.count_all
+      //   this.count_av = newVal.all.count_av
+      //   this.count_no_av = newVal.all.count_no_av
+      // }
     },
     optOfferProducts: function (newVal) {
       this.opt_products = newVal
@@ -1130,11 +1132,11 @@ export default {
           this.addItems[r_id].count = Number(stores[s].count)
         }
       }
-      if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-        this.count_all = newVal.all.count_all
-        this.count_av = newVal.all.count_av
-        this.count_no_av = newVal.all.count_no_av
-      }
+      // if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+      //   this.count_all = newVal.all.count_all
+      //   this.count_av = newVal.all.count_av
+      //   this.count_no_av = newVal.all.count_no_av
+      // }
     },
     optVendorsAvailable: function () {
       this.updatePage(0)
@@ -1177,15 +1179,15 @@ export default {
         newVal[d] = new Date(newVal[d].getTime() - newVal[d].getTimezoneOffset() * 60000)
       }
     },
-    count_all: function (newVal) {
-      this.filters.all.col = newVal
-    },
-    count_av: function (newVal) {
-      this.filters.available.col = newVal
-    },
-    count_no_av: function (newVal) {
-      this.filters.no_available.col = newVal
-    },
+    //count_all: function (newVal) {
+    //  this.filters.all.col = newVal
+    //},
+    //count_av: function (newVal) {
+    //  this.filters.available.col = newVal
+    //},
+    //count_no_av: function (newVal) {
+    //  this.filters.no_available.col = newVal
+    //},
   },
 }
 </script>
