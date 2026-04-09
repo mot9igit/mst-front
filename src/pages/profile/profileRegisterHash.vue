@@ -1,6 +1,21 @@
 <template>
   <Loader v-if="loading" />
-  hello world!
+  <teleport to="body" v-else>
+    <customModal class="profile__info-modal" v-model="errorModalInfo" id="modallHash">
+      <div class="profile__info-modal-success">
+        <h3>Произошла ошибка!</h3>
+        <p>Время ссылки истекло или ссылка является недействительной!</p>
+      </div>
+      <button
+        type="button"
+        href="#"
+        class="d-button d-button-primary d-button-primary-small d-button--sm-shadow profile__info-button"
+        @click.prevent="this.$router.push({ name: 'home' })"
+      >
+        Ок
+      </button>
+    </customModal>
+  </teleport>
 </template>
 
 <script>
@@ -11,8 +26,6 @@ export default {
   name: 'profileRegisterHash',
   data() {
     return {
-      modalEditProfile: true,
-      successModalInfo: false,
       errorModalInfo: false,
       loading: true,
     }
@@ -20,56 +33,38 @@ export default {
   components: { Loader },
   methods: {
     ...mapActions({
-      setUser: 'user/setUser',
-      deleteUser: 'user/deleteUser',
       getSessionUser: 'user/getSessionUser',
-      getOrg: 'org/getOrg',
       editUser: 'user/edit_profile',
+      setUser: 'user/setUser',
     }),
-    redirectToMain() {
-      this.$router.push({ name: 'home', hash: this.$route.params.hash })
-    },
   },
   async mounted() {
-    document.addEventListener('click', (event) => {
-      if (!event.target.closest('.vfm__content') || event.target.closest('.modal__close')) {
-        this.redirectToMain()
-      }
-    })
-
     console.log('Hash из параметров маршрута:', this.$route.params.hash)
 
     if (this.$route.params.hash) {
       try {
         const res = await this.editUser({
-          action: 'profile/edit/confirm',
+          action: 'profile/create',
           hash: this.$route.params.hash,
         })
 
         if (!res.data.data.success) {
-          this.modalEditProfile = true
-          this.successModalInfo = false
           this.errorModalInfo = true
           this.loading = false
-          //this.$router.push({ name: "profile" });
         } else {
-          this.modalEditProfile = true
-          this.errorModalInfo = false
-          this.successModalInfo = true
           this.loading = false
-          //this.$router.push({ name: "profile" });
+          this.$router.push({ name: 'home' })
         }
       } catch (error) {
-        this.$router.push({ name: 'profile' })
+        this.errorModalInfo = true
       }
     } else {
-      this.$router.push({ name: 'profile' })
+      this.errorModalInfo = true
     }
   },
   computed: {
     ...mapGetters({
-      getUser: 'user/getUser',
-      orgs: 'org/orgs',
+      user: 'user/user',
     }),
   },
   watch: {},

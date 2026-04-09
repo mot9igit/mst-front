@@ -312,6 +312,12 @@ export default {
       },
     }
   },
+  props: {
+    settings: {
+      type: Object,
+      default: null,
+    },
+  },
   setup() {
     return { v$: useVuelidate() }
   },
@@ -353,6 +359,7 @@ export default {
     sendMetrik: sendMetrik,
     ...mapActions({
       signUp: 'user/signUp',
+      setOrgUser: 'org/setOrgUser',
     }),
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword
@@ -393,6 +400,12 @@ export default {
               this.loading = false
               this.goToErrorInput(data.data.message)
             } else {
+              if (data.data.data.id) {
+                this.setOrgUser({
+                  user_id: data.data.data.id,
+                  settings: this.settings,
+                })
+              }
               this.sendMetrik('register')
               this.regIsSuccess = true
             }

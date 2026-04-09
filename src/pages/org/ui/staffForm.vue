@@ -68,6 +68,16 @@
       <div class="lk-staff-edit__operator">
         <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
           <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
+            <Checkbox v-model="form.send" :binary="true" />
+            <label class="d-radio__label vendor-change__selected-item-radio-label">
+              Отправить приглашение на регистрацию
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="lk-staff-edit__operator">
+        <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
+          <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
             <Checkbox v-model="form.operator" :binary="true" />
             <label class="d-radio__label vendor-change__selected-item-radio-label">
               Оператор 1C
@@ -577,6 +587,7 @@ export default {
         global_responsible: false,
         operator: false,
         notifications_types: [],
+        send: true,
       },
       search: {
         city: '',

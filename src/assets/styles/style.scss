@@ -8468,6 +8468,11 @@ body {
 .lk-about__block-header-button {
   white-space: nowrap;
 }
+.lk-staff-create__header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
 @media (width <=1280px) {
   .lk-about__info-title-label,
   .lk-about__block-subtitle,

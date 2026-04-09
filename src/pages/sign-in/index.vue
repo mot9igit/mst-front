@@ -1,5 +1,5 @@
 <template>
-  <FormSignUp v-if="this.isRegForm" @setRegForm="setRegForm"></FormSignUp>
+  <FormSignUp v-if="this.isRegForm" @setRegForm="setRegForm" :settings="settings"></FormSignUp>
   <FormSignIn v-if="!this.isRegForm" @setRegForm="setRegForm"></FormSignIn>
 </template>
 <script>
@@ -13,6 +13,7 @@ export default {
     return {
       organizations: [],
       isRegForm: false,
+      settings: null,
     }
   },
   components: { FormSignIn, FormSignUp },
@@ -29,10 +30,14 @@ export default {
     }),
     setRegForm(state) {
       this.isRegForm = state
+      this.$cookies.remove('analytics_register')
     },
   },
   async mounted() {
-    // console.log(localStorage.getItem("user"))
+    if (Object.keys(this.$cookies.get('analytics_register')).length) {
+      this.isRegForm = true
+      this.settings = this.$cookies.get('analytics_register')
+    }
     if (localStorage.getItem('user') !== null && localStorage.getItem('user') != 0) {
       this.setUser(JSON.parse(localStorage.getItem('user')))
     } else {

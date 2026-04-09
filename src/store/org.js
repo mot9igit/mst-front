@@ -270,6 +270,17 @@ export default {
 
       return response
     },
+    async setOrgUser(store, { user_id, settings }) {
+      const data = {
+        action: 'set/org/user',
+        user_id: user_id,
+        data: settings,
+        id: settings.org_id,
+      }
+      const response = await api.org.setManager(data)
+
+      return response
+    },
   },
   mutations: {
     SET_ORG: (state, data) => {
