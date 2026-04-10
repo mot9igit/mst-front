@@ -197,7 +197,7 @@ export default {
         reject: () => {
           this.$toast.add({
             severity: 'error',
-            summary: 'Удаление коллекции',
+            summary: 'Удаление сотрудника',
             detail: 'Действие отклонено',
             life: 3000,
           })

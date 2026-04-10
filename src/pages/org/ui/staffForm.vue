@@ -612,6 +612,7 @@ export default {
   },
   mounted() {
     if (this.$route.params.manager_id) {
+      this.form.send = false
       this.getManager({
         manager_id: this.$route.params.manager_id,
       }).then(() => {
@@ -915,10 +916,16 @@ export default {
           data: this.form,
         }).then((res) => {
           if (this.$route.params.manager_id) {
+            let mess = ''
+            if (!res.data.data.success) {
+              mess = 'Не удалось отправить ссылку на регистрацию: ' + res.data.data.message
+            } else {
+              mess = res.data.data.data
+            }
             this.$toast.add({
               severity: 'success',
               summary: 'Сотрудник отредактирован!',
-              detail: 'Вы успешно отредактировали сотрудника',
+              detail: 'Вы успешно отредактировали сотрудника! ' + mess,
               life: 3000,
             })
             this.getManager({
