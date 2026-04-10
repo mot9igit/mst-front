@@ -165,6 +165,7 @@
             <AddAddress
               :key="index"
               :index="index"
+              :type="this.type"
               :value="this.form.company.warehouses[index].address"
               v-model="this.form.company.warehouses[index].address"
               class="std-create-clients__add-address"
@@ -536,12 +537,12 @@ export default {
             },
           },
           warehouses: {
-            required: helpers.withMessage('Выберите хотя бы один адрес', () => {
-              return (
-                this.form.company.warehouses.length &&
-                this.form.company.warehouses[0].address.value != ''
-              )
-            }),
+            // required: helpers.withMessage('Выберите хотя бы один адрес', () => {
+            //   return (
+            //     this.form.company.warehouses.length &&
+            //     this.form.company.warehouses[0].address.value != ''
+            //   )
+            // }),
           },
         },
       },

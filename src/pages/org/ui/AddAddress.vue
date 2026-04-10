@@ -44,6 +44,10 @@ export default {
       default: '',
     },
     value: {},
+    type: {
+      type: String,
+      default: '1', // 1 - своя, 2 - виртуальная
+    },
   },
   data() {
     return {
@@ -56,7 +60,7 @@ export default {
     return { $v: useVuelidate() }
   },
   validations() {
-    return {
+    let adr = {
       address: {
         value: {
           required,
@@ -64,6 +68,16 @@ export default {
         },
       },
     }
+    let adr_n = {
+      address: {
+        value: {
+          // required,
+          // minLength: minLength(5),
+        },
+      },
+    }
+    //return adr
+    return this.type == 2 ? adr_n : adr
   },
   components: {
     Autocomplete,
