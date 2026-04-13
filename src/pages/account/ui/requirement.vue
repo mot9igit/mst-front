@@ -142,10 +142,9 @@
               error: this.formRequirementsView.error,
             }"
           >
-            <!--:options="!offer ? this.optVendorsSelected.items : this.vendorOfferSelected.items"-->
             <SelectInput
               v-model="this.formRequirementsView.warehouse"
-              :options="this.vendors"
+              :options="!offer ? this.optVendorsSelected.items : this.vendorOfferSelected.items"
               optionLabel="name"
               placeholder="Выберите поставщика"
               class="w-full md:w-14rem"
@@ -162,12 +161,12 @@
                 class="d-radio__wrapper need-vendor__radio-wrapper dart-mt-1"
               >
                 <Checkbox
-                  @change="changeStores(store.id, store.active)"
+                  @change="changeStores(item.id, store.id, store.active)"
                   v-model="store.active"
                   :binary="true"
                   :inputId="'store-' + store.id"
                   :name="'store-' + store.id"
-                  value="false"
+                  value="true"
                 />
                 <label
                   :for="'store-' + store.id"
@@ -179,7 +178,6 @@
           </div>
           <div class="d-col-24 text-center">
             <button
-              :disabled="disabled"
               class="d-button d-button-primary d-button-primary-small d-button--sm-shadow d-ib"
               type="submit"
             >
@@ -239,8 +237,6 @@ export default {
     return {
       loading: false,
       args: {},
-      vendors: {},
-      disabled: true,
       modals: {
         requirements: this.requirementsModal,
         createRequirement: false,
@@ -493,23 +489,6 @@ export default {
       this.getRequirements(data)
       this.loading = false
     },
-    changeStores(id, active) {
-      if (active === false) {
-        for (var i in this.formRequirementsView.warehouse.stores) {
-          this.formRequirementsView.warehouse.stores[i].active = false
-        }
-        this.disabled = true
-      } else {
-        for (i in this.formRequirementsView.warehouse.stores) {
-          if (this.formRequirementsView.warehouse.stores[i].id == id) {
-            this.formRequirementsView.warehouse.stores[i].active = true
-            this.disabled = false
-          } else {
-            this.formRequirementsView.warehouse.stores[i].active = false
-          }
-        }
-      }
-    },
   },
   watch: {
     requirementsModal: function (newVal) {
@@ -517,20 +496,6 @@ export default {
     },
     'modals.requirements': function (newVal) {
       if (!newVal) this.$emit('closeWindow')
-    },
-    'modals.requirementsView': function (newVal) {
-      if (newVal === true) {
-        if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-          this.vendors = this.vendorOfferSelected.items
-        } else {
-          this.vendors = this.optVendorsSelected.items
-        }
-        for (var i in this.vendors) {
-          for (var ii in this.vendors[i].stores) {
-            this.vendors[i].stores[ii].active = false
-          }
-        }
-      }
     },
   },
   setup() {
