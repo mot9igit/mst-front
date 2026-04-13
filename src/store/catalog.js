@@ -72,7 +72,7 @@ export default {
       const response = await api.catalog.getOptProducts(data)
       return response
     },
-    async getOptProducts({ commit }, { filters, page, perpage, basket, search, action_id, mode }) {
+    async getOptProducts({ commit }, { filters, page, perpage, basket, search, action_id }) {
       let cat = 0
       if (
         router.currentRoute._value.params.warehouse_id &&
@@ -92,7 +92,6 @@ export default {
         cat = 'all'
       }
       const data = {
-        mode: 'dev',
         id: router.currentRoute._value.params.id,
         // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
         //   ? router.currentRoute._value.params.id_org_from

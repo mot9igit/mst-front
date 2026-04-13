@@ -184,15 +184,30 @@
           В данный момент не все товары из комплекта есть в наличии, поэтому акция не может быть
           применена
         </p> -->
-        <p v-if="this.opt_products.all.count_no_av > 0">
-          Из загруженной потребности у поставщика нет
-          <span class="no-available-requirement"
-            >{{ this.opt_products.all.count_no_av }}sku /
-            {{ this.opt_products.all.counter }} товаров</span
-          >
-          <span class="no-available-requirement--a">Найти товары у другого поставщика?</span>
+        <p
+          v-if="
+            (opt_products.total_no_available > 0 &&
+              (this.$route.name == 'purchasesCatalogRequirement' ||
+                this.$route.name == 'purchasesOfferCatalogRequirement') &&
+              opt_products?.total != opt_products?.total_no_available) ||
+            (opt_products?.total == opt_products?.total_no_available &&
+              (this.$route.name == 'purchasesCatalogRequirement' ||
+                this.$route.name == 'purchasesOfferCatalogRequirement') &&
+              opt_products?.total_no_available > opt_products?.no_available_productsnp)
+          "
+        >
+          Обратите внимание, не все товары из потребности есть в наличии! В корзину попадут только
+          товары, которые есть в наличии на данный момент
         </p>
-        <p v-else>Все товары по вашей потребности в наличии</p>
+        <p
+          v-if="
+            (this.$route.name == 'purchasesCatalogRequirement' ||
+              this.$route.name == 'purchasesOfferCatalogRequirement') &&
+            opt_products?.total == opt_products?.no_available_products
+          "
+        >
+          В наличии нет товаров из потребности
+        </p>
         <!-- <p
           v-if="
             this.$route.name == 'purchasesCatalogComplect' &&
@@ -312,54 +327,8 @@
           <i class="d-icon-upload2 catalog_filters_upload_icon"></i>
         </button>
       </div>
-      <div class="catalog-top_filters">
-        <button
-          class="catalog_filters_upload_button"
-          title="Скачать отчет по продажам в Excel"
-          @click.prevent=""
-          v-if="
-            (this.$route.name == 'purchasesCatalogRequirement' ||
-              this.$route.name == 'purchasesOfferCatalogRequirement') &&
-            filters.no_available.value &&
-            opt_products.all.count_no_av > 0
-          "
-        >
-          <span>Скачать в Excel</span>
-          <div class="d-divider d-divider--vertical d-button-divider"></div>
-          <i class="d-icon-upload2 catalog_filters_upload_icon"></i>
-        </button>
-        <button
-          class="catalog_filters_upload_button"
-          title="Скачать отчет по продажам в Excel"
-          @click.prevent=""
-          v-if="
-            (this.$route.name == 'purchasesCatalogRequirement' ||
-              this.$route.name == 'purchasesOfferCatalogRequirement') &&
-            filters.no_available.value &&
-            opt_products.all.count_no_av > 0
-          "
-        >
-          <span>Создать потребность</span>
-          <div class="d-divider d-divider--vertical d-button-divider"></div>
-          <i class="d-icon-upload catalog_filters_upload_icon"></i>
-        </button>
-        <button
-          class="catalog_filters_upload_button"
-          title="Скачать отчет по продажам в Excel"
-          @click.prevent=""
-          v-if="
-            (this.$route.name == 'purchasesCatalogRequirement' ||
-              this.$route.name == 'purchasesOfferCatalogRequirement') &&
-            filters.no_available.value &&
-            opt_products.all.count_no_av > 0
-          "
-        >
-          <span>Найти у других</span>
-          <div class="d-divider d-divider--vertical d-button-divider"></div>
-          <i class="d-icon-search catalog_filters_upload_icon"></i>
-        </button>
-      </div>
-      <!--  <div class="catalog-top_filters-right"> <div
+      <!-- <div class="catalog-top_filters-right">
+        <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
           @click.prevent="active_design = 0"
@@ -373,7 +342,7 @@
         >
           <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
         </div>
-      </div>-->
+      </div> -->
     </div>
 
     <product
@@ -1067,7 +1036,6 @@ export default {
       page: this.page,
       perpage: this.per_page,
     }
-
     if (this.$route.name == 'purchasesCatalogSearch') {
       data.search = this.$route.query.search
     }
@@ -1080,7 +1048,6 @@ export default {
     if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
       data.search = this.$route.query.search
       data.active_store = this.basketOfferWarehouse
-
       this.getOfferOptProducts(data).then(() => {
         this.opt_products = this.optOfferProducts
         // if (this.$route.name == 'purchasesOfferCatalogRequirement') {
@@ -1299,7 +1266,6 @@ export default {
   justify-content: start;
   align-items: end;
   gap: 16px;
-  width: 50%;
 }
 .catalog-top_button-cont p {
   max-width: 60%;
@@ -1309,7 +1275,6 @@ export default {
   font-size: 14px;
   line-height: 16px;
   letter-spacing: -0.01em;
-  width: max-content;
 }
 
 // фильтры в наличии
@@ -1344,13 +1309,13 @@ export default {
   border-color: #f92c0d;
 }
 .catalog-top_filters-item .p-checkbox .p-checkbox-box {
-  width: 19px;
+  width: 20px;
   height: 20px;
   border-radius: 20px;
   border: none;
   background: transparent;
   margin-top: 2px;
-  margin-left: 3px;
+  margin-left: 2px;
 }
 .catalog-top_filters-item .p-checkbox-checked .p-checkbox-box {
   background: #f92c0d;
@@ -1495,19 +1460,6 @@ export default {
   margin: 0;
   opacity: 1;
 }
-.no-available-requirement {
-  display: block;
-  font-weight: 600;
-  font-size: 16px;
-  color: #282828;
-  margin: 8px 0;
-}
-.no-available-requirement--a {
-  cursor: pointer;
-}
-.no-available-requirement--a:hover {
-  color: #f92c0d;
-}
 @media (width <= 1536px) {
   // фильтры в наличии
   .catalog-top_filters {
@@ -1529,9 +1481,9 @@ export default {
   }
   .catalog-top_filters-item .p-checkbox .p-checkbox-box {
     width: 18px;
-    height: 18px;
+    height: 16px;
     border-radius: 18px;
-    margin-top: 2px;
+    margin-top: 3px;
     margin-left: 2px;
   }
   .catalog-top_filters-item .catalog-top_filters-label {
@@ -1561,9 +1513,9 @@ export default {
   }
   .catalog-top_filters-item .p-checkbox .p-checkbox-box {
     width: 12px;
-    height: 12px;
+    height: 11px;
     border-radius: 12px;
-    margin-top: 2px;
+    margin-top: 3px;
     margin-left: 2px;
   }
   .catalog-top_filters-item .catalog-top_filters-label {
