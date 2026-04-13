@@ -2,7 +2,7 @@
   <section class="promos" id="promos">
     <Loader v-if="this.loading"></Loader>
     <div class="promos__header">
-      <h1 class="promos__header-title">
+      <!-- <h1 class="promos__header-title">
         Предложение для
         <div class="d-badge2 d-badge2--fit order__item-header-badge">
           <div class="order__item-header-badge-image-container">
@@ -10,7 +10,7 @@
           </div>
           <p class="order__item-header-badge-text">{{ orgName.name }}</p>
         </div>
-      </h1>
+      </h1> -->
       <!--
         <button class="d-select promos__header-select">
           <span class="d-select__title">Акции по брендам</span>
@@ -190,12 +190,13 @@ export default {
       filtersdata: 0,
     }).then(() => {
       //this.loading = false
-      this.getOrgName()
+      this.getOrgName().then(() =>
+        this.$router.push({
+          name: 'purchasesCatalogSearchOffer',
+          params: { id: this.$route.params.id, id_org_from: this.$route.params.id_org_from },
+        }),
+      )
       //this.getSalesBanners()
-      this.$router.push({
-        name: 'purchasesCatalogSearchOffer',
-        params: { id: this.$route.params.id, id_org_from: this.$route.params.id_org_from },
-      })
     })
   },
   methods: {
@@ -221,21 +222,21 @@ export default {
   },
   computed: {
     ...mapGetters({
-      salesBanners: 'sales/salesBanners',
+      //salesBanners: 'sales/salesBanners',
       opts: 'purchases/opts',
       orgName: 'org/orgName',
     }),
-    getCount() {
-      return this.salesBanners.count
-    },
+    // getCount() {
+    //   return this.salesBanners.count
+    // },
   },
   watch: {
-    salesBanners: function () {
-      // console.log(newVal)
-      setTimeout(function () {
-        window.dispatchEvent(new Event('resize'))
-      }, 500)
-    },
+    // salesBanners: function () {
+    //   // console.log(newVal)
+    //   setTimeout(function () {
+    //     window.dispatchEvent(new Event('resize'))
+    //   }, 500)
+    // },
     $route: {
       handler: function () {
         if (this.$route.params.id) {
@@ -246,10 +247,10 @@ export default {
     catalogUpdater: function (newVal) {
       console.log(newVal)
       if (newVal) {
-        this.loading = true
-        this.getSalesBanners().then(() => {
-          this.loading = false
-        })
+        // this.loading = true
+        // this.getSalesBanners().then(() => {
+        //   this.loading = false
+        // })
       }
     },
   },
