@@ -183,17 +183,19 @@ export default {
   },
   components: { Swiper, SwiperSlide, customModal, addVendorWindow, Loader },
   mounted() {
-    this.getOrgName().then(() => (this.loading = false))
-    this.getSalesBanners()
     this.getOpts({
       page: 0,
       perpage: 0,
       filter: 0,
       filtersdata: 0,
-    })
-    this.$router.push({
-      name: 'purchasesCatalogSearchOffer',
-      params: { id: this.$route.params.id, id_org_from: this.$route.params.id_org_from },
+    }).then(() => {
+      //this.loading = false
+      this.getOrgName()
+      this.getSalesBanners()
+      this.$router.push({
+        name: 'purchasesCatalogSearchOffer',
+        params: { id: this.$route.params.id, id_org_from: this.$route.params.id_org_from },
+      })
     })
   },
   methods: {
