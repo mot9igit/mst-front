@@ -191,7 +191,7 @@ export default {
     }).then(() => {
       //this.loading = false
       this.getOrgName()
-      this.getSalesBanners()
+      //this.getSalesBanners()
       this.$router.push({
         name: 'purchasesCatalogSearchOffer',
         params: { id: this.$route.params.id, id_org_from: this.$route.params.id_org_from },
