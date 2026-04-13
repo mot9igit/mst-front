@@ -17,7 +17,7 @@
           <i class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"></i>
         </button>
       -->
-    </div>
+    <!-- </div>
     <div v-if="opts.total > 0">
       <div class="promos__banners" v-if="salesBanners.count > 0">
         <div class="dart-row promos__banners-row">
@@ -82,7 +82,7 @@
                     alt=""
                     loading="lazy"
                   />
-                  <!--
+
                 <div class="promos__banners-item-badges">
                   <div class="promos__banners-item-badges-item">
                     Реклама
@@ -90,7 +90,7 @@
                   <span class="promos__banners-item-badges-text">0+</span>
                 </div>
                 -->
-                </router-link>
+               <!-- </router-link>
               </div>
             </div>
           </template>
@@ -119,7 +119,7 @@
                     alt=""
                     loading="lazy"
                   />
-                  <!--
+
                 <div class="promos__banners-item-badges">
                   <div class="promos__banners-item-badges-item">
                     Реклама
@@ -127,7 +127,7 @@
                   <span class="promos__banners-item-badges-text">0+</span>
                 </div>
                 -->
-                </router-link>
+              <!--  </router-link>
               </div>
             </div>
           </template>
@@ -158,7 +158,7 @@
           <addVendorWindow @closeAddWindow="close()" @addVendor="addNewVendor()" />
         </customModal>
       </teleport>
-    </div>
+    </div> -->
   </section>
 </template>
 <script>
@@ -239,7 +239,7 @@ export default {
     $route: {
       handler: function () {
         if (this.$route.params.id) {
-          this.getSalesBanners()
+          //this.getSalesBanners()
         }
       },
     },
