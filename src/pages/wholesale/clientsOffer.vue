@@ -17,7 +17,7 @@
           <i class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"></i>
         </button>
       -->
-    <!-- </div>
+      <!-- </div>
     <div v-if="opts.total > 0">
       <div class="promos__banners" v-if="salesBanners.count > 0">
         <div class="dart-row promos__banners-row">
@@ -90,7 +90,7 @@
                   <span class="promos__banners-item-badges-text">0+</span>
                 </div>
                 -->
-               <!-- </router-link>
+      <!-- </router-link>
               </div>
             </div>
           </template>
@@ -127,7 +127,7 @@
                   <span class="promos__banners-item-badges-text">0+</span>
                 </div>
                 -->
-              <!--  </router-link>
+      <!--  </router-link>
               </div>
             </div>
           </template>
@@ -157,8 +157,8 @@
         <customModal v-model="this.modalAdd" class="clients-form__modal-main">
           <addVendorWindow @closeAddWindow="close()" @addVendor="addNewVendor()" />
         </customModal>
-      </teleport>
-    </div> -->
+      </teleport> -->
+    </div>
   </section>
 </template>
 <script>
