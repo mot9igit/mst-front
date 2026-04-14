@@ -42,9 +42,9 @@
       </customModal>
       <customModal v-model="modals.createRequirement" class="need-modal-create">
         <template v-slot:title>Загрузка потребности</template>
-        <div class="need__notice need-vendor__notice">
+        <!-- <div class="need__notice need-vendor__notice">
           Обратите внимание! Данная потребность будет привязана к складу доставки.
-        </div>
+        </div> -->
         <form @submit.prevent="formRequirementsSubmit" :class="{ loading: loading }">
           <div
             class="dart-form-group dart-mb-2"
@@ -76,6 +76,7 @@
             </span>
           </div>
           <div
+            v-if="!no_av_items.length"
             class="dart-form-group dart-mb-2"
             :class="{
               error: v$.formRequirements.file.$errors.length,
@@ -119,6 +120,7 @@
               >
             </div>
           </div>
+
           <div class="d-col-24 text-center">
             <button
               class="d-button d-button-primary d-button-primary-small d-button--sm-shadow d-ib"
@@ -142,9 +144,10 @@
               error: this.formRequirementsView.error,
             }"
           >
+            <!--:options="!offer ? this.optVendorsSelected.items : this.vendorOfferSelected.items"-->
             <SelectInput
               v-model="this.formRequirementsView.warehouse"
-              :options="!offer ? this.optVendorsSelected.items : this.vendorOfferSelected.items"
+              :options="this.vendors"
               optionLabel="name"
               placeholder="Выберите поставщика"
               class="w-full md:w-14rem"
@@ -161,12 +164,12 @@
                 class="d-radio__wrapper need-vendor__radio-wrapper dart-mt-1"
               >
                 <Checkbox
-                  @change="changeStores(item.id, store.id, store.active)"
+                  @change="changeStores(store.id, store.active)"
                   v-model="store.active"
                   :binary="true"
                   :inputId="'store-' + store.id"
                   :name="'store-' + store.id"
-                  value="true"
+                  value="false"
                 />
                 <label
                   :for="'store-' + store.id"
@@ -178,6 +181,7 @@
           </div>
           <div class="d-col-24 text-center">
             <button
+              :disabled="disabled"
               class="d-button d-button-primary d-button-primary-small d-button--sm-shadow d-ib"
               type="submit"
             >
@@ -214,7 +218,7 @@ export default {
     SelectInput,
     Checkbox,
   },
-  emits: ['closeWindow'],
+  emits: ['closeWindow', 'clearItems'],
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -232,11 +236,17 @@ export default {
       type: Boolean,
       default: false,
     },
+    no_av_items: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
       loading: false,
       args: {},
+      vendors: {},
+      disabled: true,
       modals: {
         requirements: this.requirementsModal,
         createRequirement: false,
@@ -296,6 +306,7 @@ export default {
       requirements: 'requirements/requirements',
       optVendorsSelected: 'org/optVendorsSelected',
       vendorOfferSelected: 'offer/vendorOfferSelected',
+      reqCounts: 'requirements/reqCounts',
     }),
   },
   mounted() {
@@ -312,9 +323,11 @@ export default {
       setRequirementWarehouse: 'requirements/setRequirementWarehouse',
       unsetRequirements: 'requirements/unsetRequirements',
       removeRequirements: 'requirements/removeRequirements',
+      getReqCounts: 'requirements/getReqCounts',
     }),
     cancel() {
       this.$emit('closeWindow')
+      this.$emit('clearItems')
     },
     formRequirementsViewSubmit() {
       if (this.formRequirementsView.warehouse.length == 0) {
@@ -366,9 +379,13 @@ export default {
         console.log('validation failed')
         return
       }
+
       this.$load(async () => {
         this.loading = true
         let data = this.formRequirements
+        if (this.no_av_items.length) {
+          data.no_av_items = this.reqCounts.no_av_items
+        }
         await this.setRequirement(data).then((response) => {
           if (response.data.success) {
             this.$toast.add({
@@ -385,6 +402,10 @@ export default {
               page: 1,
               perpage: this.pagination_items_per_page,
             })
+            this.modals.requirement = true
+            this.$emit('clearItems')
+            this.formRequirements.name = ''
+            this.formRequirements.file = ''
           } else {
             this.$toast.add({
               severity: 'error',
@@ -489,20 +510,59 @@ export default {
       this.getRequirements(data)
       this.loading = false
     },
+    changeStores(id, active) {
+      if (active === false) {
+        for (var i in this.formRequirementsView.warehouse.stores) {
+          this.formRequirementsView.warehouse.stores[i].active = false
+        }
+        this.disabled = true
+      } else {
+        for (i in this.formRequirementsView.warehouse.stores) {
+          if (this.formRequirementsView.warehouse.stores[i].id == id) {
+            this.formRequirementsView.warehouse.stores[i].active = true
+            this.disabled = false
+          } else {
+            this.formRequirementsView.warehouse.stores[i].active = false
+          }
+        }
+      }
+    },
   },
   watch: {
     requirementsModal: function (newVal) {
       if (newVal) this.modals.requirements = true
     },
     'modals.requirements': function (newVal) {
-      if (!newVal) this.$emit('closeWindow')
+      if (!newVal) {
+        this.$emit('closeWindow')
+        this.$emit('clearItems')
+      }
+    },
+    'modals.requirementsView': function (newVal) {
+      if (newVal === true) {
+        if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
+          this.vendors = this.vendorOfferSelected.items
+        } else {
+          this.vendors = this.optVendorsSelected.items
+        }
+        for (var i in this.vendors) {
+          for (var ii in this.vendors[i].stores) {
+            this.vendors[i].stores[ii].active = false
+          }
+        }
+      }
+    },
+    no_av_items: function (newVal) {
+      if (newVal.length) {
+        this.getReqCounts({ req: newVal }).then(() => (this.modals.createRequirement = true))
+      }
     },
   },
   setup() {
     return { v$: useVuelidate() }
   },
   validations() {
-    return {
+    let all = {
       formRequirements: {
         name: {
           required: helpers.withMessage('Заполните наименование', required),
@@ -512,6 +572,14 @@ export default {
         },
       },
     }
+    let name_only = {
+      formRequirements: {
+        name: {
+          required: helpers.withMessage('Заполните наименование', required),
+        },
+      },
+    }
+    return this.no_av_items.length ? name_only : all
   },
 }
 </script>

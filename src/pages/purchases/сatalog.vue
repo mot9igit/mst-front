@@ -151,74 +151,24 @@
           <p class="order__item-header-badge-text">{{ opt_products?.org_from?.name }}</p>
         </div>
       </h1>
-      <div
-        class="catalog-top_button-cont"
-        v-if="
-          this.$route.name == 'purchasesCatalogRequirement' ||
-          this.$route.name == 'purchasesOfferCatalogRequirement'
-        "
-      >
-        <!-- ||
-          this.$route.name == 'purchasesCatalogComplect'-->
-        <button
-          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
-          :disabled="
-            ((this.$route.name == 'purchasesCatalogRequirement' ||
-              this.$route.name == 'purchasesOfferCatalogRequirement') &&
-              opt_products?.total == opt_products?.no_available_products) ||
-            (this.$route.name == 'purchasesCatalogComplect' &&
-              opt_products?.total == opt_products?.total_no_available)
-          "
-          @click.prevent="addAll()"
+      <!-- <div class="catalog-top_filters-right catalog-top_button-cont">
+        <div
+          class="catalog-top_filters-right-item"
+          :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
+          @click.prevent="active_design = 0"
         >
-          <div class="d-button__text">
-            <i class="d-icon-cart product-card__buy-icon"></i>
-            Все в корзину
-          </div>
-        </button>
-        <!-- <p
-          v-if="
-            opt_products.total_no_available > 0 && this.$route.name == 'purchasesCatalogComplect'
-          "
+          <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_box.svg" />
+        </div>
+        <div
+          class="catalog-top_filters-right-item"
+          :class="{ 'catalog-top_filters-right-item--active': active_design == 1 }"
+          @click.prevent="active_design = 1"
         >
-          В данный момент не все товары из комплекта есть в наличии, поэтому акция не может быть
-          применена
-        </p> -->
-        <p
-          v-if="
-            (opt_products.total_no_available > 0 &&
-              (this.$route.name == 'purchasesCatalogRequirement' ||
-                this.$route.name == 'purchasesOfferCatalogRequirement') &&
-              opt_products?.total != opt_products?.total_no_available) ||
-            (opt_products?.total == opt_products?.total_no_available &&
-              (this.$route.name == 'purchasesCatalogRequirement' ||
-                this.$route.name == 'purchasesOfferCatalogRequirement') &&
-              opt_products?.total_no_available > opt_products?.no_available_productsnp)
-          "
-        >
-          Обратите внимание, не все товары из потребности есть в наличии! В корзину попадут только
-          товары, которые есть в наличии на данный момент
-        </p>
-        <p
-          v-if="
-            (this.$route.name == 'purchasesCatalogRequirement' ||
-              this.$route.name == 'purchasesOfferCatalogRequirement') &&
-            opt_products?.total == opt_products?.no_available_products
-          "
-        >
-          В наличии нет товаров из потребности
-        </p>
-        <!-- <p
-          v-if="
-            this.$route.name == 'purchasesCatalogComplect' &&
-            opt_products?.total == opt_products?.total_no_available
-          "
-        >
-          В наличии нет товаров из комплекта
-        </p> -->
-      </div>
+          <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
+        </div>
+      </div> -->
     </div>
-    <div class="catalog-top_filters-cont">
+    <div class="catalog-top_filters-cont" v-if="!loading">
       <!-- Фильтры по наличию -->
       <div
         class="catalog-top_filters"
@@ -326,23 +276,95 @@
           <div class="d-divider d-divider--vertical d-button-divider"></div>
           <i class="d-icon-upload2 catalog_filters_upload_icon"></i>
         </button>
+        <div
+          class="catalog-top_filters-item catalog-top_filters-req"
+          v-if="
+            this.$route.name == 'purchasesCatalogRequirement' &&
+            filters.no_available.value &&
+            opt_products?.all?.count_no_av > 0
+          "
+        >
+          <button class="catalog_filters_upload_button" @click.prevent="saveXLS()">
+            <span>Скачать в Excel</span>
+            <div class="d-divider d-divider--vertical d-button-divider"></div>
+            <i class="d-icon-upload2 catalog_filters_upload_icon"></i>
+          </button>
+          <button class="catalog_filters_upload_button" @click.prevent="createReq()">
+            <span>Создать потребность</span>
+            <div class="d-divider d-divider--vertical d-button-divider"></div>
+            <i class="d-icon-upload catalog_filters_upload_icon"></i>
+          </button>
+          <button class="catalog_filters_upload_button" @click.prevent="getReqProducts()">
+            <span>Найти у других</span>
+            <div class="d-divider d-divider--vertical d-button-divider"></div>
+            <i class="d-icon-search catalog_filters_upload_icon"></i>
+          </button>
+        </div>
       </div>
-      <!-- <div class="catalog-top_filters-right">
-        <div
-          class="catalog-top_filters-right-item"
-          :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
-          @click.prevent="active_design = 0"
+      <div
+        class="catalog-top_button-cont"
+        v-if="
+          this.$route.name == 'purchasesCatalogRequirement' ||
+          this.$route.name == 'purchasesOfferCatalogRequirement'
+        "
+      >
+        <!-- ||
+          this.$route.name == 'purchasesCatalogComplect'-->
+        <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
+          :disabled="
+            ((this.$route.name == 'purchasesCatalogRequirement' ||
+              this.$route.name == 'purchasesOfferCatalogRequirement') &&
+              opt_products?.total == opt_products?.no_available_products) ||
+            (this.$route.name == 'purchasesCatalogComplect' &&
+              opt_products?.total == opt_products?.total_no_available)
+          "
+          @click.prevent="addAll()"
         >
-          <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_box.svg" />
-        </div>
-        <div
-          class="catalog-top_filters-right-item"
-          :class="{ 'catalog-top_filters-right-item--active': active_design == 1 }"
-          @click.prevent="active_design = 1"
+          <div class="d-button__text">
+            <i class="d-icon-cart product-card__buy-icon"></i>
+            Все в корзину
+          </div>
+        </button>
+        <!-- <p
+          v-if="
+            opt_products.total_no_available > 0 && this.$route.name == 'purchasesCatalogComplect'
+          "
         >
-          <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
-        </div>
-      </div> -->
+          В данный момент не все товары из комплекта есть в наличии, поэтому акция не может быть
+          применена
+        </p> -->
+        <p
+          v-if="
+            this.opt_products?.all?.count_no_av > 0 &&
+            this.$route.name == 'purchasesCatalogRequirement'
+          "
+          class="no-available-requirement"
+        >
+          Из загруженной потребности у поставщика <br />нет
+          {{ this.opt_products?.all?.count_no_av }}sku /
+          {{ this.opt_products?.all?.counter }} товаров.
+          <span class="no-available-requirement--a" @click.prevent="getReqProducts()"
+            >Найти товары у другого поставщика?</span
+          >
+        </p>
+        <p
+          v-else-if="
+            this.opt_products?.all?.count_no_av == 0 &&
+            this.$route.name == 'purchasesCatalogRequirement'
+          "
+        >
+          Все товары по вашей потребности в наличии
+        </p>
+        <!-- <p
+          v-if="
+            this.$route.name == 'purchasesCatalogComplect' &&
+            opt_products?.total == opt_products?.total_no_available
+          "
+        >
+          В наличии нет товаров из комплекта
+        </p> -->
+      </div>
     </div>
 
     <product
@@ -404,7 +426,7 @@ import DatePicker from 'primevue/datepicker'
 export default {
   name: 'purchasesCatalog',
   inject: ['catalogUpdater'],
-  emits: ['toggleOrder', 'toggleOrderOffer'],
+  emits: ['toggleOrder', 'toggleOrderOffer', 'createReq'],
   components: {
     breadcrumbs,
     Loader,
@@ -432,30 +454,24 @@ export default {
   },
   data() {
     return {
-      count_all: null,
-      count_av: null,
-      count_no_av: null,
       filters: {
         all: {
           name: 'Все товары',
           placeholder: 'Все товары',
           value: true,
           type: 'checkbox',
-          col: this.count_all,
         },
         available: {
           name: 'В наличии',
           placeholder: 'В наличии',
           value: false,
           type: 'checkbox',
-          col: this.count_av,
         },
         no_available: {
           name: 'Отсутствуют',
           placeholder: 'Отсутствуют',
           value: false,
           type: 'checkbox',
-          col: this.count_no_av,
         },
         sales: {
           name: 'Только с продажами',
@@ -542,6 +558,7 @@ export default {
       basketProductAddAll: 'basket/basketProductAddAll',
       getSalesReport: 'catalog/getSalesReport',
       unsetAllOfferOptProducts: 'offer/unsetAllOfferOptProducts',
+      saveReqXLS: 'requirements/saveReqXLS',
     }),
     createReport() {
       const data = {
@@ -1029,6 +1046,36 @@ export default {
       let i = obj.item.remain_id
       this.addItems[i] = obj
     },
+    saveXLS() {
+      this.loading = true
+      let data = {
+        req_name: this.opt_products.name,
+      }
+      this.saveReqXLS(data).then((response) => {
+        if (response.data.data.filename) {
+          this.loading = false
+          let loc = response.data.data.filename
+          var downloadLink = document.createElement('a')
+          downloadLink.href = loc
+          downloadLink.setAttribute('download', loc)
+          downloadLink.setAttribute('target', '_blank')
+          //console.log(downloadLink)
+          downloadLink.click()
+        } else {
+          this.loading = false
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось скачать файл потребности!',
+            life: 3000,
+          })
+        }
+      })
+    },
+    createReq() {
+      this.$emit('createReq', this.$route.params.requirement_id)
+    },
+    getReqProducts() {},
   },
   mounted() {
     this.date_now = new Date()
@@ -1036,18 +1083,21 @@ export default {
       page: this.page,
       perpage: this.per_page,
     }
+
     if (this.$route.name == 'purchasesCatalogSearch') {
       data.search = this.$route.query.search
     }
     if (this.$route.name == 'purchasesOfferCatalogRequirement') {
       data.req = this.$route.query.requirement_id
     }
+
     if (this.$route.name == 'purchasesCatalogComplect') {
       data.action_id = this.$route.params.action_id
     }
     if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
       data.search = this.$route.query.search
       data.active_store = this.basketOfferWarehouse
+
       this.getOfferOptProducts(data).then(() => {
         this.opt_products = this.optOfferProducts
         // if (this.$route.name == 'purchasesOfferCatalogRequirement') {
@@ -1197,9 +1247,9 @@ export default {
 }
 .catalog-top_filters-cont {
   display: flex;
-  align-items: start;
+  align-items: center;
   justify-content: space-between;
-  padding: 1px 2px;
+  padding-bottom: 41px;
   //display: none;
 }
 
@@ -1266,24 +1316,26 @@ export default {
   justify-content: start;
   align-items: end;
   gap: 16px;
+  width: 337px;
 }
 .catalog-top_button-cont p {
-  max-width: 60%;
   color: #757575;
   text-align: right;
   font-weight: 500;
   font-size: 14px;
   line-height: 16px;
   letter-spacing: -0.01em;
+  width: max-content;
 }
-
+.catalog_filters_upload_icon {
+  font-size: 18px;
+}
 // фильтры в наличии
 .catalog-top_filters {
   display: flex;
   justify-content: start;
   align-items: center;
   gap: 24px;
-  padding-bottom: 41px;
 }
 .catalog-top_filters-item {
   display: flex;
@@ -1309,13 +1361,13 @@ export default {
   border-color: #f92c0d;
 }
 .catalog-top_filters-item .p-checkbox .p-checkbox-box {
-  width: 20px;
+  width: 19px;
   height: 20px;
   border-radius: 20px;
   border: none;
   background: transparent;
   margin-top: 2px;
-  margin-left: 2px;
+  margin-left: 3px;
 }
 .catalog-top_filters-item .p-checkbox-checked .p-checkbox-box {
   background: #f92c0d;
@@ -1431,12 +1483,17 @@ export default {
   background-color: #fff;
   color: #282828;
 }
+.catalog-top_filters-req {
+  gap: 16px !important;
+  margin-left: -130px;
+}
 .catalog_filters_upload_button {
   display: flex;
   min-width: max-content;
   align-items: center;
   gap: 8px;
-  background-color: #ededed;
+  background-color: transparent;
+  border: 1px solid #282828;
   border-radius: 30px;
   height: 40px;
   max-height: 40px;
@@ -1460,6 +1517,20 @@ export default {
   margin: 0;
   opacity: 1;
 }
+.no-available-requirement {
+  width: 337px;
+}
+.no-available-requirement--a {
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 14px;
+  color: #282828;
+  text-decoration: underline;
+}
+.no-available-requirement--a:hover {
+  color: #f92c0d;
+}
 @media (width <= 1536px) {
   // фильтры в наличии
   .catalog-top_filters {
@@ -1481,9 +1552,9 @@ export default {
   }
   .catalog-top_filters-item .p-checkbox .p-checkbox-box {
     width: 18px;
-    height: 16px;
+    height: 18px;
     border-radius: 18px;
-    margin-top: 3px;
+    margin-top: 2px;
     margin-left: 2px;
   }
   .catalog-top_filters-item .catalog-top_filters-label {
@@ -1513,9 +1584,9 @@ export default {
   }
   .catalog-top_filters-item .p-checkbox .p-checkbox-box {
     width: 12px;
-    height: 11px;
+    height: 12px;
     border-radius: 12px;
-    margin-top: 3px;
+    margin-top: 2px;
     margin-left: 2px;
   }
   .catalog-top_filters-item .catalog-top_filters-label {

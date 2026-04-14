@@ -22,11 +22,13 @@
       @notifications="notificationsCol"
       @notificationsMobile="mobileNotifications()"
       @clearStore="clearStore()"
+      @clearItems="clearItems()"
       :mobileRequipments="mobileRequipments"
       :active="toggleMenu"
       :mobileNotificationsShow="mobileNotificationsShow"
       :searchUpdater="searchUpdater"
       :store="purch_store"
+      :no_av_items="no_av_items"
     ></ProfileHeader>
     <ProfileHeaderOffer
       v-else-if="this.$route.params.id && this.$route.params.id_org_from"
@@ -54,6 +56,7 @@
           @setStore="setStore"
           @cartStore="activeStore"
           @refreshVendors="refreshVendors()"
+          @createReq="createReq"
           :refreshOrderPage="refreshOrderPage"
         >
         </router-view>
@@ -218,6 +221,7 @@ export default {
       store: 0,
       purch_store: null,
       refresh_v: false,
+      no_av_items: '',
     }
   },
   mounted() {
@@ -395,6 +399,12 @@ export default {
           this.refresh_v = false
         }, 500)
       }, 500)
+    },
+    createReq(data) {
+      this.no_av_items = data
+    },
+    clearItems() {
+      this.no_av_items = ''
     },
   },
   provide() {

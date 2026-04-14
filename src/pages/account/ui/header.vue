@@ -154,6 +154,8 @@
   <requirement
     :offer="isOffer"
     :requirementsModal="this.modals.requirement"
+    :no_av_items="no_av_items"
+    @clearItems="clearItems()"
     @closeWindow="closeRequirementsWindow"
   />
   <teleport to="body">
@@ -212,6 +214,7 @@ export default {
     'notifications',
     'notificationsMobile',
     'clearStore',
+    'clearItems',
   ],
   components: {
     Loader,
@@ -242,6 +245,10 @@ export default {
     store: {
       type: Number,
       default: null,
+    },
+    no_av_items: {
+      type: String,
+      default: '',
     },
   },
   mounted() {
@@ -381,6 +388,9 @@ export default {
 
       this.data_start = new Date()
     },
+    clearItems() {
+      this.$emit('clearItems')
+    },
   },
   watch: {
     basket() {
@@ -418,6 +428,11 @@ export default {
       if (newVal !== null && newVal != this.basketWarehouse) {
         this.setOrgBasketStore(newVal)
         this.$emit('clearStore')
+      }
+    },
+    no_av_items: function (newVal) {
+      if (newVal.length) {
+        this.modals.requirement = true
       }
     },
     // '$route.matched[5].name': function(newVal){
