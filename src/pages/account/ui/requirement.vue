@@ -240,6 +240,10 @@ export default {
       type: String,
       default: '',
     },
+    createR: {
+      type: Object,
+      default: null
+    }
   },
   data() {
     return {
@@ -383,7 +387,7 @@ export default {
       this.$load(async () => {
         this.loading = true
         let data = this.formRequirements
-        if (this.no_av_items.length) {
+        if (this.no_av_items.length || Object.keys(this.createR).length) {
           data.no_av_items = this.reqCounts.no_av_items
         }
         await this.setRequirement(data).then((response) => {
@@ -555,8 +559,83 @@ export default {
     no_av_items: function (newVal) {
       if (newVal.length) {
         this.getReqCounts({ req: newVal }).then(() => (this.modals.createRequirement = true))
+      }else{
+        this.formRequirements.no_av_items = {}
       }
     },
+    createR: function(newVal){
+      if(Object.keys(newVal).length){
+        let r_n =  newVal.id + "_req" 
+        this.loading = true
+        this.getReqCounts({ req: r_n }).then((res) => {
+          if(res.data.success){
+            this.modals.createRequirement = true
+            this.formRequirements.name = newVal.name + " №" + newVal.id + " / *Отсутствуют*"
+            this.$load(async () => {
+           
+            let data = this.formRequirements
+            data.no_av_items = this.reqCounts.no_av_items
+            await this.setRequirement(data).then((response) => {
+                if (response.data.success) {
+                  this.$toast.add({
+                    severity: 'success',
+                    summary: 'Потребность успешно создана!',
+                    detail: response.data.message,
+                    life: 3000,
+                  })
+                  let new_req = response.data.data.requirement
+                  new_req.warehouse = []
+                  this.modals.createRequirement = false
+                  this.unsetRequirements()
+                  this.getRequirements({
+                    filter: '',
+                    page: 1,
+                    perpage: this.pagination_items_per_page,
+                  }).then((res) => {
+                    if(res.data.success){
+                      
+                      this.viewReq(new_req)
+                      this.formRequirements.name = ''
+                      this.formRequirements.file = ''
+                      this.loading = false
+                      this.$emit('closeWindow')
+                      this.$emit('clearItems')
+                    }else{
+                      this.$toast.add({
+                        severity: 'error',
+                        summary: 'Ошибка создания потребности',
+                        detail: response.data.message,
+                        life: 3000,
+                      })
+                    this.loading = false
+                      }
+                  })
+                  
+                } else {
+                  this.$toast.add({
+                    severity: 'error',
+                    summary: 'Ошибка создания потребности',
+                    detail: response.data.message,
+                    life: 3000,
+                  })
+                  this.loading = false
+                }
+              })
+            })
+          }else{
+            this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось найти недостающие товары!',
+            life: 3000,
+          })
+          this.loading = false
+          }
+        })
+      }else{
+        this.formRequirements.no_av_items = {}
+      }
+    }
   },
   setup() {
     return { v$: useVuelidate() }
@@ -579,7 +658,7 @@ export default {
         },
       },
     }
-    return this.no_av_items.length ? name_only : all
+    return this.no_av_items.length || Object.keys(this.createR).length ? name_only : all
   },
 }
 </script>

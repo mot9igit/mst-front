@@ -29,6 +29,7 @@
       :searchUpdater="searchUpdater"
       :store="purch_store"
       :no_av_items="no_av_items"
+      :createR="createR"
     ></ProfileHeader>
     <ProfileHeaderOffer
       v-else-if="this.$route.params.id && this.$route.params.id_org_from"
@@ -57,6 +58,7 @@
           @cartStore="activeStore"
           @refreshVendors="refreshVendors()"
           @createReq="createReq"
+          @createReqAndGo="createReqAndGo"
           :refreshOrderPage="refreshOrderPage"
         >
         </router-view>
@@ -222,6 +224,7 @@ export default {
       purch_store: null,
       refresh_v: false,
       no_av_items: '',
+      createR: {},
     }
   },
   mounted() {
@@ -405,7 +408,11 @@ export default {
     },
     clearItems() {
       this.no_av_items = ''
+      this.createR = {}
     },
+    createReqAndGo(data){
+      this.createR = data
+    }
   },
   provide() {
     return {

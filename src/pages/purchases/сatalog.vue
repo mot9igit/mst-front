@@ -426,7 +426,7 @@ import DatePicker from 'primevue/datepicker'
 export default {
   name: 'purchasesCatalog',
   inject: ['catalogUpdater'],
-  emits: ['toggleOrder', 'toggleOrderOffer', 'createReq'],
+  emits: ['toggleOrder', 'toggleOrderOffer', 'createReq', 'createReqAndGo'],
   components: {
     breadcrumbs,
     Loader,
@@ -1075,7 +1075,13 @@ export default {
     createReq() {
       this.$emit('createReq', this.$route.params.requirement_id)
     },
-    getReqProducts() {},
+    getReqProducts() {
+      let data = {
+        id: this.opt_products.req_id,
+        name: this.opt_products.name
+      }
+      this.$emit('createReqAndGo', data)
+    },
   },
   mounted() {
     this.date_now = new Date()

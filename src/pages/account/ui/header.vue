@@ -155,6 +155,7 @@
     :offer="isOffer"
     :requirementsModal="this.modals.requirement"
     :no_av_items="no_av_items"
+    :createR="createR"
     @clearItems="clearItems()"
     @closeWindow="closeRequirementsWindow"
   />
@@ -250,6 +251,10 @@ export default {
       type: String,
       default: '',
     },
+    createR: {
+      type: Object,
+      default: null
+    }
   },
   mounted() {
     this.getOrgStores().then(() => {
