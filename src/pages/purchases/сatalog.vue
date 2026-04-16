@@ -1078,7 +1078,7 @@ export default {
     getReqProducts() {
       let data = {
         id: this.opt_products.req_id,
-        name: this.opt_products.name
+        name: this.opt_products.name,
       }
       this.$emit('createReqAndGo', data)
     },
@@ -1171,11 +1171,6 @@ export default {
           this.addItems[r_id].count = Number(stores[s].count)
         }
       }
-      // if (this.$route.name == 'purchasesCatalogRequirement') {
-      //   this.count_all = newVal.all.count_all
-      //   this.count_av = newVal.all.count_av
-      //   this.count_no_av = newVal.all.count_no_av
-      // }
     },
     optOfferProducts: function (newVal) {
       this.opt_products = newVal
@@ -1188,11 +1183,6 @@ export default {
           this.addItems[r_id].count = Number(stores[s].count)
         }
       }
-      // if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-      //   this.count_all = newVal.all.count_all
-      //   this.count_av = newVal.all.count_av
-      //   this.count_no_av = newVal.all.count_no_av
-      // }
     },
     optVendorsAvailable: function () {
       this.updatePage(0)
@@ -1235,15 +1225,6 @@ export default {
         newVal[d] = new Date(newVal[d].getTime() - newVal[d].getTimezoneOffset() * 60000)
       }
     },
-    //count_all: function (newVal) {
-    //  this.filters.all.col = newVal
-    //},
-    //count_av: function (newVal) {
-    //  this.filters.available.col = newVal
-    //},
-    //count_no_av: function (newVal) {
-    //  this.filters.no_available.col = newVal
-    //},
   },
 }
 </script>

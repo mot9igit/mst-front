@@ -242,8 +242,8 @@ export default {
     },
     createR: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
@@ -559,23 +559,22 @@ export default {
     no_av_items: function (newVal) {
       if (newVal.length) {
         this.getReqCounts({ req: newVal }).then(() => (this.modals.createRequirement = true))
-      }else{
+      } else {
         this.formRequirements.no_av_items = {}
       }
     },
-    createR: function(newVal){
-      if(Object.keys(newVal).length){
-        let r_n =  newVal.id + "_req" 
+    createR: function (newVal) {
+      if (Object.keys(newVal).length) {
+        let r_n = newVal.id + '_req'
+        this.modals.requirementsView = true
         this.loading = true
         this.getReqCounts({ req: r_n }).then((res) => {
-          if(res.data.success){
-            this.modals.createRequirement = true
-            this.formRequirements.name = newVal.name + " №" + newVal.id + " / *Отсутствуют*"
+          if (res.data.success) {
+            this.formRequirements.name = newVal.name + ' №' + newVal.id + ' / *Отсутствуют*'
             this.$load(async () => {
-           
-            let data = this.formRequirements
-            data.no_av_items = this.reqCounts.no_av_items
-            await this.setRequirement(data).then((response) => {
+              let data = this.formRequirements
+              data.no_av_items = this.reqCounts.no_av_items
+              await this.setRequirement(data).then((response) => {
                 if (response.data.success) {
                   this.$toast.add({
                     severity: 'success',
@@ -585,32 +584,30 @@ export default {
                   })
                   let new_req = response.data.data.requirement
                   new_req.warehouse = []
-                  this.modals.createRequirement = false
+
                   this.unsetRequirements()
                   this.getRequirements({
                     filter: '',
                     page: 1,
                     perpage: this.pagination_items_per_page,
                   }).then((res) => {
-                    if(res.data.success){
-                      
+                    if (res.data.success) {
                       this.viewReq(new_req)
                       this.formRequirements.name = ''
                       this.formRequirements.file = ''
+
                       this.loading = false
-                      this.$emit('closeWindow')
                       this.$emit('clearItems')
-                    }else{
+                    } else {
                       this.$toast.add({
                         severity: 'error',
                         summary: 'Ошибка создания потребности',
                         detail: response.data.message,
                         life: 3000,
                       })
-                    this.loading = false
-                      }
+                      this.loading = false
+                    }
                   })
-                  
                 } else {
                   this.$toast.add({
                     severity: 'error',
@@ -622,20 +619,20 @@ export default {
                 }
               })
             })
-          }else{
+          } else {
             this.$toast.add({
-            severity: 'error',
-            summary: 'Ошибка',
-            detail: 'Не удалось найти недостающие товары!',
-            life: 3000,
-          })
-          this.loading = false
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: 'Не удалось найти недостающие товары!',
+              life: 3000,
+            })
+            this.loading = false
           }
         })
-      }else{
+      } else {
         this.formRequirements.no_av_items = {}
       }
-    }
+    },
   },
   setup() {
     return { v$: useVuelidate() }
