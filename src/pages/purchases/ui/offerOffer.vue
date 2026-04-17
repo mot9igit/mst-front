@@ -181,12 +181,11 @@
                   <div class="product-card__stat-content" v-if="!deliveryPrefix">
                     <p class="product-card__stat-name">Доставка</p>
                     <p class="product-card__stat-description">
-                      за счет
                       {{
                         offer.payer == 1
-                          ? 'поставщика'
+                          ? 'за счет поставщика'
                           : offer.payer == 0
-                            ? 'покупателя'
+                            ? 'за счет покупателя'
                             : 'по согласованию'
                       }}
                     </p>
