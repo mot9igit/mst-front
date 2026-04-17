@@ -480,9 +480,9 @@ export default {
             }),
           },
           kpp: {
-            required: helpers.withMessage('Поле обязательно для заполнения', () => {
-              return this.form.company.kpp
-            }),
+            // required: helpers.withMessage('Поле обязательно для заполнения', () => {
+            //   return this.form.company.kpp
+            // }),
           },
           data: {
             value: {
