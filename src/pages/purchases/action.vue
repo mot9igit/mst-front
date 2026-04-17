@@ -68,7 +68,13 @@
                   <p
                     class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
                   >
-                    Доставка за счет {{ sale.payer == '1' ? 'Поставщика' : 'Покупателя' }}
+                    {{
+                      sale.payer == '1'
+                        ? 'Доставка за счет поставщика'
+                        : org?.cart_data?.payer == 0
+                          ? 'Доставка за счет покупателя'
+                          : 'По согласованию'
+                    }}
                   </p>
                 </div>
                 <div class="promotions__card-value-container">

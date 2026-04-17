@@ -42,7 +42,13 @@
           <div class="product-card__stat-content">
             <p class="product-card__stat-name">Доставка</p>
             <p class="product-card__stat-description">
-              за счет {{ orderInfo.payer == 1 ? 'поставщика' : 'покупателя' }}
+              {{
+                orderInfo.payer == 1
+                  ? 'за счет поставщика'
+                  : orderInfo.payer == 0
+                    ? 'за счет покупателя'
+                    : 'по согласованию'
+              }}
             </p>
           </div>
         </div>

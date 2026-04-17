@@ -305,6 +305,9 @@
                           <span class="cart__item-sales-item-value" v-if="sale.type != 3"
                             >Индивидуальная скидка</span
                           >
+                          <span class="cart__item-sales-item-value" v-if="sale.payer == 2"
+                            >Доставка по согласованию</span
+                          >
                           <span class="cart__item-sales-item-value" v-if="sale.percent_num > 0"
                             >{{ sale.percent_num }}%
                             <span v-if="sale.pricing_type == 1">Наценка</span
@@ -422,7 +425,13 @@
                     <div class="order__item-prop">
                       <p class="order__item-prop-label">Оплата доставки:&nbsp;</p>
                       <p class="order__item-prop-value">
-                        {{ org?.cart_data?.payer == 1 ? 'Поставщик' : 'Покупатель' }}
+                        {{
+                          org?.cart_data?.payer == 1
+                            ? 'Поставщик'
+                            : org?.cart_data?.payer == 0
+                              ? 'Покупатель'
+                              : 'По согласованию'
+                        }}
                       </p>
                     </div>
                   </div>

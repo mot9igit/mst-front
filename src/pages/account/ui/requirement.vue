@@ -655,7 +655,11 @@ export default {
         },
       },
     }
-    return this.no_av_items.length || Object.keys(this.createR).length ? name_only : all
+    return this.$route.matched[5] &&
+      this.$route.matched[5].name != 'WholesaleClientsOffer' &&
+      (this.no_av_items.length || Object.keys(this.createR).length)
+      ? name_only
+      : all
   },
 }
 </script>

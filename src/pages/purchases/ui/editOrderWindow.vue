@@ -271,19 +271,19 @@ export default {
       this.loading = true
       this.$emit('close')
       this.getOptOrder({
-          order_id: this.$route.params.order_id
+        order_id: this.$route.params.order_id,
+      }).then(() => {
+        this.getOrderCalc({
+          orderEdit: this.optorder.products,
         }).then(() => {
-      this.getOrderCalc({
-            orderEdit: this.optorder.products
-          }).then(() => {
-            this.editOrderProducts = this.ordercalc.orderEdit
-            this.fetchIds = []
-            for (let i = 0; i < this.editOrderProducts.length; i++) {
-                this.fetchIds.push(this.editOrderProducts[i].remain_id)
-            }
-            this.loading = false
-          })
+          this.editOrderProducts = this.ordercalc.orderEdit
+          this.fetchIds = []
+          for (let i = 0; i < this.editOrderProducts.length; i++) {
+            this.fetchIds.push(this.editOrderProducts[i].remain_id)
+          }
+          this.loading = false
         })
+      })
     },
 
     clearBasketProduct(index) {
@@ -361,7 +361,6 @@ export default {
 
         this.close()
       })
-
     },
   },
   mounted() {
@@ -385,8 +384,8 @@ export default {
       this.editOrderProducts = newVal.orderEdit
       this.fetchIds = []
       for (let i = 0; i < this.editOrderProducts.length; i++) {
-            this.fetchIds.push(this.editOrderProducts[i].remain_id)
-        }
+        this.fetchIds.push(this.editOrderProducts[i].remain_id)
+      }
     },
     // optorder: function(newVal){
     //   this.editOrderProducts = newVal.products
@@ -395,7 +394,6 @@ export default {
     //         this.fetchIds.push(this.editOrderProducts[i].remain_id)
     //     }
     // },
-
   },
 }
 </script>

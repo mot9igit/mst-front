@@ -312,6 +312,9 @@
                           <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2"
                             >Бесплатная доставка</span
                           >
+                          <span class="cart__item-sales-item-value" v-if="sale.payer == 2"
+                            >Доставка по согласованию</span
+                          >
                           <span
                             class="cart__item-sales-item-value"
                             v-if="sale.condition_min_sum > 0"
@@ -408,7 +411,13 @@
                     <div class="order__item-prop">
                       <p class="order__item-prop-label">Оплата доставки:&nbsp;</p>
                       <p class="order__item-prop-value">
-                        {{ org?.cart_data?.payer == 1 ? 'Поставщик' : 'Покупатель' }}
+                        {{
+                          org?.cart_data?.payer == 1
+                            ? 'Поставщик'
+                            : org?.cart_data?.payer == 0
+                              ? 'Покупатель'
+                              : 'По согласованию'
+                        }}
                       </p>
                     </div>
                   </div>

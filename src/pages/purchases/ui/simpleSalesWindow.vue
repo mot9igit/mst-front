@@ -130,9 +130,7 @@
                 }}</span>
                 <span v-else>{{ item.item.available }} шт</span></span
               >
-              
             </div>
-            
           </div>
           <!-- Купить -->
           <div
@@ -309,7 +307,9 @@
                 <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка
                 {{ sale.percent_num }}%
               </div>
-
+              <div v-if="item.payer == 2">
+                <i class="d-icon-truck product-card__buy-icon"></i>По согласованию
+              </div>
               <div v-if="sale.payer == 1">
                 <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
               </div>
@@ -374,7 +374,6 @@
     <button
       @click.prevent="add()"
       class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
-      
     >
       <div class="d-button__text">
         <i class="d-icon-cart product-card__buy-icon"></i>
@@ -385,7 +384,6 @@
 </template>
 
 <script>
-
 import Counter from '@/shared/ui/CounterNoAdd.vue'
 import Loader from '@/shared/ui/Loader.vue'
 
@@ -413,7 +411,6 @@ export default {
         return {}
       },
     },
-    
   },
   mounted() {
     this.setValues().then(() => {
@@ -423,24 +420,23 @@ export default {
   computed: {},
   methods: {
     async setValues() {
-      if(Object.keys(this.all_offers).length){
+      if (Object.keys(this.all_offers).length) {
         let complect = this.$route.params.action_id
         this.offers = this.all_offers
-        for(var r_id in this.offers){
+        for (var r_id in this.offers) {
           let conflicts = this.offers[r_id].item.conflicts
-          for(var c in conflicts){
-            if(conflicts[c].actions_ids.includes(complect)){
-              
-                let actions = this.offers[r_id].item.actions
-                for(var aa in actions){
-                  if(conflicts[c].actions_ids.includes(actions[aa].action_id)){
-                    this.offers[r_id].item.actions[aa].noshow = true
-                  }else{
-                    this.offers[r_id].item.actions[aa].noshow = false
-                  }
+          for (var c in conflicts) {
+            if (conflicts[c].actions_ids.includes(complect)) {
+              let actions = this.offers[r_id].item.actions
+              for (var aa in actions) {
+                if (conflicts[c].actions_ids.includes(actions[aa].action_id)) {
+                  this.offers[r_id].item.actions[aa].noshow = true
+                } else {
+                  this.offers[r_id].item.actions[aa].noshow = false
                 }
+              }
               this.offers[r_id].item.conflicts[c].noshow = true
-            }else{
+            } else {
               this.offers[r_id].item.conflicts[c].noshow = false
             }
           }
@@ -449,15 +445,15 @@ export default {
       if (Object.keys(this.offers).length) {
         for (var r_id in this.offers) {
           // собираем конфликты
-          this.modalActionsData[r_id]=[]
-          for(var c in this.offers[r_id].item.conflicts){
-            if(this.offers[r_id].item.conflicts[c].noshow == false){
+          this.modalActionsData[r_id] = []
+          for (var c in this.offers[r_id].item.conflicts) {
+            if (this.offers[r_id].item.conflicts[c].noshow == false) {
               this.modalActionsData[r_id].push(this.offers[r_id].item.conflicts[c])
             }
           }
           this.actions[r_id] = []
-          for(var c in this.offers[r_id].item.actions){
-            if(this.offers[r_id].item.actions[c].noshow == false){
+          for (var c in this.offers[r_id].item.actions) {
+            if (this.offers[r_id].item.actions[c].noshow == false) {
               this.actions[r_id].push(this.offers[r_id].item.actions[c])
             }
           }
@@ -492,13 +488,10 @@ export default {
             }
             this.mainActionsData[r_id] = data
           }
-          
-          
-            this.counts[r_id].count = this.offers[r_id].count
-            this.counts[r_id].step = 1
-            this.counts[r_id].count_min = 1
-          
-          
+
+          this.counts[r_id].count = this.offers[r_id].count
+          this.counts[r_id].step = 1
+          this.counts[r_id].count_min = 1
         }
       }
     },
@@ -521,35 +514,35 @@ export default {
     },
     add() {
       this.loading = true
-          let data = {}
-          for (var r_id in this.offers) {
-            let conf = {}
-            let item = this.offers[r_id].item
-            if (!this.allOff[r_id]) {
-              conf = this.activeConflict[r_id].actions
-              item.price = this.activeConflict[r_id].price
-              item.payer = this.activeConflict[r_id].payer ? this.activeConflict[r_id].payer : 0
-              item.delay = this.activeConflict[r_id].delay ? this.activeConflict[r_id].delay : 0
-              item.delay_type = this.activeConflict[r_id].delay_type
-                ? this.activeConflict[r_id].delay_type
-                : 1
-            }
-            let col = 0
-            col = this.counts[r_id].count
-            data[r_id] = {
-              org_id: item.org_id,
-              store_id: item.store_id,
-              id_remain: r_id,
-              count: col,
-              key: item.key,
-              actions: conf,
-            }
-          }
-          console.log(data)
-          this.$emit('select', data) 
-          this.loading = false
+      let data = {}
+      for (var r_id in this.offers) {
+        let conf = {}
+        let item = this.offers[r_id].item
+        if (!this.allOff[r_id]) {
+          conf = this.activeConflict[r_id].actions
+          item.price = this.activeConflict[r_id].price
+          item.payer = this.activeConflict[r_id].payer ? this.activeConflict[r_id].payer : 0
+          item.delay = this.activeConflict[r_id].delay ? this.activeConflict[r_id].delay : 0
+          item.delay_type = this.activeConflict[r_id].delay_type
+            ? this.activeConflict[r_id].delay_type
+            : 1
+        }
+        let col = 0
+        col = this.counts[r_id].count
+        data[r_id] = {
+          org_id: item.org_id,
+          store_id: item.store_id,
+          id_remain: r_id,
+          count: col,
+          key: item.key,
+          actions: conf,
+        }
+      }
+      console.log(data)
+      this.$emit('select', data)
+      this.loading = false
     },
-    
+
     checkAction(ind, r_id) {
       console.log(ind)
       let data = this.mainActionsData[r_id]
@@ -569,59 +562,59 @@ export default {
                 if (this.modalActionsData[r_id][ic].actions_ids.includes(ii)) {
                   this.activeConflict[r_id] = this.modalActionsData[r_id][ic]
                   // устанавливаем минимальное количество, количество и кратность в зависимости от того, какая акция выбрана
-          if (
-            Number(this.activeConflict[r_id].multiplicity) >
-              Number(this.activeConflict[r_id].min_count) &&
-            Number(this.activeConflict[r_id].multiplicity) > 1
-          ) {
-            this.counts[r_id].count = Number(this.activeConflict[r_id].multiplicity)
-            this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
-            this.counts[r_id].count_min = Number(this.activeConflict[r_id].multiplicity)
-          } else {
-            if (
-              Number(this.activeConflict[r_id].multiplicity) <=
-                Number(this.activeConflict[r_id].min_count) &&
-              Number(this.activeConflict[r_id].multiplicity) > 1
-            ) {
-              if (
-                !(
-                  Number(this.activeConflict[r_id].min_count) %
-                  Number(this.activeConflict[r_id].multiplicity)
-                )
-              ) {
-                this.counts[r_id].count = Number(this.activeConflict[r_id].min_count)
-                this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
-                this.counts[r_id].count_min = Number(this.activeConflict[r_id].min_count)
-              } else {
-                this.counts[r_id].count =
-                  Number(this.activeConflict[r_id].min_count) +
-                  Number(this.activeConflict[r_id].multiplicity) -
-                  (Number(this.activeConflict[r_id].min_count) %
-                    Number(this.activeConflict[r_id].multiplicity))
-                this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
-                this.counts[r_id].count_min = this.counts[r_id].count
-              }
-            } else {
-              this.counts[r_id].count =
-                Number(this.activeConflict[r_id].min_count) > this.offers[r_id].count
-                  ? Number(this.activeConflict[r_id].min_count)
-                  : this.offers[r_id].count
-              this.counts[r_id].step = 1
-              this.counts[r_id].count_min = Number(this.activeConflict[r_id].min_count) > 0 ? Number(this.activeConflict[r_id].min_count) : 1
-            }
-          }
-                 
-                  
+                  if (
+                    Number(this.activeConflict[r_id].multiplicity) >
+                      Number(this.activeConflict[r_id].min_count) &&
+                    Number(this.activeConflict[r_id].multiplicity) > 1
+                  ) {
+                    this.counts[r_id].count = Number(this.activeConflict[r_id].multiplicity)
+                    this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
+                    this.counts[r_id].count_min = Number(this.activeConflict[r_id].multiplicity)
+                  } else {
+                    if (
+                      Number(this.activeConflict[r_id].multiplicity) <=
+                        Number(this.activeConflict[r_id].min_count) &&
+                      Number(this.activeConflict[r_id].multiplicity) > 1
+                    ) {
+                      if (
+                        !(
+                          Number(this.activeConflict[r_id].min_count) %
+                          Number(this.activeConflict[r_id].multiplicity)
+                        )
+                      ) {
+                        this.counts[r_id].count = Number(this.activeConflict[r_id].min_count)
+                        this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
+                        this.counts[r_id].count_min = Number(this.activeConflict[r_id].min_count)
+                      } else {
+                        this.counts[r_id].count =
+                          Number(this.activeConflict[r_id].min_count) +
+                          Number(this.activeConflict[r_id].multiplicity) -
+                          (Number(this.activeConflict[r_id].min_count) %
+                            Number(this.activeConflict[r_id].multiplicity))
+                        this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
+                        this.counts[r_id].count_min = this.counts[r_id].count
+                      }
+                    } else {
+                      this.counts[r_id].count =
+                        Number(this.activeConflict[r_id].min_count) > this.offers[r_id].count
+                          ? Number(this.activeConflict[r_id].min_count)
+                          : this.offers[r_id].count
+                      this.counts[r_id].step = 1
+                      this.counts[r_id].count_min =
+                        Number(this.activeConflict[r_id].min_count) > 0
+                          ? Number(this.activeConflict[r_id].min_count)
+                          : 1
+                    }
+                  }
                 }
               }
             }
           } else {
             this.mainActionsData[r_id][ii] = false
           }
-        }    
+        }
       }
     },
-    
   },
   watch: {
     all_offers: function (newVal) {
@@ -631,6 +624,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

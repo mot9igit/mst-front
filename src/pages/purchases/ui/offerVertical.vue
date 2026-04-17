@@ -195,7 +195,14 @@
                   <div class="product-card__stat-content" v-if="!deliveryPrefix">
                     <p class="product-card__stat-name">Доставка</p>
                     <p class="product-card__stat-description">
-                      за счет {{ offer.payer == 1 ? 'поставщика' : 'покупателя' }}
+                      за счет
+                      {{
+                        offer.payer == 1
+                          ? 'поставщика'
+                          : offer.payer == 0
+                            ? 'покупателя'
+                            : 'по согласованию'
+                      }}
                     </p>
                   </div>
                   <div class="product-card__stat-content" v-else>
@@ -645,7 +652,9 @@
                 ><span v-if="item.pricing_type == 1">Наценка</span><span v-else>Скидка</span>
                 {{ item.percent_num }}%
               </div>
-
+              <div v-if="item.payer == 2">
+                <i class="d-icon-truck product-card__buy-icon"></i>По согласованию
+              </div>
               <div v-if="item.payer == 1">
                 <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
               </div>

@@ -279,7 +279,9 @@
                       {{
                         this.form.paymentDelivery == 0
                           ? 'Доставка за счет Покупателя'
-                          : 'Доставка за счет Продавца'
+                          : this.form.paymentDelivery == 1
+                            ? 'Доставка за счет Продавца'
+                            : 'По согласованию'
                       }}
                     </p>
                   </div>
@@ -1707,6 +1709,23 @@
                           for="who-pay-delivery-2"
                           class="d-radio__label promo-master__radio-label"
                           >Покупатель
+                        </label>
+                      </div>
+                      <div class="d-radio__wrapper promo-master__radio-wrapper">
+                        <label for="who-pay-delivery-3" class="d-radio">
+                          <input
+                            type="radio"
+                            name="who-pay-delivery"
+                            id="who-pay-delivery-3"
+                            class="d-radio__input"
+                            value="2"
+                            v-model="this.form.paymentDelivery"
+                          />
+                        </label>
+                        <label
+                          for="who-pay-delivery-3"
+                          class="d-radio__label promo-master__radio-label"
+                          >По согласованию
                         </label>
                       </div>
                     </div>
@@ -3259,6 +3278,7 @@ export default {
       paymentDelivery: [
         { name: 'Покупатель', key: 0 },
         { name: 'Поставщик', key: 1 },
+        { name: 'По согласованию', key: 2 },
       ],
       // Условия Акции
       condition: [

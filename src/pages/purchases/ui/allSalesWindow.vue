@@ -327,6 +327,9 @@
                 ><span v-if="sale.pricing_type == 1">Наценка</span><span v-else>Скидка</span>
                 {{ sale.percent_num }}%
               </div>
+              <div v-if="sale.payer == 2">
+                <i class="d-icon-truck product-card__buy-icon"></i>Доставка по согласованию
+              </div>
 
               <div v-if="sale.payer == 1">
                 <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
