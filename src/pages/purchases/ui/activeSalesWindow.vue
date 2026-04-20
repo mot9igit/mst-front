@@ -159,7 +159,7 @@
           </div>
           <div v-if="item.condition_min_sum > 0">
             <span class="product-card__icon-summ product-card__buy-icon">₽</span>
-            Мин. сумма - {{ parseInt(item.condition_min_sum) }} ₽
+            Мин. сумма - {{ parseInt(item.condition_min_sum).toLocaleString('ru') }} ₽
           </div>
           <div v-if="item.condition_SKU > 0">
             <i class="d-icon-box-flat product-card__buy-icon"></i>Мин. кол-во SKU -

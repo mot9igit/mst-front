@@ -290,9 +290,9 @@
                           <p class="cart__item-sales-item-name">{{ sale.name }}</p>
                         </router-link>
                         <p class="cart__item-sales-item-values" v-if="sale.enabled == 1">
-                          <span class="cart__item-sales-item-value" v-if="sale.type != 3"
+                          <!-- <span class="cart__item-sales-item-value" v-if="sale.type != 3"
                             >Индивидуальная скидка</span
-                          >
+                          > -->
                           <span class="cart__item-sales-item-value" v-if="sale.percent_num > 0"
                             >{{ sale.percent_num }}%
                             <span v-if="sale.pricing_type == 1">Наценка</span
@@ -318,7 +318,8 @@
                           <span
                             class="cart__item-sales-item-value"
                             v-if="sale.condition_min_sum > 0"
-                            >Мин. общ. сумма - {{ sale.condition_min_sum }} ₽</span
+                            >Мин. общ. сумма -
+                            {{ sale.condition_min_sum.toLocaleString('ru') }} ₽</span
                           >
                           <span class="cart__item-sales-item-value" v-if="sale.condition_SKU > 0"
                             >Мин. кол-во SKU - {{ sale.condition_SKU }} шт</span
