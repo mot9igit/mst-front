@@ -669,6 +669,9 @@
                   <div class="d-category" v-if="this.form.offer">
                     Доступно только в предложениях
                   </div>
+                  <div class="d-category" v-if="this.form.integration">
+                    Только для интегрированных клиентов
+                  </div>
                   <!-- <div class="d-category" v-if="this.form.complect">Комплект</div> -->
                 </div>
               </div>
@@ -729,6 +732,25 @@
                       class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value"
                     >
                       {{ this.form.conditionMinSum }} ₽
+                    </p>
+                  </div>
+                  <div class="promotions__card-block-inner promotions__card-block-inner-orders">
+                    <div class="promotions__card-block-title-container">
+                      <p
+                        class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-title"
+                      >
+                        Ограничение на количество заказов по акции
+                      </p>
+                    </div>
+                    <p
+                      class="promotions__card-label promotions__card-label--big promotions__card-block-description"
+                    >
+                      Акция будет применена на указанное количество заказов
+                    </p>
+                    <p
+                      class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value"
+                    >
+                      {{ this.form.conditionOrders ? this.form.conditionOrders : '∞' }}
                     </p>
                   </div>
                 </div>
@@ -1145,6 +1167,13 @@
             <span
               class="d-button d-button-tertiary box-shadow-none promo-modal__header-button"
               v-if="masterStep == 9"
+            >
+              <i class="d-icon-people"></i>
+              Условия участия: Требования к клиенту
+            </span>
+            <span
+              class="d-button d-button-tertiary box-shadow-none promo-modal__header-button"
+              v-if="masterStep == 10"
             >
               <i class="d-icon-cube"></i>
               Товары и скидки: Склады
@@ -1909,6 +1938,32 @@
                       />
                     </div>
                   </div>
+                  <div
+                    class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings promo-master__settings--sm-margin"
+                    v-if="type == 1"
+                  >
+                    <div class="promo-master__subtitle-container">
+                      <p class="promo-master__subtitle promo-master__subtitle--1200-small">
+                        Ограничение на количество заказов по акции
+                      </p>
+                      <p class="d-text promo-master__description">
+                        Акция будет применена на указанное количество заказов
+                      </p>
+                    </div>
+                    <div class="d-input--width-280">
+                      <InputNumber
+                        v-model="this.form.conditionOrders"
+                        id="conditionOrders"
+                        inputId="horizontal-buttons"
+                        :step="1"
+                        min="0"
+                        max="99999999"
+                        suffix=""
+                        incrementButtonIcon="pi pi-plus"
+                        decrementButtonIcon="pi pi-minus"
+                      />
+                    </div>
+                  </div>
 
                   <div
                     class="d-radio__container d-radio__container d-radio__container--1200-vertical d-radio__container--1200-small"
@@ -1939,6 +1994,8 @@
                         </p>
                       </div>
                     </div>-->
+                    <!-- Минимальная общая сумма заказа товаров акции -->
+
                     <div
                       class="d-radio__wrapper d-radio__wrapper--1200-start promo-master__radio-wrapper"
                     >
@@ -2374,8 +2431,36 @@
                     </div>
                   </div>
                 </div>
+                <!-- 9 ЭТАП -  Условия участия: Требования к клиенту
+ -->
+                <div class="contents" id="paymentConditions" v-if="masterStep == 9">
+                  <p class="promo-master__title">Условия участия: Требования к клиенту</p>
+                  <div class="d-field-container d-field-container--vertical promo-master__settings">
+                    <p class="promo-master__subtitle">Интеграция склада клиента</p>
+                    <div class="d-radio__container d-radio__container--small" v-if="type == 1">
+                      <div class="d-radio__wrapper promo-master__radio-wrapper">
+                        <label for="deferred-integration" class="d-radio">
+                          <input
+                            type="radio"
+                            name="deferred-integration"
+                            id="deferred-integration"
+                            v-model="this.form.integration"
+                            value="1"
+                            class="d-radio__input"
+                          />
+                        </label>
+                        <label
+                          for="deferred-integration"
+                          class="d-radio__label promo-master__radio-label"
+                        >
+                          Акция доступна только для клиентов, у которых активна интеграция склада
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <!-- Поздравляем -->
-                <div class="contents" id="congratulations" v-if="masterStep == 9">
+                <div class="contents" id="congratulations" v-if="masterStep == 10">
                   <div class="promo-master__title-container">
                     <p class="promo-master__title promo-master__title--no-margin">
                       Поздравляем!<br />Вы почти настроили Условия
@@ -2513,6 +2598,17 @@
                       'promo-master__setting--disabled': this.isEDisabled(9),
                     }"
                   >
+                    <i class="d-icon-people"></i>
+                    Условия участия: Требования к клиенту
+                  </button>
+                  <button
+                    @click.prevent="openStep(10)"
+                    class="d-button d-button-tertiary box-shadow-none promo-master__setting"
+                    :class="{
+                      'promo-master__setting--used': this.isUsed(10),
+                      'promo-master__setting--disabled': this.isEDisabled(10),
+                    }"
+                  >
                     <i class="d-icon-cube"></i>
                     Товары и скидки: Склады
                   </button>
@@ -2545,7 +2641,7 @@
             <span v-else></span>
             <button
               class="d-button d-button-secondary d-button-secondary-small box-shadow-none promo-master__action-button promo-master__action-button--next"
-              v-if="masterStep < 9"
+              v-if="masterStep < 10"
               @click.prevent="masterStepInc()"
             >
               <span class="promo-master__action-button-text">Далее</span>
@@ -2553,11 +2649,11 @@
             </button>
             <button
               class="d-button d-button-primary d-button-primary-small box-shadow-none"
-              v-if="masterStep > 8"
+              v-if="masterStep > 9"
               @click.prevent="
                 () => {
                   this.modals.master = false
-                  this.masterStep = 8
+                  this.masterStep = 9
                 }
               "
             >
@@ -3243,6 +3339,7 @@ export default {
         no_add: false,
         no_add_info: [],
         max_sale: null,
+        integration: false,
       },
       // Поиск
       search: {
@@ -3364,6 +3461,7 @@ export default {
         conditionMinSum: 0,
         conditionMinCount: 0,
         conditionMinGeneralCount: 0,
+        conditionOrders: 0,
         hide_for_clients: 0,
         negative: 0,
         offer: 0,
@@ -3735,7 +3833,7 @@ export default {
       }
       if (this.masterStep <= 10) {
         this.masterStep++
-        if (this.masterStep > 8 && this.masterStep < 11) {
+        if (this.masterStep > 9 && this.masterStep < 11) {
           this.slideToProducts()
         }
         if (this.type == 2) {
@@ -3762,9 +3860,9 @@ export default {
     slideToProducts() {
       this.modals.master = false
       setTimeout(() => {
-        this.visibleMasterSteps.push(9)
         this.visibleMasterSteps.push(10)
-        this.masterStep = 8
+        this.visibleMasterSteps.push(11)
+        this.masterStep = 10
         const refVar = 'warehouseProducts'
         this.$refs[refVar].scrollIntoView({ behavior: 'smooth' })
       }, 1000)
@@ -3781,7 +3879,8 @@ export default {
           this.masterStep = 8
         }
       }
-      if (this.masterStep > 8 && this.masterStep < 11) {
+
+      if (this.masterStep >= 10 && this.masterStep < 11) {
         this.slideToProducts()
       }
     },
@@ -4675,6 +4774,8 @@ export default {
         this.form.delay = newVal.delay_graph
         this.form.typeDelay = String(newVal.delay_type)
         this.form.conditionMinSum = newVal.condition_min_sum
+        this.form.conditionOrders = newVal.condition_orders
+
         this.form.regions = newVal.regions
         //if(this.form.regions.length && !this.form.regionsTemp.length){
         //  this.form.regionsTemp = this.form.regions
@@ -4783,6 +4884,13 @@ export default {
 }
 </script>
 <style lang="scss">
+@media (width <=1200px) {
+  .promotions__card-block-inner-orders {
+    border-top: 1px solid #757575;
+    padding-top: 8px;
+    margin-top: 12px;
+  }
+}
 .d-field-wrapper .p-editor {
   max-width: 100%;
 }
@@ -5064,7 +5172,7 @@ body {
 }
 .promotions__card-value {
   overflow: hidden;
-  word-break: break-all;
+  word-break: break-word;
 }
 .promotions__card-dates {
   .promotions__card-value-container {
