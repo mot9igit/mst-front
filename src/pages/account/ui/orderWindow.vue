@@ -348,7 +348,10 @@
                             >Кратность - {{ sale.multiplicity }} шт</span
                           >
                           <span class="cart__item-sales-item-value" v-if="sale.integration == 1"
-                            >Интеграция с MachineStore</span
+                            >Интеграция с МС</span
+                          >
+                          <span class="cart__item-sales-item-value" v-if="sale.condition_orders > 0"
+                            >На {{ sale.condition_orders }} заказов</span
                           >
                         </p>
                       </div>

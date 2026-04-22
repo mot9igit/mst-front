@@ -337,7 +337,10 @@
                 {{ sale.multiplicity }} шт
               </div>
               <div v-if="sale.integration == 1">
-                <i class="d-icon-shuffle product-card__buy-icon"></i>Интеграция с MachineStore
+                <i class="d-icon-shuffle product-card__buy-icon"></i>Интеграция с МС
+              </div>
+              <div v-if="item.condition_orders > 0">
+                <i class="d-icon-cart product-card__buy-icon"></i>На {{ item.condition_orders }} заказов
               </div>
             </div>
           </div>

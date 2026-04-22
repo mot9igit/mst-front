@@ -277,9 +277,11 @@
                     class="promotions__card-value promotions__card-value--bold promotions__card-value--small promotions__card-block-value promo__card-block-value"
                   >
                     {{
-                      sale[field.name] != undefined
+                      field.name != 'condition_orders' ? sale[field.name] != undefined
                         ? sale[field.name] + ' ' + field.units
-                        : '0 ' + field.units
+                        : '0 ' + field.units : sale[field.name] != undefined && sale[field.name] != 0
+                        ? sale[field.name]
+                        : '∞'
                     }}
                   </p>
                 </div>
@@ -429,6 +431,12 @@ export default {
           label: 'Минимальное общее количество товаров',
           text: 'В заказе должно быть не менее заданного общего количества товаров акции',
           units: 'шт',
+        },
+        {
+          name: 'condition_orders',
+          label: 'Ограничение на количество заказов по акции',
+          text: 'Акция будет применена на указанное количество заказов',
+          units: '',
         },
       ],
     }

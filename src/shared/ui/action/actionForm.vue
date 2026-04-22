@@ -1168,13 +1168,6 @@
               class="d-button d-button-tertiary box-shadow-none promo-modal__header-button"
               v-if="masterStep == 9"
             >
-              <i class="d-icon-people"></i>
-              Условия участия: Требования к клиенту
-            </span>
-            <span
-              class="d-button d-button-tertiary box-shadow-none promo-modal__header-button"
-              v-if="masterStep == 10"
-            >
               <i class="d-icon-cube"></i>
               Товары и скидки: Склады
             </span>
@@ -1955,6 +1948,7 @@
                         v-model="this.form.conditionOrders"
                         id="conditionOrders"
                         inputId="horizontal-buttons"
+                        placeholder="∞"
                         :step="1"
                         min="0"
                         max="99999999"
@@ -1994,8 +1988,6 @@
                         </p>
                       </div>
                     </div>-->
-                    <!-- Минимальная общая сумма заказа товаров акции -->
-
                     <div
                       class="d-radio__wrapper d-radio__wrapper--1200-start promo-master__radio-wrapper"
                     >
@@ -2430,37 +2422,37 @@
                       </div>
                     </div>
                   </div>
-                </div>
-                <!-- 9 ЭТАП -  Условия участия: Требования к клиенту
- -->
-                <div class="contents" id="paymentConditions" v-if="masterStep == 9">
-                  <p class="promo-master__title">Условия участия: Требования к клиенту</p>
-                  <div class="d-field-container d-field-container--vertical promo-master__settings">
-                    <p class="promo-master__subtitle">Интеграция склада клиента</p>
-                    <div class="d-radio__container d-radio__container--small" v-if="type == 1">
-                      <div class="d-radio__wrapper promo-master__radio-wrapper">
-                        <label for="deferred-integration" class="d-radio">
-                          <input
-                            type="radio"
-                            name="deferred-integration"
-                            id="deferred-integration"
-                            v-model="this.form.integration"
-                            value="1"
-                            class="d-radio__input"
-                          />
-                        </label>
-                        <label
-                          for="deferred-integration"
-                          class="d-radio__label promo-master__radio-label"
-                        >
+                  <div class="dart-mt-2 promo-master__subtitle-container-integration">
+                      <div class="promo-master__subtitle-container">
+                        <p class="promo-master__subtitle">Условия участия: требования к клиенту</p>
+                        <p class="d-text promo-master__description">
                           Акция доступна только для клиентов, у которых активна интеграция склада
-                        </label>
+                        </p>
                       </div>
-                    </div>
+                      <div class="promo-master__subtitle-container promo-master__subtitle-container-margin">
+                        <p class="promo-master__subtitle promo-master__subtitle--small">Интеграция склада клиента:</p>
+                        
+                      </div>
+                          <div class="d-field-wrapper">
+                            <label class="d-switch" for="actionIntegration">
+                              <input
+                                type="checkbox"
+                                name="actionIntegration"
+                                id="actionIntegration"
+                                class="d-switch__input"
+                                v-model="this.form.integration"
+                              />
+                              <div class="d-switch__circle"></div>
+                            </label>
+                            <label for="actionIntegration" class="d-switch__label"
+                              ><span v-if="this.form.integration">Включена</span><span v-else>Выключена</span>
+                            </label>
+                          </div>
+                       
                   </div>
                 </div>
                 <!-- Поздравляем -->
-                <div class="contents" id="congratulations" v-if="masterStep == 10">
+                <div class="contents" id="congratulations" v-if="masterStep == 9">
                   <div class="promo-master__title-container">
                     <p class="promo-master__title promo-master__title--no-margin">
                       Поздравляем!<br />Вы почти настроили Условия
@@ -2598,17 +2590,6 @@
                       'promo-master__setting--disabled': this.isEDisabled(9),
                     }"
                   >
-                    <i class="d-icon-people"></i>
-                    Условия участия: Требования к клиенту
-                  </button>
-                  <button
-                    @click.prevent="openStep(10)"
-                    class="d-button d-button-tertiary box-shadow-none promo-master__setting"
-                    :class="{
-                      'promo-master__setting--used': this.isUsed(10),
-                      'promo-master__setting--disabled': this.isEDisabled(10),
-                    }"
-                  >
                     <i class="d-icon-cube"></i>
                     Товары и скидки: Склады
                   </button>
@@ -2641,7 +2622,7 @@
             <span v-else></span>
             <button
               class="d-button d-button-secondary d-button-secondary-small box-shadow-none promo-master__action-button promo-master__action-button--next"
-              v-if="masterStep < 10"
+              v-if="masterStep < 9"
               @click.prevent="masterStepInc()"
             >
               <span class="promo-master__action-button-text">Далее</span>
@@ -2649,11 +2630,11 @@
             </button>
             <button
               class="d-button d-button-primary d-button-primary-small box-shadow-none"
-              v-if="masterStep > 9"
+              v-if="masterStep > 8"
               @click.prevent="
                 () => {
                   this.modals.master = false
-                  this.masterStep = 9
+                  this.masterStep = 8
                 }
               "
             >
@@ -3339,7 +3320,6 @@ export default {
         no_add: false,
         no_add_info: [],
         max_sale: null,
-        integration: false,
       },
       // Поиск
       search: {
@@ -3833,7 +3813,7 @@ export default {
       }
       if (this.masterStep <= 10) {
         this.masterStep++
-        if (this.masterStep > 9 && this.masterStep < 11) {
+        if (this.masterStep > 8 && this.masterStep < 11) {
           this.slideToProducts()
         }
         if (this.type == 2) {
@@ -3860,9 +3840,9 @@ export default {
     slideToProducts() {
       this.modals.master = false
       setTimeout(() => {
+        this.visibleMasterSteps.push(9)
         this.visibleMasterSteps.push(10)
-        this.visibleMasterSteps.push(11)
-        this.masterStep = 10
+        this.masterStep = 8
         const refVar = 'warehouseProducts'
         this.$refs[refVar].scrollIntoView({ behavior: 'smooth' })
       }, 1000)
@@ -3879,8 +3859,7 @@ export default {
           this.masterStep = 8
         }
       }
-
-      if (this.masterStep >= 10 && this.masterStep < 11) {
+      if (this.masterStep > 8 && this.masterStep < 11) {
         this.slideToProducts()
       }
     },
@@ -4775,7 +4754,6 @@ export default {
         this.form.typeDelay = String(newVal.delay_type)
         this.form.conditionMinSum = newVal.condition_min_sum
         this.form.conditionOrders = newVal.condition_orders
-
         this.form.regions = newVal.regions
         //if(this.form.regions.length && !this.form.regionsTemp.length){
         //  this.form.regionsTemp = this.form.regions
@@ -4891,6 +4869,7 @@ export default {
     margin-top: 12px;
   }
 }
+
 .d-field-wrapper .p-editor {
   max-width: 100%;
 }
@@ -5551,5 +5530,13 @@ body {
 }
 .regions .d-search__suggestion-card__img {
   width: 50px !important;
+}
+.promo-master__subtitle-container-integration{
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.promo-master__subtitle-container-margin{
+  padding-top: 8px;
 }
 </style>
