@@ -91,6 +91,7 @@
         </div>
       </router-link>
     </div>
+    
     <div
       class="cell_value"
       :class="cell_data.class ? cell_data.class + ' link_onclick' : ' link_onclick'"
@@ -185,6 +186,42 @@
           }}</span>
         </div>
       </router-link>
+    </div>
+    <div
+      class="cell_value"
+      v-if="cell_data.type == 'link_settings_store' && cell_data.items"
+      :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
+    >
+      <!-- <router-link
+        :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
+      > -->
+        <div class="multyitem_cell-header">
+          <div class="multyitem_cell-header-item">№{{value[cell_data.items[0]]}}</div>
+          <div class="multyitem_cell-header-item">{{value[cell_data.items[1]]}}</div>
+        </div>
+        <div class="multyitem_cell-footer">
+          <div class="multyitem_cell-footer-item"><i class="d-icon-location d-table2__info-address-icon"></i
+            ><span>{{value[cell_data.items[2]]}}</span></div>
+        </div>
+        
+      <!-- </router-link> -->
+    </div>
+    <div
+      class="cell_value"
+      v-if="cell_data.type == 'link_status'"
+      :class="cell_key == 'name' ? 'name ' + cell_data.class  : cell_data.class"
+    >
+      <!-- <router-link
+        :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
+      > -->
+      <div class="store_status" :class="cell_data.check_class != null ? value[cell_data.check_class] : ''">
+        <div class="round-status">
+          <i class="d-icon-check"></i>
+        </div><span>{{value[cell_key]}}</span>
+      </div>
+        
+        
+      <!-- </router-link> -->
     </div>
     <div
       class="cell_value"
@@ -629,5 +666,71 @@ export default {
   width: 16px;
   height: 16px;
   border-radius: 30px;
+}
+.multyitem_cell-header{
+  display: flex;
+  gap: 8px;
+  align-items: start;
+  justify-content: start;
+  margin-bottom: 8px;
+}
+.multyitem_cell-header-item{
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 18px;
+  color: #282828;
+}
+.multyitem_cell-footer .multyitem_cell-footer-item{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: start;
+font-weight: 400;
+font-size: 14px;
+line-height: 18px;
+color: #757575;
+}
+.store_status{
+  display: flex;
+  width:max-content;
+  align-items: center;
+  justify-content: center;
+border-radius: 29px;
+padding: 6px 16px;
+gap: 8px;
+margin: 0 auto;
+
+}
+.round-status{
+  aspect-ratio: 1;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  
+}
+.round-status i{
+  font-size: 6px;
+}
+.store_status.yellow_status, .store_status.green_status{
+  border: 1px solid #282828;
+}
+.store_status.red_status{
+  border: 1px solid #F92C0D;
+    color: #F92C0D;
+}
+.store_status.red_status i{
+  color: #fff;
+}
+.store_status.yellow_status .round-status{
+  background-color: #F6FF00;
+}
+.store_status.green_status .round-status{
+  background-color: #CDF0A9;
+}
+.store_status.red_status .round-status{
+  background-color: #F92C0D;
 }
 </style>

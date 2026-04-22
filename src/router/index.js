@@ -781,18 +781,47 @@ const router = createRouter({
                             },
                           },
                         },
+                      ],
+                    },
+                    {
+                      path: 'settings',
+                      meta: {
+                        breadcrumb: {
+                          label: 'Настройки склада',
+                        },
+                      },
+                      children: [
                         {
-                          path: 'settings/:store_id',
+                          path: '',
+                          name: 'warehouseSettings',
+                          props: true,
+                          label: 'Настройки складов',
+                          component: () => import('../pages/warehouse/settings.vue'),
+                        },
+                        {
+                          path: ':store_id',
                           name: 'warehouseStoreSettings',
                           props: true,
-                          label: 'Настройки склада',
+                          label: 'Настройка склада',
                           component: () => import('../pages/warehouse/storeSettings.vue'),
                           meta: {
                             breadcrumb: {
-                              label: 'Настройки склада',
+                              label: 'Настройка склада',
                             },
                           },
                         },
+                        // {
+                        //   path: 'settings/:store_id',
+                        //   name: 'warehouseStoreSettings',
+                        //   props: true,
+                        //   label: 'Настройки склада',
+                        //   component: () => import('../pages/warehouse/storeSettings.vue'),
+                        //   meta: {
+                        //     breadcrumb: {
+                        //       label: 'Настройки склада',
+                        //     },
+                        //   },
+                        // },
                       ],
                     },
                     {

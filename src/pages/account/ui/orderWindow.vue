@@ -458,7 +458,7 @@
                       Изменить заказ
                     </button>
                     <button
-                      v-else
+                      v-else-if="warehouse.type == 'offer'"
                       class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy"
                       @click.prevent="
                         () => {

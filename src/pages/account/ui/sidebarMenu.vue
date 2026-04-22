@@ -229,9 +229,9 @@ export default {
               to: { name: 'WarehouseCollections', params: { id: this.$route.params.id } },
             },
             // {
-            //   name: 'Настройки склада',
+            //   name: 'Настройки складов',
             //   icon: 'd-icon-conveyor',
-            //   to: { name: 'warehouseCustomization', params: { id: this.$route.params.id } },
+            //   to: { name: 'warehouseSettings', params: { id: this.$route.params.id } },
             // },
           ],
         })

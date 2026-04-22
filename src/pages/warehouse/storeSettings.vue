@@ -112,7 +112,7 @@ import SelectInput from "primevue/dropdown";
 import Toast from 'primevue/toast'
 
 export default {
-  name: 'storeSettings',
+  name: 'warehouseStoreSettings',
 components: { Breadcrumbs, Loader, SelectInput, Checkbox, DatePicker, Toast },
   props: {
     pagination_items_per_page: {
