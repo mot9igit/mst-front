@@ -228,11 +228,11 @@ export default {
               icon: 'd-icon-layers',
               to: { name: 'WarehouseCollections', params: { id: this.$route.params.id } },
             },
-            // {
-            //   name: 'Настройки складов',
-            //   icon: 'd-icon-conveyor',
-            //   to: { name: 'warehouseSettings', params: { id: this.$route.params.id } },
-            // },
+            {
+              name: 'Настройки складов',
+              icon: 'd-icon-conveyor',
+              to: { name: 'warehouseSettings', params: { id: this.$route.params.id } },
+            },
           ],
         })
         punkts.push({

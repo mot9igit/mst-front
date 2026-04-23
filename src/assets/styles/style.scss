@@ -9094,3 +9094,58 @@ body {
 .order-card__status.status-seller_packed {
   color: #282828;
 }
+.warehouse-analysis__header-storeinfo {
+  display: flex;
+  width: auto;
+  gap: 8px;
+  align-items: start;
+  margin-bottom: 40px;
+}
+.warehouse-analysis__header-storeinfo-logo,
+.warehouse-analysis__header-storeinfo-logo img {
+  height: 32px;
+  width: auto;
+}
+.warehouse-analysis__header-storeinfo-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+@media (width >1280px) {
+  .warehouse-analysis__header-storeinfo-info-name {
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 31px;
+    color: #282828;
+  }
+  .warehouse-analysis__header-storeinfo-info-address {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 26px;
+    letter-spacing: -0.01em;
+    color: #757575;
+  }
+}
+@media (width <=1280px) {
+  .warehouse-analysis__header-storeinfo-info-name {
+    font-size: 14px;
+    line-height: 15px;
+  }
+  .warehouse-analysis__header-storeinfo-info-address {
+    font-size: 12px;
+    line-height: 14px;
+  }
+}
+@media (width <=1024px) {
+  .warehouse-analysis__header-storeinfo-info-name {
+    font-size: 12px;
+    line-height: 14px;
+  }
+  .warehouse-analysis__header-storeinfo-info-address {
+    font-size: 10px;
+    line-height: 12px;
+  }
+}

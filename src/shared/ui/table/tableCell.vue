@@ -192,41 +192,39 @@
       v-if="cell_data.type == 'link_settings_store' && cell_data.items"
       :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
     >
-      <!-- <router-link
+      <router-link
         :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
-      > -->
-      <div class="multyitem_cell-header">
-        <div class="multyitem_cell-header-item">№{{ value[cell_data.items[0]] }}</div>
-        <div class="multyitem_cell-header-item">{{ value[cell_data.items[1]] }}</div>
-      </div>
-      <div class="multyitem_cell-footer">
-        <div class="multyitem_cell-footer-item">
-          <i class="d-icon-location d-table2__info-address-icon"></i
-          ><span>{{ value[cell_data.items[2]] }}</span>
+      >
+        <div class="multyitem_cell-header">
+          <div class="multyitem_cell-header-item">№{{ value[cell_data.items[0]] }}</div>
+          <div class="multyitem_cell-header-item">{{ value[cell_data.items[1]] }}</div>
         </div>
-      </div>
-
-      <!-- </router-link> -->
+        <div class="multyitem_cell-footer">
+          <div class="multyitem_cell-footer-item">
+            <i class="d-icon-location d-table2__info-address-icon"></i
+            ><span>{{ value[cell_data.items[2]] }}</span>
+          </div>
+        </div>
+      </router-link>
     </div>
     <div
       class="cell_value"
       v-if="cell_data.type == 'link_status'"
       :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
     >
-      <!-- <router-link
+      <router-link
         :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
-      > -->
-      <div
-        class="store_status"
-        :class="cell_data.check_class != null ? value[cell_data.check_class] : ''"
       >
-        <div class="round-status">
-          <i class="d-icon-check"></i>
+        <div
+          class="store_status"
+          :class="cell_data.check_class != null ? value[cell_data.check_class] : ''"
+        >
+          <div class="round-status">
+            <i class="d-icon-check"></i>
+          </div>
+          <span>{{ value[cell_key] }}</span>
         </div>
-        <span>{{ value[cell_key] }}</span>
-      </div>
-
-      <!-- </router-link> -->
+      </router-link>
     </div>
     <div
       class="cell_value"
@@ -398,7 +396,11 @@ export default {
     },
     linkParams() {
       const linkparams = {}
-      if (this.cell_data.type === 'link') {
+      if (
+        this.cell_data.type === 'link' ||
+        this.cell_data.type === 'link_settings_store' ||
+        this.cell_data.type === 'link_status'
+      ) {
         for (const key in this.cell_data.link_params) {
           if (
             this.cell_data.link_params[key] !== 'id' &&
@@ -676,6 +678,9 @@ export default {
   height: 16px;
   border-radius: 30px;
 }
+.cell_settings-stores-name a {
+  display: block !important;
+}
 .multyitem_cell-header {
   display: flex;
   gap: 8px;
@@ -709,6 +714,7 @@ export default {
   padding: 6px 16px;
   gap: 8px;
   margin: 0 auto;
+  font-weight: 500;
 }
 .round-status {
   aspect-ratio: 1;
