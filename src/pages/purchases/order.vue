@@ -15,6 +15,7 @@
           <div
             class="d-badge2 d-badge2--fit order-card__status"
             :style="'background-color: #' + status.color"
+            :class="status.api_key ? 'status-' + status.api_key : ''"
             v-if="Object.keys(status).length != 0"
           >
             {{ status.name }}
@@ -527,10 +528,7 @@ export default {
     editOrder() {
       let head =
         'Вы уверены, что хотите отредактировать заказ №' + this.$route.params.order_id + '?'
-      let mess =
-        'Корзина поставщика ' +
-        this.order?.seller_name +
-        ' будет очищена. Добавить текущий заказ для редактирования в корзину?'
+      let mess = 'Ваша корзина будет очищена. Добавить текущий заказ для редактирования в корзину?'
       this.$confirm.require({
         message: mess,
         header: head,

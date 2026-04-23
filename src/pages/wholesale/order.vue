@@ -14,6 +14,7 @@
           <div
             class="d-badge2 d-badge2--fit order-card__status"
             :style="'background-color: #' + status.color"
+            :class="status.api_key ? 'status-' + status.api_key : ''"
             v-if="Object.keys(status).length != 0"
           >
             {{ status.name }}

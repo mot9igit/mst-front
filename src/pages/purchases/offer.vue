@@ -314,7 +314,10 @@ export default {
     },
     acceptOfferClick() {
       this.$confirm.require({
-        message: 'Товары из предложения №' + this.offer.id + ' будут добавлены в вашу корзину',
+        message:
+          'Корзина будет очищена, товары из предложения №' +
+          this.offer.id +
+          ' будут добавлены в вашу корзину',
         header: 'Принять предложение',
         icon: 'pi pi-exclamation-triangle',
         accept: () => {

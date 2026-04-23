@@ -9088,3 +9088,9 @@ body {
     }
   }
 }
+.order-card__status.status-seller_started,
+.order-card__status.status-seller_accepted,
+.order-card__status.status-buyer_accepted,
+.order-card__status.status-seller_packed {
+  color: #282828;
+}

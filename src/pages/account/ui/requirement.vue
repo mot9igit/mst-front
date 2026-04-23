@@ -387,7 +387,7 @@ export default {
       this.$load(async () => {
         this.loading = true
         let data = this.formRequirements
-        if (this.no_av_items.length || Object.keys(this.createR).length) {
+        if (this.no_av_items != null || Object.keys(this.createR).length) {
           data.no_av_items = this.reqCounts.no_av_items
         }
         await this.setRequirement(data).then((response) => {
