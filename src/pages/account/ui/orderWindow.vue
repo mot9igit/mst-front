@@ -439,7 +439,7 @@
                       </p>
                     </div>
                   </div>
-                  <div class="order__item-content-bottom-right">
+                  <!-- <div class="order__item-content-bottom-right">
                     <button
                       v-if="warehouse.type == 'order'"
                       class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__item-buy"
@@ -474,15 +474,15 @@
                     >
                       Оформить заказ
                     </button>
-                    <!--
+
                       <div
                         class="d-divider d-divider--vertical order__item-content-bottom-right-divider"
                       ></div>
                       <button class="order__item-upload">
                         <i class="d-icon-upload2"></i>
                       </button>
-                      -->
-                  </div>
+
+                  </div> -->
                 </div>
                 <div class="order__item-footer">
                   <button
@@ -564,7 +564,7 @@
                       }
                     "
                   >
-                    Оформить все заказы
+                    {{ buy_button_text }}
                   </button>
                   <!--
                     <div class="d-divider d-divider--vertical order__footer-actions-divider"></div>
@@ -839,6 +839,7 @@ export default {
       order_to_basket: false,
       edits: [],
       offers: [],
+      buy_button_text: 'Оформить все заказы',
     }
   },
   computed: {
@@ -1184,16 +1185,23 @@ export default {
         this.edits = []
         this.offers = []
         this.loading = false
+        let col_all = 0
+        let col_ord = 0
         for (var org in newVal.data) {
           for (var store in newVal.data[org].data) {
             if (newVal.data[org].data[store].type == 'order') {
               this.edits.push(newVal.data[org].data[store].id)
+              col_ord++
             }
             if (newVal.data[org].data[store].type == 'offer') {
               this.offers.push(newVal.data[org].data[store].id)
             }
+            col_all++
           }
         }
+        if (col_all == col_ord) {
+          this.buy_button_text = 'Изменить заказ'
+        } else [(this.buy_button_text = 'Оформить все заказы')]
       } else {
         this.loading = false
         if (!this.order) {
