@@ -312,7 +312,7 @@ export default {
     }
   },
   mounted() {
-    this.getOrgStores().then(() => {
+    this.getOrgStores({ page: '' }).then(() => {
       this.loading = false
     })
 

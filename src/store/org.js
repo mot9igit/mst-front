@@ -56,10 +56,13 @@ export default {
       }
       return response
     },
-    async getOrgStores({ commit }) {
+    async getOrgStores({ commit }, { page, perpage, filters }) {
       const data = {
         action: 'get/stores',
         id: router.currentRoute._value.params.id,
+        page: page,
+        perpage: perpage,
+        filters: filters,
       }
       const response = await api.org.getOrg(data)
       if (response) {
@@ -281,6 +284,9 @@ export default {
 
       return response
     },
+    unsetOrgStores({ commit }) {
+      commit('UNSET_ORG_STORES')
+    },
   },
   mutations: {
     SET_ORG: (state, data) => {
@@ -294,6 +300,9 @@ export default {
     },
     SET_ORG_STORES: (state, data) => {
       state.orgStores = data.data
+    },
+    UNSET_ORG_STORES: (state) => {
+      state.orgStores = {}
     },
     SET_ORG_STORE: (state, data) => {
       state.orgStore = data.data

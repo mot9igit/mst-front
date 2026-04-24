@@ -2423,32 +2423,35 @@
                     </div>
                   </div>
                   <div class="dart-mt-2 promo-master__subtitle-container-integration">
-                      <div class="promo-master__subtitle-container">
-                        <p class="promo-master__subtitle">Условия участия: требования к клиенту</p>
-                        <p class="d-text promo-master__description">
-                          Акция доступна только для клиентов, у которых активна интеграция склада
-                        </p>
-                      </div>
-                      <div class="promo-master__subtitle-container promo-master__subtitle-container-margin">
-                        <p class="promo-master__subtitle promo-master__subtitle--small">Интеграция склада клиента:</p>
-                        
-                      </div>
-                          <div class="d-field-wrapper">
-                            <label class="d-switch" for="actionIntegration">
-                              <input
-                                type="checkbox"
-                                name="actionIntegration"
-                                id="actionIntegration"
-                                class="d-switch__input"
-                                v-model="this.form.integration"
-                              />
-                              <div class="d-switch__circle"></div>
-                            </label>
-                            <label for="actionIntegration" class="d-switch__label"
-                              ><span v-if="this.form.integration">Включена</span><span v-else>Выключена</span>
-                            </label>
-                          </div>
-                       
+                    <div class="promo-master__subtitle-container">
+                      <p class="promo-master__subtitle">Условия участия: требования к клиенту</p>
+                      <p class="d-text promo-master__description">
+                        Акция доступна только для клиентов, у которых активна интеграция склада
+                      </p>
+                    </div>
+                    <div
+                      class="promo-master__subtitle-container promo-master__subtitle-container-margin"
+                    >
+                      <p class="promo-master__subtitle promo-master__subtitle--small">
+                        Интеграция склада клиента:
+                      </p>
+                    </div>
+                    <div class="d-field-wrapper">
+                      <label class="d-switch" for="actionIntegration">
+                        <input
+                          type="checkbox"
+                          name="actionIntegration"
+                          id="actionIntegration"
+                          class="d-switch__input"
+                          v-model="this.form.integration"
+                        />
+                        <div class="d-switch__circle"></div>
+                      </label>
+                      <label for="actionIntegration" class="d-switch__label"
+                        ><span v-if="this.form.integration">Включена</span
+                        ><span v-else>Выключена</span>
+                      </label>
+                    </div>
                   </div>
                 </div>
                 <!-- Поздравляем -->
@@ -3504,7 +3507,7 @@ export default {
         return { name: el.name, code: el.id }
       })
     })
-    this.getOrgStores()
+    this.getOrgStores({ page: '' })
     this.getAllActions()
     this.getActionAdvPages({ type: this.type })
     if (this.$route.params.action) {
@@ -5531,12 +5534,12 @@ body {
 .regions .d-search__suggestion-card__img {
   width: 50px !important;
 }
-.promo-master__subtitle-container-integration{
+.promo-master__subtitle-container-integration {
   gap: 16px;
   display: flex;
   flex-direction: column;
 }
-.promo-master__subtitle-container-margin{
+.promo-master__subtitle-container-margin {
   padding-top: 8px;
 }
 </style>

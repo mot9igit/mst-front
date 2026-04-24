@@ -609,7 +609,7 @@ export default {
     this.unsetReportCopoDetails()
   },
   mounted() {
-    this.getOrgStores()
+    this.getOrgStores({ page: '' })
     this.getCardstatus()
     this.getData({
       page: this.page,

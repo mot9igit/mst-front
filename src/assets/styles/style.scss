@@ -9128,6 +9128,22 @@ body {
     letter-spacing: -0.01em;
     color: #757575;
   }
+  .warehouse-settings__header-storeinfo-info-name {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 26px;
+    color: #282828;
+  }
+  .warehouse-settings__header-storeinfo-info-address {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 21px;
+    letter-spacing: -0.01em;
+    color: #757575;
+  }
 }
 @media (width <=1280px) {
   .warehouse-analysis__header-storeinfo-info-name {

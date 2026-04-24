@@ -1120,7 +1120,7 @@ export default {
     },
   },
   mounted() {
-    this.getOrgStores().then(() => {
+    this.getOrgStores({ page: '' }).then(() => {
       this.getCatalogs()
       this.clearCollectionData().then(() => {
         if (this.$route.params.collection_id) {

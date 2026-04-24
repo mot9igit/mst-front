@@ -18,7 +18,7 @@
     </div>
 
     <Loader v-if="loading" />
-    <div class="warehouse-analysis__table">
+    <div class="warehouse-analysis__table warehouse-settings__table">
       <BaseTable
         :items_data="orgStores.items"
         :total="orgStores.total"
@@ -177,6 +177,7 @@ export default {
             store_id: 'id',
           },
           class: 'cell_centeralign cell_review-stores-active',
+          items: ['store_type', 'visible'],
         },
         integration_check: {
           label: 'Интеграция',
@@ -203,32 +204,35 @@ export default {
         //},
       },
       stores_filters: {
+        type: {
+          name: 'Тип склада',
+          placeholder: 'Тип склада',
+          type: 'tree',
+          values: {},
+        },
+        integration: {
+          name: 'Интеграция',
+          placeholder: 'Интеграция',
+          type: 'tree',
+          values: {},
+        },
         name: {
           name: 'Поиск',
           placeholder: 'Поиск',
           type: 'text',
+          value: '',
         },
-        // type: {
-        //   name: 'Тип склада',
-        //   placeholder: 'Тип склада',
-        //   type: 'text',
-        //   values: this.orgStores.types,
-        // },
-        // integration: {
-        //   name: 'Интеграция',
-        //   placeholder: 'Интеграция',
-        //   type: 'text',
-        //   values: this.orgStores.integrations,
-        // },
       },
-
       page: 1,
     }
   },
   mounted() {
-    this.getOrgStores().then(() => {
-      // this.stores_filters.type.values = this.orgStores.types
-      // this.stores_filters.integration.values = this.orgStores.integrations
+    this.getOrgStores({
+      page: this.page,
+      perpage: this.pagination_items_per_page,
+    }).then(() => {
+      this.stores_filters.type.values = this.orgStores.types
+      this.stores_filters.integration.values = this.orgStores.integrations
       this.loading = false
     })
   },
@@ -240,38 +244,62 @@ export default {
   methods: {
     ...mapActions({
       getOrgStores: 'org/getOrgStores',
+      unsetOrgStores: 'org/unsetOrgStores',
     }),
     filter(data) {
-      this.page = 1
-      data.owner_id = this.$route.params.id
-      data.id = this.$route.params.id
       this.loading = true
-      this.getData(data).then(() => {
-        this.avg_info.remains = this.products.avg_info?.remains
-        this.avg_info.no_money = this.products.avg_info.no_money
-        this.avg_info.sales_speed = this.products.avg_info.sales_speed
+      this.unsetOrgStores()
+      this.page = 1
+      console.log(data)
+      this.stores_filters.name.value = data.filter
+      this.stores_filters.type.value = data.filtersdata?.type
+      this.stores_filters.integration.value = data.filtersdata?.integration
+      this.getOrgStores({
+        page: this.page,
+        perpage: this.pagination_items_per_page,
+        filters: this.stores_filters,
+      }).then(() => {
         this.loading = false
       })
     },
     paginate(data) {
-      this.page = data.page
-      data.owner_id = this.$route.params.id
-      data.id = this.$route.params.id
       this.loading = true
-      this.getData(data).then(() => {
-        this.avg_info.remains = this.products.avg_info?.remains
-        this.avg_info.no_money = this.products.avg_info.no_money
-        this.avg_info.sales_speed = this.products.avg_info.sales_speed
+      this.unsetOrgStores()
+      this.page = data.page
+
+      this.getOrgStores({
+        page: this.page,
+        perpage: this.pagination_items_per_page,
+        filters: this.stores_filters,
+      }).then(() => {
         this.loading = false
       })
     },
   },
   watch: {
     orgStores: function (newVal) {
-      // this.stores_filters.type.values = newVal.types
-      // this.stores_filters.integration.values = newVal.integrations
+      this.stores_filters.type.values = newVal.types
+      this.stores_filters.integration.values = newVal.integrations
     },
   },
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.warehouse-settings__table .dart-row {
+  justify-content: end;
+}
+.warehouse-settings__table .p-inputtext {
+  width: 100%;
+}
+.warehouse-settings__table .d-col-xl-6:last-child {
+  min-width: 429px;
+}
+.warehouse-settings__table .form_input_group:after {
+  content: '\e01d';
+  font-family: 'Iconly' !important;
+  position: absolute;
+  font-size: 16.8px;
+  top: calc(50% - 8.4px);
+  right: 20px;
+}
+</style>

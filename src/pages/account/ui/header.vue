@@ -253,11 +253,11 @@ export default {
     },
     createR: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   mounted() {
-    this.getOrgStores().then(() => {
+    this.getOrgStores({ page: '' }).then(() => {
       this.getOrgBasketStore()
       this.getBasket()
       this.getAllNotifications()
@@ -408,7 +408,7 @@ export default {
       this.modals.requirement = newVal
     },
     orgActive: function () {
-      this.getOrgStores().then(() => {
+      this.getOrgStores({ page: '' }).then(() => {
         this.getOrgBasketStore()
       })
     },
