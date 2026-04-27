@@ -22,6 +22,7 @@ export default {
     manager: {},
     optPrices: {},
     orgName: [],
+    storeSettings: {},
   },
   actions: {
     async getOrg({ commit }) {
@@ -67,6 +68,18 @@ export default {
       const response = await api.org.getOrg(data)
       if (response) {
         commit('SET_ORG_STORES', response.data)
+      }
+      return response
+    },
+    async getStoreSettings({ commit }) {
+      const data = {
+        action: 'get/stores',
+        id: router.currentRoute._value.params.id,
+        store_id: router.currentRoute._value.params.store_id,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_ORG_STORE_SETTINGS', response.data)
       }
       return response
     },
@@ -284,6 +297,17 @@ export default {
 
       return response
     },
+    async setStoreVisible(store, { form }) {
+      const data = {
+        action: 'set/store/visible',
+        id: router.currentRoute._value.params.id,
+        store_id: router.currentRoute._value.params.store_id,
+        form: form,
+      }
+      const response = await api.org.setManager(data)
+
+      return response
+    },
     unsetOrgStores({ commit }) {
       commit('UNSET_ORG_STORES')
     },
@@ -303,6 +327,9 @@ export default {
     },
     UNSET_ORG_STORES: (state) => {
       state.orgStores = {}
+    },
+    SET_ORG_STORE_SETTINGS: (state, data) => {
+      state.storeSettings = data.data
     },
     SET_ORG_STORE: (state, data) => {
       state.orgStore = data.data
@@ -336,7 +363,9 @@ export default {
     orgStores(state) {
       return state.orgStores
     },
-
+    storeSettings(state) {
+      return state.storeSettings
+    },
     orgStore(state) {
       return state.orgStore
     },

@@ -5,126 +5,541 @@
     <div class="d-top">
       <Breadcrumbs />
     </div>
-
+    <Loader v-if="loading" />
     <div class="warehouse-analysis__header">
-      <h1 class="warehouse-analysis__header-title">Настройки склада</h1>
+      <div class="lk-staff-edit__header-left">
+        <h1>Настройки склада</h1>
+      </div>
+
+      <div class="lk-staff-edit__header-right">
+        <div class="lk-staff-edit__header-buttom">
+          <button
+            class="d-button d-button-primary d-button--no-shadow lk-staff__header-button"
+            @click.prevent="saveSettings()"
+          >
+            <i class="d-icon-plus-flat lk-staff__header-button-icon"></i>
+            Сохранить
+          </button>
+        </div>
+      </div>
     </div>
     <div class="warehouse-analysis__header-storeinfo">
       <div class="warehouse-analysis__header-storeinfo-info">
         <div
           class="warehouse-analysis__header-storeinfo-info-name warehouse-settings__header-storeinfo-info-name"
         >
-          №{{ orgStore.id }} {{ storeName }}
+          №{{ storeSettings.id }} {{ storeSettings.name_short }}
         </div>
         <div
           class="warehouse-analysis__header-storeinfo-info-address warehouse-settings__header-storeinfo-info-address"
         >
-          <i class="d-icon-location"></i><span>{{ storeAddress }}</span>
+          <i class="d-icon-location"></i><span>{{ storeSettings.address }}</span>
         </div>
       </div>
     </div>
-    <Loader v-if="loading" />
-    <form @submit.prevent="saveSettings()">
-      <div
-        v-for="(item, index) in storeSettings"
-        :key="index"
-        class="lk-staff-edit__table warehouse-settings-table"
-      >
-        <h3>{{ item.name }}</h3>
-        <div v-for="(value, k) in item.settings" :key="k" class="lk-about__info">
-          <div class="lk-about__info-title-wrapper" v-if="!value.hidden">
-            <p class="lk-staff-edit__table-label">{{ value.label }}:</p>
+    <div class="warehouse-settings-cont">
+      <div class="warehouse-settings-cont-item">
+        <div class="order-card__orderinfo-grid-lable">Интеграция</div>
+        <div class="order-card__orderinfo-grid-text">
+          <div class="store_status" :class="storeSettings.integration_class">
+            <div class="round-status">
+              <i class="d-icon-check"></i>
+            </div>
+            <span>{{ storeSettings.integration_check }}</span>
           </div>
-          <div class="d-input--cont">
-            <div
-              class="d-input d-input--light lk-about__info-input"
-              v-if="value.type == 1 && !value.hidden"
-            >
+        </div>
+      </div>
+      <div class="warehouse-settings-cont-item">
+        <div class="order-card__orderinfo-grid-lable">Тип склада</div>
+        <div class="order-card__orderinfo-grid-text">{{ storeSettings.store_type }}</div>
+      </div>
+      <div class="warehouse-settings-cont-item">
+        <div class="order-card__orderinfo-grid-lable">Видимость</div>
+        <div class="warehouse-settings-cont-item-flex">
+          <div class="order-card__orderinfo-grid-text">{{ storeSettings.visible }}</div>
+          <i
+            class="d-icon-pen2 warehouse-settings-cont-item-button"
+            :class="{ 'warehouse-settings-cont-item-button--active': view_form }"
+            @click.prevent="view_form = !view_form"
+          ></i>
+        </div>
+      </div>
+      <div class="warehouse-settings-cont-item">
+        <button
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow warehouse-settings-button"
+          @click.prevent=""
+        >
+          Посмотреть товары
+        </button>
+      </div>
+    </div>
+    <div v-if="view_form" class="warehouse-settings-form">
+      <div class="contents" id="promoAudience">
+        <h2 class="warehouse-settings-form-title">Видимость</h2>
+        <p class="promo-master__title promo-master__title--ms-margin">Аудитория</p>
+        <div
+          class="d-radio__container d-radio__container-vertical d-radio__container--big d-radio__container--1200-vertical d-radio__container--1200-tiny-small"
+        >
+          <div class="d-radio__wrapper promo-master__radio-wrapper">
+            <label for="participantsType0" class="d-radio">
               <input
-                type="text"
-                v-model="this.form[value.key]"
-                :placeholder="value.value.name"
-                :name="value.key"
-                class="d-input__field lk-about__info-input-field"
-                @input="formatPhone"
-                @focus="errors[value.key] = ''"
+                type="radio"
+                name="participantsType"
+                id="participantsType0"
+                class="d-radio__input"
+                value="0"
+                v-model="this.form.participantsType"
               />
+            </label>
+            <div class="d-radio__label-container">
+              <label for="participantsType0" class="d-radio__label promo-master__radio-label"
+                >Неограниченный круг участников
+              </label>
             </div>
-            <SelectInput
-              v-else-if="value.type == 2 && !value.hidden"
-              v-model="this.form[value.key]"
-              :options="this.selects"
-              optionLabel="name"
-              :id="value.key"
-              class="d-input__field lk-about__info-input-field"
-            />
-            <Checkbox
-              v-else-if="value.type == 3 && !value.hidden"
-              v-model="this.form[value.key]"
-              :binary="true"
-              :inputId="value.key"
-              :name="value.key"
-              :value="value.value"
-            />
-            <DatePicker
-              v-else-if="value.type == 8 && !value.hidden"
-              v-model="this.form[value.key]"
-              dateFormat="dd.mm.yy"
-              placeholder="Выберите дату прихода"
-              :manualInput="false"
-              :minDate="now"
-              :autocomplete="now"
-              @focus="errors[value.key] = ''"
-              showIcon
-            />
-            <div
-              class="d-input d-input--light lk-about__info-input"
-              v-if="value.type == 4 && !value.hidden"
-            >
+          </div>
+          <div class="d-radio__wrapper promo-master__radio-wrapper">
+            <label for="participantsType2" class="d-radio">
               <input
-                type="number"
-                v-model="this.form[value.key]"
-                :placeholder="value.value.name"
-                :name="value.key"
-                class="d-input__field lk-about__info-input-field"
-                @input="formatPhone"
-                @focus="errors[value.key] = ''"
+                type="radio"
+                name="compatibilitymode"
+                id="participantsType2"
+                class="d-radio__input"
+                value="2"
+                v-model="this.form.participantsType"
               />
+            </label>
+            <div class="d-radio__label-container">
+              <label for="participantsType2" class="d-radio__label promo-master__radio-label"
+                >Исключить регион/участников показа
+              </label>
             </div>
-
-            <div class="d-input-error" v-if="errors[value.key]">
-              <i class="d-icon-warning d-input-error__icon"></i>
-              <span class="d-input-error__text">
-                {{ errors[value.key] }}
-              </span>
+          </div>
+          <div class="d-radio__wrapper promo-master__radio-wrapper">
+            <label for="participantsType3" class="d-radio">
+              <input
+                type="radio"
+                name="compatibilitymode"
+                id="participantsType3"
+                class="d-radio__input"
+                value="3"
+                v-model="this.form.participantsType"
+              />
+            </label>
+            <div class="d-radio__label-container">
+              <label for="participantsType3" class="d-radio__label promo-master__radio-label"
+                >Выбрать регион/участников показа
+              </label>
+            </div>
+          </div>
+          <div class="d-radio__wrapper promo-master__radio-wrapper">
+            <label for="participantsType1" class="d-radio">
+              <input
+                type="radio"
+                name="compatibilitymode"
+                id="participantsType1"
+                class="d-radio__input"
+                value="1"
+                v-model="this.form.participantsType"
+              />
+            </label>
+            <div class="d-radio__label-container">
+              <label for="participantsType1" class="d-radio__label promo-master__radio-label"
+                >Скрыть для всех
+              </label>
+            </div>
+          </div>
+        </div>
+        <!-- Участники -->
+        <div v-if="this.form.participantsType > 1" class="dart-mt-2">
+          <div
+            class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings promo-master__settings--sm-margin"
+          >
+            <div class="promo-master__subtitle-container">
+              <p class="promo-master__subtitle">Участники</p>
+            </div>
+          </div>
+          <div class="promo-master__audience-changes">
+            <!-- Участники по географии -->
+            <div
+              class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings"
+            >
+              <p class="promo-master__subtitle promo-master__subtitle--small">
+                Участники по географии
+              </p>
+              <div>
+                <button
+                  class="d-button d-button-primary d-button--no-shadow d-button--width-auto"
+                  @click.prevent="((this.modals.region = true), resolveRegTemp())"
+                >
+                  <i class="d-icon-plus"></i>
+                  <span>Выбрать регионы</span>
+                </button>
+                <div class="chips" v-if="this.form.participantsType == 3">
+                  <div class="chip" v-for="(item, index) in this.form.regions" :key="item.code">
+                    <i
+                      class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"
+                    ></i>
+                    <span>{{ item.name }}</span>
+                    <a href="#" class="chip-close" @click.prevent="regionDel(index)"></a>
+                  </div>
+                </div>
+                <div class="chips" v-else-if="this.form.participantsType == 2">
+                  <div
+                    class="chip"
+                    v-for="(item, index) in this.form.regions_iskl"
+                    :key="item.code"
+                  >
+                    <i
+                      class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"
+                    ></i>
+                    <span>{{ item.name }}</span>
+                    <a href="#" class="chip-close" @click.prevent="regionDel(index)"></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="d-field-container d-field-container--long d-field-container--vertical promo-master__settings"
+            >
+              <p class="promo-master__subtitle promo-master__subtitle--small">Отдельные компании</p>
+              <div>
+                <button
+                  class="d-button d-button-primary d-button--no-shadow d-button--width-auto"
+                  @click.prevent="this.modals.organization = true"
+                >
+                  <i class="d-icon-plus"></i>
+                  <span>Выбрать организации</span>
+                </button>
+                <div class="chips" v-if="this.form.participantsType == 3">
+                  <div
+                    class="chip"
+                    v-for="(item, index) in this.form.all_organizations_selected"
+                    :key="item.code"
+                  >
+                    <img v-if="item.image" :src="item.image" :alt="item.name" class="chip-img" />
+                    <span v-else class="chip-img"></span>
+                    <span>{{ item.name }}</span>
+                    <a href="#" class="chip-close" @click.prevent="orgDel(index)"></a>
+                  </div>
+                </div>
+                <div class="chips" v-else-if="this.form.participantsType == 2">
+                  <div
+                    class="chip"
+                    v-for="(item, index) in this.form.all_organizations_selected_iskl"
+                    :key="item.code"
+                  >
+                    <img v-if="item.image" :src="item.image" :alt="item.name" class="chip-img" />
+                    <span v-else class="chip-img"></span>
+                    <span>{{ item.name }}</span>
+                    <a href="#" class="chip-close" @click.prevent="orgDel(index)"></a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="lk-about__submit-container">
+    </div>
+    <customModal v-model="this.modals.region" class="select-window">
+      <template v-slot:title>Выбрать регионы</template>
+      <div class="regions-container">
+        <div class="regions">
+          <form class="d-search d-search--alt">
+            <div>
+              <i
+                class="d-icon-search-big d-search__icon promotions__card-warehouse-search-icon"
+              ></i>
+              <input
+                type="text"
+                placeholder="Найти регион"
+                class="d-search__field"
+                :v-model="this.form.participantsType == 3 ? search.region : search.region_iskl"
+                @focus="
+                  this.form.participantsType == 3
+                    ? (search.regionSuggestionsShow = true)
+                    : (search.regionSuggestionsShow_iskl = true)
+                "
+                @blur="unActivateRegion()"
+                @keypress.enter.prevent=""
+              />
+            </div>
+
+            <ul
+              class="d-search__suggestions"
+              v-if="this.search.regionSuggestionsShow && this.form.participantsType == 3"
+            >
+              <li
+                class="d-search__suggestion"
+                v-for="suggestion in regions_all"
+                :key="suggestion.code"
+              >
+                <a
+                  href="#"
+                  class="d-search__suggestion-card"
+                  @click.prevent="
+                    () => {
+                      this.regionSelect(suggestion)
+                    }
+                  "
+                >
+                  <img
+                    :src="suggestion.image"
+                    alt=""
+                    class="d-search__suggestion-card__img"
+                    v-if="suggestion.image"
+                  />
+                  <div class="d-search__suggestion-card__content">
+                    <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+            <ul
+              class="d-search__suggestions"
+              v-else-if="this.search.regionSuggestionsShow_iskl && this.form.participantsType == 2"
+            >
+              <li
+                class="d-search__suggestion"
+                v-for="suggestion in regions_all_iskl"
+                :key="suggestion.code"
+              >
+                <a
+                  href="#"
+                  class="d-search__suggestion-card"
+                  @click.prevent="
+                    () => {
+                      this.regionSelect(suggestion)
+                    }
+                  "
+                >
+                  <img
+                    :src="suggestion.image"
+                    alt=""
+                    class="d-search__suggestion-card__img"
+                    v-if="suggestion.image"
+                  />
+                  <div class="d-search__suggestion-card__content">
+                    <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </form>
+          <div class="chips" v-if="this.form.participantsType == 2">
+            <!--<div class="chip" v-for="(item, index) in this.form.regions" :key="item.code">-->
+            <div class="chip" v-for="(item, index) in this.form.regionsTemp_iskl" :key="item.code">
+              <i class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"></i>
+              <span>{{ item.name }}</span>
+              <a href="#" class="chip-close" @click.prevent="regionTempDel(index)"></a>
+            </div>
+          </div>
+          <div class="chips" v-else-if="this.form.participantsType == 3">
+            <!--<div class="chip" v-for="(item, index) in this.form.regions" :key="item.code">-->
+            <div class="chip" v-for="(item, index) in this.form.regionsTemp" :key="item.code">
+              <i class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"></i>
+              <span>{{ item.name }}</span>
+              <a href="#" class="chip-close" @click.prevent="regionTempDel(index)"></a>
+            </div>
+          </div>
+        </div>
+        <div class="regions-submit">
+          <button
+            class="d-button d-button-primary d-button-primary-small d-button--sm-shadow d-ib"
+            type="button"
+            @click.prevent="setRegions()"
+          >
+            Добавить
+          </button>
+        </div>
+      </div>
+    </customModal>
+    <customModal v-model="this.modals.organization" class="select-window">
+      <template v-slot:title>Выбрать организации</template>
+      <div class="regions-container">
+        <div class="regions">
+          <form class="d-search d-search--alt">
+            <div>
+              <i
+                class="d-icon-search-big d-search__icon promotions__card-warehouse-search-icon"
+              ></i>
+              <input
+                type="text"
+                placeholder="Найти организацию"
+                class="d-search__field"
+                :v-model="
+                  this.form.participantsType == 3 ? search.organization : search.organization_iskl
+                "
+                @focus="
+                  this.form.participantsType == 3
+                    ? (search.organizationSuggestionsShow = true)
+                    : (search.organizationSuggestionsShow_iskl = true)
+                "
+                @blur="unActivateOrganization()"
+                @keypress.enter.prevent=""
+              />
+            </div>
+
+            <ul class="d-search__suggestions" v-if="this.search.organizationSuggestionsShow">
+              <li
+                class="d-search__suggestion"
+                v-for="suggestion in organizations_all"
+                :key="suggestion.code"
+              >
+                <a
+                  href="#"
+                  class="d-search__suggestion-card"
+                  @click.prevent="
+                    () => {
+                      this.orgSelect(suggestion)
+                    }
+                  "
+                >
+                  <img
+                    :src="suggestion.image"
+                    alt=""
+                    class="d-search__suggestion-card__img"
+                    v-if="suggestion.image"
+                  />
+                  <div class="d-search__suggestion-card__content">
+                    <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+
+            <ul
+              class="d-search__suggestions"
+              v-else-if="this.search.organizationSuggestionsShow_iskl"
+            >
+              <li
+                class="d-search__suggestion"
+                v-for="suggestion in organizations_all_iskl"
+                :key="suggestion.code"
+              >
+                <a
+                  href="#"
+                  class="d-search__suggestion-card"
+                  @click.prevent="
+                    () => {
+                      this.orgSelect(suggestion)
+                    }
+                  "
+                >
+                  <img
+                    :src="suggestion.image"
+                    alt=""
+                    class="d-search__suggestion-card__img"
+                    v-if="suggestion.image"
+                  />
+                  <div class="d-search__suggestion-card__content">
+                    <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </form>
+          <div class="chips" v-if="this.form.participantsType == 3">
+            <!--<div class="chip" v-for="(item, index) in this.form.regions" :key="item.code">-->
+            <div class="chip" v-for="(item, index) in this.form.orgsTemp" :key="item.code">
+              <i class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"></i>
+              <span>{{ item.name }}</span>
+              <a href="#" class="chip-close" @click.prevent="orgTempDel(index)"></a>
+            </div>
+          </div>
+          <div class="chips" v-else>
+            <!--<div class="chip" v-for="(item, index) in this.form.regions" :key="item.code">-->
+            <div class="chip" v-for="(item, index) in this.form.orgsTemp_iskl" :key="item.code">
+              <i class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"></i>
+              <span>{{ item.name }}</span>
+              <a href="#" class="chip-close" @click.prevent="orgTempDel(index)"></a>
+            </div>
+          </div>
+        </div>
+        <div class="regions-submit">
+          <button
+            class="d-button d-button-primary d-button-primary-small d-button--sm-shadow d-ib"
+            type="button"
+            @click.prevent="setOrgs()"
+          >
+            Добавить
+          </button>
+        </div>
+      </div>
+    </customModal>
+    <!-- <customModal v-model="this.modals.organization" class="select-window">
+      <template v-slot:title>Выбрать организации</template>
+      <div>
+        <div class="regions">
+          <form class="d-search d-search--alt">
+            <i class="d-icon-search-big d-search__icon"></i>
+            <input
+              type="text"
+              placeholder="Найти организацию"
+              class="d-search__field"
+              v-model="search.organization"
+              @focus="search.organizationSuggestionsShow = true"
+              @blur="unActivateOrganization()"
+            />
+            <ul class="d-search__suggestions" v-if="this.search.organizationSuggestionsShow">
+              <li
+                class="d-search__suggestion"
+                v-for="suggestion in organizations"
+                :key="suggestion.code"
+              >
+                <a
+                  href="#"
+                  class="d-search__suggestion-card"
+                  @click.prevent="orgSelect(suggestion)"
+                >
+                  <img
+                    :src="suggestion.image"
+                    alt=""
+                    class="d-search__suggestion-card__img"
+                    v-if="suggestion.image"
+                  />
+                  <div class="d-search__suggestion-card__content">
+                    <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </form>
+          <div class="chips">
+            <div
+              class="chip"
+              v-for="(item, index) in this.form.all_organizations_selected"
+              :key="item.code"
+            >
+              <img v-if="item.image" :src="item.image" :alt="item.name" class="chip-img" />
+              <span v-else class="chip-img"></span>
+              <span>{{ item.name }}</span>
+              <a href="#" class="chip-close" @click.prevent="orgDel(index)"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="regions-submit">
         <button
-          class="d-button d-button-primary d-button--no-shadow lk-staff__header-button"
-          type="submit"
+          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow d-ib"
+          type="button"
+          @click.prevent="modals.organization = false"
         >
-          <i class="d-icon-plus-flat lk-staff__header-button-icon"></i>
-          Сохранить настройки
+          Добавить
         </button>
       </div>
-    </form>
+    </customModal> -->
   </section>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
-import { Checkbox } from 'primevue'
-import DatePicker from 'primevue/datepicker'
-import SelectInput from 'primevue/dropdown'
+import customModal from '@/shared/ui/Modal.vue'
 import Toast from 'primevue/toast'
 
 export default {
   name: 'warehouseStoreSettings',
-  components: { Breadcrumbs, Loader, SelectInput, Checkbox, DatePicker, Toast },
+  components: { Breadcrumbs, Loader, Toast, customModal },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -138,145 +553,337 @@ export default {
   data() {
     return {
       loading: true,
-
-      storeName: '',
-      storeImage: null,
-      storeAddress: '',
-      now: new Date(),
-      storeSettings: {},
-      selects: [],
-      form: {},
-      errors: [],
+      view_form: false,
+      form: {
+        participantsType: 0,
+        regionsTemp: [],
+        orgsTemp: [],
+        all_organizations_selected: [],
+        regions: [],
+        regionsTemp_iskl: [],
+        orgsTemp_iskl: [],
+        all_organizations_selected_iskl: [],
+        regions_iskl: [],
+      },
+      regions_all: {},
+      organizations_all: {},
+      regions_all_iskl: {},
+      organizations_all_iskl: {},
+      modals: {
+        region: false,
+        organization: false,
+      },
+      // Поиск
+      search: {
+        region: '',
+        regionSuggestionsShow: false,
+        organization: '',
+        organizationSuggestionsShow: false,
+        region_iskl: '',
+        regionSuggestionsShow_iskl: false,
+        organization_iskl: '',
+        organizationSuggestionsShow_iskl: false,
+      },
     }
   },
   mounted() {
-    this.getOrgStore().then(() => {
+    this.getStoreSettings().then(() => {
+      // Берем географию
+      this.getRegions({ exclude: [], filter: '' }).then(() => {
+        this.regions_all = this.regions.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
+        this.regions_all_iskl = this.regions.map(function (el) {
+          return { name: el.label, code: el.key }
+        })
+      })
+      this.getOrganizations({ exclude: [], filter: '' }).then(() => {
+        this.organizations_all = this.organizations.map(function (el) {
+          return { name: el.name, code: el.id }
+        })
+        this.organizations_all_iskl = this.organizations.map(function (el) {
+          return { name: el.name, code: el.id }
+        })
+      })
       this.loading = false
-      this.storeSettings = this.orgStore.settings.groups
-      this.getOptPrises()
-      const groupKeys = Object.keys(this.storeSettings)
-      let in_ship = ''
-      for (let i = 0; i < groupKeys.length; i++) {
-        const keys = Object.keys(this.storeSettings[groupKeys[i]].settings)
-        for (let j = 0; j < keys.length; j++) {
-          if (this.storeSettings[groupKeys[i]].settings[keys[j]].key == 'in_ship') {
-            in_ship = Number(this.storeSettings[groupKeys[i]].settings[keys[j]].value)
-            console.log(in_ship)
-          }
-        }
-      }
-      for (let i = 0; i < groupKeys.length; i++) {
-        const keys = Object.keys(this.storeSettings[groupKeys[i]].settings)
-        for (let j = 0; j < keys.length; j++) {
-          if (
-            this.storeSettings[groupKeys[i]].settings[keys[j]].properties ==
-            '{"visible":{"in_ship":1}}'
-          ) {
-            this.storeSettings[groupKeys[i]].settings[keys[j]].hidden = Boolean(!in_ship)
-          }
-        }
-      }
     })
   },
   computed: {
     ...mapGetters({
-      orgStore: 'org/orgStore',
-      optPrices: 'org/optPrices',
+      storeSettings: 'org/storeSettings',
+      regions: 'addition/regions',
+      organizations: 'addition/organizations',
     }),
   },
   methods: {
     ...mapActions({
-      getOrgStore: 'org/getOrgStore',
-      getOptPrises: 'org/getOptPrises',
-      setOrgSettings: 'org/setOrgSettings',
+      getStoreSettings: 'org/getStoreSettings',
+      getRegions: 'addition/getRegions',
+      getOrganizations: 'addition/getOrganizations',
+      setStoreVisible: 'org/setStoreVisible',
     }),
-    saveSettings() {
-      this.errors = []
-      if (this.form.in_ship == true) {
-        if (this.form.shipping_date == 0) {
-          this.errors.shipping_date = 'Заполните дату прихода товара на удаленный склад!'
-        }
-        if (this.form.value_in_product_card == 0) {
-          this.errors.value_in_product_card = 'Заполните значение в карточке товара!'
-        }
+    unActivateOrganization() {
+      if (this.form.participantsType == 3) {
+        setTimeout(() => (this.search.organizationSuggestionsShow = false), 250)
       } else {
-        this.form.shipping_date = 0
-        this.form.value_in_product_card = 0
-        this.form.shipping_delay = 0
+        setTimeout(() => (this.search.organizationSuggestionsShow_iskl = false), 250)
       }
-      if (this.errors.length == 0) {
-        this.loading = true
-        this.$load(async () => {
-          await this.setOrgSettings({
-            settings: this.form,
+    },
+    unActivateRegion() {
+      if (this.form.participantsType == 3) {
+        setTimeout(() => (this.search.regionSuggestionsShow = false), 250)
+      }
+      {
+        setTimeout(() => (this.search.regionSuggestionsShow_iskl = false), 250)
+      }
+    },
+    regionTempDel(index) {
+      if (this.form.participantsType == 3) {
+        this.form.regionsTemp.splice(index, 1)
+        this.getRegions({ exclude: this.form.regionsTemp, filter: '' }).then(() => {
+          this.regions_all = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
           })
-            .then((result) => {
-              this.loading = false
-              this.$toast.add({
-                severity: 'info',
-                summary: 'Данные изменены',
-                detail: 'Данные были успешно изменены',
-                life: 3000,
-              })
-              this.getOrgStore()
-            })
-            .catch((result) => {
-              console.log(result)
-            })
         })
       } else {
-        return
+        this.form.regionsTemp_iskl.splice(index, 1)
+        this.getRegions({ exclude: this.form.regionsTemp_iskl, filter: '' }).then(() => {
+          this.regions_all_iskl = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
       }
+    },
+    regionDel(index) {
+      if (this.form.participantsType == 3) {
+        this.form.regions.splice(index, 1)
+        this.form.regionsTemp = this.form.regions
+        this.getRegions({ exclude: this.form.regionsTemp, filter: '' }).then(() => {
+          this.regions_all = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+      } else {
+        this.form.regions_iskl.splice(index, 1)
+        this.form.regionsTemp_iskl = this.form.regions_iskl
+        this.getRegions({ exclude: this.form.regionsTemp_iskl, filter: '' }).then(() => {
+          this.regions_all_iskl = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+      }
+    },
+    regionSelect(item) {
+      console.log(item)
+      if (this.form.participantsType == 3) {
+        this.form.regionsTemp.push(item)
+        // Берем географию
+        this.getRegions({ exclude: this.form.regionsTemp, filter: '' }).then(() => {
+          this.regions_all = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+        this.search.region = ''
+      } else {
+        this.form.regionsTemp_iskl.push(item)
+        // Берем географию
+        this.getRegions({ exclude: this.form.regionsTemp_iskl, filter: '' }).then(() => {
+          this.regions_all_iskl = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+        this.search.region_iskl = ''
+      }
+    },
+    setRegions() {
+      if (this.form.participantsType == 3) {
+        this.form.regions = []
+        for (let index = 0; index < this.form.regionsTemp.length; index++) {
+          this.form.regions.push(this.form.regionsTemp[index])
+        }
+      } else {
+        this.form.regions_iskl = []
+        for (let index = 0; index < this.form.regionsTemp_iskl.length; index++) {
+          this.form.regions_iskl.push(this.form.regionsTemp_iskl[index])
+        }
+      }
+      this.modals.region = false
+    },
+    resolveRegTemp() {
+      if (this.form.participantsType == 3) {
+        this.form.regionsTemp = []
+        for (let index = 0; index < this.form.regions.length; index++) {
+          this.form.regionsTemp.push(this.form.regions[index])
+        }
+        this.getRegions({ exclude: this.form.regionsTemp, filter: '' }).then(() => {
+          this.regions_all = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+      } else {
+        this.form.regionsTemp_iskl = []
+        for (let index = 0; index < this.form.regions_iskl.length; index++) {
+          this.form.regionsTemp_iskl.push(this.form.regions_iskl[index])
+        }
+        this.getRegions({ exclude: this.form.regionsTemp_iskl, filter: '' }).then(() => {
+          this.regions_all_iskl = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+      }
+    },
+    orgTempDel(index) {
+      if (this.form.participantsType == 3) {
+        this.form.orgsTemp.splice(index, 1)
+        this.getOrganizations({ exclude: this.form.orgsTemp, filter: '' }).then(() => {
+          this.organizations_all = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id }
+          })
+        })
+      } else {
+        this.form.orgsTemp_iskl.splice(index, 1)
+        this.getOrganizations({ exclude: this.form.orgsTemp_iskl, filter: '' }).then(() => {
+          this.organizations_all_iskl = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id }
+          })
+        })
+      }
+    },
+    orgDel(index) {
+      if (this.form.participantsType == 3) {
+        this.form.all_organizations_selected.splice(index, 1)
+        this.form.orgsTemp = this.form.all_organizations_selected
+        this.getOrganizations({ exclude: this.form.orgsTemp, filter: '' }).then(() => {
+          this.organizations_all = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id }
+          })
+        })
+      } else {
+        this.form.all_organizations_selected_iskl.splice(index, 1)
+        this.form.orgsTemp_iskl = this.form.all_organizations_selected_iskl
+        this.getOrganizations({ exclude: this.form.orgsTemp_iskl, filter: '' }).then(() => {
+          this.organizations_all_iskl = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id }
+          })
+        })
+      }
+    },
+    orgSelect(item) {
+      console.log(item)
+      if (this.form.participantsType == 3) {
+        this.form.orgsTemp.push(item)
+        // Берем географию
+        this.getOrganizations({ exclude: this.form.orgsTemp, filter: '' }).then(() => {
+          this.organizations_all = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id }
+          })
+        })
+        this.search.organization = ''
+      } else {
+        this.form.orgsTemp_iskl.push(item)
+        // Берем географию
+        this.getOrganizations({ exclude: this.form.orgsTemp_iskl, filter: '' }).then(() => {
+          this.organizations_all_iskl = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id }
+          })
+        })
+        this.search.organization_iskl = ''
+      }
+    },
+    setOrgs() {
+      if (this.form.participantsType == 3) {
+        this.form.all_organizations_selected = []
+        for (let index = 0; index < this.form.orgsTemp.length; index++) {
+          this.form.all_organizations_selected.push(this.form.orgsTemp[index])
+        }
+      } else {
+        this.form.all_organizations_selected_iskl = []
+        for (let index = 0; index < this.form.orgsTemp_iskl.length; index++) {
+          this.form.all_organizations_selected_iskl.push(this.form.orgsTemp_iskl[index])
+        }
+      }
+      this.modals.organization = false
+    },
+    resolveOrgTemp() {
+      if (this.form.participantsType == 3) {
+        this.form.orgsTemp = []
+        for (let index = 0; index < this.form.all_organizations_selected.length; index++) {
+          this.form.orgsTemp.push(this.form.all_organizations_selected[index])
+        }
+        this.getOrganizations({ exclude: this.form.orgsTemp, filter: '' }).then(() => {
+          this.organizations_all = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id }
+          })
+        })
+      } else {
+        this.form.orgsTemp_iskl = []
+        for (let index = 0; index < this.form.all_organizations_selected_iskl.length; index++) {
+          this.form.orgsTemp_iskl.push(this.form.all_organizations_selected_iskl[index])
+        }
+        this.getOrganizations({ exclude: this.form.orgsTemp_iskl, filter: '' }).then(() => {
+          this.organizations_all_iskl = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id }
+          })
+        })
+      }
+    },
+
+    debounce(func, delay) {
+      clearTimeout(this.searchPTimer)
+      this.searchPTimer = setTimeout(func, delay)
+    },
+    saveSettings() {
+      this.loading = true
+      this.setStoreVisible({ form: this.form }).then((res) => {
+        if (res.data.data.success) {
+          this.getStoreSettings()
+          this.view_form = false
+          this.loading = false
+        }
+      })
     },
   },
   watch: {
-    orgStore: function (newVal) {
-      this.storeName = newVal.name_short
-      this.storeImage = newVal.image
-      this.storeAddress = newVal.address
+    storeSettings: function (newVal) {
+      if (Object.keys(newVal).length) {
+        this.form.participantsType = newVal.visible_mode
+      }
+    },
+    regions: function (newVal) {
+      this.regions_all = newVal.map(function (el) {
+        return { name: el.label, code: el.key }
+      })
+      this.regions_all_iskl = newVal.map(function (el) {
+        return { name: el.label, code: el.key }
+      })
+    },
+    organizations: function (newVal) {
+      this.all_organizations = newVal.map(function (el) {
+        return { name: el.name, code: el.id, image: el.image }
+      })
+      this.all_organizations_iskl = newVal.map(function (el) {
+        return { name: el.name, code: el.id, image: el.image }
+      })
+    },
 
-      const settings = JSON.parse(JSON.stringify(newVal.settings))
-      const groupKeys = Object.keys(settings.groups)
-      for (let i = 0; i < groupKeys.length; i++) {
-        const keys = Object.keys(settings.groups[groupKeys[i]].settings)
-        for (let j = 0; j < keys.length; j++) {
-          if (settings.groups[groupKeys[i]].settings[keys[j]].type === '2') {
-            this.form[settings.groups[groupKeys[i]].settings[keys[j]].key] =
-              settings.groups[groupKeys[i]].settings[keys[j]].value
-          } else if (settings.groups[groupKeys[i]].settings[keys[j]].type === '3') {
-            if (
-              settings.groups[groupKeys[i]].settings[keys[j]].value === '1' ||
-              settings.groups[groupKeys[i]].settings[keys[j]].value === '8'
-            ) {
-              this.form[settings.groups[groupKeys[i]].settings[keys[j]].key] = true
-            } else {
-              this.form[settings.groups[groupKeys[i]].settings[keys[j]].key] = false
-            }
-          } else {
-            this.form[settings.groups[groupKeys[i]].settings[keys[j]].key] =
-              settings.groups[groupKeys[i]].settings[keys[j]].value
-          }
-        }
+    'search.organizationSuggestionsShow': function (newVal) {
+      if (newVal) {
+        this.search.organizationSuggestionsShow_iskl = false
       }
     },
-    optPrices: function (newVal) {
-      this.selects = []
-      for (let i = 0; i < newVal.length; i++) {
-        this.selects.push({ key: newVal[i].guid, name: newVal[i].name })
+    'search.organizationSuggestionsShow_iskl': function (newVal) {
+      if (newVal) {
+        this.search.organizationSuggestionsShow = false
       }
     },
-    'form.in_ship': function (newVal) {
-      const groupKeys = Object.keys(this.storeSettings)
-      for (let i = 0; i < groupKeys.length; i++) {
-        const keys = Object.keys(this.storeSettings[groupKeys[i]].settings)
-        for (let j = 0; j < keys.length; j++) {
-          if (
-            this.storeSettings[groupKeys[i]].settings[keys[j]].properties ==
-            '{"visible":{"in_ship":1}}'
-          ) {
-            this.storeSettings[groupKeys[i]].settings[keys[j]].hidden = !newVal
-          }
-        }
+    'search.regionSuggestionsShow': function (newVal) {
+      if (newVal) {
+        this.search.regionSuggestionsShow_iskl = false
+      }
+    },
+    'search.regionSuggestionsShow_iskl': function (newVal) {
+      if (newVal) {
+        this.search.regionSuggestionsShow = false
       }
     },
   },
@@ -295,5 +902,174 @@ export default {
 }
 .warehouse-settings-table .p-datepicker {
   width: 100%;
+}
+.warehouse-settings-cont {
+  display: grid;
+  grid-template-columns: auto auto auto 242px;
+  grid-template-rows: auto;
+  width: 100%;
+  min-width: 100%;
+  padding-bottom: 32px;
+}
+.warehouse-settings-cont .store_status {
+  margin: 0 0 0 0;
+}
+.warehouse-settings-cont-item {
+  position: relative;
+}
+.warehouse-settings-cont-item:not(:first-child),
+.warehouse-settings-cont-item:not(:last-child) {
+  padding: 0 40px;
+}
+.warehouse-settings-cont-item:first-child {
+  padding: 0 40px 0 0;
+}
+.warehouse-settings-cont-item:last-child {
+  padding: 0 0 0 40px;
+  display: flex;
+  align-items: center;
+}
+.warehouse-settings-cont-item:not(:last-child):after {
+  content: '';
+  position: absolute;
+  top: calc(50% - 12px);
+  right: 0;
+  width: 1px;
+  height: 24px;
+  background-color: #75757575;
+}
+.warehouse-settings-cont-item-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.warehouse-settings-cont-item-button {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ededed;
+  cursor: pointer;
+  border-radius: 32px;
+}
+.warehouse-settings-cont-item-button--active {
+  background-color: #282828;
+  color: #fff;
+}
+.warehouse-settings-cont-item-button:hover {
+  box-shadow: 0px 4px 13.4px 0px rgba(0, 0, 0, 0.2588235294);
+}
+.warehouse-settings-button {
+  font-size: 14px;
+  font-weight: 500;
+}
+.warehouse-settings-form {
+  width: 100%;
+  border-top: 1px solid #75757575;
+  padding-top: 48px;
+}
+.warehouse-settings-form .warehouse-settings-form-title {
+  margin-bottom: 40px;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 31px;
+}
+.warehouse-settings-form .promo-master__title {
+  font-size: 20px;
+  line-height: 26px;
+}
+.warehouse-settings-form .promo-master__audience-changes {
+  display: flex;
+  gap: 24px;
+}
+.warehouse-settings-form .promo-master__settings {
+  width: 50%;
+}
+.regions .d-search__suggestion-card__img {
+  width: 50px !important;
+}
+.promotions__card {
+  .promotions__card-warehouse-header-container {
+    position: relative;
+    z-index: 2;
+  }
+  .d-search {
+    z-index: 1;
+    .d-search__field {
+      padding: 7px 100px 7px 45px !important;
+    }
+  }
+  .d-search--alt .d-search__icon {
+    position: absolute;
+    z-index: 8;
+    top: 50%;
+    left: 16px;
+    margin: 0;
+    transform: translate(0, -14px);
+  }
+  .d-search .d-search__button {
+    height: auto;
+    min-height: auto;
+    max-height: auto;
+    top: 50%;
+    right: 4px;
+    transform: translate(0, -47%);
+  }
+}
+.d-search--alt {
+  padding: 0 2px;
+  .d-search__icon {
+    display: none;
+    position: absolute;
+    top: 5px;
+    left: 0;
+    z-index: 4;
+  }
+  .d-search__field {
+    border-radius: 5px;
+  }
+  .d-search__suggestions {
+    position: absolute;
+    overflow-y: auto;
+    max-height: 250px;
+    .d-search__suggestion {
+      align-items: center;
+      display: flex;
+      a {
+        display: flex;
+        width: 100%;
+      }
+      img {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+      }
+    }
+  }
+}
+.select-window {
+  .modal-content {
+    min-height: 400px;
+    .regions {
+      padding: 0 15px;
+    }
+  }
+  .regions-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .regions {
+    min-height: 300px;
+  }
+}
+.regions-submit {
+  display: flex;
+  justify-content: center;
+}
+.chips {
+  margin-top: 16px;
 }
 </style>

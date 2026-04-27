@@ -9165,3 +9165,54 @@ body {
     line-height: 12px;
   }
 }
+.store_status {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  justify-content: center;
+  border-radius: 29px;
+  padding: 6px 16px;
+  gap: 8px;
+  margin: 0 auto;
+  font-weight: 500;
+}
+.round-status {
+  aspect-ratio: 1;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+.round-status i {
+  font-size: 6px;
+}
+.store_status.yellow_status,
+.store_status.green_status {
+  border: 1px solid #282828;
+}
+.store_status.red_status {
+  border: 1px solid #f92c0d;
+  color: #f92c0d;
+}
+.store_status.red_status i {
+  color: #fff;
+}
+.store_status.yellow_status .round-status {
+  background-color: #f6ff00;
+}
+.store_status.green_status .round-status {
+  background-color: #cdf0a9;
+}
+.store_status.red_status .round-status {
+  background-color: #f92c0d;
+}
+.cell--status {
+  color: #fff;
+}
+.cell--status.cell--status-seller_started,
+.cell--status.cell--status-seller_accepted,
+.cell--status.cell--status-buyer_accepted,
+.cell--status.cell--status-seller_packed {
+  color: #282828;
+}
