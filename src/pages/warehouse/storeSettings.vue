@@ -253,12 +253,19 @@
                 type="text"
                 placeholder="Найти регион"
                 class="d-search__field"
-                :v-model="this.form.participantsType == 3 ? search.region : search.region_iskl"
-                @focus="
-                  this.form.participantsType == 3
-                    ? (search.regionSuggestionsShow = true)
-                    : (search.regionSuggestionsShow_iskl = true)
-                "
+                v-if="this.form.participantsType == '3'"
+                v-model="search.region"
+                @focus="search.regionSuggestionsShow = true"
+                @blur="unActivateRegion()"
+                @keypress.enter.prevent=""
+              />
+              <input
+                type="text"
+                placeholder="Найти регион"
+                class="d-search__field"
+                v-if="this.form.participantsType == '2'"
+                v-model="search.region_iskl"
+                @focus="search.regionSuggestionsShow_iskl = true"
                 @blur="unActivateRegion()"
                 @keypress.enter.prevent=""
               />
@@ -366,14 +373,19 @@
                 type="text"
                 placeholder="Найти организацию"
                 class="d-search__field"
-                :v-model="
-                  this.form.participantsType == 3 ? search.organization : search.organization_iskl
-                "
-                @focus="
-                  this.form.participantsType == 3
-                    ? (search.organizationSuggestionsShow = true)
-                    : (search.organizationSuggestionsShow_iskl = true)
-                "
+                v-if="this.form.participantsType == '3'"
+                v-model="search.organization"
+                @focus="search.organizationSuggestionsShow = true"
+                @blur="unActivateOrganization()"
+                @keypress.enter.prevent=""
+              />
+              <input
+                type="text"
+                placeholder="Найти организацию"
+                class="d-search__field"
+                v-if="this.form.participantsType == '2'"
+                v-model="search.organization_iskl"
+                @focus="search.organizationSuggestionsShow_iskl = true"
                 @blur="unActivateOrganization()"
                 @keypress.enter.prevent=""
               />
@@ -441,7 +453,10 @@
           <div class="chips" v-if="this.form.participantsType == 3">
             <!--<div class="chip" v-for="(item, index) in this.form.regions" :key="item.code">-->
             <div class="chip" v-for="(item, index) in this.form.orgsTemp" :key="item.code">
-              <i class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"></i>
+              <img v-if="item.image" :src="item.image" :alt="item.name" class="chip-img" /><span
+                v-else
+                class="chip-img"
+              ></span>
               <span>{{ item.name }}</span>
               <a href="#" class="chip-close" @click.prevent="orgTempDel(index)"></a>
             </div>
@@ -449,7 +464,10 @@
           <div class="chips" v-else>
             <!--<div class="chip" v-for="(item, index) in this.form.regions" :key="item.code">-->
             <div class="chip" v-for="(item, index) in this.form.orgsTemp_iskl" :key="item.code">
-              <i class="d-icon-location d-badge__icon promotions__card-audience-badge-icon"></i>
+              <img v-if="item.image" :src="item.image" :alt="item.name" class="chip-img" /><span
+                v-else
+                class="chip-img"
+              ></span>
               <span>{{ item.name }}</span>
               <a href="#" class="chip-close" @click.prevent="orgTempDel(index)"></a>
             </div>
@@ -466,68 +484,6 @@
         </div>
       </div>
     </customModal>
-    <!-- <customModal v-model="this.modals.organization" class="select-window">
-      <template v-slot:title>Выбрать организации</template>
-      <div>
-        <div class="regions">
-          <form class="d-search d-search--alt">
-            <i class="d-icon-search-big d-search__icon"></i>
-            <input
-              type="text"
-              placeholder="Найти организацию"
-              class="d-search__field"
-              v-model="search.organization"
-              @focus="search.organizationSuggestionsShow = true"
-              @blur="unActivateOrganization()"
-            />
-            <ul class="d-search__suggestions" v-if="this.search.organizationSuggestionsShow">
-              <li
-                class="d-search__suggestion"
-                v-for="suggestion in organizations"
-                :key="suggestion.code"
-              >
-                <a
-                  href="#"
-                  class="d-search__suggestion-card"
-                  @click.prevent="orgSelect(suggestion)"
-                >
-                  <img
-                    :src="suggestion.image"
-                    alt=""
-                    class="d-search__suggestion-card__img"
-                    v-if="suggestion.image"
-                  />
-                  <div class="d-search__suggestion-card__content">
-                    <span class="d-search__suggestion-card__title">{{ suggestion.name }}</span>
-                  </div>
-                </a>
-              </li>
-            </ul>
-          </form>
-          <div class="chips">
-            <div
-              class="chip"
-              v-for="(item, index) in this.form.all_organizations_selected"
-              :key="item.code"
-            >
-              <img v-if="item.image" :src="item.image" :alt="item.name" class="chip-img" />
-              <span v-else class="chip-img"></span>
-              <span>{{ item.name }}</span>
-              <a href="#" class="chip-close" @click.prevent="orgDel(index)"></a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="regions-submit">
-        <button
-          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow d-ib"
-          type="button"
-          @click.prevent="modals.organization = false"
-        >
-          Добавить
-        </button>
-      </div>
-    </customModal> -->
   </section>
 </template>
 <script>
@@ -599,10 +555,10 @@ export default {
       })
       this.getOrganizations({ exclude: [], filter: '' }).then(() => {
         this.organizations_all = this.organizations.map(function (el) {
-          return { name: el.name, code: el.id }
+          return { name: el.name, code: el.id, image: el.image }
         })
         this.organizations_all_iskl = this.organizations.map(function (el) {
-          return { name: el.name, code: el.id }
+          return { name: el.name, code: el.id, image: el.image }
         })
       })
       this.loading = false
@@ -737,14 +693,14 @@ export default {
         this.form.orgsTemp.splice(index, 1)
         this.getOrganizations({ exclude: this.form.orgsTemp, filter: '' }).then(() => {
           this.organizations_all = this.organizations.map(function (el) {
-            return { name: el.name, code: el.id }
+            return { name: el.name, code: el.id, image: el.image }
           })
         })
       } else {
         this.form.orgsTemp_iskl.splice(index, 1)
         this.getOrganizations({ exclude: this.form.orgsTemp_iskl, filter: '' }).then(() => {
           this.organizations_all_iskl = this.organizations.map(function (el) {
-            return { name: el.name, code: el.id }
+            return { name: el.name, code: el.id, image: el.image }
           })
         })
       }
@@ -755,7 +711,7 @@ export default {
         this.form.orgsTemp = this.form.all_organizations_selected
         this.getOrganizations({ exclude: this.form.orgsTemp, filter: '' }).then(() => {
           this.organizations_all = this.organizations.map(function (el) {
-            return { name: el.name, code: el.id }
+            return { name: el.name, code: el.id, image: el.image }
           })
         })
       } else {
@@ -763,7 +719,7 @@ export default {
         this.form.orgsTemp_iskl = this.form.all_organizations_selected_iskl
         this.getOrganizations({ exclude: this.form.orgsTemp_iskl, filter: '' }).then(() => {
           this.organizations_all_iskl = this.organizations.map(function (el) {
-            return { name: el.name, code: el.id }
+            return { name: el.name, code: el.id, image: el.image }
           })
         })
       }
@@ -775,7 +731,7 @@ export default {
         // Берем географию
         this.getOrganizations({ exclude: this.form.orgsTemp, filter: '' }).then(() => {
           this.organizations_all = this.organizations.map(function (el) {
-            return { name: el.name, code: el.id }
+            return { name: el.name, code: el.id, image: el.image }
           })
         })
         this.search.organization = ''
@@ -784,7 +740,7 @@ export default {
         // Берем географию
         this.getOrganizations({ exclude: this.form.orgsTemp_iskl, filter: '' }).then(() => {
           this.organizations_all_iskl = this.organizations.map(function (el) {
-            return { name: el.name, code: el.id }
+            return { name: el.name, code: el.id, image: el.image }
           })
         })
         this.search.organization_iskl = ''
@@ -812,7 +768,7 @@ export default {
         }
         this.getOrganizations({ exclude: this.form.orgsTemp, filter: '' }).then(() => {
           this.organizations_all = this.organizations.map(function (el) {
-            return { name: el.name, code: el.id }
+            return { name: el.name, code: el.id, image: el.image }
           })
         })
       } else {
@@ -822,7 +778,7 @@ export default {
         }
         this.getOrganizations({ exclude: this.form.orgsTemp_iskl, filter: '' }).then(() => {
           this.organizations_all_iskl = this.organizations.map(function (el) {
-            return { name: el.name, code: el.id }
+            return { name: el.name, code: el.id, image: el.image }
           })
         })
       }
@@ -834,8 +790,32 @@ export default {
     },
     saveSettings() {
       this.loading = true
-      this.setStoreVisible({ form: this.form }).then((res) => {
+      let data = {}
+      if (this.form.participantsType < 2) {
+        data.orgs = null
+        data.orgs_iskl = null
+        data.regs = null
+        data.regs_iskl = null
+      } else {
+        data.orgs = this.form.all_organizations_selected
+        data.orgs_iskl = this.form.all_organizations_selected_iskl
+        data.regs = this.form.regions
+        data.regs_iskl = this.form.regions_iskl
+      }
+      data.mode = this.form.participantsType
+      this.setStoreVisible({ form: data }).then((res) => {
         if (res.data.data.success) {
+          this.form = {
+            participantsType: 0,
+            regionsTemp: [],
+            orgsTemp: [],
+            all_organizations_selected: [],
+            regions: [],
+            regionsTemp_iskl: [],
+            orgsTemp_iskl: [],
+            all_organizations_selected_iskl: [],
+            regions_iskl: [],
+          }
           this.getStoreSettings()
           this.view_form = false
           this.loading = false
@@ -847,6 +827,12 @@ export default {
     storeSettings: function (newVal) {
       if (Object.keys(newVal).length) {
         this.form.participantsType = newVal.visible_mode
+        if (Number(newVal.visible_mode) > 1) {
+          this.form.regions = newVal.visible_incl.regs
+          this.form.regions_iskl = newVal.visible_iskl.regs
+          this.form.all_organizations_selected = newVal.visible_incl.orgs
+          this.form.all_organizations_selected_iskl = newVal.visible_iskl.orgs
+        }
       }
     },
     regions: function (newVal) {
@@ -885,6 +871,72 @@ export default {
       if (newVal) {
         this.search.regionSuggestionsShow = false
       }
+    },
+    'search.region': function (newVal, oldVal) {
+      if (newVal.length < 3 && oldVal.length < newVal.length) {
+        return
+      }
+      if (newVal.length < 3) {
+        newVal = ''
+      }
+      this.debounce(() => {
+        this.getRegions({ exclude: this.form.regionsTemp, filter: newVal }).then(() => {
+          this.regions_all = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+      }, 300)
+    },
+    'search.organization': function (newVal, oldVal) {
+      if (newVal.length < 3 && oldVal.length < newVal.length) {
+        return
+      }
+      if (newVal.length < 3) {
+        newVal = ''
+      }
+      this.debounce(() => {
+        this.getOrganizations({
+          exclude: this.form.all_organizations_selected,
+          filter: newVal,
+        }).then(() => {
+          this.organizations_all = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id, image: el.image }
+          })
+        })
+      }, 300)
+    },
+    'search.region_iskl': function (newVal, oldVal) {
+      if (newVal.length < 3 && oldVal.length < newVal.length) {
+        return
+      }
+      if (newVal.length < 3) {
+        newVal = ''
+      }
+      this.debounce(() => {
+        this.getRegions({ exclude: this.form.regionsTemp_iskl, filter: newVal }).then(() => {
+          this.regions_all_iskl = this.regions.map(function (el) {
+            return { name: el.label, code: el.key }
+          })
+        })
+      }, 300)
+    },
+    'search.organization_iskl': function (newVal, oldVal) {
+      if (newVal.length < 3 && oldVal.length < newVal.length) {
+        return
+      }
+      if (newVal.length < 3) {
+        newVal = ''
+      }
+      this.debounce(() => {
+        this.getOrganizations({
+          exclude: this.form.all_organizations_selected_iskl,
+          filter: newVal,
+        }).then(() => {
+          this.organizations_all_iskl = this.organizations.map(function (el) {
+            return { name: el.name, code: el.id, image: el.image }
+          })
+        })
+      }, 300)
     },
   },
 }
@@ -980,6 +1032,9 @@ export default {
   font-size: 20px;
   line-height: 26px;
 }
+body .warehouse-settings-form .d-radio__container-vertical {
+  flex-direction: row;
+}
 .warehouse-settings-form .promo-master__audience-changes {
   display: flex;
   gap: 24px;
@@ -1071,5 +1126,15 @@ export default {
 }
 .chips {
   margin-top: 16px;
+}
+span.chip-img {
+  background: #282828;
+}
+.chip-img {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  border-radius: 50%;
 }
 </style>
