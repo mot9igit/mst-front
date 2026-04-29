@@ -275,6 +275,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    store: {
+      type: String,
+      default: '',
+    },
   },
   emits: ['vendorCheck', 'catalogUpdate', 'close'],
   components: {
@@ -339,6 +343,7 @@ export default {
       filter: '',
       page: this.pageSelected,
       perpage: this.cfg.vendors.perpage,
+      active_store: this.store ? this.store : null,
     })
   },
   methods: {
@@ -382,11 +387,13 @@ export default {
           filter: '',
           page: this.pageAvailable,
           perpage: this.cfg.vendors.perpage,
+          active_store: this.store,
         }).then(() => {
           this.getOptVendorsOfferSelected({
             filter: '',
             page: this.pageSelected,
             perpage: this.cfg.vendors.perpage,
+            active_store: this.store,
           }).then(() => {
             this.loading = false
             this.$emit('catalogUpdate')
@@ -402,6 +409,7 @@ export default {
         filter: this.filter,
         page: this.pageSelected,
         perpage: this.cfg.vendors.perpage,
+        active_store: this.store,
       }).then(() => {
         this.loading = false
       })
@@ -412,6 +420,7 @@ export default {
         filter: this.filter,
         page: this.pageAvailable,
         perpage: this.cfg.vendors.perpage,
+        active_store: this.store,
       }).then(() => {
         this.loading = false
       })
@@ -426,6 +435,7 @@ export default {
               filter: this.filter,
               page: this.pageAvailable,
               perpage: this.cfg.vendors.perpage,
+              active_store: this.store,
             }).then(() => {
               this.loading = false
             })
@@ -461,11 +471,13 @@ export default {
             filter: '',
             page: this.pageAvailable,
             perpage: this.cfg.vendors.perpage,
+            active_store: this.store,
           }).then(() => {
             this.getOptVendorsOfferSelected({
               filter: '',
               page: this.pageSelected,
               perpage: this.cfg.vendors.perpage,
+              active_store: this.store,
             }).then(() => {
               this.loading = false
             })
@@ -497,11 +509,13 @@ export default {
               filter: '',
               page: this.pageAvailable,
               perpage: this.cfg.vendors.perpage,
+              active_store: this.store,
             }).then(() => {
               this.getOptVendorsOfferSelected({
                 filter: '',
                 page: this.pageSelected,
                 perpage: this.cfg.vendors.perpage,
+                active_store: this.store,
               }).then(() => {
                 this.loading = false
               })
@@ -544,6 +558,7 @@ export default {
           filter: '',
           page: this.pageSelected,
           perpage: this.cfg.vendors.perpage,
+          active_store: this.store,
         })
       }
     },

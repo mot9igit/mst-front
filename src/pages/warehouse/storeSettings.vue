@@ -65,12 +65,22 @@
         </div>
       </div>
       <div class="warehouse-settings-cont-item">
-        <button
-          class="d-button d-button-primary d-button-primary-small d-button--sm-shadow warehouse-settings-button"
-          @click.prevent=""
+        <router-link
+          target="_blank"
+          :to="{
+            name: 'warehouseReviewStore',
+            params: {
+              id: this.$route.params.id,
+              order_id: this.edit,
+            },
+          }"
         >
-          Посмотреть товары
-        </button>
+          <button
+            class="d-button d-button-primary d-button-primary-small d-button--sm-shadow warehouse-settings-button"
+          >
+            Посмотреть товары
+          </button>
+        </router-link>
       </div>
     </div>
     <div v-if="view_form" class="warehouse-settings-form">
@@ -805,6 +815,12 @@ export default {
       data.mode = this.form.participantsType
       this.setStoreVisible({ form: data }).then((res) => {
         if (res.data.data.success) {
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Настройка склада!',
+            detail: 'Видимость склада настроена успешно',
+            life: 3000,
+          })
           this.form = {
             participantsType: 0,
             regionsTemp: [],
@@ -819,6 +835,14 @@ export default {
           this.getStoreSettings()
           this.view_form = false
           this.loading = false
+        } else {
+          this.loading = false
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Настройка склада!',
+            detail: 'Произошла ошибка',
+            life: 3000,
+          })
         }
       })
     },

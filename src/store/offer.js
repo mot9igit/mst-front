@@ -114,13 +114,14 @@ export default {
       const response = await api.basket.basketProductUpdate(data)
       return response
     },
-    async getOptVendorOffer({ commit }) {
+    async getOptVendorOffer({ commit }, { active_store }) {
       const data = {
         id: router.currentRoute._value.params.id,
         id_org_from: router.currentRoute._value.params.id_org_from,
         action: 'get/offer/vendor',
         extended_name: 'offer',
         type: 0,
+        active_store: active_store,
       }
       const response = await api.offer.getOptVendorOffer(data)
       if (response) {
@@ -128,7 +129,7 @@ export default {
       }
       return response
     },
-    async getOptVendorsOfferSelected({ commit }, { filter }) {
+    async getOptVendorsOfferSelected({ commit }, { filter, active_store }) {
       const data = {
         id: router.currentRoute._value.params.id,
         id_org_from: router.currentRoute._value.params.id_org_from,
@@ -136,6 +137,7 @@ export default {
         extended_name: 'offer',
         type: 1,
         filter: filter,
+        active_store: active_store,
       }
       const response = await api.offer.getOptVendorOffer(data)
       if (response) {

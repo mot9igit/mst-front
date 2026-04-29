@@ -23,6 +23,7 @@ export default {
     optPrices: {},
     orgName: [],
     storeSettings: {},
+    shipments: {},
   },
   actions: {
     async getOrg({ commit }) {
@@ -96,6 +97,24 @@ export default {
       }
       return response
     },
+
+    async getOrgShipments({ commit }, { page, perpage, filter, sort }) {
+      const data = {
+        action: 'get/shipments',
+        id: router.currentRoute._value.params.id,
+        ship_id: router.currentRoute._value.params.ship_id,
+        page: page,
+        perpage: perpage,
+        filter: filter,
+        sort: sort,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_ORG_SHIPMENTS', response.data)
+      }
+      return response
+    },
+
     async create(store, data) {
       const sendData = {
         id: router.currentRoute._value.params.id,
@@ -311,6 +330,9 @@ export default {
     unsetOrgStores({ commit }) {
       commit('UNSET_ORG_STORES')
     },
+    unsetOrgShipments({ commit }) {
+      commit('UNSET_ORG_SHIPMENTS')
+    },
   },
   mutations: {
     SET_ORG: (state, data) => {
@@ -349,6 +371,12 @@ export default {
     SET_OPT_PRICES: (state, data) => {
       state.optPrices = data.data
     },
+    SET_ORG_SHIPMENTS: (state, data) => {
+      state.shipments = data.data
+    },
+    UNSET_ORG_SHIPMENTS: (state) => {
+      state.shipments = {}
+    },
   },
   getters: {
     orgActive(state) {
@@ -383,6 +411,9 @@ export default {
     },
     optPrices(state) {
       return state.optPrices
+    },
+    shipments(state) {
+      return state.shipments
     },
   },
 }

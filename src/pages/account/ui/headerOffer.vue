@@ -264,7 +264,7 @@ export default {
       }).then(() => {
         this.getBasketOffer()
       })
-      this.getOptVendorOffer()
+      this.getOptVendorOffer({ active_store: this.storeActive })
       this.getAllNotifications()
     })
 
@@ -354,6 +354,7 @@ export default {
         active_store: this.storeActive,
       }).then(() => {
         this.getBasketOffer()
+        this.getOptVendorOffer({ active_store: this.storeActive })
       })
 
       // this.setOrgBasketStore(id).then(() => {
@@ -405,7 +406,7 @@ export default {
   },
   watch: {
     basketOfferWarehouse: function (newVal) {
-      this.$emit('activeStore', newVal)
+      this.$emit('activeStore', this.storeActive)
       this.updateCart()
     },
     basketOffer() {
@@ -450,6 +451,11 @@ export default {
     cart_store: function (newVal) {
       if (newVal != null) {
         this.storeActive = newVal
+      }
+    },
+    storeActive: function (oldVal, newVal) {
+      if (oldVal != newVal) {
+        this.$emit('activeStore', this.storeActive)
       }
     },
   },

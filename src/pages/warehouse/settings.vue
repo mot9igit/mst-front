@@ -233,18 +233,27 @@ export default {
     }).then(() => {
       this.stores_filters.type.values = this.orgStores.types
       this.stores_filters.integration.values = this.orgStores.integrations
+      this.getOrgShipments({
+        page: 1,
+        perpage: 1,
+        filter: '',
+        sort: '',
+      })
       this.loading = false
     })
   },
   computed: {
     ...mapGetters({
       orgStores: 'org/orgStores',
+      shipments: 'org/shipments',
     }),
   },
   methods: {
     ...mapActions({
       getOrgStores: 'org/getOrgStores',
       unsetOrgStores: 'org/unsetOrgStores',
+      getOrgShipments: 'org/getOrgShipments',
+      unsetOrgShipments: 'org/unsetOrgShipments',
     }),
     filter(data) {
       this.loading = true

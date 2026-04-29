@@ -40,7 +40,7 @@
       @notifications="notificationsCol"
       @notificationsMobile="mobileNotifications()"
       @offerNow="offerVendor()"
-      @activeStore="activeStore()"
+      @activeStore="activeStore"
       :mobileRequipments="mobileRequipments"
       :active="toggleMenu"
       :mobileNotificationsShow="mobileNotificationsShow"
@@ -91,6 +91,7 @@
         :offer="isOffer"
         :active="this.toggleOfferVendors"
         :refresh="refresh_v"
+        :store="store"
         @close="changeVendorsOfferWindowClose()"
         @catalogUpdate="catalogUpdate()"
         @vendorCheck="vendorCheck()"
@@ -220,7 +221,7 @@ export default {
       toggleOfferVendors: false,
       searchUpdater: false,
       refreshOrderPage: false,
-      store: 0,
+      store: '',
       purch_store: null,
       refresh_v: false,
       no_av_items: '',
@@ -388,6 +389,7 @@ export default {
     activeStore(data) {
       console.log(data)
       this.store = data
+      this.refreshVendors()
     },
     setStore(data) {
       this.purch_store = data
@@ -410,9 +412,9 @@ export default {
       this.no_av_items = ''
       this.createR = {}
     },
-    createReqAndGo(data){
+    createReqAndGo(data) {
       this.createR = data
-    }
+    },
   },
   provide() {
     return {
