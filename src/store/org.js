@@ -24,6 +24,7 @@ export default {
     orgName: [],
     storeSettings: {},
     shipments: {},
+    shipment: {},
   },
   actions: {
     async getOrg({ commit }) {
@@ -102,7 +103,6 @@ export default {
       const data = {
         action: 'get/shipments',
         id: router.currentRoute._value.params.id,
-        ship_id: router.currentRoute._value.params.ship_id,
         page: page,
         perpage: perpage,
         filter: filter,
@@ -111,6 +111,19 @@ export default {
       const response = await api.org.getOrg(data)
       if (response) {
         commit('SET_ORG_SHIPMENTS', response.data)
+      }
+      return response
+    },
+
+    async getOrgShipment({ commit }) {
+      const data = {
+        action: 'get/shipments',
+        id: router.currentRoute._value.params.id,
+        ship_id: router.currentRoute._value.params.ship_id,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_ORG_SHIPMENT', response.data)
       }
       return response
     },
@@ -327,6 +340,27 @@ export default {
 
       return response
     },
+    async setShipmentVisible(store, { form }) {
+      const data = {
+        action: 'set/store/visible',
+        id: router.currentRoute._value.params.id,
+        ship_id: router.currentRoute._value.params.ship_id,
+        form: form,
+      }
+      const response = await api.org.setManager(data)
+
+      return response
+    },
+    async createStore(store, { form }) {
+      const data = {
+        action: 'create/store',
+        id: router.currentRoute._value.params.id,
+        form: form,
+      }
+      const response = await api.org.setManager(data)
+
+      return response
+    },
     unsetOrgStores({ commit }) {
       commit('UNSET_ORG_STORES')
     },
@@ -374,6 +408,9 @@ export default {
     SET_ORG_SHIPMENTS: (state, data) => {
       state.shipments = data.data
     },
+    SET_ORG_SHIPMENT: (state, data) => {
+      state.shipment = data.data
+    },
     UNSET_ORG_SHIPMENTS: (state) => {
       state.shipments = {}
     },
@@ -414,6 +451,9 @@ export default {
     },
     shipments(state) {
       return state.shipments
+    },
+    shipment(state) {
+      return state.shipment
     },
   },
 }

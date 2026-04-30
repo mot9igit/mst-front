@@ -810,18 +810,18 @@ const router = createRouter({
                             },
                           },
                         },
-                        // {
-                        //   path: 'settings/:store_id',
-                        //   name: 'warehouseStoreSettings',
-                        //   props: true,
-                        //   label: 'Настройки склада',
-                        //   component: () => import('../pages/warehouse/storeSettings.vue'),
-                        //   meta: {
-                        //     breadcrumb: {
-                        //       label: 'Настройки склада',
-                        //     },
-                        //   },
-                        // },
+                        {
+                          path: 'shipment/:ship_id',
+                          name: 'warehouseShipmentSettings',
+                          props: true,
+                          label: 'Настройка поставки',
+                          component: () => import('../pages/warehouse/shipmentSettings.vue'),
+                          meta: {
+                            breadcrumb: {
+                              label: 'Настройка поставки',
+                            },
+                          },
+                        },
                       ],
                     },
                     {

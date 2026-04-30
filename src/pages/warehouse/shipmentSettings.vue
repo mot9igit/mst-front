@@ -8,7 +8,7 @@
     <Loader v-if="loading" />
     <div class="warehouse-analysis__header">
       <div class="lk-staff-edit__header-left">
-        <h1>Настройка склада</h1>
+        <h1>Настройка товаров в пути</h1>
       </div>
 
       <div class="lk-staff-edit__header-right">
@@ -28,59 +28,33 @@
         <div
           class="warehouse-analysis__header-storeinfo-info-name warehouse-settings__header-storeinfo-info-name"
         >
-          №{{ storeSettings.id }} {{ storeSettings.name_short }}
+          №{{ shipment.id }} {{ shipment.name }}
         </div>
         <div
           class="warehouse-analysis__header-storeinfo-info-address warehouse-settings__header-storeinfo-info-address"
         >
-          <i class="d-icon-location"></i><span>{{ storeSettings.address }}</span>
+          <i class="d-icon-location"></i><span>{{ shipment.address }}</span>
         </div>
       </div>
     </div>
     <div class="warehouse-settings-cont">
       <div class="warehouse-settings-cont-item">
-        <div class="order-card__orderinfo-grid-lable">Интеграция</div>
+        <div class="order-card__orderinfo-grid-lable">Дата поступления</div>
         <div class="order-card__orderinfo-grid-text">
-          <div class="store_status" :class="storeSettings.integration_class">
-            <div class="round-status">
-              <i class="d-icon-check"></i>
-            </div>
-            <span>{{ storeSettings.integration_check }}</span>
-          </div>
+          {{ shipment.date }}
         </div>
       </div>
-      <div class="warehouse-settings-cont-item">
-        <div class="order-card__orderinfo-grid-lable">Тип склада</div>
-        <div class="order-card__orderinfo-grid-text">{{ storeSettings.store_type }}</div>
-      </div>
-      <div class="warehouse-settings-cont-item">
+
+      <div class="warehouse-settings-cont-item warehouse-settings-cont-item-last">
         <div class="order-card__orderinfo-grid-lable">Видимость</div>
         <div class="warehouse-settings-cont-item-flex">
-          <div class="order-card__orderinfo-grid-text">{{ storeSettings.visible }}</div>
+          <div class="order-card__orderinfo-grid-text">{{ shipment.visible }}</div>
           <i
             class="d-icon-pen2 warehouse-settings-cont-item-button"
             :class="{ 'warehouse-settings-cont-item-button--active': view_form }"
             @click.prevent="view_form = !view_form"
           ></i>
         </div>
-      </div>
-      <div class="warehouse-settings-cont-item">
-        <router-link
-          target="_blank"
-          :to="{
-            name: 'warehouseReviewStore',
-            params: {
-              id: this.$route.params.id,
-              store_id: this.$route.params.store_id,
-            },
-          }"
-        >
-          <button
-            class="d-button d-button-primary d-button-primary-small d-button--sm-shadow warehouse-settings-button"
-          >
-            Посмотреть товары
-          </button>
-        </router-link>
       </div>
     </div>
     <div v-if="view_form" class="warehouse-settings-form">
@@ -250,6 +224,27 @@
         </div>
       </div>
     </div>
+    <div class="warehouse-settings-products" v-if="shipment.products">
+      <BaseTable
+        :items_data="shipment.products"
+        :total="shipment.total_products"
+        :pagination_items_per_page="this.pagination_items_per_page"
+        :pagination_offset="this.pagination_offset"
+        :page="this.page"
+        :table_data="this.table_data"
+        @paginate="paginate"
+      />
+    </div>
+
+    <!-- <MinProductTable
+      :items_data="order.products"
+      :total="order.total_products"
+      :pagination_items_per_page="this.pagination_items_per_page"
+      :pagination_offset="this.pagination_offset"
+      :page="this.page"
+      :table_data="this.table_data"
+      @paginate="paginate"
+    /> -->
     <customModal v-model="this.modals.region" class="select-window">
       <template v-slot:title>Выбрать регионы</template>
       <div class="regions-container">
@@ -502,10 +497,12 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Toast from 'primevue/toast'
+import BaseTable from '@/shared/ui/table/table.vue'
+import MinProductTable from '@/shared/ui/tableMinProduct/table.vue'
 
 export default {
-  name: 'warehouseStoreSettings',
-  components: { Breadcrumbs, Loader, Toast, customModal },
+  name: 'warehouseShipmentSettings',
+  components: { Breadcrumbs, Loader, Toast, customModal, BaseTable, MinProductTable },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -550,10 +547,43 @@ export default {
         organization_iskl: '',
         organizationSuggestionsShow_iskl: false,
       },
+      table_data: {
+        image: {
+          label: 'Фото',
+          type: 'image',
+          class: 'cell_centeralign',
+        },
+        name: {
+          label: 'Наименование',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        article: {
+          label: 'Артикул',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        available: {
+          label: 'Количество',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        price: {
+          label: 'РРЦ',
+          type: 'text',
+          class: 'cell_centeralign nowrap',
+        },
+        status: {
+          label: 'Сопоставление',
+          type: 'status',
+
+          class: 'cell_centeralign',
+        },
+      },
     }
   },
   mounted() {
-    this.getStoreSettings().then(() => {
+    this.getOrgShipment().then(() => {
       // Берем географию
       this.getRegions({ exclude: [], filter: '' }).then(() => {
         this.regions_all = this.regions.map(function (el) {
@@ -576,17 +606,17 @@ export default {
   },
   computed: {
     ...mapGetters({
-      storeSettings: 'org/storeSettings',
+      shipment: 'org/shipment',
       regions: 'addition/regions',
       organizations: 'addition/organizations',
     }),
   },
   methods: {
     ...mapActions({
-      getStoreSettings: 'org/getStoreSettings',
+      getOrgShipment: 'org/getOrgShipment',
       getRegions: 'addition/getRegions',
       getOrganizations: 'addition/getOrganizations',
-      setStoreVisible: 'org/setStoreVisible',
+      setShipmentVisible: 'org/setShipmentVisible',
     }),
     unActivateOrganization() {
       if (this.form.participantsType == 3) {
@@ -813,7 +843,7 @@ export default {
         data.regs_iskl = this.form.regions_iskl
       }
       data.mode = this.form.participantsType
-      this.setStoreVisible({ form: data }).then((res) => {
+      this.setShipmentVisible({ form: data }).then((res) => {
         if (res.data.data.success) {
           this.$toast.add({
             severity: 'success',
@@ -832,7 +862,7 @@ export default {
             all_organizations_selected_iskl: [],
             regions_iskl: [],
           }
-          this.getStoreSettings()
+          this.getOrgShipment()
           this.view_form = false
           this.loading = false
         } else {
@@ -848,7 +878,7 @@ export default {
     },
   },
   watch: {
-    storeSettings: function (newVal) {
+    shipment: function (newVal) {
       if (Object.keys(newVal).length) {
         this.form.participantsType = newVal.visible_mode
         if (Number(newVal.visible_mode) > 1) {
@@ -1000,10 +1030,8 @@ export default {
 .warehouse-settings-cont-item:first-child {
   padding: 0 40px 0 0;
 }
-.warehouse-settings-cont-item:last-child {
-  padding: 0 0 0 40px;
-  display: flex;
-  align-items: center;
+.warehouse-settings-cont-item.warehouse-settings-cont-item-last {
+  display: inline-block !important;
 }
 .warehouse-settings-cont-item:not(:last-child):after {
   content: '';
@@ -1068,6 +1096,9 @@ body .warehouse-settings-form .d-radio__container-vertical {
 }
 .regions .d-search__suggestion-card__img {
   width: 50px !important;
+}
+.warehouse-settings-products {
+  margin-top: 32px;
 }
 .promotions__card {
   .promotions__card-warehouse-header-container {
