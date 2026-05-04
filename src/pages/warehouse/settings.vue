@@ -35,63 +35,24 @@
 
     <teleport to="body">
       <customModal v-model="this.modalAddStore" class="warehouse-settings__modal">
-        <form
-          class="d-modal2 d-modal2--active warehouse-settings__modal-content"
-          action="#"
-          @submit.prevent="formSubmit"
-          autocomplete="off"
-        >
-          <div class="d-modal2__header warehouse-analysis__add-header">
-            <p class="d-modal2__title warehouse-analysis__add-title">Создание склада</p>
-          </div>
+        <form class="d-modal2 d-modal2--active warehouse-settings__modal-content" action="#">
           <div class="d-modal2__content">
             <div class="warehouse-analysis__add-content">
               <div
                 class="d-field-wrapper d-field-wrapper--vertical d-field-wrapper--small warehouse-analysis__add-input-wrapper"
               >
-                <label for="date" class="d-dropdown__label warehouse-analysis__add-input-label"
-                  >Название склада</label
-                >
-                <div class="d-input d-input--light warehouse-analysis__add-input">
-                  <input
-                    type="text"
-                    v-model="this.form.name"
-                    placeholder="Введите название склада"
-                    class="d-input__field warehouse-analysis__add-input-field"
-                  />
-                </div>
-              </div>
-              <div
-                class="d-field-wrapper d-field-wrapper--vertical d-field-wrapper--small warehouse-analysis__add-input-wrapper"
-              >
-                <label for="date" class="d-dropdown__label warehouse-analysis__add-input-label"
-                  >Адрес доставки</label
-                >
                 <div class="dart-input-group">
                   <AddAddress
                     key="newWarehouseAddress"
                     index="newWarehouseAddress"
-                    :value="this.form.address"
-                    v-model="this.form.address"
+                    :value="this.form"
+                    v-model="this.form"
                     class="std-create-clients__add-address"
+                    @close="this.modalAddStore = false"
+                    @refresh="refreshList()"
                   />
                 </div>
               </div>
-            </div>
-
-            <div class="d-modal2__actions warehouse-analysis__add-actions">
-              <button
-                class="d-button d-button-secondary d-button-secondary-small box-shadow-none d-modal2__action-button warehouse-analysis__add-actions-button warehouse-analysis__add-actions-button--cancel"
-                @click.prevent="this.modalAddStore = false"
-              >
-                <span>Отменить</span>
-              </button>
-
-              <button
-                class="d-button d-button-primary d-button-primary-small box-shadow-none d-modal2__action-button warehouse-analysis__add-actions-button warehouse-analysis__add-actions-button--ok"
-              >
-                <span>Создать</span>
-              </button>
             </div>
           </div>
         </form>
@@ -122,7 +83,7 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
 import customModal from '@/shared/ui/Modal.vue'
-import AddAddress from '../org/ui/AddAddress.vue'
+import AddAddress from './ui/AddAddress.vue'
 import Toast from 'primevue/toast'
 
 export default {
@@ -295,7 +256,6 @@ export default {
       unsetOrgStores: 'org/unsetOrgStores',
       getOrgShipments: 'org/getOrgShipments',
       unsetOrgShipments: 'org/unsetOrgShipments',
-      createStore: 'org/createStore',
     }),
     filter(data) {
       this.loading = true
@@ -353,58 +313,20 @@ export default {
         this.loading = false
       })
     },
-    async formSubmit() {
-      let result = true
-      this.error = ''
-
-      if (!this.form.name) {
-        this.error = 'Введите название склада'
-        if (!this.form.address) {
-          this.error += ', введите адрес склада'
-        }
-        result = false
-      } else {
-        if (!this.form.address) {
-          this.error = 'Введите адрес склада'
-          result = false
-        }
-      }
-
-      if (!result) {
-        this.$toast.add({
-          severity: 'error',
-          summary: 'Заполните все данные!',
-          detail: this.error,
-          life: 3000,
+    refreshList() {
+      this.loading = true
+      this.modalAddStore = false
+      this.getOrgStores({
+        page: this.page,
+        perpage: this.pagination_items_per_page,
+      }).then(() => {
+        this.stores_filters.type.values = this.orgStores.types
+        this.stores_filters.integration.values = this.orgStores.integrations
+        this.getOrgShipments({
+          page: 1,
         })
-        return
-      } else {
-        this.loading = true
-        const sendData = {
-          form: this.form,
-        }
-        const response = await this.createStore(sendData)
         this.loading = false
-        if (response.data.data.success) {
-          if (response.data.data.store?.id) {
-            this.$toast.add({
-              severity: 'success',
-              summary: 'Успешно!',
-              detail: 'Склад успешно сохранен!',
-              life: 3000,
-            })
-            this.loading = false
-            this.modalAddStore = false
-          } else {
-            this.$toast.add({
-              severity: 'error',
-              summary: 'Ошибка!',
-              detail: response.data.data.message,
-              life: 3000,
-            })
-          }
-        }
-      }
+      })
     },
   },
   watch: {
@@ -436,19 +358,28 @@ export default {
 .warehouse-settings__modal {
   width: 100%;
   height: auto;
+  padding: 0;
+
+  .d-modal2__content {
+    padding: 0;
+    gap: 32px;
+  }
+  .d-modal2__header {
+    padding: 0;
+    line-height: 31px;
+    margin-bottom: 40.5px;
+  }
 
   .dart-input-group {
     width: 100%;
 
     .std-auth__map {
-      margin: 16px 0 24px;
+      margin: 0px;
+      min-width: 398px;
       ymaps3 {
         border-radius: 13px;
       }
     }
-  }
-  .d-modal2__content {
-    padding-bottom: 0px;
   }
 }
 </style>
