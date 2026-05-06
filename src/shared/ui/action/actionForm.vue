@@ -1021,39 +1021,13 @@
                     Выбрать склад
                   </button>
                 </div>
-                <div class="promotions__card-warehouse-settings hidden-1200">
-                  <div class="dart-row">
-                    <div
-                      class="d-col-md-12 d-col-24"
-                      v-for="shipments in this.shipments.items"
-                      :key="shipments.id"
-                    >
-                      <div class="d-field-wrapper dart-mb-1">
-                        <label class="d-switch" :for="'warehouse' + shipments.id">
-                          <input
-                            type="checkbox"
-                            :name="'warehouse' + shipments.id"
-                            :id="'warehouse' + shipments.id"
-                            class="d-switch__input"
-                            v-model="this.form.shipment_id"
-                            :value="shipments.id"
-                          />
-                          <div class="d-switch__circle"></div>
-                        </label>
-                        <label :for="'warehouse' + shipments.id" class="d-switch__label"
-                          >{{ shipments.name_short ? shipments.name_short : shipments.name }}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
               <div
-                v-if="this.form.store_id?.length || this.form.shipment_id?.length"
+                v-if="this.form.store_id?.length"
                 class="d-divider d-divider--full d-divider--semibold d-divider--black promotions__card-warehouse-divider"
               ></div>
               <ActionProducts
-                v-if="this.form.store_id?.length || this.form.shipment_id?.length"
+                v-if="this.form.store_id?.length"
                 :productsSelected="productsSelectedIn"
                 :productsAvailable="productsAvailable"
                 :productsAvailablePage="productsAvailablePage"
@@ -3484,7 +3458,6 @@ export default {
         warehouses: true,
         vendors: true,
         store_id: [],
-        shipment_id: [],
         dates: [],
         start_date: '',
         end_date: '',
@@ -3535,7 +3508,6 @@ export default {
       })
     })
     this.getOrgStores({ page: '' })
-    this.getOrgShipments({ page: '' })
     this.getAllActions()
     this.getActionAdvPages({ type: this.type })
     if (this.$route.params.action) {
@@ -3544,7 +3516,7 @@ export default {
         if (this.action.delay_type == 2) {
           this.form.postponementPeriod = this.action.delay
         }
-        if (this.form.store_id || this.form.shipment_id) {
+        if (this.form.store_id) {
           this.getAvailableProducts({
             store_id: this.form.store_id,
             filter: '',
@@ -3580,7 +3552,6 @@ export default {
       getRegions: 'addition/getRegions',
       getOrganizations: 'addition/getOrganizations',
       getOrgStores: 'org/getOrgStores',
-      getOrgShipments: 'org/getOrgShipments',
       getAction: 'action/getAction',
       setAction: 'action/setAction',
       unsetAction: 'action/unsetAction',
@@ -4501,7 +4472,6 @@ export default {
       regions: 'addition/regions',
       organizations: 'addition/organizations',
       orgStores: 'org/orgStores',
-      shipments: 'org/shipments',
       action: 'action/action',
       actionAdvPages: 'action/actionAdvPages',
       actionAdvPlaces: 'action/actionAdvPlaces',
