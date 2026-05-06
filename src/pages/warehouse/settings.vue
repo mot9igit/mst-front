@@ -124,7 +124,7 @@ export default {
             store_id: 'id',
           },
           class: 'cell_settings-stores-name',
-          items: ['id', 'name_short', 'address'],
+          items: ['id', 'name', 'address'],
         },
         store_type: {
           label: 'Тип / Видимость',

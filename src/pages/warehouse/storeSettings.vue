@@ -28,7 +28,7 @@
         <div
           class="warehouse-analysis__header-storeinfo-info-name warehouse-settings__header-storeinfo-info-name"
         >
-          №{{ storeSettings.id }} {{ storeSettings.name_short }}
+          №{{ storeSettings.id }} {{ storeSettings.name }}
         </div>
         <div
           class="warehouse-analysis__header-storeinfo-info-address warehouse-settings__header-storeinfo-info-address"
@@ -61,6 +61,22 @@
             class="d-icon-pen2 warehouse-settings-cont-item-button"
             :class="{ 'warehouse-settings-cont-item-button--active': view_form }"
             @click.prevent="view_form = !view_form"
+          ></i>
+        </div>
+      </div>
+      <div class="warehouse-settings-cont-item">
+        <div class="order-card__orderinfo-grid-lable">Название склада</div>
+        <div class="warehouse-settings-cont-item-flex">
+          <div class="order-card__orderinfo-grid-text">
+            {{
+              storeSettings.name_short
+                ? storeSettings.name_short
+                : 'Введите название склада для покупателей'
+            }}
+          </div>
+          <i
+            class="d-icon-pen2 warehouse-settings-cont-item-button"
+            @click.prevent="modals.name = true"
           ></i>
         </div>
       </div>
@@ -494,6 +510,45 @@
         </div>
       </div>
     </customModal>
+    <customModal v-model="this.modals.name" class="select-window-newname">
+      <template v-slot:title>Название склада</template>
+      <div
+        class="d-field-wrapper d-field-wrapper--vertical d-field-wrapper--small warehouse-analysis__add-input-wrapper"
+      >
+        <label for="date" class="d-dropdown__label warehouse-analysis__add-input-label"
+          >Введите название склада для покупателей</label
+        >
+        <div class="d-input d-input--light lk-about__info-input">
+          <input
+            type="text"
+            v-model="name"
+            placeholder="Введите название склада"
+            class="d-input__field lk-about__info-input-field"
+            @input="error = false"
+          />
+        </div>
+
+        <div v-if="error" class="d-input-error">
+          <i class="d-icon-warning d-input-error__icon"></i
+          ><span class="d-input-error__text">Пожалуйста, введите название склада</span>
+        </div>
+      </div>
+      <div class="d-modal2__actions warehouse-analysis__add-actions">
+        <button
+          class="d-button d-button-secondary d-button-secondary-small box-shadow-none d-modal2__action-button warehouse-analysis__add-actions-button warehouse-analysis__add-actions-button--cancel"
+          @click.prevent="modals.name = false"
+        >
+          <span>Отменить</span>
+        </button>
+
+        <button
+          class="d-button d-button-primary d-button-primary-small box-shadow-none d-modal2__action-button warehouse-analysis__add-actions-button warehouse-analysis__add-actions-button--ok"
+          @click.prevent="this.setName()"
+        >
+          <span>Создать</span>
+        </button>
+      </div>
+    </customModal>
   </section>
 </template>
 <script>
@@ -538,6 +593,7 @@ export default {
       modals: {
         region: false,
         organization: false,
+        name: false,
       },
       // Поиск
       search: {
@@ -550,6 +606,8 @@ export default {
         organization_iskl: '',
         organizationSuggestionsShow_iskl: false,
       },
+      name: '',
+      error: false,
     }
   },
   mounted() {
@@ -587,6 +645,7 @@ export default {
       getRegions: 'addition/getRegions',
       getOrganizations: 'addition/getOrganizations',
       setStoreVisible: 'org/setStoreVisible',
+      setStoreName: 'org/setStoreName',
     }),
     unActivateOrganization() {
       if (this.form.participantsType == 3) {
@@ -846,6 +905,49 @@ export default {
         }
       })
     },
+    setName() {
+      if (!this.name || this.name.length < 3) {
+        this.error = true
+      }
+      if (!this.error) {
+        this.loading = true
+        let data = {
+          id: this.$route.params.store_id,
+          mode: 'store',
+          name: this.name,
+        }
+        this.setStoreName(data).then((res) => {
+          if (res.data.data.success) {
+            this.$toast.add({
+              severity: 'success',
+              summary: 'Название склада!',
+              detail: 'Название склада изменено успешно',
+              life: 3000,
+            })
+
+            this.modals.name = false
+            this.getStoreSettings()
+            this.loading = false
+            this.name = ''
+          } else {
+            this.loading = false
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Название склада!',
+              detail: 'Произошла ошибка',
+              life: 3000,
+            })
+          }
+        })
+      } else {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Название склада!',
+          detail: 'Поле обязательно для заполнения',
+          life: 3000,
+        })
+      }
+    },
   },
   watch: {
     storeSettings: function (newVal) {
@@ -981,11 +1083,12 @@ export default {
 }
 .warehouse-settings-cont {
   display: grid;
-  grid-template-columns: auto auto auto 242px;
+  grid-template-columns: auto auto auto auto 242px;
   grid-template-rows: auto;
   width: 100%;
   min-width: 100%;
   padding-bottom: 32px;
+  row-gap: 16px;
 }
 .warehouse-settings-cont .store_status {
   margin: 0 0 0 0;
@@ -1160,5 +1263,17 @@ span.chip-img {
   height: 16px;
   margin-right: 8px;
   border-radius: 50%;
+}
+.select-window-newname {
+  .modal__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    min-height: 300px;
+    .d-field-wrapper--small {
+      gap: 16px;
+    }
+  }
 }
 </style>

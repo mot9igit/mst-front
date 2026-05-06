@@ -361,6 +361,17 @@ export default {
 
       return response
     },
+    async setStoreName(store, { id, mode, name }) {
+      const data = {
+        action: 'set/store/name',
+        id: id,
+        mode: mode,
+        name: name,
+      }
+      const response = await api.org.setManager(data)
+
+      return response
+    },
     unsetOrgStores({ commit }) {
       commit('UNSET_ORG_STORES')
     },
