@@ -322,9 +322,7 @@ export default {
       }).then(() => {
         this.stores_filters.type.values = this.orgStores.types
         this.stores_filters.integration.values = this.orgStores.integrations
-        this.getOrgShipments({
-          page: 1,
-        })
+
         this.loading = false
       })
     },

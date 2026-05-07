@@ -149,8 +149,36 @@
                       <label
                         for="warehouse1"
                         class="d-radio__label vendor-change__selected-item-radio-label"
-                        >Склад #{{ store.id }},
+                        >Склад {{ store.name_short ? store.name_short : store.name }} #{{
+                          store.id
+                        }}
+                        ,
                         {{ store.address_short ? store.address_short : store.address }}
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Товары в пути -->
+                  <div
+                    class="vendor-change__selected-item-footer"
+                    v-if="
+                      Object.keys(optVendorsSelected.shipments).length &&
+                      item.id in optVendorsSelected.shipments
+                    "
+                  >
+                    <div class="d-radio__wrapper vendor-change__selected-item-radio-wrapper">
+                      <Checkbox
+                        @change="setShipments(item.id)"
+                        v-model="shipments[item.id]"
+                        :binary="true"
+                        :inputId="'shipments-' + item.id"
+                        :name="'shipments-' + item.id"
+                        value="true"
+                      />
+                      <label
+                        :for="'shipments-' + item.id"
+                        class="d-radio__label vendor-change__selected-item-radio-label"
+                        >Товары в пути
                       </label>
                     </div>
                   </div>
@@ -357,6 +385,7 @@ export default {
       minContSize: 0,
       maxContSize: 0,
       is_resize: false,
+      shipments: {},
     }
   },
   computed: {
@@ -655,6 +684,12 @@ export default {
         })
       }
     },
+    setShipments(id) {
+      let active = this.shipments[id]
+      for (var i in this.optVendorsSelected.shipments[id].items) {
+        this.changeStores(id, this.optVendorsSelected.shipments[id].items[i], active)
+      }
+    },
   },
   watch: {
     offer: function (newVal) {
@@ -665,6 +700,13 @@ export default {
     '$route.matched': function (newVal) {
       if (newVal[5] && newVal[5].name == 'WholesaleClientsOffer') {
         this.close()
+      }
+    },
+    optVendorsSelected: function (newVal) {
+      for (var i in newVal.shipments) {
+        if (newVal.shipments[i].active) {
+          this.shipments[i] = true
+        }
       }
     },
   },

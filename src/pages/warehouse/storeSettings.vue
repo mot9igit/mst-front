@@ -522,7 +522,7 @@
           <input
             type="text"
             v-model="name"
-            placeholder="Введите название склада"
+            placeholder="Название склада для покупателей"
             class="d-input__field lk-about__info-input-field"
             @input="error = false"
           />
@@ -545,7 +545,7 @@
           class="d-button d-button-primary d-button-primary-small box-shadow-none d-modal2__action-button warehouse-analysis__add-actions-button warehouse-analysis__add-actions-button--ok"
           @click.prevent="this.setName()"
         >
-          <span>Создать</span>
+          <span>Ок</span>
         </button>
       </div>
     </customModal>
@@ -1263,17 +1263,5 @@ span.chip-img {
   height: 16px;
   margin-right: 8px;
   border-radius: 50%;
-}
-.select-window-newname {
-  .modal__content {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-    min-height: 300px;
-    .d-field-wrapper--small {
-      gap: 16px;
-    }
-  }
 }
 </style>

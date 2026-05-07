@@ -115,6 +115,31 @@
                       </label>
                     </div>
                   </div>
+
+                  <!-- Товары в пути -->
+                  <div
+                    class="vendor-change__selected-item-footer"
+                    v-if="
+                      Object.keys(vendorOfferSelected.shipments).length &&
+                      item.id in vendorOfferSelected.shipments
+                    "
+                  >
+                    <div class="d-radio__wrapper vendor-change__selected-item-radio-wrapper">
+                      <Checkbox
+                        @change="setShipments(item.id)"
+                        v-model="shipments[item.id]"
+                        :binary="true"
+                        :inputId="'shipments-' + item.id"
+                        :name="'shipments-' + item.id"
+                        value="true"
+                      />
+                      <label
+                        :for="'shipments-' + item.id"
+                        class="d-radio__label vendor-change__selected-item-radio-label"
+                        >Товары в пути
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -296,6 +321,7 @@ export default {
         selected: [],
       },
       multisupplier: true,
+      shipments: {},
     }
   },
   computed: {
@@ -540,6 +566,13 @@ export default {
       clearTimeout(this.searchPTimer)
       this.searchPTimer = setTimeout(func, delay)
     },
+
+    setShipments(id) {
+      let active = this.shipments[id]
+      for (var i in this.vendorOfferSelected.shipments[id].items) {
+        this.changeStores(id, this.vendorOfferSelected.shipments[id].items[i], active)
+      }
+    },
   },
   watch: {
     offer: function (newVal) {
@@ -560,6 +593,13 @@ export default {
           perpage: this.cfg.vendors.perpage,
           active_store: this.store,
         })
+      }
+    },
+    vendorOfferSelected: function (newVal) {
+      for (var i in newVal.shipments) {
+        if (newVal.shipments[i].active) {
+          this.shipments[i] = true
+        }
       }
     },
   },

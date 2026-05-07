@@ -9216,3 +9216,30 @@ body {
 .cell--status.cell--status-seller_packed {
   color: #282828;
 }
+.select-window-newname {
+  .modal-content {
+    max-width: 655px;
+    gap: 8px;
+    .modal__content {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      min-height: 161px;
+      padding: 0;
+      .d-dropdown__label {
+        line-height: 18px;
+        font-weight: 400;
+      }
+      .d-field-wrapper--small {
+        gap: 32px;
+      }
+      .d-input__field::placeholder {
+        font-size: 14px;
+      }
+      .lk-about__info-input:after {
+        display: none;
+      }
+    }
+  }
+}

@@ -7,6 +7,7 @@ export default {
     orgActive: {},
     orgs: [],
     orgStores: [],
+    orgStoresAll: [],
     orgStore: [],
     orgprofile: [],
     optVendorsAvailable: {
@@ -73,6 +74,23 @@ export default {
       }
       return response
     },
+
+    async getOrgStoresAll({ commit }, { page, perpage, filters }) {
+      const data = {
+        action: 'get/stores',
+        id: router.currentRoute._value.params.id,
+        page: page,
+        perpage: perpage,
+        filters: filters,
+        mode: 'all',
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_ORG_STORES_ALL', response.data)
+      }
+      return response
+    },
+
     async getStoreSettings({ commit }) {
       const data = {
         action: 'get/stores',
@@ -392,6 +410,9 @@ export default {
     SET_ORG_STORES: (state, data) => {
       state.orgStores = data.data
     },
+    SET_ORG_STORES_ALL: (state, data) => {
+      state.orgStoresAll = data.data
+    },
     UNSET_ORG_STORES: (state) => {
       state.orgStores = {}
     },
@@ -438,6 +459,9 @@ export default {
     },
     orgStores(state) {
       return state.orgStores
+    },
+    orgStoresAll(state) {
+      return state.orgStoresAll
     },
     storeSettings(state) {
       return state.storeSettings

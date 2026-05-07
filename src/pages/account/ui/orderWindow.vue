@@ -112,7 +112,15 @@
                       </div>
                       <div class="d-divider d-divider--vertical order__item-header-divider"></div>
                       <div class="order__item-header-warehouse">
-                        <p class="order__item-header-warehouse-label">Склад #{{ warehouse_id }}:</p>
+                        <p class="order__item-header-warehouse-label">
+                          Склад
+                          {{
+                            warehouse.warehouse_data.name_short
+                              ? warehouse.warehouse_data.name_short
+                              : warehouse.warehouse_data.name
+                          }}
+                          #{{ warehouse_id }}:
+                        </p>
                         <p class="order__item-header-warehouse-value">
                           {{
                             warehouse.warehouse_data.address_short

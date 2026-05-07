@@ -515,7 +515,7 @@
           <input
             type="text"
             v-model="name"
-            placeholder="Введите название склада"
+            placeholder="Название склада для покупателей"
             class="d-input__field lk-about__info-input-field"
             @input="error = false"
           />
@@ -538,7 +538,7 @@
           class="d-button d-button-primary d-button-primary-small box-shadow-none d-modal2__action-button warehouse-analysis__add-actions-button warehouse-analysis__add-actions-button--ok"
           @click.prevent="this.setName()"
         >
-          <span>Создать</span>
+          <span>Ок</span>
         </button>
       </div>
     </customModal>
@@ -941,7 +941,7 @@ export default {
         this.loading = true
         let data = {
           id: this.$route.params.ship_id,
-          mode: 'shipment',
+          mode: 'store',
           name: this.name,
         }
         this.setStoreName(data).then((res) => {
