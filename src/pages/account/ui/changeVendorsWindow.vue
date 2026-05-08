@@ -688,6 +688,7 @@ export default {
       let active = this.shipments[id]
       for (var i in this.optVendorsSelected.shipments[id].items) {
         this.changeStores(id, this.optVendorsSelected.shipments[id].items[i], active)
+        console.log(1)
       }
     },
   },

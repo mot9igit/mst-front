@@ -106,11 +106,15 @@
                         :inputId="'offer-' + store.id"
                         :name="'offer-' + store.id"
                         :value="true"
+                        v-if="store.show"
                       />
                       <label
+                        v-if="store.show"
                         :for="'offer-' + store.id"
                         class="d-radio__label vendor-change__selected-item-radio-label"
-                        >Склад #{{ store.id }},
+                        >Склад {{ store.name_short ? store.name_short : store.name }} #{{
+                          store.id
+                        }},
                         {{ store.address_short ? store.address_short : store.address }}
                       </label>
                     </div>
