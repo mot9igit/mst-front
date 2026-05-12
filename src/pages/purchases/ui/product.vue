@@ -30,22 +30,22 @@
       <!-- Правая часть шапки страницы закупки-->
       <div class="products__header-right" v-if="$route.matched[5].name != 'WholesaleClientsOffer'">
         <!-- Элемент статистики -->
-        <div class="products__stat">
+        <!-- <div class="products__stat">
           <span class="products__stat-value">{{ product.our_forecast }}</span>
           <p class="products__stat-label">Прогноз остатков</p>
         </div>
-        <div class="d-divider d-divider--vertical d-divider--big products__stat-divider"></div>
+        <div class="d-divider d-divider--vertical d-divider--big products__stat-divider"></div> -->
         <!-- Элемент статистики -->
         <div class="products__stat">
           <span class="products__stat-value">{{ product.our_available }}</span>
           <p class="products__stat-label">Остаток на вашем складе</p>
         </div>
-        <div class="d-divider d-divider--vertical d-divider--big products__stat-divider"></div>
+        <!-- <div class="d-divider d-divider--vertical d-divider--big products__stat-divider"></div> -->
         <!-- Элемент статистики -->
-        <div class="products__stat">
+        <!-- <div class="products__stat">
           <span class="products__stat-value">{{ product.our_purchase_speed }}</span>
           <p class="products__stat-label">Скорость продаж</p>
-        </div>
+        </div> -->
       </div>
       <!-- Правая часть шапки страницы предложения-->
       <div class="products__header-right" v-else>
