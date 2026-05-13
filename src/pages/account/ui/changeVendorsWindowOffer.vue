@@ -487,6 +487,9 @@ export default {
                 console.log(col_active_stores)
               }
             }
+            if (this.shipments[org_id] == true) {
+              col_active_stores++
+            }
           }
         }
       }
