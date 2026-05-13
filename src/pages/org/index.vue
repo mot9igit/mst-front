@@ -695,7 +695,11 @@ export default {
     }
   },
   mounted() {
-    this.getOrgProfile()
+    this.getOrgProfile().then(() => {
+      if (this.orgprofile.vendor == '0' && this.orgprofile.warehouse == '0') {
+        this.form.orgData.splice(2, 1)
+      }
+    })
   },
   setup() {
     const addRequisitesRules = {
@@ -1088,6 +1092,9 @@ export default {
       this.orgProfTmp = newVal
       this.orgProfValues = this.orgProfTmp
       this.editOrgValues = this.orgProfTmp
+      if (newVal.vendor == '0' && newVal.warehouse == '0') {
+        this.form.orgData.splice(2, 1)
+      }
     },
   },
 }
