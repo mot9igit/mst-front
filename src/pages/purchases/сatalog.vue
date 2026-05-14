@@ -151,7 +151,7 @@
           <p class="order__item-header-badge-text">{{ opt_products?.org_from?.name }}</p>
         </div>
       </h1>
-      <!-- <div class="catalog-top_filters-right catalog-top_button-cont">
+      <div class="catalog-top_filters-right catalog-top_button-container">
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
@@ -166,7 +166,7 @@
         >
           <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
         </div>
-      </div> -->
+      </div>
     </div>
     <div class="catalog-top_filters-cont" v-if="!loading">
       <!-- Фильтры по наличию -->
@@ -364,6 +364,27 @@
         >
           В наличии нет товаров из комплекта
         </p> -->
+      </div>
+      <div
+        class="catalog-top_filters-right catalog-top_button-container"
+        v-if="
+          this.$route.name == 'purchasesCatalog' || this.$route.name == 'purchasesCatalogSearch'
+        "
+      >
+        <div
+          class="catalog-top_filters-right-item"
+          :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
+          @click.prevent="active_design = 0"
+        >
+          <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_box.svg" />
+        </div>
+        <div
+          class="catalog-top_filters-right-item"
+          :class="{ 'catalog-top_filters-right-item--active': active_design == 1 }"
+          @click.prevent="active_design = 1"
+        >
+          <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
+        </div>
       </div>
     </div>
 
@@ -1305,6 +1326,16 @@ export default {
   gap: 16px;
   width: 337px;
 }
+.catalog-top_button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  width: 66px;
+  height: 32px;
+  max-width: 66px;
+  max-height: 32px;
+}
 .catalog-top_button-cont p {
   color: #757575;
   text-align: right;
@@ -1551,6 +1582,9 @@ export default {
   }
 }
 @media (width <= 1280px) {
+  .catalog-top_filters-right {
+    display: none;
+  }
   // фильтры в наличии
   .catalog-top_filters {
     gap: 24px;

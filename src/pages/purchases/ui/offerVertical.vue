@@ -7,14 +7,22 @@
         <!-- Шапка -->
         <div class="product-card__header">
           <!-- Продавец -->
-          <div class="product-card__seller" @click="this.seller_info = true">
+          <div
+            class="product-card__seller"
+            @click="active_design == 0 ? (this.seller_info = true) : ''"
+          >
             <img
               :src="offer.store_image"
               :alt="offer.org.name"
               class="product-card__seller-image"
               v-if="offer.store_image"
             />
-            <p class="product-card__seller-name">{{ offer.org.name }}</p>
+            <p class="product-card__seller-name">
+              {{ offer.org.name
+              }}<span class="product-card__seller-store" v-if="active_design == 1"
+                >г. {{ offer.store_city }}</span
+              >
+            </p>
             <button class="product-card__seller-button">
               <i class="d-icon-angle-rounded-bottom product-card__seller-button-icon"></i>
             </button>
@@ -49,7 +57,7 @@
               <img :src="offerData.image" :alt="offerData.pagetitle" class="product-card__image" />
             </div>
             <!-- Блок с ценой и акциями -->
-            <div class="product-card__price-container" v-if="active_design == 0">
+            <div class="product-card__price-container">
               <!-- Цена товара -->
               <div
                 class="product-card__price"
@@ -87,32 +95,6 @@
                 <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
               </button>
             </div>
-            <!-- Цена товара -->
-            <div class="product-card__price" v-if="active_design == 1">
-              <p
-                class="product-card__price-value-discounted"
-                v-if="
-                  pricePrefix == true ||
-                  (Object.keys(modalActionsData).length == 1 && allOff == true)
-                "
-              >
-                от {{ offer.min_price.price.toLocaleString('ru') }} ₽
-              </p>
-              <p class="product-card__price-value-discounted" v-else>
-                {{ offer.price.toLocaleString('ru') }} ₽
-              </p>
-            </div>
-            <!-- Кнопка: "Все акции" -->
-            <div class="product-card-vertical__promo-all-cont" v-if="active_design == 1">
-              <button
-                v-if="Object.keys(offer.actions).length > 0 && offer.available > 0"
-                class="product-card-vertical__promo-all"
-                @click.prevent="modalActions = true"
-              >
-                Все акции <span class="red-badge">{{ Object.keys(offer.actions).length }}</span>
-                <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
-              </button>
-            </div>
 
             <!-- Название и артикул товара -->
             <div class="product-card__info-text">
@@ -123,7 +105,7 @@
             </div>
 
             <!-- Количество -->
-            <div class="product-card__count" v-if="active_design == 0">
+            <div class="product-card__count">
               <div class="product-card__count-value">
                 <span class="product-card__count-label">В наличии: </span>
                 <span v-if="offer.remains_abstract && offer.remains_abstract != offer.available">{{
@@ -132,9 +114,14 @@
                 <span v-else>{{ offer.available }} шт</span>
                 <div v-if="offer.requirement" class="redder">
                   <span v-if="Number(offer.requirement.count) > Number(offer.available)"
-                    >Не хватает
-                    {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
-                  >
+                    ><span v-if="active_design == 0"
+                      >Не хватает
+                      {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
+                    >
+                    <span v-else
+                      >({{ Number(offer.requirement.count) - Number(offer.available) }} шт)</span
+                    >
+                  </span>
                 </div>
               </div>
               <div
@@ -149,26 +136,7 @@
                 -{{ Number(offer.requirement.count) }} шт
               </div>
             </div>
-            <div class="product-card__count-value" v-if="active_design == 1">
-              <span class="product-card__count-label">В наличии: </span>
-              <span v-if="offer.remains_abstract && offer.remains_abstract != offer.available">{{
-                offer.remains_abstract
-              }}</span>
-              <span v-else>{{ offer.available }} шт</span>
-              <div v-if="offer.requirement" class="redder">
-                <span v-if="Number(offer.requirement.count) > Number(offer.available)"
-                  >Не хватает
-                  {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
-                >
-              </div>
-            </div>
-            <div
-              class="product-card__count-value product-card__count-value-require"
-              v-if="offer.requirement && active_design == 1"
-            >
-              <span class="product-card__count-label"><span>Ваша потребность</span>: </span>
-              -{{ Number(offer.requirement.count) }} шт
-            </div>
+
             <!-- Дополнительная информация -->
             <div class="product-card__stat-cont">
               <div class="product-card__stat-list">
@@ -684,7 +652,8 @@
                 <i class="d-icon-shuffle product-card__buy-icon"></i>Интеграция с МС
               </div>
               <div v-if="item.condition_orders > 0">
-                <i class="d-icon-cart product-card__buy-icon"></i>На {{ item.condition_orders }} заказов
+                <i class="d-icon-cart product-card__buy-icon"></i>На
+                {{ item.condition_orders }} заказов
               </div>
             </div>
           </div>
