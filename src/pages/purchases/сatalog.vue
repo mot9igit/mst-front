@@ -523,6 +523,7 @@ export default {
       order_id: 0,
       page: 1,
       per_page: 25,
+      table_perpage: 50,
       active_design: 0,
       filter: [
         {
@@ -630,10 +631,9 @@ export default {
       }
     },
     updateBasket() {
-      this.getAllOfferOptProducts({})
       const data = {
         page: this.page,
-        perpage: this.per_page,
+        perpage: this.active_design == 0 ? this.per_page : this.table_perpage,
         filters: this.filters,
       }
       if (
@@ -685,7 +685,7 @@ export default {
       }
       const data = {
         page: this.page,
-        perpage: this.per_page,
+        perpage: this.active_design == 0 ? this.per_page : this.table_perpage,
         filters: this.filters,
         basket: cart,
       }
@@ -720,7 +720,7 @@ export default {
       }
       const data = {
         page: this.page,
-        perpage: this.per_page,
+        perpage: this.active_design == 0 ? this.per_page : this.table_perpage,
         filters: this.filters,
         basket: cart,
       }
@@ -753,7 +753,7 @@ export default {
       this.loading = true
       const data = {
         page: this.page,
-        perpage: this.per_page,
+        perpage: this.active_design == 0 ? this.per_page : this.table_perpage,
         filters: this.filters,
       }
       if (this.$route.name == 'purchasesCatalogSearch') {
@@ -794,7 +794,7 @@ export default {
       }
       const data = {
         page: 1,
-        perpage: this.per_page,
+        perpage: this.active_design == 0 ? this.per_page : this.table_perpage,
         filters: this.filters,
       }
       if (this.$route.name == 'purchasesCatalogSearch') {
@@ -1108,7 +1108,7 @@ export default {
     this.date_now = new Date()
     const data = {
       page: this.page,
-      perpage: this.per_page,
+      perpage: this.active_design == 0 ? this.per_page : this.table_perpage,
     }
 
     if (this.$route.name == 'purchasesCatalogSearch') {
@@ -1168,14 +1168,22 @@ export default {
     }),
     pagesCount() {
       let pages = 1
-      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-        pages = Math.ceil(this.optOfferProducts.total / this.per_page)
+      let perpage = 25
+      if (this.active_design == 0) {
+        perpage = this.per_page
       } else {
-        pages = Math.ceil(this.optProducts.total / this.per_page)
+        perpage = this.table_perpage
+      }
+
+      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
+        pages = Math.ceil(this.optOfferProducts.total / perpage)
+      } else {
+        pages = Math.ceil(this.optProducts.total / perpage)
       }
       if (pages === 0) {
         pages = 1
       }
+      console.log(pages)
       return pages
     },
   },
@@ -1244,6 +1252,121 @@ export default {
     'filters.dates.value': function (newVal) {
       for (var d in newVal) {
         newVal[d] = new Date(newVal[d].getTime() - newVal[d].getTimezoneOffset() * 60000)
+      }
+    },
+    active_design: function (newVal) {
+      if (newVal == 1) {
+        // cart-hover-effect
+        this.loading = true
+        const data = {
+          page: 1,
+          perpage: this.table_perpage,
+        }
+        if (this.$route.name == 'purchasesCatalogSearch') {
+          data.search = this.$route.query.search
+        }
+        if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+          data.req = this.$route.query.requirement_id
+        }
+
+        if (this.$route.name == 'purchasesCatalogComplect') {
+          data.action_id = this.$route.params.action_id
+        }
+        if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
+          data.search = this.$route.query.search
+          data.active_store = this.basketOfferWarehouse
+
+          this.getOfferOptProducts(data).then(() => {
+            this.opt_products = this.optOfferProducts
+
+            this.loading = false
+          })
+        } else {
+          this.getOptProducts(data).then(() => {
+            this.opt_products = this.optProducts
+            for (var i in this.opt_products.items) {
+              let stores = this.opt_products.items[i].stores
+              for (var s in stores) {
+                let r_id = stores[s].remain_id
+                this.addItems[r_id] = {}
+                this.addItems[r_id].item = stores[s]
+                this.addItems[r_id].count = Number(stores[s].count)
+              }
+            }
+
+            this.loading = false
+          })
+        }
+        setTimeout(() => {
+          let buttons = document.getElementsByClassName('d-button--cart')
+
+          for (let i = 0; i < buttons.length; i++) {
+            buttons[i].addEventListener('mouseover', function () {
+              buttons[i].previousElementSibling.classList.add('d-counter--black')
+            })
+            buttons[i].addEventListener('mouseout', function () {
+              buttons[i].previousElementSibling.classList.remove('d-counter--black')
+            })
+          }
+        }, 500)
+      } else {
+        this.loading = true
+        const data = {
+          page: 1,
+          perpage: this.per_page,
+        }
+        if (this.$route.name == 'purchasesCatalogSearch') {
+          data.search = this.$route.query.search
+        }
+        if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+          data.req = this.$route.query.requirement_id
+        }
+
+        if (this.$route.name == 'purchasesCatalogComplect') {
+          data.action_id = this.$route.params.action_id
+        }
+        if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
+          data.search = this.$route.query.search
+          data.active_store = this.basketOfferWarehouse
+
+          this.getOfferOptProducts(data).then(() => {
+            this.opt_products = this.optOfferProducts
+
+            this.loading = false
+          })
+        } else {
+          this.getOptProducts(data).then(() => {
+            this.opt_products = this.optProducts
+            for (var i in this.opt_products.items) {
+              let stores = this.opt_products.items[i].stores
+              for (var s in stores) {
+                let r_id = stores[s].remain_id
+                this.addItems[r_id] = {}
+                this.addItems[r_id].item = stores[s]
+                this.addItems[r_id].count = Number(stores[s].count)
+              }
+            }
+
+            this.loading = false
+          })
+        }
+      }
+    },
+    loading: function (newVal) {
+      if (newVal == false && this.active_design == 1) {
+        // cart-hover-effect
+        setTimeout(() => {
+          let buttons = document.getElementsByClassName('d-button--cart')
+
+          for (let i = 0; i < buttons.length; i++) {
+            buttons[i].addEventListener('mouseover', function () {
+              buttons[i].previousElementSibling.classList.add('d-counter--black')
+            })
+            buttons[i].addEventListener('mouseout', function () {
+              buttons[i].previousElementSibling.classList.remove('d-counter--black')
+            })
+          }
+        }, 100)
       }
     },
   },

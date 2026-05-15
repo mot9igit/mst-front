@@ -74,13 +74,21 @@
                   {{ offer.price.toLocaleString('ru') }} ₽
                 </p>
               </div>
+              <div
+                class="product-card__price-rrcdiscount"
+                v-if="active_design == 1 && offer.prices.rrc_discount > 0"
+              >
+                {{ -offer.prices.rrc_discount }}%
+              </div>
+
               <!-- Кнопка: "Все акции" -->
               <button
                 v-if="Object.keys(offer.actions).length > 0 && offer.available > 0"
                 class="product-card-vertical__promo-all"
                 @click.prevent="modalActions = true"
               >
-                Все акции <span class="red-badge">{{ Object.keys(offer.actions).length }}</span>
+                <span v-if="active_design == 0">Все акции</span><span v-else>Акции</span>
+                <span class="red-badge">{{ Object.keys(offer.actions).length }}</span>
                 <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
               </button>
             </div>
@@ -96,12 +104,16 @@
             <div class="product-card__count">
               <div class="product-card__count-value">
                 <span class="product-card__count-label">В наличии: </span>
-                <span v-if="offer.remains_abstract != offer.available">{{
-                  offer.remains_abstract
-                }}</span>
-                <span v-else>{{ offer.available }} шт</span>
+                <span
+                  class="product-card__count-value-text"
+                  v-if="offer.remains_abstract != offer.available"
+                  >{{ offer.remains_abstract }}</span
+                >
+                <span class="product-card__count-value-text" v-else>{{ offer.available }} шт</span>
                 <div v-if="offer.requirement" class="redder">
-                  <span v-if="Number(offer.requirement.count) > Number(offer.available)"
+                  <span
+                    class="redder-item"
+                    v-if="Number(offer.requirement.count) > Number(offer.available)"
                     ><span v-if="active_design == 0"
                       >Не хватает
                       {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
@@ -121,7 +133,7 @@
                 v-if="offer.requirement"
               >
                 <span class="product-card__count-label">Ваша потребность: </span>
-                -{{ Number(offer.requirement.count) }} шт
+                <span v-if="active_design == 0">-</span>{{ Number(offer.requirement.count) }} шт
               </div>
             </div>
 
@@ -226,9 +238,12 @@
                 class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
                 :class="{ 'd-button--loading': this.loading }"
               >
-                <div class="d-button__text">
+                <div class="d-button__text" v-if="active_design == 0">
                   <i class="d-icon-cart product-card__buy-icon"></i>
                   В корзину
+                </div>
+                <div class="d-button__text" v-else>
+                  <i class="d-icon-cart product-card__buy-icon"></i>
                 </div>
               </button>
             </div>
