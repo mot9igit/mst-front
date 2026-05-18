@@ -24,7 +24,7 @@
       <div class="d-top-order-container-right">
         <div class="d-top-order-container-buttons">
           <button
-          v-if="order.order?.transition_anchor"
+            v-if="order.order?.transition_anchor"
             @click="order.order?.stage_check_code ? orderCheckCode() : orderChangeStage()"
             class="d-button d-button-primary d-button-primary-small d-button--sm-shadow order-card__action"
           >
@@ -145,7 +145,7 @@
     </div>
   </section>
 
-<teleport to="body">
+  <teleport to="body">
     <customModal v-model="this.modals.code" class="codeWindow">
       <template v-slot:title>Введите код</template>
       <form action="#" @submit.prevent="formSubmit">
@@ -194,7 +194,6 @@
       </div>
     </customModal>
   </teleport>
-
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'

@@ -374,14 +374,14 @@
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
-          @click.prevent="active_design = 0"
+          @click.prevent="((active_design = 0), setCalagDesign())"
         >
           <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_box.svg" />
         </div>
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 1 }"
-          @click.prevent="active_design = 1"
+          @click.prevent="((active_design = 1), setCalagDesign())"
         >
           <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
         </div>
@@ -983,7 +983,7 @@ export default {
 
           this.basketProductAddAll({ items: data, cart_store: this.basketOfferWarehouse }).then(
             (res) => {
-              console.log(res)
+              //console.log(res)
               if (res.data.data) {
                 this.errors = res.data.data
                 if (this.errors == '') {
@@ -1059,7 +1059,7 @@ export default {
               this.errors = this.errors + response?.data?.data?.message
             }
           }
-          console.log(r_id)
+          //console.log(r_id)
         })
       }
     },
@@ -1102,6 +1102,23 @@ export default {
         name: this.opt_products.name,
       }
       this.$emit('createReqAndGo', data)
+    },
+    setHovers() {
+      setTimeout(() => {
+        let buttons = document.getElementsByClassName('d-button--cart')
+
+        for (let i = 0; i < buttons.length; i++) {
+          buttons[i].addEventListener('mouseover', function () {
+            buttons[i].previousElementSibling.classList.add('d-counter--black')
+          })
+          buttons[i].addEventListener('mouseout', function () {
+            buttons[i].previousElementSibling.classList.remove('d-counter--black')
+          })
+        }
+      }, 500)
+    },
+    setCalagDesign() {
+      localStorage.setItem('global.active_catalog_design', this.active_design)
     },
   },
   mounted() {
@@ -1151,6 +1168,20 @@ export default {
       })
     }
     this.filters.all.value = true
+    this.setCalagDesign()
+
+    // ресайз окна - вовремя убрать табличный вид
+    window.addEventListener(
+      'resize',
+      function () {
+        let sh = document.querySelector('#app')
+        let design = localStorage.getItem('global.active_catalog_design')
+        if ((sh.clientWidth <= 1280) & (design == 1)) {
+          localStorage.setItem('global.active_catalog_design', 0)
+        }
+      },
+      true,
+    )
   },
   computed: {
     ...mapGetters({
@@ -1183,8 +1214,12 @@ export default {
       if (pages === 0) {
         pages = 1
       }
-      console.log(pages)
+      //console.log(pages)
       return pages
+    },
+    localDesign() {
+      let dis = localStorage.getItem('global.active_catalog_design')
+      return dis
     },
   },
   watch: {
@@ -1258,9 +1293,12 @@ export default {
       if (newVal == 1) {
         // cart-hover-effect
         this.loading = true
+        let p = Math.ceil((this.per_page * this.page) / this.table_perpage)
+
         const data = {
-          page: 1,
+          page: p,
           perpage: this.table_perpage,
+          filters: this.filters,
         }
         if (this.$route.name == 'purchasesCatalogSearch') {
           data.search = this.$route.query.search
@@ -1278,7 +1316,7 @@ export default {
 
           this.getOfferOptProducts(data).then(() => {
             this.opt_products = this.optOfferProducts
-
+            this.page = p
             this.loading = false
           })
         } else {
@@ -1293,27 +1331,28 @@ export default {
                 this.addItems[r_id].count = Number(stores[s].count)
               }
             }
-
+            this.page = p
             this.loading = false
           })
         }
-        setTimeout(() => {
-          let buttons = document.getElementsByClassName('d-button--cart')
-
-          for (let i = 0; i < buttons.length; i++) {
-            buttons[i].addEventListener('mouseover', function () {
-              buttons[i].previousElementSibling.classList.add('d-counter--black')
-            })
-            buttons[i].addEventListener('mouseout', function () {
-              buttons[i].previousElementSibling.classList.remove('d-counter--black')
-            })
-          }
-        }, 500)
+        this.setHovers()
       } else {
         this.loading = true
+        let p = 1
+        if (this.pagesCount > 1) {
+          p = Math.floor((this.page * this.table_perpage) / this.per_page)
+          if (p < 1) {
+            p = 1
+          } else {
+            if (p > this.pagesCount) {
+              p = this.pagesCount
+            }
+          }
+        }
         const data = {
-          page: 1,
+          page: p,
           perpage: this.per_page,
+          filters: this.filters,
         }
         if (this.$route.name == 'purchasesCatalogSearch') {
           data.search = this.$route.query.search
@@ -1331,7 +1370,7 @@ export default {
 
           this.getOfferOptProducts(data).then(() => {
             this.opt_products = this.optOfferProducts
-
+            this.page = p
             this.loading = false
           })
         } else {
@@ -1346,7 +1385,7 @@ export default {
                 this.addItems[r_id].count = Number(stores[s].count)
               }
             }
-
+            this.page = p
             this.loading = false
           })
         }
@@ -1355,18 +1394,7 @@ export default {
     loading: function (newVal) {
       if (newVal == false && this.active_design == 1) {
         // cart-hover-effect
-        setTimeout(() => {
-          let buttons = document.getElementsByClassName('d-button--cart')
-
-          for (let i = 0; i < buttons.length; i++) {
-            buttons[i].addEventListener('mouseover', function () {
-              buttons[i].previousElementSibling.classList.add('d-counter--black')
-            })
-            buttons[i].addEventListener('mouseout', function () {
-              buttons[i].previousElementSibling.classList.remove('d-counter--black')
-            })
-          }
-        }, 100)
+        this.setHovers()
       }
     },
   },

@@ -7,10 +7,13 @@
         <!-- Шапка -->
         <div class="product-card__header">
           <!-- Продавец -->
-          <div
-            class="product-card__seller"
-            @click="active_design == 0 ? (this.seller_info = true) : ''"
-          >
+          <div class="product-card__seller product-card__seller-table">
+            <p class="product-card__seller-name">
+              {{ offer.org.name
+              }}<span class="product-card__seller-store">г. {{ offer.store_city }}</span>
+            </p>
+          </div>
+          <div class="product-card__seller" @click="this.seller_info = true">
             <img
               :src="offer.store_image"
               :alt="offer.org.name"
@@ -18,10 +21,7 @@
               v-if="offer.store_image"
             />
             <p class="product-card__seller-name">
-              {{ offer.org.name
-              }}<span class="product-card__seller-store" v-if="active_design == 1"
-                >г. {{ offer.store_city }}</span
-              >
+              {{ offer.org.name }}
             </p>
             <button class="product-card__seller-button">
               <i class="d-icon-angle-rounded-bottom product-card__seller-button-icon"></i>
@@ -85,10 +85,7 @@
                   {{ offer.price.toLocaleString('ru') }} ₽
                 </p>
               </div>
-              <div
-                class="product-card__price-rrcdiscount"
-                v-if="active_design == 1 && offer.prices.rrc_discount > 0"
-              >
+              <div class="product-card__price-rrcdiscount" v-if="offer.prices.rrc_discount > 0">
                 {{ -offer.prices.rrc_discount }}%
               </div>
               <!-- Кнопка: "Все акции" -->
@@ -97,7 +94,8 @@
                 class="product-card-vertical__promo-all"
                 @click.prevent="modalActions = true"
               >
-                <span v-if="active_design == 0">Все акции</span><span v-else>Акции</span>
+                <span class="all_sales-text">Все акции</span
+                ><span class="all_sales-text--table">Акции</span>
                 <span class="red-badge">{{ Object.keys(offer.actions).length }}</span>
                 <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
               </button>
@@ -113,7 +111,13 @@
 
             <!-- Количество -->
             <div class="product-card__count">
-              <div class="product-card__count-value">
+              <div
+                class="product-card__count-value"
+                :class="{
+                  'product-card__count-value-text-simple':
+                    this.$route.name != 'purchasesCatalogRequirement',
+                }"
+              >
                 <span class="product-card__count-label">В наличии: </span>
                 <span
                   class="product-card__count-value-text"
@@ -125,11 +129,11 @@
                   <span
                     class="redder-item"
                     v-if="Number(offer.requirement.count) > Number(offer.available)"
-                    ><span v-if="active_design == 0"
+                    ><span class="redder-item-simple"
                       >Не хватает
                       {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
                     >
-                    <span v-else
+                    <span class="redder-item-table"
                       >({{ Number(offer.requirement.count) - Number(offer.available) }} шт)</span
                     >
                   </span>
@@ -144,7 +148,7 @@
                 v-if="offer.requirement"
               >
                 <span class="product-card__count-label"><span>Ваша потребность</span>: </span>
-                <span v-if="active_design == 0">-</span>{{ Number(offer.requirement.count) }} шт
+                {{ Number(offer.requirement.count) }} шт
               </div>
             </div>
 
@@ -197,19 +201,24 @@
                     v-if="delayPrefix == ''"
                   >
                     <p class="product-card__stat-name">
-                      {{ offer.delay_type == 2 ? 'Под реал.' : 'Отсрочка' }}
+                      {{
+                        offer.delay_type == 2
+                          ? 'Под реал.'
+                          : offer.delay_type == 1
+                            ? 'Отсрочка'
+                            : 'Предоплата'
+                      }}
                     </p>
                     <p class="product-card__stat-description" v-if="offer.delay">
-                      платежа {{ offer.delay }} дней
+                      {{ Math.round(offer.delay) }} дн
                     </p>
-                    <p class="product-card__stat-description" v-else>Предоплата</p>
                   </div>
                   <div
                     class="product-card__stat-content product-card__stat-content--horizontal"
                     v-else
                   >
                     <p class="product-card__stat-name">Возможно: {{ delayPrefix }}</p>
-                    <p class="product-card__stat-description">{{ delayDays }} дней</p>
+                    <p class="product-card__stat-description">{{ Math.round(delayDays) }} дней</p>
                   </div>
                 </div>
               </div>
@@ -245,12 +254,9 @@
                 class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
                 :class="{ 'd-button--loading': this.loading, 'd-button--cart': active_design == 1 }"
               >
-                <div class="d-button__text" v-if="active_design == 0">
+                <div class="d-button__text">
                   <i class="d-icon-cart product-card__buy-icon"></i>
-                  В корзину
-                </div>
-                <div class="d-button__text" v-else>
-                  <i class="d-icon-cart product-card__buy-icon"></i>
+                  <span>В корзину</span>
                 </div>
               </button>
             </div>

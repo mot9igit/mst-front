@@ -19,7 +19,10 @@
             v-if="product.image"
           />
         </div>
-        <span class="products__title">{{ product.pagetitle }}</span>
+        <div class="products__title">
+          {{ product.pagetitle }}
+          <div class="products__title-article">Арт: {{ product.article }}</div>
+        </div>
         <button
           class="products__header-description-button"
           :class="{ 'products__header-description-button--active': showInfo }"
