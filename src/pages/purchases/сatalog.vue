@@ -151,7 +151,7 @@
           <p class="order__item-header-badge-text">{{ opt_products?.org_from?.name }}</p>
         </div>
       </h1>
-      <div class="catalog-top_filters-right catalog-top_button-container">
+      <!-- <div class="catalog-top_filters-right catalog-top_button-container">
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
@@ -166,7 +166,7 @@
         >
           <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="catalog-top_filters-cont" v-if="!loading">
       <!-- Фильтры по наличию -->
@@ -365,7 +365,7 @@
           В наличии нет товаров из комплекта
         </p> -->
       </div>
-      <div
+      <!-- <div
         class="catalog-top_filters-right catalog-top_button-container"
         v-if="
           this.$route.name == 'purchasesCatalog' || this.$route.name == 'purchasesCatalogSearch'
@@ -374,18 +374,18 @@
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
-          @click.prevent="((active_design = 0), setCalagDesign())"
+          @click.prevent="active_design = 0"
         >
           <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_box.svg" />
         </div>
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 1 }"
-          @click.prevent="((active_design = 1), setCalagDesign())"
+          @click.prevent="active_design = 1"
         >
           <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
         </div>
-      </div>
+      </div> -->
     </div>
 
     <product
@@ -522,8 +522,7 @@ export default {
       opt_products: {},
       order_id: 0,
       page: 1,
-      per_page: 25,
-      table_perpage: 50,
+      per_page: 50,
       active_design: 0,
       filter: [
         {
@@ -633,7 +632,7 @@ export default {
     updateBasket() {
       const data = {
         page: this.page,
-        perpage: this.active_design == 0 ? this.per_page : this.table_perpage,
+        perpage: this.per_page,
         filters: this.filters,
       }
       if (
@@ -685,7 +684,7 @@ export default {
       }
       const data = {
         page: this.page,
-        perpage: this.active_design == 0 ? this.per_page : this.table_perpage,
+        perpage: this.per_page,
         filters: this.filters,
         basket: cart,
       }
@@ -720,7 +719,7 @@ export default {
       }
       const data = {
         page: this.page,
-        perpage: this.active_design == 0 ? this.per_page : this.table_perpage,
+        perpage: this.per_page,
         filters: this.filters,
         basket: cart,
       }
@@ -753,7 +752,7 @@ export default {
       this.loading = true
       const data = {
         page: this.page,
-        perpage: this.active_design == 0 ? this.per_page : this.table_perpage,
+        perpage: this.per_page,
         filters: this.filters,
       }
       if (this.$route.name == 'purchasesCatalogSearch') {
@@ -794,7 +793,7 @@ export default {
       }
       const data = {
         page: 1,
-        perpage: this.active_design == 0 ? this.per_page : this.table_perpage,
+        perpage: this.per_page,
         filters: this.filters,
       }
       if (this.$route.name == 'purchasesCatalogSearch') {
@@ -1103,29 +1102,12 @@ export default {
       }
       this.$emit('createReqAndGo', data)
     },
-    setHovers() {
-      setTimeout(() => {
-        let buttons = document.getElementsByClassName('d-button--cart')
-
-        for (let i = 0; i < buttons.length; i++) {
-          buttons[i].addEventListener('mouseover', function () {
-            buttons[i].previousElementSibling.classList.add('d-counter--black')
-          })
-          buttons[i].addEventListener('mouseout', function () {
-            buttons[i].previousElementSibling.classList.remove('d-counter--black')
-          })
-        }
-      }, 500)
-    },
-    setCalagDesign() {
-      localStorage.setItem('global.active_catalog_design', this.active_design)
-    },
   },
   mounted() {
     this.date_now = new Date()
     const data = {
       page: this.page,
-      perpage: this.active_design == 0 ? this.per_page : this.table_perpage,
+      perpage: this.per_page,
     }
 
     if (this.$route.name == 'purchasesCatalogSearch') {
@@ -1168,17 +1150,54 @@ export default {
       })
     }
     this.filters.all.value = true
-    this.setCalagDesign()
 
     // ресайз окна - вовремя убрать табличный вид
     window.addEventListener(
       'resize',
       function () {
         let sh = document.querySelector('#app')
-        let design = localStorage.getItem('global.active_catalog_design')
-        if ((sh.clientWidth <= 1280) & (design == 1)) {
-          localStorage.setItem('global.active_catalog_design', 0)
+        let cards = document.getElementsByClassName('product-item-vertical')
+        let switches_cont = document.querySelector('.catalog-top_filters-right')
+        let switches = document.getElementsByClassName('catalog-top_filters-right-item')
+        let act = document.getElementsByClassName('product-item-vertical--table')
+        let mode = 0
+        if (act.length > 0) {
+          mode = 1
         }
+
+        if (sh.clientWidth <= 1280 && mode == 1) {
+          for (var i in cards) {
+            if (cards[i].classList.contains('product-item-vertical--table')) {
+              cards[i].classList.remove('product-item-vertical--table')
+            }
+          }
+          for (var ii in switches) {
+            if (switches[ii].classList.contains('catalog-top_filters-right-item--active')) {
+              switches[ii].classList.remove('catalog-top_filters-right-item--active')
+            } else {
+              switches[ii].classList.add('catalog-top_filters-right-item--active')
+            }
+          }
+          setTimeout(() => {
+            mode = 0
+          }, 500)
+        }
+
+        // if (sh.clientWidth < 1280 && act.length == 0 && switches_cont) {
+        //   if (switches_cont.style.display == 'flex') {
+        //     setTimeout(() => {
+        //       switches_cont.style.display = 'none'
+        //     }, 500)
+        //   }
+        // }
+
+        // if (sh.clientWidth > 1280 && switches_cont) {
+        //   if (switches_cont.style.display == 'none') {
+        //     setTimeout(() => {
+        //       switches_cont.style.display = 'flex'
+        //     }, 500)
+        //   }
+        // }
       },
       true,
     )
@@ -1199,27 +1218,17 @@ export default {
     }),
     pagesCount() {
       let pages = 1
-      let perpage = 25
-      if (this.active_design == 0) {
-        perpage = this.per_page
-      } else {
-        perpage = this.table_perpage
-      }
 
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-        pages = Math.ceil(this.optOfferProducts.total / perpage)
+        pages = Math.ceil(this.optOfferProducts.total / this.per_page)
       } else {
-        pages = Math.ceil(this.optProducts.total / perpage)
+        pages = Math.ceil(this.optProducts.total / this.per_page)
       }
       if (pages === 0) {
         pages = 1
       }
       //console.log(pages)
       return pages
-    },
-    localDesign() {
-      let dis = localStorage.getItem('global.active_catalog_design')
-      return dis
     },
   },
   watch: {
@@ -1289,118 +1298,14 @@ export default {
         newVal[d] = new Date(newVal[d].getTime() - newVal[d].getTimezoneOffset() * 60000)
       }
     },
-    active_design: function (newVal) {
-      if (newVal == 1) {
-        // cart-hover-effect
-        this.loading = true
-        let p = Math.ceil((this.per_page * this.page) / this.table_perpage)
-
-        const data = {
-          page: p,
-          perpage: this.table_perpage,
-          filters: this.filters,
-        }
-        if (this.$route.name == 'purchasesCatalogSearch') {
-          data.search = this.$route.query.search
-        }
-        if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-          data.req = this.$route.query.requirement_id
-        }
-
-        if (this.$route.name == 'purchasesCatalogComplect') {
-          data.action_id = this.$route.params.action_id
-        }
-        if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-          data.search = this.$route.query.search
-          data.active_store = this.basketOfferWarehouse
-
-          this.getOfferOptProducts(data).then(() => {
-            this.opt_products = this.optOfferProducts
-            this.page = p
-            this.loading = false
-          })
-        } else {
-          this.getOptProducts(data).then(() => {
-            this.opt_products = this.optProducts
-            for (var i in this.opt_products.items) {
-              let stores = this.opt_products.items[i].stores
-              for (var s in stores) {
-                let r_id = stores[s].remain_id
-                this.addItems[r_id] = {}
-                this.addItems[r_id].item = stores[s]
-                this.addItems[r_id].count = Number(stores[s].count)
-              }
-            }
-            this.page = p
-            this.loading = false
-          })
-        }
-        this.setHovers()
-      } else {
-        this.loading = true
-        let p = 1
-        if (this.pagesCount > 1) {
-          p = Math.floor((this.page * this.table_perpage) / this.per_page)
-          if (p < 1) {
-            p = 1
-          } else {
-            if (p > this.pagesCount) {
-              p = this.pagesCount
-            }
-          }
-        }
-        const data = {
-          page: p,
-          perpage: this.per_page,
-          filters: this.filters,
-        }
-        if (this.$route.name == 'purchasesCatalogSearch') {
-          data.search = this.$route.query.search
-        }
-        if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-          data.req = this.$route.query.requirement_id
-        }
-
-        if (this.$route.name == 'purchasesCatalogComplect') {
-          data.action_id = this.$route.params.action_id
-        }
-        if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-          data.search = this.$route.query.search
-          data.active_store = this.basketOfferWarehouse
-
-          this.getOfferOptProducts(data).then(() => {
-            this.opt_products = this.optOfferProducts
-            this.page = p
-            this.loading = false
-          })
-        } else {
-          this.getOptProducts(data).then(() => {
-            this.opt_products = this.optProducts
-            for (var i in this.opt_products.items) {
-              let stores = this.opt_products.items[i].stores
-              for (var s in stores) {
-                let r_id = stores[s].remain_id
-                this.addItems[r_id] = {}
-                this.addItems[r_id].item = stores[s]
-                this.addItems[r_id].count = Number(stores[s].count)
-              }
-            }
-            this.page = p
-            this.loading = false
-          })
-        }
-      }
-    },
-    loading: function (newVal) {
-      if (newVal == false && this.active_design == 1) {
-        // cart-hover-effect
-        this.setHovers()
-      }
-    },
   },
 }
 </script>
 <style lang="scss">
+.dis_no {
+  position: absolute;
+  top: -100%;
+}
 .products__top-title {
   margin-bottom: 48px;
 }
@@ -1734,7 +1639,7 @@ export default {
 }
 @media (width <= 1280px) {
   .catalog-top_filters-right {
-    display: none;
+    //display: none;
   }
   // фильтры в наличии
   .catalog-top_filters {

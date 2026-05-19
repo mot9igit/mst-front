@@ -9,8 +9,8 @@
           <!-- Продавец -->
           <div class="product-card__seller product-card__seller-table">
             <p class="product-card__seller-name">
-              {{ offer.org.name
-              }}<span class="product-card__seller-store">г. {{ offer.store_city }}</span>
+              <span class="product-card__seller-org">{{ offer.org.name }} </span>
+              <span class="product-card__seller-store"> г. {{ offer.store_city }}</span>
             </p>
           </div>
           <div class="product-card__seller" @click="this.seller_info = true">
@@ -237,6 +237,14 @@
                 'loading-counter': this.loading,
               }"
             >
+              <button
+                @click.prevent="addBasket(offer, count)"
+                class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy d-button--cart"
+              >
+                <div class="d-button__text">
+                  <i class="d-icon-cart product-card__buy-icon"></i>
+                </div>
+              </button>
               <Counter
                 @ElemCount="ElemCount"
                 :min="count_min"
@@ -252,11 +260,11 @@
               <button
                 @click.prevent="addBasket(offer, count)"
                 class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
-                :class="{ 'd-button--loading': this.loading, 'd-button--cart': active_design == 1 }"
+                :class="{ 'd-button--loading': this.loading }"
               >
                 <div class="d-button__text">
                   <i class="d-icon-cart product-card__buy-icon"></i>
-                  <span>В корзину</span>
+                  В корзину
                 </div>
               </button>
             </div>
@@ -460,6 +468,14 @@
               'loading-counter': this.loading,
             }"
           >
+            <button
+              @click.prevent="addBasket(offer, count)"
+              class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy d-button--cart"
+            >
+              <div class="d-button__text">
+                <i class="d-icon-cart product-card__buy-icon"></i>
+              </div>
+            </button>
             <Counter
               @ElemCount="ElemCount"
               :min="count_min"
@@ -744,10 +760,6 @@ export default {
       default: () => {
         return {}
       },
-    },
-    active_design: {
-      type: Number,
-      default: 0,
     },
   },
   mounted() {

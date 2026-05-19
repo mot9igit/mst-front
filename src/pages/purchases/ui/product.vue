@@ -7,8 +7,24 @@
     <div class="products__header" :class="{ 'products__header--nooffer': !showOffers }">
       <!-- Левая часть шапки страницы -->
       <div
+        class="products__header-left--table products__header-left"
+        :class="{ 'products__header-left--active': showInfo }"
+      >
+        <div class="products__title">
+          {{ product.pagetitle }}
+          <div class="products__title-article">Арт: {{ product.article }}</div>
+        </div>
+        <button
+          class="products__header-description-button"
+          @click.prevent="showInfo ? (modalProduct = true) : ''"
+          :class="{ 'products__header-description-button--active': showInfo }"
+        >
+          <i class="d-icon-arrow-right products__header-description-button-icon"></i>
+        </button>
+      </div>
+      <div
         class="products__header-left"
-        @click.prevent="showInfo ? (modalProduct = true) : (modalProduct = false)"
+        @click.prevent="showInfo ? (modalProduct = true) : ''"
         :class="{ 'products__header-left--active': showInfo }"
       >
         <div class="products__image-container">
@@ -21,7 +37,6 @@
         </div>
         <div class="products__title">
           {{ product.pagetitle }}
-          <div class="products__title-article">Арт: {{ product.article }}</div>
         </div>
         <button
           class="products__header-description-button"
@@ -74,7 +89,6 @@
           :key="new Date().getTime() + '_' + Number(item.id) + '_' + index"
           :offer="item"
           :offerData="product"
-          :active_design="active_design"
           @updateBasket="updateBasket()"
           @updateCatalog="updateCatalog()"
           @counter="counter"
@@ -86,7 +100,6 @@
           :key="new Date().getTime() + '_' + Number(item.id) + '_' + index"
           :offer="item"
           :offerData="product"
-          :active_design="active_design"
           @updateBasket="updateBasket()"
           @updateCatalog="updateCatalog()"
         />

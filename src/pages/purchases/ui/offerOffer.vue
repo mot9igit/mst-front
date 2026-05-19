@@ -226,6 +226,14 @@
                 'loading-counter': this.loading,
               }"
             >
+              <button
+                @click.prevent="addBasket(offer, count)"
+                class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy d-button--cart"
+              >
+                <div class="d-button__text">
+                  <i class="d-icon-cart product-card__buy-icon"></i>
+                </div>
+              </button>
               <Counter
                 @ElemCount="ElemCount"
                 :min="
@@ -247,12 +255,9 @@
                 class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
                 :class="{ 'd-button--loading': this.loading }"
               >
-                <div class="d-button__text" v-if="active_design == 0">
+                <div class="d-button__text">
                   <i class="d-icon-cart product-card__buy-icon"></i>
                   В корзину
-                </div>
-                <div class="d-button__text" v-else>
-                  <i class="d-icon-cart product-card__buy-icon"></i>
                 </div>
               </button>
             </div>

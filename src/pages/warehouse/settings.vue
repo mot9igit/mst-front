@@ -304,7 +304,7 @@ export default {
       this.loading = true
       this.unsetOrgShipments()
       this.page = data.page
-      this.getOrgStores({
+      this.getOrgShipments({
         page: this.pageShip,
         perpage: this.pagination_items_per_page_ship,
         filter: data.filter,
