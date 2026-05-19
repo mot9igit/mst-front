@@ -289,7 +289,7 @@ export default {
     filterShip(data) {
       this.loading = true
       this.unsetOrgShipments()
-      this.page = 1
+      this.pageShip = 1
       console.log(data)
       this.getOrgShipments({
         page: this.pageShip,
@@ -303,7 +303,7 @@ export default {
     paginateShip(data) {
       this.loading = true
       this.unsetOrgShipments()
-      this.page = data.page
+      this.pageShip = data.page
       this.getOrgShipments({
         page: this.pageShip,
         perpage: this.pagination_items_per_page_ship,
