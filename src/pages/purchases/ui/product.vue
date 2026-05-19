@@ -2,7 +2,7 @@
   <!-- <div class="product-item"> -->
   <div
     class="product-item product-item-vertical"
-    :class="{ 'product-item product-item-vertical--table': active_design == 1 }"
+    :class="{ 'product-item-vertical--table': active_design == 1 }"
   >
     <div class="products__header" :class="{ 'products__header--nooffer': !showOffers }">
       <!-- Левая часть шапки страницы -->

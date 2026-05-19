@@ -118,11 +118,11 @@
                   <span
                     class="redder-item"
                     v-if="Number(offer.requirement.count) > Number(offer.available)"
-                    ><span v-if="active_design == 0"
+                    ><span class="redder-item-simple"
                       >Не хватает
                       {{ Number(offer.requirement.count) - Number(offer.available) }} шт.</span
                     >
-                    <span v-else
+                    <span class="redder-item-table"
                       >({{ Number(offer.requirement.count) - Number(offer.available) }} шт)</span
                     >
                   </span>
@@ -137,7 +137,7 @@
                 v-if="offer.requirement"
               >
                 <span class="product-card__count-label">Ваша потребность: </span>
-                <span v-if="active_design == 0">-</span>{{ Number(offer.requirement.count) }} шт
+                {{ Number(offer.requirement.count) }} шт
               </div>
             </div>
 
@@ -743,10 +743,6 @@ export default {
       default: () => {
         return {}
       },
-    },
-    active_design: {
-      type: Number,
-      default: 0,
     },
   },
   mounted() {

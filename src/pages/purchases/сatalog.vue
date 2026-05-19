@@ -151,7 +151,7 @@
           <p class="order__item-header-badge-text">{{ opt_products?.org_from?.name }}</p>
         </div>
       </h1>
-      <!-- <div class="catalog-top_filters-right catalog-top_button-container">
+      <div class="catalog-top_filters-right catalog-top_button-container">
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
@@ -162,11 +162,11 @@
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 1 }"
-          @click.prevent="active_design = 1"
+          @click.prevent="setDesign()"
         >
           <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
         </div>
-      </div> -->
+      </div>
     </div>
     <div class="catalog-top_filters-cont" v-if="!loading">
       <!-- Фильтры по наличию -->
@@ -365,7 +365,7 @@
           В наличии нет товаров из комплекта
         </p> -->
       </div>
-      <!-- <div
+      <div
         class="catalog-top_filters-right catalog-top_button-container"
         v-if="
           this.$route.name == 'purchasesCatalog' || this.$route.name == 'purchasesCatalogSearch'
@@ -385,7 +385,7 @@
         >
           <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
         </div>
-      </div> -->
+      </div>
     </div>
 
     <product
@@ -1102,6 +1102,12 @@ export default {
       }
       this.$emit('createReqAndGo', data)
     },
+    setDesign() {
+      this.active_design = 0
+      setTimeout(() => {
+        this.active_design = 1
+      }, 5)
+    },
   },
   mounted() {
     this.date_now = new Date()
@@ -1160,44 +1166,38 @@ export default {
         let switches_cont = document.querySelector('.catalog-top_filters-right')
         let switches = document.getElementsByClassName('catalog-top_filters-right-item')
         let act = document.getElementsByClassName('product-item-vertical--table')
+
         let mode = 0
         if (act.length > 0) {
           mode = 1
         }
 
         if (sh.clientWidth <= 1280 && mode == 1) {
-          for (var i in cards) {
+          for (var i = 0; i < cards.length; i++) {
             if (cards[i].classList.contains('product-item-vertical--table')) {
               cards[i].classList.remove('product-item-vertical--table')
             }
           }
-          for (var ii in switches) {
+          for (var ii = 0; ii < switches.length; ii++) {
             if (switches[ii].classList.contains('catalog-top_filters-right-item--active')) {
               switches[ii].classList.remove('catalog-top_filters-right-item--active')
             } else {
               switches[ii].classList.add('catalog-top_filters-right-item--active')
             }
           }
-          setTimeout(() => {
-            mode = 0
-          }, 500)
+          mode = 0
         }
 
-        // if (sh.clientWidth < 1280 && act.length == 0 && switches_cont) {
-        //   if (switches_cont.style.display == 'flex') {
-        //     setTimeout(() => {
-        //       switches_cont.style.display = 'none'
-        //     }, 500)
-        //   }
-        // }
-
-        // if (sh.clientWidth > 1280 && switches_cont) {
-        //   if (switches_cont.style.display == 'none') {
-        //     setTimeout(() => {
-        //       switches_cont.style.display = 'flex'
-        //     }, 500)
-        //   }
-        // }
+        if (sh.clientWidth < 1280) {
+          if (!switches_cont.classList.contains('dis_no')) {
+            switches_cont.classList.add('dis_no')
+          }
+        }
+        if (sh.clientWidth > 1280 && switches_cont) {
+          if (switches_cont.classList.contains('dis_no')) {
+            switches_cont.classList.remove('dis_no')
+          }
+        }
       },
       true,
     )
