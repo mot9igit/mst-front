@@ -257,4 +257,7 @@ app.config.globalProperties.$filters = {
   round(value) {
     return value.toFixed(2)
   },
+  toNumber(value) {
+    return value.replace(/\D/g, '')
+  },
 }

@@ -3441,6 +3441,7 @@ export default {
         ],
         postponementPeriod: 0,
         condition: { name: 'Скидка без условий', key: 0 },
+
         conditionMinSum: 0,
         conditionMinCount: 0,
         conditionMinGeneralCount: 0,
@@ -4755,7 +4756,7 @@ export default {
         this.form.typeDeliveryPercent = Number(newVal.delivery_type_percent)
         this.form.delay = newVal.delay_graph
         this.form.typeDelay = String(newVal.delay_type)
-        this.form.conditionMinSum = newVal.condition_min_sum
+
         this.form.conditionOrders = newVal.condition_orders
         this.form.regions = newVal.regions
         //if(this.form.regions.length && !this.form.regionsTemp.length){
@@ -4776,7 +4777,8 @@ export default {
         this.form.paymentDelivery = newVal.payer
         this.form.compabilityMode = newVal.compatibility_discount_mode
         this.form.compatibilityDiscount = String(newVal.compatibility_discount)
-        this.form.conditionMinSum = newVal.condition_min_sum
+
+        this.form.conditionMinSum = this.$filters.toNumber(newVal.condition_min_sum)
         this.form.conditionMinCount = newVal.condition_SKU
         this.form.conditionMinGeneralCount = newVal.condition_min_count
         if (newVal.product_groups) {
