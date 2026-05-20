@@ -3971,6 +3971,14 @@ aside button {
       color: #757575;
       display: inline-flex;
     }
+    span {
+      max-height: 52px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
   }
   .products__header-description-button {
     height: 32px;
@@ -4505,6 +4513,14 @@ aside button {
         font-weight: 500;
         font-size: 12px;
         line-height: 123%;
+      }
+      span {
+        max-height: 36px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
       }
     }
     .products__header-description-button {

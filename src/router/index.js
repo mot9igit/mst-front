@@ -82,6 +82,13 @@ const router = createRouter({
           },
           children: [
             {
+              path: '/dashboard',
+              props: true,
+              name: 'DashBoard',
+              label: 'Дашборд проекта [*придумайте название проекта*]',
+              component: () => import('../pages/dashboard/index.vue'),
+            },
+            {
               path: '/profile',
               meta: {
                 breadcrumb: {
@@ -119,6 +126,7 @@ const router = createRouter({
                 },
               ],
             },
+
             {
               path: '/:id',
               meta: {

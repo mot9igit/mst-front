@@ -11,7 +11,7 @@
         :class="{ 'products__header-left--active': showInfo }"
       >
         <div class="products__title">
-          {{ product.pagetitle }}
+          <span>{{ product.pagetitle }}</span>
           <div class="products__title-article">Арт: {{ product.article }}</div>
         </div>
         <button
