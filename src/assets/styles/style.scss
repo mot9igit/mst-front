@@ -4429,6 +4429,11 @@ aside button {
   gap: 0px;
   width: 185px;
 }
+.product-item-vertical--table .products__header.products__header--nooffer {
+  border-bottom: none;
+  padding-bottom: 0 !important;
+  margin-bottom: 0;
+}
 @media (width <= 1600px) {
   .product-item-vertical--table .product-card__vertical .product-card__seller-table {
     min-width: 200px;
