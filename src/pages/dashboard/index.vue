@@ -6,6 +6,259 @@
     <div class="d-top">
       <breadcrumbs />
     </div>
+    <div class="promos__header">
+      <h1 class="promos__header-title">Дашборд проекта [*придумайте название организации*]</h1>
+    </div>
+
+    <i class="d-icon-window"></i>000";
+
+    <i class="d-icon-warning"></i>001";
+
+    <i class="d-icon-times"></i>002";
+
+    <i class="d-icon-search"></i>003";
+
+    <i class="d-icon-plus"></i>004";
+
+    <i class="d-icon-messages"></i>005";
+
+    <i class="d-icon-logo-800"></i>006";
+
+    <i class="d-icon-logo-640"></i>007";
+
+    <i class="d-icon-logo-400"></i>008";
+
+    <i class="d-icon-logo-320"></i>009";
+
+    <i class="d-icon-logo-1920"></i>00a";
+
+    <i class="d-icon-location"></i>00b";
+
+    <i class="d-icon-geo"></i>00c";
+
+    <i class="d-icon-angle-rounded"></i>00d";
+
+    <i class="d-icon-arrow"></i>00e";
+
+    <i class="d-icon-upload"></i>00f";
+
+    <i class="d-icon-trolley"></i>010";
+
+    <i class="d-icon-star"></i>011";
+
+    <i class="d-icon-refresh"></i>012";
+
+    <i class="d-icon-bag"></i>013";
+
+    <i class="d-icon-profile"></i>014";
+
+    <i class="d-icon-pen"></i>015";
+
+    <i class="d-icon-list"></i>016";
+
+    <i class="d-icon-info"></i>017";
+
+    <i class="d-icon-exit"></i>018";
+
+    <i class="d-icon-catalog"></i>019";
+
+    <i class="d-icon-cart"></i>01a";
+
+    <i class="d-icon-upload-solid"></i>01b";
+
+    <i class="d-icon-box"></i>01c";
+
+    <i class="d-icon-search-big"></i>01d";
+
+    <i class="d-icon-question"></i>01e";
+
+    <i class="d-icon-angle"></i>01f";
+
+    <i class="d-icon-bell"></i>020";
+
+    <i class="d-icon-catalog-solid"></i>021";
+
+    <i class="d-icon-burger"></i>022";
+
+    <i class="d-icon-bell-solid"></i>023";
+
+    <i class="d-icon-cart-solid"></i>024";
+
+    <i class="d-icon-boxes"></i>025";
+
+    <i class="d-icon-wallet"></i>026";
+
+    <i class="d-icon-user-star"></i>027";
+
+    <i class="d-icon-upper-case"></i>028";
+
+    <i class="d-icon-u"></i>029";
+
+    <i class="d-icon-truck"></i>02a";
+
+    <i class="d-icon-trash"></i>02b";
+
+    <i class="d-icon-trade"></i>02c";
+
+    <i class="d-icon-toggles"></i>02d";
+
+    <i class="d-icon-quote"></i>02e";
+
+    <i class="d-icon-picture"></i>02f";
+
+    <i class="d-icon-percent"></i>030";
+
+    <i class="d-icon-pen2"></i>031";
+
+    <i class="d-icon-number-list"></i>032";
+
+    <i class="d-icon-mixer"></i>033";
+
+    <i class="d-icon-marker"></i>034";
+
+    <i class="d-icon-list2"></i>035";
+
+    <i class="d-icon-percent-rounded"></i>036";
+
+    <i class="d-icon-lines"></i>037";
+
+    <i class="d-icon-i"></i>038";
+
+    <i class="d-icon-grid"></i>039";
+
+    <i class="d-icon-doc-plus"></i>03a";
+
+    <i class="d-icon-danger"></i>03b";
+
+    <i class="d-icon-cube"></i>03c";
+
+    <i class="d-icon-copy"></i>03d";
+
+    <i class="d-icon-check-list"></i>03e";
+
+    <i class="d-icon-calendar3"></i>03f";
+
+    <i class="d-icon-calendar2"></i>040";
+
+    <i class="d-icon-calendar"></i>041";
+
+    <i class="d-icon-b"></i>042";
+
+    <i class="d-icon-angle-rounded-top"></i>043";
+
+    <i class="d-icon-angle-rounded-right"></i>044";
+
+    <i class="d-icon-angle-rounded-left"></i>045";
+
+    <i class="d-icon-angle-rounded-bottom"></i>046";
+
+    <i class="d-icon-a"></i>047";
+
+    <i class="d-icon-minus"></i>048";
+
+    <i class="d-icon-arrow-right"></i>049";
+
+    <i class="d-icon-arrow-left"></i>04a";
+
+    <i class="d-icon-upload-cloud"></i>04b";
+
+    <i class="d-icon-check"></i>04c";
+
+    <i class="d-icon-delete"></i>04d";
+
+    <i class="d-icon-add"></i>04e";
+
+    <i class="d-icon-message-status"></i>04f";
+
+    <i class="d-icon-link"></i>050";
+
+    <i class="d-icon-times-rounded"></i>051";
+
+    <i class="d-icon-check-rounded"></i>052";
+
+    <i class="d-icon-mail"></i>053";
+
+    <i class="d-icon-phone"></i>054";
+
+    <i class="d-icon-star-flat"></i>055";
+
+    <i class="d-icon-shopping-bag"></i>056";
+
+    <i class="d-icon-box-flat"></i>057";
+
+    <i class="d-icon-times-flat"></i>058";
+
+    <i class="d-icon-plus-flat"></i>059";
+
+    <i class="d-icon-eye"></i>05a";
+
+    <i class="d-icon-download"></i>05b";
+
+    <i class="d-icon-doc-accept"></i>05c";
+
+    <i class="d-icon-location-flat"></i>05d";
+
+    <i class="d-icon-upload2"></i>05e";
+
+    <i class="d-icon-angle-rounded-sm-top"></i>05f";
+
+    <i class="d-icon-eye-open"></i>060";
+
+    <i class="d-icon-telephone"></i>061";
+
+    <i class="d-icon-mail-bold"></i>062";
+
+    <i class="d-icon-angle-rounded-bottom-bold"></i>063";
+
+    <i class="d-icon-mail2"></i>064";
+
+    <i class="d-icon-card-plus"></i>065";
+
+    <i class="d-icon-doc"></i>066";
+
+    <i class="d-icon-bag-2"></i>067";
+
+    <i class="d-icon-sales"></i>068";
+
+    <i class="d-icon-company"></i>069";
+
+    <i class="d-icon-boxes-2"></i>06a";
+
+    <i class="d-icon-people"></i>06b";
+
+    <i class="d-icon-shuffle"></i>06c";
+
+    <i class="d-icon-line-chart"></i>06d";
+
+    <i class="d-icon-layers"></i>06e";
+
+    <i class="d-icon-conveyor"></i>06f";
+
+    <i class="d-icon-user"></i>070";
+
+    <i class="d-icon-lock-open"></i>071";
+
+    <i class="d-icon-focus"></i>072";
+
+    <i class="d-icon-faq"></i>073";
+
+    <i class="d-icon-user-times"></i>074";
+
+    <i class="d-icon-plus-rounded"></i>075";
+
+    <i class="d-icon-list3"></i>076";
+
+    <i class="d-icon-loading"></i>077";
+
+    <i class="d-icon-cursor"></i>078";
+
+    <i class="d-icon-swap"></i>079";
+
+    <i class="d-icon-excel"></i>07a";
+
+    <i class="d-icon-file"></i>07b";
+
+    <i class="d-icon-power"></i>07c";
 
     <div class="promo__cards-wrap">
       <div class="dart-row">
@@ -13,7 +266,7 @@
           <div class="promotions__card promotions__card--height">
             <div class="promotions__card-header">
               <div class="promotions__card-header-left">
-                <i class="d-icon-lines promotions__card-icon"></i>
+                <i class="d-icon-card-plus promotions__card-icon"></i>
                 <p class="promotions__card-title">Контент акции</p>
               </div>
             </div>
