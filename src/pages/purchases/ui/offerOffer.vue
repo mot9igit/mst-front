@@ -73,6 +73,9 @@
                 <p class="product-card__price-value-discounted" v-else>
                   {{ offer.price.toLocaleString('ru') }} ₽
                 </p>
+                <p class="product-card__rrcdiscount" v-if="offer.prices.rrc_discount > 0">
+                  {{ -offer.prices.rrc_discount }}%
+                </p>
               </div>
               <div class="product-card__price-rrcdiscount" v-if="offer.prices.rrc_discount > 0">
                 {{ -offer.prices.rrc_discount }}%
@@ -84,10 +87,9 @@
                 class="product-card-vertical__promo-all"
                 @click.prevent="modalActions = true"
               >
-                <span class="all_sales-text">Все акции</span
-                ><span class="all_sales-text--table">Акции</span>
+                <span class="all_sales-text">Акции</span>
+
                 <span class="red-badge">{{ Object.keys(offer.actions).length }}</span>
-                <i class="d-icon-arrow-right product-card-vertical__seller-button-icon"></i>
               </button>
             </div>
 
