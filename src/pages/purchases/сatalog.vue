@@ -155,7 +155,7 @@
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
-          @click.prevent="active_design = 0"
+          @click.prevent="((active_design = 0), localStorage.setItem('global.catalog_design', 0))"
         >
           <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_box.svg" />
         </div>
@@ -374,14 +374,14 @@
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
-          @click.prevent="active_design = 0"
+          @click.prevent="((active_design = 0), localStorage.setItem('global.catalog_design', 0))"
         >
           <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_box.svg" />
         </div>
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 1 }"
-          @click.prevent="active_design = 1"
+          @click.prevent="setDesign()"
         >
           <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
         </div>
@@ -1106,10 +1106,15 @@ export default {
       this.active_design = 0
       setTimeout(() => {
         this.active_design = 1
+        localStorage.setItem('global.catalog_design', this.active_design)
       }, 5)
     },
   },
   mounted() {
+    let dis = localStorage.getItem('global.catalog_design')
+    if (dis) {
+      this.active_design = dis
+    }
     this.date_now = new Date()
     const data = {
       page: this.page,
@@ -1185,6 +1190,7 @@ export default {
               switches[ii].classList.add('catalog-top_filters-right-item--active')
             }
           }
+          localStorage.setItem('global.catalog_design', 0)
           mode = 0
         }
 
@@ -1279,6 +1285,13 @@ export default {
     $route() {
       //this.addItems = {}
       this.updatePage(0)
+      let switches = document.getElementsByClassName('catalog-top_filters-right-item')
+      if (switches[0].classList.contains('catalog-top_filters-right-item--active')) {
+        this.active_design = 0
+      } else {
+        this.active_design = 1
+      }
+      localStorage.setItem('global.catalog_design', this.active_design)
       //console.log(Object.keys(this.addItems).length)
       // if (this.$route.params.warehouse_id) {
       // 	this.get_opt_warehouse().then((this.opt_warehouse = this.optwarehouse));
