@@ -3945,7 +3945,7 @@ aside button {
 }
 .product-item-vertical--table .products__header-left:not(.products__header-left--table),
 .product-item-vertical--table .product-card__rrcdiscount {
-  display: none;
+  display: none !important;
 }
 .product-item-vertical--table .products__header-left.products__header-left--table {
   padding: 2px 0px;
