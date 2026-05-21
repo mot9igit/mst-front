@@ -88,6 +88,7 @@ const router = createRouter({
               label: 'Дашборд проекта [*придумайте название проекта*]',
               component: () => import('../pages/dashboard/index.vue'),
             },
+
             {
               path: '/profile',
               meta: {
@@ -141,6 +142,13 @@ const router = createRouter({
                   props: true,
                   label: 'Организация',
                   component: () => import('../pages/org/index.vue'),
+                },
+                {
+                  path: 'complex',
+                  props: true,
+                  name: 'ComplexAnalysis',
+                  label: 'Комплексный анализ',
+                  component: () => import('../pages/dashboard/complex.vue'),
                 },
                 {
                   path: 'purchases',

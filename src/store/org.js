@@ -26,6 +26,7 @@ export default {
     storeSettings: {},
     shipments: {},
     shipment: {},
+    clients: {},
   },
   actions: {
     async getOrg({ commit }) {
@@ -390,6 +391,17 @@ export default {
 
       return response
     },
+    async getClientsStores({ commit }) {
+      const data = {
+        action: 'get/clients/stores',
+        id: router.currentRoute._value.params.id,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_CLIENTS_STORES', response.data)
+      }
+      return response
+    },
     unsetOrgStores({ commit }) {
       commit('UNSET_ORG_STORES')
     },
@@ -446,6 +458,9 @@ export default {
     UNSET_ORG_SHIPMENTS: (state) => {
       state.shipments = {}
     },
+    SET_CLIENTS_STORES: (state, data) => {
+      state.clients = data.data
+    },
   },
   getters: {
     orgActive(state) {
@@ -489,6 +504,9 @@ export default {
     },
     shipment(state) {
       return state.shipment
+    },
+    clients(state) {
+      return state.clients
     },
   },
 }

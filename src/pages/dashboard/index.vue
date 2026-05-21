@@ -1,6 +1,6 @@
 <template>
   <Toast />
-  <section class="promo sale_page shipments order_content" id="promo">
+  <section class="promo sale_page shipments order_content dashboard" id="promo">
     <Loader v-if="loading" />
     <!-- Верхушка страницы -->
     <div class="d-top">
@@ -20,15 +20,33 @@
         <label class="dashboard__header-filters-label">Выбрать период:</label>
         <DatePicker
           v-model="this.filters.value"
+          @hide="changeFilter()"
           dateFormat="dd.mm.yy"
+          :placeholder="this.filters.placeholder"
+          :manualInput="false"
+          :maxDate="date_now"
           showIcon
           showClear
           iconDisplay="input"
           selectionMode="range"
           class="catalog-filters-dates"
         >
-          <!-- :manualInput="false"
-            :maxDate="date_now" -->
+          <template #footer>
+            <div class="catalog-filters-dates-overlay-footer">
+              <button
+                class="d-button d-button-primary d-button-primary-small d-button-clear-dates"
+                @click.prevent="this.filters.value = null"
+              >
+                Сбросить
+              </button>
+              <button
+                class="d-button d-button-primary d-button-primary-small"
+                @click.prevent="changeFilter()"
+              >
+                Готово
+              </button>
+            </div>
+          </template>
         </DatePicker>
       </div>
     </div>
@@ -153,15 +171,7 @@
                         <span class="promotions__card-badge promotions__card-badge-red">-3</span>
                       </div>
                     </div>
-                    <div class="promotions__card-value-container">
-                      <button class="promotions__card-value-container-button">
-                        <span class="promotions__card-value-container-button-label">Еще</span>
-                        <span class="promotions__card-value-container-button-badge">229</span>
-                        <i
-                          class="d-icon-arrow-right promotions__card-value-container-button-icon"
-                        ></i>
-                      </button>
-                    </div>
+                    <div class="promotions__card-value-container"></div>
                   </div>
                   <div class="promotions__card-values">
                     <div class="promotions__card-value-container">
@@ -217,7 +227,12 @@
                       </div>
                     </div>
                     <div class="promotions__card-value-container">
-                      <button class="promotions__card-value-container-button">
+                      <button
+                        class="promotions__card-value-container-button"
+                        @click.prevent="
+                          ((modalDashboard = true), (title = 'Подключение поставщиков'))
+                        "
+                      >
                         <span class="promotions__card-value-container-button-label">Еще</span>
                         <span class="promotions__card-value-container-button-badge">229</span>
                         <i
@@ -305,13 +320,13 @@
                       </div>
                     </div>
                     <div class="promotions__card-value-container">
-                      <button class="promotions__card-value-container-button">
+                      <!-- <button class="promotions__card-value-container-button">
                         <span class="promotions__card-value-container-button-label">Еще</span>
                         <span class="promotions__card-value-container-button-badge">229</span>
                         <i
                           class="d-icon-arrow-right promotions__card-value-container-button-icon"
                         ></i>
-                      </button>
+                      </button> -->
                     </div>
                   </div>
                   <div class="promotions__card-values">
@@ -368,7 +383,10 @@
                       </div>
                     </div>
                     <div class="promotions__card-value-container">
-                      <button class="promotions__card-value-container-button">
+                      <button
+                        class="promotions__card-value-container-button"
+                        @click.prevent="((modalDashboard = true), (title = 'Заказы'))"
+                      >
                         <span class="promotions__card-value-container-button-label">Еще</span>
                         <span class="promotions__card-value-container-button-badge">229</span>
                         <i
@@ -417,6 +435,9 @@
         </div>
       </div>
     </div>
+    <customModal v-model="modalDashboard">
+      <modalDash :title="title" :tabs="tabs" @close="modalDashboard = false"></modalDash>
+    </customModal>
   </section>
 </template>
 <script>
@@ -426,10 +447,11 @@ import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import DatePicker from 'primevue/datepicker'
 import { mapActions, mapGetters } from 'vuex'
+import modalDash from './ui/modalDash.vue'
 
 export default {
   name: 'DashBoard',
-  components: { Loader, breadcrumbs, Toast, customModal, DatePicker },
+  components: { Loader, breadcrumbs, Toast, customModal, DatePicker, modalDash },
 
   data() {
     return {
@@ -438,6 +460,9 @@ export default {
         value: '',
         placeholder: '-- --',
       },
+      modalDashboard: false,
+      title: '',
+      tabs: {},
     }
   },
   computed: {
@@ -446,6 +471,9 @@ export default {
   mounted() {},
   methods: {
     ...mapActions({}),
+    changeFilter() {
+      console.log(this.filters.value)
+    },
   },
   watch: {},
 }
@@ -482,6 +510,7 @@ export default {
     flex-direction: column;
     align-items: start;
     gap: 16px;
+    min-width: 384px;
     &-label {
       font-weight: 400;
       font-size: 16px;
@@ -490,6 +519,82 @@ export default {
       color: #757575;
     }
   }
+}
+.dashboard {
+  .p-datepicker {
+    width: 100%;
+  }
+  .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext {
+    color: #fff;
+    background: #282828 !important;
+  }
+  .catalog-filters-dates:not(.p-inputwrapper-focus) .p-inputtext {
+    color: #282828 !important;
+    background: #fff !important;
+    border: 1px solid #75757575;
+  }
+  .catalog-filters-dates .p-inputtext {
+    font-size: 14px;
+    line-height: 18px;
+    padding-block: 11px;
+    padding-inline: 16px 22px;
+    border: none;
+    border-radius: 53px;
+    box-shadow: none;
+    cursor: pointer;
+  }
+  .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext::placeholder {
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 500;
+    color: #fff;
+  }
+  .catalog-filters-dates .p-inputtext::placeholder {
+    font-size: 14px;
+    line-height: 18px;
+    color: #282828;
+    font-weight: 500;
+  }
+  .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-datepicker-input-icon-container {
+    color: #fff;
+  }
+  .catalog-filters-dates .p-datepicker-input-icon-container {
+    color: #282828;
+    padding-left: 14px;
+    padding-right: 4px;
+    display: flex;
+    align-items: center;
+    height: 16px;
+  }
+  .catalog-filters-dates .p-datepicker-input-icon-container .p-icon {
+    width: 12px;
+    height: 14px;
+  }
+  .catalog-filters-dates .p-datepicker-input-icon-container::before {
+    content: '';
+    width: 1px;
+    height: 11px;
+    background-color: #757575;
+    display: block;
+    position: absolute;
+    top: 3px;
+    left: 0;
+  }
+
+  .p-datepicker-day-selected-range {
+    color: #fff !important;
+  }
+}
+.catalog-filters-dates-overlay-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 8px 0;
+}
+.catalog-filters-dates-overlay-footer button {
+  width: 100%;
+  box-shadow: none;
 }
 .sale_page .dashboard__content {
   .d-divider {
@@ -684,11 +789,11 @@ export default {
             color: #549d15;
           }
           .promotions__card-badge-null {
-            background-color: #ffeac4;
+            background-color: #f9efcb;
             color: #bb7900;
           }
           .promotions__card-badge-red {
-            background-color: #f4bebe;
+            background-color: #fde1dd;
             color: #f92c0d;
           }
         }
