@@ -19,7 +19,7 @@
       <div class="complex-analysis__filters">
         <div v-for="(item, index) in filters" :key="index" class="complex-analysis__filters-item">
           <div class="complex-analysis__filters-item-container" v-if="item.type == 'text'">
-            <FloatLabel>
+            <FloatLabel class="search-floatlabel">
               <InputText
                 :id="item.name"
                 :name="item.name"
@@ -96,10 +96,44 @@
           </div>
           <div class="complex-analysis__filters-item-container" v-else>{{ item.label }}</div>
         </div>
+        <div class="complex-analysis__filters-item"></div>
+        <div class="complex-analysis__filters-item">
+          <button
+            class="d-button complex-analysis__filters-item-map_button"
+            @click.prevent="modalMap = true"
+          >
+            <img class="d-icon-catalog d-icon" src="/icons/icon_arrows.svg" /> Развернуть карту
+          </button>
+        </div>
+      </div>
+      <div class="complex-analysis__badges">
+        <div class="complex-analysis__badges-item">
+          <div class="complex-analysis__badges-item-title">Остатки (общее):</div>
+          <div class="complex-analysis__badges-item-values">
+            <div class="complex-analysis__badges-item-values-value_rub">123123123 ₽</div>
+            <div class="complex-analysis__badges-item-values-value_col">123123123 шт.</div>
+          </div>
+        </div>
+        <div class="complex-analysis__badges-item">
+          <div class="complex-analysis__badges-item-title">Продажи (общее):</div>
+          <div class="complex-analysis__badges-item-values">
+            <div class="complex-analysis__badges-item-values-value_rub">123123123 ₽</div>
+            <div class="complex-analysis__badges-item-values-value_col">123123123 шт.</div>
+          </div>
+        </div>
+        <div class="complex-analysis__badges-item">
+          <div class="complex-analysis__badges-item-title">Упущенная выручка (общее):</div>
+          <div class="complex-analysis__badges-item-values">
+            <div class="complex-analysis__badges-item-values-value_rub">123123123 ₽</div>
+            <div class="complex-analysis__badges-item-values-value_col">123123123 шт.</div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <customModal v-model="modalMap"> </customModal>
+    <customModal v-model="modalMap">
+      <YandexMap></YandexMap>
+    </customModal>
   </section>
 </template>
 <script>
@@ -115,6 +149,7 @@ import FloatLabel from 'primevue/floatlabel'
 import TreeSelect from '@zanmato/vue3-treeselect'
 import '@zanmato/vue3-treeselect/dist/vue3-treeselect.min.css'
 import Slider from 'primevue/slider'
+import YandexMap from '@/shared/ui/map/MapComplex.vue'
 
 export default {
   name: 'ComplexAnalysis',
@@ -128,6 +163,7 @@ export default {
     FloatLabel,
     Slider,
     TreeSelect,
+    YandexMap,
   },
 
   data() {
@@ -435,6 +471,21 @@ export default {
     'form.lost_revenue': function (newVal) {
       this.form.lost_revenue_string = newVal[0] + ' ₽ - ' + newVal[1] + ' ₽'
     },
+    'form.sales_col': function (newVal) {
+      this.form.sales_col_string = newVal[0] + ' шт. - ' + newVal[1] + ' шт.'
+    },
+    'form.sales_rub': function (newVal) {
+      this.form.sales_rub_string = newVal[0] + ' ₽ - ' + newVal[1] + ' ₽'
+    },
+    'form.remains': function (newVal) {
+      this.form.remains_string = newVal[0] + ' шт. - ' + newVal[1] + ' шт.'
+    },
+    'form.sales_speed': function (newVal) {
+      this.form.sales_speed_string = newVal[0] + ' - ' + newVal[1]
+    },
+    'form.price': function (newVal) {
+      this.form.price_string = newVal[0] + ' ₽ - ' + newVal[1] + ' ₽'
+    },
   },
 }
 </script>
@@ -485,7 +536,7 @@ export default {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: auto;
-    gap: 32px 32px;
+    gap: 36px 32px;
     align-items: start;
     &-item {
       width: 100%;
@@ -512,7 +563,7 @@ export default {
 
           inset-inline-start: 16px;
         }
-        .p-floatlabel:after {
+        .p-floatlabel.search-floatlabel:after {
           content: '\e01d';
           font-family: 'Iconly' !important;
           position: absolute;
@@ -592,10 +643,92 @@ export default {
           .vue3-treeselect__control:hover {
           border-color: #75757575;
         }
+
+        .p-slider {
+          height: 1px;
+          min-height: 1px;
+          max-height: 1px;
+          width: 86%;
+          margin-left: 7%;
+          &-range {
+            background-color: #f92c0d;
+            height: 1px;
+            min-height: 1px;
+            max-height: 1px;
+          }
+        }
+      }
+
+      &-map_button {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background-color: #282828;
+        color: #fff;
+        font-size: 16px;
+        line-height: 21px;
+        box-shadow: none;
+        border: 1px solid #282828;
+        height: 40px;
+        img {
+          width: 16px;
+          height: 16px;
+        }
+      }
+      &-map_button:hover {
+        background-color: transparent;
+        color: #282828;
+        img {
+          filter: brightness(0.1);
+        }
+      }
+    }
+  }
+
+  &__badges {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+    gap: 24px;
+    align-items: start;
+    margin-top: 60px;
+    &-item {
+      width: 100%;
+      background: #f2f2f2;
+      border-radius: 16px;
+      padding: 32px;
+      &-title {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 18px;
+        color: #757575;
+      }
+      &-values {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        margin-top: 16px;
+        &-value_rub {
+          font-weight: 600;
+          font-size: 24px;
+          line-height: 31px;
+
+          color: #282828;
+        }
+        &-value_col {
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 21px;
+
+          color: #757575;
+        }
       }
     }
   }
 }
+
 .complex-analysis__filters-item-container-dates-footer {
   display: flex;
   flex-direction: column;

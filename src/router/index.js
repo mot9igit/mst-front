@@ -148,7 +148,24 @@ const router = createRouter({
                   props: true,
                   name: 'ComplexAnalysis',
                   label: 'Комплексный анализ',
+                  meta: {
+                    breadcrumb: {
+                      label: 'Комплексный анализ',
+                    },
+                  },
                   component: () => import('../pages/dashboard/complex.vue'),
+                },
+                {
+                  path: 'realization',
+                  props: true,
+                  name: 'RealizationReport',
+                  label: 'Отчет по реализации',
+                  meta: {
+                    breadcrumb: {
+                      label: 'Отчет по реализации',
+                    },
+                  },
+                  component: () => import('../pages/dashboard/realization.vue'),
                 },
                 {
                   path: 'purchases',
