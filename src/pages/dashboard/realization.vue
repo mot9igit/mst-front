@@ -132,6 +132,17 @@
                 </div>
               </div>
             </div>
+            <div class="realization__process-table">
+              <BaseTable
+                :items_data="processOrders.items"
+                :total="processOrders.total"
+                :table_data="table_process"
+                :pagination_items_per_page="this.pagination_items_per_page_process"
+                :pagination_offset="this.pagination_offset_process"
+                :page="this.pageProcess"
+                @paginate="paginateProcess"
+              ></BaseTable>
+            </div>
           </div>
         </TabPanel>
         <TabPanel v-else>
@@ -283,11 +294,14 @@
                     </div>
                   </div>
                 </div>
+
                 <div class="realization__orders-item-cell">
                   <div class="realization__orders-item-cell-content">
                     <i
                       class="d-icon d-icon-angle-rounded-sm-top realization__orders-item-cell-content-icon"
-                      :class="{ 'realization__orders-item-cell-content-icon': active[index] }"
+                      :class="{
+                        'realization__orders-item-cell-content-icon--active': active[index],
+                      }"
                       @click.prevent="
                         index in active ? (active[index] = !active[index]) : (active[index] = true)
                       "
@@ -299,7 +313,16 @@
                 class="realization__orders-item-row realization__orders-item-row--table"
                 v-if="active[index]"
               >
-                Тут таблица
+                <BaseTable
+                  :items_data="client.items"
+                  :total="client.total"
+                  :table_data="table_clients_orders"
+                  @viewElem="showModalOrder"
+                  :pagination_items_per_page="this.pagination_items_per_page_orders"
+                  :pagination_offset="this.pagination_offset_orders"
+                  :page="this.pageOrders"
+                  @paginate="paginateOrders"
+                ></BaseTable>
               </div>
             </div>
           </div>
@@ -307,8 +330,60 @@
       </TabPanels>
     </Tabs>
 
-    <customModal v-model="modalMap">
-      <YandexMap></YandexMap>
+    <customModal v-model="modalOrder">
+      <div class="realization__modal" v-if="this.modalOrderData">
+        <div class="realization__modal-header">
+          <div class="realization__modal-header-title">Заказ {{ modalOrderData.order_id }}</div>
+          <div class="realization__modal-header-date">
+            Дата отгрузки: {{ modalOrderData.delivery_date }}
+          </div>
+        </div>
+        <div class="realization__modal-top">
+          <div class="realization__modal-top-item">
+            <div class="realization__modal-top-item-title">Товаров на реализации:</div>
+            <div class="realization__modal-top-item-cont">
+              <div class="realization__modal-top-item-cont-value">
+                {{ modalOrderData.total_real_rub }}
+              </div>
+              <div class="realization__modal-top-item-cont-label">
+                {{ modalOrderData.total_real_col }} товара
+              </div>
+            </div>
+          </div>
+          <div class="realization__modal-top-item">
+            <div class="realization__modal-top-item-title">К выплате:</div>
+            <div class="realization__modal-top-item-cont">
+              <div class="realization__modal-top-item-cont-value">
+                {{ modalOrderData.debet }}
+              </div>
+              <div class="realization__modal-top-item-cont-label">
+                {{ modalOrderData.debet_col }} товара
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="realization__modal-table">
+          <BaseTable
+            :items_data="modalOrderData.products"
+            :total="modalOrderData.total"
+            :table_data="table_clients_products"
+            :pagination_items_per_page="this.pagination_items_per_page_products"
+            :pagination_offset="this.pagination_offset_products"
+            :page="this.pageProducts"
+            @paginate="paginateProducts"
+          ></BaseTable>
+        </div>
+        <div class="realization__modal-button">
+          <button
+            type="button"
+            href="#"
+            class="d-button d-button-primary d-button--sm-shadow"
+            @click.prevent="((modalOrder = false), (modalOrderData = {}))"
+          >
+            Ok
+          </button>
+        </div>
+      </div>
     </customModal>
   </section>
 </template>
@@ -320,15 +395,13 @@ import customModal from '@/shared/ui/Modal.vue'
 import DatePicker from 'primevue/datepicker'
 import { mapActions, mapGetters } from 'vuex'
 import InputText from 'primevue/inputtext'
-import FloatLabel from 'primevue/floatlabel'
 import TreeSelect from '@zanmato/vue3-treeselect'
 import '@zanmato/vue3-treeselect/dist/vue3-treeselect.min.css'
-import Slider from 'primevue/slider'
-import YandexMap from '@/shared/ui/map/MapComplex.vue'
 import Tabs from 'primevue/tabs'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import TabList from 'primevue/tablist'
+import BaseTable from '@/shared/ui/table/table.vue'
 
 export default {
   name: 'RealizationReport',
@@ -339,14 +412,12 @@ export default {
     customModal,
     DatePicker,
     InputText,
-    FloatLabel,
-    Slider,
     TreeSelect,
-    YandexMap,
     Tabs,
     TabPanels,
     TabPanel,
     TabList,
+    BaseTable,
   },
 
   data() {
@@ -469,8 +540,8 @@ export default {
         },
         name: {
           label: 'Товар',
-          type: '',
-          class: '',
+          type: 'text-product-items',
+          class: 'cell_centeralign',
           items: ['article', 'name'],
         },
         operation: {
@@ -501,7 +572,7 @@ export default {
           class: 'seller--cell',
         },
         buyer_name: {
-          label: 'Поставщик:',
+          label: 'Покупатель:',
           items: ['buyer_image', 'buyer_name'],
           class: 'buyer--cell',
         },
@@ -532,27 +603,70 @@ export default {
         },
         realization: {
           label: 'Объем реализации',
-          type: '',
-          class: '',
+          type: 'text-items',
+          class: 'cell_centeralign',
           items: ['saled_rub', 'saled_percent'],
         },
         dzkz: {
           label: 'Объем выплат',
-          type: '',
-          class: '',
+          type: 'text-dzkz-items',
+          class: 'cell_centeralign',
           items: ['credit_summ', 'debet_summ'],
         },
         actions: {
           label: '',
           type: 'actions',
           sort: false,
-          class: 'd-col-2 right-align',
+          class: 'cell_centeralign realization-orders-table-button',
           available: {
             view: {
-              icon: 'd-icon-pen2',
+              icon: 'd-icon-arrow-right',
               label: 'Подробнее',
+              show_label: true,
             },
           },
+        },
+      },
+      table_clients_products: {
+        image: {
+          label: 'Фото',
+          type: 'image',
+          class: 'cell_centeralign',
+        },
+        name: {
+          label: 'Наименование',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        article: {
+          label: 'Артикул',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        count: {
+          label: 'Количество',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        price: {
+          label: 'Цена',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        cost: {
+          label: 'Сумма',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        saled: {
+          label: 'Продано',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        no_saled: {
+          label: 'Остаток',
+          type: 'text',
+          class: 'cell_centeralign',
         },
       },
       form: {
@@ -572,7 +686,88 @@ export default {
         },
       },
       active: {},
-      modalMap: false,
+      pageProcess: 1,
+      pageOrders: 1,
+      pageProducts: 1,
+      modalOrder: false,
+      modalOrderData: {},
+
+      // подставные данные, удалить
+      processOrders: {
+        total: 7,
+        items: [
+          {
+            date: '10.05.2025',
+            buyer_name: '220 вольт',
+            name: '672.1.0.00 Безударная дрель ИНТЕРСКОЛ Д-10/420ЭР ',
+            operation: 'Все',
+            order_id: '123',
+            operation_cost: '1000 ₽',
+            count: '3',
+            cost: '3000 ₽',
+          },
+          {
+            date: '10.05.2025',
+            buyer_name: '220 вольт',
+            name: '672.1.0.00 Безударная дрель ИНТЕРСКОЛ Д-10/420ЭР ',
+            operation: 'Все',
+            order_id: '123',
+            operation_cost: '1000 ₽',
+            count: '3',
+            cost: '3000 ₽',
+          },
+          {
+            date: '10.05.2025',
+            buyer_name: '220 вольт',
+            name: '672.1.0.00 Безударная дрель ИНТЕРСКОЛ Д-10/420ЭР ',
+            operation: 'Все',
+            order_id: '123',
+            operation_cost: '1000 ₽',
+            count: '3',
+            cost: '3000 ₽',
+          },
+          {
+            date: '10.05.2025',
+            buyer_name: '220 вольт',
+            name: '672.1.0.00 Безударная дрель ИНТЕРСКОЛ Д-10/420ЭР ',
+            operation: 'Все',
+            order_id: '123',
+            operation_cost: '1000 ₽',
+            count: '3',
+            cost: '3000 ₽',
+          },
+          {
+            date: '10.05.2025',
+            buyer_name: '220 вольт',
+            name: '672.1.0.00 Безударная дрель ИНТЕРСКОЛ Д-10/420ЭР ',
+            operation: 'Все',
+            order_id: '123',
+            operation_cost: '1000 ₽',
+            count: '3',
+            cost: '3000 ₽',
+          },
+          {
+            date: '10.05.2025',
+            buyer_name: '220 вольт',
+            name: '672.1.0.00 Безударная дрель ИНТЕРСКОЛ Д-10/420ЭР ',
+            operation: 'Все',
+            order_id: '123',
+            operation_cost: '1000 ₽',
+            count: '3',
+            cost: '3000 ₽',
+          },
+          {
+            date: '10.05.2025',
+            buyer_name: '220 вольт',
+            name: '672.1.0.00 Безударная дрель ИНТЕРСКОЛ Д-10/420ЭР ',
+            operation: 'Все',
+            order_id: '123',
+            operation_cost: '1000 ₽',
+            count: '3',
+            cost: '3000 ₽',
+          },
+        ],
+      },
       orgOrders: [
         {
           seller_name: '123123',
@@ -581,6 +776,7 @@ export default {
           buyer_image: 'https://dev.mst.tools/assets/content/images/shops_logo/spo-logo.png',
           all_cost: '123123 ₽',
           all_credit: '1231 ₽',
+          total: 3,
           items: [
             {
               order_id: '121',
@@ -590,6 +786,43 @@ export default {
               saled_percent: '90%',
               credit_summ: '5 678 ₽ (100%)',
               debet_summ: '5 000 ₽ (90%)',
+              total_real_rub: '5 678 ₽',
+              total_real_col: '3',
+              debet: '5 000 ₽',
+              debet_col: '2',
+              total: 3,
+              products: [
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+              ],
             },
             {
               order_id: '122',
@@ -599,6 +832,43 @@ export default {
               saled_percent: '90%',
               credit_summ: '5 678 ₽ (100%)',
               debet_summ: '5 000 ₽ (90%)',
+              total_real_rub: '5 678 ₽',
+              total_real_col: '3',
+              debet: '5 000 ₽',
+              debet_col: '2',
+              total: 3,
+              products: [
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+              ],
             },
             {
               order_id: '123',
@@ -608,6 +878,43 @@ export default {
               saled_percent: '90%',
               credit_summ: '5 678 ₽ (100%)',
               debet_summ: '5 000 ₽ (90%)',
+              total_real_rub: '5 678 ₽',
+              total_real_col: '3',
+              debet: '5 000 ₽',
+              debet_col: '2',
+              total: 3,
+              products: [
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+              ],
             },
           ],
         },
@@ -618,6 +925,7 @@ export default {
           buyer_image: 'https://dev.mst.tools/assets/content/images/shops_logo/spo-logo.png',
           all_cost: '123123 ₽',
           all_credit: '1231 ₽',
+          total: 3,
           items: [
             {
               order_id: '121',
@@ -627,6 +935,43 @@ export default {
               saled_percent: '90%',
               credit_summ: '5 678 ₽ (100%)',
               debet_summ: '5 000 ₽ (90%)',
+              total_real_rub: '5 678 ₽',
+              total_real_col: '3',
+              debet: '5 000 ₽',
+              debet_col: '2',
+              total: 3,
+              products: [
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+              ],
             },
             {
               order_id: '122',
@@ -636,6 +981,43 @@ export default {
               saled_percent: '90%',
               credit_summ: '5 678 ₽ (100%)',
               debet_summ: '5 000 ₽ (90%)',
+              total_real_rub: '5 678 ₽',
+              total_real_col: '3',
+              debet: '5 000 ₽',
+              debet_col: '2',
+              total: 3,
+              products: [
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+              ],
             },
             {
               order_id: '123',
@@ -645,11 +1027,74 @@ export default {
               saled_percent: '90%',
               credit_summ: '5 678 ₽ (100%)',
               debet_summ: '5 000 ₽ (90%)',
+              total_real_rub: '5 678 ₽',
+              total_real_col: '3',
+              debet: '5 000 ₽',
+              debet_col: '2',
+              total: 3,
+              products: [
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+                {
+                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
+                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
+                  article: '736.1.0.00',
+                  count: 30,
+                  price: '450',
+                  cost: '13500',
+                  saled: 10,
+                  no_saled: 20,
+                },
+              ],
             },
           ],
         },
       ],
     }
+  },
+  props: {
+    pagination_items_per_page_process: {
+      type: Number,
+      default: 50,
+    },
+    pagination_offset_process: {
+      type: Number,
+      default: 0,
+    },
+    pagination_items_per_page_orders: {
+      type: Number,
+      default: 25,
+    },
+    pagination_offset_orders: {
+      type: Number,
+      default: 0,
+    },
+    pagination_items_per_page_products: {
+      type: Number,
+      default: 50,
+    },
+    pagination_offset_products: {
+      type: Number,
+      default: 0,
+    },
   },
   computed: {
     ...mapGetters({
@@ -668,6 +1113,34 @@ export default {
     }),
     changeFilter() {
       console.log(this.filters)
+    },
+    showModalOrder(data) {
+      this.modalOrderData = data
+      this.modalOrder = true
+    },
+    paginateOrders(data) {
+      this.loading = true
+      //this.unsetOffers()
+      this.pageOrders = data.page
+      //this.getOffers(data).then(() => {
+      this.loading = false
+      //})
+    },
+    paginateProducts(data) {
+      this.loading = true
+      //this.unsetOffers()
+      this.paginateProducts = data.page
+      //this.getOffers(data).then(() => {
+      this.loading = false
+      //})
+    },
+    paginateProcess(data) {
+      this.loading = true
+      //this.unsetOffers()
+      this.pageProcess = data.page
+      //this.getOffers(data).then(() => {
+      this.loading = false
+      //})
     },
   },
   watch: {
@@ -995,6 +1468,12 @@ export default {
       }
     }
   }
+  &__process-table {
+    .dart-mb-1 {
+      margin-bottom: 0;
+    }
+    margin-top: 64px;
+  }
   &__orders {
     display: flex;
     flex-direction: column;
@@ -1009,12 +1488,40 @@ export default {
       border-radius: 19px;
       padding: 16px 31px;
       transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
 
       &-row {
         display: flex;
         gap: 0;
-        align-items: start;
+        align-items: center;
         justify-content: space-between;
+        &--table {
+          flex-grow: 1;
+          .v-table {
+            width: 100%;
+            .realization-orders-table-button .kenostButton {
+              background-color: #3e3e3e !important;
+              color: #fff;
+              border-radius: 20px;
+              padding: 5px 16px !important;
+              font-size: 16px;
+              line-height: 21px;
+              border: 1px solid #3e3e3e;
+              box-shadow: none;
+              gap: 8px;
+              i {
+                font-size: 14px;
+              }
+            }
+            .realization-orders-table-button .kenostButton:hover {
+              background-color: transparent !important;
+              color: #3e3e3e;
+              border: 1px solid #3e3e3e;
+            }
+          }
+        }
       }
       &-cell {
         display: flex;
@@ -1022,11 +1529,12 @@ export default {
         gap: 16px;
         align-items: start;
         justify-content: start;
+        position: relative;
+
         &-title {
           font-weight: 400;
           font-size: 14px;
           line-height: 18px;
-
           color: #757575;
         }
         &-content {
@@ -1046,7 +1554,109 @@ export default {
             font-weight: 600;
             color: #282828;
           }
+          &-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: #282828;
+            transition: all 0.2s ease;
+            &--active {
+              color: #f92c0d;
+              transform: rotate(180deg);
+            }
+          }
         }
+      }
+      &-cell:not(:last-child) {
+        flex-grow: 1;
+      }
+      &-cell:not(:last-child):after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 0;
+        translate: 0 -50%;
+        width: 0.5px;
+        height: 16px;
+        background-color: #75757575;
+      }
+      .seller--cell,
+      .buyer--cell,
+      .credit--cell,
+      .cost--cell {
+        width: calc(20% - 6px);
+      }
+    }
+  }
+  &__modal {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    &-header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      &-title {
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 31px;
+        color: #282828;
+      }
+      &-date {
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 21px;
+        color: #757575;
+      }
+    }
+    &-top {
+      display: flex;
+      align-items: start;
+      gap: 64px;
+      &-item {
+        min-width: 295px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        &-title {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 18px;
+          color: #757575;
+        }
+        &-cont {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          &-value {
+            font-weight: 600;
+            font-size: 16px;
+            line-height: 21px;
+            color: #282828;
+          }
+          &-label {
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 16px;
+            color: #a3a3a3;
+          }
+        }
+      }
+    }
+    &-table {
+      margin: 24px 0 40px;
+      .dart-mb-1 {
+        margin-bottom: 0;
+      }
+    }
+    &-button {
+      display: flex;
+      justify-content: center;
+      .d-button {
+        max-width: 91px;
+
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 18px;
       }
     }
   }

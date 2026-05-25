@@ -189,6 +189,44 @@
     </div>
     <div
       class="cell_value"
+      v-if="cell_data.type == 'text-items' && cell_data.items"
+      :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
+    >
+      <div class="multyitem_cell">
+        {{ value[cell_data.items[0]] }} ({{ value[cell_data.items[1]] }})
+      </div>
+    </div>
+    <div
+      class="cell_value"
+      v-if="cell_data.type == 'text-store-items' && cell_data.items"
+      :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
+    >
+      <div class="store-item_cell">
+        <p class="store--name">{{ value[cell_data.items[0]] }}</p>
+        <p class="store--address">{{ value[cell_data.items[1]] }}</p>
+      </div>
+    </div>
+    <div
+      class="cell_value"
+      v-if="cell_data.type == 'text-product-items' && cell_data.items"
+      :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
+    >
+      <div class="multyitem_cell">
+        {{ value[cell_data.items[0]] }} {{ value[cell_data.items[1]] }}
+      </div>
+    </div>
+    <div
+      class="cell_value"
+      v-if="cell_data.type == 'text-dzkz-items' && cell_data.items"
+      :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
+    >
+      <div class="multyitem_cell">
+        <p>К выплате: {{ value[cell_data.items[0]] }}</p>
+        <p>Выплачено: {{ value[cell_data.items[1]] }}</p>
+      </div>
+    </div>
+    <div
+      class="cell_value"
       v-if="cell_data.type == 'link_settings_store' && cell_data.items"
       :class="cell_key == 'name' ? 'name ' + cell_data.class : cell_data.class"
     >
@@ -273,10 +311,12 @@
           text
           @click="actionElem(index)"
         >
+          <span v-if="row.show_label">{{ row.label }}</span>
           <i :class="row.icon"></i>
         </Button>
       </span>
     </div>
+
     <div
       class="cell_value"
       :class="cell_key == 'actions_order' ? 'actions_order ' + cell_data.class : cell_data.class"
@@ -755,5 +795,25 @@ export default {
 .cell--status.cell--status-buyer_accepted,
 .cell--status.cell--status-seller_packed {
   color: #282828;
+}
+.store--name {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 18px;
+
+  color: #282828;
+}
+.store--address {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+
+  color: #757575;
+}
+.store-item_cell {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: 472px;
 }
 </style>
