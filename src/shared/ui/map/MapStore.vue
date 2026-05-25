@@ -17,7 +17,7 @@
       <YandexMapDefaultSchemeLayer />
       <YandexMapDefaultFeaturesLayer />
 
-      <YandexMapMarker
+      <!-- <YandexMapMarker
         @click.stop
         v-model="defaultMarker"
         :settings="{
@@ -28,7 +28,7 @@
       >
         <MapMarker :address="address" />
       </YandexMapMarker>
-
+ -->
       <YandexMapListener
         :settings="{
           onClick,

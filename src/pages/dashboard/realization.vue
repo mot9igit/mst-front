@@ -1100,16 +1100,19 @@ export default {
     ...mapGetters({
       organizations: 'addition/organizations',
       regions: 'addition/regions',
+      realization: 'org/realization',
     }),
   },
   mounted() {
     this.getRegions({ exclude: '', filter: '' })
-    this.getOrganizations({ exclude: '', filter: '' })
+    this.getOrganizations({ exclude: '', filter: '', ids: [169, 20, 225] })
+    this.getRealization({ filters: this.form.filters_clients })
   },
   methods: {
     ...mapActions({
       getOrganizations: 'addition/getOrganizations',
       getRegions: 'addition/getRegions',
+      getRealization: 'org/getRealization',
     }),
     changeFilter() {
       console.log(this.filters)

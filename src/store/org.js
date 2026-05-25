@@ -27,6 +27,8 @@ export default {
     shipments: {},
     shipment: {},
     clients: {},
+    complex: {},
+    realization: {},
   },
   actions: {
     async getOrg({ commit }) {
@@ -402,6 +404,30 @@ export default {
       }
       return response
     },
+    async getComplex({ commit }, { filters }) {
+      const data = {
+        action: 'get/complex/analysis',
+        id: router.currentRoute._value.params.id,
+        filters: filters,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_COMPLEX', response.data)
+      }
+      return response
+    },
+    async getRealization({ commit }, { filters }) {
+      const data = {
+        action: 'get/realization/analysis',
+        id: router.currentRoute._value.params.id,
+        filters: filters,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_REALIZATION', response.data)
+      }
+      return response
+    },
     unsetOrgStores({ commit }) {
       commit('UNSET_ORG_STORES')
     },
@@ -461,6 +487,12 @@ export default {
     SET_CLIENTS_STORES: (state, data) => {
       state.clients = data.data
     },
+    SET_COMPLEX: (state, data) => {
+      state.complex = data.data
+    },
+    SET_REALIZATION: (state, data) => {
+      state.realization = data.data
+    },
   },
   getters: {
     orgActive(state) {
@@ -507,6 +539,12 @@ export default {
     },
     clients(state) {
       return state.clients
+    },
+    complex(state) {
+      return state.complex
+    },
+    realization(state) {
+      return state.realization
     },
   },
 }

@@ -91,12 +91,13 @@ export default {
       }
       return response
     },
-    async getOrganizations({ commit }, { exclude, filter }) {
+    async getOrganizations({ commit }, { exclude, filter, ids }) {
       const data = {
         id: router.currentRoute._value.params.id,
         type: 'get/organizations',
         exclude: exclude,
         filter: filter,
+        ids: ids,
       }
       const response = await api.addition.getOrganizations(data)
       if (response) {

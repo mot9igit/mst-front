@@ -717,6 +717,7 @@ export default {
       vendors: 'addition/vendors',
       clients: 'org/clients',
       regions: 'addition/regions',
+      complex: 'org/complex',
     }),
   },
   mounted() {
@@ -726,6 +727,7 @@ export default {
     this.getCatalogs()
     this.getVendors()
     this.getClients()
+    this.getComplex({ filters: this.form })
   },
   methods: {
     ...mapActions({
@@ -733,6 +735,7 @@ export default {
       getVendors: 'addition/getVendors',
       getClients: 'org/getClientsStores',
       getRegions: 'addition/getRegions',
+      getComplex: 'org/getComplex',
     }),
     changeFilter() {
       console.log(this.filters)
