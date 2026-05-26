@@ -29,6 +29,7 @@ export default {
     clients: {},
     complex: {},
     realization: {},
+    realization_process: {},
   },
   actions: {
     async getOrg({ commit }) {
@@ -416,15 +417,36 @@ export default {
       }
       return response
     },
-    async getRealization({ commit }, { filters }) {
+    async getRealization(
+      { commit },
+      { filters, pageOrders, perpageOrders, pageProducts, perpageProducts },
+    ) {
       const data = {
         action: 'get/realization/analysis',
         id: router.currentRoute._value.params.id,
         filters: filters,
+        pageOrders: pageOrders,
+        perpageOrders: perpageOrders,
+        pageProducts: pageProducts,
+        perpageProducts: perpageProducts,
       }
       const response = await api.org.getOrg(data)
       if (response) {
         commit('SET_REALIZATION', response.data)
+      }
+      return response
+    },
+    async getRealizationProcess({ commit }, { filters, pageProcess, perpageProcess }) {
+      const data = {
+        action: 'get/realization_process/analysis',
+        id: router.currentRoute._value.params.id,
+        filters: filters,
+        pageOrders: pageProcess,
+        perpageOrders: perpageProcess,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_REALIZATION_PROCESS', response.data)
       }
       return response
     },
@@ -493,6 +515,9 @@ export default {
     SET_REALIZATION: (state, data) => {
       state.realization = data.data
     },
+    SET_REALIZATION_PROCESS: (state, data) => {
+      state.realization_process = data.data
+    },
   },
   getters: {
     orgActive(state) {
@@ -545,6 +570,9 @@ export default {
     },
     realization(state) {
       return state.realization
+    },
+    realization_process(state) {
+      return state.realization_process
     },
   },
 }

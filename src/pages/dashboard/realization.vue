@@ -104,21 +104,29 @@
               <div class="realization__badges-item">
                 <div class="realization__badges-item-title">Товаров на реализации:</div>
                 <div class="realization__badges-item-values">
-                  <div class="realization__badges-item-values-value_rub">123123123 ₽</div>
-                  <div class="realization__badges-item-values-value_col">за 12312 товара</div>
+                  <div class="realization__badges-item-values-value_rub">
+                    {{ realization_process.total_remains_cost }} ₽
+                  </div>
+                  <div class="realization__badges-item-values-value_col">
+                    за {{ realization_process.total_remains }} товара
+                  </div>
                 </div>
               </div>
               <div class="realization__badges-item">
                 <div class="realization__badges-item-title">Продано товаров:</div>
                 <div class="realization__badges-item-values">
-                  <div class="realization__badges-item-values-value_rub">123</div>
+                  <div class="realization__badges-item-values-value_rub">
+                    {{ realization_process.total_orders }}
+                  </div>
                   <div class="realization__badges-item-values-value_col"></div>
                 </div>
               </div>
               <div class="realization__badges-item">
                 <div class="realization__badges-item-title">Выплачено:</div>
                 <div class="realization__badges-item-values">
-                  <div class="realization__badges-item-values-value_rub">123123123 ₽</div>
+                  <div class="realization__badges-item-values-value_rub">
+                    {{ realization_process.total_payed }} ₽
+                  </div>
                   <div class="realization__badges-item-values-value_col"></div>
                 </div>
               </div>
@@ -127,7 +135,9 @@
                   <span class="red-round-thing"></span>К выплате:
                 </div>
                 <div class="realization__badges-item-values">
-                  <div class="realization__badges-item-values-value_rub">123123123 ₽</div>
+                  <div class="realization__badges-item-values-value_rub">
+                    {{ realization_process.total_debt }} ₽
+                  </div>
                   <div class="realization__badges-item-values-value_col"></div>
                 </div>
               </div>
@@ -161,7 +171,7 @@
                       :name="item.name"
                       v-model="form.filters_clients[item.name]"
                       :placeholder="item.placeholder"
-                      @update:modelValue="changeFilter()"
+                      @update:modelValue="changeFilterClients()"
                     />
                   </div>
                 </div>
@@ -169,7 +179,6 @@
                   <label :for="item.name">{{ item.label }}</label>
                   <DatePicker
                     v-model="form.filters_clients[item.name]"
-                    @hide="changeFilter()"
                     dateFormat="dd.mm.yy"
                     :placeholder="item.placeholder"
                     :manualInput="false"
@@ -192,7 +201,7 @@
                         </button>
                         <button
                           class="d-button d-button-primary d-button-primary-small"
-                          @click.prevent="changeFilter()"
+                          @click.prevent="changeFilterClients()"
                         >
                           Готово
                         </button>
@@ -210,8 +219,8 @@
                     valueFormat="id"
                     :limit="1"
                     :limitText="(count) => `и еще ${count}`"
-                    @select="changeFilter"
-                    @deselect="changeFilter"
+                    @select="changeFilterClients()"
+                    @deselect="changeFilterClients()"
                   />
                 </div>
                 <div class="realization__filters-item-container" v-else-if="item.type == 'switch'">
@@ -239,25 +248,33 @@
                 <div class="realization__filters-item-container" v-else>{{ item.label }}</div>
               </div>
             </div>
-            <div class="realization__badges">
+            <div class="realization__badges" v-if="realization.clients">
               <div class="realization__badges-item">
                 <div class="realization__badges-item-title">Товаров на реализации:</div>
                 <div class="realization__badges-item-values">
-                  <div class="realization__badges-item-values-value_rub">123123123 ₽</div>
-                  <div class="realization__badges-item-values-value_col">за 12312 товара</div>
+                  <div class="realization__badges-item-values-value_rub">
+                    {{ realization.total_remains_cost }} ₽
+                  </div>
+                  <div class="realization__badges-item-values-value_col">
+                    за {{ realization.total_remains }} товара
+                  </div>
                 </div>
               </div>
               <div class="realization__badges-item">
                 <div class="realization__badges-item-title">Продано товаров:</div>
                 <div class="realization__badges-item-values">
-                  <div class="realization__badges-item-values-value_rub">123</div>
+                  <div class="realization__badges-item-values-value_rub">
+                    {{ realization.total_orders }}
+                  </div>
                   <div class="realization__badges-item-values-value_col"></div>
                 </div>
               </div>
               <div class="realization__badges-item">
                 <div class="realization__badges-item-title">Выплачено:</div>
                 <div class="realization__badges-item-values">
-                  <div class="realization__badges-item-values-value_rub">123123123 ₽</div>
+                  <div class="realization__badges-item-values-value_rub">
+                    {{ realization.total_payed }} ₽
+                  </div>
                   <div class="realization__badges-item-values-value_col"></div>
                 </div>
               </div>
@@ -266,14 +283,20 @@
                   <span class="red-round-thing"></span>К выплате:
                 </div>
                 <div class="realization__badges-item-values">
-                  <div class="realization__badges-item-values-value_rub">123123123 ₽</div>
+                  <div class="realization__badges-item-values-value_rub">
+                    {{ realization.total_debt }} ₽
+                  </div>
                   <div class="realization__badges-item-values-value_col"></div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="realization__orders">
-            <div class="realization__orders-item" v-for="(client, index) in orgOrders" :key="index">
+          <div class="realization__orders" v-if="realization.clients">
+            <div
+              class="realization__orders-item"
+              v-for="(client, index) in realization.clients"
+              :key="index"
+            >
               <div class="realization__orders-item-row">
                 <div
                   class="realization__orders-item-cell"
@@ -325,6 +348,9 @@
                 ></BaseTable>
               </div>
             </div>
+          </div>
+          <div v-else class="realization__nofound">
+            <div class="dart-alert dart-alert-info">Ничего не найдено</div>
           </div>
         </TabPanel>
       </TabPanels>
@@ -422,7 +448,7 @@ export default {
 
   data() {
     return {
-      loading: false,
+      loading: true,
       tabException: false,
       filters_process: [
         {
@@ -768,306 +794,6 @@ export default {
           },
         ],
       },
-      orgOrders: [
-        {
-          seller_name: '123123',
-          buyer_name: '234234',
-          seller_image: 'https://dev.mst.tools/assets/content/images/shops_logo/spo-logo.png',
-          buyer_image: 'https://dev.mst.tools/assets/content/images/shops_logo/spo-logo.png',
-          all_cost: '123123 ₽',
-          all_credit: '1231 ₽',
-          total: 3,
-          items: [
-            {
-              order_id: '121',
-              delivery_date: '23.01.2026',
-              cost: '5 678 ₽',
-              saled_rub: '5 000 ₽',
-              saled_percent: '90%',
-              credit_summ: '5 678 ₽ (100%)',
-              debet_summ: '5 000 ₽ (90%)',
-              total_real_rub: '5 678 ₽',
-              total_real_col: '3',
-              debet: '5 000 ₽',
-              debet_col: '2',
-              total: 3,
-              products: [
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-              ],
-            },
-            {
-              order_id: '122',
-              delivery_date: '23.01.2026',
-              cost: '5 678 ₽',
-              saled_rub: '5 000 ₽',
-              saled_percent: '90%',
-              credit_summ: '5 678 ₽ (100%)',
-              debet_summ: '5 000 ₽ (90%)',
-              total_real_rub: '5 678 ₽',
-              total_real_col: '3',
-              debet: '5 000 ₽',
-              debet_col: '2',
-              total: 3,
-              products: [
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-              ],
-            },
-            {
-              order_id: '123',
-              delivery_date: '23.01.2026',
-              cost: '5 678 ₽',
-              saled_rub: '5 000 ₽',
-              saled_percent: '90%',
-              credit_summ: '5 678 ₽ (100%)',
-              debet_summ: '5 000 ₽ (90%)',
-              total_real_rub: '5 678 ₽',
-              total_real_col: '3',
-              debet: '5 000 ₽',
-              debet_col: '2',
-              total: 3,
-              products: [
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          seller_name: 'xcv',
-          buyer_name: 'dsfg',
-          seller_image: 'https://dev.mst.tools/assets/content/images/shops_logo/spo-logo.png',
-          buyer_image: 'https://dev.mst.tools/assets/content/images/shops_logo/spo-logo.png',
-          all_cost: '123123 ₽',
-          all_credit: '1231 ₽',
-          total: 3,
-          items: [
-            {
-              order_id: '121',
-              delivery_date: '23.01.2026',
-              cost: '5 678 ₽',
-              saled_rub: '5 000 ₽',
-              saled_percent: '90%',
-              credit_summ: '5 678 ₽ (100%)',
-              debet_summ: '5 000 ₽ (90%)',
-              total_real_rub: '5 678 ₽',
-              total_real_col: '3',
-              debet: '5 000 ₽',
-              debet_col: '2',
-              total: 3,
-              products: [
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-              ],
-            },
-            {
-              order_id: '122',
-              delivery_date: '23.01.2026',
-              cost: '5 678 ₽',
-              saled_rub: '5 000 ₽',
-              saled_percent: '90%',
-              credit_summ: '5 678 ₽ (100%)',
-              debet_summ: '5 000 ₽ (90%)',
-              total_real_rub: '5 678 ₽',
-              total_real_col: '3',
-              debet: '5 000 ₽',
-              debet_col: '2',
-              total: 3,
-              products: [
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-              ],
-            },
-            {
-              order_id: '123',
-              delivery_date: '23.01.2026',
-              cost: '5 678 ₽',
-              saled_rub: '5 000 ₽',
-              saled_percent: '90%',
-              credit_summ: '5 678 ₽ (100%)',
-              debet_summ: '5 000 ₽ (90%)',
-              total_real_rub: '5 678 ₽',
-              total_real_col: '3',
-              debet: '5 000 ₽',
-              debet_col: '2',
-              total: 3,
-              products: [
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-                {
-                  image: 'https://dev.mst.tools/assets/images/products/9791/1695302690-azu-12.jpg',
-                  name: 'АЗУ-12В адаптер ЗУ для аккумулятора 12В',
-                  article: '736.1.0.00',
-                  count: 30,
-                  price: '450',
-                  cost: '13500',
-                  saled: 10,
-                  no_saled: 20,
-                },
-              ],
-            },
-          ],
-        },
-      ],
     }
   },
   props: {
@@ -1101,21 +827,34 @@ export default {
       organizations: 'addition/organizations',
       regions: 'addition/regions',
       realization: 'org/realization',
+      realization_process: 'org/realization_process',
     }),
   },
   mounted() {
     this.getRegions({ exclude: '', filter: '' })
     this.getOrganizations({ exclude: '', filter: '', ids: [169, 20, 225] })
-    this.getRealization({ filters: this.form.filters_clients })
+    this.getRealizationProccess({ filters: this.form.filters_process })
+    this.getRealization({ filters: this.form.filters_clients }).then(() => {
+      this.loading = false
+    })
   },
   methods: {
     ...mapActions({
       getOrganizations: 'addition/getOrganizations',
       getRegions: 'addition/getRegions',
       getRealization: 'org/getRealization',
+      getRealizationProccess: 'org/getRealizationProcess',
     }),
     changeFilter() {
       console.log(this.filters)
+    },
+    changeFilterClients() {
+      this.loading = true
+      setTimeout(() => {
+        this.getRealization({ filters: this.form.filters_clients }).then(() => {
+          this.loading = false
+        })
+      }, 500)
     },
     showModalOrder(data) {
       this.modalOrderData = data
@@ -1498,7 +1237,7 @@ export default {
       &-row {
         display: flex;
         gap: 0;
-        align-items: center;
+        align-items: start;
         justify-content: space-between;
         &--table {
           flex-grow: 1;
@@ -1582,6 +1321,9 @@ export default {
         height: 16px;
         background-color: #75757575;
       }
+      &-cell:last-child {
+        align-self: center;
+      }
       .seller--cell,
       .buyer--cell,
       .credit--cell,
@@ -1662,6 +1404,9 @@ export default {
         line-height: 18px;
       }
     }
+  }
+  &__nofound {
+    margin-top: 80px;
   }
 }
 .realization__orders-item-row:first-child .realization__orders-item-cell:first-child {
