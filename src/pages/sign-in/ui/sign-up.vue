@@ -14,7 +14,7 @@
           <source media="(max-width: 640px)" srcset="/icons/logo-640.svg" />
           <source media="(max-width: 400px)" srcset="/icons/logo-400.svg" />
           <source media="(max-width: 320px)" srcset="/icons/logo-320.svg" /> -->
-          <img src="/icons/logo-1920.svg" loading="lazy" width="368" height="79" />
+          <img src="/icons/logo.svg" loading="lazy" width="368" height="79" />
         </picture>
       </a>
 
