@@ -3,7 +3,7 @@
     <Toast />
     <PreLoader v-if="loading"></PreLoader>
     <form class="auth__form" @submit.prevent="formSubmit">
-      <a href="/" class="auth__logo">
+      <a href="/" class="auth__logo inverse_logo">
         <picture>
           <source media="(max-width: 1920px)" srcset="/icons/logo.svg" />
           <!-- <source media="(max-width: 800px)" srcset="/icons/logo-800.svg" />

@@ -7,7 +7,7 @@
         <i class="d-icon-arrow d-back__icon"></i>
         <span class="d-back__text hidden-640">Назад</span>
       </a>
-      <a href="/" class="auth__logo registration__logo">
+      <a href="/" class="auth__logo registration__logo inverse_logo">
         <picture>
           <source media="(max-width: 1920px)" srcset="/icons/logo-icon.svg" />
           <!-- <source media="(max-width: 800px)" srcset="/icons/logo-800.svg" />
