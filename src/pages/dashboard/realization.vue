@@ -105,10 +105,10 @@
                 <div class="realization__badges-item-title">Товаров на реализации:</div>
                 <div class="realization__badges-item-values">
                   <div class="realization__badges-item-values-value_rub">
-                    {{ realization_process.total_remains_cost }} ₽
+                    {{ realization.total_remains_cost }} ₽
                   </div>
                   <div class="realization__badges-item-values-value_col">
-                    за {{ realization_process.total_remains }} товара
+                    за {{ realization.total_remains }} тов.
                   </div>
                 </div>
               </div>
@@ -116,7 +116,7 @@
                 <div class="realization__badges-item-title">Продано товаров:</div>
                 <div class="realization__badges-item-values">
                   <div class="realization__badges-item-values-value_rub">
-                    {{ realization_process.total_orders }}
+                    {{ realization.total_orders }}
                   </div>
                   <div class="realization__badges-item-values-value_col"></div>
                 </div>
@@ -125,7 +125,7 @@
                 <div class="realization__badges-item-title">Выплачено:</div>
                 <div class="realization__badges-item-values">
                   <div class="realization__badges-item-values-value_rub">
-                    {{ realization_process.total_payed }} ₽
+                    {{ realization.total_payed }} ₽
                   </div>
                   <div class="realization__badges-item-values-value_col"></div>
                 </div>
@@ -136,7 +136,7 @@
                 </div>
                 <div class="realization__badges-item-values">
                   <div class="realization__badges-item-values-value_rub">
-                    {{ realization_process.total_debt }} ₽
+                    {{ realization.total_debt }} ₽
                   </div>
                   <div class="realization__badges-item-values-value_col"></div>
                 </div>
@@ -144,8 +144,8 @@
             </div>
             <div class="realization__process-table">
               <BaseTable
-                :items_data="processOrders.items"
-                :total="processOrders.total"
+                :items_data="realization_process.processes"
+                :total="realization_process.total"
                 :table_data="table_process"
                 :pagination_items_per_page="this.pagination_items_per_page_process"
                 :pagination_offset="this.pagination_offset_process"
@@ -256,7 +256,7 @@
                     {{ realization.total_remains_cost }} ₽
                   </div>
                   <div class="realization__badges-item-values-value_col">
-                    за {{ realization.total_remains }} товара
+                    за {{ realization.total_remains }} тов.
                   </div>
                 </div>
               </div>
@@ -372,7 +372,7 @@
                 {{ modalOrderData.total_real_rub }}
               </div>
               <div class="realization__modal-top-item-cont-label">
-                {{ modalOrderData.total_real_col }} товара
+                {{ modalOrderData.total_real_col }} тов.
               </div>
             </div>
           </div>
@@ -383,7 +383,7 @@
                 {{ modalOrderData.debet }}
               </div>
               <div class="realization__modal-top-item-cont-label">
-                {{ modalOrderData.debet_col }} товара
+                {{ modalOrderData.debet_col }} тов.
               </div>
             </div>
           </div>
@@ -573,12 +573,12 @@ export default {
         operation: {
           label: 'Операция',
           type: 'text',
-          class: 'cell_centeralign',
+          class: 'cell_centeralign nowrap',
         },
         operation_cost: {
           label: 'Цена поставки',
           type: 'text',
-          class: 'cell_centeralign',
+          class: 'cell_centeralign nowrap',
         },
         count: {
           label: 'Количество',
@@ -588,7 +588,7 @@ export default {
         cost: {
           label: 'Сумма',
           type: 'text',
-          class: 'cell_centeralign',
+          class: 'cell_centeralign nowrap',
         },
       },
       table_clients: {
@@ -625,18 +625,18 @@ export default {
         cost: {
           label: 'Сумма заказа',
           type: 'text',
-          class: 'cell_centeralign',
+          class: 'cell_centeralign nowrap',
         },
         realization: {
           label: 'Объем реализации',
           type: 'text-items',
-          class: 'cell_centeralign',
+          class: 'cell_centeralign nowrap',
           items: ['saled_rub', 'saled_percent'],
         },
         dzkz: {
           label: 'Объем выплат',
           type: 'text-dzkz-items',
-          class: 'cell_centeralign',
+          class: 'cell_centeralign nowrap',
           items: ['credit_summ', 'debet_summ'],
         },
         actions: {
@@ -677,12 +677,12 @@ export default {
         price: {
           label: 'Цена',
           type: 'text',
-          class: 'cell_centeralign',
+          class: 'cell_centeralign nowrap',
         },
         cost: {
           label: 'Сумма',
           type: 'text',
-          class: 'cell_centeralign',
+          class: 'cell_centeralign nowrap',
         },
         saled: {
           label: 'Продано',
@@ -833,9 +833,20 @@ export default {
   mounted() {
     this.getRegions({ exclude: '', filter: '' })
     this.getOrganizations({ exclude: '', filter: '', ids: [169, 20, 225] })
-    this.getRealizationProccess({ filters: this.form.filters_process })
-    this.getRealization({ filters: this.form.filters_clients }).then(() => {
-      this.loading = false
+    this.getRealizationProccess({
+      filters: this.form.filters_process,
+      pageProcess: this.pageProcess,
+      perpageProcess: this.pagination_items_per_page_process,
+    }).then(() => {
+      this.getRealization({
+        filters: this.form.filters_clients,
+        pageOrders: this.pageOrders,
+        perpageOrders: this.pagination_items_per_page_orders,
+        pageProducts: this.pageProducts,
+        perpageProducts: this.pagination_items_per_page_products,
+      }).then(() => {
+        this.loading = false
+      })
     })
   },
   methods: {
@@ -846,7 +857,12 @@ export default {
       getRealizationProccess: 'org/getRealizationProcess',
     }),
     changeFilter() {
-      console.log(this.filters)
+      this.loading = true
+      setTimeout(() => {
+        this.getRealizationProccess({ filters: this.form.filters_process }).then(() => {
+          this.loading = false
+        })
+      }, 500)
     },
     changeFilterClients() {
       this.loading = true
@@ -864,25 +880,34 @@ export default {
       this.loading = true
       //this.unsetOffers()
       this.pageOrders = data.page
-      //this.getOffers(data).then(() => {
-      this.loading = false
-      //})
+      data.filters = this.filters_clients
+      data.pageProducts = 1
+      data.perpageOrders = this.pagination_items_per_page_orders
+      data.perpageProducts = this.pagination_items_per_page_products
+      data.pageOrders = data.page
+      this.getRealization(data).then(() => {
+        this.loading = false
+      })
     },
     paginateProducts(data) {
       this.loading = true
       //this.unsetOffers()
       this.paginateProducts = data.page
-      //this.getOffers(data).then(() => {
-      this.loading = false
-      //})
+      this.getRealization(data).then(() => {
+        this.loading = false
+      })
     },
     paginateProcess(data) {
       this.loading = true
       //this.unsetOffers()
       this.pageProcess = data.page
-      //this.getOffers(data).then(() => {
-      this.loading = false
-      //})
+      this.getRealizationProccess({
+        filters: this.form.filters_process,
+        pageProcess: this.pageProcess,
+        perpageProcess: this.pagination_items_per_page_process,
+      }).then(() => {
+        this.loading = false
+      })
     },
   },
   watch: {

@@ -5,10 +5,10 @@
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0" />
     <title>МС: Управление Продажами</title>
-    <link rel="icon" type="image/png" href="/images/favicon/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/images/favicon/favicon.svg" />
+    <link rel="icon" type="image/png" href="/images/favicon/favicon-lite.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/images/favicon/favicon-lite.svg" />
     <link rel="shortcut icon" href="/images/favicon/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/favicon-lite.png" />
     <meta name="apple-mobile-web-app-title" content="МС: Управление Продажами" />
     <link rel="manifest" href="/images/favicon/site.webmanifest" />
 
@@ -44,17 +44,32 @@
     <meta property="vk:url" content="https://a.mst.tools/" />
     <!-- Begin Talk-Me {literal} -->
     <script>
-      (function(){(function c(d,w,m,i) {
-        window.supportAPIMethod = m;
-        var s = d.createElement('script');
-        s.id = 'supportScript'; 
-        s.async = true;
-        var id = '7d62e16ac837c20e2696b6169a249dcd';
-        s.src = (!i ? 'https://lcab.talk-me.ru/support/support.js' : 'https://static.site-chat.me/support/support.int.js') + '?h=' + id;
-        s.onerror = i ? undefined : function(){c(d,w,m,true)};
-        w[m] = w[m] ? w[m] : function(){(w[m].q = w[m].q ? w[m].q : []).push(arguments);};
-        (d.head ? d.head : d.body).appendChild(s);
-    })(document,window,'TalkMe')})();
+      ;(function () {
+        ;(function c(d, w, m, i) {
+          window.supportAPIMethod = m
+          var s = d.createElement('script')
+          s.id = 'supportScript'
+          s.async = true
+          var id = '7d62e16ac837c20e2696b6169a249dcd'
+          s.src =
+            (!i
+              ? 'https://lcab.talk-me.ru/support/support.js'
+              : 'https://static.site-chat.me/support/support.int.js') +
+            '?h=' +
+            id
+          s.onerror = i
+            ? undefined
+            : function () {
+                c(d, w, m, true)
+              }
+          w[m] = w[m]
+            ? w[m]
+            : function () {
+                ;(w[m].q = w[m].q ? w[m].q : []).push(arguments)
+              }
+          ;(d.head ? d.head : d.body).appendChild(s)
+        })(document, window, 'TalkMe')
+      })()
     </script>
     <!-- {/literal} End Talk-Me -->
   </head>

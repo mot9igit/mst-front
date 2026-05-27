@@ -441,8 +441,8 @@ export default {
         action: 'get/realization_process/analysis',
         id: router.currentRoute._value.params.id,
         filters: filters,
-        pageOrders: pageProcess,
-        perpageOrders: perpageProcess,
+        pageProcess: pageProcess,
+        perpageProcess: perpageProcess,
       }
       const response = await api.org.getOrg(data)
       if (response) {
