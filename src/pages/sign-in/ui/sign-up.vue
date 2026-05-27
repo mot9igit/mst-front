@@ -9,11 +9,11 @@
       </a>
       <a href="/" class="auth__logo registration__logo">
         <picture>
-          <source media="(max-width: 1920px)" srcset="/icons/logo-1920.svg" />
-          <source media="(max-width: 800px)" srcset="/icons/logo-800.svg" />
+          <source media="(max-width: 1920px)" srcset="/icons/logo-icon.svg" />
+          <!-- <source media="(max-width: 800px)" srcset="/icons/logo-800.svg" />
           <source media="(max-width: 640px)" srcset="/icons/logo-640.svg" />
           <source media="(max-width: 400px)" srcset="/icons/logo-400.svg" />
-          <source media="(max-width: 320px)" srcset="/icons/logo-320.svg" />
+          <source media="(max-width: 320px)" srcset="/icons/logo-320.svg" /> -->
           <img src="/icons/logo-1920.svg" loading="lazy" width="368" height="79" />
         </picture>
       </a>
