@@ -82,7 +82,7 @@
                 :id="item.name"
                 :name="item.name"
                 v-model="form[item.name + '_string']"
-                @update:modelValue="changeFilter()"
+                @input="changeFilter()"
               />
               <label :for="item.name">{{ item.label }}</label>
             </FloatLabel>
@@ -92,11 +92,12 @@
               class="w-56"
               :min="item.value.min"
               :max="item.value.max"
+              @slideend="changeFilter()"
             />
           </div>
           <div class="complex-analysis__filters-item-container" v-else>{{ item.label }}</div>
         </div>
-        <div class="complex-analysis__filters-item"></div>
+        <!-- <div class="complex-analysis__filters-item"></div>
         <div class="complex-analysis__filters-item">
           <button
             class="d-button complex-analysis__filters-item-map_button"
@@ -104,17 +105,17 @@
           >
             <img class="d-icon-catalog d-icon" src="/icons/icon_arrows.svg" /> Развернуть карту
           </button>
-        </div>
+        </div> -->
       </div>
       <div class="complex-analysis__badges">
         <div class="complex-analysis__badges-item">
           <div class="complex-analysis__badges-item-title">Остатки (общее):</div>
           <div class="complex-analysis__badges-item-values">
             <div class="complex-analysis__badges-item-values-value_rub">
-              {{ allData.total_remains_cost.toLocaleString('ru') }} ₽
+              {{ complex.total_remains_price.toLocaleString('ru') }} ₽
             </div>
             <div class="complex-analysis__badges-item-values-value_col">
-              {{ allData.total_remains }} шт.
+              {{ complex.total_remains }} шт.
             </div>
           </div>
         </div>
@@ -122,10 +123,10 @@
           <div class="complex-analysis__badges-item-title">Продажи (общее):</div>
           <div class="complex-analysis__badges-item-values">
             <div class="complex-analysis__badges-item-values-value_rub">
-              {{ allData.total_orders_cost.toLocaleString('ru') }} ₽
+              {{ complex.total_sales_price.toLocaleString('ru') }} ₽
             </div>
             <div class="complex-analysis__badges-item-values-value_col">
-              {{ allData.total_orders }} шт.
+              {{ complex.total_sales }} шт.
             </div>
           </div>
         </div>
@@ -133,10 +134,10 @@
           <div class="complex-analysis__badges-item-title">Упущенная выручка (общее):</div>
           <div class="complex-analysis__badges-item-values">
             <div class="complex-analysis__badges-item-values-value_rub">
-              {{ allData.total_lost_revenue_cost.toLocaleString('ru') }} ₽
+              {{ complex.total_lost_revenue_price.toLocaleString('ru') }} ₽
             </div>
             <div class="complex-analysis__badges-item-values-value_col">
-              {{ allData.total_lost_revenue }} шт.
+              {{ complex.total_lost_revenue }} шт.
             </div>
           </div>
         </div>
@@ -144,8 +145,8 @@
       <div class="complex-analysis__tables">
         <div class="complex-analysis__tables-item">
           <BaseTable
-            :items_data="storesData.items"
-            :total="storesData.total"
+            :items_data="complex.sales"
+            :total="complex.sales_total"
             :table_data="table_stores"
             :pagination_items_per_page="this.pagination_items_per_page_stores"
             :pagination_offset="this.pagination_offset_stores"
@@ -155,8 +156,8 @@
         </div>
         <div class="complex-analysis__tables-item">
           <BaseTable
-            :items_data="productsData.items"
-            :total="productsData.total"
+            :items_data="complex.data"
+            :total="complex.total"
             :table_data="table_products"
             :pagination_items_per_page="this.pagination_items_per_page_products"
             :pagination_offset="this.pagination_offset_products"
@@ -205,7 +206,7 @@ export default {
 
   data() {
     return {
-      loading: false,
+      loading: true,
       pageStores: 1,
       pageProducts: 1,
       filters: [
@@ -221,18 +222,18 @@ export default {
           label: 'Период выборки',
           value: '',
         },
-        {
-          name: 'category',
-          type: 'tree',
-          label: 'Категории',
-          value: '',
-        },
-        {
-          name: 'brand',
-          type: 'tree',
-          label: 'Бренд',
-          value: '',
-        },
+        // {
+        //   name: 'category',
+        //   type: 'tree',
+        //   label: 'Категории',
+        //   value: '',
+        // },
+        // {
+        //   name: 'brand',
+        //   type: 'tree',
+        //   label: 'Бренд',
+        //   value: '',
+        // },
         {
           name: 'out_of_stock',
           type: 'range',
@@ -242,18 +243,18 @@ export default {
             max: 365,
           },
         },
-        {
-          name: 'store',
-          type: 'tree',
-          label: 'Магазин',
-          value: '',
-        },
-        {
-          name: 'region',
-          type: 'tree',
-          label: 'Регион',
-          value: '',
-        },
+        // {
+        //   name: 'store',
+        //   type: 'tree',
+        //   label: 'Магазин',
+        //   value: '',
+        // },
+        // {
+        //   name: 'region',
+        //   type: 'tree',
+        //   label: 'Регион',
+        //   value: '',
+        // },
         {
           name: 'lost_revenue',
           type: 'range',
@@ -316,12 +317,12 @@ export default {
           class: '',
           items: ['name', 'address'],
         },
-        available_col: {
+        remains: {
           label: 'Остатки в шт',
           type: 'text',
           class: 'cell_centeralign',
         },
-        available_rub: {
+        remains_price: {
           label: 'Остатки в ₽',
           type: 'text',
           class: 'cell_centeralign',
@@ -331,12 +332,12 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
-        sales_col: {
+        sales: {
           label: 'Продажи в шт',
           type: 'text',
           class: 'cell_centeralign',
         },
-        sales_rub: {
+        sales_price: {
           label: 'Продажи в ₽',
           type: 'text',
           class: 'cell_centeralign',
@@ -351,7 +352,7 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
-        sales_speed: {
+        speed: {
           label: 'Скорость продаж',
           type: 'text',
           class: 'cell_centeralign',
@@ -369,12 +370,12 @@ export default {
           class: '',
           items: ['name', 'article'],
         },
-        available_col: {
+        remains: {
           label: 'Остатки в шт',
           type: 'text',
           class: 'cell_centeralign',
         },
-        available_rub: {
+        remains_price: {
           label: 'Остатки в ₽',
           type: 'text',
           class: 'cell_centeralign',
@@ -384,12 +385,12 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
-        sales_col: {
+        sales: {
           label: 'Продажи в шт',
           type: 'text',
           class: 'cell_centeralign',
         },
-        sales_rub: {
+        sales_price: {
           label: 'Продажи в ₽',
           type: 'text',
           class: 'cell_centeralign',
@@ -404,7 +405,7 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
-        sales_speed: {
+        speed: {
           label: 'Скорость продаж',
           type: 'text',
           class: 'cell_centeralign',
@@ -438,259 +439,6 @@ export default {
         out_of_stock_string: '',
       },
       modalMap: false,
-      // подставные данные, удалить
-      allData: {
-        total_remains_cost: 456456456456,
-        total_remains: 456456,
-        total_orders_cost: 4562456435634,
-        total_orders: 2341,
-        total_lost_revenue_cost: 0,
-        total_lost_revenue: 0,
-      },
-      storesData: {
-        total: 9,
-        items: [
-          {
-            name: 'Клиент 1 Склад 1',
-            address: 'Адрес',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Клиент 2 Склад 1',
-            address: 'Адрес',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Клиент 2 Склад 2',
-            address: 'Адрес',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Клиент 3 Склад 1',
-            address: 'Адрес',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Клиент 4 Склад 1',
-            address: 'Адрес',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Клиент 4 Склад 2',
-            address: 'Адрес',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Клиент 4 Склад 3',
-            address: 'Адрес',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Клиент 4 Склад 4',
-            address: 'Адрес',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Клиент 5 Склад 1',
-            address: 'Адрес',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-        ],
-      },
-      productsData: {
-        total: 9,
-        items: [
-          {
-            name: 'Товар',
-            article: 'Артикул',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Товар',
-            article: 'Артикул',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Товар',
-            article: 'Артикул',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Товар',
-            article: 'Артикул',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Товар',
-            article: 'Артикул',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Товар',
-            article: 'Артикул',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Товар',
-            article: 'Артикул',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Товар',
-            article: 'Артикул',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-          {
-            name: 'Товар',
-            article: 'Артикул',
-            available_col: 'Остатки в шт',
-            available_rub: 'Остатки в ₽',
-            out_of_stock: 'Out of stock',
-            sales_col: 'Продажи в шт',
-            sales_rub: 'Продажи в ₽',
-            lost_revenue_col: 'Упущенные продажи в шт',
-            lost_revenue_rub: 'Упущенные продажи в ₽',
-            sales_speed: 'Скорость продаж',
-            price: 'Цена в ₽',
-          },
-        ],
-      },
     }
   },
   props: {
@@ -713,32 +461,36 @@ export default {
   },
   computed: {
     ...mapGetters({
-      catalogs: 'addition/catalogs',
-      vendors: 'addition/vendors',
-      clients: 'org/clients',
-      regions: 'addition/regions',
+      // catalogs: 'addition/catalogs',
+      // vendors: 'addition/vendors',
+      // clients: 'org/clients',
+      // regions: 'addition/regions',
       complex: 'org/complex',
     }),
   },
   mounted() {
-    this.getRegions({ exclude: '', filter: '' }).then(() => {
-      console.log(1)
+    console.log('1')
+    // this.getRegions({ exclude: '', filter: '' })
+    // this.getCatalogs()
+    // this.getVendors()
+    // this.getClients()
+    this.getComplex({ filters: this.form }).then(() => {
+      this.loading = false
     })
-    this.getCatalogs()
-    this.getVendors()
-    this.getClients()
-    this.getComplex({ filters: this.form })
   },
   methods: {
     ...mapActions({
-      getCatalogs: 'addition/getCatalogs',
-      getVendors: 'addition/getVendors',
-      getClients: 'org/getClientsStores',
-      getRegions: 'addition/getRegions',
+      // getCatalogs: 'addition/getCatalogs',
+      // getVendors: 'addition/getVendors',
+      // getClients: 'org/getClientsStores',
+      // getRegions: 'addition/getRegions',
       getComplex: 'org/getComplex',
     }),
     changeFilter() {
-      console.log(this.filters)
+      this.loading = true
+      this.getComplex({ filters: this.form }).then(() => {
+        this.loading = false
+      })
     },
     paginateStores(data) {
       this.loading = true
