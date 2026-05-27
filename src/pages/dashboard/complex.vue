@@ -112,7 +112,7 @@
           <div class="complex-analysis__badges-item-title">Остатки (общее):</div>
           <div class="complex-analysis__badges-item-values">
             <div class="complex-analysis__badges-item-values-value_rub">
-              {{ complex.total_remains_price.toLocaleString('ru') }} ₽
+              {{ complex.total_remains_price }} ₽
             </div>
             <div class="complex-analysis__badges-item-values-value_col">
               {{ complex.total_remains }} шт.
@@ -123,7 +123,7 @@
           <div class="complex-analysis__badges-item-title">Продажи (общее):</div>
           <div class="complex-analysis__badges-item-values">
             <div class="complex-analysis__badges-item-values-value_rub">
-              {{ complex.total_sales_price.toLocaleString('ru') }} ₽
+              {{ complex.total_sales_price }} ₽
             </div>
             <div class="complex-analysis__badges-item-values-value_col">
               {{ complex.total_sales }} шт.
@@ -134,7 +134,7 @@
           <div class="complex-analysis__badges-item-title">Упущенная выручка (общее):</div>
           <div class="complex-analysis__badges-item-values">
             <div class="complex-analysis__badges-item-values-value_rub">
-              {{ complex.total_lost_revenue_price.toLocaleString('ru') }} ₽
+              {{ complex.total_lost_revenue_price }} ₽
             </div>
             <div class="complex-analysis__badges-item-values-value_col">
               {{ complex.total_lost_revenue }} шт.
@@ -342,12 +342,12 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
-        lost_revenue_col: {
+        lost_items: {
           label: 'Упущенные продажи в шт',
           type: 'text',
           class: 'cell_centeralign',
         },
-        lost_revenue_rub: {
+        lost_revenue: {
           label: 'Упущенные продажи в ₽',
           type: 'text',
           class: 'cell_centeralign',
@@ -395,12 +395,12 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
-        lost_revenue_col: {
+        lost_items: {
           label: 'Упущенные продажи в шт',
           type: 'text',
           class: 'cell_centeralign',
         },
-        lost_revenue_rub: {
+        lost_revenue: {
           label: 'Упущенные продажи в ₽',
           type: 'text',
           class: 'cell_centeralign',
