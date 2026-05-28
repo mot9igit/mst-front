@@ -69,8 +69,8 @@
         <div class="warehouse-settings-cont-item-flex">
           <div class="order-card__orderinfo-grid-text">
             {{
-              storeSettings.name_short
-                ? storeSettings.name_short
+              storeSettings.selfname
+                ? storeSettings.selfname
                 : 'Введите название склада для покупателей'
             }}
           </div>
@@ -912,8 +912,6 @@ export default {
       if (!this.error) {
         this.loading = true
         let data = {
-          id: this.$route.params.store_id,
-          mode: 'store',
           name: this.name,
         }
         this.setStoreName(data).then((res) => {
@@ -958,6 +956,9 @@ export default {
           this.form.regions_iskl = newVal.visible_iskl.regs
           this.form.all_organizations_selected = newVal.visible_incl.orgs
           this.form.all_organizations_selected_iskl = newVal.visible_iskl.orgs
+        }
+        if (newVal.selfname) {
+          this.name = newVal.selfname
         }
       }
     },

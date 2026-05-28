@@ -60,9 +60,7 @@
         <div class="order-card__orderinfo-grid-lable">Название склада</div>
         <div class="warehouse-settings-cont-item-flex">
           <div class="order-card__orderinfo-grid-text">
-            {{
-              shipment.name_short ? shipment.name_short : 'Введите название склада для покупателей'
-            }}
+            {{ shipment.selfname ? shipment.selfname : 'Введите название склада для покупателей' }}
           </div>
           <i
             class="d-icon-pen2 warehouse-settings-cont-item-button"
@@ -940,8 +938,6 @@ export default {
       if (!this.error) {
         this.loading = true
         let data = {
-          id: this.$route.params.ship_id,
-          mode: 'store',
           name: this.name,
         }
         this.setStoreName(data).then((res) => {

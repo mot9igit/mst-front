@@ -383,11 +383,14 @@ export default {
 
       return response
     },
-    async setStoreName(store, { id, mode, name }) {
+    async setStoreName(store, { name }) {
       const data = {
         action: 'set/store/name',
-        id: id,
-        mode: mode,
+        id:
+          router.currentRoute._value.name == 'warehouseStoreSettings'
+            ? router.currentRoute._value.params.store_id
+            : router.currentRoute._value.params.ship_id,
+        org_id: router.currentRoute._value.params.id,
         name: name,
       }
       const response = await api.org.setManager(data)
