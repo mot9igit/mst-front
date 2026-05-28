@@ -32,7 +32,6 @@
           <div class="complex-analysis__filters-item-container" v-else-if="item.type == 'dates'">
             <DatePicker
               v-model="form[item.name]"
-              @hide="changeFilter()"
               dateFormat="dd.mm.yy"
               :placeholder="item.label"
               :manualInput="false"
@@ -44,8 +43,9 @@
               class="complex-analysis__filters-item-container-dates"
               :id="item.name"
               :name="item.name"
+              @hide="changeFilter()"
             >
-              <template #footer>
+              <!-- <template #footer>
                 <div class="complex-analysis__filters-item-container-dates-footer">
                   <button
                     class="d-button d-button-primary d-button-primary-small d-button-clear-dates"
@@ -60,7 +60,7 @@
                     Готово
                   </button>
                 </div>
-              </template>
+              </template> -->
             </DatePicker>
           </div>
           <div class="complex-analysis__filters-item-container" v-else-if="item.type == 'tree'">
@@ -270,7 +270,7 @@ export default {
           label: 'Продажи в штуках',
           value: {
             min: 0,
-            max: 500,
+            max: 50000,
           },
         },
         {
@@ -279,7 +279,7 @@ export default {
           label: 'Продажи в рублях',
           value: {
             min: 0,
-            max: 500000,
+            max: 500000000,
           },
         },
         {
@@ -288,7 +288,7 @@ export default {
           label: 'Остатки',
           value: {
             min: 0,
-            max: 500000,
+            max: 5000,
           },
         },
         {
@@ -297,7 +297,7 @@ export default {
           label: 'Скорость продаж',
           value: {
             min: 0,
-            max: 500000,
+            max: 500,
           },
         },
         {
@@ -510,6 +510,33 @@ export default {
     },
   },
   watch: {
+    complex: function (newVal) {
+      if (Object.keys(newVal.maxes).length) {
+        for (var i in this.filters) {
+          if (this.filters[i].name == 'lost_revenue') {
+            this.filters[i].value.max = newVal.maxes.lost_revenue
+          }
+          if (this.filters[i].name == 'out_of_stock') {
+            this.filters[i].value.max = newVal.maxes.out_of_stock
+          }
+          if (this.filters[i].name == 'price') {
+            this.filters[i].value.max = newVal.maxes.price
+          }
+          if (this.filters[i].name == 'remains') {
+            this.filters[i].value.max = newVal.maxes.remains
+          }
+          if (this.filters[i].name == 'sales_col') {
+            this.filters[i].value.max = newVal.maxes.sales_col
+          }
+          if (this.filters[i].name == 'sales_rub') {
+            this.filters[i].value.max = newVal.maxes.sales_rub
+          }
+          if (this.filters[i].name == 'sales_speed') {
+            this.filters[i].value.max = newVal.maxes.sales_speed
+          }
+        }
+      }
+    },
     catalogs: function (newVal) {
       if (newVal) {
         for (var i in this.filters) {
