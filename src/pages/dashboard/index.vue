@@ -69,31 +69,99 @@
                   >
                     <span class="promotions__card-label">Всего:</span>
                     <div class="promotions__card-value-container-item">
-                      <p class="promotions__card-value">234</p>
-                      <span class="promotions__card-badge promotions__card-badge-green">+34</span>
+                      <p class="promotions__card-value">
+                        {{ dashboard_data?.registration?.total_now }}
+                      </p>
+                      <span
+                        class="promotions__card-badge"
+                        :class="{
+                          'promotions__card-badge-green':
+                            Number(dashboard_data?.registration?.total_prev) > 0,
+                          'promotions__card-badge-red':
+                            Number(dashboard_data?.registration?.total_prev) < 0,
+                          'promotions__card-badge-null':
+                            Number(dashboard_data?.registration?.total_prev) == 0,
+                        }"
+                        >{{
+                          Number(dashboard_data?.registration?.total_prev) > 0
+                            ? '+' + dashboard_data?.registration?.total_prev
+                            : dashboard_data?.registration?.total_prev
+                        }}</span
+                      >
                     </div>
                   </div>
                   <div class="promotions__card-value-container">
                     <span class="promotions__card-label">Брендов:</span>
                     <div class="promotions__card-value-container-item">
-                      <p class="promotions__card-value">122</p>
-                      <span class="promotions__card-badge promotions__card-badge-red">-2</span>
+                      <p class="promotions__card-value">
+                        {{ dashboard_data?.registration?.vendor_now }}
+                      </p>
+                      <span
+                        class="promotions__card-badge"
+                        :class="{
+                          'promotions__card-badge-green':
+                            Number(dashboard_data?.registration?.vendor_prev) > 0,
+                          'promotions__card-badge-red':
+                            Number(dashboard_data?.registration?.vendor_prev) < 0,
+                          'promotions__card-badge-null':
+                            Number(dashboard_data?.registration?.vendor_prev) == 0,
+                        }"
+                        >{{
+                          Number(dashboard_data?.registration?.vendor_prev) > 0
+                            ? '+' + dashboard_data?.registration?.vendor_prev
+                            : dashboard_data?.registration?.vendor_prev
+                        }}</span
+                      >
                     </div>
                   </div>
                   <div class="d-divider d-divider--vertical"></div>
                   <div class="promotions__card-value-container">
                     <span class="promotions__card-label">Оптовиков:</span>
                     <div class="promotions__card-value-container-item">
-                      <p class="promotions__card-value">34</p>
-                      <span class="promotions__card-badge promotions__card-badge-null">0</span>
+                      <p class="promotions__card-value">
+                        {{ dashboard_data?.registration?.warehouse_now }}
+                      </p>
+                      <span
+                        class="promotions__card-badge"
+                        :class="{
+                          'promotions__card-badge-green':
+                            Number(dashboard_data?.registration?.warehouse_prev) > 0,
+                          'promotions__card-badge-red':
+                            Number(dashboard_data?.registration?.warehouse_prev) < 0,
+                          'promotions__card-badge-null':
+                            Number(dashboard_data?.registration?.warehouse_prev) == 0,
+                        }"
+                        >{{
+                          Number(dashboard_data?.registration?.warehouse_prev) > 0
+                            ? '+' + dashboard_data?.registration?.warehouse_prev
+                            : dashboard_data?.registration?.warehouse_prev
+                        }}</span
+                      >
                     </div>
                   </div>
                   <div class="d-divider d-divider--vertical"></div>
                   <div class="promotions__card-value-container">
-                    <span class="promotions__card-label">Оптовиков:</span>
+                    <span class="promotions__card-label">Магазинов:</span>
                     <div class="promotions__card-value-container-item">
-                      <p class="promotions__card-value">135</p>
-                      <span class="promotions__card-badge promotions__card-badge-green">+34</span>
+                      <p class="promotions__card-value">
+                        {{ dashboard_data?.registration?.store_now }}
+                      </p>
+                      <span
+                        class="promotions__card-badge"
+                        :class="{
+                          'promotions__card-badge-green':
+                            Number(dashboard_data?.registration?.store_prev) > 0,
+                          'promotions__card-badge-red':
+                            Number(dashboard_data?.registration?.store_prev) < 0,
+                          'promotions__card-badge-null':
+                            Number(dashboard_data?.registration?.store_prev) == 0,
+                        }"
+                        >{{
+                          Number(dashboard_data?.registration?.store_prev) > 0
+                            ? '+' + dashboard_data?.registration?.store_prev
+                            : dashboard_data?.registration?.store_prev
+                        }}</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -136,7 +204,7 @@
                   </div>
                   <div class="d-divider d-divider--vertical"></div>
                   <div class="promotions__card-value-container">
-                    <span class="promotions__card-label">Оптовиков:</span>
+                    <span class="promotions__card-label">Магазинов:</span>
                     <div class="promotions__card-value-container-item">
                       <p class="promotions__card-value">135</p>
                       <span class="promotions__card-badge promotions__card-badge-green">+34</span>
@@ -167,8 +235,25 @@
                     >
                       <span class="promotions__card-values-title">Подключили поставщика:</span>
                       <div class="promotions__card-value-container-item">
-                        <p class="promotions__card-value">234</p>
-                        <span class="promotions__card-badge promotions__card-badge-red">-3</span>
+                        <p class="promotions__card-value">
+                          {{ dashboard_data?.connection?.total_now }}
+                        </p>
+                        <span
+                          class="promotions__card-badge"
+                          :class="{
+                            'promotions__card-badge-green':
+                              Number(dashboard_data?.connection?.total_prev) > 0,
+                            'promotions__card-badge-red':
+                              Number(dashboard_data?.connection?.total_prev) < 0,
+                            'promotions__card-badge-null':
+                              Number(dashboard_data?.connection?.total_prev) == 0,
+                          }"
+                          >{{
+                            Number(dashboard_data?.connection?.total_prev) > 0
+                              ? '+' + dashboard_data?.connection?.total_prev
+                              : dashboard_data?.connection?.total_prev
+                          }}</span
+                        >
                       </div>
                     </div>
                     <div class="promotions__card-value-container"></div>
@@ -177,40 +262,110 @@
                     <div class="promotions__card-value-container">
                       <span class="promotions__card-label">С поставщиками:</span>
                       <div class="promotions__card-value-container-item">
-                        <p class="promotions__card-value">122</p>
-                        <span class="promotions__card-badge promotions__card-badge-red">-2</span>
+                        <p class="promotions__card-value">
+                          {{ dashboard_data?.connection?.have_now }}
+                        </p>
+                        <span
+                          class="promotions__card-badge"
+                          :class="{
+                            'promotions__card-badge-green':
+                              Number(dashboard_data?.connection?.have_prev) > 0,
+                            'promotions__card-badge-red':
+                              Number(dashboard_data?.connection?.have_prev) < 0,
+                            'promotions__card-badge-null':
+                              Number(dashboard_data?.connection?.have_prev) == 0,
+                          }"
+                          >{{
+                            Number(dashboard_data?.connection?.have_prev) > 0
+                              ? '+' + dashboard_data?.connection?.have_prev
+                              : dashboard_data?.connection?.have_prev
+                          }}</span
+                        >
                       </div>
                     </div>
                     <div class="d-divider d-divider--vertical"></div>
                     <div class="promotions__card-value-container">
                       <span class="promotions__card-label">Без поставщиков:</span>
                       <div class="promotions__card-value-container-item">
-                        <p class="promotions__card-value">34</p>
-                        <span class="promotions__card-badge promotions__card-badge-null">0</span>
+                        <p class="promotions__card-value">
+                          {{ dashboard_data?.connection?.nohave_now }}
+                        </p>
+                        <!-- <span class="promotions__card-badge promotions__card-badge-null">0</span> -->
                       </div>
                     </div>
                     <div class="d-divider d-divider--vertical"></div>
                     <div class="promotions__card-value-container">
                       <span class="promotions__card-label">Бренды:</span>
                       <div class="promotions__card-value-container-item">
-                        <p class="promotions__card-value">135</p>
-                        <span class="promotions__card-badge promotions__card-badge-green">+34</span>
+                        <p class="promotions__card-value">
+                          {{ dashboard_data?.connection?.vendor_now }}
+                        </p>
+                        <span
+                          class="promotions__card-badge"
+                          :class="{
+                            'promotions__card-badge-green':
+                              Number(dashboard_data?.connection?.vendor_prev) > 0,
+                            'promotions__card-badge-red':
+                              Number(dashboard_data?.connection?.vendor_prev) < 0,
+                            'promotions__card-badge-null':
+                              Number(dashboard_data?.connection?.vendor_prev) == 0,
+                          }"
+                          >{{
+                            Number(dashboard_data?.connection?.vendor_prev) > 0
+                              ? '+' + dashboard_data?.connection?.vendor_prev
+                              : dashboard_data?.connection?.vendor_prev
+                          }}</span
+                        >
                       </div>
                     </div>
                     <div class="d-divider d-divider--vertical"></div>
                     <div class="promotions__card-value-container">
                       <span class="promotions__card-label">Оптовики:</span>
                       <div class="promotions__card-value-container-item">
-                        <p class="promotions__card-value">135</p>
-                        <span class="promotions__card-badge promotions__card-badge-green">+34</span>
+                        <p class="promotions__card-value">
+                          {{ dashboard_data?.connection?.warehouse_now }}
+                        </p>
+                        <span
+                          class="promotions__card-badge"
+                          :class="{
+                            'promotions__card-badge-green':
+                              Number(dashboard_data?.connection?.warehouse_prev) > 0,
+                            'promotions__card-badge-red':
+                              Number(dashboard_data?.connection?.warehouse_prev) < 0,
+                            'promotions__card-badge-null':
+                              Number(dashboard_data?.connection?.warehouse_prev) == 0,
+                          }"
+                          >{{
+                            Number(dashboard_data?.connection?.warehouse_prev) > 0
+                              ? '+' + dashboard_data?.connection?.warehouse_prev
+                              : dashboard_data?.connection?.warehouse_prev
+                          }}</span
+                        >
                       </div>
                     </div>
                     <div class="d-divider d-divider--vertical"></div>
                     <div class="promotions__card-value-container">
                       <span class="promotions__card-label">Магазины:</span>
                       <div class="promotions__card-value-container-item">
-                        <p class="promotions__card-value">135</p>
-                        <span class="promotions__card-badge promotions__card-badge-green">+34</span>
+                        <p class="promotions__card-value">
+                          {{ dashboard_data?.connection?.store_now }}
+                        </p>
+                        <span
+                          class="promotions__card-badge"
+                          :class="{
+                            'promotions__card-badge-green':
+                              Number(dashboard_data?.connection?.store_prev) > 0,
+                            'promotions__card-badge-red':
+                              Number(dashboard_data?.connection?.store_prev) < 0,
+                            'promotions__card-badge-null':
+                              Number(dashboard_data?.connection?.store_prev) == 0,
+                          }"
+                          >{{
+                            Number(dashboard_data?.connection?.store_prev) > 0
+                              ? '+' + dashboard_data?.connection?.store_prev
+                              : dashboard_data?.connection?.store_prev
+                          }}</span
+                        >
                       </div>
                     </div>
                   </div>
@@ -222,8 +377,25 @@
                     >
                       <span class="promotions__card-values-title">Подключили клиентов:</span>
                       <div class="promotions__card-value-container-item">
-                        <p class="promotions__card-value">234</p>
-                        <span class="promotions__card-badge promotions__card-badge-red">-3</span>
+                        <p class="promotions__card-value">
+                          {{ dashboard_data?.connection?.total_now }}
+                        </p>
+                        <span
+                          class="promotions__card-badge"
+                          :class="{
+                            'promotions__card-badge-green':
+                              Number(dashboard_data?.connection?.total_prev) > 0,
+                            'promotions__card-badge-red':
+                              Number(dashboard_data?.connection?.total_prev) < 0,
+                            'promotions__card-badge-null':
+                              Number(dashboard_data?.connection?.total_prev) == 0,
+                          }"
+                          >{{
+                            Number(dashboard_data?.connection?.total_prev) > 0
+                              ? '+' + dashboard_data?.connection?.total_prev
+                              : dashboard_data?.connection?.total_prev
+                          }}</span
+                        >
                       </div>
                     </div>
                     <div class="promotions__card-value-container">
@@ -455,9 +627,9 @@ export default {
 
   data() {
     return {
-      loading: false,
+      loading: true,
       filters: {
-        value: '',
+        value: [],
         placeholder: '-- --',
       },
       modalDashboard: false,
@@ -466,13 +638,24 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({}),
+    ...mapGetters({
+      dashboard_data: 'addition/dashboard_data',
+    }),
   },
-  mounted() {},
+  mounted() {
+    this.getDashboardData({ filter: this.filters.value }).then(() => {
+      this.loading = false
+    })
+  },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      getDashboardData: 'addition/getDashboardData',
+    }),
     changeFilter() {
-      console.log(this.filters.value)
+      this.loading = true
+      this.getDashboardData({ filter: this.filters.value }).then(() => {
+        this.loading = false
+      })
     },
   },
   watch: {},
