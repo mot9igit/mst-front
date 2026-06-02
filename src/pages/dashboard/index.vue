@@ -589,8 +589,25 @@
                     <div class="promotions__card-value-container">
                       <span class="promotions__card-label">Без заказов:</span>
                       <div class="promotions__card-value-container-item">
-                        <p class="promotions__card-value">135</p>
-                        <span class="promotions__card-badge promotions__card-badge-green">+34</span>
+                        <p class="promotions__card-value">
+                          {{ dashboard_data?.orders?.org_noorder_now }}
+                        </p>
+                        <span
+                          class="promotions__card-badge"
+                          :class="{
+                            'promotions__card-badge-green':
+                              Number(dashboard_data?.orders?.org_noorder_prev) > 0,
+                            'promotions__card-badge-red':
+                              Number(dashboard_data?.orders?.org_noorder_prev) < 0,
+                            'promotions__card-badge-null':
+                              Number(dashboard_data?.orders?.org_noorder_prev) == 0,
+                          }"
+                          >{{
+                            Number(dashboard_data?.orders?.org_noorder_prev) > 0
+                              ? '+' + dashboard_data?.orders?.org_noorder_prev
+                              : dashboard_data?.orders?.org_noorder_prev
+                          }}</span
+                        >
                       </div>
                     </div>
                   </div>
@@ -602,17 +619,22 @@
                     >
                       <span class="promotions__card-values-title">Получили заказы:</span>
                       <div class="promotions__card-value-container-item">
-                        <p class="promotions__card-value">234</p>
+                        <p class="promotions__card-value">
+                          {{ dashboard_data?.orders?.org_seller_now }}
+                        </p>
                         <!-- <span class="promotions__card-badge promotions__card-badge-red">-3</span> -->
                       </div>
                     </div>
                     <div class="promotions__card-value-container">
                       <button
                         class="promotions__card-value-container-button"
+                        v-if="Object.keys(orders_modal_orgs).length"
                         @click.prevent="((modalDashboard = true), (title = 'Заказы'))"
                       >
                         <span class="promotions__card-value-container-button-label">Еще</span>
-                        <span class="promotions__card-value-container-button-badge">229</span>
+                        <span class="promotions__card-value-container-button-badge">{{
+                          this.dashboard_data?.orders?.orgs?.total - 4
+                        }}</span>
                         <i
                           class="d-icon-arrow-right promotions__card-value-container-button-icon"
                         ></i>
@@ -620,36 +642,32 @@
                     </div>
                   </div>
                   <div class="promotions__card-values">
-                    <div class="promotions__card-value-container">
-                      <span class="promotions__card-label">Без заказов:</span>
-                      <div class="promotions__card-value-container-item">
-                        <p class="promotions__card-value">122</p>
-                        <span class="promotions__card-badge promotions__card-badge-red">-2</span>
+                    <div
+                      class="promotions__card-values-contt"
+                      v-for="(item, ind) in orders_temp_orgs"
+                      :key="ind"
+                    >
+                      <div class="promotions__card-value-container">
+                        <span class="promotions__card-label">{{ item.name }}:</span>
+                        <div class="promotions__card-value-container-item">
+                          <p class="promotions__card-value">{{ item.count_now }}</p>
+                          <span
+                            class="promotions__card-badge"
+                            :class="{
+                              'promotions__card-badge-green': Number(item.count_prev) > 0,
+                              'promotions__card-badge-red': Number(item.count_prev) < 0,
+                              'promotions__card-badge-null': Number(item.count_prev) == 0,
+                            }"
+                            >{{
+                              Number(item.count_prev) > 0 ? '+' + item.count_prev : item.count_prev
+                            }}</span
+                          >
+                        </div>
                       </div>
-                    </div>
-                    <div class="d-divider d-divider--vertical"></div>
-                    <div class="promotions__card-value-container">
-                      <span class="promotions__card-label">Организация2:</span>
-                      <div class="promotions__card-value-container-item">
-                        <p class="promotions__card-value">34</p>
-                        <span class="promotions__card-badge promotions__card-badge-null">0</span>
-                      </div>
-                    </div>
-                    <div class="d-divider d-divider--vertical"></div>
-                    <div class="promotions__card-value-container">
-                      <span class="promotions__card-label">Организация3:</span>
-                      <div class="promotions__card-value-container-item">
-                        <p class="promotions__card-value">135</p>
-                        <span class="promotions__card-badge promotions__card-badge-green">+34</span>
-                      </div>
-                    </div>
-                    <div class="d-divider d-divider--vertical"></div>
-                    <div class="promotions__card-value-container">
-                      <span class="promotions__card-label">Организация4:</span>
-                      <div class="promotions__card-value-container-item">
-                        <p class="promotions__card-value">135</p>
-                        <span class="promotions__card-badge promotions__card-badge-green">+34</span>
-                      </div>
+                      <div
+                        class="d-divider d-divider--vertical"
+                        v-if="ind < Object.keys(orders_temp_orgs).length - 1"
+                      ></div>
                     </div>
                   </div>
                 </div>
@@ -660,7 +678,13 @@
       </div>
     </div>
     <customModal v-model="modalDashboard">
-      <modalDash :title="title" :tabs="tabs" @close="modalDashboard = false"></modalDash>
+      <modalDash
+        :title="title"
+        :tabs="dashboard_data[modalMode]"
+        :mode="modalMode"
+        :filtersModal="filters"
+        @setDates="modalFilter"
+      ></modalDash>
     </customModal>
   </section>
 </template>
@@ -685,10 +709,13 @@ export default {
         placeholder: '-- --',
       },
       modalDashboard: false,
+      modalMode: '',
       title: '',
       tabs: {},
       connection_temp_orgs: {},
       connection_modal_orgs: {},
+      orders_temp_orgs: {},
+      orders_modal_orgs: {},
     }
   },
   computed: {
@@ -711,9 +738,31 @@ export default {
         this.loading = false
       })
     },
+    modalFilter(data) {
+      this.filters.value = data
+      this.changeFilter()
+    },
   },
   watch: {
+    title: function (newVal) {
+      if (newVal) {
+        if (newVal == 'Заказы') {
+          this.modalMode = 'orders'
+        } else {
+          this.modalMode = 'connection'
+        }
+      } else {
+        this.modalMode = ''
+      }
+    },
+    modalDashboard: function (newVal) {
+      console.log(newVal)
+    },
     dashboard_data: function (newVal) {
+      this.connection_temp_orgs = {}
+      this.connection_modal_orgs = {}
+      this.orders_temp_orgs = {}
+      this.orders_modal_orgs = {}
       if (newVal.connection.orgs.total <= 4 && newVal.connection.orgs.total > 0) {
         this.connection_temp_orgs = newVal.connection.orgs.items
       } else {
@@ -723,6 +772,19 @@ export default {
               this.connection_temp_orgs[i] = newVal.connection.orgs.items[i]
             } else {
               this.connection_modal_orgs[i] = newVal.connection.orgs.items[i]
+            }
+          }
+        }
+      }
+      if (newVal.orders.orgs.total <= 4 && newVal.orders.orgs.total > 0) {
+        this.orders_temp_orgs = newVal.orders.orgs.items
+      } else {
+        if (newVal.orders.orgs.total > 4) {
+          for (let i = 0; i < newVal.orders.orgs.total; i++) {
+            if (i < 4) {
+              this.orders_temp_orgs[i] = newVal.orders.orgs.items[i]
+            } else {
+              this.orders_modal_orgs[i] = newVal.orders.orgs.items[i]
             }
           }
         }
