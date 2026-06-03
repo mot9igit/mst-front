@@ -9,7 +9,7 @@
     <div class="dashboard__header">
       <div class="dashboard__header-title">
         <h1 class="dashboard__header-title-h1">
-          Дашборд проекта [*придумайте название организации*]
+          Дашборд проекта МС: цифровой сервис закупок и аналитики
         </h1>
         <p class="dashboard__header-title-text">
           Данный отчёт включает комплекс метрик, позволяющих оценить текущее развитие проекта,
@@ -19,34 +19,20 @@
       <div class="dashboard__header-filters">
         <label class="dashboard__header-filters-label">Выбрать период:</label>
         <DatePicker
+          v-if="!datepicker_loading"
           v-model="this.filters.value"
           @hide="changeFilter()"
           dateFormat="dd.mm.yy"
           :placeholder="this.filters.placeholder"
           :manualInput="false"
-          :maxDate="date_now"
           showIcon
           showClear
           iconDisplay="input"
           selectionMode="range"
           class="catalog-filters-dates"
+          :key="dates1"
+          :defaultValue="start_dates"
         >
-          <template #footer>
-            <div class="catalog-filters-dates-overlay-footer">
-              <button
-                class="d-button d-button-primary d-button-primary-small d-button-clear-dates"
-                @click.prevent="this.filters.value = null"
-              >
-                Сбросить
-              </button>
-              <button
-                class="d-button d-button-primary d-button-primary-small"
-                @click.prevent="changeFilter()"
-              >
-                Готово
-              </button>
-            </div>
-          </template>
         </DatePicker>
       </div>
     </div>
@@ -183,31 +169,99 @@
                   >
                     <span class="promotions__card-label">Всего:</span>
                     <div class="promotions__card-value-container-item">
-                      <p class="promotions__card-value">234</p>
-                      <span class="promotions__card-badge promotions__card-badge-null">0</span>
+                      <p class="promotions__card-value">
+                        {{ dashboard_data?.integration?.total_now }}
+                      </p>
+                      <span
+                        class="promotions__card-badge"
+                        :class="{
+                          'promotions__card-badge-green':
+                            Number(dashboard_data?.integration?.total_prev) > 0,
+                          'promotions__card-badge-red':
+                            Number(dashboard_data?.integration?.total_prev) < 0,
+                          'promotions__card-badge-null':
+                            Number(dashboard_data?.integration?.total_prev) == 0,
+                        }"
+                        >{{
+                          Number(dashboard_data?.integration?.total_prev) > 0
+                            ? '+' + dashboard_data?.integration?.total_prev
+                            : dashboard_data?.integration?.total_prev
+                        }}</span
+                      >
                     </div>
                   </div>
                   <div class="promotions__card-value-container">
                     <span class="promotions__card-label">Брендов:</span>
                     <div class="promotions__card-value-container-item">
-                      <p class="promotions__card-value">122</p>
-                      <span class="promotions__card-badge promotions__card-badge-red">-2</span>
+                      <p class="promotions__card-value">
+                        {{ dashboard_data?.integration?.vendor_now }}
+                      </p>
+                      <span
+                        class="promotions__card-badge"
+                        :class="{
+                          'promotions__card-badge-green':
+                            Number(dashboard_data?.integration?.vendor_prev) > 0,
+                          'promotions__card-badge-red':
+                            Number(dashboard_data?.integration?.vendor_prev) < 0,
+                          'promotions__card-badge-null':
+                            Number(dashboard_data?.integration?.vendor_prev) == 0,
+                        }"
+                        >{{
+                          Number(dashboard_data?.integration?.vendor_prev) > 0
+                            ? '+' + dashboard_data?.integration?.vendor_prev
+                            : dashboard_data?.integration?.vendor_prev
+                        }}</span
+                      >
                     </div>
                   </div>
                   <div class="d-divider d-divider--vertical"></div>
                   <div class="promotions__card-value-container">
                     <span class="promotions__card-label">Оптовиков:</span>
                     <div class="promotions__card-value-container-item">
-                      <p class="promotions__card-value">34</p>
-                      <span class="promotions__card-badge promotions__card-badge-null">0</span>
+                      <p class="promotions__card-value">
+                        {{ dashboard_data?.integration?.warehouse_now }}
+                      </p>
+                      <span
+                        class="promotions__card-badge"
+                        :class="{
+                          'promotions__card-badge-green':
+                            Number(dashboard_data?.integration?.warehouse_prev) > 0,
+                          'promotions__card-badge-red':
+                            Number(dashboard_data?.integration?.warehouse_prev) < 0,
+                          'promotions__card-badge-null':
+                            Number(dashboard_data?.integration?.warehouse_prev) == 0,
+                        }"
+                        >{{
+                          Number(dashboard_data?.integration?.warehouse_prev) > 0
+                            ? '+' + dashboard_data?.integration?.warehouse_prev
+                            : dashboard_data?.integration?.warehouse_prev
+                        }}</span
+                      >
                     </div>
                   </div>
                   <div class="d-divider d-divider--vertical"></div>
                   <div class="promotions__card-value-container">
                     <span class="promotions__card-label">Магазинов:</span>
                     <div class="promotions__card-value-container-item">
-                      <p class="promotions__card-value">135</p>
-                      <span class="promotions__card-badge promotions__card-badge-green">+34</span>
+                      <p class="promotions__card-value">
+                        {{ dashboard_data?.integration?.store_now }}
+                      </p>
+                      <span
+                        class="promotions__card-badge"
+                        :class="{
+                          'promotions__card-badge-green':
+                            Number(dashboard_data?.integration?.store_prev) > 0,
+                          'promotions__card-badge-red':
+                            Number(dashboard_data?.integration?.store_prev) < 0,
+                          'promotions__card-badge-null':
+                            Number(dashboard_data?.integration?.store_prev) == 0,
+                        }"
+                        >{{
+                          Number(dashboard_data?.integration?.store_prev) > 0
+                            ? '+' + dashboard_data?.integration?.store_prev
+                            : dashboard_data?.integration?.store_prev
+                        }}</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -650,7 +704,12 @@
                       <div class="promotions__card-value-container">
                         <span class="promotions__card-label">{{ item.name }}:</span>
                         <div class="promotions__card-value-container-item">
-                          <p class="promotions__card-value">{{ item.count_now }}</p>
+                          <p class="promotions__card-value">
+                            {{ item.count_now }}
+                            <span class="promotions__card-values-title-grey" v-if="item.cost_now"
+                              >({{ item.cost_now }})</span
+                            >
+                          </p>
                           <span
                             class="promotions__card-badge"
                             :class="{
@@ -677,14 +736,9 @@
         </div>
       </div>
     </div>
+
     <customModal v-model="modalDashboard">
-      <modalDash
-        :title="title"
-        :tabs="dashboard_data[modalMode]"
-        :mode="modalMode"
-        :filtersModal="filters"
-        @setDates="modalFilter"
-      ></modalDash>
+      <modalDash :title="title" :tabs="dashboard_data[modalMode]" :mode="modalMode"></modalDash>
     </customModal>
   </section>
 </template>
@@ -704,6 +758,7 @@ export default {
   data() {
     return {
       loading: true,
+      datepicker_loading: true,
       filters: {
         value: [],
         placeholder: '-- --',
@@ -716,6 +771,7 @@ export default {
       connection_modal_orgs: {},
       orders_temp_orgs: {},
       orders_modal_orgs: {},
+      start_dates: [],
     }
   },
   computed: {
@@ -725,6 +781,40 @@ export default {
   },
   mounted() {
     this.getDashboardData({ filter: this.filters.value }).then(() => {
+      if (this.filters.value.length == 0) {
+        this.start_dates[0] = new Date(this.dashboard_data.dates.now_format[0])
+        this.start_dates[1] = new Date(this.dashboard_data.dates.now_format[1])
+        this.datepicker_loading = false
+      }
+      if (
+        this.dashboard_data.connection.orgs.total <= 4 &&
+        this.dashboard_data.connection.orgs.total > 0
+      ) {
+        this.connection_temp_orgs = this.dashboard_data.connection.orgs.items
+      } else {
+        if (this.dashboard_data.connection.orgs.total > 4) {
+          for (let i = 0; i < this.dashboard_data.connection.orgs.total; i++) {
+            if (i < 4) {
+              this.connection_temp_orgs[i] = this.dashboard_data.connection.orgs.items[i]
+            } else {
+              this.connection_modal_orgs[i] = this.dashboard_data.connection.orgs.items[i]
+            }
+          }
+        }
+      }
+      if (this.dashboard_data.orders.orgs.total <= 4 && this.dashboard_data.orders.orgs.total > 0) {
+        this.orders_temp_orgs = this.dashboard_data.orders.orgs.items
+      } else {
+        if (this.dashboard_data.orders.orgs.total > 4) {
+          for (let i = 0; i < this.dashboard_data.orders.orgs.total; i++) {
+            if (i < 4) {
+              this.orders_temp_orgs[i] = this.dashboard_data.orders.orgs.items[i]
+            } else {
+              this.orders_modal_orgs[i] = this.dashboard_data.orders.orgs.items[i]
+            }
+          }
+        }
+      }
       this.loading = false
     })
   },
@@ -754,9 +844,6 @@ export default {
       } else {
         this.modalMode = ''
       }
-    },
-    modalDashboard: function (newVal) {
-      console.log(newVal)
     },
     dashboard_data: function (newVal) {
       this.connection_temp_orgs = {}
@@ -980,7 +1067,7 @@ export default {
           justify-content: space-between;
           flex-grow: 1;
           .d-divider {
-            margin: 0 12px;
+            margin: 0 auto;
           }
         }
         &-title {
@@ -1135,71 +1222,200 @@ export default {
     }
   }
 }
-
-@media (width <= 1200px) {
-  .promo__card-block-description,
-  .promo__cards-item-conds-value-total {
-    font-size: 14px;
+.promotions__card-value .promotions__card-values-title-grey {
+  margin-left: 4px;
+}
+@media (width <= 1536px) {
+  .dashboard__content .promo__cards-wrap:last-child .dart-row {
+    flex-direction: column;
+    gap: 40px;
+    .d-col-md-12 {
+      width: 100%;
+    }
+  }
+  .sale_page .dashboard__content .promotions__card-content .promotions__card-values-cont {
+    display: flex;
+    flex-direction: row;
+    gap: 48px;
+  }
+  .sale_page .dashboard__content .promotions__card-content .promotions__card-values {
+    flex-grow: 1;
+  }
+  .promotions__card {
+    position: relative;
   }
   .promotions__card-header {
-    border-radius: 6px 6px 0 0;
+    height: 54px;
   }
-  .promo__cards-item-date-values {
-    flex-direction: column;
-    gap: 12px;
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container-button {
+    position: absolute;
+    top: 11px;
+    right: 32px;
+    padding: 5.5px 20px;
+    background-color: #3e3e3e;
+    height: 32px;
+    min-height: 32px;
+    max-height: 32px;
+    border: 1px solid #3e3e3e;
+    &-label {
+      color: #fff;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 21px;
+    }
+    &-badge {
+      display: none;
+    }
+    &-icon {
+      color: #fff;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 16px;
+    }
   }
-  .promo__cards-date-container .d-fractions__item {
-    min-width: 100px;
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container-button:hover {
+    background-color: transparent;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container-button:hover
+    .promotions__card-value-container-button-label {
+    color: #282828;
+  }
+
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container-button:hover
+    .promotions__card-value-container-button-icon {
+    color: #282828;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container
+    .promotions__card-label {
+    font-size: 16px;
+    line-height: 21px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container:not(.promotions__card-value-container--main)
+    .promotions__card-value {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 26px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container--main
+    .promotions__card-value {
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 42px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values-cont:not(:first-child) {
+    margin-top: 32px;
+    padding-top: 32px;
+  }
+  .sale_page .dashboard__content .promotions__card-header .promotions__card-title {
+    font-size: 16px;
+    line-height: 26px;
   }
 }
-@media (width <= 800px) {
-  .promo__cards-item-values {
-    gap: 24px;
+@media (width <= 1260px) {
+  .sale_page .dashboard__content .promotions__card-content .promotions__card-values-cont {
+    gap: 29px;
   }
-  .promo__cards-date-container .d-fractions__item {
-    min-width: 70px;
+  .promotions__card-header {
+    height: 48px;
   }
-  .promo__cards-item-date-values {
-    flex-direction: row;
-    gap: 12px;
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container-button {
+    top: 8px;
+    &-label {
+      font-size: 14px;
+      line-height: 18px;
+    }
   }
-  .promo__cards-item-date-values .promo__cards-item-conds-value {
-    gap: 12px;
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container
+    .promotions__card-label {
+    font-size: 10px;
+    line-height: 13px;
   }
-}
-.promo-master__footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-}
-.promo-master__content {
-  padding-bottom: 60px;
-}
-.promo-master {
-  padding-top: 115px;
-}
-.promo-modal__header {
-  position: absolute;
-  z-index: 1001;
-}
-.promotions .promotions__card,
-.promotions .promotions__card-container {
-  height: 100%;
-}
-.sale_seeall-button {
-  width: 100%;
-  margin: 40px 0 24px;
-  display: flex;
-  justify-content: end;
-  align-items: center;
-}
-.sale_seeall-button p {
-  color: #757575;
-  width: 35%;
-}
-@media (width <= 780px) {
-  .promo .v-table {
-    display: block;
+  .sale_page .dashboard__content .promotions__card-content .promotions__card-values-title {
+    font-size: 10px;
+    line-height: 13px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container:not(.promotions__card-value-container--main)
+    .promotions__card-value {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container--main
+    .promotions__card-value {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 21px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values-cont:not(:first-child) {
+    margin-top: 24px;
+    padding-top: 24px;
+  }
+  .sale_page .dashboard__content .promotions__card-header .promotions__card-title {
+    font-size: 14px;
+    line-height: 18px;
+  }
+  .sale_page .dashboard__content .promotions__card-header .promotions__card-icon {
+    font-weight: 500;
+    font-size: 13px;
+  }
+  .sale_page .dashboard__content .promotions__card-header .d-icon-catalog {
+    width: auto;
+    height: 13px;
+  }
+  .dashboard__header-title-text {
+    font-size: 14px;
+    line-height: 18px;
+    max-width: 80%;
   }
 }
 </style>

@@ -2,7 +2,7 @@
   <div v-if="tabs" class="dashboard--tabs">
     <div class="dashboard-modal_header-left">
       <h2>{{ title }}</h2>
-      <p>Выберите промежутки дат, чтобы отобразить в поиске</p>
+      <!-- <p>Выберите промежутки дат, чтобы отобразить в поиске</p> -->
     </div>
 
     <Tabs class="product-modal__info-content">
@@ -37,37 +37,22 @@
         </TabList>
 
         <div class="dashboard__header-filters">
-          <label class="dashboard__header-filters-label">Выбрать период:</label>
+          <!--  <label class="dashboard__header-filters-label">Выбрать период:</label>
           <DatePicker
             v-model="this.filters.value"
             @hide="changeFilter()"
             dateFormat="dd.mm.yy"
             :placeholder="this.filters.placeholder"
             :manualInput="false"
-            :maxDate="date_now"
             showIcon
             showClear
             iconDisplay="input"
             selectionMode="range"
             class="catalog-filters-dates"
+            :key="dates2"
+            :defaultValue="dates"
           >
-            <template #footer>
-              <div class="catalog-filters-dates-overlay-footer">
-                <button
-                  class="d-button d-button-primary d-button-primary-small d-button-clear-dates"
-                  @click.prevent="this.filters.value = null"
-                >
-                  Сбросить
-                </button>
-                <button
-                  class="d-button d-button-primary d-button-primary-small"
-                  @click.prevent="changeFilter()"
-                >
-                  Готово
-                </button>
-              </div>
-            </template>
-          </DatePicker>
+          </DatePicker> -->
         </div>
       </div>
 
@@ -203,7 +188,7 @@
               </div>
               <div class="promotions__card-value-container"></div>
             </div>
-            <div class="promotions__card-values">
+            <div class="promotions__card-values promotions__card-table">
               <div
                 class="promotions__card-values-contt"
                 v-for="(item, ind) in tabs.orgs.items"
@@ -212,7 +197,12 @@
                 <div class="promotions__card-value-container">
                   <span class="promotions__card-label">{{ item.name }}:</span>
                   <div class="promotions__card-value-container-item">
-                    <p class="promotions__card-value">{{ item.count_now }}</p>
+                    <p class="promotions__card-value">
+                      {{ item.count_now
+                      }}<span class="promotions__card-values-title-grey" v-if="item.cost_now"
+                        >({{ item.cost_now }})</span
+                      >
+                    </p>
                     <span
                       class="promotions__card-badge"
                       :class="{
@@ -373,7 +363,7 @@
               </div>
               <div class="promotions__card-value-container"></div>
             </div>
-            <div class="promotions__card-values">
+            <div class="promotions__card-values promotions__card-table">
               <div
                 class="promotions__card-values-contt"
                 v-for="(item, ind) in tabs.orgs.items"
@@ -396,6 +386,7 @@
                     >
                   </div>
                 </div>
+
                 <div
                   class="d-divider d-divider--vertical"
                   v-if="ind < Object.keys(tabs.orgs.items).length - 1"
@@ -414,7 +405,7 @@ import Tabs from 'primevue/tabs'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import TabList from 'primevue/tablist'
-import DatePicker from 'primevue/datepicker'
+//import DatePicker from 'primevue/datepicker'
 
 export default {
   name: 'modalDash',
@@ -422,10 +413,17 @@ export default {
     return {
       tabException: 0,
       filters: {},
+      days: [],
     }
   },
   emits: ['setDates'],
-  components: { Tabs, TabPanels, TabPanel, TabList, DatePicker },
+  components: {
+    Tabs,
+    TabPanels,
+    TabPanel,
+    TabList,
+    //  DatePicker
+  },
   props: {
     tabs: {
       type: Object,
@@ -433,12 +431,12 @@ export default {
         return {}
       },
     },
-    filtersModal: {
-      type: Object,
-      default: () => {
-        return {}
-      },
-    },
+    // filtersModal: {
+    //   type: Object,
+    //   default: () => {
+    //     return {}
+    //   },
+    // },
     title: {
       type: String,
       default: 'Дашборд',
@@ -447,27 +445,40 @@ export default {
       type: String,
       default: '',
     },
+    // start_dates: {
+    //   type: Array,
+    //   default: [],
+    // },
   },
   mounted() {
-    if (Object.keys(this.filtersModal).length) {
-      this.filters = this.filtersModal
-    }
+    // if (Object.keys(this.filtersModal).length) {
+    //   this.filters = this.filtersModal
+    // }
   },
   computed: {},
   methods: {
-    changeFilter() {
-      this.$emit('setDates', this.filters.value)
-    },
+    // changeFilter() {
+    //   this.$emit('setDates', this.filters.value)
+    // },
   },
   watch: {
-    filtersModal: function (newVal) {
-      this.filters = newVal
-    },
+    // filtersModal: function (newVal) {
+    //   this.filters = newVal
+    // },
+    // start_dates: function (newVal) {
+    //   this.dates[0] = new Date(newVal[0])
+    //   this.dates[1] = new Date(newVal[1])
+    // },
   },
 }
 </script>
 
 <style lang="scss">
+.dashboard--tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
 .dashboard-modal_header {
   display: flex;
   align-items: end;
@@ -617,7 +628,8 @@ export default {
       justify-content: space-between;
       flex-grow: 1;
       .d-divider {
-        margin: 0 12px;
+        margin: 0 19.5px;
+        height: 8px;
       }
     }
     &-title {
@@ -769,5 +781,20 @@ export default {
     margin-top: 32px;
     padding-top: 22px;
   }
+}
+.promotions__card-values.promotions__card-table {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  row-gap: 24px;
+  align-items: start;
+}
+.promotions__card-value .promotions__card-values-title-grey {
+  margin-left: 4px;
+}
+.promotions__card-table .promotions__card-values-contt:nth-child(5n + 5) .d-divider {
+  display: none;
+}
+.d-divider {
+  height: 8px;
 }
 </style>
