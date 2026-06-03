@@ -1233,12 +1233,30 @@ export default {
       width: 100%;
     }
   }
-  .sale_page .dashboard__content .promotions__card-content .promotions__card-values-cont {
+  .sale_page
+    .dashboard__content
+    .promo__cards-wrap:last-child
+    .promotions__card-content
+    .promotions__card-values-cont {
     display: flex;
     flex-direction: row;
     gap: 48px;
   }
-  .sale_page .dashboard__content .promotions__card-content .promotions__card-values {
+  .sale_page
+    .dashboard__content
+    .promo__cards-wrap:last-child
+    .promotions__card-content
+    .promotions__card-values:first-child {
+    width: 209px;
+  }
+  .sale_page
+    .dashboard__content
+    .promo__cards-wrap:first-child
+    .promotions__card-content
+    .promotions__card-values:first-child {
+    flex-grow: 1;
+  }
+  .sale_page .dashboard__content .promotions__card-content .promotions__card-values:last-child {
     flex-grow: 1;
   }
   .promotions__card {
@@ -1416,6 +1434,13 @@ export default {
     font-size: 14px;
     line-height: 18px;
     max-width: 80%;
+  }
+  .sale_page
+    .dashboard__content
+    .promo__cards-wrap:last-child
+    .promotions__card-content
+    .promotions__card-values:first-child {
+    width: 131px;
   }
 }
 </style>
