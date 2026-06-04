@@ -42,13 +42,28 @@
         <div class="dart-row">
           <div class="d-col-md-12">
             <div class="promotions__card promotions__card--height">
-              <div class="promotions__card-header">
+              <div
+                class="promotions__card-header"
+                :class="{ 'promotions__card-header--active': show_more.registration }"
+              >
                 <div class="promotions__card-header-left">
                   <i class="d-icon-card-plus promotions__card-icon"></i>
                   <p class="promotions__card-title">Регистрации</p>
                 </div>
+                <div
+                  class="promotions__card-header-right"
+                  @click.prevent="show_more.registration = !show_more.registration"
+                >
+                  <i
+                    class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"
+                    :class="{ 'promos__header-select-icon--active': show_more.registration }"
+                  ></i>
+                </div>
               </div>
-              <div class="promotions__card-content">
+              <div
+                class="promotions__card-content"
+                :class="{ 'promotions__card-content--active': show_more.registration }"
+              >
                 <div class="promotions__card-values">
                   <div
                     class="promotions__card-value-container promotions__card-value-container--main"
@@ -156,13 +171,28 @@
           </div>
           <div class="d-col-md-12">
             <div class="promotions__card promotions__card--height">
-              <div class="promotions__card-header">
+              <div
+                class="promotions__card-header"
+                :class="{ 'promotions__card-header--active': show_more.integration }"
+              >
                 <div class="promotions__card-header-left">
                   <img class="d-icon-catalog d-icon" src="/icons/icon_integration.svg" />
                   <p class="promotions__card-title">Интеграции</p>
                 </div>
+                <div
+                  class="promotions__card-header-right"
+                  @click.prevent="show_more.integration = !show_more.integration"
+                >
+                  <i
+                    class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"
+                    :class="{ 'promos__header-select-icon--active': show_more.integration }"
+                  ></i>
+                </div>
               </div>
-              <div class="promotions__card-content">
+              <div
+                class="promotions__card-content"
+                :class="{ 'promotions__card-content--active': show_more.integration }"
+              >
                 <div class="promotions__card-values">
                   <div
                     class="promotions__card-value-container promotions__card-value-container--main"
@@ -275,13 +305,28 @@
         <div class="dart-row">
           <div class="d-col-md-12">
             <div class="promotions__card promotions__card--height">
-              <div class="promotions__card-header">
+              <div
+                class="promotions__card-header"
+                :class="{ 'promotions__card-header--active': show_more.connection }"
+              >
                 <div class="promotions__card-header-left">
                   <img class="d-icon-catalog d-icon" src="/icons/icon_user_plus.svg" />
                   <p class="promotions__card-title">Подключение поставщиков</p>
                 </div>
+                <div
+                  class="promotions__card-header-right"
+                  @click.prevent="show_more.connection = !show_more.connection"
+                >
+                  <i
+                    class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"
+                    :class="{ 'promos__header-select-icon--active': show_more.connection }"
+                  ></i>
+                </div>
               </div>
-              <div class="promotions__card-content">
+              <div
+                class="promotions__card-content"
+                :class="{ 'promotions__card-content--active': show_more.connection }"
+              >
                 <div class="promotions__card-values-cont">
                   <div class="promotions__card-values">
                     <div
@@ -505,13 +550,28 @@
           </div>
           <div class="d-col-md-12">
             <div class="promotions__card promotions__card--height">
-              <div class="promotions__card-header">
+              <div
+                class="promotions__card-header"
+                :class="{ 'promotions__card-header--active': show_more.orders }"
+              >
                 <div class="promotions__card-header-left">
                   <i class="d-icon-cube promotions__card-icon"></i>
                   <p class="promotions__card-title">Заказы</p>
                 </div>
+                <div
+                  class="promotions__card-header-right"
+                  @click.prevent="show_more.orders = !show_more.orders"
+                >
+                  <i
+                    class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"
+                    :class="{ 'promos__header-select-icon--active': show_more.orders }"
+                  ></i>
+                </div>
               </div>
-              <div class="promotions__card-content">
+              <div
+                class="promotions__card-content"
+                :class="{ 'promotions__card-content--active': show_more.orders }"
+              >
                 <div class="promotions__card-values-cont">
                   <div class="promotions__card-values">
                     <div
@@ -772,6 +832,12 @@ export default {
       orders_temp_orgs: {},
       orders_modal_orgs: {},
       start_dates: [],
+      show_more: {
+        registration: true,
+        integration: false,
+        connection: false,
+        orders: false,
+      },
     }
   },
   computed: {
@@ -884,7 +950,7 @@ export default {
 .dashboard__header {
   display: flex;
   flex-direction: row;
-  align-items: start;
+  align-items: end;
   justify-content: space-between;
   margin-bottom: 59px;
   &-title {
@@ -1035,6 +1101,9 @@ export default {
       border-bottom: none;
       &-left {
         gap: 16px;
+      }
+      &-right {
+        display: none;
       }
       .promotions__card-icon {
         color: #757575;
@@ -1441,6 +1510,815 @@ export default {
     .promotions__card-content
     .promotions__card-values:first-child {
     width: 131px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container--main
+    .promotions__card-badge {
+    font-size: 10px;
+    line-height: 13px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container
+    .promotions__card-badge {
+    font-size: 10px;
+    line-height: 13px;
+  }
+  .dashboard__header-filters-label {
+    font-size: 14px;
+    line-height: 16px;
+  }
+  .dashboard .catalog-filters-dates .p-inputtext {
+    font-size: 10px;
+    line-height: 13px;
+    padding-block: 9.5px;
+    padding-inline: 16px 22px;
+  }
+  .p-datepicker-calendar,
+  .p-datepicker-day-view {
+    font-size: 10px !important;
+  }
+  .dashboard__header-filters {
+    min-width: 304px;
+  }
+  .sale_page .dashboard__content .promo__cards-wrap + .promo__cards-wrap {
+    margin-top: 60px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container
+    .promotions__card-value-container-item {
+    align-items: center;
+    gap: 8px;
+  }
+  .sale_page .dashboard__content .dart-row {
+    gap: 38px;
+  }
+  .sale_page .dashboard__content .dart-row .d-col-md-12 {
+    width: calc(50% - 19px);
+  }
+  .sale_page
+    .dashboard__content
+    .promo__cards-wrap:last-child
+    .promotions__card-content
+    .promotions__card-values-cont {
+    gap: 14px;
+  }
+  .sale_page .dashboard__content .promotions__card-header-left {
+    gap: 8px;
+  }
+}
+@media (width <= 1024px) {
+  .sale_page .dashboard__content .promotions__card-content .promotions__card-values-cont {
+    gap: 14px;
+  }
+  .shipments h1 {
+    line-height: 21px;
+  }
+  .promotions__card-header {
+    height: 32px;
+    min-height: 32px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container-button {
+    top: 4px;
+    right: 16px;
+    padding: 5.5px 14.5px;
+    height: 24px;
+    max-height: 24px;
+    min-height: 24px;
+    &-label {
+      font-size: 10px;
+      line-height: 13px;
+    }
+    &-icon {
+      font-size: 7px;
+      line-height: 9px;
+      height: 8px;
+      width: 8px;
+    }
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container
+    .promotions__card-label {
+    font-size: 9px;
+    line-height: 12px;
+  }
+  .sale_page .dashboard__content .promotions__card-content .promotions__card-values-title {
+    font-size: 9px;
+    line-height: 12px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container:not(.promotions__card-value-container--main)
+    .promotions__card-value {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container--main
+    .promotions__card-value {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 21px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values-cont:not(:first-child) {
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+  .sale_page .dashboard__content .promotions__card-header .promotions__card-title {
+    font-size: 10px;
+    line-height: 13px;
+  }
+  .sale_page .dashboard__content .promotions__card-header .promotions__card-icon {
+    font-weight: 500;
+    font-size: 13px;
+  }
+  .sale_page .dashboard__content .promotions__card-header .d-icon-catalog {
+    width: auto;
+    height: 13px;
+  }
+  .dashboard__header-title-text {
+    font-size: 12px;
+    line-height: 16px;
+    max-width: 70%;
+  }
+  .sale_page
+    .dashboard__content
+    .promo__cards-wrap:last-child
+    .promotions__card-content
+    .promotions__card-values:first-child {
+    width: 115px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container--main
+    .promotions__card-badge {
+    font-size: 10px;
+    line-height: 13px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container
+    .promotions__card-badge {
+    font-size: 9px;
+    line-height: 12px;
+  }
+  .dashboard__header-filters-label {
+    font-size: 10px;
+    line-height: 13px;
+  }
+  .dashboard .catalog-filters-dates .p-inputtext {
+    font-size: 9px;
+    line-height: 12px;
+    padding-block: 6px;
+    padding-inline: 16px 22px;
+  }
+  .p-datepicker-calendar,
+  .p-datepicker-day-view {
+    font-size: 10px !important;
+  }
+  .dashboard__header-filters {
+    min-width: 192px;
+  }
+  .sale_page .dashboard__content .promo__cards-wrap + .promo__cards-wrap {
+    margin-top: 55px;
+  }
+  .sale_page .dashboard__content .dart-row {
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+  .sale_page .dashboard__content .dart-row .d-col-md-12 {
+    width: calc(50% - 16px);
+  }
+  .dashboard__content .promo__cards-wrap:last-child .dart-row {
+    gap: 32px;
+  }
+}
+@media (width <= 800px) {
+  .shipments h1 {
+    font-size: 14px;
+    line-height: 18px;
+  }
+  .promotions__card-header {
+    height: 32px;
+    min-height: 32px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container-button {
+    top: 4px;
+    right: 16px;
+    padding: 5.5px 14.5px;
+    height: 24px;
+    max-height: 24px;
+    min-height: 24px;
+    &-label {
+      font-size: 10px;
+      line-height: 13px;
+    }
+    &-icon {
+      font-size: 7px;
+      line-height: 9px;
+      height: 8px;
+      width: 8px;
+    }
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container
+    .promotions__card-label {
+    font-size: 8px;
+    line-height: 10px;
+  }
+  .sale_page .dashboard__content .promotions__card-content .promotions__card-values-title {
+    font-size: 8px;
+    line-height: 10px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container:not(.promotions__card-value-container--main)
+    .promotions__card-value {
+    font-weight: 600;
+    font-size: 10px;
+    line-height: 13px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container--main
+    .promotions__card-value {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 21px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values-cont:not(:first-child) {
+    margin-top: 21px;
+    padding-top: 20px;
+  }
+  .sale_page .dashboard__content .promotions__card-header .promotions__card-title {
+    font-size: 10px;
+    line-height: 13px;
+  }
+  .sale_page .dashboard__content .promotions__card-header .promotions__card-icon {
+    font-weight: 500;
+    font-size: 13px;
+  }
+  .sale_page .dashboard__content .promotions__card-header .d-icon-catalog {
+    width: auto;
+    height: 13px;
+  }
+  .dashboard__header-title-text {
+    font-size: 10px;
+    line-height: 13px;
+    max-width: 60%;
+  }
+  .sale_page
+    .dashboard__content
+    .promo__cards-wrap:last-child
+    .promotions__card-content
+    .promotions__card-values:first-child {
+    width: 103px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container--main
+    .promotions__card-badge {
+    font-size: 9px;
+    line-height: 12px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container
+    .promotions__card-badge {
+    font-size: 8px;
+    line-height: 10px;
+  }
+  .dashboard__header-filters-label {
+    font-size: 10px;
+    line-height: 13px;
+  }
+  .dashboard .catalog-filters-dates .p-inputtext {
+    font-size: 9px;
+    line-height: 12px;
+    padding-block: 6px;
+    padding-inline: 16px 22px;
+  }
+  .p-datepicker-calendar,
+  .p-datepicker-day-view {
+    font-size: 10px !important;
+  }
+  .dashboard__header-filters {
+    min-width: 174px;
+  }
+  .sale_page .dashboard__content .promo__cards-wrap + .promo__cards-wrap {
+    margin-top: 55px;
+  }
+  .sale_page .dashboard__content .dart-row {
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+  .sale_page .dashboard__content .dart-row .d-col-md-12 {
+    width: calc(50% - 16px);
+  }
+  .dashboard__content .promo__cards-wrap:last-child .dart-row {
+    gap: 32px;
+  }
+}
+@media (width <= 730px) {
+  .shipments h1 {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .promotions__card-header {
+    height: 24px;
+    min-height: 24px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container-button {
+    top: 4px;
+    right: 16px;
+    padding: 2px 8px;
+    height: 16px;
+    max-height: 16px;
+    min-height: 16px;
+    &-label {
+      font-size: 9px;
+      line-height: 12px;
+    }
+    &-icon {
+      font-size: 7px;
+      line-height: 9px;
+      height: 8px;
+      width: 8px;
+    }
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container
+    .promotions__card-label {
+    font-size: 8px;
+    line-height: 10px;
+  }
+  .sale_page .dashboard__content .promotions__card-content .promotions__card-values-title {
+    font-size: 8px;
+    line-height: 10px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container:not(.promotions__card-value-container--main)
+    .promotions__card-value {
+    font-weight: 600;
+    font-size: 9px;
+    line-height: 12px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container--main
+    .promotions__card-value {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values-cont:not(:first-child) {
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+  .sale_page .dashboard__content .promotions__card-header .promotions__card-title {
+    font-size: 9px;
+    line-height: 12px;
+  }
+  .sale_page .dashboard__content .promotions__card-header .promotions__card-icon {
+    font-weight: 500;
+    font-size: 11px;
+  }
+  .sale_page .dashboard__content .promotions__card-header .d-icon-catalog {
+    width: auto;
+    height: 11px;
+  }
+  .dashboard__header-title-text {
+    font-size: 8px;
+    line-height: 12px;
+    max-width: 65%;
+  }
+  .sale_page
+    .dashboard__content
+    .promo__cards-wrap:last-child
+    .promotions__card-content
+    .promotions__card-values:first-child {
+    width: 64px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container--main
+    .promotions__card-badge {
+    font-size: 7px;
+    line-height: 9px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container
+    .promotions__card-badge {
+    font-size: 8px;
+    line-height: 10px;
+  }
+  .dashboard__header-filters-label {
+    font-size: 7px;
+    line-height: 9px;
+  }
+  .dashboard .catalog-filters-dates .p-inputtext {
+    font-size: 8px;
+    line-height: 12px;
+    padding-block: 6px;
+    padding-inline: 8px 22px;
+    border-radius: 4px;
+  }
+  .p-datepicker-calendar,
+  .p-datepicker-day-view {
+    font-size: 10px !important;
+  }
+  .dashboard__header-filters {
+    min-width: 159px;
+    gap: 8px;
+  }
+  .dashboard .catalog-filters-dates .p-datepicker-input-icon-container .p-icon {
+    width: 9px;
+    height: 8px;
+  }
+  .sale_page .dashboard__content .promo__cards-wrap + .promo__cards-wrap {
+    margin-top: 45px;
+  }
+  .sale_page .dashboard__content .dart-row {
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .sale_page .dashboard__content .dart-row .d-col-md-12 {
+    width: calc(50% - 8px);
+  }
+  .dashboard__content .promo__cards-wrap:last-child .dart-row {
+    gap: 24px;
+  }
+  .dashboard__content .promo__cards-wrap:first-child .promotions__card-values {
+    display: grid;
+    grid-template-areas:
+      'A A A A A'
+      'B C D E F';
+    row-gap: 16px;
+  }
+  .dashboard__content
+    .promo__cards-wrap:first-child
+    .promotions__card-values
+    .promotions__card-value-container--main {
+    grid-area: A;
+  }
+}
+@media (width <= 600px) {
+  .shipments.dashboard {
+    padding-top: 16px;
+  }
+  .sale_page .dashboard__content .promo__cards-wrap + .promo__cards-wrap {
+    margin-top: 55px;
+  }
+  .dashboard__content .promo__cards-wrap:last-child .dart-row {
+    gap: 32px;
+  }
+  .dashboard {
+    .promotions__card {
+      margin-top: 0px;
+    }
+
+    &__header {
+      flex-direction: column;
+      gap: 40px;
+      align-items: start;
+      justify-content: start;
+      margin-bottom: 0;
+      &-title {
+        gap: 8px;
+        h1 {
+          font-weight: 600;
+          font-size: 20px;
+          line-height: 26px;
+          letter-spacing: -0.01em;
+          margin-bottom: 0;
+        }
+        &-text {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 18px;
+          max-width: 100%;
+        }
+      }
+      &-filters {
+        gap: 16px;
+        min-width: 100%;
+        &-label {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 18px;
+        }
+        .p-datepicker .p-inputtext {
+          font-size: 14px;
+          line-height: 18px;
+          padding-block: 11px;
+          padding-inline: 16px 22px;
+          border-radius: 8px;
+        }
+        .p-datepicker-input-icon-container .p-icon {
+          width: 14px !important;
+          height: 12px !important;
+        }
+      }
+    }
+    &__content {
+      position: relative;
+      width: calc(100% + 40px);
+      margin-left: -20px;
+      padding-top: 64px;
+      padding-bottom: 60px;
+      .promo__cards-wrap:first-child .dart-row {
+        flex-direction: column;
+        .d-col-md-12 {
+          width: 100%;
+          .promotions__card.promotions__card--height {
+            margin: 0;
+          }
+        }
+      }
+      .promo__cards-wrap {
+        .dart-row {
+          gap: 32px;
+          margin-bottom: 0;
+        }
+        .promotions__card.promotions__card--height {
+          box-shadow: none;
+        }
+        .promotions__card-header {
+          height: 48px;
+          border-radius: 22px;
+          padding: 14px 20px;
+          transition: all 0.2s ease;
+          &-left {
+            gap: 16px;
+            .promotions__card-icon {
+              font-size: 16px;
+            }
+            .d-icon {
+              height: 16px;
+            }
+            .promotions__card-title {
+              font-size: 16px;
+              line-height: 21px;
+            }
+          }
+          &-right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 21px;
+            height: 21px;
+            cursor: pointer;
+            .promos__header-select-icon {
+              font-size: 8px;
+              transform: rotate(-180deg);
+              transition: all 0.2s ease;
+            }
+            .promos__header-select-icon--active {
+              transform: rotate(0deg);
+            }
+          }
+        }
+        .promotions__card-header--active {
+          height: 48px;
+          border-radius: 22px 22px 0 0;
+          border-bottom: 0.3px solid #75757575;
+        }
+        .promotions__card-content {
+          display: none;
+        }
+        .promotions__card-content.promotions__card-content--active {
+          display: flex;
+          transition: all 0.2s ease;
+          padding: 24px 20px;
+          background: #f3f3f3;
+          box-shadow: 0px 10px 9.3px -5px rgba(0, 0, 0, 0.08);
+          border-radius: 0 0 18px 18px;
+          .promotions__card-values {
+            .promotions__card-value-container.promotions__card-value-container--main
+              .promotions__card-value {
+              font-size: 24px;
+              line-height: 31px;
+            }
+            .promotions__card-value-container:not(.promotions__card-value-container--main)
+              .promotions__card-value {
+              font-size: 14px;
+              line-height: 18px;
+            }
+            .promotions__card-label {
+              font-size: 14px;
+              line-height: 18px;
+            }
+            .promotions__card-value-container.promotions__card-value-container--main
+              .promotions__card-values-title {
+              font-size: 14px;
+              line-height: 18px;
+            }
+            .promotions__card-value-container.promotions__card-value-container--main
+              .promotions__card-badge {
+              margin-top: -16px;
+            }
+            .promotions__card-badge {
+              font-size: 12px;
+              line-height: 16px;
+            }
+
+            .promotions__card-value-container--main .promotions__card-badge-red {
+              background-color: #ffcec7;
+            }
+
+            .promotions__card-value-container--main .promotions__card-badge-green {
+              background-color: #d5ffaa;
+            }
+
+            .promotions__card-value-container--main .promotions__card-badge-null {
+              background-color: #ffefb5;
+            }
+          }
+        }
+      }
+      .promo__cards-wrap:last-child .promotions__card-content--active {
+        flex-direction: column;
+        padding: 8px;
+        gap: 8px;
+        .promotions__card-values-cont {
+          background: #ffffff;
+          border-radius: 18px;
+          padding: 24px 16px;
+          border: none;
+          margin: 0;
+          display: flex;
+          flex-direction: column !important;
+          gap: 32px;
+          position: relative;
+          .promotions__card-values:first-child {
+            max-width: 100%;
+            width: 100%;
+            .promotions__card-value-container--main {
+              width: 70%;
+            }
+            .promotions__card-value-container-button {
+              position: relative;
+              height: 32px;
+              min-height: 32px;
+              max-height: 32px;
+              top: 0;
+              right: 0;
+              background-color: transparent;
+              padding: 5.5px 15px;
+              &-label {
+                color: #282828;
+                font-size: 16px;
+                line-height: 21px;
+              }
+              &-icon {
+                color: #282828;
+                font-size: 11px;
+                line-height: 16px;
+                width: 16px;
+                height: 16px;
+              }
+            }
+            .promotions__card-value-container-button:hover {
+              background-color: #3e3e3e;
+            }
+            .promotions__card-value-container-button:hover
+              .promotions__card-value-container-button-label {
+              color: #fff;
+            }
+            .promotions__card-value-container-button:hover
+              .promotions__card-value-container-button-icon {
+              color: #fff;
+            }
+          }
+          .promotions__card-values:last-child {
+            flex-direction: column;
+            justify-content: start;
+            align-items: start;
+            gap: 8px;
+            .promotions__card-values-contt {
+              width: 100%;
+            }
+            .promotions__card-value-container {
+              flex-direction: row;
+              justify-content: space-between;
+              align-items: center;
+              width: 100%;
+              min-width: 100%;
+              gap: none;
+            }
+            .promotions__card-value-container:not(:last-child) {
+              border-bottom: 1px solid #75757575;
+              padding-bottom: 8px;
+            }
+            .d-divider {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media (width <= 320px) {
+  .dashboard__header-title h1 {
+    font-size: 16px;
+    line-height: 21px;
+  }
+  .dashboard__header-title-text {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .dashboard__header-filters-label {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .dashboard__content .promo__cards-wrap .promotions__card-header-left .promotions__card-title {
+    font-size: 14px;
+    line-height: 16px;
+  }
+  .dashboard__content .promo__cards-wrap .promotions__card-header--active,
+  .dashboard__content .promo__cards-wrap .promotions__card-header {
+    height: 40px;
+  }
+  .dashboard__content
+    .promo__cards-wrap
+    .promotions__card-content.promotions__card-content--active
+    .promotions__card-values
+    .promotions__card-label,
+  .dashboard__content
+    .promo__cards-wrap
+    .promotions__card-content.promotions__card-content--active
+    .promotions__card-values
+    .promotions__card-value-container.promotions__card-value-container--main
+    .promotions__card-values-title {
+    font-size: 12px;
+    line-height: 16px;
   }
 }
 </style>

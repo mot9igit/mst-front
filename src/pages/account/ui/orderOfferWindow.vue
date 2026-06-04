@@ -109,9 +109,11 @@
                         <p class="order__item-header-warehouse-label">
                           Склад
                           {{
-                            warehouse.warehouse_data.name_short
-                              ? warehouse.warehouse_data.name_short
-                              : warehouse.warehouse_data.name
+                            warehouse.warehouse_data.selfname
+                              ? warehouse.warehouse_data.selfname
+                              : warehouse.warehouse_data.name_short
+                                ? warehouse.warehouse_data.name_short
+                                : warehouse.warehouse_data.name
                           }}
                           #{{ warehouse_id }}:
                         </p>
@@ -146,9 +148,11 @@
                       <p class="order__item-header-address-label">Адрес доставки&nbsp;</p>
                       <p class="order__item-header-address-value">
                         {{
-                          basketStore.store_data.name_short
-                            ? basketStore.store_data.name_short
-                            : basketStore.store_data.name
+                          basketStore.store_data.selfname
+                            ? basketStore.store_data.selfname
+                            : basketStore.store_data.name_short
+                              ? basketStore.store_data.name_short
+                              : basketStore.store_data.name
                         }},
                         {{
                           basketStore.store_data.address_short

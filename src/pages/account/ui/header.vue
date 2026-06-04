@@ -19,9 +19,11 @@
             <div class="header__address-value">
               <p class="header__address-text">
                 {{
-                  orgBasketWarehouse?.name_short
-                    ? orgBasketWarehouse?.name_short
-                    : orgBasketWarehouse?.name
+                  orgBasketWarehouse?.selfname
+                    ? orgBasketWarehouse?.selfname
+                    : orgBasketWarehouse?.name_short
+                      ? orgBasketWarehouse?.name_short
+                      : orgBasketWarehouse?.name
                 }},
                 {{
                   orgBasketWarehouse?.address_short

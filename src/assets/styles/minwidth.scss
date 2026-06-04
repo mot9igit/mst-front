@@ -286,6 +286,13 @@ body .d-fractions {
     pointer-events: none;
   }
 }
+.header__address-value .header__address-text {
+  max-width: 600px;
+  max-height: 21px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 @media (width <=1610px) {
   .balance__main:before {
@@ -412,6 +419,9 @@ body .d-fractions {
   .header {
     padding-block: 11px 20px;
   }
+  .header__address-value .header__address-text {
+    max-width: 400px;
+  }
   .header__vendor {
     display: flex;
   }
@@ -536,6 +546,9 @@ body .d-fractions {
 }
 
 @media (width <=890px) {
+  .header__address-value .header__address-text {
+    max-width: 300px;
+  }
   .products__stat-value,
   .products__title,
   .product-card__seller-name {
@@ -991,6 +1004,9 @@ body .d-fractions {
 }
 
 @media (width <=600px) {
+  .header__address-value .header__address-text {
+    max-width: 100%;
+  }
   .d-search .d-search__field {
     max-height: 32px !important;
     height: 32px;
