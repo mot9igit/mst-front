@@ -294,6 +294,31 @@
                       >
                     </div>
                   </div>
+                  <div class="d-divider d-divider--vertical"></div>
+                  <div class="promotions__card-value-container">
+                    <span class="promotions__card-label">Отключилось:</span>
+                    <div class="promotions__card-value-container-item">
+                      <p class="promotions__card-value">
+                        {{ dashboard_data?.integration?.out_now }}
+                      </p>
+                      <span
+                        class="promotions__card-badge"
+                        :class="{
+                          'promotions__card-badge-green':
+                            Number(dashboard_data?.integration?.out_prev) > 0,
+                          'promotions__card-badge-red':
+                            Number(dashboard_data?.integration?.out_prev) < 0,
+                          'promotions__card-badge-null':
+                            Number(dashboard_data?.integration?.out_prev) == 0,
+                        }"
+                        >{{
+                          Number(dashboard_data?.integration?.out_prev) > 0
+                            ? '+' + dashboard_data?.integration?.out_prev
+                            : dashboard_data?.integration?.out_prev
+                        }}</span
+                      >
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -335,22 +360,22 @@
                       <span class="promotions__card-values-title">Подключили поставщика:</span>
                       <div class="promotions__card-value-container-item">
                         <p class="promotions__card-value">
-                          {{ dashboard_data?.connection?.total_now }}
+                          {{ dashboard_data?.connection?.total_c_now }}
                         </p>
                         <span
                           class="promotions__card-badge"
                           :class="{
                             'promotions__card-badge-green':
-                              Number(dashboard_data?.connection?.total_prev) > 0,
+                              Number(dashboard_data?.connection?.total_c_prev) > 0,
                             'promotions__card-badge-red':
-                              Number(dashboard_data?.connection?.total_prev) < 0,
+                              Number(dashboard_data?.connection?.total_c_prev) < 0,
                             'promotions__card-badge-null':
-                              Number(dashboard_data?.connection?.total_prev) == 0,
+                              Number(dashboard_data?.connection?.total_c_prev) == 0,
                           }"
                           >{{
-                            Number(dashboard_data?.connection?.total_prev) > 0
-                              ? '+' + dashboard_data?.connection?.total_prev
-                              : dashboard_data?.connection?.total_prev
+                            Number(dashboard_data?.connection?.total_c_prev) > 0
+                              ? '+' + dashboard_data?.connection?.total_c_prev
+                              : dashboard_data?.connection?.total_c_prev
                           }}</span
                         >
                       </div>
@@ -388,6 +413,7 @@
                       <div class="promotions__card-value-container-item">
                         <p class="promotions__card-value">
                           {{ dashboard_data?.connection?.nohave_now }}
+                          <span class="promotions__card-label">(на сегодня)</span>
                         </p>
                         <!-- <span class="promotions__card-badge promotions__card-badge-null">0</span> -->
                       </div>

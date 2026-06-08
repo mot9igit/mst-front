@@ -411,7 +411,7 @@ export default {
   name: 'modalDash',
   data() {
     return {
-      tabException: 0,
+      tabException: 1,
       filters: {},
       days: [],
     }
