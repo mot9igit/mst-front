@@ -12,6 +12,7 @@ export default {
     organizations: [],
     organizationsOpts: [],
     tags: [],
+    dashboard_data: {},
   },
   actions: {
     async getVendors({ commit }, sendData) {
@@ -91,12 +92,13 @@ export default {
       }
       return response
     },
-    async getOrganizations({ commit }, { exclude, filter }) {
+    async getOrganizations({ commit }, { exclude, filter, ids }) {
       const data = {
         id: router.currentRoute._value.params.id,
         type: 'get/organizations',
         exclude: exclude,
         filter: filter,
+        ids: ids,
       }
       const response = await api.addition.getOrganizations(data)
       if (response) {
@@ -129,6 +131,17 @@ export default {
       }
       return response
     },
+    async getDashboardData({ commit }, { filter }) {
+      const data = {
+        action: 'get/dashboard',
+        filter: filter,
+      }
+      const response = await api.addition.getRegions(data)
+      if (response) {
+        commit('SET_DASHBOARD_DATA', response.data)
+      }
+      return response
+    },
   },
   mutations: {
     SET_VENDORS: (state, data) => {
@@ -158,6 +171,9 @@ export default {
     SET_TAGS: (state, data) => {
       state.tags = data.data
     },
+    SET_DASHBOARD_DATA: (state, data) => {
+      state.dashboard_data = data.data
+    },
   },
   getters: {
     vendors(state) {
@@ -186,6 +202,9 @@ export default {
     },
     tags(state) {
       return state.tags
+    },
+    dashboard_data(state) {
+      return state.dashboard_data
     },
   },
 }

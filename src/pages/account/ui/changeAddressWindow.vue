@@ -5,9 +5,11 @@
       <p class="change-address__header-label">Активный склад:</p>
       <p class="change-address__header-value">
         {{
-          orgBasketWarehouse?.name_short
-            ? orgBasketWarehouse?.name_short
-            : orgBasketWarehouse?.name
+          orgBasketWarehouse?.selfname
+            ? orgBasketWarehouse?.selfname
+            : orgBasketWarehouse?.name_short
+              ? orgBasketWarehouse?.name_short
+              : orgBasketWarehouse?.name
         }},
         {{
           orgBasketWarehouse?.address_short
@@ -31,7 +33,13 @@
         >
           <i class="d-icon-geo change-address__content-list-item-icon"></i>
           <p class="change-address__content-list-item-text">
-            {{ store?.name_short ? store?.name_short : store?.name }},
+            {{
+              store?.selfname
+                ? store?.selfname
+                : store?.name_short
+                  ? store?.name_short
+                  : store?.name
+            }},
             {{ store?.address_short ? store?.address_short : store?.address }}
           </p>
         </a>
@@ -48,18 +56,17 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'changeAddressWindow',
-  data(){
+  data() {
     return {
-      stores: []
+      stores: [],
     }
   },
   mounted() {
-     if(this.$route.matched[5]?.name == 'WholesaleClientsOffer'){
-       this.stores = this.fromOrgStores.items
-     }else{
+    if (this.$route.matched[5]?.name == 'WholesaleClientsOffer') {
+      this.stores = this.fromOrgStores.items
+    } else {
       this.stores = this.orgStores.items
     }
-
   },
   computed: {
     ...mapGetters({
@@ -69,10 +76,10 @@ export default {
       basketOfferWarehouse: 'offer/basketOfferWarehouse',
     }),
     orgBasketWarehouse() {
-       if(this.$route?.matched[5]?.name == 'WholesaleClientsOffer'){
-         return this.fromOrgStores?.items?.find((el) => el.id == this.basketOfferWarehouse)
-       }else{
-      return this.orgStores?.items?.find((el) => el.id == this.basketWarehouse)
+      if (this.$route?.matched[5]?.name == 'WholesaleClientsOffer') {
+        return this.fromOrgStores?.items?.find((el) => el.id == this.basketOfferWarehouse)
+      } else {
+        return this.orgStores?.items?.find((el) => el.id == this.basketWarehouse)
       }
     },
   },

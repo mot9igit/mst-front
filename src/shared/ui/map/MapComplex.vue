@@ -10,14 +10,14 @@
         theme: 'light',
         showScaleInCopyrights: true,
       }"
-      width="100%"
-      height="665px"
+      width="398px"
+      height="100%"
       :class="'yaMapNoColor'"
     >
       <YandexMapDefaultSchemeLayer />
       <YandexMapDefaultFeaturesLayer />
 
-      <!-- <YandexMapMarker
+      <YandexMapMarker
         @click.stop
         v-model="defaultMarker"
         :settings="{
@@ -28,7 +28,7 @@
       >
         <MapMarker :address="address" />
       </YandexMapMarker>
- -->
+
       <YandexMapListener
         :settings="{
           onClick,

@@ -155,14 +155,14 @@
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
-          @click.prevent="((active_design = 0), localStorage.setItem('global.catalog_design', 0))"
+          @click.prevent="setDesign(0)"
         >
           <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_box.svg" />
         </div>
         <div
           class="catalog-top_filters-right-item"
           :class="{ 'catalog-top_filters-right-item--active': active_design == 1 }"
-          @click.prevent="setDesign()"
+          @click.prevent="setDesign(1)"
         >
           <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
         </div>
@@ -1109,7 +1109,7 @@ export default {
         this.active_design = a
         localStorage.setItem('global.catalog_design', this.active_design)
         this.loading = false
-      }, 50)
+      }, 100)
     },
   },
   mounted() {

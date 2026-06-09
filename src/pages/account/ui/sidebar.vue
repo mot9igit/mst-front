@@ -13,11 +13,14 @@
             class="sidebar__logo-container"
             @click.prevent="!active ? sidebarToggle() : ''"
           >
-            <img src="/icons/logo.svg" alt="MST" width="40" height="40" class="sidebar__logo" />
-            <span class="sidebar__logo-text"
-              ><span class="sidebar__logo-text sidebar__logo-text--bold">МС:</span>Управление
-              продажами <br />и закупками</span
-            >
+            <img
+              src="/icons/logo-icon.svg"
+              alt="MST"
+              width="40"
+              height="40"
+              class="sidebar__logo"
+            />
+            <span class="sidebar__logo-text">цифровой сервис закупок <br />и аналитики</span>
           </router-link>
           <div class="sidebar__block sidebar__toggle-block sidebar__logo-toggle">
             <!-- <button class="sidebar__toggle" @click.prevent="sidebarToggle()"> -->

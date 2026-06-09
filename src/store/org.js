@@ -26,6 +26,10 @@ export default {
     storeSettings: {},
     shipments: {},
     shipment: {},
+    clients: {},
+    complex: {},
+    realization: {},
+    realization_process: {},
   },
   actions: {
     async getOrg({ commit }) {
@@ -379,15 +383,74 @@ export default {
 
       return response
     },
-    async setStoreName(store, { id, mode, name }) {
+    async setStoreName(store, { name }) {
       const data = {
         action: 'set/store/name',
-        id: id,
-        mode: mode,
+        id:
+          router.currentRoute._value.name == 'warehouseStoreSettings'
+            ? router.currentRoute._value.params.store_id
+            : router.currentRoute._value.params.ship_id,
+        org_id: router.currentRoute._value.params.id,
         name: name,
       }
       const response = await api.org.setManager(data)
 
+      return response
+    },
+    async getClientsStores({ commit }) {
+      const data = {
+        action: 'get/clients/stores',
+        id: router.currentRoute._value.params.id,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_CLIENTS_STORES', response.data)
+      }
+      return response
+    },
+    async getComplex({ commit }, { filters }) {
+      const data = {
+        action: 'get/complex/analysis',
+        id: router.currentRoute._value.params.id,
+        filters: filters,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_COMPLEX', response.data)
+      }
+      return response
+    },
+    async getRealization(
+      { commit },
+      { filters, pageOrders, perpageOrders, pageProducts, perpageProducts },
+    ) {
+      const data = {
+        action: 'get/realization/analysis',
+        id: router.currentRoute._value.params.id,
+        filters: filters,
+        pageOrders: pageOrders,
+        perpageOrders: perpageOrders,
+        pageProducts: pageProducts,
+        perpageProducts: perpageProducts,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_REALIZATION', response.data)
+      }
+      return response
+    },
+    async getRealizationProcess({ commit }, { filters, pageProcess, perpageProcess }) {
+      const data = {
+        action: 'get/realization_process/analysis',
+        id: router.currentRoute._value.params.id,
+        filters: filters,
+        pageProcess: pageProcess,
+        perpageProcess: perpageProcess,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_REALIZATION_PROCESS', response.data)
+      }
       return response
     },
     unsetOrgStores({ commit }) {
@@ -446,6 +509,18 @@ export default {
     UNSET_ORG_SHIPMENTS: (state) => {
       state.shipments = {}
     },
+    SET_CLIENTS_STORES: (state, data) => {
+      state.clients = data.data
+    },
+    SET_COMPLEX: (state, data) => {
+      state.complex = data.data
+    },
+    SET_REALIZATION: (state, data) => {
+      state.realization = data.data
+    },
+    SET_REALIZATION_PROCESS: (state, data) => {
+      state.realization_process = data.data
+    },
   },
   getters: {
     orgActive(state) {
@@ -489,6 +564,18 @@ export default {
     },
     shipment(state) {
       return state.shipment
+    },
+    clients(state) {
+      return state.clients
+    },
+    complex(state) {
+      return state.complex
+    },
+    realization(state) {
+      return state.realization
+    },
+    realization_process(state) {
+      return state.realization_process
     },
   },
 }
