@@ -523,23 +523,7 @@
                         >
                       </div>
                     </div>
-                    <div class="promotions__card-value-container">
-                      <button
-                        class="promotions__card-value-container-button"
-                        v-if="Object.keys(connection_modal_orgs).length"
-                        @click.prevent="
-                          ((modalDashboard = true), (title = 'Подключение поставщиков'))
-                        "
-                      >
-                        <span class="promotions__card-value-container-button-label">Еще</span>
-                        <span class="promotions__card-value-container-button-badge">{{
-                          this.dashboard_data?.connection?.orgs?.total - 4
-                        }}</span>
-                        <i
-                          class="d-icon-arrow-right promotions__card-value-container-button-icon"
-                        ></i>
-                      </button>
-                    </div>
+                    <div class="promotions__card-value-container"></div>
                   </div>
                   <div class="promotions__card-values">
                     <div
@@ -564,10 +548,50 @@
                           >
                         </div>
                       </div>
-                      <div
-                        class="d-divider d-divider--vertical"
-                        v-if="ind < Object.keys(connection_temp_orgs).length - 1"
-                      ></div>
+                      <div class="d-divider d-divider--vertical"></div>
+                    </div>
+                    <button
+                      class="promotions__card-value-container-button show_more_org-button"
+                      v-if="Object.keys(connection_modal_orgs).length"
+                      @click.prevent="show_more_orgs.connection = !show_more_orgs.connection"
+                    >
+                      <span class="promotions__card-value-container-button-label">Еще</span>
+                      <span class="promotions__card-value-container-button-badge">{{
+                        this.dashboard_data?.connection?.orgs?.total - 4
+                      }}</span>
+                      <i
+                        class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"
+                        :class="{ 'promos__header-select-icon--active': show_more_orgs.connection }"
+                      ></i>
+                    </button>
+                  </div>
+                  <div
+                    class="promotions__card-values promotions__card-values--hidden"
+                    v-if="show_more_orgs.connection"
+                  >
+                    <div
+                      class="promotions__card-values-contt"
+                      v-for="(item, ind) in connection_modal_orgs"
+                      :key="ind"
+                    >
+                      <div class="promotions__card-value-container">
+                        <span class="promotions__card-label">{{ item.name }}:</span>
+                        <div class="promotions__card-value-container-item">
+                          <p class="promotions__card-value">{{ item.count_now }}</p>
+                          <span
+                            class="promotions__card-badge"
+                            :class="{
+                              'promotions__card-badge-green': Number(item.count_prev) > 0,
+                              'promotions__card-badge-red': Number(item.count_prev) < 0,
+                              'promotions__card-badge-null': Number(item.count_prev) == 0,
+                            }"
+                            >{{
+                              Number(item.count_prev) > 0 ? '+' + item.count_prev : item.count_prev
+                            }}</span
+                          >
+                        </div>
+                      </div>
+                      <div class="d-divider d-divider--vertical"></div>
                     </div>
                   </div>
                 </div>
@@ -765,21 +789,7 @@
                         <!-- <span class="promotions__card-badge promotions__card-badge-red">-3</span> -->
                       </div>
                     </div>
-                    <div class="promotions__card-value-container">
-                      <button
-                        class="promotions__card-value-container-button"
-                        v-if="Object.keys(orders_modal_orgs).length"
-                        @click.prevent="((modalDashboard = true), (title = 'Заказы'))"
-                      >
-                        <span class="promotions__card-value-container-button-label">Еще</span>
-                        <span class="promotions__card-value-container-button-badge">{{
-                          this.dashboard_data?.orders?.orgs?.total - 4
-                        }}</span>
-                        <i
-                          class="d-icon-arrow-right promotions__card-value-container-button-icon"
-                        ></i>
-                      </button>
-                    </div>
+                    <div class="promotions__card-value-container"></div>
                   </div>
                   <div class="promotions__card-values">
                     <div
@@ -809,10 +819,53 @@
                           >
                         </div>
                       </div>
-                      <div
-                        class="d-divider d-divider--vertical"
-                        v-if="ind < Object.keys(orders_temp_orgs).length - 1"
-                      ></div>
+                      <div class="d-divider d-divider--vertical"></div>
+                    </div>
+                    <button
+                      class="promotions__card-value-container-button show_more_org-button"
+                      v-if="Object.keys(orders_modal_orgs).length"
+                      @click.prevent="show_more_orgs.orders = !show_more_orgs.orders"
+                    >
+                      <span class="promotions__card-value-container-button-label">Еще</span>
+                      <span class="promotions__card-value-container-button-badge">{{
+                        this.dashboard_data?.orders?.orgs?.total - 3
+                      }}</span>
+                      <i
+                        class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"
+                        :class="{ 'promos__header-select-icon--active': show_more_orgs.orders }"
+                      ></i>
+                    </button>
+                  </div>
+                  <div
+                    class="promotions__card-values promotions__card-values--hidden"
+                    v-if="show_more_orgs.orders"
+                  >
+                    <div
+                      class="promotions__card-values-contt"
+                      v-for="(item, ind) in orders_modal_orgs"
+                      :key="ind"
+                    >
+                      <div class="promotions__card-value-container">
+                        <span class="promotions__card-label">{{ item.name }}:</span>
+                        <div class="promotions__card-value-container-item">
+                          <p class="promotions__card-value">{{ item.count_now }}</p>
+                          <span class="promotions__card-values-title-grey" v-if="item.cost_now"
+                            >({{ item.cost_now }})</span
+                          >
+                          <span
+                            class="promotions__card-badge"
+                            :class="{
+                              'promotions__card-badge-green': Number(item.count_prev) > 0,
+                              'promotions__card-badge-red': Number(item.count_prev) < 0,
+                              'promotions__card-badge-null': Number(item.count_prev) == 0,
+                            }"
+                            >{{
+                              Number(item.count_prev) > 0 ? '+' + item.count_prev : item.count_prev
+                            }}</span
+                          >
+                        </div>
+                      </div>
+                      <div class="d-divider d-divider--vertical"></div>
                     </div>
                   </div>
                 </div>
@@ -864,6 +917,10 @@ export default {
         connection: false,
         orders: false,
       },
+      show_more_orgs: {
+        connection: false,
+        orders: false,
+      },
     }
   },
   computed: {
@@ -894,12 +951,12 @@ export default {
           }
         }
       }
-      if (this.dashboard_data.orders.orgs.total <= 4 && this.dashboard_data.orders.orgs.total > 0) {
+      if (this.dashboard_data.orders.orgs.total <= 3 && this.dashboard_data.orders.orgs.total > 0) {
         this.orders_temp_orgs = this.dashboard_data.orders.orgs.items
       } else {
-        if (this.dashboard_data.orders.orgs.total > 4) {
+        if (this.dashboard_data.orders.orgs.total > 3) {
           for (let i = 0; i < this.dashboard_data.orders.orgs.total; i++) {
-            if (i < 4) {
+            if (i < 3) {
               this.orders_temp_orgs[i] = this.dashboard_data.orders.orgs.items[i]
             } else {
               this.orders_modal_orgs[i] = this.dashboard_data.orders.orgs.items[i]
@@ -955,12 +1012,12 @@ export default {
           }
         }
       }
-      if (newVal.orders.orgs.total <= 4 && newVal.orders.orgs.total > 0) {
+      if (newVal.orders.orgs.total <= 3 && newVal.orders.orgs.total > 0) {
         this.orders_temp_orgs = newVal.orders.orgs.items
       } else {
-        if (newVal.orders.orgs.total > 4) {
+        if (newVal.orders.orgs.total > 3) {
           for (let i = 0; i < newVal.orders.orgs.total; i++) {
-            if (i < 4) {
+            if (i < 3) {
               this.orders_temp_orgs[i] = newVal.orders.orgs.items[i]
             } else {
               this.orders_modal_orgs[i] = newVal.orders.orgs.items[i]
@@ -1156,6 +1213,16 @@ export default {
         align-items: center;
         justify-content: space-between;
         gap: 0;
+        &--hidden {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          border-top: 1px solid #75757575;
+          padding-top: 19px;
+          gap: 19px 12px;
+          .d-divider--vertical {
+            margin-left: 12px;
+          }
+        }
         &-contt {
           display: flex;
           align-items: center;
@@ -1180,6 +1247,7 @@ export default {
           &-item {
             display: flex;
           }
+
           &-button {
             padding: 9px 16px;
             display: flex;
@@ -1313,6 +1381,15 @@ export default {
         border-top: 0.5px solid #75757575;
         margin-top: 32px;
         padding-top: 22px;
+        .show_more_org-button .promos__header-select-icon {
+          font-size: 11px;
+          &--active {
+            transform: rotate(-180deg);
+          }
+        }
+        .show_more_org-button:hover .promos__header-select-icon {
+          color: #fff;
+        }
       }
     }
   }
@@ -1321,6 +1398,12 @@ export default {
   margin-left: 4px;
 }
 @media (width <= 1536px) {
+  .show_more_org-button:hover .promos__header-select-icon {
+    color: #3e3e3e !important;
+  }
+  .show_more_org-button .promos__header-select-icon {
+    color: #fff;
+  }
   .dashboard__content .promo__cards-wrap:last-child .dart-row {
     flex-direction: column;
     gap: 40px;
@@ -1333,9 +1416,42 @@ export default {
     .promo__cards-wrap:last-child
     .promotions__card-content
     .promotions__card-values-cont {
-    display: flex;
-    flex-direction: row;
-    gap: 48px;
+    display: grid;
+    grid-template-areas:
+      'A'
+      'B'
+      'D';
+    gap: 19px 0;
+  }
+  .sale_page
+    .dashboard__content
+    .promo__cards-wrap:last-child
+    .promotions__card-content
+    .promotions__card-values-cont
+    .promotions__card-values:first-child {
+    grid-area: A;
+  }
+  .sale_page
+    .dashboard__content
+    .promo__cards-wrap:last-child
+    .promotions__card-content
+    .promotions__card-values-cont
+    .promotions__card-values:nth-child(2) {
+    grid-area: B;
+  }
+  .sale_page
+    .dashboard__content
+    .promo__cards-wrap:last-child
+    .promotions__card-content
+    .promotions__card-values-cont
+    .promotions__card-values--hidden {
+    grid-area: D;
+  }
+  .sale_page
+    .dashboard__content
+    .promo__cards-wrap:last-child
+    .promotions__card-content
+    .promotions__card-values-cont {
   }
   .sale_page
     .dashboard__content
@@ -1365,9 +1481,9 @@ export default {
     .promotions__card-content
     .promotions__card-values
     .promotions__card-value-container-button {
-    position: absolute;
-    top: 11px;
-    right: 32px;
+    // position: absolute;
+    // top: 11px;
+    // right: 32px;
     padding: 5.5px 20px;
     background-color: #3e3e3e;
     height: 32px;
@@ -1747,7 +1863,7 @@ export default {
     gap: 32px;
   }
 }
-@media (width <= 800px) {
+@media (width <= 880px) {
   .shipments h1 {
     font-size: 14px;
     line-height: 18px;
@@ -1891,7 +2007,7 @@ export default {
     gap: 32px;
   }
 }
-@media (width <= 730px) {
+@media (width <= 800px) {
   .shipments h1 {
     font-size: 12px;
     line-height: 16px;
@@ -2043,8 +2159,8 @@ export default {
   .dashboard__content .promo__cards-wrap:first-child .promotions__card-values {
     display: grid;
     grid-template-areas:
-      'A A A A A'
-      'B C D E F';
+      'A A A A A A'
+      'B C D E F G';
     row-gap: 16px;
   }
   .dashboard__content
@@ -2063,6 +2179,62 @@ export default {
   }
   .dashboard__content .promo__cards-wrap:last-child .dart-row {
     gap: 32px;
+  }
+  .sale_page
+    .dashboard__content
+    .promotions__card-content
+    .promotions__card-values
+    .promotions__card-value-container-button {
+    justify-self: end;
+    position: relative;
+    height: 32px;
+    min-height: 32px;
+    max-height: 32px;
+    top: 0;
+    right: 0;
+    background-color: transparent;
+    padding: 5.5px 15px;
+    &-label {
+      color: #282828;
+      font-size: 16px;
+      line-height: 21px;
+    }
+    .promos__header-select-icon {
+      color: #282828;
+      font-size: 11px;
+      line-height: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+  .sale_page
+    .dashboard__content
+    .promo__cards-wrap:last-child
+    .promotions__card-content
+    .promotions__card-values {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: start;
+    &-contt {
+      width: 100%;
+    }
+    .d-divider {
+      display: none;
+    }
+    .promotions__card-value-container.promotions__card-value-container--main {
+      // flex-direction: row;
+      // justify-content: space-between;
+      width: 100% !important;
+    }
+    .promotions__card-value-container:not(.promotions__card-value-container--main) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 0 0 8px 0;
+      border-bottom: 1px solid rgba(117, 117, 117, 0.4588235294);
+    }
   }
   .dashboard {
     .promotions__card {
@@ -2232,16 +2404,21 @@ export default {
         flex-direction: column;
         padding: 8px;
         gap: 8px;
+        .promotions__card-values.promotions__card-values--hidden {
+          padding-bottom: 16px;
+        }
+
         .promotions__card-values-cont {
           background: #ffffff;
           border-radius: 18px;
-          padding: 24px 16px;
+          padding: 24px 16px 12px;
           border: none;
           margin: 0;
           display: flex;
           flex-direction: column !important;
           gap: 32px;
           position: relative;
+
           .promotions__card-values:first-child {
             max-width: 100%;
             width: 100%;
@@ -2253,8 +2430,7 @@ export default {
               height: 32px;
               min-height: 32px;
               max-height: 32px;
-              top: 0;
-              right: 0;
+
               background-color: transparent;
               padding: 5.5px 15px;
               &-label {

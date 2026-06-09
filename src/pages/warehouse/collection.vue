@@ -64,7 +64,7 @@
           />
         </div>
       </div>
-      <div class="collection__block">
+      <!-- <div class="collection__block">
         <div class="collection__block-title-wrapper">
           <p class="collection__block-title">Склад</p>
           <p class="collection__block-title-description">
@@ -80,9 +80,9 @@
           optionValue="value"
           placeholder="Выберите склад"
         />
-      </div>
+      </div> -->
 
-      <Tabs v-if="this.collectionData.store_id">
+      <Tabs v-if="this.collectionData">
         <TabList class="d-tab2__container collection__tabs">
           <Tab class="d-tab2" :class="{ 'd-tab2--active': !tabException }" :value="tabException">
             <button class="collection__tabs-link" @click.prevent="tabException = false">
@@ -184,7 +184,7 @@
                           item.term == '1'
                             ? 'Категории'
                             : item.term == '2'
-                              ? 'Категории системы интеграции'
+                              ? 'Склады'
                               : item.term == '3'
                                 ? 'Теги'
                                 : 'Бренды'
@@ -222,8 +222,8 @@
                         @change="updateBuild"
                         selectionMode="checkbox"
                         v-model="collectionData.terms.include[index].value"
-                        :options="this.out_catalogs"
-                        placeholder="Выберите категории"
+                        :options="this.stores"
+                        placeholder="Выберите склады"
                       />
                       <div
                         class="d-divider d-divider--vertical d-divider--no-margi collection__block-conditions-category-actions-divider"
@@ -453,7 +453,7 @@
                           item.term == '1'
                             ? 'Категории'
                             : item.term == '2'
-                              ? 'Категории системы интеграции'
+                              ? 'Склады'
                               : item.term == '3'
                                 ? 'Теги'
                                 : 'Бренды'
@@ -491,8 +491,8 @@
                         @change="updateBuild"
                         selectionMode="checkbox"
                         v-model="collectionData.terms.exclude[index].value"
-                        :options="this.out_catalogs"
-                        placeholder="Выберите категории"
+                        :options="this.stores"
+                        placeholder="Выберите склады"
                       />
                       <div
                         class="d-divider d-divider--vertical d-divider--no-margi collection__block-conditions-category-actions-divider"
@@ -746,7 +746,7 @@ export default {
       collectionData: {
         name: '',
         description: '',
-        store_id: 0,
+        store_id: 'all',
         update: false,
         terms: {
           include: [],
@@ -777,12 +777,13 @@ export default {
       },
       termsChips: [
         { name: 'Категории', active: false, placeholder: 'Выберите категории', key: 'categories' },
-        {
-          name: 'Категории системы интеграции',
-          active: false,
-          placeholder: 'Выберите категории системы интеграции',
-          key: 'out_categories',
-        },
+        { name: 'Склады', active: false, placeholder: 'Выберите склады', key: 'stores' },
+        // {
+        //   name: 'Категории системы интеграции',
+        //   active: false,
+        //   placeholder: 'Выберите категории системы интеграции',
+        //   key: 'out_categories',
+        // },
         { name: 'Теги', active: false, placeholder: 'Выберите теги', key: 'tags' },
         { name: 'Бренды', active: false, placeholder: 'Выберите бренды', key: 'brands' },
       ],
@@ -811,11 +812,11 @@ export default {
         },
       },
       table_data: {
-        remain_id: {
-          label: 'ID',
-          type: 'text',
-          class: 'cell_centeralign',
-        },
+        // remain_id: {
+        //   label: 'ID',
+        //   type: 'text',
+        //   class: 'cell_centeralign',
+        // },
         article: {
           label: 'Артикул',
           type: 'text',
@@ -1135,6 +1136,34 @@ export default {
           this.loading = false
         }
       })
+      this.buildCollection({
+        typeData: 1,
+        store_id: 'all',
+        terms: this.collectionData.terms,
+        page: this.page,
+        perpage: this.pagination_items_per_page,
+        filter: this.filter,
+        type: this.collectionData.type,
+        typeExclude: this.collectionData.typeExclude,
+        file: this.collectionData.file,
+        fileExclude: this.collectionData.fileExclude,
+      }).then(() => {
+        // Исключения
+        this.buildCollection({
+          typeData: 2,
+          store_id: 'all',
+          terms: this.collectionData.terms,
+          page: this.pageExclude,
+          perpage: this.pagination_items_per_page,
+          filter: this.filterExclude,
+          type: this.collectionData.type,
+          typeExclude: this.collectionData.typeExclude,
+          file: this.collectionData.file,
+          fileExclude: this.collectionData.fileExclude,
+        }).then(() => {
+          this.productLoading = false
+        })
+      })
     })
   },
   computed: {
@@ -1186,7 +1215,7 @@ export default {
     orgStores: function (newVal) {
       this.stores = []
       for (let i = 0; i < newVal.items.length; i++) {
-        this.stores.push({ label: newVal.items[i].name, value: Number(newVal.items[i].id) })
+        this.stores.push({ label: newVal.items[i].name, key: Number(newVal.items[i].id) })
       }
     },
     groupTags: function (newVal) {
