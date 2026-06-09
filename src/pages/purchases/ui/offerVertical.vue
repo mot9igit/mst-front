@@ -73,10 +73,7 @@
               <div class="product-card__price" v-else>
                 <p
                   class="product-card__price-value-discounted"
-                  v-if="
-                    pricePrefix == true ||
-                    (Object.keys(modalActionsData).length == 1 && allOff == true)
-                  "
+                  v-if="pricePrefix == true || (modalActionsData.length == 1 && allOff == true)"
                 >
                   от {{ offer.min_price.price.toLocaleString('ru') }} ₽
                 </p>
@@ -180,9 +177,9 @@
                     <p class="product-card__stat-name">Доставка</p>
                     <p class="product-card__stat-description">
                       {{
-                        offer.payer == 1
+                        activeConflict.payer == 1
                           ? 'за счет поставщика'
-                          : offer.payer == 0
+                          : activeConflict.payer == 0
                             ? 'за счет покупателя'
                             : 'по согласованию'
                       }}
@@ -203,15 +200,15 @@
                   >
                     <p class="product-card__stat-name">
                       {{
-                        offer.delay_type == 2
+                        activeConflict.delay_type == 2
                           ? 'Под реал.'
-                          : offer.delay_type == 1
+                          : activeConflict.delay_type == 1
                             ? 'Отсрочка'
                             : 'Предоплата'
                       }}
                     </p>
-                    <p class="product-card__stat-description" v-if="offer.delay">
-                      {{ Math.round(offer.delay) }} дн
+                    <p class="product-card__stat-description" v-if="activeConflict.delay">
+                      {{ Math.round(activeConflict.delay) }} дн
                     </p>
                   </div>
                   <div
@@ -219,7 +216,9 @@
                     v-else
                   >
                     <p class="product-card__stat-name">Возможно: {{ delayPrefix }}</p>
-                    <p class="product-card__stat-description">{{ Math.round(delayDays) }} дней</p>
+                    <p class="product-card__stat-description">
+                      {{ Math.round(activeConflict.delay) }} дней
+                    </p>
                   </div>
                 </div>
               </div>
@@ -411,7 +410,7 @@
                 {{
                   allOff == true
                     ? (offer.prices.rrc * count).toLocaleString('ru')
-                    : (activeConflict.price * count).toLocaleString('ru')
+                    : (activeConflict.prices.price * count).toLocaleString('ru')
                 }}
                 ₽
               </p>
@@ -419,18 +418,18 @@
           </div>
           <p class="product-card__p">
             {{
-              allOff == true || activeConflict.prices.rrc_discount == 0
+              allOff == true || activeConflict.prices.discount_percent == 0
                 ? 'Без скидки от РРЦ'
-                : activeConflict.prices.rrc_discount > 0
-                  ? '-' + activeConflict.prices.rrc_discount + '% от РРЦ'
-                  : '+' + activeConflict.prices.rrc_discount * -1 + '% от РРЦ'
+                : activeConflict.prices.discount_percent > 0
+                  ? '-' + activeConflict.prices.discount_percent + '% от РРЦ'
+                  : '+' + activeConflict.prices.discount_percent * -1 + '% от РРЦ'
             }}
           </p>
           <p class="product-card__p">
             {{
               allOff == true
                 ? offer.prices.rrc.toLocaleString('ru')
-                : activeConflict.price.toLocaleString('ru')
+                : activeConflict.prices.price.toLocaleString('ru')
             }}
             ₽ цена за ед.
           </p>
@@ -526,7 +525,7 @@
         </div>-->
 
       <!-- Список акций -->
-      <div class="product-card-actions__modal-all-content" v-if="this.activeConflict">
+      <div class="product-card-actions__modal-all-content" v-if="this.offer.actions">
         <div
           class="product-card-actions__modal-all-item"
           v-for="(item, index) in offer.actions"
@@ -540,31 +539,14 @@
           <!--Акция включена, Акция выключена, Акция несовместима, Условия акции не выполнены -->
           <div class="product-card-actions__modal-all-item-action">
             <p class="product-card-actions__modal-all-item-action-label">
-              <span
-                v-if="
-                  (item.is_trigger == 1 &&
-                    item.enabled == 0 &&
-                    !Object.keys(this.mainActionsData).includes(item.action_id)) ||
-                  (!this.activeConflict?.actions_ids?.includes(item.action_id) &&
-                    !Object.keys(this.mainActionsData).includes(item.action_id)) ||
-                  (this.mainActionsData[item.action_id] == true &&
-                    Object.keys(this.mainActionsData).length == 1 &&
-                    item.is_trigger == 1 &&
-                    item.enabled == 0)
-                "
+              <span v-if="item.is_trigger == 1 && item.enabled == 0"
                 >Условия акции не выполнены:</span
               >
               <span
                 v-else-if="
                   (this.activeConflict?.actions_ids?.includes(item.action_id) &&
-                    item.is_trigger == 0 &&
-                    !Object.keys(this.mainActionsData).includes(item.action_id)) ||
+                    item.is_trigger == 0) ||
                   (this.activeConflict?.actions_ids?.includes(item.action_id) &&
-                    item.is_trigger == 1 &&
-                    item.enabled == 1 &&
-                    !Object.keys(this.mainActionsData).includes(item.action_id)) ||
-                  (this.mainActionsData[item.action_id] == true &&
-                    Object.keys(this.mainActionsData).length == 1 &&
                     item.is_trigger == 1 &&
                     item.enabled == 1)
                 "
@@ -583,13 +565,7 @@
                 <div
                   class="d-switch"
                   @click.prevent="checkAction(Number(item.action_id))"
-                  v-if="
-                    (this.offer.main_actions.includes(Number(item.action_id)) &&
-                      item.is_trigger == 0) ||
-                    (this.offer.main_actions.includes(Number(item.action_id)) &&
-                      item.is_trigger == 1 &&
-                      Object.keys(this.mainActionsData).length > 1)
-                  "
+                  v-if="this.activeConflict.incompatibility.includes(Number(item.action_id))"
                 >
                   <input
                     type="checkbox"
@@ -603,7 +579,10 @@
                     <!--несовместима-->
                     <div
                       class="product-card__actions-icon-info"
-                      v-if="this.mainActionsData[item.action_id] == false && !allOff"
+                      v-if="
+                        this.activeConflict.incompatibility.includes(Number(item.action_id)) &&
+                        !allOff
+                      "
                     >
                       !
                     </div>
@@ -612,26 +591,16 @@
                 <!--крест-->
                 <i
                   class="d-icon-times product-card__actions-icon-cross"
-                  v-else-if="
-                    (!this.activeConflict?.actions_ids?.includes(item.action_id) &&
-                      !this.offer.main_actions.includes(Number(item.action_id))) ||
-                    (item.is_trigger == 1 && item.enabled == 0) ||
-                    (this.mainActionsData[item.action_id] == true &&
-                      Object.keys(this.mainActionsData).length == 1 &&
-                      item.is_trigger == 1 &&
-                      item.enabled == 0)
-                  "
+                  v-else-if="item.is_trigger == 1 && item.enabled == 0"
                 ></i>
                 <!--галочка-->
                 <i
                   class="d-icon-check product-card__actions-icon-auto"
                   v-else-if="
-                    (this.activeConflict?.actions_ids?.includes(item.action_id) &&
-                      ((item.is_trigger == 1 && item.enabled == 1) || item.is_trigger == 0)) ||
-                    (this.mainActionsData[item.action_id] == true &&
-                      Object.keys(this.mainActionsData).length == 1 &&
+                    (this.activeConflict.compatibility.includes(Number(item.action_id)) &&
                       item.is_trigger == 1 &&
-                      item.enabled == 1)
+                      item.enabled == 1) ||
+                    item.is_trigger == 0
                   "
                 ></i>
               </div>
@@ -651,10 +620,10 @@
           <div class="product-card__stat-list-cont">
             <div class="product-card__stat-list">
               <div v-if="item.complect > 0" class="d-category">Комплект</div>
-              <div v-if="item.percent_num > 0">
+              <div v-if="item.percent > 0">
                 <i class="d-icon-percent-rounded product-card__buy-icon"></i
                 ><span v-if="item.pricing_type == 1">Наценка</span><span v-else>Скидка</span>
-                {{ item.percent_num }}%
+                {{ item.percent }}%
               </div>
               <div v-if="item.payer == 2">
                 <i class="d-icon-truck product-card__buy-icon"></i>По согласованию
@@ -731,7 +700,7 @@ export default {
       modalActiveActions: false,
       seller_info: false,
       modalMultiplicityRemain: false,
-      modalActionsData: {},
+      modalActionsData: [],
       mainActionsData: {},
       allOff: false,
       pricePrefix: false,
@@ -741,7 +710,18 @@ export default {
       count: 1,
       count_min: 1,
       step: 1,
-      activeConflict: {},
+      activeConflict: {
+        delay: 0,
+        delay_type: 1,
+        min_count: 1,
+        multiplicity: 1,
+        payer: 0,
+        counter: {
+          count: 1,
+          step: 1,
+          count_min: 1,
+        },
+      },
       colActiveActions: 0,
       colNoActiveActions: 0,
       colNoTriggerActions: 0,
@@ -765,39 +745,16 @@ export default {
   },
   mounted() {
     if (Object.keys(this.offer).length) {
-      this.modalActionsData = this.offer.conflicts
+      if (this.offer.actions.length) {
+        this.modalActionsData = this.offer.actions
+      }
 
       if (this.modalActionsData && Object.keys(this.modalActionsData).length > 1) {
-        let col = Object.keys(this.modalActionsData).length
         let payer = false
-        //let active = Object.keys(this.offer.actions).length
         let real = 0
         let delay = 0
-        for (var i in this.modalActionsData) {
-          if (
-            this.modalActionsData[i].active == true ||
-            this.modalActionsData[i].price == this.offer.prices.rrc
-          ) {
-            col--
-          }
-          let actions = this.modalActionsData[i].actions
-          for (var ii in actions) {
-            if (actions[ii].payer == 1) {
-              payer = true
-            }
-            if (actions[ii].delay_type == 2) {
-              if (Number(actions[ii].delay) > real) {
-                real = Number(actions[ii].delay)
-              }
-            }
-            if (actions[ii].delay_type == 1) {
-              if (Number(actions[ii].delay) > delay) {
-                delay = Number(actions[ii].delay)
-              }
-            }
-          }
-        }
-        if (col > 0) {
+
+        if (this.offer.prices.min_price > 0 && this.offer.prices.min_price < this.offer.price) {
           this.pricePrefix = true
         }
         if (payer == true) {
@@ -815,60 +772,14 @@ export default {
       }
     }
     if (Object.keys(this.offer).length) {
-      for (var ic in this.offer.conflicts) {
-        if (this.offer.conflicts[ic].active) {
-          this.activeConflict = this.offer.conflicts[ic]
+      for (var action_item in this.offer.actions) {
+        // console.log(this.offer.actions[action_item])
+        if (this.offer.actions[action_item].relations?.active) {
+          this.activeConflict = this.offer.actions[action_item].relations
         }
       }
       if (this.activeConflict.actions_ids) {
-        let item = JSON.parse(JSON.stringify(this.activeConflict.actions_ids))
-        for (var iitem in item) {
-          item[iitem] = Number(item[iitem])
-        }
-        for (var ima in this.offer.main_actions) {
-          if (item.includes(Number(this.offer.main_actions[ima]))) {
-            this.mainActionsData[this.offer.main_actions[ima]] = true
-          } else {
-            this.mainActionsData[this.offer.main_actions[ima]] = false
-          }
-        }
-
-        if (
-          Number(this.activeConflict.multiplicity) > Number(this.activeConflict.min_count) &&
-          Number(this.activeConflict.multiplicity) > 1
-        ) {
-          this.count = Number(this.activeConflict.multiplicity)
-          this.step = Number(this.activeConflict.multiplicity)
-          this.count_min = Number(this.activeConflict.multiplicity)
-        } else {
-          if (
-            Number(this.activeConflict.multiplicity) <= Number(this.activeConflict.min_count) &&
-            Number(this.activeConflict.multiplicity) > 1
-          ) {
-            if (
-              !(Number(this.activeConflict.min_count) % Number(this.activeConflict.multiplicity))
-            ) {
-              this.count = Number(this.activeConflict.min_count)
-              this.step = Number(this.activeConflict.multiplicity)
-              this.count_min = Number(this.activeConflict.min_count)
-            } else {
-              this.count =
-                Number(this.activeConflict.min_count) +
-                Number(this.activeConflict.multiplicity) -
-                (Number(this.activeConflict.min_count) % Number(this.activeConflict.multiplicity))
-              this.step = Number(this.activeConflict.multiplicity)
-              this.count_min = this.count
-            }
-          } else {
-            this.count =
-              Number(this.activeConflict.min_count) > 0 ? Number(this.activeConflict.min_count) : 1
-            this.step = 1
-            this.count_min = this.count
-          }
-        }
-
         // потребность
-
         if (
           this.$route.matched[5] &&
           this.$route.matched[5].name == 'purchasesCatalogRequirement'
@@ -898,6 +809,7 @@ export default {
         }
       }
     }
+    // console.log(this.activeConflict)
   },
   computed: {},
   methods: {
@@ -959,8 +871,9 @@ export default {
       } else {
         this.loading = true
         let conf = {}
+
         if (!this.allOff) {
-          conf = this.activeConflict?.actions
+          conf = this.activeConflict?.action_ids
         }
         const data = {
           org_id: item.org_id,
@@ -988,10 +901,14 @@ export default {
     },
     addBasketAllSales(item, count) {
       this.loading = true
+      console.log(this.allOff)
+      console.log(this.activeConflict)
+      console.log(this.item)
+      console.log(this.count)
       let conf = {}
       if (!this.allOff) {
-        conf = this.activeConflict.actions
-        item.price = this.activeConflict.price
+        conf = this.activeConflict.action_ids
+        item.price = this.activeConflict.prices.price
         item.payer = this.activeConflict.payer ? this.activeConflict.payer : 0
         item.delay = this.activeConflict.delay ? this.activeConflict.delay : 0
         item.delay_type = this.activeConflict.delay_type ? this.activeConflict.delay_type : 1
@@ -1063,110 +980,24 @@ export default {
       }
     },
     checkAction(ind) {
-      if (this.mainActionsData[ind]) {
-        this.mainActionsData[ind] = false
-        this.allOff = true
-        // потребность
-        if (
-          this.$route.matched[5] &&
-          this.$route.matched[5].name == 'purchasesCatalogRequirement'
-        ) {
-          this.count = Number(this.offer.count)
-          let obj = { item: this.offer, count: this.count }
-          obj.item.data = this.offerData
-          this.$emit('counter', obj)
-        } else {
-          this.count = 1
+      var actions = []
+      for (let ii in this.offer.actions) {
+        if (this.offer.actions[ii].relations?.active == 1) {
+          this.offer.actions[ii].relations?.active == 0
         }
-        this.activeConflict = {}
-      } else {
-        for (var ii in this.mainActionsData) {
-          if (ii == ind) {
-            this.mainActionsData[ii] = true
-            this.allOff = false
-            // выставляем новый активный конфликт
-            for (var ic in this.offer.conflicts) {
-              if (this.offer.conflicts[ic] !== undefined) {
-                if (this.offer.conflicts[ic].actions_ids.includes(ii)) {
-                  this.activeConflict = this.offer.conflicts[ic]
-
-                  if (
-                    Number(this.activeConflict.multiplicity) >
-                      Number(this.activeConflict.min_count) &&
-                    Number(this.activeConflict.multiplicity) > 1
-                  ) {
-                    this.count = Number(this.activeConflict.multiplicity)
-                    this.step = Number(this.activeConflict.multiplicity)
-                    this.count_min = Number(this.activeConflict.multiplicity)
-                  } else {
-                    if (
-                      Number(this.activeConflict.multiplicity) <=
-                        Number(this.activeConflict.min_count) &&
-                      Number(this.activeConflict.multiplicity) > 1
-                    ) {
-                      if (
-                        !(
-                          Number(this.activeConflict.min_count) %
-                          Number(this.activeConflict.multiplicity)
-                        )
-                      ) {
-                        this.count = Number(this.activeConflict.min_count)
-                        this.step = Number(this.activeConflict.multiplicity)
-                        this.count_min = Number(this.activeConflict.min_count)
-                      } else {
-                        this.count =
-                          Number(this.activeConflict.min_count) +
-                          Number(this.activeConflict.multiplicity) -
-                          (Number(this.activeConflict.min_count) %
-                            Number(this.activeConflict.multiplicity))
-                        this.step = Number(this.activeConflict.multiplicity)
-                        this.count_min = this.count
-                      }
-                    } else {
-                      this.count =
-                        Number(this.activeConflict.min_count) > 0
-                          ? Number(this.activeConflict.min_count)
-                          : 1
-                      this.step = 1
-                      this.count_min = this.count
-                    }
-                  }
-                  // потребность
-                  // потребность
-                  if (
-                    this.$route.matched[5] &&
-                    this.$route.matched[5].name == 'purchasesCatalogRequirement'
-                  ) {
-                    if (Number(this.activeConflict.multiplicity) == 1) {
-                      this.count_min > Number(this.offer.count)
-                        ? (this.count = this.count_min)
-                        : (this.count = Number(this.offer.count))
-                    } else {
-                      if (Number(this.activeConflict.multiplicity) >= Number(this.offer.count)) {
-                        this.count = Number(this.activeConflict.multiplicity)
-                      } else {
-                        if (
-                          !(Number(this.activeConflict.multiplicity) % Number(this.offer.count))
-                        ) {
-                          this.count = Number(this.offer.count)
-                        } else {
-                          this.count =
-                            Number(this.offer.count) +
-                            Number(this.activeConflict.multiplicity) -
-                            (Number(this.offer.count) % Number(this.activeConflict.multiplicity))
-                        }
-                      }
-                    }
-                    let obj = { item: this.offer, count: this.count }
-                    obj.item.data = this.offerData
-                    this.$emit('counter', obj)
-                  }
-                }
-              }
-            }
+        if (this.offer.actions[ii].action_id == ind) {
+          // console.log(this.offer.actions[ii])
+          if (this.offer.actions[ii].relations?.action_ids) {
+            actions = this.offer.actions[ii].relations?.action_ids
           } else {
-            this.mainActionsData[ii] = false
+            actions.push(ind)
           }
+          this.activeConflict = this.offer.actions[ii].relations
+        }
+      }
+      for (let ii in this.offer.actions) {
+        if (actions.includes(this.offer.actions[ii].action_id)) {
+          this.offer.actions[ii].relations?.active == 1
         }
       }
     },

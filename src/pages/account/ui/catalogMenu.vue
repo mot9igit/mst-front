@@ -77,15 +77,15 @@
                 <p class="catalog__item-title">{{ item.pagetitle }}</p>
               </div>
             </button>
-            <!--           <router-link
+            <!-- <router-link
               class="catalog__item-button"
               :to="{
                 name: 'purchasesCatalogWarehouseCategory',
                 params: {
                   id: this.$route.params.id,
                   org_w_id: item.org_w_id,
-                //  warehouse_id: item.warehouse_id,
-                //  warehouse_cat_id: item.id,
+                  //  warehouse_id: item.warehouse_id,
+                  //  warehouse_cat_id: item.id,
                 },
               }"
               v-else
@@ -95,7 +95,7 @@
                 <img :src="item.image" class="catalog__item-img" v-if="item.image != ''" />
                 <p class="catalog__item-title">{{ item.pagetitle }}</p>
               </div>
-            </router-link>-->
+            </router-link> -->
           </li>
         </ul>
       </div>
@@ -291,11 +291,11 @@ export default {
     },
     getMenu() {
       return [
-        // {
-        //   name: 'Каталоги поставщиков',
-        //   icon: 'd-icon-catalog',
-        //   activeCatalog: false,
-        // },
+        {
+          name: 'Каталоги поставщиков',
+          icon: 'd-icon-catalog',
+          activeCatalog: false,
+        },
         {
           name: 'Единый каталог',
           icon: 'd-icon-boxes',
