@@ -230,7 +230,7 @@ export default {
       activeShowCatalog: 1,
       cataloglistShow: false,
       breadcrumbs: [
-        { id: 0, name: 'Единый каталог', child: 1, category_id: 0 },
+        // { id: 0, name: 'Единый каталог', child: 1, category_id: 0 },
         { id: 1, name: '', child: 0, category_id: 0 },
       ],
       stepmenu: 1,
@@ -291,11 +291,11 @@ export default {
     },
     getMenu() {
       return [
-        {
-          name: 'Каталоги поставщиков',
-          icon: 'd-icon-catalog',
-          activeCatalog: false,
-        },
+        // {
+        //   name: 'Каталоги поставщиков',
+        //   icon: 'd-icon-catalog',
+        //   activeCatalog: false,
+        // },
         {
           name: 'Единый каталог',
           icon: 'd-icon-boxes',

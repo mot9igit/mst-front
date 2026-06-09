@@ -426,11 +426,7 @@
             }}
           </p>
           <p class="product-card__p">
-            {{
-              allOff == true
-                ? offer.prices.rrc.toLocaleString('ru')
-                : activeConflict.prices.price.toLocaleString('ru')
-            }}
+            {{ activeConflict.prices.price.toLocaleString('ru') }}
             ₽ цена за ед.
           </p>
           <!-- Количество -->
@@ -544,16 +540,19 @@
               >
               <span
                 v-else-if="
-                  (this.activeConflict?.actions_ids?.includes(item.action_id) &&
-                    item.is_trigger == 0) ||
-                  (this.activeConflict?.actions_ids?.includes(item.action_id) &&
-                    item.is_trigger == 1 &&
-                    item.enabled == 1)
+                  !this.activeConflict.incompatibility.includes(Number(item.action_id)) &&
+                  this.activeConflict.action_ids &&
+                  this.activeConflict.action_ids.includes(Number(item.action_id)) &&
+                  ((item.is_trigger == 1 && item.enabled == 1) || item.is_trigger == 0) &&
+                  this.active_index != item.action_id
                 "
                 >Применена автоматически:</span
               >
-              <span v-else-if="this.mainActionsData[item.action_id] == true">Акция включена:</span>
-              <span v-else-if="this.mainActionsData[item.action_id] == false && !allOff"
+              <span v-else-if="this.active_index == item.action_id">Акция включена:</span>
+              <span
+                v-else-if="
+                  this.activeConflict.incompatibility.includes(Number(item.action_id)) && !allOff
+                "
                 >Акция несовместима:</span
               >
               <span v-else-if="this.mainActionsData[item.action_id] == false && allOff"
@@ -600,7 +599,8 @@
                     (this.activeConflict.compatibility.includes(Number(item.action_id)) &&
                       item.is_trigger == 1 &&
                       item.enabled == 1) ||
-                    item.is_trigger == 0
+                    item.is_trigger == 0 ||
+                    this.active_index == item.action_id
                   "
                 ></i>
               </div>
@@ -725,6 +725,7 @@ export default {
       colActiveActions: 0,
       colNoActiveActions: 0,
       colNoTriggerActions: 0,
+      active_index: null,
     }
   },
   components: { customModal, Counter },
@@ -776,38 +777,10 @@ export default {
         // console.log(this.offer.actions[action_item])
         if (this.offer.actions[action_item].relations?.active) {
           this.activeConflict = this.offer.actions[action_item].relations
+          this.active_index = Number(this.activeConflict.groups[0].actions[0])
         }
       }
-      if (this.activeConflict.actions_ids) {
-        // потребность
-        if (
-          this.$route.matched[5] &&
-          this.$route.matched[5].name == 'purchasesCatalogRequirement'
-        ) {
-          if (this.step == 1) {
-            this.count_min > Number(this.offer.count)
-              ? (this.count = this.count_min)
-              : (this.count = Number(this.offer.count))
-          } else {
-            if (this.count < Number(this.offer.count)) {
-              this.count = Number(this.offer.count)
-            }
-          }
-          let obj = { item: this.offer, count: this.count }
-          obj.item.data = this.offerData
-          this.$emit('counter', obj)
-        }
-      } else {
-        if (
-          this.$route.matched[5] &&
-          this.$route.matched[5].name == 'purchasesCatalogRequirement'
-        ) {
-          this.count = Number(this.offer.count)
-          let obj = { item: this.offer, count: this.count }
-          obj.item.data = this.offerData
-          this.$emit('counter', obj)
-        }
-      }
+      this.setCounts()
     }
     // console.log(this.activeConflict)
   },
@@ -934,6 +907,34 @@ export default {
         this.$emit('updateCatalog')
         this.$emit('updateBasket')
       })
+      this.setCounts()
+    },
+    checkAction(ind) {
+      this.active_index = ind
+      var actions = []
+      for (let ii in this.offer.actions) {
+        if (this.offer.actions[ii].relations?.active == 1) {
+          this.offer.actions[ii].relations?.active == 0
+        }
+        if (this.offer.actions[ii].action_id == ind) {
+          // console.log(this.offer.actions[ii])
+          if (this.offer.actions[ii].relations?.action_ids) {
+            actions = this.offer.actions[ii].relations?.action_ids
+          } else {
+            actions.push(ind)
+          }
+          this.activeConflict = this.offer.actions[ii].relations
+
+          this.setCounts()
+        }
+      }
+      for (let ii in this.offer.actions) {
+        if (actions.includes(this.offer.actions[ii].action_id)) {
+          this.offer.actions[ii].relations?.active == 1
+        }
+      }
+    },
+    setCounts() {
       if (
         Number(this.activeConflict.multiplicity) > Number(this.activeConflict.min_count) &&
         Number(this.activeConflict.multiplicity) > 1
@@ -965,39 +966,34 @@ export default {
           this.count_min = this.count
         }
       }
-      // потребность
-      if (this.$route.matched[5] && this.$route.matched[5].name == 'purchasesCatalogRequirement') {
-        if (this.step == 1) {
-          this.count_min > Number(this.offer.count)
-            ? (this.count = this.count_min)
-            : (this.count = Number(this.offer.count))
-        } else {
-          this.count < Number(this.offer.count) ? (this.count = Number(this.offer.count)) : ''
-        }
-        let obj = { item: this.offer, count: this.count }
-        obj.item.data = this.offerData
-        this.$emit('counter', obj)
-      }
-    },
-    checkAction(ind) {
-      var actions = []
-      for (let ii in this.offer.actions) {
-        if (this.offer.actions[ii].relations?.active == 1) {
-          this.offer.actions[ii].relations?.active == 0
-        }
-        if (this.offer.actions[ii].action_id == ind) {
-          // console.log(this.offer.actions[ii])
-          if (this.offer.actions[ii].relations?.action_ids) {
-            actions = this.offer.actions[ii].relations?.action_ids
+      if (this.activeConflict) {
+        // потребность
+        if (
+          this.$route.matched[5] &&
+          this.$route.matched[5].name == 'purchasesCatalogRequirement'
+        ) {
+          if (this.step == 1) {
+            this.count_min > Number(this.offer.count)
+              ? (this.count = this.count_min)
+              : (this.count = Number(this.offer.count))
           } else {
-            actions.push(ind)
+            if (this.count < Number(this.offer.count)) {
+              this.count = Number(this.offer.count)
+            }
           }
-          this.activeConflict = this.offer.actions[ii].relations
+          let obj = { item: this.offer, count: this.count }
+          obj.item.data = this.offerData
+          this.$emit('counter', obj)
         }
-      }
-      for (let ii in this.offer.actions) {
-        if (actions.includes(this.offer.actions[ii].action_id)) {
-          this.offer.actions[ii].relations?.active == 1
+      } else {
+        if (
+          this.$route.matched[5] &&
+          this.$route.matched[5].name == 'purchasesCatalogRequirement'
+        ) {
+          this.count = Number(this.offer.count)
+          let obj = { item: this.offer, count: this.count }
+          obj.item.data = this.offerData
+          this.$emit('counter', obj)
         }
       }
     },
