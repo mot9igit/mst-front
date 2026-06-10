@@ -586,7 +586,7 @@
                 <i
                   class="d-icon-check product-card__actions-icon-auto"
                   v-else-if="
-                    (this.activeConflict.compatibility.includes(Number(item.action_id)) &&
+                    (this.activeConflict.action_ids.includes(Number(item.action_id)) &&
                       item.is_trigger == 1 &&
                       item.enabled == 1) ||
                     item.is_trigger == 0 ||

@@ -95,11 +95,9 @@
             <div class="product-card__price">
               <p class="product-card__price-value-discounted">
                 {{
-                  allOff[remain_id] == true
-                    ? (item.item.prices.rrc * counts[remain_id].count).toLocaleString('ru')
-                    : (activeConflict[remain_id]?.price * counts[remain_id].count).toLocaleString(
-                        'ru',
-                      )
+                  (
+                    activeConflict[remain_id]?.prices.price * counts[remain_id].count
+                  ).toLocaleString('ru')
                 }}
                 ₽
               </p>
@@ -107,19 +105,13 @@
           </div>
           <p class="product-card__p">
             {{
-              allOff[remain_id] == true || activeConflict[remain_id].prices.rrc_discount == 0
-                ? 'Без скидки от РРЦ'
-                : activeConflict[remain_id].prices.rrc_discount > 0
-                  ? '-' + activeConflict[remain_id]?.prices.rrc_discount + '% от РРЦ'
-                  : '+' + activeConflict[remain_id]?.prices.rrc_discount * -1 + '% от РРЦ'
+              activeConflict[remain_id].prices.discount_percent > 0
+                ? '-' + activeConflict[remain_id]?.prices.discount_percent + '% от РРЦ'
+                : '+' + activeConflict[remain_id]?.prices.discount_percent * -1 + '% от РРЦ'
             }}
           </p>
           <p class="product-card__p">
-            {{
-              allOff[remain_id] == true
-                ? item.item.prices.rrc.toLocaleString('ru')
-                : activeConflict[remain_id]?.price.toLocaleString('ru')
-            }}
+            {{ activeConflict[remain_id]?.prices.price.toLocaleString('ru') }}
             ₽ цена за ед.
           </p>
           <!-- Количество -->
@@ -200,51 +192,34 @@
           <!--Акция включена, Акция выключена, Акция несовместима, Условия акции не выполнены -->
           <div class="product-card-actions__modal-all-item-action">
             <p class="product-card-actions__modal-all-item-action-label">
-              <span
-                v-if="
-                  (sale.is_trigger == 1 &&
-                    sale.enabled == 0 &&
-                    !Object.keys(this.mainActionsData[remain_id]).includes(sale.action_id)) ||
-                  (!this.activeConflict[remain_id]?.actions_ids?.includes(sale.action_id) &&
-                    !Object.keys(this.mainActionsData[remain_id]).includes(sale.action_id)) ||
-                  (this.mainActionsData[remain_id][sale.action_id] == true &&
-                    Object.keys(this.mainActionsData[remain_id]).length == 1 &&
-                    sale.is_trigger == 1 &&
-                    sale.enabled == 0)
-                "
+              <span v-if="sale.is_trigger == 1 && sale.enabled == 0"
                 >Условия акции не выполнены:</span
               >
+
               <span
                 v-else-if="
-                  (this.activeConflict[remain_id]?.actions_ids?.includes(sale.action_id) &&
-                    sale.is_trigger == 0 &&
-                    !Object.keys(this.mainActionsData[remain_id]).includes(sale.action_id)) ||
-                  (this.activeConflict[remain_id]?.actions_ids?.includes(sale.action_id) &&
-                    sale.is_trigger == 1 &&
-                    sale.enabled == 1 &&
-                    !Object.keys(this.mainActionsData[remain_id]).includes(sale.action_id)) ||
-                  (this.mainActionsData[remain_id][sale.action_id] == true &&
-                    Object.keys(this.mainActionsData[remain_id]).length == 1 &&
-                    sale.is_trigger == 1 &&
-                    sale.enabled == 1)
+                  !this.activeConflict[remain_id]?.incompatibility.includes(
+                    Number(sale.action_id),
+                  ) &&
+                  this.activeConflict[remain_id]?.action_ids &&
+                  (this.activeConflict[remain_id]?.action_ids.includes(Number(sale.action_id)) ||
+                    this.activeConflict[remain_id]?.action_ids.includes(sale.action_id)) &&
+                  ((sale.is_trigger == 1 && sale.enabled == 1) || sale.is_trigger == 0) &&
+                  Number(this.active_index[remain_id]) != Number(sale.action_id)
                 "
                 >Применена автоматически:</span
               >
-              <span v-else-if="this.mainActionsData[remain_id][sale.action_id] == true"
+              <span v-else-if="Number(this.active_index[remain_id]) == Number(sale.action_id)"
                 >Акция включена:</span
               >
               <span
                 v-else-if="
-                  this.mainActionsData[remain_id][sale.action_id] == false && !allOff[remain_id]
+                  this.activeConflict[remain_id].incompatibility.includes(Number(sale.action_id)) &&
+                  !allOff[remain_id]
                 "
                 >Акция несовместима:</span
               >
-              <span
-                v-else-if="
-                  this.mainActionsData[remain_id][sale.action_id] == false && allOff[remain_id]
-                "
-                >Акция выключена:</span
-              >
+              <!-- <span v-else-if="allOff[remain_id]">Акция выключена:</span> -->
             </p>
             <div class="product-card-actions__modal-all-item-action-button">
               <div>
@@ -252,11 +227,7 @@
                   class="d-switch"
                   @click.prevent="checkAction(Number(sale.action_id), remain_id)"
                   v-if="
-                    (item.item.main_actions.includes(Number(sale.action_id)) &&
-                      sale.is_trigger == 0) ||
-                    (item.item.main_actions.includes(Number(sale.action_id)) &&
-                      sale.is_trigger == 1 &&
-                      Object.keys(this.mainActionsData[remain_id]).length > 1)
+                    this.activeConflict[remain_id].incompatibility.includes(Number(sale.action_id))
                   "
                 >
                   <input
@@ -265,15 +236,15 @@
                     :id="Number(sale.action_id)"
                     binary="true"
                     class="d-switch__input"
-                    v-model="mainActionsData[remain_id][Number(sale.action_id)]"
                   />
                   <div class="d-switch__circle">
                     <!--несовместима-->
                     <div
                       class="product-card__actions-icon-info"
                       v-if="
-                        this.mainActionsData[remain_id][sale.action_id] == false &&
-                        !allOff[remain_id]
+                        this.activeConflict[remain_id].incompatibility.includes(
+                          Number(sale.action_id),
+                        ) && !allOff[remain_id]
                       "
                     >
                       !
@@ -283,30 +254,22 @@
                 <!--крест-->
                 <i
                   class="d-icon-times product-card__actions-icon-cross"
-                  v-else-if="
-                    (!this.activeConflict[remain_id]?.actions_ids?.includes(sale.action_id) &&
-                      !item.item.main_actions.includes(Number(sale.action_id))) ||
-                    (sale.is_trigger == 1 && sale.enabled == 0) ||
-                    (this.mainActionsData[remain_id][sale.action_id] == true &&
-                      Object.keys(this.mainActionsData[remain_id]).length == 1 &&
-                      sale.is_trigger == 1 &&
-                      sale.enabled == 0)
-                  "
+                  v-else-if="sale.is_trigger == 1 && sale.enabled == 0"
                 ></i>
                 <!--галочка-->
                 <i
                   class="d-icon-check product-card__actions-icon-auto"
                   v-else-if="
-                    (this.activeConflict[remain_id]?.actions_ids?.includes(sale.action_id) &&
-                      ((sale.is_trigger == 1 && sale.enabled == 1) || sale.is_trigger == 0)) ||
-                    (this.mainActionsData[remain_id][sale.action_id] == true &&
-                      Object.keys(this.mainActionsData[remain_id]).length == 1 &&
+                    (this.activeConflict[remain_id].action_ids.includes(Number(sale.action_id)) &&
                       sale.is_trigger == 1 &&
-                      sale.enabled == 1)
+                      sale.enabled == 1) ||
+                    sale.is_trigger == 0 ||
+                    this.active_index[remain_id] == sale.action_id
                   "
                 ></i>
               </div>
               <p>
+                {{ sale.action_id }} ----
                 {{ sale.name }}
               </p>
             </div>
@@ -361,7 +324,8 @@
                 <i class="d-icon-shuffle product-card__buy-icon"></i>Интеграция с МС
               </div>
               <div v-if="item.condition_orders > 0">
-                <i class="d-icon-cart product-card__buy-icon"></i>На {{ item.condition_orders }} заказов
+                <i class="d-icon-cart product-card__buy-icon"></i>На
+                {{ item.condition_orders }} заказов
               </div>
             </div>
           </div>
@@ -398,7 +362,6 @@
     <button
       @click.prevent="addBasketAll()"
       class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-vertical__buy"
-      :disabled="!buttonActive"
     >
       <div class="d-button__text">
         <i class="d-icon-cart product-card__buy-icon"></i>
@@ -460,11 +423,12 @@ export default {
       modalAll: false,
       actionsRemains: {},
       checked: {},
-      buttonActive: false,
+
       errors: '',
       afterComplect: {},
       modalAfterComplect: false,
       saveData: {},
+      active_index: {},
     }
   },
   emits: ['windowClose', 'updateCatalog', 'updateBasket', 'toggleOrder', 'toggleOrderOffer'],
@@ -516,51 +480,35 @@ export default {
       if (Object.keys(this.offers).length) {
         for (var r_id in this.offers) {
           // собираем конфликты
-          this.modalActionsData[r_id] = this.offers[r_id].item.conflicts
-          // выставляем пустой активный конфликт
-          //let conf = this.modalActionsData[r_id]
-          // for (var ic in conf) {
-          //   if (conf[ic].active) {
-          //     this.activeConflict[r_id] = conf[ic]
-          //   }
-          // }
-          this.activeConflict[r_id] = {
-            actions: [],
-            actions_ids: [],
-            active: false,
-            delay: null,
-            delay_type: null,
-            min_count: 1,
-            multiplicity: 1,
-            payer: 0,
-            price: this.modalActionsData[r_id][0].prices.rrc,
-            prices: [],
+          this.modalActionsData[r_id] = this.offers[r_id].item.actions
+          // выставляем активный конфликт
+          let data = {}
+          for (var action_item in this.offers[r_id].item.actions) {
+            // console.log(this.offer.actions[action_item])
+            if (this.offers[r_id].item.actions[action_item].relations?.active) {
+              this.activeConflict[r_id] = this.offers[r_id].item.actions[action_item].relations
+              this.active_index[r_id] = Number(this.activeConflict[r_id].action_ids[0])
+            }
+            // собираем массив акций и устанавливаем их активными или неактивными
+            if (
+              !Object.prototype.hasOwnProperty.call(
+                data,
+                this.offers[r_id].item.actions[action_item].action_id,
+              )
+            ) {
+              data[this.offers[r_id].item.actions[action_item].action_id] = Boolean(
+                this.offers[r_id].item.actions[action_item].relations.active,
+              )
+            }
           }
+          this.mainActionsData[r_id] = data
           // проставляем состояние окошка информации о продавце
           this.seller_info[r_id] = false
           // проставляем количество из каунтеров в данный момент
           this.counts[r_id] = { count: this.offers[r_id].count }
-          // проставляем состояние переключателей (все выключены)
-          this.allOff[r_id] = true
-          // собираем массив главных акций и устанавливаем их все неактивными
-          if (this.activeConflict[r_id]?.actions_ids) {
-            let item = JSON.parse(JSON.stringify(this.activeConflict[r_id].actions_ids))
-            for (var iitem in item) {
-              item[iitem] = Number(item[iitem])
-            }
+          // проставляем состояние переключателей (все НЕ выключены)
+          this.allOff[r_id] = false
 
-            let act_ids = this.offers[r_id].item.main_actions
-            let data = {}
-            for (var ima in act_ids) {
-              data[act_ids[ima]] = false
-              // if (item.includes(Number(act_ids[ima]))) {
-              //   data[act_ids[ima]] = true
-              // } else {
-              //   data[act_ids[ima]] = false
-              // }
-            }
-            this.mainActionsData[r_id] = data
-          }
           // формируем массив action_id: remain_ids
           let mains = this.mainActionsData[r_id]
           for (var act in mains) {
@@ -570,9 +518,9 @@ export default {
               this.actionsRemains[act] = this.actionsRemains[act] + '/' + r_id
             }
           }
-          // формируем массив продуктов с отмеченными акциями
-          this.checked[r_id] = false
-          // устанавливаем минимальное количество, количество и кратность в зависимости от того, какая акция выбрана
+          //формируем массив продуктов с отмеченными акциями
+          this.checked[r_id] = true
+          //устанавливаем минимальное количество, количество и кратность в зависимости от того, какая акция выбрана
           if (
             Number(this.activeConflict[r_id].multiplicity) >
               Number(this.activeConflict[r_id].min_count) &&
@@ -899,53 +847,23 @@ export default {
     },
 
     checkAction(ind, r_id) {
-      let data = this.mainActionsData[r_id]
-      if (data[ind]) {
-        this.mainActionsData[r_id][ind] = false
-        this.allOff[r_id] = true
-        this.checked[r_id] = false
-        // потребность или комплект
-        if (
-          this.$route.matched[5] &&
-          (this.$route.name == 'purchasesCatalogRequirement' ||
-            this.$route.name == 'purchasesOfferCatalogRequirement' ||
-            this.$route.name == 'purchasesCatalogComplect')
-        ) {
-          this.counts[r_id].count = Number(this.offers[r_id].count)
-        } else {
-          this.counts[r_id].count = 1
+      for (var i in this.offers[r_id].item.actions) {
+        if (this.offers[r_id].item.actions[i].action_id == ind) {
+          this.editNow = this.offers[r_id].item.actions[i]
+          //console.log(this.editNow)
         }
-        this.activeConflict[r_id] = {}
-        this.checkControl()
+      }
+      let r_ids = this.actionsRemains[ind].split('/')
+      let c = 0
+      for (var k in r_ids) {
+        if (this.mainActionsData[r_ids[k]][ind] == false && r_ids[k] != r_id) {
+          c++
+        }
+      }
+      if (c > 0) {
+        this.modalAll = true
       } else {
-        for (var ii in this.mainActionsData[r_id]) {
-          if (ii == ind) {
-            for (var ic in this.offers[r_id].item.conflicts) {
-              if (this.offers[r_id].item.conflicts[ic] !== undefined) {
-                if (this.offers[r_id].item.conflicts[ic].actions_ids.includes(ii)) {
-                  let editsNow = this.offers[r_id].item.conflicts[ic].actions
-                  for (var iii in editsNow) {
-                    if (editsNow[iii].action_id == ind) {
-                      this.editNow = editsNow[iii]
-                      let col = this.actionsRemains[ind].split('/')
-                      let c = 0
-                      for (var k in col) {
-                        if (this.checked[col[k]] == false && col[k] != r_id) {
-                          c++
-                        }
-                      }
-                      if (c > 0) {
-                        this.modalAll = true
-                      } else {
-                        this.checkOne(ind, r_id)
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+        this.checkOne(ind, r_id)
       }
     },
     checkAll() {
@@ -957,102 +875,97 @@ export default {
       this.modalAll = false
     },
     checkOne(ind, r_id) {
-      for (var ii in this.mainActionsData[r_id]) {
-        if (ii == ind) {
-          this.mainActionsData[r_id][ii] = true
-          this.allOff[r_id] = false
-          // выставляем новый активный конфликт
-          for (var ic in this.offers[r_id].item.conflicts) {
-            if (this.offers[r_id].item.conflicts[ic] !== undefined) {
-              if (this.offers[r_id].item.conflicts[ic].actions_ids.includes(ii)) {
-                this.activeConflict[r_id] = this.offers[r_id].item.conflicts[ic]
+      console.log('one')
+      this.active_index[r_id] = ind
+      var aactions = []
+      for (let ii in this.offers[r_id].item.actions) {
+        if (this.offers[r_id].item.actions[ii].relations?.active == 1) {
+          this.offers[r_id].item.actions[ii].relations?.active == 0
+        }
+        if (this.offers[r_id].item.actions[ii].action_id == ind) {
+          // console.log(this.offer.actions[ii])
+          if (this.offers[r_id].item.actions[ii].relations?.action_ids) {
+            aactions = this.offers[r_id].item.actions[ii].relations?.action_ids
+          } else {
+            aactions.push(ind)
+          }
+          this.activeConflict[r_id] = this.offers[r_id].item.actions[ii].relations
+        }
+      }
 
-                if (
-                  Number(this.activeConflict[r_id].multiplicity) >
-                    Number(this.activeConflict[r_id].min_count) &&
-                  Number(this.activeConflict[r_id].multiplicity) > 1
-                ) {
-                  this.counts[r_id].count = Number(this.activeConflict[r_id].multiplicity)
-                  this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
-                  this.counts[r_id].count_min = Number(this.activeConflict[r_id].multiplicity)
-                } else {
-                  if (
-                    Number(this.activeConflict[r_id].multiplicity) <=
-                      Number(this.activeConflict[r_id].min_count) &&
-                    Number(this.activeConflict[r_id].multiplicity) > 1
-                  ) {
-                    if (
-                      !(
-                        Number(this.activeConflict[r_id].min_count) %
-                        Number(this.activeConflict[r_id].multiplicity)
-                      )
-                    ) {
-                      this.counts[r_id].count = Number(this.activeConflict[r_id].min_count)
-                      this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
-                      this.counts[r_id].count_min = Number(this.activeConflict[r_id].min_count)
-                    } else {
-                      this.counts[r_id].count =
-                        Number(this.activeConflict[r_id].min_count) +
-                        Number(this.activeConflict[r_id].multiplicity) -
-                        (Number(this.activeConflict[r_id].min_count) %
-                          Number(this.activeConflict[r_id].multiplicity))
-                      this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
-                      this.counts[r_id].count_min = this.counts[r_id].count
-                    }
-                  } else {
-                    this.counts[r_id].count =
-                      Number(this.activeConflict[r_id].min_count) > 0
-                        ? Number(this.activeConflict[r_id].min_count)
-                        : 1
-                    this.counts[r_id].step = 1
-                    this.counts[r_id].count_min = this.counts[r_id].count
-                  }
-                }
-                // потребность
-                if (
-                  this.$route.matched[5] &&
-                  (this.$route.name == 'purchasesCatalogRequirement' ||
-                    this.$route.name == 'purchasesOfferCatalogRequirement' ||
-                    this.$route.name == 'purchasesCatalogComplect')
-                ) {
-                  if (this.counts[r_id].step == 1) {
-                    this.counts[r_id].count_min > Number(this.offers[r_id].count)
-                      ? (this.counts[r_id].count = this.counts[r_id].count_min)
-                      : (this.counts[r_id].count = Number(this.offers[r_id].count))
-                  } else {
-                    // if (this.counts[r_id].count < Number(this.offers[r_id].count)) {
-                    //   this.counts[r_id].count = Number(this.offers[r_id].count)
-                    // }
-                    if (!(this.counts[r_id].step % Number(this.offers[r_id].count))) {
-                      this.counts[r_id].count = Number(this.offers[r_id].count)
-                    } else {
-                      this.counts[r_id].count =
-                        Number(this.offers[r_id].count) +
-                        this.counts[r_id].step -
-                        (Number(this.offers[r_id].count) % this.counts[r_id].step)
-                    }
-                  }
-                }
-              }
-            }
+      for (var k in this.mainActionsData[r_id]) {
+        if (aactions.includes(Number(k))) {
+          this.mainActionsData[r_id][k] = true
+        } else {
+          this.mainActionsData[r_id][k] = false
+        }
+      }
+
+      for (let ii in this.offers[r_id].item.actions) {
+        if (aactions.includes(this.offers[r_id].item.actions[ii].action_id)) {
+          this.offers[r_id].item.actions[ii].relations?.active == 1
+        }
+      }
+
+      console.log(this.mainActionsData[r_id])
+      //устанавливаем минимальное количество, количество и кратность в зависимости от того, какая акция выбрана
+      if (
+        Number(this.activeConflict[r_id].multiplicity) >
+          Number(this.activeConflict[r_id].min_count) &&
+        Number(this.activeConflict[r_id].multiplicity) > 1
+      ) {
+        this.counts[r_id].count = Number(this.activeConflict[r_id].multiplicity)
+        this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
+        this.counts[r_id].count_min = Number(this.activeConflict[r_id].multiplicity)
+      } else {
+        if (
+          Number(this.activeConflict[r_id].multiplicity) <=
+            Number(this.activeConflict[r_id].min_count) &&
+          Number(this.activeConflict[r_id].multiplicity) > 1
+        ) {
+          if (
+            !(
+              Number(this.activeConflict[r_id].min_count) %
+              Number(this.activeConflict[r_id].multiplicity)
+            )
+          ) {
+            this.counts[r_id].count = Number(this.activeConflict[r_id].min_count)
+            this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
+            this.counts[r_id].count_min = Number(this.activeConflict[r_id].min_count)
+          } else {
+            this.counts[r_id].count =
+              Number(this.activeConflict[r_id].min_count) +
+              Number(this.activeConflict[r_id].multiplicity) -
+              (Number(this.activeConflict[r_id].min_count) %
+                Number(this.activeConflict[r_id].multiplicity))
+            this.counts[r_id].step = Number(this.activeConflict[r_id].multiplicity)
+            this.counts[r_id].count_min = this.counts[r_id].count
           }
         } else {
-          this.mainActionsData[r_id][ii] = false
+          this.counts[r_id].count =
+            Number(this.activeConflict[r_id].min_count) > 0
+              ? Number(this.activeConflict[r_id].min_count)
+              : 1
+          this.counts[r_id].step = 1
+          this.counts[r_id].count_min = this.counts[r_id].count
         }
       }
-      this.checked[r_id] = true
-      this.checkControl()
-    },
-    checkControl() {
-      let col = 0
-      this.buttonActive = false
-      for (var r_id in this.checked) {
-        if (this.checked[r_id] == true) {
-          col++
+      // потребность
+      if (
+        this.$route.matched[5] &&
+        (this.$route.name == 'purchasesCatalogRequirement' ||
+          this.$route.name == 'purchasesOfferCatalogRequirement' ||
+          this.$route.name == 'purchasesCatalogComplect')
+      ) {
+        if (this.counts[r_id].step == 1) {
+          this.counts[r_id].count_min > Number(this.offers[r_id].count)
+            ? (this.counts[r_id].count = this.counts[r_id].count_min)
+            : (this.counts[r_id].count = Number(this.offers[r_id].count))
+        } else {
+          if (this.counts[r_id].count < Number(this.offers[r_id].count)) {
+            this.counts[r_id].count = Number(this.offers[r_id].count)
+          }
         }
-      }
-      if (col == Object.keys(this.checked).length) {
-        this.buttonActive = true
       }
     },
   },
