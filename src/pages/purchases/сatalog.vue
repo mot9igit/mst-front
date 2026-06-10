@@ -824,9 +824,8 @@ export default {
       let data = {}
       this.loading = true
       if (
-        this.opt_products.items.length <= this.opt_products.total &&
-        (this.$route.name == 'purchasesCatalogRequirement' ||
-          this.$route.name == 'purchasesOfferCatalogRequirement')
+        this.$route.name == 'purchasesCatalogRequirement' ||
+        this.$route.name == 'purchasesOfferCatalogRequirement'
       ) {
         let sstore = 0
         if (this.$route.name == 'purchasesOfferCatalogRequirement') {
@@ -849,8 +848,7 @@ export default {
               Number(this.addItems[item].count) > 0
             ) {
               if (
-                this.addItems[item].item.conflicts &&
-                this.addItems[item].item.conflicts?.length > 1 &&
+                this.addItems[item].item.conflicts_count &&
                 this.addItems[item].item.available > 0
               ) {
                 this.addItemsConflicts[item] = this.addItems[item]
@@ -868,14 +866,16 @@ export default {
                 if (this.noconflicts[r_id].count > 0 && this.noconflicts[r_id].item.available > 0) {
                   let conf = {}
                   let item = this.noconflicts[r_id].item
-                  if (item.conflicts && item.conflicts.length == 1) {
-                    conf = item.conflicts[0].actions
-                    item.price = item.conflicts[0].price
-                    item.payer = item.conflicts[0].payer ? item.conflicts[0].payer : 0
-                    item.delay = item.conflicts[0].delay ? item.conflicts[0].delay : 0
-                    item.delay_type = item.conflicts[0].delay_type
-                      ? item.conflicts[0].delay_type
-                      : 1
+                  if (item.actions.length) {
+                    for (var action_item in item.actions) {
+                      if (item.actions[action_item].relations?.active) {
+                        conf = item.actions[action_item].relations
+                      }
+                    }
+                    item.price = conf.price
+                    item.payer = conf.payer ? conf.payer : 0
+                    item.delay = conf.delay ? conf.delay : 0
+                    item.delay_type = conf.delay_type ? conf.delay_type : 1
                   }
                   let col = this.noconflicts[r_id].count
 
@@ -885,7 +885,7 @@ export default {
                     id_remain: r_id,
                     count: col,
                     key: item.key,
-                    actions: conf,
+                    actions: conf.action_ids,
                     cart_store: this.basketOfferWarehouse,
                   }
                 }
@@ -936,94 +936,6 @@ export default {
             )
           }
         })
-      } else {
-        for (var item in this.addItems) {
-          if (Number(this.addItems[item].item.price) > 0 && Number(this.addItems[item].count) > 0) {
-            if (
-              this.addItems[item].item.conflicts &&
-              this.addItems[item].item.conflicts?.length > 1
-            ) {
-              this.addItemsConflicts[item] = this.addItems[item]
-            } else {
-              this.noconflicts[item] = this.addItems[item]
-            }
-          }
-        }
-        if (Object.keys(this.addItemsConflicts).length) {
-          this.modalConflicts = true
-          this.loading = false
-        } else {
-          if (Object.keys(this.noconflicts).length) {
-            for (var r_id in this.noconflicts) {
-              if (this.noconflicts[r_id].count > 0) {
-                let conf = {}
-                let item = this.noconflicts[r_id].item
-                if (item.conflicts && item.conflicts.length == 1) {
-                  conf = item.conflicts[0].actions
-                  item.price = item.conflicts[0].price
-                  item.payer = item.conflicts[0].payer ? item.conflicts[0].payer : 0
-                  item.delay = item.conflicts[0].delay ? item.conflicts[0].delay : 0
-                  item.delay_type = item.conflicts[0].delay_type ? item.conflicts[0].delay_type : 1
-                }
-                let col = this.noconflicts[r_id].count
-
-                data[r_id] = {
-                  org_id: item.org_id,
-                  store_id: item.store_id,
-                  id_remain: r_id,
-                  count: col,
-                  key: item.key,
-                  actions: conf,
-                  cart_store: this.basketOfferWarehouse,
-                }
-              }
-            }
-          }
-
-          this.basketProductAddAll({ items: data, cart_store: this.basketOfferWarehouse }).then(
-            (res) => {
-              //console.log(res)
-              if (res.data.data) {
-                this.errors = res.data.data
-                if (this.errors == '') {
-                  this.$toast.add({
-                    severity: 'success',
-                    summary: 'Выполнено!',
-                    detail: 'Товары добавлены в корзину',
-                    life: 3000,
-                  })
-                } else {
-                  this.$toast.add({
-                    severity: 'secondary',
-                    summary: 'Товары добавлены в корзину!',
-                    detail: this.errors,
-                    life: 3000,
-                  })
-                }
-
-                this.updateCatalog()
-                this.updateBasket()
-                if (this.$route.name == 'purchasesCatalogRequirement') {
-                  this.$emit('toggleOrder')
-                }
-                if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-                  this.$emit('toggleOrderOffer')
-                }
-                this.loading = false
-              } else {
-                this.$toast.add({
-                  severity: 'error',
-                  summary: 'Ошибка',
-                  detail: 'Не удалось положить товары в корзину',
-                  life: 3000,
-                })
-                this.loading = false
-                this.updateCatalog()
-                this.updateBasket()
-              }
-            },
-          )
-        }
       }
     },
     afterAddBasket() {

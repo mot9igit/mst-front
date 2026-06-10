@@ -230,7 +230,7 @@ export default {
       activeShowCatalog: 1,
       cataloglistShow: false,
       breadcrumbs: [
-        // { id: 0, name: 'Единый каталог', child: 1, category_id: 0 },
+        { id: 0, name: 'Единый каталог', child: 1, category_id: 0 },
         { id: 1, name: '', child: 0, category_id: 0 },
       ],
       stepmenu: 1,

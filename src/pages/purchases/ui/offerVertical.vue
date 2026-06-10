@@ -777,7 +777,7 @@ export default {
         // console.log(this.offer.actions[action_item])
         if (this.offer.actions[action_item].relations?.active) {
           this.activeConflict = this.offer.actions[action_item].relations
-          this.active_index = Number(this.activeConflict.groups[0].actions[0])
+          this.active_index = Number(this.activeConflict.action_ids[0])
         }
       }
       this.setCounts()
