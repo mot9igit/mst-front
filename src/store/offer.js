@@ -129,7 +129,7 @@ export default {
       }
       return response
     },
-    async getOptVendorsOfferSelected({ commit }, { filter, active_store }) {
+    async getOptVendorsOfferSelected({ commit }, { filter, active_store, set }) {
       const data = {
         id: router.currentRoute._value.params.id,
         id_org_from: router.currentRoute._value.params.id_org_from,
@@ -138,6 +138,7 @@ export default {
         type: 1,
         filter: filter,
         active_store: active_store,
+        set: set,
       }
       const response = await api.offer.getOptVendorOffer(data)
       if (response) {

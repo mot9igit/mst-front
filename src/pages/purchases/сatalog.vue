@@ -843,7 +843,7 @@ export default {
               this.addItems[id].item.data = this.addItems[id].item
             }
           }
-          console.log(this.reqProducts)
+          //console.log(this.reqProducts)
           for (var item in this.addItems) {
             if (
               Number(this.addItems[item].item.price) > 0 &&
@@ -1202,7 +1202,7 @@ export default {
       //this.addItems = {}
       this.updatePage(0)
       let switches = document.getElementsByClassName('catalog-top_filters-right-item')
-      if (switches[0].classList.contains('catalog-top_filters-right-item--active')) {
+      if (switches && switches[0].classList.contains('catalog-top_filters-right-item--active')) {
         this.setDesign(0)
       } else {
         this.setDesign(1)

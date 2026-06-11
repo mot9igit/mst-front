@@ -285,7 +285,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { Checkbox } from 'primevue'
+import { Checkbox, ConfirmPopupStyle } from 'primevue'
 import Paginate from 'vuejs-paginate-next'
 import Loader from '@/shared/ui/Loader.vue'
 
@@ -307,6 +307,12 @@ export default {
     store: {
       type: String,
       default: '',
+    },
+    vendor_data: {
+      type: Object,
+      default: () => {
+        return {}
+      },
     },
   },
   emits: ['vendorCheck', 'catalogUpdate', 'close'],
@@ -474,7 +480,7 @@ export default {
       }
     },
     changeStores(org_id, store_id, active) {
-      console.log(active)
+      //console.log(active)
       //если снимаем галочку
       let col_active_stores = 0
       if (active == false) {
@@ -484,7 +490,7 @@ export default {
             for (let ii = 0; ii < this.vendorOfferSelected.items[i].stores.length; ii++) {
               if (this.vendorOfferSelected.items[i].stores[ii].active) {
                 col_active_stores++
-                console.log(col_active_stores)
+                //console.log(col_active_stores)
               }
             }
             if (this.shipments[org_id] == true) {
@@ -594,18 +600,31 @@ export default {
     },
     refresh: function (newVal) {
       if (newVal == true) {
-        this.getOptVendorsOfferSelected({
-          filter: '',
-          page: this.pageSelected,
-          perpage: this.cfg.vendors.perpage,
-          active_store: this.store,
-        })
+        //console.log(this.vendor_data)
+        if (this.vendor_data) {
+          this.getOptVendorsOfferSelected({
+            filter: '',
+            page: this.pageSelected,
+            perpage: this.cfg.vendors.perpage,
+            active_store: this.store,
+            set: this.vendor_data,
+          })
+        } else {
+          this.getOptVendorsOfferSelected({
+            filter: '',
+            page: this.pageSelected,
+            perpage: this.cfg.vendors.perpage,
+            active_store: this.store,
+          })
+        }
       }
     },
     vendorOfferSelected: function (newVal) {
-      for (var i in newVal.shipments) {
-        if (newVal.shipments[i].active) {
-          this.shipments[i] = true
+      if (newVal.shipments?.length) {
+        for (var i in newVal.shipments) {
+          if (newVal.shipments[i].active) {
+            this.shipments[i] = true
+          }
         }
       }
     },

@@ -47,6 +47,7 @@
       :offer="isOffer"
       :searchUpdater="searchUpdater"
       :cart_store="this.store"
+      :editOfferOrder="editOfferOrder"
     ></ProfileHeaderOffer>
 
     <main class="main">
@@ -56,7 +57,7 @@
           @toggleOrderOffer="toggleOrderOffer()"
           @setStore="setStore"
           @cartStore="activeStore"
-          @refreshVendors="refreshVendors()"
+          @refreshVendors="refreshVendors"
           @createReq="createReq"
           @createReqAndGo="createReqAndGo"
           :refreshOrderPage="refreshOrderPage"
@@ -92,6 +93,7 @@
         :active="this.toggleOfferVendors"
         :refresh="refresh_v"
         :store="store"
+        :vendor_data="vendor_data"
         @close="changeVendorsOfferWindowClose()"
         @catalogUpdate="catalogUpdate()"
         @vendorCheck="vendorCheck()"
@@ -109,6 +111,8 @@
           :active="this.toggleOrderOfferWindow"
           @close="changeOrderOfferWindowClose()"
           @catalogUpdate="catalogUpdate()"
+          @disableVendorsSelected="disableVendorsSelected"
+          @refreshVendors="refreshOfferVendors()"
         />
       </teleport>
     </main>
@@ -226,6 +230,8 @@ export default {
       refresh_v: false,
       no_av_items: '',
       createR: {},
+      vendor_data: {},
+      editOfferOrder: null,
     }
   },
   mounted() {
@@ -387,7 +393,7 @@ export default {
       }, 500)
     },
     activeStore(data) {
-      console.log(data)
+      //console.log(data)
       this.store = data
       this.refreshVendors()
     },
@@ -397,13 +403,22 @@ export default {
     clearStore() {
       this.purch_store = null
     },
-    refreshVendors() {
+    refreshVendors(data) {
       setTimeout(() => {
         this.refresh_v = true
+        if (data) {
+          this.vendor_data = data
+        }
         setTimeout(() => {
           this.refresh_v = false
+          //this.vendor_data = {}
         }, 500)
-      }, 500)
+      }, 100)
+    },
+    refreshOfferVendors() {
+      this.editOfferOrder = null
+      this.vendor_data = {}
+      this.refreshVendors()
     },
     createReq(data) {
       this.no_av_items = data
@@ -414,6 +429,9 @@ export default {
     },
     createReqAndGo(data) {
       this.createR = data
+    },
+    disableVendorsSelected(data) {
+      this.editOfferOrder = data
     },
   },
   provide() {

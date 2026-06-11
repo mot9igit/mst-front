@@ -177,6 +177,22 @@
       @reloadSuccess="this.reloadNotificationsModal = false"
     />
   </customModal>
+  <customModal v-model="modalError" class="error__modal">
+    <h3>Вы не можете редактировать выбранных поставщиков! !</h3>
+    <p>
+      Вы не можете изменить выбранных поставщиков, так как в корзине редактируется заказ #{{
+        this.editOfferOrder
+      }}!
+    </p>
+    <div class="modal__content-button">
+      <button
+        class="d-button d-button-primary d-button-primary-small"
+        @click="this.modalError = false"
+      >
+        Ok
+      </button>
+    </div>
+  </customModal>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -206,6 +222,7 @@ export default {
         requirement: false,
       },
       data_start: new Date(),
+      modalError: false,
     }
   },
   emits: [
@@ -250,6 +267,10 @@ export default {
     },
     cart_store: {
       type: Number,
+      default: null,
+    },
+    editOfferOrder: {
+      type: String,
       default: null,
     },
   },
@@ -340,8 +361,12 @@ export default {
       this.$emit('showRequipments')
     },
     toggleOfferVendor() {
-      this.$emit('toggleOfferVendor')
-      this.$emit('offerNow')
+      if (this.editOfferOrder) {
+        this.modalError = true
+      } else {
+        this.$emit('toggleOfferVendor')
+        this.$emit('offerNow')
+      }
     },
     toggleOrder() {
       this.$emit('toggleOrder')
@@ -578,5 +603,20 @@ export default {
 }
 .notifications__modal-container-empty {
   margin-top: 30px;
+}
+.error__modal .modal__content {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  align-items: start;
+  .modal__content-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .d-button {
+      box-shadow: none;
+    }
+  }
 }
 </style>

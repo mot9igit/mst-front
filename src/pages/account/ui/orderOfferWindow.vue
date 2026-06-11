@@ -766,7 +766,7 @@ import Editor from 'primevue/editor'
 
 export default {
   name: 'orderOfferWindow',
-  emits: ['close', 'catalogUpdate', 'offerSubmit'],
+  emits: ['close', 'catalogUpdate', 'offerSubmit', 'disableVendorsSelected', 'refreshVendors'],
   components: { Loader, customModal, Counter, Toast, Editor },
   props: {
     active: {
@@ -1182,22 +1182,28 @@ export default {
           this.basketStore = newVal.data[this.basketOfferWarehouse]
           this.order = ''
           this.edit = null
+          this.$emit('disableVendorsSelected', null)
           for (var org in this.basketStore.data) {
-            console.log(this.basketStore.data[org])
+            //console.log(this.basketStore.data[org])
             for (var store in this.basketStore.data[org].data) {
               if (
                 'type' in this.basketStore.data[org].data[store] &&
                 this.basketStore.data[org].data[store].type == 'order'
               ) {
                 this.edit = this.basketStore.data[org].data[store].id
+                this.$emit('disableVendorsSelected', this.edit)
               }
             }
           }
         } else {
           this.basketStore = {}
+          this.order = ''
+          this.edit = null
         }
       } else {
         this.basketStore = {}
+        this.order = ''
+        this.edit = null
       }
     },
     basketOfferWarehouse(newVal) {
@@ -1213,6 +1219,11 @@ export default {
     },
     activeStore: function (newVal) {
       this.basketStore = this.basketOffer.data[newVal]
+    },
+    edit: function (newVal) {
+      if (newVal === null) {
+        this.$emit('refreshVendors')
+      }
     },
   },
 }
