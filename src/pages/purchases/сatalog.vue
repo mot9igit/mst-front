@@ -524,6 +524,9 @@ export default {
       page: 1,
       per_page: 50,
       active_design: 0,
+      productsRequestKey: null,
+      productsRequestInFlight: null,
+      productsLoadingCount: 0,
       filter: [
         {
           type: 'checkbox',
@@ -629,11 +632,14 @@ export default {
         })
       }
     },
-    updateBasket() {
+    buildProductsPayload({ page = this.page, basket } = {}) {
       const data = {
-        page: this.page,
+        page: page,
         perpage: this.per_page,
         filters: this.filters,
+      }
+      if (basket !== undefined) {
+        data.basket = basket
       }
       if (
         this.$route.name == 'purchasesCatalogSearch' ||
@@ -644,21 +650,67 @@ export default {
       if (this.$route.name == 'purchasesCatalogComplect') {
         data.action_id = this.$route.params.action_id
       }
+      if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+        data.req = this.$route.query.requirement_id
+      }
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-        this.getBasketOffer()
         data.search = this.$route.query.search
         data.active_store = this.basketOfferWarehouse
-        this.getOfferOptProducts(data).then(() => {
+      }
+      return data
+    },
+    getProductsRequestKey(data) {
+      return JSON.stringify({
+        data,
+        route: {
+          name: this.$route.name,
+          params: this.$route.params,
+          query: this.$route.query,
+        },
+      })
+    },
+    async loadProducts(data, { force = false } = {}) {
+      const requestKey = this.getProductsRequestKey(data)
+      if (this.productsRequestInFlight === requestKey) {
+        return
+      }
+      if (
+        !force &&
+        this.productsRequestKey === requestKey &&
+        Object.keys(this.opt_products || {}).length
+      ) {
+        return
+      }
+
+      this.productsRequestInFlight = requestKey
+      this.productsLoadingCount += 1
+      this.loading = true
+
+      try {
+        if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
+          await this.getOfferOptProducts(data)
           this.opt_products = this.optOfferProducts
+        } else {
+          await this.getOptProducts(data)
+          this.opt_products = this.optProducts
+        }
+        this.productsRequestKey = requestKey
+      } finally {
+        this.productsRequestInFlight = null
+        this.productsLoadingCount = Math.max(this.productsLoadingCount - 1, 0)
+        if (this.productsLoadingCount === 0) {
           this.loading = false
-        })
+        }
+      }
+    },
+    updateBasket() {
+      const data = this.buildProductsPayload()
+      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
+        this.getBasketOffer()
       } else {
         this.getBasket()
-        this.getOptProducts(data).then(() => {
-          this.opt_products = this.optProducts
-          this.loading = false
-        })
       }
+      this.loadProducts(data, { force: true })
     },
     updatePage(order_id) {
       let cart = {}
@@ -676,72 +728,22 @@ export default {
       this.filters.dates.value = null
       this.filters.show_offers.value = true
       this.filters.sales.value = false
-      this.loading = true
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         cart = this.basketOffer
       } else {
         cart = this.basket
       }
-      const data = {
-        page: this.page,
-        perpage: this.per_page,
-        filters: this.filters,
-        basket: cart,
-      }
-      if (this.$route.name == 'purchasesCatalogSearch') {
-        data.search = this.$route.query.search
-      }
-      if (this.$route.name == 'purchasesCatalogComplect') {
-        data.action_id = this.$route.params.action_id
-      }
-      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-        data.search = this.$route.query.search
-        data.active_store = this.basketOfferWarehouse
-        this.getOfferOptProducts(data).then(() => {
-          this.opt_products = this.optOfferProducts
-          this.loading = false
-        })
-      } else {
-        this.getOptProducts(data).then(() => {
-          this.opt_products = this.optProducts
-          this.loading = false
-        })
-      }
+      this.loadProducts(this.buildProductsPayload({ basket: cart }))
     },
     pagClickCallback(pageNum) {
       let cart = {}
       this.page = pageNum
-      this.loading = true
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         cart = this.basketOffer
       } else {
         cart = this.basket
       }
-      const data = {
-        page: this.page,
-        perpage: this.per_page,
-        filters: this.filters,
-        basket: cart,
-      }
-      if (this.$route.name == 'purchasesCatalogSearch') {
-        data.search = this.$route.query.search
-      }
-      if (this.$route.name == 'purchasesCatalogComplect') {
-        data.action_id = this.$route.params.action_id
-      }
-      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-        data.search = this.$route.query.search
-        data.active_store = this.basketOfferWarehouse
-        this.getOfferOptProducts(data).then(() => {
-          this.opt_products = this.optOfferProducts
-          this.loading = false
-        })
-      } else {
-        this.getOptProducts(data).then(() => {
-          this.opt_products = this.optProducts
-          this.loading = false
-        })
-      }
+      this.loadProducts(this.buildProductsPayload({ basket: cart }))
 
       const el = document.querySelector('.products__top-wrapper')
       if (el) {
@@ -749,34 +751,9 @@ export default {
       }
     },
     updateCatalog() {
-      this.loading = true
-      const data = {
-        page: this.page,
-        perpage: this.per_page,
-        filters: this.filters,
-      }
-      if (this.$route.name == 'purchasesCatalogSearch') {
-        data.search = this.$route.query.search
-      }
-      if (this.$route.name == 'purchasesCatalogComplect') {
-        data.action_id = this.$route.params.action_id
-      }
-      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-        data.search = this.$route.query.search
-        data.active_store = this.basketOfferWarehouse
-        this.getOfferOptProducts(data).then(() => {
-          this.opt_products = this.optOfferProducts
-          this.loading = false
-        })
-      } else {
-        this.getOptProducts(data).then(() => {
-          this.opt_products = this.optProducts
-          this.loading = false
-        })
-      }
+      this.loadProducts(this.buildProductsPayload(), { force: true })
     },
     changeFilter(index) {
-      this.loading = true
       if (index != 'dates' && index != 'sales') {
         for (var i in this.filters) {
           if (i == index && i != 'show_offers' && i != 'dates') {
@@ -791,32 +768,8 @@ export default {
       if (index == 'sales') {
         this.filters[index].value = !this.filters[index].value
       }
-      const data = {
-        page: 1,
-        perpage: this.per_page,
-        filters: this.filters,
-      }
-      if (this.$route.name == 'purchasesCatalogSearch') {
-        data.search = this.$route.query.search
-      }
-      if (this.$route.name == 'purchasesCatalogComplect') {
-        data.action_id = this.$route.params.action_id
-      }
-      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-        data.search = this.$route.query.search
-        data.active_store = this.basketOfferWarehouse
-        this.getOfferOptProducts(data).then(() => {
-          this.opt_products = this.optOfferProducts
-
-          this.loading = false
-        })
-      } else {
-        this.getOptProducts(data).then(() => {
-          this.opt_products = this.optProducts
-
-          this.loading = false
-        })
-      }
+      this.page = 1
+      this.loadProducts(this.buildProductsPayload())
     },
     addAll() {
       this.addItems = {}
@@ -920,7 +873,6 @@ export default {
                     this.$emit('toggleOrderOffer')
                   }
                   this.loading = false
-                  this.updateCatalog()
                   this.updateBasket()
                 } else {
                   this.$toast.add({
@@ -931,7 +883,6 @@ export default {
                   })
                   this.loading = false
 
-                  this.updateCatalog()
                   this.updateBasket()
                 }
               },
@@ -958,7 +909,6 @@ export default {
       }
       this.loading = false
 
-      this.updateCatalog()
       this.updateBasket()
     },
     async addBasketOne(data) {
@@ -1016,13 +966,17 @@ export default {
       }
       this.$emit('createReqAndGo', data)
     },
-    setDesign(a) {
+    setDesign(a, withLoading = true) {
       this.active_design = a == 1 ? 0 : 1
-      this.loading = true
+      if (withLoading) {
+        this.loading = true
+      }
       setTimeout(() => {
         this.active_design = a
         localStorage.setItem('global.catalog_design', this.active_design)
-        this.loading = false
+        if (withLoading && this.productsLoadingCount === 0) {
+          this.loading = false
+        }
       }, 100)
     },
   },
@@ -1032,51 +986,12 @@ export default {
       this.active_design = dis
     }
     this.date_now = new Date()
-    const data = {
-      page: this.page,
-      perpage: this.per_page,
-    }
-
-    if (this.$route.name == 'purchasesCatalogSearch') {
-      data.search = this.$route.query.search
-    }
-    if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-      data.req = this.$route.query.requirement_id
-    }
-
-    if (this.$route.name == 'purchasesCatalogComplect') {
-      data.action_id = this.$route.params.action_id
-    }
-    if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-      data.search = this.$route.query.search
-      data.active_store = this.basketOfferWarehouse
-
-      this.getOfferOptProducts(data).then(() => {
-        this.opt_products = this.optOfferProducts
-        // if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-        //   this.count_all = Object.keys(this.optOfferProducts.requirement).length
-        // }
-        this.loading = false
-      })
-    } else {
-      this.getOptProducts(data).then(() => {
-        this.opt_products = this.optProducts
-        for (var i in this.opt_products.items) {
-          let stores = this.opt_products.items[i].stores
-          for (var s in stores) {
-            let r_id = stores[s].remain_id
-            this.addItems[r_id] = {}
-            this.addItems[r_id].item = stores[s]
-            this.addItems[r_id].count = Number(stores[s].count)
-          }
-        }
-        // if (this.$route.name == 'purchasesCatalogRequirement') {
-        //   this.count_all = Object.keys(this.optProducts.requirement).length
-        // }
-        this.loading = false
-      })
-    }
     this.filters.all.value = true
+    const cart =
+      this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'
+        ? this.basketOffer
+        : this.basket
+    this.loadProducts(this.buildProductsPayload({ basket: cart }))
 
     // ресайз окна - вовремя убрать табличный вид
     window.addEventListener(
@@ -1203,9 +1118,9 @@ export default {
       this.updatePage(0)
       let switches = document.getElementsByClassName('catalog-top_filters-right-item')
       if (switches[0].classList.contains('catalog-top_filters-right-item--active')) {
-        this.setDesign(0)
+        this.setDesign(0, false)
       } else {
-        this.setDesign(1)
+        this.setDesign(1, false)
       }
 
       //console.log(Object.keys(this.addItems).length)
