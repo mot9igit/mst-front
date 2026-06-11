@@ -435,12 +435,18 @@ export default {
             order_id: this.$route.params.order_id,
           }).then(() => {
             this.loading = false
-            this.$router.push({
-              name: 'WholesalesOfferClient',
-              params: { id: this.$route.params.id, id_org_from: this.order.org_id },
-            })
-            this.$emit('toggleOrderOffer')
-            this.$emit('refreshVendors')
+            let vendor_data = {}
+            vendor_data.org_id = this.order.from_org_id
+            vendor_data.store_id = this.order.store_id
+            this.$emit('refreshVendors', vendor_data)
+
+            setTimeout(() => {
+              this.$router.push({
+                name: 'WholesalesOfferClient',
+                params: { id: this.$route.params.id, id_org_from: this.order.org_id },
+              })
+              this.$emit('toggleOrderOffer')
+            }, 500)
           })
         },
         reject: () => {

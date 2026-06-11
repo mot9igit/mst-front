@@ -796,7 +796,7 @@ export default {
               this.addItems[id].item.data = this.addItems[id].item
             }
           }
-          console.log(this.reqProducts)
+          //console.log(this.reqProducts)
           for (var item in this.addItems) {
             if (
               Number(this.addItems[item].item.price) > 0 &&

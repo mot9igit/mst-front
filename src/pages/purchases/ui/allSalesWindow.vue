@@ -663,15 +663,14 @@ export default {
         for (var r_id in this.offers) {
           let conf = {}
           let item = this.offers[r_id].item
-          if (!this.allOff[r_id]) {
-            conf = this.activeConflict[r_id].actions
-            item.price = this.activeConflict[r_id].price
-            item.payer = this.activeConflict[r_id].payer ? this.activeConflict[r_id].payer : 0
-            item.delay = this.activeConflict[r_id].delay ? this.activeConflict[r_id].delay : 0
-            item.delay_type = this.activeConflict[r_id].delay_type
-              ? this.activeConflict[r_id].delay_type
-              : 1
-          }
+
+          conf = this.activeConflict[r_id]
+
+          item.price = conf.price
+          item.payer = conf.payer ? conf.payer : 0
+          item.delay = conf.delay ? conf.delay : 0
+          item.delay_type = conf.delay_type ? conf.delay_type : 1
+
           // let col = 0
           // if(this.afterComplect.length && r_id in this.afterComplect){
           //   col = this.counts[r_id].count - this.afterComplect[r_id].count
@@ -684,23 +683,27 @@ export default {
             id_remain: r_id,
             count: col,
             key: item.key,
-            actions: conf,
+            actions: conf.action_ids,
             cart_store: this.basketOfferWarehouse,
           }
         }
       }
       if (Object.keys(this.noconflicts).length) {
-        for (var r_id in this.noconflicts) {
+        for (r_id in this.noconflicts) {
           let conf = {}
           if (this.noconflicts[r_id].count > 0) {
             //let conf = {}
             let item = this.noconflicts[r_id].item
-            if (item.conflicts.length == 1) {
-              conf = item.conflicts[0].actions
-              item.price = item.conflicts[0].price
-              item.payer = item.conflicts[0].payer ? item.conflicts[0].payer : 0
-              item.delay = item.conflicts[0].delay ? item.conflicts[0].delay : 0
-              item.delay_type = item.conflicts[0].delay_type ? item.conflicts[0].delay_type : 1
+            if (item.actions.length) {
+              for (action_item in item.actions) {
+                if (item.actions[action_item].relations?.active) {
+                  conf = item.actions[action_item].relations
+                }
+              }
+              item.price = conf.price
+              item.payer = conf.payer ? conf.payer : 0
+              item.delay = conf.delay ? conf.delay : 0
+              item.delay_type = conf.delay_type ? conf.delay_type : 1
             }
             // let col = 0
             // if(this.afterComplect.length && r_id in this.afterComplect){
@@ -714,7 +717,7 @@ export default {
               id_remain: r_id,
               count: col,
               key: item.key,
-              actions: conf,
+              actions: conf.action_ids,
               cart_store: this.basketOfferWarehouse,
             }
           }
@@ -875,7 +878,7 @@ export default {
       this.modalAll = false
     },
     checkOne(ind, r_id) {
-      console.log('one')
+      //console.log(r_id)
       this.active_index[r_id] = ind
       var aactions = []
       for (let ii in this.offers[r_id].item.actions) {
@@ -907,7 +910,7 @@ export default {
         }
       }
 
-      console.log(this.mainActionsData[r_id])
+      //console.log(this.mainActionsData[r_id])
       //устанавливаем минимальное количество, количество и кратность в зависимости от того, какая акция выбрана
       if (
         Number(this.activeConflict[r_id].multiplicity) >
