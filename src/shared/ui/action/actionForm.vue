@@ -3736,11 +3736,16 @@ export default {
           store_id: this.form.store_id,
         })
         this.updateProductList()
-        this.getProductGroups({
-          store_id: this.form.store_id,
-          filter: '',
-        })
+        // this.getProductGroups({
+        //   store_id: this.form.store_id,
+        //   filter: '',
+        // }).then(() => {
+        for (var i in this.form.product_groups) {
+          this.updateGroups(i)
+        }
+        // })
         this.getActiveActions()
+        // ДОБАВИТЬ сюда обновление продуктов в коллекции и проверку наличия в акции этих товаров!
       }
     },
     updateGroups(id) {
@@ -3751,6 +3756,7 @@ export default {
         page: this.form.product_groups[id].page,
         perpage: this.per_page,
         check: this.check_collection == true ? this.check_collection == true : '',
+        stores: this.form.store_id,
       }).then((res) => {
         if (this.check_collection == true && res.data.success == false) {
           if (this.form.product_groups[id].price == 'key') {
