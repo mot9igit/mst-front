@@ -3208,8 +3208,14 @@
       </customModal>
       <customModal v-model="this.modals.no_add" class="products_no_add">
         <template v-slot:title>Нельзя добавить {{ modals.no_add_info.cat_name }}!</template>
-        <p class="no_add_p" v-if="modals.no_add_info.cat_name == 'коллекцию'">
-          Коллекция "{{ modals.no_add_info?.name }}" содержит уже добавленные в акцию товары:
+        <p
+          class="no_add_p"
+          v-if="modals.no_add_info.cat_name == 'коллекцию' && modals.no_add_info?.name"
+        >
+          Коллекция "{{ modals.no_add_info?.name }}" уже содержит товары:
+        </p>
+        <p v-else-if="modals.no_add_info.cat_name == 'коллекцию' && !modals.no_add_info?.name">
+          Эти товары уже добавлены в текущую акцию:
         </p>
         <div class="cont_no_add">
           <div class="prod-card" v-for="(item, index) in modals.no_add_info.product" :key="index">
@@ -3230,6 +3236,7 @@
           <p class="no_add_p" v-if="modals.no_add_info.cat_name == 'товар'">
             Товар уже включен в коллекцию "{{ modals.no_add_info?.name }}"
           </p>
+
           <button
             class="d-button d-button-primary d-button-primary-small d-button--sm-shadow d-ib no_add_button"
             type="button"
@@ -3745,7 +3752,6 @@ export default {
         }
         // })
         this.getActiveActions()
-        // ДОБАВИТЬ сюда обновление продуктов в коллекции и проверку наличия в акции этих товаров!
       }
     },
     updateGroups(id) {
@@ -4697,10 +4703,13 @@ export default {
     'form.store_id': function (newVal) {
       this.updateProductList()
       this.getProductsPrices({ store_id: newVal })
-      this.getProductGroups({
-        store_id: newVal,
-        filter: '',
-      })
+      // this.getProductGroups({
+      //   store_id: newVal,
+      //   filter: '',
+      // })
+      for (var i in this.form.product_groups) {
+        this.updateGroups(i)
+      }
     },
     // Акция (редактирование)
     action: function (newVal) {
