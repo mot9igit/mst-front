@@ -584,6 +584,13 @@ export default {
       unsetAllOfferOptProducts: 'offer/unsetAllOfferOptProducts',
       saveReqXLS: 'requirements/saveReqXLS',
     }),
+    debounce(func, delay) {
+      let timeout
+      return (...args) => {
+        clearTimeout(timeout)
+        timeout = setTimeout(() => func(...args), delay)
+      }
+    },
     createReport() {
       const data = {
         filters: this.filters,
@@ -987,10 +994,22 @@ export default {
     }
     this.date_now = new Date()
     this.filters.all.value = true
+
+    this.debouncedUpdatePage = this.debounce(this.updatePage, 300)
+
     const cart =
       this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'
         ? this.basketOffer
         : this.basket
+
+    if (
+      this.$route.matched[5] &&
+      this.$route.matched[5].name == 'WholesaleClientsOffer' &&
+      Object.keys(cart).length === 0
+    ) {
+      return
+    }
+
     this.loadProducts(this.buildProductsPayload({ basket: cart }))
 
     // ресайз окна - вовремя убрать табличный вид
@@ -1095,17 +1114,17 @@ export default {
       }
     },
     optVendorsAvailable: function () {
-      this.updatePage(0)
+      this.debouncedUpdatePage(0)
     },
     basketWarehouse: function () {
-      this.updatePage(0)
+      this.debouncedUpdatePage(0)
     },
     basketOfferWarehouse: function () {
       this.getBasketOffer()
-      this.updatePage(0)
+      this.debouncedUpdatePage(0)
     },
     orgActive: function () {
-      this.updatePage(0)
+      this.debouncedUpdatePage(0)
     },
     catalogUpdater: function (newVal) {
       if (newVal) {
