@@ -3219,18 +3219,13 @@
         </p>
         <div class="cont_no_add">
           <div class="prod-card" v-for="(item, index) in modals.no_add_info.product" :key="index">
-            <img
-              :src="
-                item.image == 'https://dev.mst.tools/assets/content/images/nopic.svg'
-                  ? item.image
-                  : site_url_prefix + item.image
-              "
-              alt=""
-              class="prod-card__img"
-            />
+            <img :src="item.image" alt="" class="prod-card__img" />
             <div class="prod__content">
               <span class="prod-card__title">{{ item.name }}</span>
               <span class="prod-card__article">арт. {{ item.article }}</span>
+              <div class="d-badge d-badge--small">
+                <img :src="item.store_image" alt="" class="d-badge__img" />{{ item.store_name }}
+              </div>
             </div>
           </div>
           <p class="no_add_p" v-if="modals.no_add_info.cat_name == 'товар'">
@@ -5517,6 +5512,9 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  .d-badge {
+    margin-top: 8px;
+  }
 }
 .prod-card__title {
   font-size: 16px;
