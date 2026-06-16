@@ -620,10 +620,10 @@
           <div class="product-card__stat-list-cont">
             <div class="product-card__stat-list">
               <div v-if="item.complect > 0" class="d-category">Комплект</div>
-              <div v-if="item.percent > 0">
+              <div v-if="item.prices.discount_percent > 0">
                 <i class="d-icon-percent-rounded product-card__buy-icon"></i
                 ><span v-if="item.pricing_type == 1">Наценка</span><span v-else>Скидка</span>
-                {{ item.percent }}%
+                {{ item.prices.discount_percent }}%
               </div>
               <div v-if="item.payer == 2">
                 <i class="d-icon-truck product-card__buy-icon"></i>По согласованию
@@ -632,7 +632,12 @@
                 <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
               </div>
               <div v-if="item.delay_type == 2 && item.delay > 0">
-                <i class="d-icon-box-flat product-card__buy-icon"></i>Под реал. {{ item.delay }}дн.
+                <i class="d-icon-box-flat product-card__buy-icon"></i>Под реал.
+                {{ Number(item.delay) }} дн.
+              </div>
+              <div v-if="item.delay_type == 1 && item.delay > 0">
+                <i class="d-icon-box-flat product-card__buy-icon"></i>Отсрочка платежа -
+                {{ Number(item.delay) }} дн.
               </div>
               <div v-if="item.condition_min_sum > 0">
                 <span class="product-card__icon-summ product-card__buy-icon">₽</span>
