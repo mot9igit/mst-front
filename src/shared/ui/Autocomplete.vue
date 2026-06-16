@@ -354,7 +354,7 @@ export default {
   &__input {
     flex-basis: 0;
     flex-grow: 1;
-
+    background: #fff;
     border: none;
     outline: none;
     color: #495057;
