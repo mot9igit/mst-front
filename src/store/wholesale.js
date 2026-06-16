@@ -15,6 +15,7 @@ export default {
     virtOrg: {},
     offers: {},
     offer: {},
+    seller_statuses: {},
   },
   actions: {
     async getOrders({ commit }, { filter, sort, page, perpage }) {
@@ -166,6 +167,38 @@ export default {
       const response = await api.purchases.canselOptOrder(data)
       return response
     },
+    async getSellerStatuses({ commit }) {
+      const data = {
+        action: 'get/seller/statuses',
+        org_id: router.currentRoute._value.params.id,
+        order_id: router.currentRoute._value.params.order_id,
+      }
+      const response = await api.wholesale.getSellerStatuses(data)
+      if (response) {
+        commit('SET_SELLER_STATUSES', response.data)
+      }
+      return response
+    },
+    async setOrderStatus(store, { status_id }) {
+      const data = {
+        action: 'order/set/status',
+        id: router.currentRoute._value.params.id,
+        order_id: router.currentRoute._value.params.order_id,
+        status_id: status_id,
+      }
+      const response = await api.wholesale.getSellerStatuses(data)
+      return response
+    },
+    async deleteOrderOrtDoc(store, { doc_id }) {
+      const data = {
+        action: 'order/delete/doc',
+        id: router.currentRoute._value.params.id,
+        order_id: router.currentRoute._value.params.order_id,
+        doc_id: doc_id,
+      }
+      const response = await api.wholesale.getSellerStatuses(data)
+      return response
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },
@@ -231,6 +264,9 @@ export default {
     UNSET_MY_OFFER: (state) => {
       state.offer = {}
     },
+    SET_SELLER_STATUSES: (state, data) => {
+      state.seller_statuses = data.data
+    },
   },
   getters: {
     orders(state) {
@@ -256,6 +292,9 @@ export default {
     },
     offer(state) {
       return state.offer
+    },
+    seller_statuses(state) {
+      return state.seller_statuses
     },
   },
 }

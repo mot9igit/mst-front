@@ -38,6 +38,37 @@
           >
             <i class="d-icon-pen2"></i>
           </button>
+
+          <SelectInput
+            v-model="form.status"
+            @change="setStatus()"
+            :options="seller_statuses"
+            optionLabel="data"
+            placeholder="Изменить статус"
+            class="w-full md:w-56 order_change_status"
+            v-if="order.portal_integration == '1'"
+          >
+            <template #value="slotProps">
+              <span v-if="!slotProps.value">
+                {{ slotProps.placeholder }}
+              </span>
+              <span v-else>
+                {{ slotProps.placeholder }}
+              </span>
+            </template>
+            <template #option="slotProps">
+              <div class="order_change_status--option">
+                <div
+                  class="d-badge2 d-badge2--fit order-card__status"
+                  :style="'background-color: #' + slotProps.option.color"
+                  :class="slotProps.option.api_key ? 'status-' + slotProps.option.api_key : ''"
+                >
+                  {{ slotProps.option.name_seller }}
+                </div>
+              </div>
+            </template>
+          </SelectInput>
+
           <button
             class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__cancel"
             v-if="
@@ -48,10 +79,11 @@
             "
             @click.prevent="modalCancel = true"
           >
+            <i class="item-list-item-icon d-icon-plus"></i>
             <span class="catalog__head-item-text">Отменить заказ</span>
           </button>
           <button
-            class="d-button d-button-tertiary d-button-tertiary-small order-card__action order-card__docs"
+            class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__action order-card__action order-card__docs"
             @click.prevent="modalDocs = true"
             v-if="docs.length"
           >
@@ -59,6 +91,13 @@
             <span class="catalog__head-item-text"
               >Документы <span v-if="docs.length">({{ docs.length }})</span></span
             >
+          </button>
+          <button
+            class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__action order-card__docs-upload"
+            @click.prevent="modalDocsUpload = true"
+            v-if="order.portal_integration == '1'"
+          >
+            <i class="d-icon d-icon-download"></i>
           </button>
         </div>
       </div>
@@ -228,6 +267,7 @@
           :total="docs.length"
           :table_data="table_docs"
           @clickElem="docClick"
+          @deleteElem="deleteDoc"
         />
         <button
           class="d-button d-button-primary d-button-primary-small d-button--sm-shadow"
@@ -270,6 +310,47 @@
           </button>
         </div>
       </customModal>
+      <customModal v-model="modalDocsUpload" class="order-card__modal order-card__modal-docsupload">
+        <h3>Загрузить документы</h3>
+        <p>Загрузите документы к заказу №{{ order.id }}</p>
+
+        <DropZone
+          class="dart-dropzone"
+          :maxFiles="Number(10)"
+          url="/rest/file_upload.php?upload_docs"
+          :uploadOnDrop="true"
+          :multipleUpload="true"
+          :parallelUpload="1"
+          @sending="parseFile"
+          v-bind="args"
+        >
+          <template v-slot:message>
+            <div class="dart-dropzone__custom">
+              <i class="pi pi-cloud-upload"></i>
+              <b>Перетащите файл в эту область</b>
+              <p>Вы также можете загрузить файл, <span>нажав сюда</span></p>
+            </div>
+          </template>
+        </DropZone>
+        <div class="order-card__modal-docsupload-container">
+          <button
+            type="button"
+            href="#"
+            class="d-button d-button-primary d-button--sm-shadow order-card__modal-docsupload-container-button"
+            @click.prevent="this.modalDocsUpload = false"
+          >
+            Отменить
+          </button>
+          <button
+            type="button"
+            href="#"
+            class="d-button d-button-primary d-button--sm-shadow order-card__modal-docsupload-container-button"
+            @click.prevent="saveDocs()"
+          >
+            Загрузить
+          </button>
+        </div>
+      </customModal>
     </Teleport>
   </section>
 </template>
@@ -282,10 +363,21 @@ import MinProductTable from '@/shared/ui/tableMinProduct/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import saleWindow from '@/pages/purchases/ui/activeSalesWindow.vue'
+import SelectInput from 'primevue/select'
+import DropZone from 'dropzone-vue'
 
 export default {
   name: 'WholesaleOrder',
-  components: { Breadcrumbs, BaseTable, Loader, customModal, MinProductTable, saleWindow },
+  components: {
+    Breadcrumbs,
+    BaseTable,
+    Loader,
+    customModal,
+    MinProductTable,
+    saleWindow,
+    SelectInput,
+    DropZone,
+  },
   data() {
     return {
       loading: true,
@@ -365,10 +457,15 @@ export default {
           },
         },
       },
+      form: {
+        status: null,
+        files: [],
+      },
       modalActiveActions: false,
       modalCancel: false,
       productOrder: [],
       orderInfo: {},
+      modalDocsUpload: false,
     }
   },
   props: {
@@ -392,6 +489,9 @@ export default {
       unsetOrder: 'wholesale/unsetOrder',
       optOrderCancel: 'wholesale/optOrderCancel',
       editOptOrder: 'wholesale/editOptOrder',
+      getSellerStatuses: 'wholesale/getSellerStatuses',
+      setOrderStatus: 'wholesale/setOrderStatus',
+      deleteOrderOrtDoc: 'wholesale/deleteOrderOrtDoc',
     }),
     docClick(data) {
       let loc = data.filename
@@ -401,6 +501,49 @@ export default {
       downloadLink.setAttribute('target', '_blank')
       // console.log(downloadLink)
       downloadLink.click()
+    },
+    deleteDoc(data) {
+      console.log(data)
+      this.$confirm.require({
+        message: 'Вы действительно хотите удалить документ ' + data.name + '?',
+        header: 'Подтвердите удаление документа',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.loading = true
+          this.deleteOrderOrtDoc({ doc_id: data.id }).then((res) => {
+            if (res.data.success) {
+              this.$toast.add({
+                severity: 'success',
+                summary: 'Удаление документа',
+                detail: 'Документ удален!',
+                life: 3000,
+              })
+              let data = {}
+              data.order_id = this.$route.params.order_id
+              data.page = this.page
+              data.perpage = this.pagination_items_per_page
+              this.getOrder(data).then(() => {
+                this.loading = false
+              })
+            } else {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Удаление документа',
+                detail: res.data.message,
+                life: 3000,
+              })
+            }
+          })
+        },
+        reject: () => {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Удаление документа',
+            detail: 'Действие отклонено',
+            life: 3000,
+          })
+        },
+      })
     },
     paginate(data) {
       this.loading = true
@@ -489,6 +632,35 @@ export default {
         })
       })
     },
+    setStatus() {
+      this.loading = true
+      this.setOrderStatus({ status_id: this.form.status.id }).then(() => {
+        this.form.status = null
+        let data = {}
+        data.order_id = this.$route.params.order_id
+        data.page = this.page
+        data.perpage = this.pagination_items_per_page
+        this.getOrder(data).then(() => {
+          this.loading = false
+        })
+      })
+    },
+    parseFile(files, xhr) {
+      console.log(files)
+      console.log(xhr)
+      // const callback = (e) => {
+      //   const res = JSON.parse(e)
+      //   console.log(res)
+      //   if (res.data.files[0].name) {
+      //     this.formRequirements.file = res.data.files[0]
+      //   }
+      // }
+      // xhr.onreadystatechange = () => {
+      //   if (xhr.readyState === 4) {
+      //     callback(xhr.response)
+      //   }
+      // }
+    },
   },
   mounted() {
     this.getOrder({
@@ -496,18 +668,28 @@ export default {
       perpage: this.pagination_items_per_page,
       order_id: this.$route.params.order_id,
     }).then(() => {
-      this.loading = false
       this.orderInfo.seller_name = this.order.seller_name
       this.orderInfo.seller_img = this.order.seller_image
       this.orderInfo.delivery = this.order.day_delivery
       this.orderInfo.payer = this.order.payer
       this.orderInfo.delay_type = this.order.delay_type
       this.orderInfo.delay = this.order.delay
+      if (this.order.portal_integration == '1') {
+        this.getSellerStatuses()
+
+        this.table_docs.actions.available.delete = {
+          icon: 'pi pi-trash',
+          label: 'Удалить',
+        }
+        this.table_docs.actions.label = 'Скачать / Удалить'
+      }
+      this.loading = false
     })
   },
   computed: {
     ...mapGetters({
       order: 'wholesale/order',
+      seller_statuses: 'wholesale/seller_statuses',
     }),
   },
   watch: {
@@ -520,6 +702,9 @@ export default {
       this.orderInfo.payer = newVal.payer
       this.orderInfo.delay_type = newVal.delay_type
       this.orderInfo.delay = newVal.delay
+      if (newVal.portal_integration == '1') {
+        this.getSellerStatuses()
+      }
     },
     refreshOrderPage: function (newVal) {
       if (newVal == true) {
@@ -537,4 +722,117 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.order-card__cancel {
+  width: 100%;
+}
+.p-select.order_change_status {
+  width: auto;
+  background-color: #ededed;
+  border: none;
+  border-radius: 20px;
+  height: 40px;
+  .p-select-label.p-placeholder {
+    color: #282828;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 21px;
+    padding: 8px 8px 8px 16px;
+    position: relative;
+    span {
+      padding-left: 8px;
+    }
+  }
+  .p-select-label.p-placeholder:before {
+    content: '\e079';
+    font-family: 'Iconly';
+    position: relative;
+    font-size: 18px;
+    width: 18px;
+    height: 21px;
+    font-weight: 400;
+    transform: rotate(90deg);
+    display: inline-block;
+  }
+  .p-select-label.p-placeholder:after {
+    content: '';
+    position: absolute;
+    top: calc(50% - 4px);
+    right: 0;
+    width: 1px;
+    height: 8px;
+    background-color: #75757575;
+    display: block;
+    margin: 0;
+    border-radius: 0;
+  }
+  .p-select-dropdown {
+    color: #282828;
+    width: 10px;
+    margin: 0 16px 0 8px;
+    .p-icon {
+      width: 10px;
+      height: 10px;
+    }
+  }
+}
+.order_change_status--option {
+  display: flex;
+  align-items: center;
+  max-height: 48px;
+  justify-content: start;
+  .d-badge2 {
+    margin-top: 0;
+    height: 32px;
+  }
+}
+.catalog__head-item-text {
+  white-space: nowrap;
+}
+.order-card__docs-upload {
+  width: 40px;
+  max-width: 40px;
+  min-width: 40px;
+  padding: 8px;
+  .d-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+.order-card__modal-docsupload {
+  h3 {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 26px;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+    color: #282828;
+  }
+  p {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+
+    color: #757575;
+  }
+  .dart-dropzone {
+    margin-top: 41px;
+    margin-bottom: 32px;
+  }
+  &-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 8px;
+    &-button {
+      width: auto;
+      margin: 0 !important;
+    }
+  }
+}
+</style>
