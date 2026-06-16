@@ -146,10 +146,6 @@ export default {
       if ((newVal.length < 3 && newVal.length > 0) || newVal == this.$route.query.search) {
         this.showSearchSuggestions = false
         return
-      } else {
-        if (newVal.length == 0) {
-          this.toSearch()
-        }
       }
 
       this.showSearchSuggestions = !!newVal
