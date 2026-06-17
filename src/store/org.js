@@ -64,13 +64,14 @@ export default {
       }
       return response
     },
-    async getOrgStores({ commit }, { page, perpage, filters }) {
+    async getOrgStores({ commit }, { page, perpage, filters, name }) {
       const data = {
         action: 'get/stores',
         id: router.currentRoute._value.params.id,
         page: page,
         perpage: perpage,
         filters: filters,
+        name: name,
       }
       const response = await api.org.getOrg(data)
       if (response) {

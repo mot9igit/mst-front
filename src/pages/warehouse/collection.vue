@@ -196,9 +196,11 @@
                       v-if="item.term == '1'"
                     >
                       <TreeSelect
-                        :key="this.updateKey"
-                        @change="updateBuild"
-                        selectionMode="checkbox"
+                        :multiple="true"
+                        :limit="3"
+                        :limitText="(count) => `и еще ${count}`"
+                        @select="updateBuild"
+                        @deselect="updateBuild"
                         v-model="collectionData.terms.include[index].value"
                         :options="this.catalogs"
                         placeholder="Выберите категории"
@@ -218,12 +220,14 @@
                       v-if="item.term == '2'"
                     >
                       <TreeSelect
-                        :key="this.updateKey"
-                        @change="updateBuild"
-                        selectionMode="checkbox"
                         v-model="collectionData.terms.include[index].value"
+                        :multiple="true"
                         :options="this.stores"
                         placeholder="Выберите склады"
+                        :limit="1"
+                        :limitText="(count) => `и еще ${count}`"
+                        @select="updateBuild"
+                        @deselect="updateBuild"
                       />
                       <div
                         class="d-divider d-divider--vertical d-divider--no-margi collection__block-conditions-category-actions-divider"
@@ -465,12 +469,14 @@
                       v-if="item.term == '1'"
                     >
                       <TreeSelect
-                        :key="this.updateKey"
-                        @change="updateBuild"
-                        selectionMode="checkbox"
+                        :multiple="true"
                         v-model="collectionData.terms.exclude[index].value"
                         :options="this.catalogs"
                         placeholder="Выберите категории"
+                        :limit="3"
+                        :limitText="(count) => `и еще ${count}`"
+                        @select="updateBuild"
+                        @deselect="updateBuild"
                       />
                       <div
                         class="d-divider d-divider--vertical d-divider--no-margi collection__block-conditions-category-actions-divider"
@@ -487,12 +493,15 @@
                       v-if="item.term == '2'"
                     >
                       <TreeSelect
-                        :key="this.updateKey"
-                        @change="updateBuild"
-                        selectionMode="checkbox"
                         v-model="collectionData.terms.exclude[index].value"
+                        :multiple="true"
                         :options="this.stores"
                         placeholder="Выберите склады"
+                        :limit="1"
+                        :limitText="(count) => `и еще ${count}`"
+                        @select="updateBuild"
+                        @deselect="updateBuild"
+                        id="exclude_stores"
                       />
                       <div
                         class="d-divider d-divider--vertical d-divider--no-margi collection__block-conditions-category-actions-divider"
@@ -703,7 +712,7 @@ import Loader from '@/shared/ui/Loader.vue'
 import MultiSelect from 'primevue/multiselect'
 import SelectInput from 'primevue/select'
 import Checkbox from 'primevue/checkbox'
-import TreeSelect from 'primevue/treeselect'
+import TreeSelect from '@zanmato/vue3-treeselect'
 import Tabs from 'primevue/tabs'
 import TabList from 'primevue/tablist'
 import TabPanels from 'primevue/tabpanels'
@@ -754,8 +763,8 @@ export default {
         },
         type: 1,
         typeExclude: 1,
-        file: [],
-        fileExclude: [],
+        file: null,
+        fileExclude: null,
       },
       tabException: false,
       type: 1,
@@ -960,54 +969,56 @@ export default {
     },
     deleteFileExclude() {
       this.filesExclude = null
-      this.collectionData.fileExclude = ''
+      this.collectionData.fileExclude = null
       this.showDropZoneExclude = true
       this.updateBuild()
     },
     updateStore() {
       this.getTags({
-        store_id: this.collectionData.store_id,
+        //store_id: this.collectionData.store_id,
       })
       this.getOutCatalogs({
-        store_id: this.collectionData.store_id,
+        //store_id: this.collectionData.store_id,
       })
       this.getOurVendors({
-        store_id: this.collectionData.store_id,
+        //store_id: this.collectionData.store_id,
       })
       this.page = 1
       this.updateBuild()
     },
     updateBuild() {
       this.productLoading = true
-      // Выбранные товары
-      this.buildCollection({
-        typeData: 1,
-        store_id: this.collectionData.store_id,
-        terms: this.collectionData.terms,
-        page: this.page,
-        perpage: this.pagination_items_per_page,
-        filter: this.filter,
-        type: this.collectionData.type,
-        typeExclude: this.collectionData.typeExclude,
-        file: this.collectionData.file,
-        fileExclude: this.collectionData.fileExclude,
-      }).then(() => {
-        // Исключения
+      setTimeout(() => {
+        // Выбранные товары
         this.buildCollection({
-          typeData: 2,
+          typeData: 1,
           store_id: this.collectionData.store_id,
           terms: this.collectionData.terms,
-          page: this.pageExclude,
+          page: this.page,
           perpage: this.pagination_items_per_page,
-          filter: this.filterExclude,
+          filter: this.filter,
           type: this.collectionData.type,
           typeExclude: this.collectionData.typeExclude,
           file: this.collectionData.file,
           fileExclude: this.collectionData.fileExclude,
         }).then(() => {
-          this.productLoading = false
+          // Исключения
+          this.buildCollection({
+            typeData: 2,
+            store_id: this.collectionData.store_id,
+            terms: this.collectionData.terms,
+            page: this.pageExclude,
+            perpage: this.pagination_items_per_page,
+            filter: this.filterExclude,
+            type: this.collectionData.type,
+            typeExclude: this.collectionData.typeExclude,
+            file: this.collectionData.file,
+            fileExclude: this.collectionData.fileExclude,
+          }).then(() => {
+            this.productLoading = false
+          })
         })
-      })
+      }, 500)
     },
     filterCollection(data) {
       this.productLoading = true
@@ -1121,7 +1132,7 @@ export default {
     },
   },
   mounted() {
-    this.getOrgStores({ page: '' }).then(() => {
+    this.getOrgStores({ name: 'self' }).then(() => {
       this.getCatalogs()
       this.clearCollectionData().then(() => {
         if (this.$route.params.collection_id) {
@@ -1195,13 +1206,16 @@ export default {
       if (newVal.file_exclude) {
         this.filesExclude = newVal.file_exclude
         this.collectionData.fileExclude = newVal.file_exclude.name
+        if (newVal.file_exclude.name == []) {
+          this.collectionData.fileExclude = null
+        }
       }
     },
-    'collectionData.store_id': function (newVal) {
-      if (newVal) {
-        this.updateStore()
-      }
-    },
+    // 'collectionData.store_id': function (newVal) {
+    //   if (newVal) {
+    //     this.updateStore()
+    //   }
+    // },
     'collectionData.type': function (newVal) {
       if (newVal == 1) {
         this.deleteFile()
@@ -1215,7 +1229,11 @@ export default {
     orgStores: function (newVal) {
       this.stores = []
       for (let i = 0; i < newVal.items.length; i++) {
-        this.stores.push({ label: newVal.items[i].name, key: Number(newVal.items[i].id) })
+        this.stores.push({
+          label: newVal.items[i].data,
+          key: Number(newVal.items[i].id),
+          id: Number(newVal.items[i].id),
+        })
       }
     },
     groupTags: function (newVal) {

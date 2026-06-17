@@ -93,16 +93,16 @@ export default {
           sort: true,
           class: 'cell_centeralign',
         },
-        store_name: {
-          label: 'Склад',
-          type: 'link',
-          link_to: 'WarehouseCollection',
-          link_params: {
-            id: this.$route.params.id,
-            collection_id: 'id',
-          },
-          class: 'cell_centeralign',
-        },
+        //    store_name: {
+        //      label: 'Склад',
+        //      type: 'link',
+        //      link_to: 'WarehouseCollection',
+        //      link_params: {
+        //       id: this.$route.params.id,
+        //        collection_id: 'id',
+        //      },
+        //      class: 'cell_centeralign',
+        //    },
         description: {
           label: 'Описание',
           type: 'link',
