@@ -3512,6 +3512,10 @@ export default {
     })
     this.getOrgStores({ page: '' })
     this.getAllActions()
+    this.getProductGroups({
+      store_id: this.form.store_id,
+      filter: '',
+    })
     this.getActionAdvPages({ type: this.type })
     if (this.$route.params.action) {
       this.getAction().then(() => {
@@ -3536,10 +3540,6 @@ export default {
             }).then(() => {
               this.productLoading = false
             })
-          })
-          this.getProductGroups({
-            store_id: this.form.store_id,
-            filter: '',
           })
 
           this.getActiveActions()
@@ -3738,14 +3738,14 @@ export default {
           store_id: this.form.store_id,
         })
         this.updateProductList()
-        // this.getProductGroups({
-        //   store_id: this.form.store_id,
-        //   filter: '',
-        // }).then(() => {
-        for (var i in this.form.product_groups) {
-          this.updateGroups(i)
-        }
-        // })
+        this.getProductGroups({
+          store_id: this.form.store_id,
+          filter: '',
+        }).then(() => {
+          for (var i in this.form.product_groups) {
+            this.updateGroups(i)
+          }
+        })
         this.getActiveActions()
       }
     },

@@ -318,7 +318,7 @@
           class="dart-dropzone"
           :maxFiles="Number(10)"
           url="/rest/file_upload.php?upload_docs"
-          :uploadOnDrop="true"
+          :uploadOnDrop="false"
           :multipleUpload="true"
           :parallelUpload="1"
           @sending="parseFile"
