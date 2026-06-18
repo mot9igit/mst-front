@@ -39,7 +39,7 @@
             <i class="d-icon-pen2"></i>
           </button>
 
-          <SelectInput
+          <!-- <SelectInput
             v-model="form.status"
             @change="setStatus()"
             :options="seller_statuses"
@@ -67,7 +67,7 @@
                 </div>
               </div>
             </template>
-          </SelectInput>
+          </SelectInput> -->
 
           <button
             class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__cancel"
@@ -92,13 +92,13 @@
               >Документы <span v-if="docs.length">({{ docs.length }})</span></span
             >
           </button>
-          <button
+          <!-- <button
             class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__action order-card__docs-upload"
             @click.prevent="modalDocsUpload = true"
             v-if="order.portal_integration == '1'"
           >
             <i class="d-icon d-icon-download"></i>
-          </button>
+          </button> -->
         </div>
       </div>
     </div>
@@ -329,6 +329,11 @@
               <i class="pi pi-cloud-upload"></i>
               <b>Перетащите файл в эту область</b>
               <p>Вы также можете загрузить файл, <span>нажав сюда</span></p>
+            </div>
+          </template>
+          <template v-slot:item>
+            <div class="dart-dropzone__custom">
+              <i class="pi pi-cloud-upload"></i>
             </div>
           </template>
         </DropZone>

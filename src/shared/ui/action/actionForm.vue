@@ -3756,7 +3756,7 @@ export default {
         filter: this.form.product_groups[id].filter,
         page: this.form.product_groups[id].page,
         perpage: this.per_page,
-        check: this.check_collection == true ? this.check_collection == true : '',
+        check: this.check_collection == true ? this.check_collection : '',
         stores: this.form.store_id,
       }).then((res) => {
         if (this.check_collection == true && res.data.success == false) {
@@ -3969,7 +3969,7 @@ export default {
       })
     },
     settings(items, type) {
-      //console.log(items)
+      console.log(items)
       this.modals.priceType = type
       this.productsSelected = items
       this.modals.price_step = 0
