@@ -39,7 +39,7 @@
             <i class="d-icon-pen2"></i>
           </button>
 
-          <!-- <SelectInput
+          <SelectInput
             v-model="form.status"
             @change="setStatus()"
             :options="seller_statuses"
@@ -67,7 +67,7 @@
                 </div>
               </div>
             </template>
-          </SelectInput> -->
+          </SelectInput>
 
           <button
             class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__cancel"
@@ -92,13 +92,13 @@
               >Документы <span v-if="docs.length">({{ docs.length }})</span></span
             >
           </button>
-          <!-- <button
+          <button
             class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__action order-card__docs-upload"
             @click.prevent="modalDocsUpload = true"
             v-if="order.portal_integration == '1'"
           >
             <i class="d-icon d-icon-download"></i>
-          </button> -->
+          </button>
         </div>
       </div>
     </div>
@@ -317,11 +317,12 @@
         <DropZone
           class="dart-dropzone"
           :maxFiles="Number(10)"
-          url="/rest/file_upload.php?upload_docs"
-          :uploadOnDrop="false"
+          :url="'/rest/file_upload.php?upload_orders=' + order.id"
+          :uploadOnDrop="true"
           :multipleUpload="true"
-          :parallelUpload="1"
+          :parallelUpload="10"
           @sending="parseFile"
+          :hiddenInputContainer="div"
           v-bind="args"
         >
           <template v-slot:message>
@@ -331,18 +332,13 @@
               <p>Вы также можете загрузить файл, <span>нажав сюда</span></p>
             </div>
           </template>
-          <template v-slot:item>
-            <div class="dart-dropzone__custom">
-              <i class="pi pi-cloud-upload"></i>
-            </div>
-          </template>
         </DropZone>
         <div class="order-card__modal-docsupload-container">
           <button
             type="button"
             href="#"
             class="d-button d-button-primary d-button--sm-shadow order-card__modal-docsupload-container-button"
-            @click.prevent="this.modalDocsUpload = false"
+            @click.prevent="((this.modalDocsUpload = false), (this.form.files = []))"
           >
             Отменить
           </button>
@@ -653,18 +649,18 @@ export default {
     parseFile(files, xhr) {
       console.log(files)
       console.log(xhr)
-      // const callback = (e) => {
-      //   const res = JSON.parse(e)
-      //   console.log(res)
-      //   if (res.data.files[0].name) {
-      //     this.formRequirements.file = res.data.files[0]
-      //   }
-      // }
-      // xhr.onreadystatechange = () => {
-      //   if (xhr.readyState === 4) {
-      //     callback(xhr.response)
-      //   }
-      // }
+
+      const callback = (e) => {
+        console.log(e)
+        const res = JSON.parse(e)
+        console.log(res)
+      }
+
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          callback(xhr.response)
+        }
+      }
     },
   },
   mounted() {
@@ -824,9 +820,16 @@ export default {
 
     color: #757575;
   }
+  .dropzone {
+    display: block;
+  }
   .dart-dropzone {
     margin-top: 41px;
     margin-bottom: 32px;
+    height: 100%;
+    //min-height: 148px;
+    position: relative;
+    display: block;
   }
   &-container {
     display: flex;
@@ -837,6 +840,35 @@ export default {
     &-button {
       width: auto;
       margin: 0 !important;
+    }
+  }
+  .dropzone__item {
+    width: auto;
+    height: 57px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: #ededed;
+    box-shadow: 0px 4px 9.3px -5px rgba(0, 0, 0, 0.08);
+    border-radius: 11px;
+    margin: 0 16px 16px 0;
+    padding: 8px 16px;
+    position: relative;
+    &-thumbnail {
+      display: none;
+    }
+    .dropzone__progress {
+      display: none;
+    }
+    .dropzone__file-size {
+      display: none;
+    }
+    .dropzone__filename {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 21px;
+
+      color: #282828;
     }
   }
 }
