@@ -316,8 +316,9 @@
 
         <DropZone
           class="dart-dropzone"
-          :maxFiles="Number(10)"
+          :maxFiles="10"
           :url="'/rest/file_upload.php?upload_orders=' + order.id"
+          paramName="file[]"
           :uploadOnDrop="true"
           :multipleUpload="true"
           :parallelUpload="10"
