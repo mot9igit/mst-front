@@ -334,11 +334,26 @@
             </div>
           </template>
         </DropZone>
+        <div class="order-card__modal-docsupload-docs" v-if="form.files.length">
+          <div
+            class="order-card__modal-docsupload-docs-item"
+            v-for="(item, index) in form.files"
+            :key="index"
+          >
+            <img src="/icons/icon_sheet.svg" class="order-card__modal-docsupload-docs-item-sheet" />
+            <span class="order-card__modal-docsupload-docs-item-type">{{ item.type_file }}</span>
+            <div class="order-card__modal-docsupload-docs-item-text">
+              <p class="order-card__modal-docsupload-docs-item-text-name">{{ item.name }}</p>
+              <p classs="order-card__modal-docsupload-docs-item-text-date">{{ item.date }}</p>
+            </div>
+            <i class="d-icon d-icon-trash order-card__modal-docsupload-docs-item-trash"></i>
+          </div>
+        </div>
         <div class="order-card__modal-docsupload-container">
           <button
             type="button"
             href="#"
-            class="d-button d-button-primary d-button--sm-shadow order-card__modal-docsupload-container-button"
+            class="d-button d-button-primary d-button--sm-shadow order-card__modal-docsupload-container-button order-card__modal-docsupload-container-button"
             @click.prevent="((this.modalDocsUpload = false), (this.form.files = []))"
           >
             Отменить
@@ -648,13 +663,16 @@ export default {
       })
     },
     parseFile(files, xhr) {
-      console.log(files)
-      console.log(xhr)
+      // console.log(files)
+      // console.log(xhr)
 
       const callback = (e) => {
-        console.log(e)
+        //console.log(e)
         const res = JSON.parse(e)
         console.log(res)
+        for (var i in res.data.files) {
+          this.form.files.push(res.data.files[i])
+        }
       }
 
       xhr.onreadystatechange = () => {
@@ -806,6 +824,9 @@ export default {
   }
 }
 .order-card__modal-docsupload {
+  .modal__content {
+    overflow-x: hidden;
+  }
   h3 {
     font-weight: 600;
     font-size: 20px;
@@ -870,6 +891,29 @@ export default {
       line-height: 21px;
 
       color: #282828;
+    }
+  }
+  .order-card__modal-docsupload-docs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    position: relative;
+    width: 100%;
+    &-item {
+      width: auto;
+      height: 57px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #ededed;
+      box-shadow: 0px 4px 9.3px -5px rgba(0, 0, 0, 0.08);
+      border-radius: 11px;
+      padding: 8px 16px;
+      position: relative;
+      &-sheet {
+        width: 16px;
+        height: 20px;
+      }
     }
   }
 }
