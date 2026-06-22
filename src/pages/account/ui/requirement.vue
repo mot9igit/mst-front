@@ -714,14 +714,14 @@ export default {
     }
     b {
       font-size: 14px;
-      margin-top: 18px;
+      margin-top: 22px;
     }
     p {
       color: #a0a0a0;
       font-size: 14px;
       margin: 0;
       span {
-        color: #1874cf;
+        color: #F92C0D;
         text-decoration: underline;
       }
     }

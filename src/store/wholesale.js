@@ -199,6 +199,16 @@ export default {
       const response = await api.wholesale.getSellerStatuses(data)
       return response
     },
+    async optOrderSetDocs(store, { files }) {
+      const data = {
+        action: 'order/set/docs',
+        id: router.currentRoute._value.params.id,
+        order_id: router.currentRoute._value.params.order_id,
+        files: files,
+      }
+      const response = await api.wholesale.getSellerStatuses(data)
+      return response
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },

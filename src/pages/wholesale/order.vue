@@ -325,6 +325,8 @@
           @sending="parseFile"
           :hiddenInputContainer="div"
           v-bind="args"
+          clickable="true"
+     
         >
           <template v-slot:message>
             <div class="dart-dropzone__custom">
@@ -333,27 +335,42 @@
               <p>Вы также можете загрузить файл, <span>нажав сюда</span></p>
             </div>
           </template>
+          <template v-slot:success>
+            <div class="dart-dropzone__custom" @click.prevent="dropzoneClick()">
+              <i class="pi pi-cloud-upload"></i>
+              <b>Перетащите файл в эту область</b>
+              <p>Вы также можете загрузить файл, <span>нажав сюда</span></p>
+            </div>
+          </template>
+          
         </DropZone>
         <div class="order-card__modal-docsupload-docs" v-if="form.files.length">
+          
           <div
-            class="order-card__modal-docsupload-docs-item"
+            class="order-card__modal-docsupload-docs-item-cont"
             v-for="(item, index) in form.files"
             :key="index"
           >
-            <img src="/icons/icon_sheet.svg" class="order-card__modal-docsupload-docs-item-sheet" />
-            <span class="order-card__modal-docsupload-docs-item-type">{{ item.type_file }}</span>
-            <div class="order-card__modal-docsupload-docs-item-text">
-              <p class="order-card__modal-docsupload-docs-item-text-name">{{ item.name }}</p>
-              <p classs="order-card__modal-docsupload-docs-item-text-date">{{ item.date }}</p>
-            </div>
-            <i class="d-icon d-icon-trash order-card__modal-docsupload-docs-item-trash"></i>
+            <a
+            class="order-card__modal-docsupload-docs-item" :href="item.original_href" target="_blank">
+              <img src="/icons/icon_sheet.svg" class="order-card__modal-docsupload-docs-item-sheet" />
+              <span class="order-card__modal-docsupload-docs-item-type">{{ item.type_file }}</span>
+              <div class="order-card__modal-docsupload-docs-item-text">
+                <p class="order-card__modal-docsupload-docs-item-text-name">{{ item.name }}</p>
+                <p classs="order-card__modal-docsupload-docs-item-text-date">{{ item.date }}</p>
+              </div>
+            </a>
+            <i class="d-icon d-icon-trash order-card__modal-docsupload-docs-item-cont-trash"
+            @click.prevent="removeFile(index)"></i>
           </div>
+        
+          
         </div>
         <div class="order-card__modal-docsupload-container">
           <button
             type="button"
             href="#"
-            class="d-button d-button-primary d-button--sm-shadow order-card__modal-docsupload-container-button order-card__modal-docsupload-container-button"
+            class="d-button d-button-primary d-button--sm-shadow order-card__modal-docsupload-container-button order-card__modal-docsupload-container-button--cancel"
             @click.prevent="((this.modalDocsUpload = false), (this.form.files = []))"
           >
             Отменить
@@ -363,6 +380,7 @@
             href="#"
             class="d-button d-button-primary d-button--sm-shadow order-card__modal-docsupload-container-button"
             @click.prevent="saveDocs()"
+            :disabled="!this.form.files.length"
           >
             Загрузить
           </button>
@@ -483,6 +501,8 @@ export default {
       productOrder: [],
       orderInfo: {},
       modalDocsUpload: false,
+     
+      
     }
   },
   props: {
@@ -509,6 +529,7 @@ export default {
       getSellerStatuses: 'wholesale/getSellerStatuses',
       setOrderStatus: 'wholesale/setOrderStatus',
       deleteOrderOrtDoc: 'wholesale/deleteOrderOrtDoc',
+      optOrderSetDocs: 'wholesale/optOrderSetDocs'
     }),
     docClick(data) {
       let loc = data.filename
@@ -663,25 +684,71 @@ export default {
       })
     },
     parseFile(files, xhr) {
-      // console.log(files)
-      // console.log(xhr)
+    this.loading = true
 
-      const callback = (e) => {
-        //console.log(e)
+     const callback = (e) => {
         const res = JSON.parse(e)
-        console.log(res)
+        
         for (var i in res.data.files) {
           this.form.files.push(res.data.files[i])
         }
+        this.loading = false
       }
 
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
+   
           callback(xhr.response)
         }
       }
+      
     },
+    removeFile(ind){
+      this.form.files.splice(ind, 1)
+    },
+    dropzoneClick(){
+       document.getElementsByClassName("dropzone")[0].click()
+    },
+    saveDocs(){
+      this.loading = true
+      this.optOrderSetDocs({
+        files: this.form.files
+      }).then((res) => {
+        if(res.data.success){
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Документы добавлены',
+            detail: "Вы успешно добавили документы к заказу",
+            life: 3000,
+          })
+          this.form.files = []
+          this.modalDocsUpload = false
+          this.getOrder({
+            page: this.page,
+            perpage: this.pagination_items_per_page,
+            order_id: this.$route.params.order_id,
+          }).then(() => {
+            this.loading = false
+          })
+        }else{
+          this.loading = false
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: res.data.message,
+            life: 3000,
+          })
+        }
+
+      })
+    },
+    showDoc(ind){
+      src = this.form.files[ind].original_href
+      window.open(src);
+    }
+    
   },
+  
   mounted() {
     this.getOrder({
       page: this.page,
@@ -705,6 +772,10 @@ export default {
       }
       this.loading = false
     })
+
+    
+
+   
   },
   computed: {
     ...mapGetters({
@@ -818,6 +889,7 @@ export default {
     width: 18px;
     height: 18px;
     font-size: 18px;
+    font-weight: 600;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -845,13 +917,26 @@ export default {
   .dropzone {
     display: block;
   }
+  .dart-dropzone__custom{
+    padding: 0;
+    i {
+      height: 52px;
+  }
+  }
+  .dropzone__message{
+    //margin-top: -22px;
+  }
   .dart-dropzone {
     margin-top: 41px;
     margin-bottom: 32px;
     height: 100%;
-    //min-height: 148px;
+    min-height: 148px;
+    max-height: 148px;
+    overflow: hidden;
     position: relative;
     display: block;
+    cursor: pointer;
+    z-index: 1010;
   }
   &-container {
     display: flex;
@@ -862,20 +947,36 @@ export default {
     &-button {
       width: auto;
       margin: 0 !important;
+      font-weight: 500;
+      &--cancel{
+        background: transparent;
+        color: #282828;
+        border: 1px solid #282828;
+      }
+      &--cancel:hover{
+        background: #282828;
+        color: #fff;
+        border: 1px solid #282828;
+      }
+    }
+    .d-button-primary:disabled {
+        background-color: #EDEDED;
+        color: #757575;
+        font-weight: 500;
     }
   }
-  .dropzone__item {
-    width: auto;
-    height: 57px;
+  .dropzone__item:not(:first-child) {
+    display:none;
+  }
+  .dropzone__item:first-child {
+    width: 100%;
+    height: 158px;
     display: flex;
     align-items: center;
-    gap: 0;
-    background: #ededed;
-    box-shadow: 0px 4px 9.3px -5px rgba(0, 0, 0, 0.08);
-    border-radius: 11px;
-    margin: 0 16px 16px 0;
-    padding: 8px 16px;
-    position: relative;
+    justify-content: center;
+    margin-top: - 25px;
+    position:relative;
+    z-index: 1001;
     &-thumbnail {
       display: none;
     }
@@ -886,11 +987,10 @@ export default {
       display: none;
     }
     .dropzone__filename {
-      font-weight: 600;
-      font-size: 16px;
-      line-height: 21px;
-
-      color: #282828;
+      display:none;
+    }
+    .dropzone__item-thumbnail{
+      display:none;
     }
   }
   .order-card__modal-docsupload-docs {
@@ -899,20 +999,70 @@ export default {
     gap: 16px;
     position: relative;
     width: 100%;
-    &-item {
-      width: auto;
-      height: 57px;
+    margin-bottom: 56px;
+    &-item-cont{
+      width: 100%;
       display: flex;
-      align-items: center;
-      gap: 8px;
+      align-items:center;
+      justify-content: space-between;
+      height: 57px;
       background: #ededed;
       box-shadow: 0px 4px 9.3px -5px rgba(0, 0, 0, 0.08);
       border-radius: 11px;
       padding: 8px 16px;
       position: relative;
+      &-trash{
+          cursor: pointer;
+        }
+    }
+    &-item {
+      width: auto;
+      
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
       &-sheet {
         width: 16px;
         height: 20px;
+      }
+      &-type {
+        position: absolute;
+        font-size: 5px;
+        line-height: 5px;
+        text-transform: uppercase;
+        top: calc(50% - 1px);
+        left: 19px;
+        font-weight: 600;
+        width:10px;
+        max-width: 10px;
+        max-height: 5px;
+        overflow: hidden;
+        text-align:center;
+      }
+      &-text{
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        gap: 2px;
+        &-name{
+          width: 260px;
+          height: 21px;
+          font-weight: 600;
+          font-size: 16px;
+          line-height: 21px;
+          color: #282828;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        &-date{         
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 18px;
+          color: #757575;
+        }
+        
       }
     }
   }
