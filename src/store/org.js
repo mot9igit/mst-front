@@ -20,6 +20,11 @@ export default {
       total: -1,
       totalAll: 0,
     },
+    publicVendors: {
+      items: [],
+      total: 0,
+      total_visible: 0,
+    },
     manager: {},
     optPrices: {},
     orgName: [],
@@ -454,6 +459,20 @@ export default {
       }
       return response
     },
+    async getPublicVendors({ commit }, { page, perpage }) {
+      const data = {
+        action: 'get/public/vendors',
+        id: router.currentRoute._value.params.id,
+        page: page,
+        perpage: perpage,
+
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_PUBLIC_VENDORS', response.data)
+      }
+      return response
+    },
     unsetOrgStores({ commit }) {
       commit('UNSET_ORG_STORES')
     },
@@ -522,6 +541,9 @@ export default {
     SET_REALIZATION_PROCESS: (state, data) => {
       state.realization_process = data.data
     },
+    SET_PUBLIC_VENDORS: (state, data) => {
+      state.publicVendors = data.data
+    },
   },
   getters: {
     orgActive(state) {
@@ -577,6 +599,9 @@ export default {
     },
     realization_process(state) {
       return state.realization_process
+    },
+    publicVendors(state) {
+      return state.publicVendors
     },
   },
 }

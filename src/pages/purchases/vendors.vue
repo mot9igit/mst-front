@@ -302,6 +302,7 @@ export default {
       unsetOpts: 'purchases/unsetOpts',
       getOptVendorsAvailable: 'org/getOptVendorsAvailable',
       getOptVendorsSelected: 'org/getOptVendorsSelected',
+      getPublicVendors: 'org/getPublicVendors'
     }),
     setFilter(type = '0') {
       if (type === 'filter') {
@@ -397,16 +398,19 @@ export default {
     },
   },
   mounted() {
+    
     this.getOpts({
       page: this.page,
       perpage: this.pagination_items_per_page,
     }).then(() => {
+      this.getPublicVendors({page: 0})
       this.loading = false
     })
   },
   computed: {
     ...mapGetters({
       opts: 'purchases/opts',
+      publicVendors: 'org/publicVendors'
     }),
   },
   watch: {
