@@ -92,6 +92,16 @@ export default {
 
       return response
     },
+    async setNewOrgProfileVendor(store, { vendor_id }) {
+      const data = {
+        action: 'add/vendor/warehouse',
+        id: router.currentRoute._value.params.id,
+        vendor_id: vendor_id,
+      }
+      const response = await api.purchases.setNewOrgProfile(data)
+
+      return response
+    },
     async getOrderCalc({ commit }, { orderEdit }) {
       const data = {
         id: router.currentRoute._value.params.order_id,
