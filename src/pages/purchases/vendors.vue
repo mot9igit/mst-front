@@ -4,6 +4,19 @@
     <div class="d-top">
       <Breadcrumbs />
     </div>
+    <!-- <Loader v-if="loading" /> -->
+    <!-- Доступные производители -->
+    <!-- <div class="clients__content" v-if="publicVendors.total > 0">
+      <h2 class="clients__header-title-h2">Бренды</h2>
+      <div class="clients__content-container">
+        <div class="clients__content-container-item" v-for="(item, index) in publicVendors.items" :key="index">
+
+        </div>
+      </div>
+      <div class="clients__content-button" v-if="publicVendors.total > publicVendors.total_visible">
+
+      </div>
+    </div> -->
 
     <div class="clients__header">
       <div class="clients__header-title-wrapper">
@@ -16,6 +29,7 @@
         Доступные организации, которые являются вашими поставщиками
       </p>
     </div>
+    
 
     <div class="clients__filters">
       <div class="clients__filters-left" v-if="Object.keys(opts.items).length">
@@ -270,6 +284,10 @@ export default {
   name: 'purchasesVendors',
   components: { Breadcrumbs, Loader, Paginate, customModal, addVendorWindow },
   props: {
+    pagination_items_per_page_public: {
+      type: Number,
+      default: 3,
+    },
     pagination_items_per_page: {
       type: Number,
       default: 25,
@@ -284,6 +302,7 @@ export default {
       loading: true,
       modalAdd: false,
       page: 1,
+      pagePublic: 1,
       filterText: '',
       countPages: 0,
       filters: {
@@ -398,12 +417,14 @@ export default {
     },
   },
   mounted() {
-    
     this.getOpts({
       page: this.page,
       perpage: this.pagination_items_per_page,
     }).then(() => {
-      //this.getPublicVendors({page: 0})
+      // this.getPublicVendors({
+      //   page: this.pagePublic,
+      //   perpage: this.pagination_items_per_page_public,
+      // })
       this.loading = false
     })
   },

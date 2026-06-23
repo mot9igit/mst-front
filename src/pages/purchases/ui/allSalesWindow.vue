@@ -695,7 +695,7 @@ export default {
             //let conf = {}
             let item = this.noconflicts[r_id].item
             if (item.actions.length) {
-              for (action_item in item.actions) {
+              for (var action_item in item.actions) {
                 if (item.actions[action_item].relations?.active) {
                   conf = item.actions[action_item].relations
                 }
