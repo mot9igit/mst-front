@@ -2,7 +2,7 @@
   <section class="promos" id="promos">
     <Loader v-if="this.loading"></Loader>
     <div class="promos__header">
-      <!-- <h1 class="promos__header-title">
+      <h1 class="promos__header-title">
         Предложение для
         <div class="d-badge2 d-badge2--fit order__item-header-badge">
           <div class="order__item-header-badge-image-container">
@@ -10,14 +10,14 @@
           </div>
           <p class="order__item-header-badge-text">{{ orgName.name }}</p>
         </div>
-      </h1> -->
+      </h1>
       <!--
         <button class="d-select promos__header-select">
           <span class="d-select__title">Акции по брендам</span>
           <i class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"></i>
         </button>
       -->
-      <!-- </div>
+    </div>
     <div v-if="opts.total > 0">
       <div class="promos__banners" v-if="salesBanners.count > 0">
         <div class="dart-row promos__banners-row">
@@ -82,7 +82,7 @@
                     alt=""
                     loading="lazy"
                   />
-
+                  <!--
                 <div class="promos__banners-item-badges">
                   <div class="promos__banners-item-badges-item">
                     Реклама
@@ -90,7 +90,7 @@
                   <span class="promos__banners-item-badges-text">0+</span>
                 </div>
                 -->
-      <!-- </router-link>
+                </router-link>
               </div>
             </div>
           </template>
@@ -119,7 +119,7 @@
                     alt=""
                     loading="lazy"
                   />
-
+                  <!--
                 <div class="promos__banners-item-badges">
                   <div class="promos__banners-item-badges-item">
                     Реклама
@@ -127,7 +127,7 @@
                   <span class="promos__banners-item-badges-text">0+</span>
                 </div>
                 -->
-      <!--  </router-link>
+                </router-link>
               </div>
             </div>
           </template>
@@ -157,7 +157,7 @@
         <customModal v-model="this.modalAdd" class="clients-form__modal-main">
           <addVendorWindow @closeAddWindow="close()" @addVendor="addNewVendor()" />
         </customModal>
-      </teleport> -->
+      </teleport>
     </div>
   </section>
 </template>
@@ -189,14 +189,13 @@ export default {
       filter: 0,
       filtersdata: 0,
     }).then(() => {
-      //this.loading = false
-      this.getOrgName().then(() =>
-        this.$router.push({
-          name: 'purchasesCatalogSearchOffer',
-          params: { id: this.$route.params.id, id_org_from: this.$route.params.id_org_from },
-        }),
-      )
+      this.loading = false
+      this.getOrgName()
       //this.getSalesBanners()
+      // this.$router.push({
+      //   name: 'purchasesCatalogSearchOffer',
+      //   params: { id: this.$route.params.id, id_org_from: this.$route.params.id_org_from },
+      // })
     })
   },
   methods: {
@@ -222,35 +221,35 @@ export default {
   },
   computed: {
     ...mapGetters({
-      //salesBanners: 'sales/salesBanners',
+      salesBanners: 'sales/salesBanners',
       opts: 'purchases/opts',
       orgName: 'org/orgName',
     }),
-    // getCount() {
-    //   return this.salesBanners.count
-    // },
+    getCount() {
+      return this.salesBanners.count
+    },
   },
   watch: {
-    // salesBanners: function () {
-    //   // console.log(newVal)
-    //   setTimeout(function () {
-    //     window.dispatchEvent(new Event('resize'))
-    //   }, 500)
-    // },
+    salesBanners: function () {
+      // console.log(newVal)
+      setTimeout(function () {
+        window.dispatchEvent(new Event('resize'))
+      }, 500)
+    },
     $route: {
       handler: function () {
         if (this.$route.params.id) {
-          //this.getSalesBanners()
+          this.getSalesBanners()
         }
       },
     },
     catalogUpdater: function (newVal) {
       console.log(newVal)
       if (newVal) {
-        // this.loading = true
-        // this.getSalesBanners().then(() => {
-        //   this.loading = false
-        // })
+        this.loading = true
+        this.getSalesBanners().then(() => {
+          this.loading = false
+        })
       }
     },
   },
