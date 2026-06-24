@@ -18,7 +18,32 @@
       <form @submit.prevent="editOrgProfData()">
         <div class="lk-about__info-container">
           <div class="lk-about__info" v-for="(field, index) in this.form.orgData" :key="index">
-            <div class="lk-about__info-title-wrapper">
+            <!-- new here -->
+            <div v-if="field.type === 'images_container'" class="lk-about__info-flex">
+              <div class="lk-about__info-text-wrapper-flex">
+                <div class="lk-about__info-text-wrapper-flex-item" v-for="(item, i) in field.name" :key="i">
+                  <div class="lk-about__info-text-wrapper-flex-item-header">
+                    <div class="lk-about__info-title-wrapper">
+                      <p class="lk-about__info-title-label">{{ field.label[i] }}</p>
+                      <p class="lk-about__info-title-description">{{ field.placeholder[i] }}</p>
+                    </div>
+                    <i class="d-icon-pen2 lk-about__info-text-wrapper-flex-item-icon" @click.prevent="openAdd(item)"></i>
+                  </div>
+                  <div class="lk-about__info-text-wrapper-flex-item-content">
+                    <div class="lk-about__info-text-wrapper-flex-item-content-text" v-if="item == 'description'">
+                      <div v-html="this.orgProfValues[item]"></div>
+                    </div>
+                    <div class="lk-about__info-text-wrapper-flex-item-content-image" v-else :class="'lk-about__info-text-wrapper-flex-item-content-image--'+item">
+                      <img :src="this.orgProfValues[item]" v-if="this.orgProfValues[item]"/>
+                      <div class="lk-about__info-text-wrapper-flex-item-content-image-noimg" v-else> 
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!---->
+            <div class="lk-about__info-title-wrapper" v-else>
               <p class="lk-about__info-title-label">{{ field.label }}</p>
               <p class="lk-about__info-title-description">{{ field.placeholder }}</p>
             </div>
@@ -94,6 +119,7 @@
                 </FileUpload>
               </div>
             </div>
+            
             <div class="lk-about__info-text-wrapper" v-if="field.type === 'text'">
               <p class="lk-about__info-text">{{ this.orgprofile[field.name] }}</p>
             </div>
@@ -533,22 +559,48 @@
       </customModal>
     </teleport>
 
-    <!--  <teleport to="body">
-    <customModal v-model="this.modalAddCompany" class="lk-about-form__modal">
-      <div class="lk-about-info__value-container">
-        <h2>Добавить компанию</h2>
-        <form class="lk-about-form__modal"  @submit.prevent="">
-        <button
-						type="submit"
-						href="#"
-						class="d-button d-button-primary d-button-primary-small d-button--sm-shadow lk-about-info__button"
-				>
-          Добавить
-        </button>
-      </form>
+    <teleport to="body">
+    <customModal v-model="this.modalAddData" class="lk-about-info__modal">
+      <div class="lk-about-info__modal-add">
+        <div class="lk-about-info__modal-add-header" v-if="modalAddDataStep == 1">
+          <h2>{{ form.data.title }}</h2>
+          <p>{{ form.data.text }}</p>
+        </div>
+        <div class="lk-about-info__modal-add-header" v-else>
+          <h2>{{ form.data.title }}</h2>
+          <p>Выбранная область будет показываться на вашей странице.</p>
+          <p>Если изображение ориентировано неправильно, фотографию можно изменить</p>
+        </div>
+        <div class="lk-about-info__modal-add-content" v-if="modalAddDataStep == 1">
+          {{ form.data.value }}
+        </div>
+        <div class="lk-about-info__modal-add-content" v-else>
+          {{ form.data.value }}
+        </div>
+        <div class="lk-about-info__modal-add-buttons">
+          <button
+            type="button"
+            href="#"
+            class="d-button d-button-primary d-button--sm-shadow lk-about-info__modal-add-buttons-button lk-about-info__modal-add-buttons-button--cancel"
+            @click.prevent="((this.modalAddData = false), (this.form.data = {}))"
+          >
+            Отменить
+          </button>
+          <button
+            type="button"
+            href="#"
+            class="d-button d-button-primary d-button--sm-shadow lk-about-info__modal-add-buttons-button"
+            @click.prevent="saveDocs()"
+            :disabled="!form.data.value.length"
+          >
+            Загрузить
+          </button>
+        </div>
+
+
 			</div>
     </customModal>
-    </teleport>-->
+    </teleport>
   </section>
 </template>
 
@@ -574,7 +626,8 @@ export default {
       showSaveButton: false,
       requisitesShow: true,
       modalRequisites: false,
-      modalAddCompany: false,
+      modalAddData: false,
+      modalAddDataStep: 1,
       addRequisitShow: false,
       newReqModalForm: false,
       editReqModalForm: true,
@@ -597,6 +650,14 @@ export default {
             placeholder: 'Отображается для покупателей',
             type: 'image',
           },
+          // {
+          //   name: ['image', 'banner', 'description'],
+          //   label: ['Логотип компании', 'Баннер компании','Описание компании'],
+          //   placeholder: ['Отображается для покупателей', 'Выводится на карточке поставщика','Показать клиенту, что он получит (скидку, подарок, бонус)'],
+          //   modalTitle: ['Изменить логотип', 'Изменить баннер','Описание компании'],
+          //   modalText: ['Загрузите логотип в формате jpg, png размером до 80х80 px', 'Загрузите логотип в формате jpg, png размером до 486х190 px','Вы можете отредактировать или изменить описание'],
+          //   type: 'images_container',
+          // },
           {
             name: 'code',
             label: 'Код поставщика',
@@ -604,6 +665,7 @@ export default {
               'Данный код необходим вашим клиентам для подключения к вашему каталогу в МС: Управление продажами и закупками',
             type: 'text',
           },
+          
           {
             name: 'phone',
             label: 'Телефон компании',
@@ -691,6 +753,7 @@ export default {
             readonly: 1,
           },
         ],
+        data: {}
       },
     }
   },
@@ -1081,6 +1144,26 @@ export default {
       //		});
       //	});
     },
+    openAdd(i){
+      this.modalAddDataStep = 1
+      this.form.data = {}
+      this.form.data.name = i
+      let index = []
+      for(var ind in this.form.orgData){
+        if(this.form.orgData[ind].type == 'images_container'){
+          index.push(ind)
+          for(var indd in this.form.orgData[ind].name){
+            if(this.form.orgData[ind].name[indd] == i){
+              index.push(indd)
+            }
+          }
+        }
+      }
+      this.form.data.value = this.orgProfValues[i]
+      this.form.data.title = this.form.orgData[index[0]].modalTitle[index[1]]
+      this.form.data.text = this.form.orgData[index[0]].modalText[index[1]]
+      this.modalAddData = true
+    }
   },
   computed: {
     ...mapGetters({
@@ -1100,4 +1183,105 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.lk-about__info-flex{
+  display: flex;
+  width: 100%;
+}
+.lk-about__info-text-wrapper-flex{
+  display: flex;
+  align-items: start;
+  gap:40px;
+  width: 100%;
+  flex-grow: 1;
+  &-item{
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex-grow: 1;
+    &-header{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .lk-about__info-title-wrapper{
+        position: relative;
+        width: max-content;
+        padding-right: 16px;
+        flex-grow: 1;
+      }
+      .lk-about__info-title-wrapper:after{
+        content: '';
+        position: absolute;
+        top: calc(50% - 8px);
+        right: 0;
+        width: 0.5px;
+        height: 16px;
+        background-color: #75757575;
+        display: block;
+      }
+      .lk-about__info-text-wrapper-flex-item-icon{
+        width: 40px;
+        height: 40px;
+        padding-left: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    &-content-text{
+      height: 84px;
+      width: 501px;
+      overflow: hidden;
+      div{
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 21px;
+        color: #282828;
+      }
+    }
+    &-content-image{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &-noimg{
+        width: 100%;
+        height: 100%;
+        background-color: #D9D9D9;
+        background-image: url('/icons/camera-off.svg');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: 28px;
+      }
+      &--image{
+        width: 80px;
+        height: 80px;
+        aspect-ratio: 1;
+        .lk-about__info-text-wrapper-flex-item-content-image-noimg{
+          border-radius: 40px;
+        }
+        img{
+          width: 80px;
+          height: 80px;
+          border-radius: 40px;
+        }
+      }
+      &--banner{
+        width: fit-content;
+        height: 97px;
+        .lk-about__info-text-wrapper-flex-item-content-image-noimg{
+          border-radius: 5px;
+          width: 247px;
+        }
+        img{
+          height: 97px;
+          width: auto;
+          border-radius: 5px;
+        }
+      }
+    }
+    &-icon{
+      cursor: pointer;
+    }
+  }
+}
+</style>
