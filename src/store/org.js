@@ -293,6 +293,15 @@ export default {
       const response = await api.org.editOrgProfile(sendData)
       return response
     },
+    async setOrgProfile(store, { data }) {
+      const sendData = {
+        action: 'set/org/profile',
+        id: router.currentRoute._value.params.id,
+        data: data
+      }
+      const response = await api.org.getOrgProfile(sendData)
+      return response
+    },
     async setManager(store, { data }) {
       const sendData = {
         action: 'set/org/manager',
