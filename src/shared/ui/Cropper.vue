@@ -82,7 +82,79 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  
+  .cropper-modal{
+    border-radius: 8px;
+  }
+  .cropper-view-box {
+    outline: 1px solid transparent;
+    outline-color:transparent;
+  }
+  .cropper-line {
+    background-color: transparent;
+  }
+  .cropper-point {
+    background-color: #C0C0C0;
+    height: 12px;
+    opacity: 1;
+    width: 12px;
+    border-radius: 2px;
+}
+.cropper-point.point-e {
+    cursor: ew-resize;
+    margin-top: -6px;
+    right: -6px;
+    top: 50%;
+    opacity: 0;
+}
+.cropper-point.point-n {
+    cursor: ns-resize;
+    left: 50%;
+    margin-left: -6px;
+    top: -6px;
+    opacity: 0;
+}
+.cropper-point.point-w {
+    cursor: ew-resize;
+    left: -6px;
+    margin-top: -6px;
+    top: 50%;
+    opacity: 0;
+}
+.cropper-point.point-s {
+    bottom: -6px;
+    cursor: s-resize;
+    left: 50%;
+    margin-left: -6px;
+    opacity: 0;
+}
+.cropper-point.point-ne {
+    cursor: nesw-resize;
+    right: -6px;
+    top: -6px;
+}
+.cropper-point.point-nw {
+    cursor: nwse-resize;
+    left: -6px;
+    top: -6px;
+}
+.cropper-point.point-sw {
+    bottom: -6px;
+    cursor: nesw-resize;
+    left: -6px;
+}
+.cropper-point.point-se {
+  bottom: -6px;
+  right: -6px;
+}
+.cropper-dashed {
+     border: none;
+    
+}
+.cropper-bg {
+    background-image: none;
+    background-color: #67676738;
+}
 }
 .cropper_banner{
   width: 595px;
