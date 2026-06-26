@@ -579,7 +579,7 @@
                 :url="form.data.name == 'image' ? '/rest/file_upload.php?upload_org_avatar=avatar' : '/rest/file_upload.php?banner=banner'"
                 :uploadOnDrop="true"
                 :multipleUpload="false"
-                :acceptedFiles="['image/*']"
+                :acceptedFiles="['png', 'jpeg', 'jpg', 'svg']"
                 :parallelUpload="1"
                 @sending="parseFile"
                 v-bind="args"
@@ -605,7 +605,12 @@
         </div>
         <div class="lk-about-info__modal-add-content" v-else>
           <div class="lk-about-info__modal-add-content-center">          
-            <Cropper :pic="form.data.value.original_href ? form.data.value.original_href : form.data.value" :options="form.data.options" :presetMode="form.data.presetMode" :class="'cropper_'+form.data.name" />
+            <Cropper 
+            :pic="form.data.value.original_href ? form.data.value.original_href : form.data.value" 
+            :options="form.data.options" 
+            :presetMode="form.data.presetMode" 
+            :class="'cropper_'+form.data.name"
+            @cropData="cropData" />
 </div>
           <div class="lk-about-info__modal-add-content-buttons" >
           <button class="lk-about-info__modal-add-content-buttons--change" @click.prevent="modalAddDataStep = 1, form.data.value = ''"><i class="d-icon d-icon-download"></i>Загрузить другое изображение</button>
@@ -972,6 +977,7 @@ export default {
       getOrgProfile: 'org/getOrgProfile',
       editOrgProfile: 'org/editOrgProfile',
       setOrgProfile: 'org/setOrgProfile',
+      cropImage: 'addition/cropImage',
     }),
     showModals(index) {
       if (this.modalRequisites === false && this.successMessage === true) {
@@ -1283,12 +1289,21 @@ export default {
       }
       this.modalAddData = true
     },
+    cropData(data){
+      this.form.data.cropper = data.detail
+    },
     saveData(){
       if(this.form.data.name == 'description'){
         this.editOrgValues[this.form.data.name] = this.form.data.value
       }else{
         this.editOrgValues[this.form.data.name] = this.form.data.value.original_href
         this.editOrgValues[this.form.data.name + '_data'] = this.form.data.value
+        this.loading = true
+        this.cropImage({
+          data: this.form.data
+        }).then(() => {
+          this.loading = false
+        })
       }
       this.modalAddData = false
       this.modalAddDataStep = 1
@@ -1495,6 +1510,14 @@ export default {
           align-items: center;
           gap: 8px;
         }
+      }
+      .dart-dropzone {
+        
+        border-radius: 6px;
+        
+      }
+      .dropzone__item {
+        display:none;
       }
     }
   }

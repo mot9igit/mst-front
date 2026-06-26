@@ -703,6 +703,7 @@ export default {
   border: 2px dashed #e2e2e2 !important;
   padding: 15px 15px;
   margin-top: 10px;
+  border-radius: 6px;
   & .dart-dropzone__custom {
     display: flex;
     flex-direction: column;

@@ -142,6 +142,14 @@ export default {
       }
       return response
     },
+    async cropImage(store, { data }) {
+      const sendData = {
+        action: 'crop',
+        data: data,
+      }
+      const response = await api.addition.cropImage(sendData)
+      return response
+    },
   },
   mutations: {
     SET_VENDORS: (state, data) => {

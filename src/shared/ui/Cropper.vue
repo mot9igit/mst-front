@@ -21,7 +21,7 @@ export default {
   components: {
     VuePictureCropper,
   },
-  emits: [],
+  emits: ['cropData'],
   props: {
     pic: {
       type: String,
@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     ready(data){
-      console.log(data)
+      this.$emit('cropData', data)
     }
   },
   mounted() {
