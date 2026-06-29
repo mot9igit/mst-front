@@ -4,58 +4,73 @@
     <div class="d-top">
       <Breadcrumbs />
     </div>
-    <Toast/>
+    <Toast />
     <Loader v-if="loading" />
     <div v-else>
       <!-- Доступные производители -->
       <div class="clients__content" v-if="publicVendors.total > 0">
         <h2 class="clients__content-h2">Бренды</h2>
         <div class="clients__content-container">
-          <div class="clients__content-container-item" v-for="(item, index) in publicVendors.items" :key="index">
-            <div class="clients__content-container-item-banner" :style="'background-image:url(' + item.banner +');'" v-if="item.banner"></div>
-            <div class="clients__content-container-item-banner" v-else>  
-              
-                <div class="clients__content-container-item-banner-container">
-                  <img :src="item.image" class="clients__content-container-item-banner-container-logo"/>
-                  {{ item.name }}
-                </div>
-              
+          <div
+            class="clients__content-container-item"
+            v-for="(item, index) in publicVendors.items"
+            :key="index"
+          >
+            <div
+              class="clients__content-container-item-banner"
+              :style="'background-image:url(' + item.banner + ');'"
+              v-if="item.banner"
+            ></div>
+            <div class="clients__content-container-item-banner" v-else>
+              <div class="clients__content-container-item-banner-container">
+                <img
+                  :src="item.image"
+                  class="clients__content-container-item-banner-container-logo"
+                />
+                {{ item.name }}
+              </div>
             </div>
-            
+
             <div class="clients__content-container-item-content">
               <div class="clients__content-container-item-content-info">
-                <img :src="item.image" class="clients__content-container-item-content-info-logo"/>
+                <img :src="item.image" class="clients__content-container-item-content-info-logo" />
                 <div class="clients__content-container-item-content-info-text">
-                  <div class="clients__content-container-item-content-info-text-name">{{ item.name }}</div>
-                  <div class="clients__content-container-item-content-info-text-address">{{ item.address }}</div>
-                </div>  
+                  <div class="clients__content-container-item-content-info-text-name">
+                    {{ item.name }}
+                  </div>
+                  <div class="clients__content-container-item-content-info-text-address">
+                    {{ item.address }}
+                  </div>
+                </div>
               </div>
-              <div class="clients__content-container-item-content-descr" v-html="item.description">
-              </div>
+              <div
+                class="clients__content-container-item-content-descr"
+                v-html="item.description"
+              ></div>
             </div>
             <div class="clients__content-container-item-button">
               <button
-                  class="d-button d-button-primary d-button--sm-shadow"
-                  @click.prevent="setVendor(item.id)"
-                >
-                  Подключить
+                class="d-button d-button-primary d-button--sm-shadow"
+                @click.prevent="setVendor(item.id)"
+              >
+                Подключить
               </button>
             </div>
-            
           </div>
         </div>
-        <div class="clients__content-button" v-if="publicVendors.total > publicVendors.total_visible">
+        <div
+          class="clients__content-button"
+          v-if="publicVendors.total > publicVendors.total_visible"
+        >
           <button
             class="clients__content-button-show_more_org-button"
             @click.prevent="paginatePublicVendors"
           >
             <span class="clients__content-button-show_more_org-button-label">Еще</span>
             <span class="clients__content-button-show_more_org-button-badge">{{
-                Number(publicVendors.total) - Number(publicVendors.total_visible)
+              Number(publicVendors.total) - Number(publicVendors.total_visible)
             }}</span>
-            <i
-              class="d-icon-arrow-right clients__content-button-show_more_org-button-icon"
-            ></i>
+            <i class="d-icon-arrow-right clients__content-button-show_more_org-button-icon"></i>
           </button>
         </div>
       </div>
@@ -75,7 +90,10 @@
         <div class="clients__filters">
           <div class="clients__filters-left" v-if="Object.keys(opts.items).length">
             <div class="clients__filters-input-container" v-for="(ffilter, i) in filters" :key="i">
-              <div class="d-input d-input--light clients__filters-input" v-if="ffilter.type == 'text'">
+              <div
+                class="d-input d-input--light clients__filters-input"
+                v-if="ffilter.type == 'text'"
+              >
                 <input
                   type="text"
                   :id="ffilter.name"
@@ -103,8 +121,7 @@
           </button>
         </div>
       </div>
-      
-      
+
       <div class="clients__card-container vendor-page">
         <template v-if="Object.keys(opts.items).length">
           <div class="clients__card dart-row" v-for="(item, index) in opts.items" :key="index">
@@ -131,22 +148,24 @@
                     {{ item.req?.inn != '' ? item.req?.inn : 'не указан' }}
                   </p>
                 </div>
-          
+
                 <div class="clients__card-contact-container d-col-18 clients__devider">
-                  <a :href="'tel:' + item.phone.replace(/[^+\d]/g, '')" class="clients__card-contact">
+                  <a
+                    :href="'tel:' + item.phone.replace(/[^+\d]/g, '')"
+                    class="clients__card-contact"
+                  >
                     <i class="d-icon-telephone clients__card-contact-icon"></i>
                     <span>{{ item.phone != '' ? item.phone : '-' }}</span>
                   </a>
                   <a :href="'mailto:' + item.email" class="clients__card-contact">
                     <i class="d-icon-mail2 clients__card-contact-icon"></i>
-                    <span>{{ item.email != '' ? item.email : '-'  }}</span>
+                    <span>{{ item.email != '' ? item.email : '-' }}</span>
                   </a>
                 </div>
               </div>
             </div>
 
             <div class="clients__card-right d-col-3">
-              
               <div class="clients__card-right-right d-col-24">
                 <div class="clients__card-action-container d-col-6">
                   <button class="clients__card-action" @click.prevent="changeOpts(item.id, '')">
@@ -174,21 +193,19 @@
 
               <div class="clients__card-top-right">
                 <div class="clients__card-top-right-top">
-                 
-                  <div class="clients__card-action-container">
-                   
-                  </div>
+                  <div class="clients__card-action-container"></div>
                 </div>
-                <div class="clients__card-vendor-wrapper">
-                 
-                </div>
+                <div class="clients__card-vendor-wrapper"></div>
               </div>
             </div>
 
             <div class="clients__card-bottom">
               <div class="clients__card-bottom-left">
                 <div class="clients__card-contact-container">
-                  <a :href="'tel:' + item.phone.replace(/[^+\d]/g, '')" class="clients__card-contact">
+                  <a
+                    :href="'tel:' + item.phone.replace(/[^+\d]/g, '')"
+                    class="clients__card-contact"
+                  >
                     <i class="d-icon-telephone clients__card-contact-icon"></i>
                     <span>{{ item.phone != '' ? item.phone : '-' }}</span>
                   </a>
@@ -207,15 +224,12 @@
             </div>
             <div class="clients__card-top-mobile">
               <div class="clients__card-top-right-top">
-               
                 <div class="clients__card-action-container">
-                 
                   <button class="clients__card-action" @click.prevent="changeOpts(item.id, '')">
                     <i class="d-icon-trash"></i>
                   </button>
                 </div>
               </div>
-              
             </div>
           </div>
         </template>
@@ -297,7 +311,7 @@ export default {
       getOptVendorsAvailable: 'org/getOptVendorsAvailable',
       getOptVendorsSelected: 'org/getOptVendorsSelected',
       getPublicVendors: 'org/getPublicVendors',
-      setNewOrgProfileVendor: 'purchases/setNewOrgProfileVendor'
+      setNewOrgProfileVendor: 'purchases/setNewOrgProfileVendor',
     }),
     setFilter(type = '0') {
       if (type === 'filter') {
@@ -350,7 +364,6 @@ export default {
           })
         },
       })
-      
     },
     filter(data) {
       console.log(data)
@@ -413,7 +426,7 @@ export default {
         })
       })
     },
-    paginatePublicVendors(){
+    paginatePublicVendors() {
       this.loading = true
       this.pagePublic++
       this.getPublicVendors({
@@ -423,18 +436,18 @@ export default {
         this.loading = false
       })
     },
-    setVendor(id){
+    setVendor(id) {
       this.loading = true
       this.setNewOrgProfileVendor({
-        vendor_id: id
+        vendor_id: id,
       }).then((res) => {
-        if(res.data.success){
+        if (res.data.success) {
           this.$toast.add({
-              severity: 'success',
-              summary: 'Поставщик добавлен!',
-              detail: 'Поставщик успешно добавлен!',
-              life: 3000,
-            })
+            severity: 'success',
+            summary: 'Поставщик добавлен!',
+            detail: 'Поставщик успешно добавлен!',
+            life: 3000,
+          })
           this.page = 1
           this.pagePublic = 1
           this.getOpts({
@@ -448,37 +461,35 @@ export default {
               this.loading = false
             })
           })
-        }else{
+        } else {
           this.$toast.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: "Ошибка добавления поставщика",
-              life: 3000,
-            })
-            this.loading = false
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Ошибка добавления поставщика',
+            life: 3000,
+          })
+          this.loading = false
         }
-        
       })
-    }
+    },
   },
   mounted() {
-    
-      this.getPublicVendors({
-        page: this.pagePublic,
-        perpage: this.pagination_items_per_page_public,
+    this.getPublicVendors({
+      page: this.pagePublic,
+      perpage: this.pagination_items_per_page_public,
+    }).then(() => {
+      this.getOpts({
+        page: this.page,
+        perpage: this.pagination_items_per_page,
       }).then(() => {
-        this.getOpts({
-          page: this.page,
-          perpage: this.pagination_items_per_page,
-        }).then(() => {
-          this.loading = false
-        })
+        this.loading = false
       })
+    })
   },
   computed: {
     ...mapGetters({
       opts: 'purchases/opts',
-      publicVendors: 'org/publicVendors'
+      publicVendors: 'org/publicVendors',
     }),
   },
   watch: {
@@ -492,76 +503,76 @@ export default {
 }
 </script>
 <style lang="scss">
-.clients__container{
+.clients__container {
   display: flex;
   align-items: start;
   justify-content: space-between;
 }
-@media (width<=1024px){
-  .clients__container{
+@media (width<=1024px) {
+  .clients__container {
     display: flex;
     flex-direction: column;
     align-items: start;
     justify-content: start;
     gap: 24px;
   }
-  .clients__filters{
+  .clients__filters {
     justify-content: space-between;
     width: 100%;
   }
 }
-@media (width<=600px){
-  .clients__filters{
+@media (width<=600px) {
+  .clients__filters {
     flex-direction: column-reverse;
     display: flex !important;
   }
-  .clients__filters-create{
+  .clients__filters-create {
     width: 100%;
   }
 }
-.clients__filters-input{
+.clients__filters-input {
   border-radius: 20px;
 }
-.clients__content{
+.clients__content {
   display: flex;
   flex-direction: column;
   gap: 40px;
   margin-bottom: 80px;
-  &-h2{   
+  &-h2 {
     font-weight: 600;
     font-size: 20px;
     line-height: 26px;
     color: #282828;
   }
-  &-container{
+  &-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 32px;
-    &-item{
+    &-item {
       max-height: 489px;
       height: 498px;
       min-height: 489px;
       overflow: hidden;
-      background: #FFFFFF;
+      background: #ffffff;
       box-shadow: 0px 4px 13.2px -5px rgba(0, 0, 0, 0.41);
       border-radius: 16px;
       display: flex;
       flex-direction: column;
       gap: 22px;
       padding: 0;
-      &-banner{
+      &-banner {
         max-height: 190px;
         min-height: 190px;
         width: 100%;
         overflow: hidden;
-        background-color: #EBEBEB;
+        background-color: #ebebeb;
         display: flex;
         align-items: center;
         justify-content: center;
         background-position: center center;
         background-size: cover;
         padding: 0 16px;
-        &-container{
+        &-container {
           display: flex;
           align-items: center;
           gap: 16px;
@@ -569,7 +580,7 @@ export default {
           font-size: 29px;
           line-height: 29px;
           font-weight: 700;
-          &-logo{           
+          &-logo {
             width: 63px;
             height: auto;
             border-radius: 42px;
@@ -577,7 +588,7 @@ export default {
           }
         }
       }
-      &-content{
+      &-content {
         padding: 0 16px;
         display: flex;
         flex-direction: column;
@@ -587,71 +598,70 @@ export default {
         min-height: 179px;
         max-height: 179px;
         overflow: hidden;
-        
-        &-info{
+
+        &-info {
           display: flex;
           min-height: 47px;
           gap: 8px;
           align-items: start;
           position: relative;
           box-sizing: border-box;
-          &-logo{
-            aspect-ratio: 1;        
+          &-logo {
+            aspect-ratio: 1;
             width: 24px;
             height: auto;
             border-radius: 14px;
           }
-          &-text{
+          &-text {
             display: flex;
             flex-direction: column;
             gap: 8px;
             position: relative;
-            &-name{          
+            &-name {
               font-weight: 700;
               font-size: 16px;
               line-height: 21px;
               color: #282828;
             }
-            &-address{   
+            &-address {
               font-weight: 400;
               font-size: 14px;
               line-height: 18px;
               color: #757575;
               max-height: 18px;
               overflow: hidden;
-              position:relative;
+              position: relative;
             }
           }
-
         }
 
-        &-descr{       
+        &-descr {
           max-height: 105px;
           overflow: hidden;
           font-weight: 400;
           font-size: 16px;
-          line-height: 21px;
+          line-height: auto;
           color: #282828;
         }
       }
-      &-button{
-          margin-top: 10px;
-          display: flex;
-          width: 100%;
-          padding: 0 16px;
-          align-items: center;
-          justify-content: center;
-          button{
-            width: auto;
-          }
+      &-button {
+        margin-top: 10px;
+        display: flex;
+        width: 100%;
+        padding: 0 16px;
+        align-items: center;
+        justify-content: center;
+        button {
+          width: auto;
+        }
       }
     }
   }
-  &-button{
+  &-button {
     width: 100%;
     display: flex;
     justify-content: center;
-    &-show_more_org-button{
+    &-show_more_org-button {
       color: #fff;
       background-color: #282828;
       border: 1px solid #282828;
@@ -664,7 +674,7 @@ export default {
       align-items: center;
       gap: 8px;
       font-weight: 500;
-      &-icon{
+      &-icon {
         width: 24px;
         height: 24px;
         font-size: 10px;
@@ -673,175 +683,175 @@ export default {
         justify-content: center;
       }
     }
-    &-show_more_org-button:hover{
+    &-show_more_org-button:hover {
       color: #282828;
       background-color: transparent;
     }
   }
 }
- @media (width<1280px){
-  .clients__content{
-  gap: 32px;
-  margin-bottom: 60px;
-  &-h2{   
-    font-size: 16px;
-    line-height: 21px;
-  }
-  &-container{
-    gap: 24px;
-    &-item{
-      max-height: 412px;
-      height: 412px;
-      min-height: 412px;
-      gap: 22px;
-      padding: 0;
-      &-banner{
-        max-height: 160px;
-        min-height: 160px;
-        width: 100%;
-        &-container{
+@media (width<1280px) {
+  .clients__content {
+    gap: 32px;
+    margin-bottom: 60px;
+    &-h2 {
+      font-size: 16px;
+      line-height: 21px;
+    }
+    &-container {
+      gap: 24px;
+      &-item {
+        max-height: 412px;
+        height: 412px;
+        min-height: 412px;
+        gap: 22px;
+        padding: 0;
+        &-banner {
+          max-height: 160px;
+          min-height: 160px;
+          width: 100%;
+          &-container {
+            gap: 16px;
+            color: #282828;
+            font-size: 24px;
+            line-height: 24px;
+            &-logo {
+              width: 56px;
+              border-radius: 56px;
+            }
+          }
+        }
+        &-content {
           gap: 16px;
-          color: #282828;
-          font-size: 24px;
-          line-height: 24px;
-          &-logo{           
-            width: 56px;
-            border-radius: 56px;
-          }
-        }
-      }
-      &-content{
-        gap: 16px;
-        min-height: 154px;
-        max-height: 154px;
-        &-info{
-          min-height: 47px;
-          gap: 8px;
-          &-logo{ 
-            width: 20px;
-            border-radius: 14px;
-          }
-          &-text{
+          min-height: 154px;
+          max-height: 154px;
+          &-info {
+            min-height: 47px;
             gap: 8px;
-            &-name{          
-              font-weight: 700;
-              font-size: 14px;
-              line-height: 18px;
+            &-logo {
+              width: 20px;
+              border-radius: 14px;
             }
-            &-address{   
-              font-weight: 400;
-              font-size: 12px;
-              line-height: 16px;
-              max-height: 16px;
+            &-text {
+              gap: 8px;
+              &-name {
+                font-weight: 700;
+                font-size: 14px;
+                line-height: 18px;
+              }
+              &-address {
+                font-weight: 400;
+                font-size: 12px;
+                line-height: 16px;
+                max-height: 16px;
+              }
             }
           }
+          &-descr {
+            max-height: 105px;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 18px;
+          }
         }
-        &-descr{       
-          max-height: 105px;
-          font-weight: 400;
-          font-size: 14px;
-          line-height: 18px;
-        }
-      }
-      &-button{
+        &-button {
           margin-top: 0px;
           display: flex;
           width: 100%;
           padding: 0 16px;
           align-items: center;
           justify-content: center;
-          button{
+          button {
             width: auto;
             font-size: 14px;
           }
+        }
       }
     }
-  }
-  &-button{
-    &-show_more_org-button{
-      height: 32px;
-      font-size: 14px;
-      line-height: 18px;
-      padding: 8px 16px;
-      &-icon{
-        width: 20px;
-        height: 20px;
-        font-size: 10px;
-      }
-    }
-  }
-}
-.clients__filters-create {
+    &-button {
+      &-show_more_org-button {
         height: 32px;
-        min-height: 32px;
         font-size: 14px;
-    }
- }
- @media (width<1024px){
-  .clients__content{
-  gap: 16px;
-  margin-bottom: 32px;
-  &-h2{   
-    font-size: 16px;
-    line-height: 21px;
-  }
-  &-container{
-    gap: 16px;
-    &-item{
-      max-height: 300px;
-      height: 300px;
-      min-height: 300px;
-      gap: 8px;
-      padding: 0;
-      &-banner{
-        max-height: 112px;
-        min-height: 112px;
-        width: 100%;
-        &-container{
-          gap: 8px;
-          color: #282828;
-          font-size: 16px;
-          line-height: 21px;
-          &-logo{           
-            width: 32px;
-            border-radius: 32px;
-          }
-        }
-      }
-      &-content{
-        gap: 8px;
-        min-height: 127px;
-        max-height: 127px;
-        &-info{
-          min-height: 36px;
-          gap: 4px;
-          &-logo{ 
-            width: 16px;
-            border-radius: 14px;
-          }
-          &-text{
-            gap: 4px;
-            &-name{          
-              font-weight: 700;
-              font-size: 12px;
-              line-height: 18px;
-            }
-            &-address{   
-              font-weight: 400;
-              font-size: 10px;
-              line-height: 14px;
-              max-height: 14px;
-            }
-          }
-        }
-        &-descr{       
-          max-height: 105px;
-          font-weight: 400;
+        line-height: 18px;
+        padding: 8px 16px;
+        &-icon {
+          width: 20px;
+          height: 20px;
           font-size: 10px;
-          line-height: 12px;
         }
       }
-      &-button{
+    }
+  }
+  .clients__filters-create {
+    height: 32px;
+    min-height: 32px;
+    font-size: 14px;
+  }
+}
+@media (width<1024px) {
+  .clients__content {
+    gap: 16px;
+    margin-bottom: 32px;
+    &-h2 {
+      font-size: 16px;
+      line-height: 21px;
+    }
+    &-container {
+      gap: 16px;
+      &-item {
+        max-height: 300px;
+        height: 300px;
+        min-height: 300px;
+        gap: 8px;
+        padding: 0;
+        &-banner {
+          max-height: 112px;
+          min-height: 112px;
+          width: 100%;
+          &-container {
+            gap: 8px;
+            color: #282828;
+            font-size: 16px;
+            line-height: 21px;
+            &-logo {
+              width: 32px;
+              border-radius: 32px;
+            }
+          }
+        }
+        &-content {
+          gap: 8px;
+          min-height: 127px;
+          max-height: 127px;
+          &-info {
+            min-height: 36px;
+            gap: 4px;
+            &-logo {
+              width: 16px;
+              border-radius: 14px;
+            }
+            &-text {
+              gap: 4px;
+              &-name {
+                font-weight: 700;
+                font-size: 12px;
+                line-height: 18px;
+              }
+              &-address {
+                font-weight: 400;
+                font-size: 10px;
+                line-height: 14px;
+                max-height: 14px;
+              }
+            }
+          }
+          &-descr {
+            max-height: 105px;
+            font-weight: 400;
+            font-size: 10px;
+            line-height: 12px;
+          }
+        }
+        &-button {
           margin-top: 0px;
           display: flex;
           width: 100%;
@@ -849,100 +859,99 @@ export default {
           align-items: center;
           justify-content: center;
           height: 30px;
-          button{
+          button {
             width: auto;
             font-size: 12px;
           }
+        }
+      }
+    }
+    &-button {
+      &-show_more_org-button {
+        height: 30px;
+        font-size: 12px;
+        line-height: 16px;
+        padding: 6px 16px;
+        &-icon {
+          width: 20px;
+          height: 20px;
+          font-size: 8px;
+        }
       }
     }
   }
-  &-button{
-    &-show_more_org-button{
-      height: 30px;
-      font-size: 12px;
-      line-height: 16px;
-      padding: 6px 16px;
-      &-icon{
-        width: 20px;
-        height: 20px;
-        font-size: 8px;
-      }
-    }
+  .clients__filters-create {
+    height: 30px;
+    min-height: 30px;
+    font-size: 12px;
   }
 }
-.clients__filters-create {
-        height: 30px;
-        min-height: 30px;
-        font-size: 12px;
-    }
-        
- }
-@media (width<800px){
-  .clients__content{
-  gap: 16px;
-  margin-bottom: 32px;
-  &-h2{   
-    font-size: 16px;
-    line-height: 21px;
-  }
-  &-container{
+@media (width<800px) {
+  .clients__content {
     gap: 16px;
-    grid-template-columns: repeat(1, 1fr);
-    &-item{
-      max-height: 300px;
-      height: 300px;
-      min-height: 300px;
-      gap: 8px;
-      padding: 0;
-      &-banner{
-        max-height: 112px;
-        min-height: 112px;
-        width: 100%;
-        &-container{
-          gap: 8px;
-          color: #282828;
-          font-size: 16px;
-          line-height: 21px;
-          &-logo{           
-            width: 32px;
-            border-radius: 32px;
-          }
-        }
-      }
-      &-content{
+    margin-bottom: 32px;
+    &-h2 {
+      font-size: 16px;
+      line-height: 21px;
+    }
+    &-container {
+      gap: 16px;
+      grid-template-columns: repeat(1, 1fr);
+      &-item {
+        max-height: 300px;
+        height: 300px;
+        min-height: 300px;
         gap: 8px;
-        min-height: 127px;
-        max-height: 127px;
-        &-info{
-          min-height: 36px;
-          gap: 4px;
-          &-logo{ 
-            width: 16px;
-            border-radius: 14px;
+        padding: 0;
+        &-banner {
+          max-height: 112px;
+          min-height: 112px;
+          width: 100%;
+          &-container {
+            gap: 8px;
+            color: #282828;
+            font-size: 16px;
+            line-height: 21px;
+            &-logo {
+              width: 32px;
+              border-radius: 32px;
+            }
           }
-          &-text{
+        }
+        &-content {
+          gap: 8px;
+          min-height: 127px;
+          max-height: 127px;
+          &-info {
+            min-height: 36px;
             gap: 4px;
-            &-name{          
-              font-weight: 700;
-              font-size: 12px;
-              line-height: 18px;
+            &-logo {
+              width: 16px;
+              border-radius: 14px;
             }
-            &-address{   
-              font-weight: 400;
-              font-size: 10px;
-              line-height: 14px;
-              max-height: 14px;
+            &-text {
+              gap: 4px;
+              &-name {
+                font-weight: 700;
+                font-size: 12px;
+                line-height: 18px;
+              }
+              &-address {
+                font-weight: 400;
+                font-size: 10px;
+                line-height: 14px;
+                max-height: 14px;
+              }
             }
           }
+          &-descr {
+            max-height: 105px;
+            font-weight: 400;
+            font-size: 10px;
+            line-height: 12px;
+          }
         }
-        &-descr{       
-          max-height: 105px;
-          font-weight: 400;
-          font-size: 10px;
-          line-height: 12px;
-        }
-      }
-      &-button{
+        &-button {
           margin-top: 0px;
           display: flex;
           width: 100%;
@@ -950,44 +959,43 @@ export default {
           align-items: center;
           justify-content: center;
           height: 30px;
-          button{
+          button {
             width: auto;
             font-size: 12px;
           }
+        }
+      }
+    }
+    &-button {
+      &-show_more_org-button {
+        height: 30px;
+        font-size: 12px;
+        line-height: 16px;
+        padding: 6px 16px;
+        &-icon {
+          width: 20px;
+          height: 20px;
+          font-size: 8px;
+        }
       }
     }
   }
-  &-button{
-    &-show_more_org-button{
-      height: 30px;
-      font-size: 12px;
-      line-height: 16px;
-      padding: 6px 16px;
-      &-icon{
-        width: 20px;
-        height: 20px;
-        font-size: 8px;
-      }
-    }
+  .clients__filters-create {
+    height: 30px;
+    min-height: 30px;
+    font-size: 12px;
   }
 }
-.clients__filters-create {
-        height: 30px;
-        min-height: 30px;
-        font-size: 12px;
-    }
-        
- }
-.vendor-page{
-  @media (width>1280px){
-    .clients__card-data.d-col-14{
+.vendor-page {
+  @media (width>1280px) {
+    .clients__card-data.d-col-14 {
       flex-direction: row;
       align-items: center;
     }
-    .clients__card-inn.d-col-6.clients__devider{
-      position:relative
+    .clients__card-inn.d-col-6.clients__devider {
+      position: relative;
     }
-    .clients__card-inn.d-col-6.clients__devider:before{
+    .clients__card-inn.d-col-6.clients__devider:before {
       content: '';
       position: absolute;
       top: calc(50% - 10px);
@@ -997,7 +1005,7 @@ export default {
       background-color: #75757575;
       display: block;
     }
-    .clients__card-contact-container.d-col-18.clients__devider{
+    .clients__card-contact-container.d-col-18.clients__devider {
       flex-direction: row;
       gap: 24px;
       justify-content: center;

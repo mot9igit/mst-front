@@ -9,15 +9,14 @@
   />
 </template>
 <script>
-
 import VuePictureCropper from 'vue-picture-cropper'
 import 'cropperjs/dist/cropper.css'
 import 'vue-picture-cropper/style.css'
 import { ref } from 'vue'
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 export default {
-  name: 'Cropper',
+  name: 'CropperCut',
   components: {
     VuePictureCropper,
   },
@@ -25,7 +24,7 @@ export default {
   props: {
     pic: {
       type: String,
-      default: null
+      default: null,
     },
     options: {
       type: Object,
@@ -43,19 +42,19 @@ export default {
   data() {
     return {
       vpcRef: ref(null),
-      p: null
+      p: null,
     }
   },
   methods: {
-    ready(data){
+    ready(data) {
       this.$emit('cropData', data)
-    }
+    },
   },
   mounted() {
     //this.p=this.pic
-    this.p = 'http://localhost:5173/public/images/small-window.png'
+    this.p = this.pic
   },
- setup() {
+  setup() {
     // Bind a ref to the component
     const vpcRef = ref(null)
 
@@ -67,100 +66,94 @@ export default {
       vpcRef,
       cropper,
     }
-    
   },
-  computed: {
-    
-  },
-  watch: {
-    
-  },
+  computed: {},
+  watch: {},
 }
 </script>
 <style lang="scss">
-.dart-cropper{
+.dart-cropper {
   display: flex;
   align-items: center;
   justify-content: center;
-  
-  .cropper-modal{
+
+  .cropper-modal {
     border-radius: 8px;
   }
   .cropper-view-box {
     outline: 1px solid transparent;
-    outline-color:transparent;
+    outline-color: transparent;
   }
   .cropper-line {
     background-color: transparent;
   }
   .cropper-point {
-    background-color: #C0C0C0;
+    background-color: #c0c0c0;
     height: 12px;
     opacity: 1;
     width: 12px;
     border-radius: 2px;
-}
-.cropper-point.point-e {
+  }
+  .cropper-point.point-e {
     cursor: ew-resize;
     margin-top: -6px;
     right: -6px;
     top: 50%;
     opacity: 0;
-}
-.cropper-point.point-n {
+  }
+  .cropper-point.point-n {
     cursor: ns-resize;
     left: 50%;
     margin-left: -6px;
     top: -6px;
     opacity: 0;
-}
-.cropper-point.point-w {
+  }
+  .cropper-point.point-w {
     cursor: ew-resize;
     left: -6px;
     margin-top: -6px;
     top: 50%;
     opacity: 0;
-}
-.cropper-point.point-s {
+  }
+  .cropper-point.point-s {
     bottom: -6px;
     cursor: s-resize;
     left: 50%;
     margin-left: -6px;
     opacity: 0;
-}
-.cropper-point.point-ne {
+  }
+  .cropper-point.point-ne {
     cursor: nesw-resize;
     right: -6px;
     top: -6px;
-}
-.cropper-point.point-nw {
+  }
+  .cropper-point.point-nw {
     cursor: nwse-resize;
     left: -6px;
     top: -6px;
-}
-.cropper-point.point-sw {
+  }
+  .cropper-point.point-sw {
     bottom: -6px;
     cursor: nesw-resize;
     left: -6px;
-}
-.cropper-point.point-se {
-  bottom: -6px;
-  right: -6px;
-}
-.cropper-dashed {
-     border: none;
-    
-}
-.cropper-bg {
+  }
+  .cropper-point.point-se {
+    bottom: -6px;
+    right: -6px;
+  }
+  .cropper-dashed {
+    border: none;
+  }
+  .cropper-bg {
     background-image: none;
     background-color: #67676738;
+  }
 }
-}
-.cropper_banner{
+.cropper_banner {
   width: 595px;
   height: 402px;
 }
-.cropper_image{
+.cropper_image {
   width: 480px;
   height: 480px;
 }

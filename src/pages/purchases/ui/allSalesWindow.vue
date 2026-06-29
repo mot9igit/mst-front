@@ -139,7 +139,7 @@
               class="product-card__count-value product-card__count-value-require"
               v-if="item.item.requirement"
             >
-              <span class="product-card__count-label">Ваша потребность: </span>
+              <span class="product-card__count-label">Потребность: </span>
               {{ Number(item.item.requirement.count) }} шт
             </div>
           </div>
