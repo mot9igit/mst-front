@@ -297,7 +297,7 @@ export default {
       const sendData = {
         action: 'set/org/profile',
         id: router.currentRoute._value.params.id,
-        data: data
+        data: data,
       }
       const response = await api.org.getOrgProfile(sendData)
       return response
@@ -474,7 +474,6 @@ export default {
         id: router.currentRoute._value.params.id,
         page: page,
         perpage: perpage,
-
       }
       const response = await api.org.getOrg(data)
       if (response) {
@@ -482,6 +481,7 @@ export default {
       }
       return response
     },
+
     unsetOrgStores({ commit }) {
       commit('UNSET_ORG_STORES')
     },
