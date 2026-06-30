@@ -880,7 +880,7 @@ export default {
                     this.$emit('toggleOrderOffer')
                   }
                   this.loading = false
-                  this.updateBasket()
+                  this.getBasket()
                 } else {
                   this.$toast.add({
                     severity: 'error',
@@ -889,8 +889,6 @@ export default {
                     life: 3000,
                   })
                   this.loading = false
-
-                  this.updateBasket()
                 }
               },
             )

@@ -402,6 +402,7 @@
 </template>
 
 <script>
+import { toRaw } from 'vue'
 import { mapActions, mapGetters } from 'vuex'
 import Counter from '@/shared/ui/CounterNoAdd.vue'
 import Loader from '@/shared/ui/Loader.vue'
@@ -688,22 +689,29 @@ export default {
           }
         }
       }
+      console.log(this.noconflicts)
       if (Object.keys(this.noconflicts).length) {
         for (r_id in this.noconflicts) {
           let conf = {}
           if (this.noconflicts[r_id].count > 0) {
             //let conf = {}
-            let item = this.noconflicts[r_id].item
-            if (item.actions.length) {
-              for (var action_item in item.actions) {
-                if (item.actions[action_item].relations?.active) {
-                  conf = item.actions[action_item].relations
+            let item = toRaw(this.noconflicts[r_id].item)
+            // console.log(item.actions)
+            let actions = item.actions
+            console.log(actions.length)
+            if (Object.keys(actions).length) {
+              for (var action_item in actions) {
+                if (actions[action_item].relations?.active) {
+                  conf = actions[action_item].relations
                 }
               }
+              // console.log(conf)
               item.price = conf.price
               item.payer = conf.payer ? conf.payer : 0
               item.delay = conf.delay ? conf.delay : 0
               item.delay_type = conf.delay_type ? conf.delay_type : 1
+            } else {
+              // console.log(this.noconflicts[r_id].item)
             }
             // let col = 0
             // if(this.afterComplect.length && r_id in this.afterComplect){
@@ -737,6 +745,7 @@ export default {
       //   this.modalAfterComplect = true
       // }
       //this.$emit('windowClose')
+      console.log(data)
       this.basketProductAddAll({ items: data, cart_store: this.basketOfferWarehouse }).then(
         (res) => {
           if (res.data) {
