@@ -983,7 +983,7 @@ export default {
   },
 
   watch: {
-    offers: function (newVal) {
+    offers: function () {
       this.setValues()
     },
   },

@@ -1000,14 +1000,6 @@ export default {
         ? this.basketOffer
         : this.basket
 
-    if (
-      this.$route.matched[5] &&
-      this.$route.matched[5].name == 'WholesaleClientsOffer' &&
-      Object.keys(cart).length === 0
-    ) {
-      return
-    }
-
     this.loadProducts(this.buildProductsPayload({ basket: cart }))
 
     // ресайз окна - вовремя убрать табличный вид
@@ -1118,7 +1110,6 @@ export default {
       this.debouncedUpdatePage(0)
     },
     basketOfferWarehouse: function () {
-      this.getBasketOffer()
       this.debouncedUpdatePage(0)
     },
     orgActive: function () {

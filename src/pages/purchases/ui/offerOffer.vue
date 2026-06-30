@@ -70,9 +70,8 @@
                 >
                   от {{ offer.min_price.price.toLocaleString('ru') }} ₽
                 </p>
-                <p class="product-card__price-value-discounted" v-else>
-                  {{ offer.price.toLocaleString('ru') }} ₽
-                </p>
+
+                <p class="product-card__price-value-discounted" v-else>{{ offer.price }} ₽</p>
                 <p class="product-card__rrcdiscount" v-if="offer.prices.rrc_discount > 0">
                   {{ -offer.prices.rrc_discount }}%
                 </p>
@@ -837,8 +836,9 @@ export default {
         this.loading = true
         let conf = {}
         if (!this.allOff) {
-          conf = this.activeConflict?.actions
+          conf = this.activeConflict?.actions_ids
         }
+        console.log(this.activeConflict)
         const data = {
           org_id: item.org_id,
           store_id: item.store_id,
@@ -867,8 +867,9 @@ export default {
     addBasketAllSales(item, count) {
       this.loading = true
       let conf = {}
+      console.log(this.activeConflict)
       if (!this.allOff) {
-        conf = this.activeConflict.actions
+        conf = this.activeConflict.action_ids
         item.price = this.activeConflict.price
         item.payer = this.activeConflict.payer ? this.activeConflict.payer : 0
         item.delay = this.activeConflict.delay ? this.activeConflict.delay : 0
