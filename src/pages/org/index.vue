@@ -1383,7 +1383,7 @@ export default {
       } else {
         this.editOrgValues[this.form.data.name] = this.form.data.value.original_href
           ? this.form.data.value.original_href
-          : this.form.data.value
+          : this.form.data.value + '?v' + Date.now()
         this.editOrgValues[this.form.data.name + '_data'] = this.form.data.value
         this.loading = true
         this.cropImage({
