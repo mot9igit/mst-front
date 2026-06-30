@@ -15,10 +15,56 @@
     </div>
     <Loader v-if="loading" />
     <div v-else>
-      <form @submit.prevent="editOrgProfData()">
+      <form @submit.prevent="saveProfile()">
         <div class="lk-about__info-container">
           <div class="lk-about__info" v-for="(field, index) in this.form.orgData" :key="index">
-            <div class="lk-about__info-title-wrapper">
+            <!-- new here -->
+            <div v-if="field.type === 'images_container'" class="lk-about__info-flex">
+              <div class="lk-about__info-text-wrapper-flex">
+                <div
+                  class="lk-about__info-text-wrapper-flex-item"
+                  v-for="(item, i) in field.name"
+                  :key="i"
+                >
+                  <div class="lk-about__info-text-wrapper-flex-item-header">
+                    <div class="lk-about__info-title-wrapper">
+                      <p class="lk-about__info-title-label">{{ field.label[i] }}</p>
+                      <p class="lk-about__info-title-description">{{ field.placeholder[i] }}</p>
+                    </div>
+                    <i
+                      class="d-icon-pen2 lk-about__info-text-wrapper-flex-item-icon"
+                      @click.prevent="openAdd(item)"
+                    ></i>
+                    <i
+                      class="d-icon-trash lk-about__info-text-wrapper-flex-item-icon"
+                      v-if="editOrgValues[item]"
+                      @click.prevent="deleteAdd(item)"
+                    ></i>
+                  </div>
+                  <div class="lk-about__info-text-wrapper-flex-item-content">
+                    <div
+                      class="lk-about__info-text-wrapper-flex-item-content-text"
+                      v-if="item == 'description'"
+                    >
+                      <div v-html="this.orgProfValues[item]"></div>
+                    </div>
+                    <div
+                      class="lk-about__info-text-wrapper-flex-item-content-image"
+                      v-else
+                      :class="'lk-about__info-text-wrapper-flex-item-content-image--' + item"
+                    >
+                      <img :src="this.orgProfValues[item]" v-if="this.orgProfValues[item]" />
+                      <div
+                        class="lk-about__info-text-wrapper-flex-item-content-image-noimg"
+                        v-else
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!---->
+            <div class="lk-about__info-title-wrapper" v-else>
               <p class="lk-about__info-title-label">{{ field.label }}</p>
               <p class="lk-about__info-title-description">{{ field.placeholder }}</p>
             </div>
@@ -94,6 +140,7 @@
                 </FileUpload>
               </div>
             </div>
+
             <div class="lk-about__info-text-wrapper" v-if="field.type === 'text'">
               <p class="lk-about__info-text">{{ this.orgprofile[field.name] }}</p>
             </div>
@@ -533,22 +580,102 @@
       </customModal>
     </teleport>
 
-    <!--  <teleport to="body">
-    <customModal v-model="this.modalAddCompany" class="lk-about-form__modal">
-      <div class="lk-about-info__value-container">
-        <h2>Добавить компанию</h2>
-        <form class="lk-about-form__modal"  @submit.prevent="">
-        <button
-						type="submit"
-						href="#"
-						class="d-button d-button-primary d-button-primary-small d-button--sm-shadow lk-about-info__button"
-				>
-          Добавить
-        </button>
-      </form>
-			</div>
-    </customModal>
-    </teleport>-->
+    <teleport to="body">
+      <customModal v-model="this.modalAddData" class="lk-about-info__modal">
+        <div class="lk-about-info__modal-add">
+          <div class="lk-about-info__modal-add-header" v-if="modalAddDataStep == 1">
+            <h2>{{ form.data.title }}</h2>
+            <p>{{ form.data.text }}</p>
+          </div>
+          <div class="lk-about-info__modal-add-header" v-else>
+            <h2>{{ form.data.title }}</h2>
+            <p>Выбранная область будет показываться на вашей странице.</p>
+            <p style="margin-top: -8px">
+              Если изображение ориентировано неправильно, фотографию можно изменить
+            </p>
+          </div>
+          <div class="lk-about-info__modal-add-content" v-if="modalAddDataStep == 1">
+            <div
+              class="lk-about-info__modal-add-content-dropzone"
+              v-if="form.data.name != 'description'"
+            >
+              <DropZone
+                clickable="true"
+                :maxFiles="Number(1)"
+                :url="
+                  form.data.name == 'image'
+                    ? '/rest/file_upload.php?upload_org_avatar=avatar'
+                    : '/rest/file_upload.php?banner=banner'
+                "
+                :uploadOnDrop="true"
+                :multipleUpload="false"
+                :acceptedFiles="['png', 'jpeg', 'jpg', 'svg']"
+                :parallelUpload="1"
+                @sending="parseFile"
+                v-bind="args"
+                class="dart-dropzone"
+              >
+                <template v-slot:message>
+                  <div class="dart-dropzone__custom">
+                    <i class="pi pi-cloud-upload"></i>
+                    <b>Перетащите файл в эту область</b>
+                    <p>Вы также можете загрузить файл, <span>нажав сюда</span></p>
+                  </div>
+                </template>
+              </DropZone>
+            </div>
+            <div class="lk-about-info__modal-add-content-editor" v-else>
+              <Editor
+                v-model="form.data.value"
+                id="description"
+                editorStyle="height: 248px"
+                variant="simple"
+              />
+            </div>
+          </div>
+          <div class="lk-about-info__modal-add-content" v-else>
+            <div class="lk-about-info__modal-add-content-center">
+              <Cropper
+                :pic="
+                  form.data.value.original_href ? form.data.value.original_href : form.data.value
+                "
+                :options="form.data.options"
+                :presetMode="form.data.presetMode"
+                :class="'cropper_' + form.data.name"
+                @cropData="cropData"
+              />
+            </div>
+            <div class="lk-about-info__modal-add-content-buttons">
+              <button
+                class="lk-about-info__modal-add-content-buttons--change"
+                @click.prevent="((modalAddDataStep = 1), (form.data.value = ''))"
+              >
+                <i class="d-icon d-icon-download"></i>Загрузить другое изображение
+              </button>
+            </div>
+          </div>
+          <div class="lk-about-info__modal-add-buttons">
+            <button
+              type="button"
+              href="#"
+              class="d-button d-button-primary d-button--sm-shadow lk-about-info__modal-add-buttons-button lk-about-info__modal-add-buttons-button--cancel"
+              @click.prevent="((this.modalAddData = false), (this.form.data = {}))"
+            >
+              Отменить
+            </button>
+            <button
+              type="button"
+              href="#"
+              class="d-button d-button-primary d-button--sm-shadow lk-about-info__modal-add-buttons-button"
+              @click.prevent="saveData()"
+              :disabled="!form.data.value"
+            >
+              Загрузить
+            </button>
+          </div>
+        </div>
+      </customModal>
+    </teleport>
   </section>
 </template>
 
@@ -564,17 +691,30 @@ import { ref } from 'vue'
 import Checkbox from 'primevue/checkbox'
 import DropZone from 'dropzone-vue'
 import FileUpload from 'primevue/fileupload'
+import Editor from 'primevue/editor'
+import Cropper from '@/shared/ui/Cropper.vue'
 
 export default {
   name: 'ProfileMain',
-  components: { Breadcrumbs, Loader, Toast, customModal, Checkbox, DropZone, FileUpload },
+  components: {
+    Breadcrumbs,
+    Loader,
+    Toast,
+    customModal,
+    Checkbox,
+    DropZone,
+    FileUpload,
+    Editor,
+    Cropper,
+  },
   data() {
     return {
       loading: false,
       showSaveButton: false,
       requisitesShow: true,
       modalRequisites: false,
-      modalAddCompany: false,
+      modalAddData: false,
+      modalAddDataStep: 1,
       addRequisitShow: false,
       newReqModalForm: false,
       editReqModalForm: true,
@@ -591,11 +731,27 @@ export default {
             placeholder: 'Отображается для покупателей',
             type: 'input',
           },
+          // {
+          //   name: 'image',
+          //   label: 'Логотип компании',
+          //   placeholder: 'Отображается для покупателей',
+          //   type: 'image',
+          // },
           {
-            name: 'image',
-            label: 'Логотип компании',
-            placeholder: 'Отображается для покупателей',
-            type: 'image',
+            name: ['image', 'banner', 'description'],
+            label: ['Логотип компании', 'Баннер компании', 'Описание компании'],
+            placeholder: [
+              'Отображается для покупателей',
+              'Выводится на карточке поставщика',
+              'Показать клиенту, что он получит (скидку, подарок, бонус)',
+            ],
+            modalTitle: ['Изменить логотип', 'Изменить баннер', 'Описание компании'],
+            modalText: [
+              'Загрузите логотип в формате jpg, png размером до 80х80 px',
+              'Загрузите логотип в формате jpg, png размером до 486х190 px',
+              'Вы можете отредактировать или изменить описание',
+            ],
+            type: 'images_container',
           },
           {
             name: 'code',
@@ -604,6 +760,7 @@ export default {
               'Данный код необходим вашим клиентам для подключения к вашему каталогу в МС: Управление продажами и закупками',
             type: 'text',
           },
+
           {
             name: 'phone',
             label: 'Телефон компании',
@@ -691,6 +848,7 @@ export default {
             readonly: 1,
           },
         ],
+        data: {},
       },
     }
   },
@@ -870,6 +1028,8 @@ export default {
     ...mapActions({
       getOrgProfile: 'org/getOrgProfile',
       editOrgProfile: 'org/editOrgProfile',
+      setOrgProfile: 'org/setOrgProfile',
+      cropImage: 'addition/cropImage',
     }),
     showModals(index) {
       if (this.modalRequisites === false && this.successMessage === true) {
@@ -902,8 +1062,43 @@ export default {
         if (res.success) {
           if (res.data.files[0].type === 'avatar') {
             console.log('avatar')
-            this.editOrgValues.image = res.data.files[0]
-            this.editOrgValues.upload_image = true
+            // this.editOrgValues.image = res.data.files[0]
+            // this.editOrgValues.upload_image = true
+            this.modalAddDataStep = 2
+            this.form.data.value = res.data.files[0]
+            let presetWidth = ref(400)
+            let presetHeight = ref(400)
+            this.form.data.options = {
+              viewMode: 1,
+              dragMode: 'move',
+              aspectRatio: presetWidth.value / presetHeight.value,
+              cropBoxResizable: true,
+            }
+            this.form.data.presetMode = {
+              mode: 'round',
+              width: presetWidth.value,
+              height: presetHeight.value,
+            }
+          }
+          if (res.data.files[0].type === 'banner') {
+            console.log('banner')
+            // this.editOrgValues.image = res.data.files[0]
+            // this.editOrgValues.upload_image = true
+            this.modalAddDataStep = 2
+            this.form.data.value = res.data.files[0]
+            let presetWidth = ref(486)
+            let presetHeight = ref(190)
+            this.form.data.options = {
+              viewMode: 1,
+              dragMode: 'move',
+              aspectRatio: presetWidth.value / presetHeight.value,
+              cropBoxResizable: true,
+            }
+            this.form.data.presetMode = {
+              mode: 'fixedSize',
+              width: presetWidth.value,
+              height: presetHeight.value,
+            }
           }
         }
       }
@@ -999,6 +1194,8 @@ export default {
         email: this.editOrgValues.email,
         phone: this.editOrgValues.phone,
         image: this.editOrgValues.image,
+        banner: this.editOrgValues.banner,
+        description: this.editOrgValues.description,
       }
       data.org_name = this.orgprofile.name
       await this.editOrgProfile({
@@ -1064,22 +1261,146 @@ export default {
       })
     },
     saveProfile() {
-      //	this.getOrgProfile({
-      //		action: "set/org/profile",
-      //		id: router.currentRoute._value.params.id,
-      //		data: {
-      //			managers: this.managers,
-      //			image: this.orgProfValues.image,
-      //			upload_image: this.orgProfValues.upload_image,
-      //		},
-      //	}).then((res) => {
-      //		this.$toast.add({
-      //			severity: "info",
-      //			summary: "Сохранено!",
-      //			detail: res.data.data.message,
-      //			life: 3000,
-      //		});
-      //	});
+      this.loading = true
+      this.setOrgProfile({
+        data: {
+          name: this.editOrgValues.name,
+          email: this.editOrgValues.email,
+          phone: this.editOrgValues.phone,
+          image: this.editOrgValues.image,
+          image_data: this.editOrgValues.image_data,
+          banner: this.editOrgValues.banner,
+          banner_data: this.editOrgValues.banner_data,
+          description: this.editOrgValues.description,
+        },
+      }).then((res) => {
+        this.$toast.add({
+          severity: 'info',
+          summary: 'Сохранено!',
+          detail: res.data.data.message,
+          life: 3000,
+        })
+        this.getOrgProfile().then(() => {
+          this.loading = false
+        })
+      })
+    },
+    deleteAdd(ind) {
+      console.log(ind)
+      let str = ''
+      for (var n in this.form.orgData) {
+        if (this.form.orgData[n].type == 'images_container') {
+          for (var nn in this.form.orgData[n].name) {
+            if (this.form.orgData[n].name[nn] == ind) {
+              str = this.form.orgData[n].label[nn]
+            }
+          }
+        }
+      }
+      this.$confirm.require({
+        message: 'Вы уверены, что хотите удалить ' + str + '?',
+        header: 'Удаление данных',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.editOrgValues[ind] = ''
+          this.$toast.add({
+            severity: 'info',
+            summary: 'Удаление данных',
+            detail:
+              'Вы удалили ' + str + '! Не забудте сохранить изменения в карточке организации!',
+            life: 3000,
+          })
+        },
+        reject: () => {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Удаление данных',
+            detail: 'Действие отклонено',
+            life: 3000,
+          })
+        },
+      })
+    },
+    openAdd(i) {
+      this.modalAddDataStep = 1
+      this.form.data = {}
+      this.form.data.name = i
+      let index = []
+      for (var ind in this.form.orgData) {
+        if (this.form.orgData[ind].type == 'images_container') {
+          index.push(ind)
+          for (var indd in this.form.orgData[ind].name) {
+            if (this.form.orgData[ind].name[indd] == i) {
+              index.push(indd)
+            }
+          }
+        }
+      }
+      this.form.data.value = this.orgProfValues[i]
+      this.form.data.title = this.form.orgData[index[0]].modalTitle[index[1]]
+      this.form.data.text = this.form.orgData[index[0]].modalText[index[1]]
+
+      if (i != 'description' && this.form.data.value) {
+        this.modalAddDataStep = 2
+        if (i == 'banner') {
+          let presetWidth = ref(486)
+          let presetHeight = ref(190)
+          this.form.data.options = {
+            viewMode: 1,
+            dragMode: 'move',
+            aspectRatio: presetWidth.value / presetHeight.value,
+            cropBoxResizable: true,
+          }
+          this.form.data.presetMode = {
+            mode: 'fixedSize',
+            width: presetWidth.value,
+            height: presetHeight.value,
+          }
+        } else {
+          let presetWidth = ref(400)
+          let presetHeight = ref(400)
+          this.form.data.options = {
+            viewMode: 1,
+            dragMode: 'move',
+            aspectRatio: presetWidth.value / presetHeight.value,
+            cropBoxResizable: true,
+          }
+          this.form.data.presetMode = {
+            mode: 'round',
+            width: presetWidth.value,
+            height: presetHeight.value,
+          }
+        }
+      }
+      this.modalAddData = true
+    },
+    cropData(data) {
+      this.form.data.cropper = data.detail
+    },
+    saveData() {
+      if (this.form.data.name == 'description') {
+        this.editOrgValues[this.form.data.name] = this.form.data.value
+      } else {
+        this.editOrgValues[this.form.data.name] = this.form.data.value.original_href
+          ? this.form.data.value.original_href
+          : this.form.data.value + '?v' + Date.now()
+        this.editOrgValues[this.form.data.name + '_data'] = this.form.data.value
+        this.loading = true
+        this.cropImage({
+          data: this.form.data,
+        }).then(() => {
+          this.loading = false
+        })
+      }
+      this.modalAddData = false
+      this.modalAddDataStep = 1
+      this.form.data = {}
+      this.$toast.add({
+        severity: 'info',
+        summary: 'Изменения внесены!',
+        detail: 'Не забудте сохранить изменения!',
+        life: 3000,
+      })
     },
   },
   computed: {
@@ -1092,12 +1413,227 @@ export default {
       this.orgProfTmp = newVal
       this.orgProfValues = this.orgProfTmp
       this.editOrgValues = this.orgProfTmp
-      if (newVal.warehouse == '0') {
-        this.form.orgData.splice(2, 1)
-      }
     },
   },
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.lk-about__info-flex {
+  display: flex;
+  width: 100%;
+}
+.lk-about__info-text-wrapper-flex {
+  display: flex;
+  align-items: start;
+  gap: 40px;
+  width: 100%;
+  flex-grow: 1;
+  &-item {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex-grow: 1;
+    &-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .lk-about__info-title-wrapper {
+        position: relative;
+        width: max-content;
+        padding-right: 16px;
+        flex-grow: 1;
+      }
+      .lk-about__info-title-wrapper:after {
+        content: '';
+        position: absolute;
+        top: calc(50% - 8px);
+        right: 0;
+        width: 0.5px;
+        height: 16px;
+        background-color: #75757575;
+        display: block;
+      }
+      .lk-about__info-text-wrapper-flex-item-icon {
+        width: 40px;
+        height: 40px;
+        padding-left: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    &-content-text {
+      height: 84px;
+      width: 501px;
+      overflow: hidden;
+      div {
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 21px;
+        color: #282828;
+      }
+    }
+    &-content-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &-noimg {
+        width: 100%;
+        height: 100%;
+        background-color: #d9d9d9;
+        background-image: url('/icons/camera-off.svg');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: 28px;
+      }
+      &--image {
+        width: 80px;
+        height: 80px;
+        aspect-ratio: 1;
+        .lk-about__info-text-wrapper-flex-item-content-image-noimg {
+          border-radius: 40px;
+        }
+        img {
+          width: 80px;
+          height: auto;
+          border-radius: 40px;
+        }
+      }
+      &--banner {
+        width: fit-content;
+        height: 97px;
+        .lk-about__info-text-wrapper-flex-item-content-image-noimg {
+          border-radius: 5px;
+          width: 247px;
+        }
+        img {
+          height: 97px;
+          width: auto;
+          border-radius: 5px;
+        }
+      }
+    }
+    &-icon {
+      cursor: pointer;
+    }
+  }
+}
+.lk-about-info__modal {
+  &-add {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: -22px;
+    &-header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      h2 {
+        font-weight: 600;
+        font-size: 20px;
+        line-height: 26px;
+        letter-spacing: -0.01em;
+        color: #282828;
+      }
+      p {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 18px;
+        color: #757575;
+      }
+    }
+    &-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      &-button {
+        width: auto;
+        margin: 0 !important;
+        font-weight: 500;
+        &--cancel {
+          background: transparent;
+          color: #282828;
+          border: 1px solid #282828;
+        }
+        &--cancel:hover {
+          background: #282828;
+          color: #fff;
+          border: 1px solid #282828;
+        }
+      }
+      .d-button-primary:disabled {
+        background-color: #ededed;
+        color: #757575;
+        font-weight: 500;
+      }
+    }
+    &-content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      &-center {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+      &-buttons {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        &--change {
+          height: 40px;
+          background: #ededed;
+          border-radius: 8px;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 18px;
+          color: #282828;
+          padding: 8px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+      }
+      .dart-dropzone {
+        border-radius: 6px;
+      }
+      .dropzone__item {
+        display: none;
+      }
+    }
+  }
+}
+@media (width<1280px) {
+  .lk-about__info-text-wrapper-flex {
+    display: grid;
+    grid-template-areas:
+      'A B'
+      'C C';
+  }
+}
+@media (width<980px) {
+  .lk-about__info-text-wrapper-flex {
+    display: flex;
+    flex-direction: column;
+    &-item:not(:last-child) {
+      padding-bottom: 24px;
+      border-bottom: 1px solid #75757575;
+    }
+    &-item {
+      width: 100%;
+    }
+  }
+}
+@media (width<600px) {
+  .lk-about__info-text-wrapper-flex-item-content-text {
+    width: auto;
+    height: auto;
+  }
+  .lk-about__info-text-wrapper-flex-item-header .lk-about__info-title-wrapper {
+    width: 150px;
+  }
+}
+</style>

@@ -145,7 +145,7 @@
                 class="product-card__count-value product-card__count-value-require"
                 v-if="offer.requirement"
               >
-                <span class="product-card__count-label"><span>Ваша потребность</span>: </span>
+                <span class="product-card__count-label"><span>Потребность</span>: </span>
                 {{ Number(offer.requirement.count) }} шт
               </div>
             </div>
@@ -452,7 +452,7 @@
               class="product-card__count-value product-card__count-value-require"
               v-if="offer.requirement"
             >
-              <span class="product-card__count-label">Ваша потребность: </span>
+              <span class="product-card__count-label">Потребность: </span>
               {{ Number(offer.requirement.count) }} шт
             </div>
           </div>

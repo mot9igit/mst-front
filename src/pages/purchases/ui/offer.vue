@@ -107,7 +107,7 @@
             v-if="offer.requirement"
           ></div>
           <div class="product-card__count-value" v-if="offer.requirement">
-            <span class="product-card__count-label">Ваша потребность: </span>
+            <span class="product-card__count-label">Потребность: </span>
             {{ Number(offer.requirement.count) }} шт
             <div v-if="offer.requirement" class="redder">
               <span v-if="Number(offer.requirement.count) > Number(offer.available)"
@@ -185,7 +185,7 @@
             v-if="offer.requirement"
           ></div>
           <div class="product-card__count-value" v-if="offer.requirement">
-            <span class="product-card__count-label">Ваша потребность: </span>
+            <span class="product-card__count-label">Потребность: </span>
             {{ Number(offer.requirement.count) }} шт
             <div v-if="offer.requirement" class="redder">
               <span v-if="Number(offer.requirement.count) > Number(offer.available)"

@@ -293,6 +293,15 @@ export default {
       const response = await api.org.editOrgProfile(sendData)
       return response
     },
+    async setOrgProfile(store, { data }) {
+      const sendData = {
+        action: 'set/org/profile',
+        id: router.currentRoute._value.params.id,
+        data: data,
+      }
+      const response = await api.org.getOrgProfile(sendData)
+      return response
+    },
     async setManager(store, { data }) {
       const sendData = {
         action: 'set/org/manager',
@@ -465,7 +474,6 @@ export default {
         id: router.currentRoute._value.params.id,
         page: page,
         perpage: perpage,
-
       }
       const response = await api.org.getOrg(data)
       if (response) {
@@ -473,6 +481,7 @@ export default {
       }
       return response
     },
+
     unsetOrgStores({ commit }) {
       commit('UNSET_ORG_STORES')
     },

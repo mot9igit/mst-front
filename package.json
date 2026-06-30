@@ -1,6 +1,6 @@
 {
   "name": "mst-front",
-  "version": "2.1.24062026.1",
+  "version": "2.1.30062026.5",
   "private": true,
   "type": "module",
   "scripts": {
@@ -20,6 +20,7 @@
     "@zanmato/vue3-treeselect": "^0.4.1",
     "axios": "^1.10.0",
     "chart.js": "^4.5.0",
+    "cropperjs": "^1.6.2",
     "dropzone-vue": "^0.1.11",
     "mdi-vue": "^3.0.13",
     "primeicons": "^7.0.0",
@@ -31,6 +32,7 @@
     "vue-cookies": "^1.8.6",
     "vue-final-modal": "^4.5.5",
     "vue-html-editor": "^0.2.1",
+    "vue-picture-cropper": "^1.0.0",
     "vue-router": "^4.5.1",
     "vue-yandex-maps": "^2.1.9",
     "vue3-treeselect": "^0.1.10",

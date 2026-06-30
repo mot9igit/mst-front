@@ -916,6 +916,7 @@ export default {
   }
   .dropzone {
     display: block;
+    border-radius: 6px;
   }
   .dart-dropzone__custom{
     padding: 0;
