@@ -9,7 +9,6 @@
   />
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex'
 import VuePictureCropper from 'vue-picture-cropper'
 import 'cropperjs/dist/cropper.css'
 import 'vue-picture-cropper/style.css'
@@ -47,17 +46,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions({
-      cropGenerateUrl: 'addition/cropGenerateUrl',
-    }),
     ready(data) {
       this.$emit('cropData', data)
     },
   },
   mounted() {
-    this.cropGenerateUrl({ pic: this.pic }).then(() => {
-      this.p = this.pathNew
-    })
+    this.p = this.pic
   },
   setup() {
     // Bind a ref to the component
@@ -72,11 +66,7 @@ export default {
       cropper,
     }
   },
-  computed: {
-    ...mapGetters({
-      pathNew: 'addition/pathNew',
-    }),
-  },
+  computed: {},
   watch: {},
 }
 </script>

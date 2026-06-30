@@ -13,7 +13,6 @@ export default {
     organizationsOpts: [],
     tags: [],
     dashboard_data: {},
-    pathNew: {},
   },
   actions: {
     async getVendors({ commit }, sendData) {
@@ -151,17 +150,6 @@ export default {
       const response = await api.addition.cropImage(sendData)
       return response
     },
-    async cropGenerateUrl({ commit }, { pic }) {
-      const sendData = {
-        action: 'crop/generate/url',
-        pic: pic,
-      }
-      const response = await api.addition.cropImage(sendData)
-      if (response) {
-        commit('SET_CROP_URL', response.data)
-      }
-      return response
-    },
   },
   mutations: {
     SET_VENDORS: (state, data) => {
@@ -194,9 +182,6 @@ export default {
     SET_DASHBOARD_DATA: (state, data) => {
       state.dashboard_data = data.data
     },
-    SET_CROP_URL: (state, data) => {
-      state.pathNew = data.data
-    },
   },
   getters: {
     vendors(state) {
@@ -228,9 +213,6 @@ export default {
     },
     dashboard_data(state) {
       return state.dashboard_data
-    },
-    pathNew(state) {
-      return state.pathNew
     },
   },
 }
