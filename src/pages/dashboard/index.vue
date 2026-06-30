@@ -59,6 +59,14 @@
                     :class="{ 'promos__header-select-icon--active': show_more.registration }"
                   ></i>
                 </div>
+                <div
+                  class="promotions__card-header-right-upload"
+                  @click.prevent="uploadData('connection')"
+                >
+                  <i
+                    class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
+                  ></i>
+                </div>
               </div>
               <div
                 class="promotions__card-content"
@@ -970,6 +978,7 @@ export default {
   methods: {
     ...mapActions({
       getDashboardData: 'addition/getDashboardData',
+      uploadDashboardData: 'addition/uploadDashboardData',
     }),
     changeFilter() {
       this.loading = true
@@ -980,6 +989,14 @@ export default {
     modalFilter(data) {
       this.filters.value = data
       this.changeFilter()
+    },
+    uploadData(type) {
+      this.loading = true
+      this.uploadDashboardData({
+        type: type,
+      }).then((res) => {
+        this.loading = false
+      })
     },
   },
   watch: {
@@ -1187,6 +1204,18 @@ export default {
       }
       &-right {
         display: none;
+      }
+      &-right-upload {
+        display: none;
+        //display: flex;
+        align-items: center;
+        justify-content: end;
+        cursor: pointer;
+        &-icon {
+          color: #282828;
+          font-weight: 500;
+          font-size: 19px;
+        }
       }
       .promotions__card-icon {
         color: #757575;
@@ -1716,6 +1745,9 @@ export default {
   .sale_page .dashboard__content .promotions__card-header-left {
     gap: 8px;
   }
+  .sale_page .dashboard__content .promotions__card-header-right-upload-icon {
+    font-size: 14px;
+  }
 }
 @media (width <= 1024px) {
   .sale_page .dashboard__content .promotions__card-content .promotions__card-values-cont {
@@ -2005,6 +2037,9 @@ export default {
   }
   .dashboard__content .promo__cards-wrap:last-child .dart-row {
     gap: 32px;
+  }
+  .sale_page .dashboard__content .promotions__card-header-right-upload-icon {
+    font-size: 12px;
   }
 }
 @media (width <= 800px) {
@@ -2324,6 +2359,9 @@ export default {
               font-size: 16px;
               line-height: 21px;
             }
+          }
+          &-right-upload {
+            display: none;
           }
           &-right {
             display: flex;

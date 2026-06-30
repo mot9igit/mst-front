@@ -143,6 +143,16 @@ export default {
       }
       return response
     },
+    async uploadDashboardData(store, { type, filter }) {
+      const data = {
+        action: 'upload/dashboard',
+        type: type,
+        filter: filter,
+      }
+      const response = await api.addition.getRegions(data)
+
+      return response
+    },
     async cropImage(store, { data }) {
       const sendData = {
         action: 'crop',
