@@ -61,7 +61,7 @@
                 </div>
                 <div
                   class="promotions__card-header-right-upload"
-                  @click.prevent="uploadData('connection')"
+                  @click.prevent="uploadData('registration')"
                 >
                   <i
                     class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
@@ -194,6 +194,14 @@
                   <i
                     class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"
                     :class="{ 'promos__header-select-icon--active': show_more.integration }"
+                  ></i>
+                </div>
+                <div
+                  class="promotions__card-header-right-upload"
+                  @click.prevent="uploadData('integration')"
+                >
+                  <i
+                    class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
                   ></i>
                 </div>
               </div>
@@ -353,6 +361,14 @@
                   <i
                     class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"
                     :class="{ 'promos__header-select-icon--active': show_more.connection }"
+                  ></i>
+                </div>
+                <div
+                  class="promotions__card-header-right-upload"
+                  @click.prevent="uploadData('connection')"
+                >
+                  <i
+                    class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
                   ></i>
                 </div>
               </div>
@@ -623,6 +639,14 @@
                   <i
                     class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"
                     :class="{ 'promos__header-select-icon--active': show_more.orders }"
+                  ></i>
+                </div>
+                <div
+                  class="promotions__card-header-right-upload"
+                  @click.prevent="uploadData('orders')"
+                >
+                  <i
+                    class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
                   ></i>
                 </div>
               </div>
@@ -994,8 +1018,26 @@ export default {
       this.loading = true
       this.uploadDashboardData({
         type: type,
-      }).then((res) => {
-        this.loading = false
+        filter: this.filters.value,
+      }).then((response) => {
+        if (response.data.data.data.filename) {
+          this.loading = false
+          let loc = response.data.data.data.filename
+          var downloadLink = document.createElement('a')
+          downloadLink.href = loc
+          downloadLink.setAttribute('download', loc)
+          downloadLink.setAttribute('target', '_blank')
+          //console.log(downloadLink)
+          downloadLink.click()
+        } else {
+          this.loading = false
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось скачать отчет!',
+            life: 3000,
+          })
+        }
       })
     },
   },
@@ -1206,8 +1248,8 @@ export default {
         display: none;
       }
       &-right-upload {
-        display: none;
-        //display: flex;
+        //display: none;
+        display: flex;
         align-items: center;
         justify-content: end;
         cursor: pointer;

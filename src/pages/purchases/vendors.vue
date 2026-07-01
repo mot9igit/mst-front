@@ -508,6 +508,11 @@ export default {
   align-items: start;
   justify-content: space-between;
 }
+@media (width>=3000px) {
+  .clients__card-top-mobile {
+    display: none !important;
+  }
+}
 @media (width<=1024px) {
   .clients__container {
     display: flex;
