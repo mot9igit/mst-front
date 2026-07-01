@@ -1230,7 +1230,6 @@ export default {
         font-weight: 600;
         font-size: 20px;
         line-height: 26px;
-
         letter-spacing: -0.01em;
       }
     }
