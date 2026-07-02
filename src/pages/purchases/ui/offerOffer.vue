@@ -675,6 +675,7 @@
   </teleport>
 </template>
 <script>
+import { toRaw } from 'vue'
 import { mapActions, mapGetters } from 'vuex'
 import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/CounterNoAdd.vue'
@@ -835,10 +836,12 @@ export default {
       } else {
         this.loading = true
         let conf = {}
+        const activeConflict = toRaw(this.activeConflict)
         if (!this.allOff) {
-          conf = this.activeConflict?.actions_ids
+          conf = activeConflict?.action_ids
         }
-        console.log(this.activeConflict)
+        console.log(activeConflict)
+        console.log(conf)
         const data = {
           org_id: item.org_id,
           store_id: item.store_id,
