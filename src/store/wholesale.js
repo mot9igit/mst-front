@@ -8,6 +8,10 @@ export default {
       orders: [],
       total: -1,
     },
+    init_orders: {
+      orders: [],
+      total: -1,
+    },
     order: {},
     dilers: {},
     managers: {},
@@ -31,6 +35,21 @@ export default {
       const response = await api.wholesale.getOrders(data)
       if (response) {
         commit('SET_ORDERS', response.data)
+      }
+      return response
+    },
+    async getInitOrders({ commit }, { filter, sort, page, perpage }) {
+      const data = {
+        action: 'get/orders/initiator',
+        id: router.currentRoute._value.params.id,
+        filter: filter,
+        page: page,
+        sort: sort,
+        perpage: perpage,
+      }
+      const response = await api.wholesale.getOrders(data)
+      if (response) {
+        commit('SET_INIT_ORDERS', response.data)
       }
       return response
     },
@@ -212,6 +231,9 @@ export default {
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },
+    unsetInitOrders({ commit }) {
+      commit('UNSET_INIT_ORDERS')
+    },
     unsetOrder({ commit }) {
       commit('UNSET_ORDER')
     },
@@ -234,6 +256,15 @@ export default {
     },
     UNSET_ORDERS: (state) => {
       state.orders = {
+        orders: [],
+        total: -1,
+      }
+    },
+    SET_INIT_ORDERS: (state, data) => {
+      state.init_orders = data.data
+    },
+    UNSET_INIT_ORDERS: (state) => {
+      state.init_orders = {
         orders: [],
         total: -1,
       }
@@ -281,6 +312,9 @@ export default {
   getters: {
     orders(state) {
       return state.orders
+    },
+    init_orders(state) {
+      return state.init_orders
     },
     order(state) {
       return state.order

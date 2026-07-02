@@ -5,41 +5,80 @@
     <div class="d-top">
       <breadcrumbs />
     </div>
-
-    <div class="organization">
-      <h1>Сотрудники</h1>
-    </div>
-
     <Loader v-if="loading" />
+    <Tabs class="lk-staff-tabs">
+      <TabList class="lk-staff-tabs-tabs">
+        <div class="d-tab2" :class="{ 'd-tab2--active': tabException == 0 }" :value="0">
+          <button class="collection__tabs-link" @click.prevent="tabException = 0">
+            Сотрудники
+          </button>
+        </div>
+        <div class="d-tab2" :class="{ 'd-tab2--active': tabException == 1 }" :value="1">
+          <button class="collection__tabs-link" @click.prevent="tabException = 1">
+            <span class="promotions__card-values-title">Отчет по ТП</span>
+          </button>
+        </div>
+      </TabList>
 
-    <div class="lk-staff__header">
-      <router-link
-        :to="{
-          name: 'profileStuffCreate',
-          params: {
-            id: this.$route.params.id,
-          },
-        }"
-        class="d-button d-button-primary d-button--no-shadow lk-staff__header-button"
-      >
-        <i class="d-icon-plus-flat lk-staff__header-button-icon"></i>
-        Новый сотрудник
-      </router-link>
-    </div>
+      <TabPanels>
+        <TabPanel v-if="tabException == 0">
+          <div class="lk-staff__header">
+            <router-link
+              :to="{
+                name: 'profileStuffCreate',
+                params: {
+                  id: this.$route.params.id,
+                },
+              }"
+              class="d-button d-button-primary d-button--no-shadow lk-staff__header-button"
+            >
+              <i class="d-icon-plus-flat lk-staff__header-button-icon"></i>
+              Новый сотрудник
+            </router-link>
+          </div>
 
-    <BoxTable
-      :items_data="managers.items"
-      :total="managers.total"
-      :pagination_items_per_page="this.pagination_items_per_page"
-      :pagination_offset="this.pagination_offset"
-      :page="this.page"
-      :table_data="this.table_data"
-      :filters="this.filters"
-      @filter="filter"
-      @paginate="paginate"
-      @editElem="editElem"
-      @deleteElem="deleteElem"
-    />
+          <BoxTable
+            :items_data="managers.items"
+            :total="managers.total"
+            :pagination_items_per_page="this.pagination_items_per_page"
+            :pagination_offset="this.pagination_offset"
+            :page="this.page"
+            :table_data="this.table_data"
+            :filters="this.filters"
+            @filter="filter"
+            @paginate="paginate"
+            @editElem="editElem"
+            @deleteElem="deleteElem"
+          />
+        </TabPanel>
+        <TabPanel v-else class="lk-staff--panel">
+          <BaseTable
+            :items_data="init_orders.orders"
+            :total="init_orders.total"
+            :pagination_items_per_page="this.pagination_items_per_page_orders"
+            :pagination_offset="this.pagination_offset"
+            :page="this.pageOrders"
+            :table_data="this.table_data_orders"
+            :filters="this.filters_orders"
+            @filter="filterOrder"
+            @sort="filterOrder"
+            @paginate="paginateOrder"
+          />
+          <MinTable
+            :items_data="init_orders.orders"
+            :total="init_orders.total"
+            :pagination_items_per_page="this.pagination_items_per_page_orders"
+            :pagination_offset="this.pagination_offset"
+            :page="this.pageOrders"
+            :table_data="this.table_data_orders"
+            :filters="this.filters_orders"
+            @filter="filterOrder"
+            @sort="filterOrder"
+            @paginate="paginateOrder"
+          />
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
   </section>
 </template>
 
@@ -48,15 +87,32 @@ import { mapActions, mapGetters } from 'vuex'
 import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import BoxTable from '@/shared/ui/boxtable/table.vue'
+import BaseTable from '@/shared/ui/table/table.vue'
 import Toast from 'primevue/toast'
+import Tabs from 'primevue/tabs'
+import TabPanels from 'primevue/tabpanels'
+import TabPanel from 'primevue/tabpanel'
+import TabList from 'primevue/tablist'
 
 export default {
   name: 'ProfileStaff',
-  components: { Breadcrumbs, Loader, BoxTable, Toast },
+  components: {
+    Breadcrumbs,
+    Loader,
+    BoxTable,
+    Toast,
+    Tabs,
+    TabPanels,
+    TabPanel,
+    TabList,
+    BaseTable,
+  },
   data() {
     return {
       page: 1,
+      pageOrders: 1,
       loading: true,
+      tabException: 0,
       table_data: {
         name: {
           label: '',
@@ -111,6 +167,126 @@ export default {
           type: 'text',
         },
       },
+      filters_orders: {
+        name: {
+          name: 'Искать в заказах',
+          placeholder: 'Искать в заказах',
+          type: 'text',
+        },
+        initiator_user: {
+          name: 'Сотрудник',
+          placeholder: 'Сотрудник',
+          type: 'tree',
+          value: '',
+        },
+      },
+      table_data_orders: {
+        id: {
+          label: '№',
+          type: 'link_all',
+          link_to: 'wholesaleOrder',
+          link_params: {
+            id: this.$route.params.id,
+            order_id: 'id',
+          },
+
+          class: 'cell_centeralign',
+        },
+        date: {
+          label: 'Дата создания',
+          type: 'link',
+          link_to: 'wholesaleOrder',
+          link_params: {
+            id: this.$route.params.id,
+            order_id: 'id',
+          },
+          sort: true,
+          sort_desc: 'Дата заказа от новых к старым',
+          sort_asc: 'Дата заказа от старых к новым',
+          class: 'cell_centeralign',
+        },
+        seller_address: {
+          label: 'Поставщик',
+          type: 'link',
+          link_to: 'wholesaleOrder',
+          link_params: {
+            id: this.$route.params.id,
+            order_id: 'id',
+          },
+          class: 'cell_centeralign',
+          items: ['seller_name', 'seller_inn', 'seller_address'],
+        },
+        buyer_name: {
+          label: 'Покупатель',
+          type: 'link',
+          link_to: 'wholesaleOrder',
+          link_params: {
+            id: this.$route.params.id,
+            order_id: 'id',
+          },
+          class: 'cell_centeralign',
+          items: ['buyer_name', 'buyer_inn', 'buyer_address'],
+        },
+
+        // buyer_store: {
+        //   label: 'Магазин/Склад покупателя',
+        //   type: 'link',
+        //   link_to: 'wholesaleOrder',
+        //   link_params: {
+        //     id: this.$route.params.id,
+        //     order_id: 'id',
+        //   },
+        //   class: 'cell_centeralign',
+        // },
+
+        initiator: {
+          label: 'Инициатор',
+          type: 'html',
+          link_to: 'wholesaleOrder',
+          link_params: {
+            id: this.$route.params.id,
+            order_id: 'id',
+          },
+
+          class: 'cell_centeralign',
+        },
+
+        // seller_w_name: {
+        //   label: 'Магазин/Склад продавца',
+        //   type: 'link',
+        //   link_to: 'wholesaleOrder',
+        //   link_params: {
+        //     id: this.$route.params.id,
+        //     order_id: 'id',
+        //   },
+        //   class: 'cell_centeralign',
+        // },
+        cost: {
+          label: 'Сумма',
+          type: 'link',
+          link_to: 'wholesaleOrder',
+          link_params: {
+            id: this.$route.params.id,
+            order_id: 'id',
+          },
+
+          class: 'cell_centeralign nowrap',
+        },
+        status: {
+          label: 'Статус',
+          type: 'status',
+          sort: true,
+          sort_asc: 'Статус от новых к выполненным',
+          sort_desc: 'Статус от выполненным к новым',
+          class: 'cell_centeralign cell_order-status',
+        },
+        comment: {
+          label: 'Комментарий',
+          type: 'prepare-html',
+
+          class: 'cell_centeralign order-table_comment',
+        },
+      },
     }
   },
   props: {
@@ -122,6 +298,10 @@ export default {
       type: Number,
       default: 0,
     },
+    pagination_items_per_page_orders: {
+      type: Number,
+      default: 25,
+    },
   },
   mounted() {
     this.getManagers({
@@ -129,18 +309,27 @@ export default {
       page: this.page,
       perpage: this.pagination_items_per_page,
     }).then(() => {
+      this.getInitOrders({
+        page: this.pageOrders,
+        perpage: this.pagination_items_per_page_orders,
+        filter: null,
+        sort: null,
+      })
       this.loading = false
     })
   },
   computed: {
     ...mapGetters({
       managers: 'wholesale/managers',
+      init_orders: 'wholesale/init_orders',
     }),
   },
   methods: {
     ...mapActions({
       getManagers: 'wholesale/getManagers',
       deleteManager: 'org/deleteManager',
+      getInitOrders: 'wholesale/getInitOrders',
+      unsetInitOrders: 'wholesale/unsetInitOrders',
     }),
     filter(data) {
       this.loading = true
@@ -153,6 +342,22 @@ export default {
       this.loading = true
       this.page = data.page
       this.getManagers(data).then(() => {
+        this.loading = false
+      })
+    },
+    filterOrder(data) {
+      this.loading = true
+      this.unsetInitOrders()
+      this.pageOrders = 1
+      this.getInitOrders(data).then(() => {
+        this.loading = false
+      })
+    },
+    paginateOrder(data) {
+      this.loading = true
+      this.unsetInitOrders()
+      this.pageOrders = data.page
+      this.getInitOrders(data).then(() => {
         this.loading = false
       })
     },
@@ -255,11 +460,19 @@ export default {
 .lk-staff__all .v-box-table {
   margin-top: -80px;
 }
-.cell_value a {
+.lk-staff__all .clients__card-container .cell_value a {
   display: flex;
 }
 .lk-staff__card-contact-container:nth-child(3) .cell_value {
   overflow: hidden;
+}
+.lk-staff--panel {
+  .dart-row {
+    justify-content: end;
+    .p-inputtext {
+      border-radius: 20px;
+    }
+  }
 }
 @media (width <= 1280px) {
   .lk-staff .clients__card {

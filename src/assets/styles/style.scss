@@ -10029,3 +10029,21 @@ body {
 .inverse_logo {
   filter: invert(1);
 }
+
+//---табы в сотрудниках-----//
+.lk-staff {
+  &-tabs {
+    gap: 64px;
+    &-tabs {
+      width: max-content;
+      height: 40px;
+      background: #fbfbfb;
+      border: 1px solid #ededed;
+      border-radius: 26px;
+      padding: 1px;
+    }
+    .p-tabpanels {
+      padding: 0;
+    }
+  }
+}
