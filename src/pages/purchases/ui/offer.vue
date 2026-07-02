@@ -609,12 +609,17 @@ export default {
           return false
         }
       }
+      let conf = {}
+
+      if (!this.allOff) {
+        conf = this.activeConflict?.action_ids
+      }
       const data = {
         org_id: item.org_id,
         store_id: item.store_id,
         id_remain: item.id,
         count: item.basket.count,
-        actions: item.actions,
+        actions: conf,
       }
       this.basketProductAdd(data).then(() => {
         this.loading = false
