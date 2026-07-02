@@ -401,8 +401,8 @@ export default {
       localItems: [],
       filters: {
         name: {
-          name: 'Название организации',
-          placeholder: 'Введите название организации',
+          name: 'Название организации или инн',
+          placeholder: 'Название организации или инн',
           type: 'text',
         },
         /*
