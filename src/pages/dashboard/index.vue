@@ -59,6 +59,14 @@
                     :class="{ 'promos__header-select-icon--active': show_more.registration }"
                   ></i>
                 </div>
+                <div
+                  class="promotions__card-header-right-upload"
+                  @click.prevent="uploadData('registration')"
+                >
+                  <i
+                    class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
+                  ></i>
+                </div>
               </div>
               <div
                 class="promotions__card-content"
@@ -186,6 +194,14 @@
                   <i
                     class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"
                     :class="{ 'promos__header-select-icon--active': show_more.integration }"
+                  ></i>
+                </div>
+                <div
+                  class="promotions__card-header-right-upload"
+                  @click.prevent="uploadData('integration')"
+                >
+                  <i
+                    class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
                   ></i>
                 </div>
               </div>
@@ -345,6 +361,14 @@
                   <i
                     class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"
                     :class="{ 'promos__header-select-icon--active': show_more.connection }"
+                  ></i>
+                </div>
+                <div
+                  class="promotions__card-header-right-upload"
+                  @click.prevent="uploadData('connection')"
+                >
+                  <i
+                    class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
                   ></i>
                 </div>
               </div>
@@ -615,6 +639,14 @@
                   <i
                     class="d-icon-angle-rounded-bottom-bold d-select__arrow promos__header-select-icon"
                     :class="{ 'promos__header-select-icon--active': show_more.orders }"
+                  ></i>
+                </div>
+                <div
+                  class="promotions__card-header-right-upload"
+                  @click.prevent="uploadData('orders')"
+                >
+                  <i
+                    class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
                   ></i>
                 </div>
               </div>
@@ -970,6 +1002,7 @@ export default {
   methods: {
     ...mapActions({
       getDashboardData: 'addition/getDashboardData',
+      uploadDashboardData: 'addition/uploadDashboardData',
     }),
     changeFilter() {
       this.loading = true
@@ -980,6 +1013,32 @@ export default {
     modalFilter(data) {
       this.filters.value = data
       this.changeFilter()
+    },
+    uploadData(type) {
+      this.loading = true
+      this.uploadDashboardData({
+        type: type,
+        filter: this.filters.value,
+      }).then((response) => {
+        if (response.data.data.data.filename) {
+          this.loading = false
+          let loc = response.data.data.data.filename
+          var downloadLink = document.createElement('a')
+          downloadLink.href = loc
+          downloadLink.setAttribute('download', loc)
+          downloadLink.setAttribute('target', '_blank')
+          //console.log(downloadLink)
+          downloadLink.click()
+        } else {
+          this.loading = false
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось скачать отчет!',
+            life: 3000,
+          })
+        }
+      })
     },
   },
   watch: {
@@ -1188,6 +1247,18 @@ export default {
       &-right {
         display: none;
       }
+      &-right-upload {
+        //display: none;
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        cursor: pointer;
+        &-icon {
+          color: #282828;
+          font-weight: 500;
+          font-size: 19px;
+        }
+      }
       .promotions__card-icon {
         color: #757575;
         font-weight: 500;
@@ -1201,7 +1272,6 @@ export default {
         font-weight: 600;
         font-size: 20px;
         line-height: 26px;
-
         letter-spacing: -0.01em;
       }
     }
@@ -1716,6 +1786,9 @@ export default {
   .sale_page .dashboard__content .promotions__card-header-left {
     gap: 8px;
   }
+  .sale_page .dashboard__content .promotions__card-header-right-upload-icon {
+    font-size: 14px;
+  }
 }
 @media (width <= 1024px) {
   .sale_page .dashboard__content .promotions__card-content .promotions__card-values-cont {
@@ -2005,6 +2078,9 @@ export default {
   }
   .dashboard__content .promo__cards-wrap:last-child .dart-row {
     gap: 32px;
+  }
+  .sale_page .dashboard__content .promotions__card-header-right-upload-icon {
+    font-size: 12px;
   }
 }
 @media (width <= 800px) {
@@ -2325,6 +2401,9 @@ export default {
               line-height: 21px;
             }
           }
+          &-right-upload {
+            display: none;
+          }
           &-right {
             display: flex;
             align-items: center;
@@ -2346,6 +2425,16 @@ export default {
           height: 48px;
           border-radius: 22px 22px 0 0;
           border-bottom: 0.3px solid #75757575;
+          position: relative;
+          .promotions__card-header-right-upload {
+            display: flex;
+            position: absolute;
+            top: 76px;
+            right: 22px;
+            i {
+              font-size: 16px;
+            }
+          }
         }
         .promotions__card-content {
           display: none;
