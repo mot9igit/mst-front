@@ -2425,6 +2425,16 @@ export default {
           height: 48px;
           border-radius: 22px 22px 0 0;
           border-bottom: 0.3px solid #75757575;
+          position: relative;
+          .promotions__card-header-right-upload {
+            display: flex;
+            position: absolute;
+            top: 76px;
+            right: 22px;
+            i {
+              font-size: 16px;
+            }
+          }
         }
         .promotions__card-content {
           display: none;
