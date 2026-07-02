@@ -169,7 +169,7 @@
             <div class="clients__card-top-right-top">
               <button
                 @click.prevent="createOffer(item)"
-                v-if="item.owner_id == 0"
+                v-if="item.owner_id == 0 || (item.owner_id != 0 && item.store_id)"
                 class="d-button d-button-primary d-button--sm-shadow clients__card-offer"
               >
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
@@ -204,7 +204,11 @@
               >
                 Создан поставщиком
               </div>
-              <img src="/icons/org_api_integration.svg" class="clients__card-vendor--integration" v-if="item.api_integration == 1"/>
+              <img
+                src="/icons/org_api_integration.svg"
+                class="clients__card-vendor--integration"
+                v-if="item.api_integration == 1"
+              />
             </div>
           </div>
         </div>
@@ -269,7 +273,11 @@
                 v-if="item.owner_id > 0 && item.owner_id == this.$route.params.id"
                 >Создан поставщиком</span
               >
-              <img src="/icons/org_api_integration.svg" class="clients__card-vendor--integration" v-if="item.api_integration == 1"/>
+              <img
+                src="/icons/org_api_integration.svg"
+                class="clients__card-vendor--integration"
+                v-if="item.api_integration == 1"
+              />
             </div>
           </div>
           <div class="clients__card-right-right d-col-10">
@@ -280,7 +288,7 @@
               <button
                 @click.prevent="createOffer(item)"
                 class="d-button d-button-primary d-button--sm-shadow clients__card-offer"
-                v-if="item.owner_id == 0"
+                v-if="item.owner_id == 0 || (item.owner_id != 0 && item.store_id)"
               >
                 <i class="d-icon-plus-flat clients__card-offer-icon"></i>
                 Предложение
@@ -422,6 +430,7 @@ export default {
       getStores: 'wholesale/getStores',
       deleteOrgProfile: 'wholesale/deleteOrgProfile',
       createOfferExtended: 'offer/createOfferExtended',
+      activateVirtualStore: 'org/activateVirtualStore',
     }),
     setFilter(type = '0') {
       if (type === 'filter') {
@@ -484,6 +493,11 @@ export default {
       })
     },
     createOffer(data) {
+      if (data.store_active == 0) {
+        this.activateVirtualStore({
+          store_id: data.store_id,
+        })
+      }
       this.createOfferExtended({
         id: data.id,
       }).then(() => {
@@ -589,52 +603,56 @@ export default {
 }
 </script>
 <style lang="scss">
-@media(width>1280px){
-  .clients__card-vendor--integration{
+.clients__card-right-right.d-col-10 {
+  padding-right: 0;
+}
+@media (width>1280px) {
+  .clients__card-vendor--integration {
     width: 100%;
     height: 20px;
     margin: 0 auto;
     position: relative;
   }
 }
-@media (width<=1280px) and (width>1024px){
-  .clients__card-right-right.d-col-10 .d-col-18 .clients__card-offer{
+@media (width<=1280px) and (width>1024px) {
+  .clients__card-right-right.d-col-10 .d-col-18 .clients__card-offer {
     float: right;
   }
-  .clients__card-right-left.d-col-14.clients__devider{
+  .clients__card-right-left.d-col-14.clients__devider {
     align-items: center;
   }
-  .clients__card-vendor--integration{
+  .clients__card-vendor--integration {
     width: auto;
     height: 18px;
-  
   }
 }
-@media(width<=1024px){
-  .clients__card-vendor-wrapper{
-    display:flex;
+@media (width<=1024px) {
+  .clients__card-vendor-wrapper {
+    display: flex;
     align-items: center;
-    justify-content: end; 
+    justify-content: end;
   }
-  .clients__card-vendor--integration{
+  .clients__card-vendor--integration {
     width: auto;
     height: 18px;
-    
+
     position: relative;
   }
-  .clients__card-action-container{
-    display:none;
+  .clients__card-action-container {
+    display: none;
   }
 }
-@media(width<=600px){
- 
-  .clients__card-vendor--integration{
+@media (width<=600px) {
+  .clients__card-vendor--integration {
     width: auto;
     height: 24px;
     position: relative;
   }
-  .clients__card-right-right.d-col-10{
+  .clients__card-right-right.d-col-10 {
     justify-content: center !important;
+  }
+  .clients__card-right-right.d-col-10 .d-col-18 .clients__card-offer {
+    margin: 0 auto;
   }
 }
 </style>

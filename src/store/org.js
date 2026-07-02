@@ -412,6 +412,16 @@ export default {
 
       return response
     },
+    async activateVirtualStore(store, { store_id }) {
+      const data = {
+        action: 'activate/store',
+        id: router.currentRoute._value.params.id,
+        store_id: store_id,
+      }
+      const response = await api.org.setManager(data)
+
+      return response
+    },
     async getClientsStores({ commit }) {
       const data = {
         action: 'get/clients/stores',
