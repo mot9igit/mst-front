@@ -244,6 +244,25 @@ export default {
       const response = await api.wholesale.getSellerStatuses(data)
       return response
     },
+    async downloadOrders(store, { filter, mode }) {
+      const data = {
+        action: 'load/orders',
+        id: router.currentRoute._value.params.id,
+        filter: filter,
+        mode: mode,
+      }
+      const response = await api.wholesale.downloadOrders(data)
+      return response
+    },
+    async downloadOrder(store, { order_id }) {
+      const data = {
+        action: 'load/orders',
+        id: router.currentRoute._value.params.id,
+        order_id: order_id,
+      }
+      const response = await api.wholesale.downloadOrders(data)
+      return response
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },

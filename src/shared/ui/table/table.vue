@@ -195,6 +195,15 @@
             </label>
           </div>
         </div>
+        <div class="dart-form-group" v-if="ffilter.type == 'download'">
+          <div class="flex align-items-center gap-1">
+            <button @click.prevent="toDownload" class="download-button">
+              <i
+                class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
+              ></i>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="v-table__widgets">
@@ -326,6 +335,7 @@ export default {
     'editNumber',
     'actionCell',
     'saleModal',
+    'download',
   ],
   components: {
     vTableRow,
@@ -461,6 +471,9 @@ export default {
     },
     viewElem(data) {
       this.$emit('viewElem', data)
+    },
+    toDownload() {
+      this.$emit('download')
     },
     toggleAllChecked(checked) {
       // console.log(this.items_data)
@@ -958,7 +971,23 @@ tbody {
   line-height: 18px;
   color: #757575;
 }
-
+.download-button {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ededed;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+  i {
+    font-size: 18px;
+  }
+}
+.download-button:hover {
+  background-color: #282828;
+  color: #fff;
+}
 @media (width <= 1280px) {
   .d-table-sort {
     width: 20px;

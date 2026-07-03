@@ -63,6 +63,7 @@
             @filter="filterOrder"
             @sort="filterOrder"
             @paginate="paginateOrder"
+            @download="downloadOrd"
           />
           <MinTable
             :items_data="init_orders.orders"
@@ -180,6 +181,9 @@ export default {
           placeholder: 'Искать в заказах',
           type: 'text',
         },
+        button: {
+          type: 'download',
+        },
       },
       table_data_orders: {
         id: {
@@ -287,6 +291,7 @@ export default {
           class: 'cell_centeralign order-table_comment',
         },
       },
+      request_filter: {},
     }
   },
   props: {
@@ -335,6 +340,7 @@ export default {
       deleteManager: 'org/deleteManager',
       getInitOrders: 'wholesale/getInitOrders',
       unsetInitOrders: 'wholesale/unsetInitOrders',
+      downloadOrders: 'wholesale/downloadOrders',
     }),
     filter(data) {
       this.loading = true
@@ -357,6 +363,7 @@ export default {
       this.pageOrders = 1
       this.getInitOrders(data).then(() => {
         this.loading = false
+        this.request_filter = data
       })
     },
     paginateOrder(data) {
@@ -413,6 +420,31 @@ export default {
             life: 3000,
           })
         },
+      })
+    },
+    downloadOrd() {
+      this.downloadOrders({
+        filter: this.request_filter,
+        mode: 'initiator',
+      }).then((response) => {
+        if (response.data.data.filename) {
+          this.loading = false
+          let loc = response.data.data.filename
+          var downloadLink = document.createElement('a')
+          downloadLink.href = loc
+          downloadLink.setAttribute('download', loc)
+          downloadLink.setAttribute('target', '_blank')
+          //console.log(downloadLink)
+          downloadLink.click()
+        } else {
+          this.loading = false
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось скачать отчет!',
+            life: 3000,
+          })
+        }
       })
     },
   },
@@ -498,6 +530,10 @@ export default {
     .vue3-treeselect__placeholder,
     .p-floatlabel label {
       color: #757575;
+    }
+    .d-col-xl-6.d-col-md-4:last-child {
+      width: 56px;
+      padding-right: 20px;
     }
   }
 }

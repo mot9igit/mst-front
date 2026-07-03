@@ -268,6 +268,7 @@ export default {
     ...mapActions({
       getOrder: 'wholesale/getOrderInitiator',
       unsetOrder: 'wholesale/unsetOrderInitiator',
+      downloadOrder: 'wholesale/downloadOrder',
     }),
 
     paginate(data) {
