@@ -168,23 +168,24 @@ export default {
         },
       },
       filters_orders: {
+        initiator_user: {
+          name: 'Сотрудник',
+          placeholder: 'Все',
+          label: 'Сотрудник',
+          type: 'tree',
+          value: '',
+        },
         name: {
           name: 'Искать в заказах',
           placeholder: 'Искать в заказах',
           type: 'text',
-        },
-        initiator_user: {
-          name: 'Сотрудник',
-          placeholder: 'Сотрудник',
-          type: 'tree',
-          value: '',
         },
       },
       table_data_orders: {
         id: {
           label: '№',
           type: 'link_all',
-          link_to: 'wholesaleOrder',
+          link_to: 'WholesaleOrderInitiator',
           link_params: {
             id: this.$route.params.id,
             order_id: 'id',
@@ -195,7 +196,7 @@ export default {
         date: {
           label: 'Дата создания',
           type: 'link',
-          link_to: 'wholesaleOrder',
+          link_to: 'WholesaleOrderInitiator',
           link_params: {
             id: this.$route.params.id,
             order_id: 'id',
@@ -208,7 +209,7 @@ export default {
         seller_address: {
           label: 'Поставщик',
           type: 'link',
-          link_to: 'wholesaleOrder',
+          link_to: 'WholesaleOrderInitiator',
           link_params: {
             id: this.$route.params.id,
             order_id: 'id',
@@ -219,7 +220,7 @@ export default {
         buyer_name: {
           label: 'Покупатель',
           type: 'link',
-          link_to: 'wholesaleOrder',
+          link_to: 'WholesaleOrderInitiator',
           link_params: {
             id: this.$route.params.id,
             order_id: 'id',
@@ -242,7 +243,7 @@ export default {
         initiator: {
           label: 'Инициатор',
           type: 'html',
-          link_to: 'wholesaleOrder',
+          link_to: 'WholesaleOrderInitiator',
           link_params: {
             id: this.$route.params.id,
             order_id: 'id',
@@ -250,7 +251,6 @@ export default {
 
           class: 'cell_centeralign',
         },
-
         // seller_w_name: {
         //   label: 'Магазин/Склад продавца',
         //   type: 'link',
@@ -264,7 +264,7 @@ export default {
         cost: {
           label: 'Сумма',
           type: 'link',
-          link_to: 'wholesaleOrder',
+          link_to: 'WholesaleOrderInitiator',
           link_params: {
             id: this.$route.params.id,
             order_id: 'id',
@@ -315,6 +315,9 @@ export default {
         filter: null,
         sort: null,
       })
+      this.getFilterManagers().then(() => {
+        this.filters_orders.initiator_user.values = this.filter_managers
+      })
       this.loading = false
     })
   },
@@ -322,11 +325,13 @@ export default {
     ...mapGetters({
       managers: 'wholesale/managers',
       init_orders: 'wholesale/init_orders',
+      filter_managers: 'addition/managers',
     }),
   },
   methods: {
     ...mapActions({
       getManagers: 'wholesale/getManagers',
+      getFilterManagers: 'addition/getManagers',
       deleteManager: 'org/deleteManager',
       getInitOrders: 'wholesale/getInitOrders',
       unsetInitOrders: 'wholesale/unsetInitOrders',
@@ -346,6 +351,7 @@ export default {
       })
     },
     filterOrder(data) {
+      console.log(data)
       this.loading = true
       this.unsetInitOrders()
       this.pageOrders = 1
@@ -410,6 +416,11 @@ export default {
       })
     },
   },
+  watch: {
+    filter_managers: function (newVal) {
+      this.filters_orders.initiator_user.values = newVal
+    },
+  },
 }
 </script>
 
@@ -469,8 +480,24 @@ export default {
 .lk-staff--panel {
   .dart-row {
     justify-content: end;
-    .p-inputtext {
+    align-items: end !important;
+    .p-inputtext,
+    .vue3-treeselect__control {
       border-radius: 20px;
+    }
+    .dart-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .vue3-treeselect__placeholder,
+    .vue3-treeselect__single-value {
+      padding-left: 8px;
+      line-height: 37px;
+    }
+    .vue3-treeselect__placeholder,
+    .p-floatlabel label {
+      color: #757575;
     }
   }
 }

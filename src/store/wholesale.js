@@ -13,6 +13,7 @@ export default {
       total: -1,
     },
     order: {},
+    order_initiator: {},
     dilers: {},
     managers: {},
     stores: {},
@@ -38,7 +39,7 @@ export default {
       }
       return response
     },
-    async getInitOrders({ commit }, { filter, sort, page, perpage }) {
+    async getInitOrders({ commit }, { filter, sort, page, perpage, filtersdata }) {
       const data = {
         action: 'get/orders/initiator',
         id: router.currentRoute._value.params.id,
@@ -46,6 +47,7 @@ export default {
         page: page,
         sort: sort,
         perpage: perpage,
+        filtersdata: filtersdata,
       }
       const response = await api.wholesale.getOrders(data)
       if (response) {
@@ -64,6 +66,20 @@ export default {
       const response = await api.wholesale.getOrders(data)
       if (response) {
         commit('SET_ORDER', response.data)
+      }
+      return response
+    },
+    async getOrderInitiator({ commit }, { order_id, page, perpage }) {
+      const data = {
+        action: 'get/orders/initiator',
+        id: router.currentRoute._value.params.id,
+        order_id: order_id,
+        perpage: perpage,
+        page: page,
+      }
+      const response = await api.wholesale.getOrders(data)
+      if (response) {
+        commit('SET_ORDER_INITIATOR', response.data)
       }
       return response
     },
@@ -237,6 +253,9 @@ export default {
     unsetOrder({ commit }) {
       commit('UNSET_ORDER')
     },
+    unsetOrderInitiator({ commit }) {
+      commit('UNSET_ORDER_INITIATOR')
+    },
     unsetDilers({ commit }) {
       commit('UNSET_DILERS')
     },
@@ -272,8 +291,14 @@ export default {
     SET_ORDER: (state, data) => {
       state.order = data.data.order
     },
+    SET_ORDER_INITIATOR: (state, data) => {
+      state.order_initiator = data.data.order
+    },
     UNSET_ORDER: (state) => {
       state.order = {}
+    },
+    UNSET_ORDER_INITIATOR: (state) => {
+      state.order_initiator = {}
     },
     SET_DILERS: (state, data) => {
       state.dilers = data.data
@@ -318,6 +343,9 @@ export default {
     },
     order(state) {
       return state.order
+    },
+    order_initiator(state) {
+      return state.order_initiator
     },
     dilers(state) {
       return state.dilers

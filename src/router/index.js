@@ -980,6 +980,18 @@ const router = createRouter({
                             },
                           },
                         },
+                        {
+                          path: ':order_id',
+                          name: 'WholesaleOrderInitiator',
+                          props: true,
+                          label: 'Просмотр заказа',
+                          component: () => import('../pages/org/order.vue'),
+                          meta: {
+                            breadcrumb: {
+                              label: 'Просмотр заказа',
+                            },
+                          },
+                        },
                       ],
                     },
                     {

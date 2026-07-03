@@ -275,6 +275,7 @@ export default {
   width: 100%;
   padding: 11px 16px;
   background-color: #fff !important;
+  color: #282828 !important;
 }
 .warehouse-analysis__add-actions {
   margin-top: 32px;

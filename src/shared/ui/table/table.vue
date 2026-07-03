@@ -122,7 +122,9 @@
             :fluid="true"
             @select="setFilter"
           /> -->
-
+          <label :for="'tree_' + i" v-if="ffilter.label" class="treeselect-filter-label">{{
+            ffilter.label
+          }}</label>
           <TreeSelect
             v-model="filtersdata[i]"
             :multiple="true"
@@ -133,6 +135,7 @@
             :limitText="(count) => `и еще ${count}`"
             @select="setFilter"
             @deselect="setFilter"
+            :id="'tree_' + i"
           />
         </div>
         <div class="dart-form-group dart-form-tree-group" v-if="ffilter.type == 'round_tree'">
@@ -949,6 +952,13 @@ tbody {
 .swap-rotate {
   transform: scale(-1, 1);
 }
+.treeselect-filter-label {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  color: #757575;
+}
+
 @media (width <= 1280px) {
   .d-table-sort {
     width: 20px;

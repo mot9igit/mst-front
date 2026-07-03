@@ -1248,8 +1248,8 @@ export default {
         display: none;
       }
       &-right-upload {
-        display: none;
-        //display: flex;
+        //display: none;
+        display: flex;
         align-items: center;
         justify-content: end;
         cursor: pointer;
@@ -2427,8 +2427,7 @@ export default {
           border-bottom: 0.3px solid #75757575;
           position: relative;
           .promotions__card-header-right-upload {
-            //display: flex;
-            display: none;
+            display: flex;
             position: absolute;
             top: 76px;
             right: 22px;

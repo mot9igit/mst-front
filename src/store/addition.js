@@ -14,6 +14,7 @@ export default {
     tags: [],
     dashboard_data: {},
     pathNew: {},
+    managers: {},
   },
   actions: {
     async getVendors({ commit }, sendData) {
@@ -132,6 +133,17 @@ export default {
       }
       return response
     },
+    async getManagers({ commit }) {
+      const data = {
+        action: 'filter/managers',
+        id: router.currentRoute._value.params.id,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_MANAGERS', response.data)
+      }
+      return response
+    },
     async getDashboardData({ commit }, { filter }) {
       const data = {
         action: 'get/dashboard',
@@ -201,6 +213,9 @@ export default {
     SET_TAGS: (state, data) => {
       state.tags = data.data
     },
+    SET_MANAGERS: (state, data) => {
+      state.managers = data.data
+    },
     SET_DASHBOARD_DATA: (state, data) => {
       state.dashboard_data = data.data
     },
@@ -235,6 +250,9 @@ export default {
     },
     tags(state) {
       return state.tags
+    },
+    managers(state) {
+      return state.managers
     },
     dashboard_data(state) {
       return state.dashboard_data
