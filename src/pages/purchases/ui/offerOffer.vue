@@ -840,8 +840,8 @@ export default {
         if (!this.allOff) {
           conf = activeConflict?.action_ids
         }
-        console.log(activeConflict)
-        console.log(conf)
+        // console.log(activeConflict)
+        // console.log(conf)
         const data = {
           org_id: item.org_id,
           store_id: item.store_id,
