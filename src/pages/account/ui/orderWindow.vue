@@ -803,6 +803,53 @@
         </div>
       </div>
     </customModal>
+    <customModal v-model="modalOrderInfo" class="order-info order-card__modal noclose_click">
+      <div class="order-info__header">
+        <h3>Добрый день!</h3>
+        <span>Мы обработали ваш заказ и разделили его на несколько частей:</span>
+      </div>
+      <div class="order-info__orders">
+        <div class="order-info__order" v-for="order in list_orders" :key="order.id">
+          <div class="dart-row dart-align-items-center">
+            <div class="d-col-10 d-col-sm-6 d-col-md-4">
+              <router-link
+                :to="{
+                  name: 'purchasesOrder',
+                  params: {
+                    id: this.$route.params.id,
+                    order_id: order.id,
+                  },
+                }"
+                >Заказ № {{ order.id }}</router-link
+              >
+            </div>
+            <div class="d-col-14 d-col-sm-18 d-col-md-20">
+              <span v-if="order.fog"
+                >позиции, по которым поставщик в настоящее время прорабатывает условия поставки или
+                подбирает аналоги</span
+              >
+              <span v-else>все товары в наличии — готовы к отправке после подтверждения</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="order-info__content">
+        <p>
+          После завершения обработки Вы получите уведомление с обновлённым статусом заказов.
+          Благодарим за терпение!
+        </p>
+      </div>
+      <div class="order-card__modal-buttons">
+        <button
+          type="button"
+          href="#"
+          class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel noclose_click"
+          @click.prevent="((modalOrderInfo = false), close())"
+        >
+          ОК
+        </button>
+      </div>
+    </customModal>
   </teleport>
 </template>
 <script>
@@ -832,6 +879,7 @@ export default {
       showChangedIdStore: '',
       basketStore: {},
       fetchIds: [],
+      list_orders: [],
       id_clear_org: 0,
       id_clear_store: 0,
       order: '',
@@ -841,6 +889,7 @@ export default {
       modalCommentText: '',
       error: '',
       modalCommentDelete: false,
+      modalOrderInfo: false,
       sales_active: {},
       salesModal: false,
       saleOff: [],
@@ -1022,10 +1071,11 @@ export default {
 
           this.orderSubmitApi({ orgId: orgId, warehouse_id: warehouse_id }).then((response) => {
             let arr = []
-            console.log(response)
             let res = response.data?.data
             let products = res.products
             let nums = res.nums
+            this.modalOrderInfo = true
+            this.list_orders = res.orders
             console.log(res)
             for (var key in products) {
               const product = products[key]
@@ -1250,4 +1300,78 @@ export default {
   },
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.order-info {
+  &__header {
+    h3 {
+      margin-bottom: 8px;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 26px;
+      letter-spacing: -0.01em;
+      color: #282828;
+    }
+    span {
+      display: block;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 18px;
+      color: #757575;
+    }
+  }
+  &__orders {
+    padding: 40px 0;
+  }
+  &__order {
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background: #ededed;
+    border-radius: 6px;
+    & + & {
+      margin-top: 16px;
+    }
+    a {
+      display: block;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 18px;
+      color: #282828;
+    }
+    span {
+      display: block;
+      position: relative;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 18px;
+      color: #757575;
+      &::before {
+        content: '';
+        position: absolute;
+        left: -16px;
+        top: 50%;
+        transform: translate(0, -50%);
+        width: 0.5px;
+        height: 8px;
+        background: #757575;
+      }
+    }
+  }
+  &__content {
+    p,
+    span {
+      display: block;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 18px;
+      color: #757575;
+    }
+  }
+}
+</style>
