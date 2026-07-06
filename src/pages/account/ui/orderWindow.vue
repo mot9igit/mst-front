@@ -844,7 +844,7 @@
           type="button"
           href="#"
           class="d-button d-button-primary d-button--sm-shadow order-card__modal-buttons-cancel noclose_click"
-          @click.prevent="modalOrderInfo = false"
+          @click.prevent="((modalOrderInfo = false), close())"
         >
           ОК
         </button>
