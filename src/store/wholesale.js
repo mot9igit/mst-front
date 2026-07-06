@@ -254,11 +254,12 @@ export default {
       const response = await api.wholesale.downloadOrders(data)
       return response
     },
-    async downloadOrder(store, { order_id }) {
+    async downloadOrder(store, { mode }) {
       const data = {
         action: 'load/orders',
         id: router.currentRoute._value.params.id,
-        order_id: order_id,
+        order_id: router.currentRoute._value.params.order_id,
+        mode: mode,
       }
       const response = await api.wholesale.downloadOrders(data)
       return response

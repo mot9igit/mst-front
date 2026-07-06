@@ -25,6 +25,9 @@
       </div>
       <div class="d-top-order-container-right">
         <!-- <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>-->
+        <button @click.prevent="toDownload" class="download-button">
+          <i class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"></i>
+        </button>
       </div>
     </div>
     <div class="d-top-order-container-info">
@@ -183,6 +186,18 @@
       />
     </div>
   </section>
+  <customModal
+    v-model="modalActiveActions"
+    class="product-card-actions__modal-all product-card-actions-product__modal-all"
+  >
+    <saleWindow :product="productOrder" :orderInfo="orderInfo"></saleWindow>
+    <button
+      class="d-button d-button-primary d-button-primary-small d-button--sm-shadow product-card-actions-product__modal-all-button"
+      @click.prevent="modalActiveActions = false"
+    >
+      Ok
+    </button>
+  </customModal>
 </template>
 
 <script>
@@ -191,6 +206,8 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
 import MinProductTable from '@/shared/ui/tableMinProduct/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
+import customModal from '@/shared/ui/Modal.vue'
+import saleWindow from '@/pages/purchases/ui/activeSalesWindow.vue'
 
 export default {
   name: 'WholesaleOrderInitiator',
@@ -199,6 +216,8 @@ export default {
     BaseTable,
     Loader,
     MinProductTable,
+    customModal,
+    saleWindow,
   },
   data() {
     return {
@@ -206,6 +225,7 @@ export default {
       page: 1,
       status: [],
       orderInfo: {},
+      modalActiveActions: false,
       table_data: {
         image: {
           label: 'Фото',
@@ -283,6 +303,32 @@ export default {
     saleModal(data) {
       this.modalActiveActions = true
       this.productOrder = data
+    },
+    toDownload() {
+      this.loading = true
+      this.downloadOrder({
+        mode: 'initiator',
+      }).then((response) => {
+        this.loading = false
+        if (response.data.data.filename) {
+          this.loading = false
+          let loc = response.data.data.filename
+          var downloadLink = document.createElement('a')
+          downloadLink.href = loc
+          downloadLink.setAttribute('download', loc)
+          downloadLink.setAttribute('target', '_blank')
+          //console.log(downloadLink)
+          downloadLink.click()
+        } else {
+          this.loading = false
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось скачать отчет!',
+            life: 3000,
+          })
+        }
+      })
     },
   },
 

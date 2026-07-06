@@ -311,7 +311,12 @@
                     </div>
                   </div>
                   <div class="d-divider d-divider--vertical"></div>
-                  <div class="promotions__card-value-container">
+                  <div
+                    class="promotions__card-value-container"
+                    @click.prevent="uploadData('integration_off')"
+                    style="cursor: pointer"
+                    title="Скачать список организаций"
+                  >
                     <span class="promotions__card-label">Отключилось:</span>
                     <div class="promotions__card-value-container-item">
                       <p class="promotions__card-value">
@@ -407,7 +412,12 @@
                     <div class="promotions__card-value-container"></div>
                   </div>
                   <div class="promotions__card-values">
-                    <div class="promotions__card-value-container">
+                    <div
+                      class="promotions__card-value-container"
+                      @click.prevent="uploadData('connection_yes')"
+                      style="cursor: pointer"
+                      title="Скачать список организаций"
+                    >
                       <span class="promotions__card-label">С поставщиками:</span>
                       <div class="promotions__card-value-container-item">
                         <p class="promotions__card-value">
@@ -432,7 +442,12 @@
                       </div>
                     </div>
                     <div class="d-divider d-divider--vertical"></div>
-                    <div class="promotions__card-value-container">
+                    <div
+                      class="promotions__card-value-container"
+                      @click.prevent="uploadData('connection_no')"
+                      style="cursor: pointer"
+                      title="Скачать список организаций"
+                    >
                       <span class="promotions__card-label">Без поставщиков:</span>
                       <div class="promotions__card-value-container-item">
                         <p class="promotions__card-value">

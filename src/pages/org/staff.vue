@@ -325,6 +325,12 @@ export default {
       })
       this.loading = false
     })
+    if (localStorage.getItem('staff.tabs') == 1) {
+      this.tabException = 1
+    } else {
+      this.tabException = 0
+    }
+    localStorage.setItem('staff.tabs', this.tabException)
   },
   computed: {
     ...mapGetters({
@@ -451,6 +457,9 @@ export default {
   watch: {
     filter_managers: function (newVal) {
       this.filters_orders.initiator_user.values = newVal
+    },
+    tabException: function (newVal) {
+      localStorage.setItem('staff.tabs', newVal)
     },
   },
 }
