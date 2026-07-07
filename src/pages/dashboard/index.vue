@@ -797,7 +797,10 @@
                       </div>
                     </div>
                     <div class="d-divider d-divider--vertical"></div>
-                    <div class="promotions__card-value-container">
+                    <div class="promotions__card-value-container" 
+                      @click.prevent="uploadData('orders_no_s')"
+                      style="cursor: pointer"
+                      title="Скачать список организаций">
                       <span class="promotions__card-label">Без заказов:</span>
                       <div class="promotions__card-value-container-item">
                         <p class="promotions__card-value">
@@ -844,7 +847,31 @@
                       v-for="(item, ind) in orders_temp_orgs"
                       :key="ind"
                     >
-                      <div class="promotions__card-value-container">
+                    <div class="promotions__card-value-container" v-if="ind == 0"
+                       @click.prevent="uploadData('orders_no_w')"
+                      style="cursor: pointer"
+                      title="Скачать список организаций"
+                      >
+                        <span class="promotions__card-label">{{ item.name }}:</span>
+                        <div class="promotions__card-value-container-item">
+                          <p class="promotions__card-value">{{ item.count_now }}</p>
+                          <span class="promotions__card-values-title-grey" v-if="item.cost_now"
+                            >({{ item.cost_now }})</span
+                          >
+                          <span
+                            class="promotions__card-badge"
+                            :class="{
+                              'promotions__card-badge-green': Number(item.count_prev) > 0,
+                              'promotions__card-badge-red': Number(item.count_prev) < 0,
+                              'promotions__card-badge-null': Number(item.count_prev) == 0,
+                            }"
+                            >{{
+                              Number(item.count_prev) > 0 ? '+' + item.count_prev : item.count_prev
+                            }}</span
+                          >
+                        </div>
+                      </div>
+                      <div class="promotions__card-value-container" v-else>
                         <span class="promotions__card-label">{{ item.name }}:</span>
                         <div class="promotions__card-value-container-item">
                           <p class="promotions__card-value">
@@ -892,6 +919,7 @@
                       v-for="(item, ind) in orders_modal_orgs"
                       :key="ind"
                     >
+                      
                       <div class="promotions__card-value-container">
                         <span class="promotions__card-label">{{ item.name }}:</span>
                         <div class="promotions__card-value-container-item">
@@ -912,6 +940,7 @@
                           >
                         </div>
                       </div>
+                      
                       <div class="d-divider d-divider--vertical"></div>
                     </div>
                   </div>
@@ -2327,6 +2356,10 @@ export default {
       border-bottom: 1px solid rgba(117, 117, 117, 0.4588235294);
     }
   }
+  .promotions__card-values-title-grey{
+    display:none;
+    
+  }
   .dashboard {
     .promotions__card {
       margin-top: 0px;
@@ -2444,8 +2477,9 @@ export default {
           .promotions__card-header-right-upload {
             display: flex;
             position: absolute;
-            top: 76px;
+            top: 83px;
             right: 22px;
+            z-index:10;
             i {
               font-size: 16px;
             }
