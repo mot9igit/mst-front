@@ -1379,7 +1379,7 @@ export default {
     },
     saveData() {
       if (this.form.data.name == 'description') {
-        this.editOrgValues[this.form.data.name] = this.form.data.value
+        this.editOrgValues[this.form.data.name] = this.form.data.value.replace(/&nbsp;/g, ' ')
       } else {
         this.editOrgValues[this.form.data.name] = this.form.data.value.original_href
           ? this.form.data.value.original_href
