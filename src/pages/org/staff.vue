@@ -518,7 +518,11 @@ export default {
 .lk-staff__card-contact-container:nth-child(3) .cell_value {
   overflow: hidden;
 }
+.lk-staff-tabs .p-tabpanels{
+    background-color: transparent;
+  }
 .lk-staff--panel {
+  
   .dart-row {
     justify-content: end;
     align-items: end !important;
