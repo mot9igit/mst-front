@@ -6,7 +6,7 @@
       <breadcrumbs />
     </div>
     <Loader v-if="loading" />
-    <!-- <Tabs class="lk-staff-tabs">
+    <Tabs class="lk-staff-tabs">
       <TabList class="lk-staff-tabs-tabs">
         <div class="d-tab2" :class="{ 'd-tab2--active': tabException == 0 }" :value="0">
           <button class="collection__tabs-link" @click.prevent="tabException = 0">
@@ -21,10 +21,8 @@
       </TabList>
 
       <TabPanels>
-        <TabPanel v-if="tabException == 0"> -->
-          <h1 style="margin-bottom:40px">Сотрудники</h1>
+        <TabPanel v-if="tabException == 0">
           <div class="lk-staff__header">
-            
             <router-link
               :to="{
                 name: 'profileStuffCreate',
@@ -52,7 +50,7 @@
             @editElem="editElem"
             @deleteElem="deleteElem"
           />
-        <!-- </TabPanel>
+        </TabPanel>
         <TabPanel v-else class="lk-staff--panel">
           <BaseTable
             :items_data="init_orders.orders"
@@ -81,7 +79,7 @@
           />
         </TabPanel>
       </TabPanels>
-    </Tabs> -->
+    </Tabs>
   </section>
 </template>
 
@@ -520,7 +518,11 @@ export default {
 .lk-staff__card-contact-container:nth-child(3) .cell_value {
   overflow: hidden;
 }
+.lk-staff-tabs .p-tabpanels{
+    background-color: transparent;
+  }
 .lk-staff--panel {
+  
   .dart-row {
     justify-content: end;
     align-items: end !important;
