@@ -51,32 +51,34 @@
             @deleteElem="deleteElem"
           />
         </TabPanel>
-        <TabPanel v-else class="lk-staff--panel">
-          <BaseTable
-            :items_data="init_orders.orders"
-            :total="init_orders.total"
-            :pagination_items_per_page="this.pagination_items_per_page_orders"
-            :pagination_offset="this.pagination_offset"
-            :page="this.pageOrders"
-            :table_data="this.table_data_orders"
-            :filters="this.filters_orders"
-            @filter="filterOrder"
-            @sort="filterOrder"
-            @paginate="paginateOrder"
-            @download="downloadOrd"
-          />
-          <MinTable
-            :items_data="init_orders.orders"
-            :total="init_orders.total"
-            :pagination_items_per_page="this.pagination_items_per_page_orders"
-            :pagination_offset="this.pagination_offset"
-            :page="this.pageOrders"
-            :table_data="this.table_data_orders"
-            :filters="this.filters_orders"
-            @filter="filterOrder"
-            @sort="filterOrder"
-            @paginate="paginateOrder"
-          />
+        <TabPanel v-else class="lk-staff--panel orders_table">
+          <div class="myorders__content">
+            <BaseTable
+              :items_data="init_orders.orders"
+              :total="init_orders.total"
+              :pagination_items_per_page="this.pagination_items_per_page_orders"
+              :pagination_offset="this.pagination_offset"
+              :page="this.pageOrders"
+              :table_data="this.table_data_orders"
+              :filters="this.filters_orders"
+              @filter="filterOrder"
+              @sort="filterOrder"
+              @paginate="paginateOrder"
+              @download="downloadOrd"
+            />
+            <MinTable
+              :items_data="init_orders.orders"
+              :total="init_orders.total"
+              :pagination_items_per_page="this.pagination_items_per_page_orders"
+              :pagination_offset="this.pagination_offset"
+              :page="this.pageOrders"
+              :table_data="this.table_data_orders"
+              :filters="this.filters_orders"
+              @filter="filterOrder"
+              @sort="filterOrder"
+              @paginate="paginateOrder"
+            />
+          </div>
         </TabPanel>
       </TabPanels>
     </Tabs>
@@ -518,11 +520,10 @@ export default {
 .lk-staff__card-contact-container:nth-child(3) .cell_value {
   overflow: hidden;
 }
-.lk-staff-tabs .p-tabpanels{
-    background-color: transparent;
-  }
+.lk-staff-tabs .p-tabpanels {
+  background-color: transparent;
+}
 .lk-staff--panel {
-  
   .dart-row {
     justify-content: end;
     align-items: end !important;
