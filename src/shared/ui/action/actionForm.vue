@@ -4141,12 +4141,13 @@ export default {
     updateFormula() {
       this.modals.max_sale = null
       if (this.productsSelected.length == 1 && this.modals.priceType != 'group') {
-        var base_price = this.productsSelected[0].price
-        var rrc_price = this.productsSelected[0].price
+        var base_price = parseFloat(this.productsSelected[0].price.replace(/\s+/g, ''))
+        var rrc_price = parseFloat(this.productsSelected[0].price.replace(/\s+/g, ''))
         // Если указан тип цены меняем базовую стоимость
         // console.log(this.productsSelectedData)
         // console.log(this.productsSelected[0].save_data.prices)
-        // console.log(base_price)
+        // console.log(this.productsSelectedData.sale_value)
+        // console.log(rrc_price)
         if (this.productsSelectedData.type_price?.guid) {
           Object.entries(this.productsSelected[0].save_data.prices).forEach((val) => {
             const [k, value] = val
@@ -4221,7 +4222,8 @@ export default {
             // Фиксированная
             if (this.productsSelectedData.type_pricing?.key == 3) {
               this.modals.max_sale = null
-              if (this.productsSelectedData.sale_value > this.modals.max_sale) {
+              
+              if (this.modals.max_sale && this.productsSelectedData.sale_value > this.modals.max_sale) {
                 this.productsSelectedData.sale_value = this.modals.max_sale
               }
               this.productsSelected[0].save_data.new_price = this.productsSelectedData.sale_value
