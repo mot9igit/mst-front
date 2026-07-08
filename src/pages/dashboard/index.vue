@@ -797,10 +797,12 @@
                       </div>
                     </div>
                     <div class="d-divider d-divider--vertical"></div>
-                    <div class="promotions__card-value-container" 
+                    <div
+                      class="promotions__card-value-container"
                       @click.prevent="uploadData('orders_no_s')"
                       style="cursor: pointer"
-                      title="Скачать список организаций">
+                      title="Скачать список организаций"
+                    >
                       <span class="promotions__card-label">Без заказов:</span>
                       <div class="promotions__card-value-container-item">
                         <p class="promotions__card-value">
@@ -847,10 +849,12 @@
                       v-for="(item, ind) in orders_temp_orgs"
                       :key="ind"
                     >
-                    <div class="promotions__card-value-container" v-if="ind == 0"
-                       @click.prevent="uploadData('orders_no_w')"
-                      style="cursor: pointer"
-                      title="Скачать список организаций"
+                      <div
+                        class="promotions__card-value-container"
+                        v-if="ind == 0"
+                        @click.prevent="uploadData('orders_no_w')"
+                        style="cursor: pointer"
+                        title="Скачать список организаций"
                       >
                         <span class="promotions__card-label">{{ item.name }}:</span>
                         <div class="promotions__card-value-container-item">
@@ -919,7 +923,6 @@
                       v-for="(item, ind) in orders_modal_orgs"
                       :key="ind"
                     >
-                      
                       <div class="promotions__card-value-container">
                         <span class="promotions__card-label">{{ item.name }}:</span>
                         <div class="promotions__card-value-container-item">
@@ -940,7 +943,7 @@
                           >
                         </div>
                       </div>
-                      
+
                       <div class="d-divider d-divider--vertical"></div>
                     </div>
                   </div>
@@ -1131,11 +1134,7 @@ export default {
     },
     'filters.value': function (newVal) {
       for (var d in newVal) {
-        if (newVal[d] === null) {
-          newVal[d] = newVal[0]
-        } else {
-          newVal[d] = new Date(newVal[d].getTime() - newVal[d].getTimezoneOffset() * 60000)
-        }
+        newVal[d] = new Date(newVal[d].getTime() - newVal[d].getTimezoneOffset() * 60000)
       }
     },
   },
@@ -2365,9 +2364,8 @@ export default {
       border-bottom: 1px solid rgba(117, 117, 117, 0.4588235294);
     }
   }
-  .promotions__card-values-title-grey{
-    display:none;
-    
+  .promotions__card-values-title-grey {
+    display: none;
   }
   .dashboard {
     .promotions__card {
@@ -2488,7 +2486,7 @@ export default {
             position: absolute;
             top: 83px;
             right: 22px;
-            z-index:10;
+            z-index: 10;
             i {
               font-size: 16px;
             }
