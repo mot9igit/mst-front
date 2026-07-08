@@ -1100,6 +1100,15 @@ export default {
         }
       }
     },
+    'filters.value': function (newVal) {
+      for (var d in newVal) {
+        if (newVal[d] === null) {
+          newVal[d] = newVal[0]
+        } else {
+          newVal[d] = new Date(newVal[d].getTime() - newVal[d].getTimezoneOffset() * 60000)
+        }
+      }
+    },
   },
 }
 </script>
