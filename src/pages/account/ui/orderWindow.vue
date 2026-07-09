@@ -1074,7 +1074,12 @@ export default {
             let res = response.data?.data
             let products = res.products
             let nums = res.nums
-            this.modalOrderInfo = true
+            for (var i in res.orders) {
+              if (res.orders[i].fog) {
+                this.modalOrderInfo = true
+              }
+            }
+
             this.list_orders = res.orders
             console.log(res)
             for (var key in products) {

@@ -609,10 +609,10 @@
           <div class="product-card__stat-list-cont">
             <div class="product-card__stat-list">
               <div v-if="item.complect > 0" class="d-category">Комплект</div>
-              <div v-if="item.percent_num > 0">
+              <div v-if="item.prices.discount_percent > 0">
                 <i class="d-icon-percent-rounded product-card__buy-icon"></i
-                ><span v-if="item.pricing_type == 1">Наценка</span><span v-else>Скидка</span>
-                {{ item.percent_num }}%
+                ><span v-if="item.prices.pricing_type == 1">Наценка</span
+                ><span v-else>Скидка</span> {{ item.prices.discount_percent }}%
               </div>
               <div v-if="item.payer == 2">
                 <i class="d-icon-truck product-card__buy-icon"></i>По согласованию
@@ -827,11 +827,13 @@ export default {
     },
 
     addBasket(item, count) {
-      if (
-        this.modalActionsData &&
-        (Object.keys(this.modalActionsData).length > 1 ||
-          (Object.keys(this.modalActionsData).length == 1 && this.allOff))
-      ) {
+      let conflicts = false
+      for (var i in item.actions) {
+        if (item.actions[i].relations?.incompatibility.length) {
+          conflicts = true
+        }
+      }
+      if (conflicts) {
         this.modalActions = true
       } else {
         this.loading = true
