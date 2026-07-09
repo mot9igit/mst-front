@@ -813,6 +813,7 @@ export default {
       showDropZoneExclude: false,
       filter: '',
       filterExclude: '',
+      stores: [],
       filters: {
         name: {
           name: 'Наименование, артикул',
@@ -873,7 +874,7 @@ export default {
       buildCollection: 'warehouse/buildCollection',
       clearCollectionData: 'warehouse/clearCollectionData',
       toggleProductCollection: 'warehouse/toggleProductCollection',
-      getOrgStores: 'org/getOrgStores',
+      getOrgStores: 'org/getFiltersStores',
       getOurVendors: 'addition/getOurVendors',
       getCatalogs: 'addition/getCatalogs',
       getOutCatalogs: 'addition/getOutCatalogs',
@@ -1186,7 +1187,7 @@ export default {
       collection: 'warehouse/collection',
       collectionBuild: 'warehouse/collectionBuild',
       collectionBuildExclude: 'warehouse/collectionBuildExclude',
-      orgStores: 'org/orgStores',
+      filterStores: 'org/filterStores',
     }),
   },
   watch: {
@@ -1226,15 +1227,8 @@ export default {
         this.deleteFileExclude()
       }
     },
-    orgStores: function (newVal) {
-      this.stores = []
-      for (let i = 0; i < newVal.items.length; i++) {
-        this.stores.push({
-          label: newVal.items[i].data,
-          key: Number(newVal.items[i].id),
-          id: Number(newVal.items[i].id),
-        })
-      }
+    filterStores: function (newVal) {
+      this.stores = newVal
     },
     groupTags: function (newVal) {
       this.tags = newVal.map((tag) => ({ label: tag, value: tag }))
