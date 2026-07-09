@@ -69,7 +69,7 @@ export default {
       }
       return response
     },
-    async getOrgStores({ commit }, { page, perpage, filters, name, mode }) {
+    async getOrgStores({ commit }, { page, perpage, filters, name }) {
       const data = {
         action: 'get/stores',
         id: router.currentRoute._value.params.id,
@@ -77,7 +77,6 @@ export default {
         perpage: perpage,
         filters: filters,
         name: name,
-        mode: mode,
       }
       const response = await api.org.getOrg(data)
       if (response) {

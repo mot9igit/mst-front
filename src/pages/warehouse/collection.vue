@@ -813,7 +813,6 @@ export default {
       showDropZoneExclude: false,
       filter: '',
       filterExclude: '',
-      stores: [],
       filters: {
         name: {
           name: 'Наименование, артикул',
@@ -1133,7 +1132,7 @@ export default {
     },
   },
   mounted() {
-    this.getOrgStores({ name: 'self', mode: 'all' }).then(() => {
+    this.getOrgStores({ name: 'self' }).then(() => {
       this.getCatalogs()
       this.clearCollectionData().then(() => {
         if (this.$route.params.collection_id) {
