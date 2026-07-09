@@ -681,8 +681,39 @@
                       <div class="promotions__card-value-container-item">
                         <p class="promotions__card-value">
                           {{ dashboard_data?.orders?.org_now }}
+                          <span
+                            class="promotions__card-badge"
+                            :class="{
+                              'promotions__card-badge-green':
+                                Number(dashboard_data?.orders?.org_prev) > 0,
+                              'promotions__card-badge-red':
+                                Number(dashboard_data?.orders?.org_prev) < 0,
+                              'promotions__card-badge-null':
+                                Number(dashboard_data?.orders?.org_prev) == 0,
+                            }"
+                            >{{
+                              Number(dashboard_data?.orders?.org_prev) > 0
+                                ? '+' + dashboard_data?.orders?.org_prev
+                                : dashboard_data?.orders?.org_prev
+                            }}</span
+                          >
                           <span class="promotions__card-values-title-grey"
                             >({{ dashboard_data?.orders?.total_new }})</span
+                          ><span
+                            class="promotions__card-badge"
+                            :class="{
+                              'promotions__card-badge-green':
+                                dashboard_data?.orders?.total_new_prev > 0,
+                              'promotions__card-badge-red':
+                                dashboard_data?.orders?.total_new_prev < 0,
+                              'promotions__card-badge-null':
+                                dashboard_data?.orders?.total_new_prev == 0,
+                            }"
+                            >{{
+                              dashboard_data?.orders?.total_new_prev > 0
+                                ? '+' + dashboard_data?.orders?.total_new_prev
+                                : dashboard_data?.orders?.total_new_prev
+                            }}</span
                           >
                         </p>
                         <!-- <span class="promotions__card-badge promotions__card-badge-red">-3</span> -->
@@ -838,7 +869,22 @@
                         <p class="promotions__card-value">
                           {{ dashboard_data?.orders?.org_seller_now }}
                         </p>
-                        <!-- <span class="promotions__card-badge promotions__card-badge-red">-3</span> -->
+                        <span
+                          class="promotions__card-badge"
+                          :class="{
+                            'promotions__card-badge-green':
+                              Number(dashboard_data?.orders?.org_seller_prev) > 0,
+                            'promotions__card-badge-red':
+                              Number(dashboard_data?.orders?.org_seller_prev) < 0,
+                            'promotions__card-badge-null':
+                              Number(dashboard_data?.orders?.org_seller_prev) == 0,
+                          }"
+                          >{{
+                            Number(dashboard_data?.orders?.org_seller_prev) > 0
+                              ? '+' + dashboard_data?.orders?.org_seller_prev
+                              : dashboard_data?.orders?.org_seller_prev
+                          }}</span
+                        >
                       </div>
                     </div>
                     <div class="promotions__card-value-container"></div>
@@ -928,7 +974,7 @@
                         <div class="promotions__card-value-container-item">
                           <p class="promotions__card-value">{{ item.count_now }}</p>
                           <span class="promotions__card-values-title-grey" v-if="item.cost_now"
-                            >({{ item.cost_now }})</span
+                            >({{ item.cost_now }} )</span
                           >
                           <span
                             class="promotions__card-badge"
@@ -1468,6 +1514,11 @@ export default {
             line-height: 42px;
             letter-spacing: -0.01em;
             color: #282828;
+            display: flex;
+            gap: 8px;
+            .promotions__card-badge {
+              height: min-content;
+            }
           }
           .promotions__card-badge {
             padding: 0px 8px;
@@ -2365,7 +2416,16 @@ export default {
     }
   }
   .promotions__card-values-title-grey {
-    display: none;
+    //display: none;
+  }
+  .dashboard__content
+    .promo__cards-wrap
+    .promotions__card-content.promotions__card-content--active
+    .promotions__card-values
+    .promotions__card-value-container.promotions__card-value-container--main
+    .promotions__card-value
+    .promotions__card-badge {
+    margin-top: -0px;
   }
   .dashboard {
     .promotions__card {
