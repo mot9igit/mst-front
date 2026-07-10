@@ -2922,6 +2922,15 @@
               />
               <label for="type_price-3" class="ml-2 radioLabel">Кратность</label>
             </div>
+            <div class="flex align-items-center gap-1 mt-3" v-if="this.productsSelected.length > 1">
+              <RadioButton
+                v-model="this.modals.deletes"
+                inputId="type_price-4"
+                name="type_pricing"
+                value="true"
+              />
+              <label for="type_price-3" class="ml-2 radioLabel">Удалить</label>
+            </div>
           </div>
           <div
             v-if="this.modals.priceStep == 1 && this.modals.typePrice == 1"
@@ -3241,6 +3250,24 @@
           </button>
         </div>
       </customModal>
+      <customModal v-model="this.requireDelModal">
+        <template v-slot:title>Удаление товаров</template>
+        <p class="no_add_p">Все выбранные товары будут удалены из акции</p>
+        <div class="dart-modal-price__button dart-modal-price__flex dart-mt-1">
+          <div
+            class="d-button d-button-secondary d-button--no-shadow"
+            @click.prevent="requireDelModal = false"
+          >
+            Отменить
+          </div>
+          <div
+            class="d-button d-button-primary d-button--no-shadow"
+            @click.prevent="((modals.priceStep = 1), closeDialogPrice())"
+          >
+            Удалить
+          </div>
+        </div>
+      </customModal>
     </teleport>
   </section>
 </template>
@@ -3308,6 +3335,7 @@ export default {
       masterStep: 0,
       visibleMasterSteps: [],
       stopDate: undefined,
+      requireDelModal: false,
       // Флаги окон
       modals: {
         master: false,
@@ -3325,6 +3353,7 @@ export default {
         no_add: false,
         no_add_info: [],
         max_sale: null,
+        deletes: false,
       },
       // Поиск
       search: {
@@ -4222,8 +4251,11 @@ export default {
             // Фиксированная
             if (this.productsSelectedData.type_pricing?.key == 3) {
               this.modals.max_sale = null
-              
-              if (this.modals.max_sale && this.productsSelectedData.sale_value > this.modals.max_sale) {
+
+              if (
+                this.modals.max_sale &&
+                this.productsSelectedData.sale_value > this.modals.max_sale
+              ) {
                 this.productsSelectedData.sale_value = this.modals.max_sale
               }
               this.productsSelected[0].save_data.new_price = this.productsSelectedData.sale_value
@@ -4262,8 +4294,11 @@ export default {
           this.productsSelectedData.sale_value = '0'
           this.productsSelectedData.type_formula = '0'
         }
-
-        this.modals.priceStep = 1
+        if (!this.modals.deletes) {
+          this.modals.priceStep = 1
+        } else {
+          this.requireDelModal = true
+        }
       } else {
         this.modals.priceStep = 0
         this.modals.price = false
@@ -4278,11 +4313,19 @@ export default {
           products: this.productsSelected,
           data: this.productsSelectedData,
         }
+        if (this.modals.deletes) {
+          data.type = 'deletes'
+        }
         if (this.modals.priceType == 'group') {
           let id = this.productsSelected[0]
           this.form.product_groups[id].properties = this.productsSelectedData
         }
         this.setSelectedProductData(data).then(() => {
+          if (this.modals.deletes) {
+            this.modals.deletes = false
+            this.requireDelModal = false
+          }
+
           this.resetDiscountFormula()
           this.updateStoreData()
           if (this.modals.priceType == 'group') {
