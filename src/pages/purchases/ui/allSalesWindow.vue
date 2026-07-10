@@ -285,10 +285,10 @@
           <div class="product-card__stat-list-cont">
             <div class="product-card__stat-list">
               <div v-if="sale.complect > 0" class="d-category">Комплект</div>
-              <div v-if="sale.percent_num > 0">
+              <div v-if="sale.prices.discount_percent != 0">
                 <i class="d-icon-percent-rounded product-card__buy-icon"></i
-                ><span v-if="sale.pricing_type == 1">Наценка</span><span v-else>Скидка</span>
-                {{ sale.percent_num }}%
+                ><span v-if="sale.prices.pricing_type == 1">Наценка</span
+                ><span v-else>Скидка</span> {{ Math.abs(sale.prices.discount_percent) }}%
               </div>
               <div v-if="sale.payer == 2">
                 <i class="d-icon-truck product-card__buy-icon"></i>Доставка по согласованию
