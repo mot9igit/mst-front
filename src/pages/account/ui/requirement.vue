@@ -546,13 +546,9 @@ export default {
     'modals.requirementsView': function (newVal) {
       if (newVal === true) {
         if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-          this.vendors = this.vendorOfferSelected.items
+          this.vendors = JSON.parse(JSON.stringify(this.vendorOfferSelected.items))
           for (var o in this.vendors) {
-            for (var oo in this.vendors[o].stores) {
-              if (this.vendors[o].stores[oo].target_id != '0') {
-                this.vendors[o].stores.splice(oo, 1)
-              }
-            }
+            this.vendors[o].stores = this.vendors[o].stores.filter((s) => s.target_id === '0')
           }
         } else {
           this.vendors = this.optVendorsSelected.items
