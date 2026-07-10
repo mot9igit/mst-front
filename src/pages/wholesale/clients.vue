@@ -126,6 +126,9 @@
                   item.req?.fact_address != '' ? item.req?.fact_address : 'адрес не указан'
                 }}</span>
               </div>
+              <div class="clients__card-info-title clients__card-info-title-type">
+                {{ item.org_type }}
+              </div>
             </div>
           </div>
 
@@ -155,7 +158,13 @@
               <img src="/icons/spo-logo.svg" alt="" class="clients__card-info-image" />
             </div>
             <div class="clients__card-info-content">
-              <p class="clients__card-info-title">{{ item.name }}</p>
+              <div class="clients__card-info-content-flex">
+                <p class="clients__card-info-title">{{ item.name }}</p>
+                <div class="clients__card-info-title clients__card-info-title-type">
+                  {{ item.org_type }}
+                </div>
+              </div>
+
               <div class="clients__card-info-address">
                 <i class="d-icon-location clients__card-info-address-icon"></i>
                 <span>{{

@@ -10047,3 +10047,80 @@ body {
     }
   }
 }
+.clients__card-info-title-type {
+  font-weight: 500;
+  color: #757575;
+  font-size: 14px;
+  line-height: 18px;
+  margin-top: 8px;
+  padding: 3px 8px;
+  border-radius: 24px;
+  background-color: #ededed;
+  width: min-content;
+}
+.clients__card-info-address span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  max-width: 300px;
+  white-space: nowrap;
+}
+@media (width<=1590px) {
+  .clients__card-info-address span {
+    max-width: 250px;
+  }
+}
+@media (width<=1480px) {
+  .clients__card-info-address span {
+    max-width: 200px;
+  }
+}
+@media (width<=1280px) {
+  .clients__card-info-address span {
+    max-width: 400px;
+  }
+  .clients__card-info-content-flex {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .clients__card-info-title-type {
+    font-size: 10px;
+    line-height: 14px;
+    margin-top: 0;
+  }
+}
+@media (width<=800px) {
+  .clients__card-info-title-type {
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .clients__card-info-address span {
+    max-width: 300px;
+  }
+}
+@media (width<=700px) {
+  .clients__card-info-address span {
+    max-width: 200px;
+  }
+}
+@media (width<=600px) {
+  .clients__card-info-title-type {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .clients__card-info-content-flex {
+    flex-direction: column;
+    align-items: start;
+  }
+  .clients__card-right-right.d-col-10 {
+    padding-left: 0;
+  }
+  .clients__card-right-right.d-col-10 .d-col-18 {
+    width: 100%;
+    padding: 0;
+  }
+  .clients__card-right-right.d-col-10 .d-col-18 .clients__card-offer {
+    min-width: 100%;
+  }
+}
