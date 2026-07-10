@@ -155,7 +155,7 @@
         <div class="clients__card-top">
           <div class="clients__card-info">
             <div class="clients__card-info-image-container">
-              <img src="/icons/spo-logo.svg" alt="" class="clients__card-info-image" />
+              <img :src="item.image" alt="" class="clients__card-info-image" />
             </div>
             <div class="clients__card-info-content">
               <div class="clients__card-info-content-flex">
