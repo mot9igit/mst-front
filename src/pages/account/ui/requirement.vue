@@ -328,6 +328,7 @@ export default {
       unsetRequirements: 'requirements/unsetRequirements',
       removeRequirements: 'requirements/removeRequirements',
       getReqCounts: 'requirements/getReqCounts',
+      getOptVendorsOfferSelected: 'offer/getOptVendorsOfferSelected',
     }),
     cancel() {
       this.$emit('closeWindow')
@@ -546,6 +547,13 @@ export default {
       if (newVal === true) {
         if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
           this.vendors = this.vendorOfferSelected.items
+          for (var o in this.vendors) {
+            for (var oo in this.vendors[o].stores) {
+              if (this.vendors[o].stores[oo].target_id != '0') {
+                this.vendors[o].stores.splice(oo, 1)
+              }
+            }
+          }
         } else {
           this.vendors = this.optVendorsSelected.items
         }
@@ -722,7 +730,7 @@ export default {
       font-size: 14px;
       margin: 0;
       span {
-        color: #F92C0D;
+        color: #f92c0d;
         text-decoration: underline;
       }
     }
