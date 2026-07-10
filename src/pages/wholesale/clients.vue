@@ -216,6 +216,7 @@
               <img
                 src="/icons/org_api_integration.svg"
                 class="clients__card-vendor--integration"
+                title="Интегрирован"
                 v-if="item.api_integration == 1"
               />
             </div>
@@ -286,6 +287,7 @@
                 src="/icons/org_api_integration.svg"
                 class="clients__card-vendor--integration"
                 v-if="item.api_integration == 1"
+                title="Интегрирован"
               />
             </div>
           </div>
