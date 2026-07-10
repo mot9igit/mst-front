@@ -285,7 +285,6 @@
           <div class="product-card__stat-list-cont">
             <div class="product-card__stat-list">
               <div v-if="sale.complect > 0" class="d-category">Комплект</div>
-              т
               <div v-if="sale.prices.discount_percent != 0">
                 <i class="d-icon-percent-rounded product-card__buy-icon"></i
                 ><span v-if="sale.prices.pricing_type == 1">Наценка</span
