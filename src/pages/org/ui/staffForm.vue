@@ -871,7 +871,7 @@ export default {
       return regex.test(phone)
     },
     validateEmail(email) {
-      const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      const regex = /^[a-zA-Zа-яА-ЯёЁ0-9._%+\-]+@[a-zA-Zа-яА-ЯёЁ0-9.\-]+\.[a-zA-Zа-яА-ЯёЁ]{2,}$/
       return regex.test(email)
     },
     submitStaff() {

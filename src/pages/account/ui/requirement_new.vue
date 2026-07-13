@@ -165,18 +165,29 @@
                 class="d-radio__wrapper need-vendor__radio-wrapper dart-mt-1"
               >
                 <Checkbox
-                  @change="changeStores(store.id, store.active)"
                   v-model="store.active"
                   :binary="true"
                   :inputId="'store-' + store.id"
                   :name="'store-' + store.id"
                   value="false"
+                  @change="changeStores(store.id, store.active)"
                 />
                 <label
                   :for="'store-' + store.id"
                   class="d-radio__label need-vendor__radio-label dart-ml-1"
-                  >Склад #{{ store.id }}, {{ store.address }}</label
+                  >Склад {{ store.name_short }} #{{ store.id }}, {{ store.address }}</label
                 >
+                <div class="d-radio__wrapper lk-staff-edit__operator-radio-wrapper">
+                  <Checkbox
+                    v-model="store.main_role"
+                    :binary="true"
+                    @change="changeStoresMains(store.id, store.main_role)"
+                    value="false"
+                  />
+                  <label class="d-radio__label vendor-change__selected-item-radio-label">
+                    Основной
+                  </label>
+                </div>
               </div>
             </div>
           </div>
@@ -517,19 +528,57 @@ export default {
       this.loading = false
     },
     changeStores(id, active) {
-      if (active === false) {
+      if (active === true) {
+        let count = this.formRequirementsView.warehouse.stores.length
+        let flag = this.formRequirementsView.warehouse.stores.length
         for (var i in this.formRequirementsView.warehouse.stores) {
-          this.formRequirementsView.warehouse.stores[i].active = false
+          if (this.formRequirementsView.warehouse.stores[i].active === true) {
+            count--
+          }
+          if (this.formRequirementsView.warehouse.stores[i].main_role === false) {
+            flag--
+          }
         }
-        this.disabled = true
+        for (var ii in this.formRequirementsView.warehouse.stores) {
+          if (
+            this.formRequirementsView.warehouse.stores[ii].id == id &&
+            count == this.formRequirementsView.warehouse.stores.length - 1 &&
+            flag == 0
+          ) {
+            this.formRequirementsView.warehouse.stores[ii].main_role = true
+          }
+        }
       } else {
-        for (i in this.formRequirementsView.warehouse.stores) {
+        for (var iii in this.formRequirementsView.warehouse.stores) {
+          if (this.formRequirementsView.warehouse.stores[iii].id == id) {
+            this.formRequirementsView.warehouse.stores[iii].main_role = false
+          }
+        }
+      }
+      this.setEnabled()
+    },
+    changeStoresMains(id, active) {
+      if (active === true) {
+        for (var i in this.formRequirementsView.warehouse.stores) {
           if (this.formRequirementsView.warehouse.stores[i].id == id) {
+            this.formRequirementsView.warehouse.stores[i].main_role = true
             this.formRequirementsView.warehouse.stores[i].active = true
             this.disabled = false
           } else {
-            this.formRequirementsView.warehouse.stores[i].active = false
+            this.formRequirementsView.warehouse.stores[i].main_role = false
           }
+        }
+      }
+      this.setEnabled()
+    },
+    setEnabled() {
+      this.disabled = true
+      for (var i in this.formRequirementsView.warehouse.stores) {
+        if (
+          this.formRequirementsView.warehouse.stores[i].active &&
+          this.formRequirementsView.warehouse.stores[i].main_role
+        ) {
+          this.disabled = false
         }
       }
     },
@@ -557,10 +606,12 @@ export default {
         for (var i in this.vendors) {
           for (var ii in this.vendors[i].stores) {
             this.vendors[i].stores[ii].active = false
+            this.vendors[i].stores[ii].main_role = false
           }
         }
       }
     },
+
     no_av_items: function (newVal) {
       if (newVal.length) {
         this.getReqCounts({ req: newVal }).then(() => (this.modals.createRequirement = true))
