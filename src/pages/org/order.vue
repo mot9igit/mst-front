@@ -26,7 +26,7 @@
       <div class="d-top-order-container-right">
         <!-- <div class="d-top-order-container-buttons-text"><p>Убедитесь, что товар есть в наличии и подготовьте его к отправке.</p></div>-->
         <button @click.prevent="toDownload" class="download-button">
-          <i class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"></i>
+          <i class="d-icon-upload2 d-select__arrow promotions__card-header-right-upload-icon"></i>
         </button>
       </div>
     </div>

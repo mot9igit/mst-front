@@ -64,7 +64,7 @@
                   @click.prevent="uploadData('registration')"
                 >
                   <i
-                    class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
+                    class="d-icon-upload2 d-select__arrow promotions__card-header-right-upload-icon"
                   ></i>
                 </div>
               </div>
@@ -201,7 +201,7 @@
                   @click.prevent="uploadData('integration')"
                 >
                   <i
-                    class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
+                    class="d-icon-upload2 d-select__arrow promotions__card-header-right-upload-icon"
                   ></i>
                 </div>
               </div>
@@ -373,7 +373,7 @@
                   @click.prevent="uploadData('connection')"
                 >
                   <i
-                    class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
+                    class="d-icon-upload2 d-select__arrow promotions__card-header-right-upload-icon"
                   ></i>
                 </div>
               </div>
@@ -661,7 +661,7 @@
                   @click.prevent="uploadData('orders')"
                 >
                   <i
-                    class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
+                    class="d-icon-upload2 d-select__arrow promotions__card-header-right-upload-icon"
                   ></i>
                 </div>
               </div>

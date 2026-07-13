@@ -199,7 +199,7 @@
           <div class="flex align-items-center gap-1">
             <button @click.prevent="toDownload" class="download-button">
               <i
-                class="d-icon-download d-select__arrow promotions__card-header-right-upload-icon"
+                class="d-icon-upload2 d-select__arrow promotions__card-header-right-upload-icon"
               ></i>
             </button>
           </div>

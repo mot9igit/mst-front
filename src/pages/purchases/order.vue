@@ -70,6 +70,13 @@
               >Документы <span v-if="docs.length">({{ docs.length }})</span></span
             >
           </button>
+          <button
+            class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__action order-card__docs-upload"
+            @click.prevent="saveExcel()"
+            title="Скачать в Excel"
+          >
+            <i class="d-icon d-icon-upload2"></i>
+          </button>
         </div>
       </div>
     </div>
@@ -426,6 +433,7 @@ export default {
       setStatusAccept: 'purchases/setStatusAccept',
       setOrderEditToCart: 'purchases/setOrderEditToCart',
       getBasket: 'basket/getBasket',
+      downloadOrder: 'wholesale/downloadOrder',
     }),
     changeStatus() {
       this.loading = true
@@ -562,6 +570,32 @@ export default {
       this.modalActiveActions = true
       this.productOrder = data
     },
+    saveExcel() {
+      this.loading = true
+      this.downloadOrder({
+        mode: 'buyer',
+      }).then((response) => {
+        this.loading = false
+        if (response.data.data.filename) {
+          this.loading = false
+          let loc = response.data.data.filename
+          var downloadLink = document.createElement('a')
+          downloadLink.href = loc
+          downloadLink.setAttribute('download', loc)
+          downloadLink.setAttribute('target', '_blank')
+          //console.log(downloadLink)
+          downloadLink.click()
+        } else {
+          this.loading = false
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось скачать заказ!',
+            life: 3000,
+          })
+        }
+      })
+    },
   },
   mounted() {
     this.getOptOrder({
@@ -613,4 +647,20 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.order-card__docs-upload {
+  width: 40px;
+  max-width: 40px;
+  min-width: 40px;
+  padding: 8px;
+  .d-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+</style>

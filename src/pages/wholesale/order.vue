@@ -96,8 +96,16 @@
             class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__action order-card__docs-upload"
             @click.prevent="modalDocsUpload = true"
             v-if="order.portal_integration == '1'"
+            title="Загрузить документы"
           >
             <i class="d-icon d-icon-download"></i>
+          </button>
+          <button
+            class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__action order-card__docs-upload"
+            @click.prevent="saveExcel()"
+            title="Скачать в Excel"
+          >
+            <i class="d-icon d-icon-upload2"></i>
           </button>
         </div>
       </div>
@@ -326,7 +334,6 @@
           :hiddenInputContainer="div"
           v-bind="args"
           clickable="true"
-     
         >
           <template v-slot:message>
             <div class="dart-dropzone__custom">
@@ -342,29 +349,33 @@
               <p>Вы также можете загрузить файл, <span>нажав сюда</span></p>
             </div>
           </template>
-          
         </DropZone>
         <div class="order-card__modal-docsupload-docs" v-if="form.files.length">
-          
           <div
             class="order-card__modal-docsupload-docs-item-cont"
             v-for="(item, index) in form.files"
             :key="index"
           >
             <a
-            class="order-card__modal-docsupload-docs-item" :href="item.original_href" target="_blank">
-              <img src="/icons/icon_sheet.svg" class="order-card__modal-docsupload-docs-item-sheet" />
+              class="order-card__modal-docsupload-docs-item"
+              :href="item.original_href"
+              target="_blank"
+            >
+              <img
+                src="/icons/icon_sheet.svg"
+                class="order-card__modal-docsupload-docs-item-sheet"
+              />
               <span class="order-card__modal-docsupload-docs-item-type">{{ item.type_file }}</span>
               <div class="order-card__modal-docsupload-docs-item-text">
                 <p class="order-card__modal-docsupload-docs-item-text-name">{{ item.name }}</p>
                 <p classs="order-card__modal-docsupload-docs-item-text-date">{{ item.date }}</p>
               </div>
             </a>
-            <i class="d-icon d-icon-trash order-card__modal-docsupload-docs-item-cont-trash"
-            @click.prevent="removeFile(index)"></i>
+            <i
+              class="d-icon d-icon-trash order-card__modal-docsupload-docs-item-cont-trash"
+              @click.prevent="removeFile(index)"
+            ></i>
           </div>
-        
-          
         </div>
         <div class="order-card__modal-docsupload-container">
           <button
@@ -501,8 +512,6 @@ export default {
       productOrder: [],
       orderInfo: {},
       modalDocsUpload: false,
-     
-      
     }
   },
   props: {
@@ -529,7 +538,8 @@ export default {
       getSellerStatuses: 'wholesale/getSellerStatuses',
       setOrderStatus: 'wholesale/setOrderStatus',
       deleteOrderOrtDoc: 'wholesale/deleteOrderOrtDoc',
-      optOrderSetDocs: 'wholesale/optOrderSetDocs'
+      optOrderSetDocs: 'wholesale/optOrderSetDocs',
+      downloadOrder: 'wholesale/downloadOrder',
     }),
     docClick(data) {
       let loc = data.filename
@@ -684,11 +694,11 @@ export default {
       })
     },
     parseFile(files, xhr) {
-    this.loading = true
+      this.loading = true
 
-     const callback = (e) => {
+      const callback = (e) => {
         const res = JSON.parse(e)
-        
+
         for (var i in res.data.files) {
           this.form.files.push(res.data.files[i])
         }
@@ -697,28 +707,26 @@ export default {
 
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
-   
           callback(xhr.response)
         }
       }
-      
     },
-    removeFile(ind){
+    removeFile(ind) {
       this.form.files.splice(ind, 1)
     },
-    dropzoneClick(){
-       document.getElementsByClassName("dropzone")[0].click()
+    dropzoneClick() {
+      document.getElementsByClassName('dropzone')[0].click()
     },
-    saveDocs(){
+    saveDocs() {
       this.loading = true
       this.optOrderSetDocs({
-        files: this.form.files
+        files: this.form.files,
       }).then((res) => {
-        if(res.data.success){
+        if (res.data.success) {
           this.$toast.add({
             severity: 'success',
             summary: 'Документы добавлены',
-            detail: "Вы успешно добавили документы к заказу",
+            detail: 'Вы успешно добавили документы к заказу',
             life: 3000,
           })
           this.form.files = []
@@ -730,7 +738,7 @@ export default {
           }).then(() => {
             this.loading = false
           })
-        }else{
+        } else {
           this.loading = false
           this.$toast.add({
             severity: 'error',
@@ -739,16 +747,40 @@ export default {
             life: 3000,
           })
         }
-
       })
     },
-    showDoc(ind){
-      src = this.form.files[ind].original_href
-      window.open(src);
-    }
-    
+    showDoc(ind) {
+      let src = this.form.files[ind].original_href
+      window.open(src)
+    },
+    saveExcel() {
+      this.loading = true
+      this.downloadOrder({
+        mode: 'seller',
+      }).then((response) => {
+        this.loading = false
+        if (response.data.data.filename) {
+          this.loading = false
+          let loc = response.data.data.filename
+          var downloadLink = document.createElement('a')
+          downloadLink.href = loc
+          downloadLink.setAttribute('download', loc)
+          downloadLink.setAttribute('target', '_blank')
+          //console.log(downloadLink)
+          downloadLink.click()
+        } else {
+          this.loading = false
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось скачать заказ!',
+            life: 3000,
+          })
+        }
+      })
+    },
   },
-  
+
   mounted() {
     this.getOrder({
       page: this.page,
@@ -772,10 +804,6 @@ export default {
       }
       this.loading = false
     })
-
-    
-
-   
   },
   computed: {
     ...mapGetters({
@@ -918,13 +946,13 @@ export default {
     display: block;
     border-radius: 6px;
   }
-  .dart-dropzone__custom{
+  .dart-dropzone__custom {
     padding: 0;
     i {
       height: 52px;
+    }
   }
-  }
-  .dropzone__message{
+  .dropzone__message {
     //margin-top: -22px;
   }
   .dart-dropzone {
@@ -949,25 +977,25 @@ export default {
       width: auto;
       margin: 0 !important;
       font-weight: 500;
-      &--cancel{
+      &--cancel {
         background: transparent;
         color: #282828;
         border: 1px solid #282828;
       }
-      &--cancel:hover{
+      &--cancel:hover {
         background: #282828;
         color: #fff;
         border: 1px solid #282828;
       }
     }
     .d-button-primary:disabled {
-        background-color: #EDEDED;
-        color: #757575;
-        font-weight: 500;
+      background-color: #ededed;
+      color: #757575;
+      font-weight: 500;
     }
   }
   .dropzone__item:not(:first-child) {
-    display:none;
+    display: none;
   }
   .dropzone__item:first-child {
     width: 100%;
@@ -975,8 +1003,8 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: - 25px;
-    position:relative;
+    margin-top: -25px;
+    position: relative;
     z-index: 1001;
     &-thumbnail {
       display: none;
@@ -988,10 +1016,10 @@ export default {
       display: none;
     }
     .dropzone__filename {
-      display:none;
+      display: none;
     }
-    .dropzone__item-thumbnail{
-      display:none;
+    .dropzone__item-thumbnail {
+      display: none;
     }
   }
   .order-card__modal-docsupload-docs {
@@ -1001,10 +1029,10 @@ export default {
     position: relative;
     width: 100%;
     margin-bottom: 56px;
-    &-item-cont{
+    &-item-cont {
       width: 100%;
       display: flex;
-      align-items:center;
+      align-items: center;
       justify-content: space-between;
       height: 57px;
       background: #ededed;
@@ -1012,17 +1040,17 @@ export default {
       border-radius: 11px;
       padding: 8px 16px;
       position: relative;
-      &-trash{
-          cursor: pointer;
-        }
+      &-trash {
+        cursor: pointer;
+      }
     }
     &-item {
       width: auto;
-      
+
       display: flex;
       align-items: center;
       gap: 8px;
-      
+
       &-sheet {
         width: 16px;
         height: 20px;
@@ -1035,18 +1063,18 @@ export default {
         top: calc(50% - 1px);
         left: 19px;
         font-weight: 600;
-        width:10px;
+        width: 10px;
         max-width: 10px;
         max-height: 5px;
         overflow: hidden;
-        text-align:center;
+        text-align: center;
       }
-      &-text{
+      &-text {
         display: flex;
         flex-direction: column;
         align-items: start;
         gap: 2px;
-        &-name{
+        &-name {
           width: 260px;
           height: 21px;
           font-weight: 600;
@@ -1057,13 +1085,12 @@ export default {
           text-overflow: ellipsis;
           white-space: nowrap;
         }
-        &-date{         
+        &-date {
           font-weight: 500;
           font-size: 14px;
           line-height: 18px;
           color: #757575;
         }
-        
       }
     }
   }
