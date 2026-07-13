@@ -755,6 +755,7 @@ export default {
     },
     settings(item, type) {
       this.selected = []
+
       this.selected.push(item)
       this.$emit('settings', this.selected, type)
     },
@@ -802,6 +803,13 @@ export default {
     productsAvailable: function () {
       this.filter_table_global = false
     },
+    productsSelected: function (newVal) {
+      if (this.filter_table_global) {
+        for (var i in newVal.products) {
+          this.table.push(Number(newVal.products[i].id))
+        }
+      }
+    },
     table: function (newVal) {
       if (this.productsSelected.products.length != newVal.length) {
         this.checked_all = false
@@ -811,6 +819,12 @@ export default {
     },
     filter_table_global: function (newVal) {
       if (newVal) {
+        this.table = []
+
+        for (var i in this.productsSelected.products) {
+          this.table.push(Number(this.productsSelected.products[i].id))
+        }
+      } else {
         this.table = []
       }
     },
