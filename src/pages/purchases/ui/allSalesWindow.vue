@@ -269,7 +269,6 @@
                 ></i>
               </div>
               <p>
-                {{ sale.action_id }} ----
                 {{ sale.name }}
               </p>
             </div>

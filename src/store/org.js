@@ -213,7 +213,7 @@ export default {
       }
       return response
     },
-    async getOptVendorsSelected({ commit }, { page, perpage }) {
+    async getOptVendorsSelected({ commit }, { page, perpage, show_ships, org_id }) {
       const data = {
         id: router.currentRoute._value.params.id,
         // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
@@ -229,11 +229,25 @@ export default {
         //   : null,
         extended_name: 'cart',
         // router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer' ? 'offer' : 'cart',
+        show_ships: show_ships,
+        org_id: org_id,
       }
       const response = await api.org.getOptVendors(data)
       if (response) {
         commit('SET_OPT_VENDORS_SELECTED', response.data)
       }
+      return response
+    },
+    async toggleVendorShipments(store, { active, org_id, store_ids }) {
+      const data = {
+        action: 'toggle/vendors/shipments',
+        active: active,
+        extended_name: 'cart',
+        id: router.currentRoute._value.params.id,
+        org_id: org_id,
+        store_ids: store_ids,
+      }
+      const response = await api.org.toggleVendorStores(data)
       return response
     },
     async toggleVendorStores(store, { active, org_id, store_id }) {

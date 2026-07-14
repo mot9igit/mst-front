@@ -133,7 +133,7 @@
         </form>
       </customModal>
       <customModal v-model="modals.requirementsView" class="need-modal-view">
-        <template v-slot:title>Выберите Поставщика и склады</template>
+        <template v-slot:title>Выберите поставщика и склады</template>
         <div class="need__notice need-vendor__notice">
           Для формирования заказа выберите поставщика, список складов и один основной склад —
           система сначала возьмёт товар оттуда, а при нехватке — с ближайших по сроку доставки.
@@ -782,6 +782,12 @@ export default {
         text-decoration: underline;
       }
     }
+  }
+}
+.need-modal-view {
+  .p-select {
+    border-radius: 20px;
+    border: 1px solid #757575;
   }
 }
 </style>

@@ -484,6 +484,7 @@ export default {
       getOptVendorsSelected: 'org/getOptVendorsSelected',
       toggleOpts: 'org/toggleOpts',
       toggleVendorStores: 'org/toggleVendorStores',
+      toggleVendorShipments: 'org/toggleVendorShipments',
     }),
 
     resizeMap() {
@@ -689,10 +690,34 @@ export default {
     },
     setShipments(id) {
       let active = this.shipments[id]
-      for (var i in this.optVendorsSelected.shipments[id].items) {
-        this.changeStores(id, this.optVendorsSelected.shipments[id].items[i], active)
-        console.log(1)
-      }
+      this.loading = true
+      this.toggleVendorShipments({
+        active: active,
+        org_id: id,
+        store_ids: this.optVendorsSelected?.shipments[id]?.items,
+      }).then(() => {
+        this.getOptVendorsAvailable({
+          filter: '',
+          page: this.pageAvailable,
+          perpage: this.cfg.vendors.perpage,
+        })
+          .then(() => {
+            this.getOptVendorsSelected({
+              filter: '',
+              page: this.pageSelected,
+              perpage: this.cfg.vendors.perpage,
+              org_id: id,
+              shiw_ship: active,
+            }).then(() => {
+              this.loading = false
+            })
+          })
+          .then(() => {
+            this.loading = false
+            this.$emit('catalogUpdate')
+            this.$emit('vendorCheck')
+          })
+      })
     },
   },
   watch: {

@@ -387,6 +387,7 @@ export default {
       toggleOptsVisible: 'offer/toggleOptsVisible',
       toggleOpts: 'offer/toggleOpts',
       toggleVendorStores: 'offer/toggleVendorStores',
+      toggleVendorShipments: 'offer/toggleVendorShipments',
       getOptVendorOffer: 'offer/getOptVendorOffer',
       getOptVendorsOfferSelected: 'offer/getOptVendorsOfferSelected',
     }),
@@ -582,9 +583,32 @@ export default {
 
     setShipments(id) {
       let active = this.shipments[id]
-      for (var i in this.vendorOfferSelected.shipments[id].items) {
-        this.changeStores(id, this.vendorOfferSelected.shipments[id].items[i], active)
-      }
+      this.loading = true
+      this.toggleVendorShipments({
+        active: active,
+        org_id: id,
+        store_ids: this.vendorOfferSelected?.shipments[id]?.items,
+      }).then(() => {
+        this.getOptVendorOffer({
+          filter: '',
+          page: this.pageAvailable,
+          perpage: this.cfg.vendors.perpage,
+          active_store: this.store,
+        }).then(() => {
+          this.getOptVendorsOfferSelected({
+            filter: '',
+            page: this.pageSelected,
+            perpage: this.cfg.vendors.perpage,
+            active_store: this.store,
+            show_ships: active,
+            org_id: id,
+          }).then(() => {
+            this.loading = false
+            this.$emit('catalogUpdate')
+            this.$emit('vendorCheck')
+          })
+        })
+      })
     },
   },
   watch: {
