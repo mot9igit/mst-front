@@ -644,7 +644,7 @@ export default {
       }
     },
     vendorOfferSelected: function (newVal) {
-      if (newVal.shipments?.length) {
+      if (Object.keys(newVal.shipments).length) {
         for (var i in newVal.shipments) {
           if (newVal.shipments[i].active) {
             this.shipments[i] = true

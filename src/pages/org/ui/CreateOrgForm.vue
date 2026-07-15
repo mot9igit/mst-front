@@ -237,7 +237,7 @@
 import PreLoader from '@/shared/ui/Loader.vue'
 import DropZone from 'dropzone-vue'
 import { useVuelidate } from '@vuelidate/core'
-import { required } from '@vuelidate/validators'
+import { required, minLength, numeric } from '@vuelidate/validators'
 import { helpers } from '@vuelidate/validators'
 import AddAddress from './AddAddress.vue'
 import Autocomplete from '@/shared/ui/Autocomplete.vue'
@@ -478,6 +478,8 @@ export default {
             required: helpers.withMessage('Поле обязательно для заполнения', () => {
               return this.form.company.inn
             }),
+            minLength: helpers.withMessage('ИНН должен содержать минимум 9 символов', minLength(9)),
+            numeric: helpers.withMessage('ИНН может состоять только из цифр', numeric),
           },
           kpp: {
             // required: helpers.withMessage('Поле обязательно для заполнения', () => {
@@ -524,6 +526,8 @@ export default {
             required: helpers.withMessage('Поле обязательно для заполнения', () => {
               return this.form.company.inn
             }),
+            minLength: helpers.withMessage('ИНН должен содержать минимум 9 символов', minLength(9)),
+            numeric: helpers.withMessage('ИНН может состоять только из цифр', numeric),
           },
           kpp: {
             // required: helpers.withMessage('Поле обязательно для заполнения', () => {

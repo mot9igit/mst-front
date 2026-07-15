@@ -732,9 +732,11 @@ export default {
       }
     },
     optVendorsSelected: function (newVal) {
-      for (var i in newVal.shipments) {
-        if (newVal.shipments[i].active) {
-          this.shipments[i] = true
+      if (Object.keys(newVal.shipments).length) {
+        for (var i in newVal.shipments) {
+          if (newVal.shipments[i].active) {
+            this.shipments[i] = true
+          }
         }
       }
     },
