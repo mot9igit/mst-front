@@ -616,7 +616,7 @@ export default {
           }
         }
       }
-      if ((active == false && col_active_stores > 0) || active == true) {
+      if ((active === false && col_active_stores > 0) || active == true) {
         this.toggleVendorStores({
           active: active,
           org_id: org_id,

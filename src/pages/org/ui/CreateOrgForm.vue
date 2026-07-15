@@ -119,14 +119,13 @@
               error: v$.form.company.kpp.$errors.length,
             }"
           >
-            <Autocomplete
+            <input
               name="kpp"
               class="dart-form-control"
-              type="company"
+              type="text"
               selectionType="single"
               placeholder="КПП"
               v-model="form.company.kpp"
-              @setSelection="form.company.data = $event"
             />
             <span class="error_desc" v-for="error of v$.form.company.kpp.$errors" :key="error.$uid">
               {{ error.$message }}
@@ -447,6 +446,11 @@ export default {
             this.form.company.warehouses.push(newWarehouse)
           }
         })
+      }
+    },
+    'form.company.data': function (newVal) {
+      if (newVal.data.kpp) {
+        this.form.company.kpp = newVal.data.kpp
       }
     },
   },
