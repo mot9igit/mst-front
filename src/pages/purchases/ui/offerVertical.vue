@@ -713,7 +713,10 @@ export default {
       delayPrefix: '',
       delayDays: 0,
       count: 1,
-      count_min: 1,
+      count_min:
+        this.$route.matched[5] && this.$route.matched[5].name == 'purchasesCatalogRequirement'
+          ? 0
+          : 1,
       step: 1,
       activeConflict: {
         delay: 0,
@@ -724,7 +727,10 @@ export default {
         counter: {
           count: 1,
           step: 1,
-          count_min: 1,
+          count_min:
+            this.$route.matched[5] && this.$route.matched[5].name == 'purchasesCatalogRequirement'
+              ? 0
+              : 1,
         },
       },
       colActiveActions: 0,
@@ -979,6 +985,7 @@ export default {
           this.$route.matched[5] &&
           this.$route.matched[5].name == 'purchasesCatalogRequirement'
         ) {
+          this.count_min = 0
           if (this.step == 1) {
             this.count_min > Number(this.offer.count)
               ? (this.count = this.count_min)
@@ -1001,6 +1008,7 @@ export default {
           let obj = { item: this.offer, count: this.count }
           obj.item.data = this.offerData
           this.$emit('counter', obj)
+          this.count_min = 0
         }
       }
     },

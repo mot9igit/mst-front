@@ -189,6 +189,23 @@
                   </label>
                 </div>
               </div>
+              <div
+                v-if="this.formRequirementsView.warehouse.shipments"
+                class="d-radio__wrapper need-vendor__radio-wrapper dart-mt-1"
+              >
+                <Checkbox
+                  v-model="this.formRequirementsView.warehouse.shipments.active"
+                  :binary="true"
+                  :inputId="'ship-' + formRequirementsView.warehouse"
+                  :name="'ship-' + formRequirementsView.warehouse"
+                  value="false"
+                />
+                <label
+                  :for="'ship-' + formRequirementsView.warehouse"
+                  class="d-radio__label need-vendor__radio-label dart-ml-1"
+                  >Товары в пути</label
+                >
+              </div>
             </div>
           </div>
           <div class="d-col-24 text-center">
@@ -279,6 +296,7 @@ export default {
         error: false,
       },
       page: 1,
+      shipments: false,
       table_data: {
         id: {
           label: '№',
@@ -611,7 +629,13 @@ export default {
         }
       }
     },
-
+    'formRequirementsView.warehouse': function (newVal) {
+      let id = newVal.id
+      if (id in this.optVendorsSelected.shipments) {
+        newVal.shipments = this.optVendorsSelected.shipments[id]
+        newVal.shipments.active = false
+      }
+    },
     no_av_items: function (newVal) {
       if (newVal.length) {
         this.getReqCounts({ req: newVal }).then(() => (this.modals.createRequirement = true))
@@ -751,9 +775,16 @@ export default {
     margin-right: 0;
   }
 }
+.need__notice {
+  border-radius: 16px;
+  padding: 16px 24px;
+  font-size: 16px;
+  line-height: 21px;
+  margin-top: 8px;
+  margin-bottom: 40px;
+}
 .need-vendor__notice {
-  background: #ededed;
-  color: #757575;
+  background: #f2f2f2;
 }
 .dart-dropzone {
   border: 2px dashed #e2e2e2 !important;
@@ -787,7 +818,75 @@ export default {
 .need-modal-view {
   .p-select {
     border-radius: 20px;
-    border: 1px solid #757575;
+    border: 1px solid #75757575;
+    .p-select-label {
+      padding: 11px 24px;
+
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 18px;
+
+      color: #282828;
+    }
+    .p-select-label.p-placeholder {
+      color: #757575;
+    }
+  }
+  .p-checkbox-box {
+    border-color: #757575;
+  }
+  .p-checkbox,
+  .p-checkbox-input,
+  .p-checkbox-box {
+    width: 24px;
+    min-width: 24px;
+    height: 24px;
+  }
+  .p-checkbox-checked .p-checkbox-box {
+    border-color: #f92c0d;
+  }
+  .need-vendor__radio-label.dart-ml-1 {
+    min-width: 45%;
+    width: 45%;
+    max-width: 45%;
+    font-size: 16px;
+    line-height: 21px;
+    margin-right: 48px;
+  }
+  .lk-staff-edit__operator-radio-wrapper {
+    margin-bottom: 0px;
+    .p-checkbox-box {
+      border-radius: 20px;
+    }
+    .p-checkbox-checked .p-checkbox-box {
+      border-color: #f92c0d;
+      background-color: #fff;
+      color: #f92c0d;
+    }
+    .p-checkbox-checked .p-checkbox-icon {
+      color: transparent;
+      background-color: #f92c0d;
+      border-radius: 10px;
+      width: 20px;
+      height: 20px;
+    }
+    .p-checkbox-checked:not(.p-disabled):has(.p-checkbox-input:hover) .p-checkbox-box {
+      background: #fff;
+      border-color: var(--p-checkbox-checked-hover-border-color);
+    }
+    .p-checkbox-checked:not(.p-disabled):has(.p-checkbox-input:hover) .p-checkbox-icon {
+      color: #f92c0d;
+    }
+  }
+}
+@media (min-width: 1536px) and (max-width: 1920px) {
+  .need-modal,
+  .need-modal-create,
+  .need-modal-view {
+    .modal__title {
+      font-size: 24px;
+      line-height: 31px;
+    }
   }
 }
 </style>
