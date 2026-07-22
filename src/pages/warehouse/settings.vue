@@ -21,8 +21,8 @@
     <Loader v-if="loading" />
     <div class="warehouse-analysis__table warehouse-settings__table">
       <BaseTable
-        :items_data="orgStores.items"
-        :total="orgStores.total"
+        :items_data="localOrgStores.items"
+        :total="localOrgStores.total"
         :table_data="this.table_stores"
         :filters="stores_filters"
         :pagination_items_per_page="this.pagination_items_per_page"
@@ -114,6 +114,12 @@ export default {
       productsData: [],
       productsTotal: 0,
       color: '#757575',
+      localOrgStores: {
+        items: [],
+        total: 0,
+        types: {},
+        integrations: {},
+      },
       table_stores: {
         name: {
           label: 'Название / Адрес',
@@ -236,8 +242,9 @@ export default {
       page: this.page,
       perpage: this.pagination_items_per_page,
     }).then(() => {
-      this.stores_filters.type.values = this.orgStores.types
-      this.stores_filters.integration.values = this.orgStores.integrations
+      this.localOrgStores = { ...this.orgStores }
+      this.stores_filters.type.values = this.localOrgStores.types
+      this.stores_filters.integration.values = this.localOrgStores.integrations
       this.getOrgShipments({
         page: 1,
       })
@@ -270,6 +277,7 @@ export default {
         perpage: this.pagination_items_per_page,
         filters: this.stores_filters,
       }).then(() => {
+        this.localOrgStores = { ...this.orgStores }
         this.loading = false
       })
     },
@@ -283,6 +291,7 @@ export default {
         perpage: this.pagination_items_per_page,
         filters: this.stores_filters,
       }).then(() => {
+        this.localOrgStores = { ...this.orgStores }
         this.loading = false
       })
     },
@@ -320,19 +329,15 @@ export default {
         page: this.page,
         perpage: this.pagination_items_per_page,
       }).then(() => {
-        this.stores_filters.type.values = this.orgStores.types
-        this.stores_filters.integration.values = this.orgStores.integrations
+        this.localOrgStores = { ...this.orgStores }
+        this.stores_filters.type.values = this.localOrgStores.types
+        this.stores_filters.integration.values = this.localOrgStores.integrations
 
         this.loading = false
       })
     },
   },
-  watch: {
-    orgStores: function (newVal) {
-      this.stores_filters.type.values = newVal.types
-      this.stores_filters.integration.values = newVal.integrations
-    },
-  },
+  watch: {},
 }
 </script>
 <style lang="scss">

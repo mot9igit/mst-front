@@ -158,13 +158,16 @@
                   <i class="d-icon-location product-card__stat-icon"></i>
                   <div class="product-card__stat-content" v-if="offer.available > 0">
                     <p class="product-card__stat-name">
-                      {{ offer.delivery }} дн. ({{
-                        new Date(offer.delivery_day).toLocaleString('ru', {
-                          month: '2-digit',
-                          day: '2-digit',
-                          year: '2-digit',
-                        })
-                      }})
+                      {{ offer.delivery }}
+                      <span v-if="offer.delivery_day">
+                        дн. ({{
+                          new Date(offer.delivery_day).toLocaleString('ru', {
+                            month: '2-digit',
+                            day: '2-digit',
+                            year: '2-digit',
+                          })
+                        }})
+                      </span>
                     </p>
                     <p class="product-card__stat-description">{{ offer.store_city }}</p>
                   </div>
@@ -357,13 +360,16 @@
               <i class="d-icon-location product-card__stat-icon"></i>
               <div class="product-card__stat-content">
                 <p class="product-card__stat-name">
-                  {{ offer.delivery }} дн. ({{
-                    new Date(offer.delivery_day).toLocaleString('ru', {
-                      month: '2-digit',
-                      day: '2-digit',
-                      year: '2-digit',
-                    })
-                  }})
+                  {{ offer.delivery }}
+                  <span v-if="offer.delivery_day">
+                    дн. ({{
+                      new Date(offer.delivery_day).toLocaleString('ru', {
+                        month: '2-digit',
+                        day: '2-digit',
+                        year: '2-digit',
+                      })
+                    }})
+                  </span>
                 </p>
                 <p class="product-card__stat-description">{{ offer.store_city }}</p>
               </div>
