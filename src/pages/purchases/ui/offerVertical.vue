@@ -809,6 +809,7 @@ export default {
       basketClear: 'basket/basketClear',
       basketProductRemove: 'basket/basketProductRemove',
       basketProductUpdate: 'basket/basketProductUpdate',
+      setSessionCount: 'catalog/setSessionCount',
     }),
 
     ElemCount(object) {
@@ -821,6 +822,7 @@ export default {
           let obj = { item: this.offer, count: this.count }
           obj.item.data = this.offerData
           this.$emit('counter', obj)
+          this.setSessionCount({ remain_id: this.offer.remain_id, count: this.count })
         }
         return
       }
@@ -835,6 +837,7 @@ export default {
           let obj = { item: this.offer, count: this.count }
           obj.item.data = this.offerData
           this.$emit('counter', obj)
+          this.setSessionCount({ remain_id: this.offer.remain_id, count: this.count })
         }
       }
       if (object.value < object.min) {
@@ -846,6 +849,7 @@ export default {
           let obj = { item: this.offer, count: this.count }
           obj.item.data = this.offerData
           this.$emit('counter', obj)
+          this.setSessionCount({ remain_id: this.offer.remain_id, count: this.count })
         }
         return
       }

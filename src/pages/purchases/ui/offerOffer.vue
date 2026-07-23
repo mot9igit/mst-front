@@ -150,13 +150,16 @@
                   <i class="d-icon-location product-card__stat-icon"></i>
                   <div class="product-card__stat-content" v-if="offer.available > 0">
                     <p class="product-card__stat-name">
-                      {{ offer.delivery }} дн. ({{
-                        new Date(offer.delivery_day).toLocaleString('ru', {
-                          month: '2-digit',
-                          day: '2-digit',
-                          year: '2-digit',
-                        })
-                      }})
+                      {{ offer.delivery }}
+                      <span v-if="offer.delivery_day">
+                        дн. ({{
+                          new Date(offer.delivery_day).toLocaleString('ru', {
+                            month: '2-digit',
+                            day: '2-digit',
+                            year: '2-digit',
+                          })
+                        }})</span
+                      >
                     </p>
                     <p class="product-card__stat-description">{{ offer.store_city }}</p>
                   </div>
@@ -697,7 +700,10 @@ export default {
       delayPrefix: '',
       delayDays: 0,
       count: 1,
-      count_min: 1,
+      count_min:
+        this.$route.matched[5] && this.$route.matched[5].name == 'purchasesOfferCatalogRequirement'
+          ? 0
+          : 1,
       step: 1,
       activeConflict: {
         delay: 0,
@@ -708,7 +714,11 @@ export default {
         counter: {
           count: 1,
           step: 1,
-          count_min: 1,
+          count_min:
+            this.$route.matched[5] &&
+            this.$route.matched[5].name == 'purchasesOfferCatalogRequirement'
+              ? 0
+              : 1,
         },
       },
       colActiveActions: 0,
@@ -784,6 +794,7 @@ export default {
       basketOfferClear: 'offer/basketOfferClear',
       basketOfferProductRemove: 'offer/basketOfferProductRemove',
       basketOfferProductUpdate: 'offer/basketOfferProductUpdate',
+      setSessionCount: 'catalog/setSessionCount',
     }),
 
     ElemCount(object) {
@@ -796,6 +807,7 @@ export default {
           let obj = { item: this.offer, count: this.count }
           obj.item.data = this.offerData
           this.$emit('counter', obj)
+          this.setSessionCount({ remain_id: this.offer.remain_id, count: this.count })
         }
         return
       }
@@ -810,6 +822,7 @@ export default {
           let obj = { item: this.offer, count: this.count }
           obj.item.data = this.offerData
           this.$emit('counter', obj)
+          this.setSessionCount({ remain_id: this.offer.remain_id, count: this.count })
         }
       }
       if (object.value < object.min) {
@@ -821,6 +834,7 @@ export default {
           let obj = { item: this.offer, count: this.count }
           obj.item.data = this.offerData
           this.$emit('counter', obj)
+          this.setSessionCount({ remain_id: this.offer.remain_id, count: this.count })
         }
         return
       }
@@ -1010,9 +1024,10 @@ export default {
       if (this.activeConflict) {
         // потребность
         if (
-          this.$route.matched[5] &&
-          this.$route.matched[5].name == 'purchasesOfferCatalogRequirement'
+          this.$route.matched[6] &&
+          this.$route.matched[6].name == 'purchasesOfferCatalogRequirement'
         ) {
+          this.count_min = 0
           if (this.step == 1) {
             this.count_min > Number(this.offer.count)
               ? (this.count = this.count_min)
@@ -1028,13 +1043,14 @@ export default {
         }
       } else {
         if (
-          this.$route.matched[5] &&
-          this.$route.matched[5].name == 'purchasesOfferCatalogRequirement'
+          this.$route.matched[6] &&
+          this.$route.matched[6].name == 'purchasesOfferCatalogRequirement'
         ) {
           this.count = Number(this.offer.count)
           let obj = { item: this.offer, count: this.count }
           obj.item.data = this.offerData
           this.$emit('counter', obj)
+          this.count_min = 0
         }
       }
     },

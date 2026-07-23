@@ -880,7 +880,11 @@ export default {
                     this.$emit('toggleOrderOffer')
                   }
                   this.loading = false
-                  this.getBasket()
+                  if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+                    this.getBasketOffer()
+                  } else {
+                    this.getBasket()
+                  }
                 } else {
                   this.$toast.add({
                     severity: 'error',

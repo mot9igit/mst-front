@@ -475,6 +475,7 @@ export default {
       basketProductAdd: 'basket/basketProductAdd',
       basketOfferProductAdd: 'offer/basketOfferProductAdd',
       basketProductAddAll: 'basket/basketProductAddAll',
+      setSessionCount: 'catalog/setSessionCount',
     }),
     async setValues() {
       if (Object.keys(this.offers).length) {
@@ -587,15 +588,33 @@ export default {
       let r_id = object.id
       if (object.value == object.min) {
         this.counts[r_id].count = object.value
+        if (
+          this.$route.name == 'purchasesCatalogRequirement' ||
+          this.$route.name == 'purchasesOfferCatalogRequirement'
+        ) {
+          this.setSessionCount({ remain_id: r_id, count: this.counts[r_id].count })
+        }
         return
       }
       if (object.value > Number(object.max)) {
         this.modal_remain = true
       } else {
         this.counts[r_id].count = object.value
+        if (
+          this.$route.name == 'purchasesCatalogRequirement' ||
+          this.$route.name == 'purchasesOfferCatalogRequirement'
+        ) {
+          this.setSessionCount({ remain_id: r_id, count: this.counts[r_id].count })
+        }
       }
       if (object.value < object.min) {
         this.counts[r_id].count = this.counts[r_id].count_min
+        if (
+          this.$route.name == 'purchasesCatalogRequirement' ||
+          this.$route.name == 'purchasesOfferCatalogRequirement'
+        ) {
+          this.setSessionCount({ remain_id: r_id, count: this.counts[r_id].count })
+        }
         return
       }
     },
