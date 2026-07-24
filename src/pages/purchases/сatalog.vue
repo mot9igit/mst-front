@@ -431,6 +431,23 @@
       @toggleOrderOffer="this.$emit('toggleOrderOffer')"
     />
   </customModal>
+
+  <customModal v-model="this.sessionCountWarning" class="product-card-actions__modal-all">
+    <div class="all-sales-window">
+      <div class="all-sales-window__top">
+        <h3 class="all-sales-window__title">Внимание!</h3>
+      </div>
+      <p>{{ sessionCountWarningText }}</p>
+      <div class="all-sales-window__bottom">
+        <button
+          class="d-button d-button-primary d-button--sm-shadow"
+          @click="this.sessionCountWarning = false"
+        >
+          Ок
+        </button>
+      </div>
+    </div>
+  </customModal>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -567,6 +584,8 @@ export default {
       addItemsConflicts: {},
       noconflicts: {},
       modalConflicts: false,
+      sessionCountWarning: false,
+      sessionCountWarningText: '',
       errors: '',
       date_now: '',
     }
@@ -792,11 +811,15 @@ export default {
         if (this.$route.name == 'purchasesOfferCatalogRequirement') {
           sstore = this.basketOfferWarehouse
         }
-        this.getOptProductsReqAll({ cart_store: sstore }).then(() => {
-          for (var id in this.reqProducts) {
+        this.getOptProductsReqAll({ cart_store: sstore }).then((response) => {
+          if (response.data.data.session_count_warning != '') {
+            this.sessionCountWarningText = response.data.data.session_count_warning
+            this.sessionCountWarning = true
+          }
+          for (var id in this.reqProducts.items) {
             if (!Object.keys(this.addItems).includes(id)) {
               //let art = this.reqProducts[id].item.article
-              this.addItems[id] = this.reqProducts[id]
+              this.addItems[id] = this.reqProducts.items[id]
               this.addItems[id].item.data = this.addItems[id].item
             }
             if (this.$route.name == 'purchasesOfferCatalogRequirement') {

@@ -305,6 +305,7 @@ export default {
       getOrg: 'org/getOrg',
       getOptVendorsAvailable: 'org/getOptVendorsAvailable',
       getOptVendorsSelected: 'org/getOptVendorsSelected',
+      setSessionCount: 'catalog/setSessionCount',
     }),
     catalogUpdate() {
       this.catalogUpdater = true
@@ -453,6 +454,14 @@ export default {
     changeVendorsOfferWindow,
   },
   watch: {
+    '$route.name': function (newVal, oldVal) {
+      if (
+        (oldVal === 'purchasesCatalogRequirement' || oldVal === 'purchasesOfferCatalogRequirement') &&
+        oldVal !== newVal
+      ) {
+        this.setSessionCount({ mode: 'clear' })
+      }
+    },
     '$route.params.id': {
       handler: function () {
         if (this.$route.params.id) {
