@@ -614,7 +614,7 @@ export default {
     'modals.requirementsView': function (newVal) {
       if (newVal === true) {
         if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-          this.vendors = JSON.parse(JSON.stringify(this.vendorOfferSelected.items))
+          this.vendors = this.vendorOfferSelected.items
           for (var o in this.vendors) {
             this.vendors[o].stores = this.vendors[o].stores.filter((s) => s.target_id === '0')
           }
