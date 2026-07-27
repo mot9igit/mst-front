@@ -616,7 +616,7 @@ export default {
       }
     },
     'modals.requirementsView': function (newVal) {
-      console.log(this.vendorOfferSelected)
+      //console.log(this.vendorOfferSelected)
       if (newVal === true) {
         if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
           if (!this.vendorOfferSelected) {
@@ -631,9 +631,11 @@ export default {
           }
 
           for (var o in this.vendors) {
-            this.vendors[o].stores = Array.isArray(this.vendors[o].stores)
-              ? this.vendors[o].stores.filter((s) => s.target_id === '0')
-              : []
+            for (var s in this.vendors[o].stores) {
+              if (this.vendors[o].stores[s].target_id != '0') {
+                this.vendors[o].stores.splice(s, 1)
+              }
+            }
           }
         } else {
           this.vendors = this.optVendorsSelected.items
