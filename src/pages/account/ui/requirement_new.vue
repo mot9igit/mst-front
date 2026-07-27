@@ -630,11 +630,10 @@ export default {
           }
           console.log(this.vendors)
           for (var o in this.vendors) {
-            for (var s in this.vendors[o].stores) {
-              if (this.vendors[o].stores[s].target_id != '0') {
-                this.vendors[o].stores.splice(s, 1)
-              }
-            }
+            this.vendors[o].stores = Array.isArray(this.vendors[o].stores)
+              ? this.vendors[o].stores
+              : Object.values(this.vendors[o].stores)
+            this.vendors[o].stores = this.vendors[o].stores.filter((s) => s.target_id === '0')
           }
         } else {
           this.vendors = this.optVendorsSelected.items
