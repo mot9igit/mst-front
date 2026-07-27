@@ -432,15 +432,22 @@
     />
   </customModal>
 
-  <customModal v-model="this.sessionCountWarning" class="product-card-actions__modal-all">
-    <div class="all-sales-window">
-      <div class="all-sales-window__top">
-        <h3 class="all-sales-window__title">Внимание!</h3>
+  <customModal v-model="this.sessionCountWarning" class="product-card-actions__modal-warning">
+    <div class="product-card-actions__modal-warning-cont">
+      <h2 class="product-card-actions__modal-warning__title">Внимание!</h2>
+      <p class="product-card-actions__modal-warning__text">{{ sessionCountWarningText }}</p>
+      <div class="product-card-actions__modal-warning__products">
+        <div class="prod-card" v-for="(item, index) in sessionCountWarningItems" :key="index">
+          <img :src="item.image" alt="" class="prod-card__img" />
+          <div class="prod__content">
+            <span class="prod-card__title">{{ item.pagetitle }}</span>
+            <span class="prod-card__article">арт. {{ item.article }}</span>
+          </div>
+        </div>
       </div>
-      <p>{{ sessionCountWarningText }}</p>
-      <div class="all-sales-window__bottom">
+      <div class="product-card-actions__modal-warning__bottom">
         <button
-          class="d-button d-button-primary d-button--sm-shadow"
+          class="d-button d-button-primary d-button--sm-shadow noclose_click"
           @click="this.sessionCountWarning = false"
         >
           Ок
@@ -586,6 +593,7 @@ export default {
       modalConflicts: false,
       sessionCountWarning: false,
       sessionCountWarningText: '',
+      sessionCountWarningItems: [],
       errors: '',
       date_now: '',
     }
@@ -812,8 +820,9 @@ export default {
           sstore = this.basketOfferWarehouse
         }
         this.getOptProductsReqAll({ cart_store: sstore }).then((response) => {
-          if (response.data.data.session_count_warning != '') {
-            this.sessionCountWarningText = response.data.data.session_count_warning
+          if (response.data.data.session_count_warning.message != '') {
+            this.sessionCountWarningText = response.data.data.session_count_warning.message
+            this.sessionCountWarningItems = response.data.data.session_count_warning.items
             this.sessionCountWarning = true
           }
           for (var id in this.reqProducts.items) {
@@ -1679,6 +1688,66 @@ export default {
     font-weight: 500;
     font-size: 8px;
     line-height: 10px;
+  }
+}
+.product-card-actions__modal-warning .modal__title {
+  margin-bottom: 24px;
+}
+.product-card-actions__modal-warning__title {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+  letter-spacing: -0.01em;
+  color: #282828;
+}
+.product-card-actions__modal-warning__text {
+  margin: 24px auto;
+  text-align: left;
+  font-size: 14px;
+  line-height: 22px;
+  color: #282828;
+}
+.product-card-actions__modal-warning__products {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  gap: 16px;
+}
+.product-card-actions__modal-warning__products .prod-card {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: start;
+}
+.product-card-actions__modal-warning__products .prod__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.product-card-actions__modal-warning__products .prod-card__title {
+  font-size: 16px;
+  line-height: 18px;
+  font-weight: 600;
+  text-align: left;
+}
+.product-card-actions__modal-warning__products .prod-card__article {
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 400;
+  color: #757575;
+}
+.product-card-actions__modal-warning__products .prod-card__img {
+  max-height: 80px;
+  border-radius: 6px;
+}
+.product-card-actions__modal-warning__bottom {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  button {
+    width: min-content;
+    min-width: 72px;
   }
 }
 @media (width <= 600px) {
