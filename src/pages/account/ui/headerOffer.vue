@@ -156,6 +156,7 @@
   </div>
   <requirement
     :offer="isOffer"
+    :store="cart_store"
     :requirementsModal="this.modals.requirement"
     @closeWindow="closeRequirementsWindow"
   />

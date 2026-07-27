@@ -273,6 +273,10 @@ export default {
       type: Object,
       default: null,
     },
+    store: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -614,9 +618,18 @@ export default {
     'modals.requirementsView': function (newVal) {
       if (newVal === true) {
         if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
+          if (!this.vendorOfferSelectedvendorOfferSelected) {
+            this.getOptVendorsOfferSelected({
+              active_store: this.store,
+              type: 1,
+            })
+          }
           this.vendors = this.vendorOfferSelected.items
+
           for (var o in this.vendors) {
-            this.vendors[o].stores = this.vendors[o].stores.filter((s) => s.target_id === '0')
+            this.vendors[o].stores = (this.vendors[o].stores || []).filter(
+              (s) => s.target_id === '0',
+            )
           }
         } else {
           this.vendors = this.optVendorsSelected.items
