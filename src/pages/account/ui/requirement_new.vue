@@ -622,9 +622,12 @@ export default {
             this.getOptVendorsOfferSelected({
               active_store: this.store,
               type: 1,
+            }).then(() => {
+              this.vendors = this.vendorOfferSelected.items
             })
+          } else {
+            this.vendors = this.vendorOfferSelected.items
           }
-          this.vendors = this.vendorOfferSelected.items
 
           for (var o in this.vendors) {
             this.vendors[o].stores = Array.isArray(this.vendors[o].stores)
