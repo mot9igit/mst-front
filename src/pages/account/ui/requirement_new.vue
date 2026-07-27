@@ -627,14 +627,15 @@ export default {
           this.vendors = this.vendorOfferSelected.items
 
           for (var o in this.vendors) {
-            this.vendors[o].stores = (this.vendors[o].stores || []).filter(
-              (s) => s.target_id === '0',
-            )
+            this.vendors[o].stores = Array.isArray(this.vendors[o].stores)
+              ? this.vendors[o].stores.filter((s) => s.target_id === '0')
+              : []
           }
         } else {
           this.vendors = this.optVendorsSelected.items
         }
         for (var i in this.vendors) {
+          if (!Array.isArray(this.vendors[i].stores)) continue
           for (var ii in this.vendors[i].stores) {
             this.vendors[i].stores[ii].active = false
             this.vendors[i].stores[ii].main_role = false
