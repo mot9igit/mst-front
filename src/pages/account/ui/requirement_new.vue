@@ -616,9 +616,10 @@ export default {
       }
     },
     'modals.requirementsView': function (newVal) {
+      console.log(this.vendorOfferSelected)
       if (newVal === true) {
         if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-          if (!this.vendorOfferSelectedvendorOfferSelected) {
+          if (!this.vendorOfferSelected) {
             this.getOptVendorsOfferSelected({
               active_store: this.store,
               type: 1,
