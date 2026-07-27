@@ -616,7 +616,6 @@ export default {
       }
     },
     'modals.requirementsView': function (newVal) {
-      //console.log(this.vendorOfferSelected)
       if (newVal === true) {
         if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
           if (!this.vendorOfferSelected) {
@@ -629,7 +628,7 @@ export default {
           } else {
             this.vendors = this.vendorOfferSelected.items
           }
-
+          console.log(this.vendors)
           for (var o in this.vendors) {
             for (var s in this.vendors[o].stores) {
               if (this.vendors[o].stores[s].target_id != '0') {
