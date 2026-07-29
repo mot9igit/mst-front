@@ -422,7 +422,7 @@ export default {
       this.$load(async () => {
         this.loading = true
         let data = this.formRequirements
-        if (this.no_av_items != null || Object.keys(this.createR).length) {
+        if (Object.keys(this.no_av_items).length || Object.keys(this.createR).length) {
           data.no_av_items = this.reqCounts.no_av_items
         }
         await this.setRequirement(data).then((response) => {
@@ -649,9 +649,18 @@ export default {
     },
     'formRequirementsView.warehouse': function (newVal) {
       let id = newVal.id
-      if (id in this.optVendorsSelected.shipments) {
-        newVal.shipments = this.optVendorsSelected.shipments[id]
-        newVal.shipments.active = false
+      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
+        if (Object.keys(this.vendorOfferSelected.shipments).length) {
+          if (id in this.vendorOfferSelected.shipments) {
+            newVal.shipments = this.vendorOfferSelected.shipments[id].items
+            newVal.shipments.active = false
+          }
+        }
+      } else {
+        if (id in this.optVendorsSelected.shipments) {
+          newVal.shipments = this.optVendorsSelected.shipments[id]
+          newVal.shipments.active = false
+        }
       }
     },
     no_av_items: function (newVal) {

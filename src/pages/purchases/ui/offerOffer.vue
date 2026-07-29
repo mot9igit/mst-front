@@ -71,7 +71,9 @@
                   от {{ offer.min_price.price.toLocaleString('ru') }} ₽
                 </p>
 
-                <p class="product-card__price-value-discounted" v-else>{{ offer.price }} ₽</p>
+                <p class="product-card__price-value-discounted" v-else>
+                  {{ offer.price.toLocaleString('ru') }} ₽
+                </p>
                 <p class="product-card__rrcdiscount" v-if="offer.prices.rrc_discount > 0">
                   {{ -offer.prices.rrc_discount }}%
                 </p>

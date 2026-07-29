@@ -313,6 +313,36 @@
                   <div class="d-divider d-divider--vertical"></div>
                   <div
                     class="promotions__card-value-container"
+                    @click.prevent="uploadData('integration_link_off')"
+                    style="cursor: pointer"
+                    title="Скачать список организаций"
+                  >
+                    <span class="promotions__card-label">Связь потеряна:</span>
+                    <div class="promotions__card-value-container-item">
+                      <p class="promotions__card-value">
+                        {{ dashboard_data?.integration?.out_link_now }}
+                      </p>
+                      <span
+                        class="promotions__card-badge"
+                        :class="{
+                          'promotions__card-badge-green':
+                            Number(dashboard_data?.integration?.out_link_prev) > 0,
+                          'promotions__card-badge-red':
+                            Number(dashboard_data?.integration?.out_link_prev) < 0,
+                          'promotions__card-badge-null':
+                            Number(dashboard_data?.integration?.out_link_prev) == 0,
+                        }"
+                        >{{
+                          Number(dashboard_data?.integration?.out_link_prev) > 0
+                            ? '+' + dashboard_data?.integration?.out_link_prev
+                            : dashboard_data?.integration?.out_link_prev
+                        }}</span
+                      >
+                    </div>
+                  </div>
+                  <div class="d-divider d-divider--vertical"></div>
+                  <div
+                    class="promotions__card-value-container"
                     @click.prevent="uploadData('integration_off')"
                     style="cursor: pointer"
                     title="Скачать список организаций"
