@@ -110,8 +110,11 @@
 
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
-          <div class="order-card__orderinfo-grid-text">
+          <div class="order-card__orderinfo-grid-text" v-if="!this.offer?.fog_store">
             {{ this.offer?.day_delivery }}дн. ({{ this.offer?.delivery_date }})
+          </div>
+          <div class="order-card__orderinfo-grid-text" v-else>
+            {{ this.offer?.fog_store }}
           </div>
         </div>
       </div>
