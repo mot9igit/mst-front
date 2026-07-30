@@ -310,7 +310,7 @@
                       >
                     </div>
                   </div>
-                  <div class="d-divider d-divider--vertical"></div>
+                  <div class="d-divider d-divider--vertical opacity_divider"></div>
                   <div
                     class="promotions__card-value-container"
                     @click.prevent="uploadData('integration_link_off')"
@@ -1774,7 +1774,7 @@ export default {
     line-height: 26px;
   }
 }
-@media (width <= 1260px) {
+@media (width <= 1460px) {
   .sale_page .dashboard__content .promotions__card-content .promotions__card-values-cont {
     gap: 29px;
   }
@@ -2069,7 +2069,7 @@ export default {
     gap: 32px;
   }
 }
-@media (width <= 880px) {
+@media (width <= 960px) {
   .shipments h1 {
     font-size: 14px;
     line-height: 18px;
@@ -2216,7 +2216,7 @@ export default {
     font-size: 12px;
   }
 }
-@media (width <= 800px) {
+@media (width <= 880px) {
   .shipments h1 {
     font-size: 12px;
     line-height: 16px;
@@ -2377,6 +2377,9 @@ export default {
     .promotions__card-values
     .promotions__card-value-container--main {
     grid-area: A;
+  }
+  .opacity_divider {
+    opacity: 0 !important;
   }
 }
 @media (width <= 600px) {
