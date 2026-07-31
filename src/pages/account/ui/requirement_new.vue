@@ -421,10 +421,14 @@ export default {
 
       this.$load(async () => {
         this.loading = true
-        let data = this.formRequirements
-        if (Object.keys(this.no_av_items).length || Object.keys(this.createR).length) {
-          data.no_av_items = this.reqCounts.no_av_items
+        let data = toRaw(this.formRequirements)
+        console.log(data)
+        if (this.$route.matched[5] && this.$route.matched[5].name != 'WholesaleClientsOffer') {
+          if (Object.keys(this.no_av_items).length || Object.keys(this.createR).length) {
+            data.no_av_items = this.reqCounts.no_av_items
+          }
         }
+
         await this.setRequirement(data).then((response) => {
           if (response.data.success) {
             this.$toast.add({
