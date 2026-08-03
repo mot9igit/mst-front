@@ -659,7 +659,7 @@ export default {
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         if (Object.keys(this.vendorOfferSelected.shipments).length) {
           if (id in this.vendorOfferSelected.shipments) {
-            newVal.shipments = this.vendorOfferSelected.shipments[id].items
+            newVal.shipments = this.vendorOfferSelected.shipments[id]
             newVal.shipments.active = false
           }
         }
