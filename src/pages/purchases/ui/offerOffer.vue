@@ -1030,15 +1030,30 @@ export default {
           this.$route.matched[6].name == 'purchasesOfferCatalogRequirement'
         ) {
           this.count_min = 0
-          if (this.step == 1) {
-            this.count_min > Number(this.offer.count)
-              ? (this.count = this.count_min)
-              : (this.count = Number(this.offer.count))
+          if (Number(this.offer.count) == 0) {
+            this.count = 0
           } else {
-            if (this.count < Number(this.offer.count)) {
-              this.count = Number(this.offer.count)
+            if (this.step == 1) {
+              this.count_min > Number(this.offer.count)
+                ? (this.count = this.count_min)
+                : (this.count = Number(this.offer.count))
+            } else {
+              // if (this.count < Number(this.offer.count)) {
+              //   this.count = Number(this.offer.count)
+              // }
+              if (this.step >= Number(this.offer.count)) {
+                this.count = this.step
+              } else {
+                if (!(this.step % Number(this.offer.count))) {
+                  this.count = Number(this.offer.count)
+                } else {
+                  this.count =
+                    Number(this.offer.count) + this.step - (Number(this.offer.count) % this.step)
+                }
+              }
             }
           }
+
           let obj = { item: this.offer, count: this.count }
           obj.item.data = this.offerData
           this.$emit('counter', obj)
