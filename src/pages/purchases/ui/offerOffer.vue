@@ -964,6 +964,7 @@ export default {
         let obj = { item: this.offer, count: this.count }
         obj.item.data = this.offerData
         this.$emit('counter', obj)
+        this.setSessionCount({ remain_id: this.offer.remain_id, count: this.count })
       }
     },
     checkAction(ind) {
@@ -1057,6 +1058,7 @@ export default {
           let obj = { item: this.offer, count: this.count }
           obj.item.data = this.offerData
           this.$emit('counter', obj)
+          this.setSessionCount({ remain_id: this.offer.remain_id, count: this.count })
         }
       } else {
         if (
@@ -1123,6 +1125,7 @@ export default {
             let obj = { item: this.offer, count: this.count }
             obj.item.data = this.offerData
             this.$emit('counter', obj)
+            this.setSessionCount({ remain_id: this.offer.remain_id, count: this.count })
           } else {
             this.count = 1
           }
