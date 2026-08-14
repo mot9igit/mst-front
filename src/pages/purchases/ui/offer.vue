@@ -199,7 +199,7 @@
     </div>
 
     <!-- Нижняя часть карточки с информацией об акциях -->
-    <div class="product-card__footer" v-if="offer.actions && offer.actions.length">
+    <div class="product-card__footer" v-if="offer.actions && Object.keys(offer.actions).length">
       <!-- Список акций -->
       <div class="product-card__promo-list">
         <div class="product-card__promo" v-if="activeActions > 0">

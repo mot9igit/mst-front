@@ -151,20 +151,44 @@
           <p class="order__item-header-badge-text">{{ opt_products?.org_from?.name }}</p>
         </div>
       </h1>
-      <div class="catalog-top_filters-right catalog-top_button-container">
-        <div
-          class="catalog-top_filters-right-item"
-          :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
-          @click.prevent="setDesign(0)"
-        >
-          <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_box.svg" />
+      <div class="catalog-top_button-container">
+        <div class="card_trigger">
+          <div class="d-switch catalog-filter-switch" @click="this.show_offers = !this.show_offers">
+            <input
+              type="checkbox"
+              binary="true"
+              class="d-switch__input"
+              v-model="this.show_offers"
+              id="catalog-show_offers"
+            />
+            <div class="d-switch__circle"></div>
+          </div>
+
+          <label
+            for="catalog-show_offers"
+            class="catalog-top_filters-label"
+            :class="{
+              'catalog-top_filters-label--active': this.show_offers,
+              'catalog-filter-switch-lable': true,
+            }"
+            >Отображение карточек
+          </label>
         </div>
-        <div
-          class="catalog-top_filters-right-item"
-          :class="{ 'catalog-top_filters-right-item--active': active_design == 1 }"
-          @click.prevent="setDesign(1)"
-        >
-          <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
+        <div class="catalog-top_filters-right">
+          <div
+            class="catalog-top_filters-right-item"
+            :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
+            @click.prevent="setDesign(0)"
+          >
+            <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_box.svg" />
+          </div>
+          <div
+            class="catalog-top_filters-right-item"
+            :class="{ 'catalog-top_filters-right-item--active': active_design == 1 }"
+            @click.prevent="setDesign(1)"
+          >
+            <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
+          </div>
         </div>
       </div>
     </div>
@@ -524,10 +548,10 @@ export default {
           value: false,
           type: 'switch',
         },
-        show_offers: {
-          name: 'Отображение карточек',
-          placeholder: 'Отображение карточек',
-          value: true,
+        outOfStock: {
+          name: 'Out of stock',
+          placeholder: 'Out of stock',
+          value: false,
           type: 'switch',
         },
         dates: {
@@ -791,7 +815,11 @@ export default {
       if (index != 'dates' && index != 'sales') {
         for (var i in this.filters) {
           if (i == index && i != 'show_offers' && i != 'dates') {
-            this.filters[i].value = true
+            if (this.filters[i].value) {
+              this.filters[i].value = false
+            } else {
+              this.filters[i].value = true
+            }
           } else {
             if (i != 'show_offers' && i != 'dates' && i != 'sales') {
               this.filters[i].value = false
@@ -860,7 +888,7 @@ export default {
                 if (this.noconflicts[r_id].count > 0 && this.noconflicts[r_id].item.available > 0) {
                   let conf = {}
                   let item = this.noconflicts[r_id].item
-                  if (item.actions.length) {
+                  if (Object.keys(item.actions || {}).length) {
                     for (var action_item in item.actions) {
                       if (item.actions[action_item].relations?.active) {
                         conf = item.actions[action_item].relations
@@ -1272,13 +1300,31 @@ export default {
 }
 .catalog-top_button-container {
   display: flex;
-  justify-content: center;
+  justify-content: end;
   align-items: center;
   gap: 2px;
-  width: 66px;
+  width: 30%;
   height: 32px;
-  max-width: 66px;
   max-height: 32px;
+  .card_trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 32px;
+    margin-right: 32px;
+    position: relative;
+    &::before {
+      content: '';
+      width: 1px;
+      height: 16px;
+      background-color: #757575;
+      display: block;
+      position: absolute;
+      top: 50%;
+      transform: translate(0, -50%);
+      right: 0;
+    }
+  }
 }
 .catalog-top_button-cont p {
   color: #757575;

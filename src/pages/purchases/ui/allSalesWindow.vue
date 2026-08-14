@@ -716,7 +716,7 @@ export default {
             let item = toRaw(this.noconflicts[r_id].item)
             // console.log(item.actions)
             let actions = item.actions
-            console.log(actions.length)
+            console.log(Object.keys(actions).length)
             if (Object.keys(actions).length) {
               for (var action_item in actions) {
                 if (actions[action_item].relations?.active) {

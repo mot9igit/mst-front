@@ -231,7 +231,7 @@ export default {
     },
   },
   mounted() {
-    if (this.product.actions.length) {
+    if (Object.keys(this.product.actions || {}).length) {
       for (var i in this.product.actions) {
         if (this.product.actions[i].enabled == 1) {
           this.actions.push(this.product.actions[i])
@@ -243,7 +243,7 @@ export default {
   methods: {},
   watch: {
     product: function (newVal) {
-      if (newVal.actions.length) {
+      if (Object.keys(newVal.actions || {}).length) {
         for (var i in newVal.actions) {
           if (newVal.actions[i].enabled == 1) {
             this.actions.push(newVal.actions[i])

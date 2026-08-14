@@ -7,15 +7,33 @@
     </div>
 
     <div class="clients__header">
-      <div class="clients__header-title-wrapper">
-        <h1 class="clients__header-title">
-          Мои клиенты (<span v-if="dilers.total > -1">{{ dilers.total }}</span
-          ><span v-else>0</span>)
-        </h1>
+      <div class="dart-row">
+        <div class="d-col-lg-12">
+          <div class="clients__header-title-wrapper">
+            <h1 class="clients__header-title">
+              Мои клиенты (<span v-if="dilers.total > -1">{{ dilers.total }}</span
+              ><span v-else>0</span>)
+            </h1>
+          </div>
+          <p class="clients__header-description">
+            Доступные организации, которые являются вашими клиентами
+          </p>
+        </div>
+        <div class="d-col-lg-12 d-flex d-flex-end">
+          <router-link
+            :to="{
+              name: 'WholesaleClientsAdd',
+              params: {
+                id: this.$route.params.id,
+              },
+            }"
+            class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
+          >
+            <i class="d-icon-plus-flat clients__filters-create-icon"></i>
+            Новый клиент
+          </router-link>
+        </div>
       </div>
-      <p class="clients__header-description">
-        Доступные организации, которые являются вашими клиентами
-      </p>
     </div>
 
     <div class="clients__filters">
@@ -68,47 +86,85 @@
               </button>-->
             </div>
           </div>
-        </div>
-        <div
-          class="d-radio__wrapper clients__filters-radio-wrapper"
-          v-for="(ffilter, i) in filters"
-          :key="i"
-        >
-          <label
-            for="vendorCreated"
-            class="p-checkbox p-component"
+          <div
+            class="d-radio__wrapper clients__filters-radio-wrapper"
             v-if="ffilter.type == 'checkbox'"
           >
-            <Checkbox
-              :inputId="'input' + i"
-              :name="i"
-              value="1"
-              v-model="filterValues[i]"
-              @change="setFilter"
-              class="p-radio-input clients__filters-radio-input"
-            />
-          </label>
-          <label
-            for="vendorCreated"
-            class="d-radio__label clients__filters-radio-label"
-            v-if="ffilter.type == 'checkbox'"
-            >Созданные поставщиком
-          </label>
+            <label for="vendorCreated" class="p-checkbox p-component">
+              <Checkbox
+                :inputId="'input' + i"
+                :name="i"
+                value="1"
+                v-model="filterValues[i]"
+                @change="setFilter"
+                class="p-radio-input clients__filters-radio-input"
+              />
+            </label>
+            <label
+              for="vendorCreated"
+              class="d-radio__label clients__filters-radio-label"
+              v-if="ffilter.type == 'checkbox'"
+            >
+              {{ ffilter.name }}
+            </label>
+          </div>
+          <div
+            class="d-radio__wrapper clients__filters-radio-wrapper"
+            v-if="ffilter.type == 'switch'"
+          >
+            <div class="d-switch catalog-filter-switch" @click="setFilterSwitch(i)">
+              <input
+                type="checkbox"
+                binary="true"
+                class="d-switch__input"
+                v-model="filterValues[i]"
+                :id="'catalog-' + i"
+              />
+              <div class="d-switch__circle"></div>
+            </div>
+            <label
+              :for="'catalog-' + i"
+              class="catalog-top_filters-label"
+              :class="{
+                'catalog-top_filters-label--active': filterValues[i],
+                'catalog-filter-switch-lable': ffilter.type == 'switch',
+              }"
+              >{{ ffilter.placeholder }}
+            </label>
+          </div>
+          <DatePicker
+            v-if="ffilter.type == 'datepicker'"
+            v-model="filterValues[i]"
+            @hide="setFilter"
+            dateFormat="dd.mm.yy"
+            :placeholder="ffilter.placeholder"
+            :manualInput="false"
+            :maxDate="date_now"
+            showIcon
+            showClear
+            iconDisplay="input"
+            selectionMode="range"
+            class="catalog-filters-dates"
+          >
+            <template #footer>
+              <div class="catalog-filters-dates-overlay-footer">
+                <button
+                  class="d-button d-button-primary d-button-primary-small d-button-clear-dates"
+                  @click.prevent="filterValues[i] = null"
+                >
+                  Сбросить
+                </button>
+                <button
+                  class="d-button d-button-primary d-button-primary-small"
+                  @click.prevent="setFilter"
+                >
+                  Готово
+                </button>
+              </div>
+            </template>
+          </DatePicker>
         </div>
       </div>
-
-      <router-link
-        :to="{
-          name: 'WholesaleClientsAdd',
-          params: {
-            id: this.$route.params.id,
-          },
-        }"
-        class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
-      >
-        <i class="d-icon-plus-flat clients__filters-create-icon"></i>
-        Новый клиент
-      </router-link>
     </div>
     <Loader v-if="loading" />
     <div class="clients__card-container">
@@ -386,10 +442,20 @@ import { toRaw } from 'vue'
 import { MultiSelect } from 'primevue'
 import customModal from '@/shared/ui/Modal.vue'
 import Toast from 'primevue/toast'
+import DatePicker from 'primevue/datepicker'
 
 export default {
   name: 'WholesaleClients',
-  components: { Breadcrumbs, Loader, Paginate, Checkbox, MultiSelect, customModal, Toast },
+  components: {
+    Breadcrumbs,
+    Loader,
+    DatePicker,
+    Paginate,
+    Checkbox,
+    MultiSelect,
+    customModal,
+    Toast,
+  },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -424,11 +490,35 @@ export default {
           values: [],
         },
         */
+        outOfStock: {
+          name: 'Out of stock',
+          placeholder: 'Out of stock',
+          type: 'switch',
+          values: 1,
+        },
+        sales: {
+          name: 'Только с продажами',
+          placeholder: 'Только с продажами',
+          type: 'switch',
+          values: 1,
+        },
+        integrated: {
+          name: 'Интегрированные',
+          placeholder: 'Интегрированные',
+          type: 'switch',
+          values: 1,
+        },
         our: {
           name: 'Созданные поставщиком',
           placeholder: 'Созданные поставщиком',
-          type: 'checkbox',
+          type: 'switch',
           values: 1,
+        },
+        dates: {
+          name: 'Продажи за период',
+          placeholder: 'Продажи за период',
+          value: null,
+          type: 'datepicker',
         },
       },
     }
@@ -443,6 +533,26 @@ export default {
       createOfferExtended: 'offer/createOfferExtended',
       activateVirtualStore: 'org/activateVirtualStore',
     }),
+    setFilterSwitch(index) {
+      console.log(index)
+      var find = false
+      if (index != 'dates') {
+        for (var i in this.filterValues) {
+          if (i == index) {
+            find = true
+            if (this.filterValues[index]) {
+              this.filterValues[index] = false
+            } else {
+              this.filterValues[index] = true
+            }
+          }
+        }
+        if (!find) {
+          this.filterValues[index] = true
+        }
+        this.filter()
+      }
+    },
     setFilter(type = '0') {
       if (type === 'filter') {
         if (this.filterText.length >= 3 || this.filterText.length === 0) {
@@ -464,11 +574,16 @@ export default {
         })
       }
     },
-    filter(data) {
+    filter() {
       this.loading = true
       this.unsetDilers()
       this.page = 1
-      this.getDilers(data).then(() => {
+      this.getDilers({
+        filter: this.filterText,
+        filtersdata: toRaw(this.filterValues),
+        page: 1,
+        perpage: this.pagination_items_per_page,
+      }).then(() => {
         this.loading = false
       })
     },
@@ -616,6 +731,93 @@ export default {
 <style lang="scss">
 .clients__card-right-right.d-col-10 {
   padding-right: 0;
+}
+.catalog-filters-dates {
+  position: relative;
+  padding-left: 24px;
+}
+.catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext {
+  color: #fff;
+  background: #282828 !important;
+}
+.catalog-filters-dates:not(.p-inputwrapper-focus) .p-inputtext {
+  color: #282828 !important;
+  background: #ededed !important;
+}
+.catalog-filters-dates .p-inputtext {
+  font-size: 14px;
+  line-height: 18px;
+  padding-block: 11px;
+  padding-inline: 16px 22px;
+  border: none;
+  border-radius: 53px;
+  box-shadow: none;
+  cursor: pointer;
+}
+.catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext::placeholder {
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #fff;
+}
+.catalog-filters-dates .p-inputtext::placeholder {
+  font-size: 14px;
+  line-height: 18px;
+  color: #282828;
+  font-weight: 500;
+}
+.catalog-filters-dates.p-inputwrapper-focus.p-focus .p-datepicker-input-icon-container {
+  color: #fff;
+}
+.catalog-filters-dates .p-datepicker-input-icon-container {
+  color: #282828;
+  padding-left: 14px;
+  padding-right: 4px;
+  display: flex;
+  align-items: center;
+  height: 16px;
+}
+.catalog-filters-dates .p-datepicker-input-icon-container .p-icon {
+  width: 12px;
+  height: 14px;
+}
+.catalog-filters-dates .p-datepicker-input-icon-container::before {
+  content: '';
+  width: 1px;
+  height: 11px;
+  background-color: #757575;
+  display: block;
+  position: absolute;
+  top: 3px;
+  left: 0;
+}
+.catalog-top_purch-filters .catalog-top_filters-item:before {
+  display: none;
+}
+.p-datepicker-day-selected-range {
+  color: #fff !important;
+}
+.catalog-filters-dates:before {
+  content: '';
+  width: 1px;
+  height: 16px;
+  background-color: #757575;
+  display: block;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  left: 0;
+}
+.catalog-filters-dates-overlay-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 8px 0;
+}
+.catalog-filters-dates-overlay-footer button {
+  width: 100%;
+  box-shadow: none;
 }
 @media (width>1280px) {
   .clients__card-vendor--integration {
