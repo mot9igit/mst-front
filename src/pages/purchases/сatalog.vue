@@ -787,22 +787,19 @@ export default {
       this.loadProducts(this.buildProductsPayload(), { force: true })
     },
     changeFilter(index) {
-      if (index != 'dates' && index != 'sales') {
+      console.log(index)
+      if (index != 'dates' && index != 'sales' && index != 'outOfStock') {
         for (var i in this.filters) {
-          if (i == index && i != 'show_offers' && i != 'dates') {
-            if (this.filters[i].value) {
-              this.filters[i].value = false
-            } else {
-              this.filters[i].value = true
-            }
+          if (i == index) {
+            this.filters[i].value = true
           } else {
-            if (i != 'show_offers' && i != 'dates' && i != 'sales') {
+            if (i != 'outOfStock' && i != 'dates' && i != 'sales') {
               this.filters[i].value = false
             }
           }
         }
       }
-      if (index == 'sales') {
+      if (index == 'sales' || index == 'outOfStock') {
         this.filters[index].value = !this.filters[index].value
       }
       this.page = 1
@@ -1040,7 +1037,12 @@ export default {
         : this.basket
 
     this.loadProducts(this.buildProductsPayload({ basket: cart }))
-
+    if (
+      this.$route.name == 'purchasesCatalogRequirement' ||
+      this.$route.name == 'purchasesOfferCatalogRequirement'
+    ) {
+      this.setSessionCount({ mode: 'clear' })
+    }
     // ресайз окна - вовремя убрать табличный вид
     window.addEventListener(
       'resize',
@@ -1055,12 +1057,7 @@ export default {
         if (act.length > 0) {
           mode = 1
         }
-        if (
-          this.$route.name == 'purchasesCatalogRequirement' ||
-          this.$route.name == 'purchasesOfferCatalogRequirement'
-        ) {
-          this.setSessionCount({ mode: 'clear' })
-        }
+
         if (sh.clientWidth <= 1280 && mode == 1) {
           for (var i = 0; i < cards.length; i++) {
             if (cards[i].classList.contains('product-item-vertical--table')) {
