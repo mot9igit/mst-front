@@ -196,7 +196,7 @@
       >
         <div class="catalog-top_filters-item" v-for="(item, index) in filters" :key="index">
           <Checkbox
-            @value-change="changeFilter(index)"
+            @value-change="changeFilter(index, $event)"
             v-model="this.filters[index].value"
             :binary="true"
             :inputId="'catalog-' + index"
@@ -208,11 +208,7 @@
           <div
             v-if="item.type == 'switch' && this.$route.matched[5].name == 'WholesaleClientsOffer'"
             class="d-switch catalog-filter-switch"
-            @click="
-              index == 'show_offers'
-                ? (this.filters[index].value = !this.filters[index].value)
-                : changeFilter(index)
-            "
+            @click="changeFilter(index)"
           >
             <input
               type="checkbox"
@@ -759,7 +755,7 @@ export default {
         }
       }
       this.filters.dates.value = null
-      this.filters.show_offers = true
+
       this.filters.sales.value = false
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         cart = this.basketOffer
@@ -786,14 +782,20 @@ export default {
     updateCatalog() {
       this.loadProducts(this.buildProductsPayload(), { force: true })
     },
-    changeFilter(index) {
-      console.log(index)
+    changeFilter(index, newValue) {
       if (index != 'dates' && index != 'sales' && index != 'outOfStock') {
+        if (newValue === false) {
+          this.$nextTick(() => {
+            this.filters[index].value = true
+          })
+          return
+        }
         for (var i in this.filters) {
           if (i == index) {
             this.filters[i].value = true
           } else {
             if (i != 'outOfStock' && i != 'dates' && i != 'sales') {
+              //console.log(i)
               this.filters[i].value = false
             }
           }
