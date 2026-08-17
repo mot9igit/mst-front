@@ -627,14 +627,11 @@ export default {
       this.createOfferExtended({
         id: data.id,
       }).then(() => {
-        this.$router
-          .push({
-            name: 'WholesaleClientsOffer',
-            params: { id: this.$route.params.id, id_org_from: data.id },
-          })
-          .then(() => {
-            window.location.reload()
-          })
+        const url = this.$router.resolve({
+          name: 'WholesaleClientsOffer',
+          params: { id: this.$route.params.id, id_org_from: data.id },
+        }).href
+        window.open(url, '_blank')
       })
     },
     deleteClient(data) {

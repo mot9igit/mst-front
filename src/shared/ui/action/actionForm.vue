@@ -2833,7 +2833,7 @@
           <div class="dart-upload-xlsx" v-if="this.upload_product">
             <div class="dart-upload-xlsx__file dart-mt-2">
               <!-- <img src="../../../public/img/files/xls.png" alt=""> -->
-              <a targer="_blank" :href="this.files?.xlsx?.original_href">{{
+              <a target="_blank" :href="this.files?.xlsx?.original_href">{{
                 this.files?.xlsx?.name
               }}</a>
             </div>
