@@ -763,7 +763,7 @@ export default {
   },
   mounted() {
     if (Object.keys(this.offer).length) {
-      if (this.offer.actions.length) {
+      if (Object.keys(this.offer.actions || {}).length) {
         this.modalActionsData = this.offer.actions
       }
 
