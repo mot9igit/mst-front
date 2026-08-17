@@ -781,11 +781,13 @@ export default {
         if (i == 'all') {
           this.filters[i].value = true
         } else {
-          this.filters[i].value = false
+          if (this.filters[i].value) {
+            this.filters[i].value = false
+          }
         }
       }
       this.filters.dates.value = null
-      this.filters.show_offers.value = true
+      this.filters.show_offers = true
       this.filters.sales.value = false
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         cart = this.basketOffer
@@ -1217,7 +1219,9 @@ export default {
     },
     'filters.dates.value': function (newVal) {
       for (var d in newVal) {
-        newVal[d] = new Date(newVal[d].getTime() - newVal[d].getTimezoneOffset() * 60000)
+        if (newVal[d]) {
+          newVal[d] = new Date(newVal[d].getTime() - newVal[d].getTimezoneOffset() * 60000)
+        }
       }
     },
   },
