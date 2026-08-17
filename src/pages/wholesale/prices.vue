@@ -14,6 +14,7 @@
             params: { id: this.$route.params.id },
             query: { typeSale: 2 },
           }"
+          target="_blank"
           class="d-button d-button-secondary d-button--sm-shadow d-button-wholesaleprices"
         >
           <i class="d-icon-plus-flat clients__card-offer-icon"></i>
@@ -25,6 +26,7 @@
             params: { id: this.$route.params.id },
             query: { typeSale: 3 },
           }"
+          target="_blank"
           class="d-button d-button-secondary d-button--sm-shadow d-button-wholesaleprices"
         >
           <i class="d-icon-plus-flat clients__card-offer-icon"></i>
@@ -36,6 +38,7 @@
             params: { id: this.$route.params.id },
             query: { typeSale: 1 },
           }"
+          target="_blank"
           class="d-button d-button-primary d-button--sm-shadow d-button-wholesaleprices"
         >
           <i class="d-icon-plus-flat clients__card-offer-icon"></i>
@@ -231,10 +234,11 @@ export default {
       })
     },
     editElem(item) {
-      this.$router.push({
+      const url = this.$router.resolve({
         name: 'wholesaleSale',
         params: { id: this.$route.params.id, action: item.id },
-      })
+      }).href
+      window.open(url, '_blank')
     },
     approveElem(item) {
       let header = ''
