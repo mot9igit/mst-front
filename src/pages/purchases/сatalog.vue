@@ -119,25 +119,17 @@
         </div>
       </div>
     </div>
-    <div
-      class="catalog-top_button"
-      v-if="
-        !loading &&
-        (this.$route.name == 'purchasesCatalogComplect' ||
-          this.$route.name == 'purchasesCatalogRequirement' ||
-          this.$route.matched[5].name == 'WholesaleClientsOffer')
-      "
-    >
+    <div class="catalog-top_button" v-if="!loading">
       <h2 v-if="this.$route.name == 'purchasesCatalogComplect'" class="products__top-title">
         Товары по акции "{{ opt_products?.action?.name }}"
         <p>от {{ opt_products?.action?.org_name }}</p>
       </h2>
-      <h2 v-if="this.$route.name == 'purchasesCatalogRequirement'" class="products__top-title">
+      <h2 v-else-if="this.$route.name == 'purchasesCatalogRequirement'" class="products__top-title">
         Товары из потребности "{{ opt_products?.name }}"
       </h2>
       <h1
         class="promos__header-title"
-        v-if="this.$route.matched[5].name == 'WholesaleClientsOffer' && !loading"
+        v-else-if="this.$route.matched[5].name == 'WholesaleClientsOffer' && !loading"
       >
         Предложение для
         <div class="d-badge2 d-badge2--fit order__item-header-badge">
@@ -151,6 +143,7 @@
           <p class="order__item-header-badge-text">{{ opt_products?.org_from?.name }}</p>
         </div>
       </h1>
+      <div class="products__top-title--notitle" v-else></div>
       <div class="catalog-top_button-container">
         <div class="card_trigger">
           <div class="d-switch catalog-filter-switch" @click="this.show_offers = !this.show_offers">
@@ -388,27 +381,6 @@
         >
           В наличии нет товаров из комплекта
         </p> -->
-      </div>
-      <div
-        class="catalog-top_filters-right catalog-top_button-container"
-        v-if="
-          this.$route.name == 'purchasesCatalog' || this.$route.name == 'purchasesCatalogSearch'
-        "
-      >
-        <div
-          class="catalog-top_filters-right-item"
-          :class="{ 'catalog-top_filters-right-item--active': active_design == 0 }"
-          @click.prevent="setDesign(0)"
-        >
-          <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_box.svg" />
-        </div>
-        <div
-          class="catalog-top_filters-right-item"
-          :class="{ 'catalog-top_filters-right-item--active': active_design == 1 }"
-          @click.prevent="setDesign(1)"
-        >
-          <img class="d-icon-catalog d-icon" src="/icons/icon_catalog_table.svg" />
-        </div>
       </div>
     </div>
 
