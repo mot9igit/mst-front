@@ -1010,11 +1010,20 @@ export default {
               if (this.step >= Number(this.offer.count)) {
                 this.count = this.step
               } else {
-                if (!(this.step % Number(this.offer.count))) {
-                  this.count = Number(this.offer.count)
+                if (this.step > Number(this.offer.count)) {
+                  if (!(this.step % Number(this.offer.count))) {
+                    this.count = Number(this.offer.count)
+                  } else {
+                    this.count =
+                      Number(this.offer.count) + this.step - (this.step % Number(this.offer.count))
+                  }
                 } else {
-                  this.count =
-                    Number(this.offer.count) + this.step - (Number(this.offer.count) % this.step)
+                  if (!(Number(this.offer.count) % this.step)) {
+                    this.count = Number(this.offer.count)
+                  } else {
+                    this.count =
+                      Number(this.offer.count) + this.step - (Number(this.offer.count) % this.step)
+                  }
                 }
               }
             }
@@ -1022,7 +1031,9 @@ export default {
           let obj = { item: this.offer, count: this.count }
           obj.item.data = this.offerData
           this.$emit('counter', obj)
-          this.setSessionCount({ remain_id: this.offer.remain_id, count: this.count })
+          if (this.count != Number(this.offer.count)) {
+            this.setSessionCount({ remain_id: this.offer.remain_id, count: this.count })
+          }
         }
       } else {
         if (
@@ -1041,61 +1052,6 @@ export default {
   watch: {
     offer: function (newVal) {
       this.modalActionsData = newVal.conflicts
-    },
-    modalActions: function (newVal) {
-      if (newVal == false) {
-        if (!this.allOff) {
-          if (
-            Number(this.activeConflict.multiplicity) <= 1 ||
-            Number(this.activeConflict.min_count) <= 1
-          ) {
-            // потребность
-            if (
-              this.$route.matched[5] &&
-              this.$route.matched[5].name == 'purchasesCatalogRequirement'
-            ) {
-              this.count = Number(this.offer.count)
-              let obj = { item: this.offer, count: this.count }
-              obj.item.data = this.offerData
-              this.$emit('counter', obj)
-            } else {
-              this.count = 1
-            }
-          }
-        } else {
-          // потребность
-          if (
-            this.$route.matched[5] &&
-            this.$route.matched[5].name == 'purchasesCatalogRequirement'
-          ) {
-            //this.count = Number(this.offer.count)
-            if (Number(this.activeConflict.multiplicity) == 1) {
-              this.count_min > Number(this.offer.count)
-                ? (this.count = this.count_min)
-                : (this.count = Number(this.offer.count))
-            } else {
-              if (Number(this.activeConflict.multiplicity) >= Number(this.offer.count)) {
-                this.count = Number(this.activeConflict.multiplicity)
-              } else {
-                if (!(Number(this.activeConflict.multiplicity) % Number(this.offer.count))) {
-                  this.count = Number(this.offer.count)
-                } else {
-                  this.count =
-                    Number(this.offer.count) +
-                    Number(this.activeConflict.multiplicity) -
-                    (Number(this.offer.count) % Number(this.activeConflict.multiplicity))
-                }
-              }
-            }
-            let obj = { item: this.offer, count: this.count }
-            obj.item.data = this.offerData
-            this.$emit('counter', obj)
-            this.setSessionCount({ remain_id: this.offer.remain_id, count: this.count })
-          } else {
-            this.count = 1
-          }
-        }
-      }
     },
   },
 }

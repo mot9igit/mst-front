@@ -610,6 +610,7 @@ export default {
       getSalesReport: 'catalog/getSalesReport',
       unsetAllOfferOptProducts: 'offer/unsetAllOfferOptProducts',
       saveReqXLS: 'requirements/saveReqXLS',
+      setSessionCount: 'catalog/setSessionCount',
     }),
     debounce(func, delay) {
       let timeout
@@ -1052,7 +1053,12 @@ export default {
         if (act.length > 0) {
           mode = 1
         }
-
+        if (
+          this.$route.name == 'purchasesCatalogRequirement' ||
+          this.$route.name == 'purchasesOfferCatalogRequirement'
+        ) {
+          this.setSessionCount({ mode: 'clear' })
+        }
         if (sh.clientWidth <= 1280 && mode == 1) {
           for (var i = 0; i < cards.length; i++) {
             if (cards[i].classList.contains('product-item-vertical--table')) {
