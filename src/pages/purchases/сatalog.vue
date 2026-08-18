@@ -1032,19 +1032,19 @@ export default {
     this.filters.all.value = true
 
     this.debouncedUpdatePage = this.debounce(this.updatePage, 300)
-
+    if (
+      this.$route.name == 'purchasesCatalogRequirement' ||
+      this.$route.name == 'purchasesOfferCatalogRequirement'
+    ) {
+      //this.setSessionCount({ mode: 'clear' })
+    }
     const cart =
       this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'
         ? this.basketOffer
         : this.basket
 
     this.loadProducts(this.buildProductsPayload({ basket: cart }))
-    if (
-      this.$route.name == 'purchasesCatalogRequirement' ||
-      this.$route.name == 'purchasesOfferCatalogRequirement'
-    ) {
-      this.setSessionCount({ mode: 'clear' })
-    }
+
     // ресайз окна - вовремя убрать табличный вид
     window.addEventListener(
       'resize',
