@@ -55,6 +55,12 @@
         <div class="d-divider d-divider--vertical d-divider--big products__stat-divider"></div> -->
         <!-- Элемент статистики -->
         <div class="products__stat">
+          <span class="products__stat-value">{{ product.our_delivered_available }}</span>
+          <p class="products__stat-label">В пути</p>
+        </div>
+        <div class="d-divider d-divider--vertical d-divider--big products__stat-divider"></div>
+        <!-- Элемент статистики -->
+        <div class="products__stat">
           <span class="products__stat-value">{{ product.our_available }}</span>
           <p class="products__stat-label">Остаток на вашем складе</p>
         </div>
@@ -67,6 +73,12 @@
       </div>
       <!-- Правая часть шапки страницы предложения-->
       <div class="products__header-right" v-else>
+        <!-- Элемент статистики -->
+        <div class="products__stat">
+          <span class="products__stat-value">{{ product.our_delivered_available }}</span>
+          <p class="products__stat-label">В пути</p>
+        </div>
+        <div class="d-divider d-divider--vertical d-divider--big products__stat-divider"></div>
         <!-- Элемент статистики -->
         <div class="products__stat">
           <span class="products__stat-value">{{ product.our_available }}</span>
@@ -186,6 +198,7 @@ export default {
   border-radius: 13px;
   padding-left: 16px;
 }
+
 .products__header-left--active {
   cursor: pointer;
   transition: all 0.2s ease;

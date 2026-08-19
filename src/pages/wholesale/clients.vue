@@ -496,6 +496,12 @@ export default {
           type: 'switch',
           values: 1,
         },
+        deliveries: {
+          name: 'Учитывать товары в пути',
+          placeholder: 'Учитывать товары в пути',
+          values: 1,
+          type: 'switch',
+        },
         sales: {
           name: 'Только с продажами',
           placeholder: 'Только с продажами',
@@ -687,6 +693,7 @@ export default {
         } else {
           this.stores.total = 0
         }
+        this.filters.deliveries.values = true
         this.loading = false
       }
     })

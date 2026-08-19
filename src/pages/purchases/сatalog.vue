@@ -522,6 +522,12 @@ export default {
           value: false,
           type: 'switch',
         },
+        deliveries: {
+          name: 'Учитывать товары в пути',
+          placeholder: 'Учитывать товары в пути',
+          value: true,
+          type: 'switch',
+        },
         dates: {
           name: 'Продажи за период',
           placeholder: 'Продажи за период',
@@ -783,7 +789,7 @@ export default {
       this.loadProducts(this.buildProductsPayload(), { force: true })
     },
     changeFilter(index, newValue) {
-      if (index != 'dates' && index != 'sales' && index != 'outOfStock') {
+      if (index != 'dates' && index != 'sales' && index != 'outOfStock' && index != 'deliveries') {
         if (newValue === false) {
           this.$nextTick(() => {
             this.filters[index].value = true
@@ -794,14 +800,14 @@ export default {
           if (i == index) {
             this.filters[i].value = true
           } else {
-            if (i != 'outOfStock' && i != 'dates' && i != 'sales') {
+            if (i != 'outOfStock' && i != 'dates' && i != 'sales' && i != 'deliveries') {
               //console.log(i)
               this.filters[i].value = false
             }
           }
         }
       }
-      if (index == 'sales' || index == 'outOfStock') {
+      if (index == 'sales' || index == 'outOfStock' || index == 'deliveries') {
         this.filters[index].value = !this.filters[index].value
       }
       this.page = 1
@@ -1030,14 +1036,15 @@ export default {
     }
     this.date_now = new Date()
     this.filters.all.value = true
-
-    this.debouncedUpdatePage = this.debounce(this.updatePage, 300)
+    this.filters.deliveries.value = true
     if (
       this.$route.name == 'purchasesCatalogRequirement' ||
       this.$route.name == 'purchasesOfferCatalogRequirement'
     ) {
-      //this.setSessionCount({ mode: 'clear' })
+      this.setSessionCount({ mode: 'clear' })
     }
+    this.debouncedUpdatePage = this.debounce(this.updatePage, 300)
+
     const cart =
       this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer'
         ? this.basketOffer
