@@ -76,12 +76,12 @@
         <!-- Элемент статистики -->
         <div class="products__stat">
           <span class="products__stat-value">{{ product.our_delivered_available }}</span>
-          <p class="products__stat-label">В пути</p>
+          <p class="products__stat-label">В пути на склад клиента</p>
         </div>
         <div class="d-divider d-divider--vertical d-divider--big products__stat-divider"></div>
         <!-- Элемент статистики -->
         <div class="products__stat">
-          <span class="products__stat-value">{{ product.our_available }}</span>
+          <span class="products__stat-value">{{ product.our_available }}</span> 
           <p class="products__stat-label">Остаток на складе клиента</p>
         </div>
         <div class="d-divider d-divider--vertical d-divider--big products__stat-divider"></div>
