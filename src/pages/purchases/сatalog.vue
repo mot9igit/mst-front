@@ -276,6 +276,7 @@
               </div>
             </template>
           </DatePicker>
+          <div class="d-divider d-divider--vertical d-button-divider"  v-if="item.class == 'filter_divider'"></div>
         </div>
         <button
           class="catalog_filters_upload_button"
@@ -509,12 +510,14 @@ export default {
           placeholder: 'Отсутствуют',
           value: false,
           type: 'checkbox',
+          class: 'filter_divider'
         },
         sales: {
           name: 'Только с продажами',
           placeholder: 'Только с продажами',
           value: false,
           type: 'switch',
+          class: 'filter_divider'
         },
         outOfStock: {
           name: 'Out of stock',
@@ -523,10 +526,11 @@ export default {
           type: 'switch',
         },
         deliveries: {
-          name: 'Учитывать товары в пути',
-          placeholder: 'Учитывать товары в пути',
+          name: 'Учитывать товары в заказе',
+          placeholder: 'Учитывать товары в заказе',
           value: true,
           type: 'switch',
+          class: 'filter_divider'
         },
         dates: {
           name: 'Продажи за период',
@@ -1343,6 +1347,9 @@ export default {
 .catalog-top_filters-item .p-checkbox {
   width: 24px;
   height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .catalog-top_filters-item .p-checkbox-input {
   width: 24px;
@@ -1357,13 +1364,14 @@ export default {
   border-color: #f92c0d;
 }
 .catalog-top_filters-item .p-checkbox .p-checkbox-box {
-  width: 19px;
+  width: 20px;
   height: 20px;
   border-radius: 20px;
   border: none;
   background: transparent;
-  margin-top: 2px;
-  margin-left: 3px;
+  margin: 2px;
+  aspect-ratio: 1;
+  
 }
 .catalog-top_filters-item .p-checkbox-checked .p-checkbox-box {
   background: #f92c0d;
@@ -1381,27 +1389,11 @@ export default {
 .catalog-top_filters-label--active {
   font-weight: 600 !important;
 }
-.catalog-filter-switch-lable:before,
-.catalog-top_filters-item:nth-child(5):before {
-  content: '';
-  width: 1px;
-  height: 16px;
-  background-color: #757575;
-  display: block;
-  position: absolute;
-  top: 3px;
-}
+
 .catalog-filter-switch-lable:before {
   right: 0;
 }
-.catalog-top_filters-item:nth-child(5):before {
-  left: 0;
-}
-.catalog-top_filters-item:nth-child(5) {
-  position: relative;
-  padding-right: 32px;
-  padding-left: 32px;
-}
+
 
 .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext {
   color: #fff;
@@ -1527,6 +1519,9 @@ export default {
 .no-available-requirement--a:hover {
   color: #f92c0d;
 }
+.catalog-top_filters-item .d-divider{
+  margin-left: 24px;
+}
 @media (width <= 1536px) {
   // фильтры в наличии
   .catalog-top_filters {
@@ -1550,8 +1545,7 @@ export default {
     width: 18px;
     height: 18px;
     border-radius: 18px;
-    margin-top: 2px;
-    margin-left: 2px;
+    
   }
   .catalog-top_filters-item .catalog-top_filters-label {
     font-weight: 500;
@@ -1585,8 +1579,7 @@ export default {
     width: 12px;
     height: 12px;
     border-radius: 12px;
-    margin-top: 2px;
-    margin-left: 2px;
+ 
   }
   .catalog-top_filters-item .catalog-top_filters-label {
     font-weight: 500;
@@ -1617,8 +1610,7 @@ export default {
     width: 8px;
     height: 8px;
     border-radius: 12px;
-    margin-top: 2px;
-    margin-left: 2px;
+    
   }
   .catalog-top_filters-item .catalog-top_filters-label {
     font-weight: 500;
@@ -1631,11 +1623,7 @@ export default {
     --d-switch-height: 16px;
     --d-switch-thumb-width: 12px;
   }
-  .catalog-top_filters-item:nth-child(5) {
-    position: relative;
-    padding-right: 16px;
-    padding-left: 16px;
-  }
+ 
   .catalog-filters-dates .p-datepicker-input-icon-container::before {
     display: none;
   }
@@ -1683,8 +1671,7 @@ export default {
     width: 12px;
     height: 12px;
     border-radius: 12px;
-    margin-top: 2px;
-    margin-left: 2px;
+
   }
   .catalog-top_filters-item .catalog-top_filters-label {
     font-weight: 500;
@@ -1715,8 +1702,7 @@ export default {
     width: 12px;
     height: 12px;
     border-radius: 12px;
-    margin-top: 2px;
-    margin-left: 2px;
+
   }
   .catalog-top_filters-item .catalog-top_filters-label {
     font-weight: 500;
@@ -1810,8 +1796,7 @@ export default {
     width: 20px;
     height: 20px;
     border-radius: 20px;
-    margin-top: 2px;
-    margin-left: 2px;
+
   }
   .catalog-top_filters-item .catalog-top_filters-label {
     font-weight: 500;

@@ -497,8 +497,8 @@ export default {
           values: 1,
         },
         deliveries: {
-          name: 'Учитывать товары в пути',
-          placeholder: 'Учитывать товары в пути',
+          name: 'Учитывать товары в заказе',
+          placeholder: 'Учитывать товары в заказе',
           values: 1,
           type: 'switch',
         },
