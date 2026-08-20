@@ -473,7 +473,7 @@ export default {
       modalDelete: false,
       modalDeleteObj: {},
       filterText: '',
-      filterValues: {},
+      filterValues: { deliveries: true },
       countPages: 0,
       localItems: [],
       filters: {
@@ -490,6 +490,12 @@ export default {
           values: [],
         },
         */
+        sales: {
+          name: 'Только с продажами',
+          placeholder: 'Только с продажами',
+          type: 'switch',
+          values: 1,
+        },
         outOfStock: {
           name: 'Out of stock',
           placeholder: 'Out of stock',
@@ -501,12 +507,6 @@ export default {
           placeholder: 'Учитывать товары в заказе',
           values: 1,
           type: 'switch',
-        },
-        sales: {
-          name: 'Только с продажами',
-          placeholder: 'Только с продажами',
-          type: 'switch',
-          values: 1,
         },
         integrated: {
           name: 'Интегрированные',
@@ -681,6 +681,7 @@ export default {
       type: 1,
       page: this.page,
       perpage: this.pagination_items_per_page,
+      filtersdata: { deliveries: true },
     }).then(() => {
       if (this.dilers) {
         if (Object.prototype.hasOwnProperty.call(this.dilers, 'items')) {
