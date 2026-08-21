@@ -758,7 +758,7 @@ export default {
       for (var i in this.filters) {
         if (i == 'all') {
           this.filters[i].value = true
-        } else {
+        } else if (i != 'deliveries') {
           if (this.filters[i].value) {
             this.filters[i].value = false
           }
@@ -1382,7 +1382,7 @@ export default {
 .catalog-top_filters-item .catalog-top_filters-label {
   font-weight: 500;
   font-size: 14px;
-  line-height: 22px;
+  line-height: 18px;
   color: #282828;
   cursor: pointer;
 }
@@ -1676,7 +1676,7 @@ export default {
   .catalog-top_filters-item .catalog-top_filters-label {
     font-weight: 500;
     font-size: 10px;
-    line-height: 12px;
+    line-height: 12px; 
   }
 }
 @media (width <= 700px) {
