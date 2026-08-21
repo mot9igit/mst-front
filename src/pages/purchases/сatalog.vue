@@ -276,7 +276,7 @@
               </div>
             </template>
           </DatePicker>
-          <div class="d-divider d-divider--vertical d-button-divider"  v-if="item.class == 'filter_divider'"></div>
+          <div class="d-divider d-divider--vertical d-button-divider"  v-if="this.$route.matched[5].name == 'WholesaleClientsOffer' && item.class == 'filter_divider'"></div>
         </div>
         <button
           class="catalog_filters_upload_button"
