@@ -844,6 +844,45 @@ export default {
     height: 18px;
   }
 }
+@media (width<=1280px){
+  .clients__header .dart-row{
+    margin-top: 0 !important;
+  }
+  .clients__filters-create {
+    height: 32px;
+    min-height: 32px;
+    font-size: 14px;
+  }
+  .clients__filters-create-icon {
+    font-size: 12px;
+    width: 12px;
+  }
+  .clients__filters-input-container .d-radio__wrapper{
+    gap: 8px;
+  }
+  .catalog-filter-switch-lable{
+    font-size: 12px;
+    line-height: 14px;
+  }
+  .clients__filters-left {
+    align-items: center;
+  }
+}
+@media (width<=1140px){
+  .catalog-filter-switch-lable{
+    font-size: 10px;
+    line-height: 12px;
+  }
+  .catalog-filters-dates {
+      padding-left: 16px;
+      max-height: 32px;
+  }
+  .clients__filters-input {
+       
+        width: 200px;
+      
+    }
+}
 @media (width<=1024px) {
   .clients__card-vendor-wrapper {
     display: flex;
@@ -859,12 +898,86 @@ export default {
   .clients__card-action-container {
     display: none;
   }
+  .clients__filters-create {
+    font-size: 10px;
+    font-weight: 400;
+    margin-top: 3px;
+    padding: 4px 12px;
+    height: 24px;
+    min-height: 24px;
+    gap: 8px;
+  }
+  .clients__filters-create-icon {
+    font-size: 8px;
+    width: 14px;
+    height: 14px;
+  }
+  .clients__filters-input {
+    --d-input-padding: 8px 9px;
+    font-size: 10px;
+    font-weight: 400;
+    width: 200px;
+    height: 24px;
+  }
+  .clients__filters-radio-wrapper .d-switch {
+    --d-switch-width: 25px;
+    --d-switch-height: 14px;
+    --d-switch-thumb-width: 10px;
+  }
+  .catalog-filter-switch-lable {
+    font-size: 8px;
+    line-height: 10px;
+  }
+  .clients__filters-input-container .d-radio__wrapper {
+    gap: 6px;
+  }
+  .clients__filters-left{
+    gap: 10px;
+  }
+  .catalog-filters-dates .p-datepicker-input-icon-container .p-icon {
+    width: 10px;
+    height: 10px;
+  }
+  .catalog-filters-dates {
+    padding-left: 8px;
+    max-height: 24px;
+  }
+  .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext::placeholder, .catalog-filters-dates .p-inputtext::placeholder{
+    font-size: 10px;
+  }
+  .catalog-filters-dates .p-inputtext {
+    font-size: 10px;
+    line-height: 10px;
+  }
+}
+@media (width<=991px) {
+    .clients__header .dart-row .d-col-lg-12 {
+        width: 50% !important;
+    }
+}
+@media (width<=860px) {
+  .clients__filters-left{
+    display:grid;
+    grid-template-areas:'A A A A A A' 
+                        'B C D E F G';
+  
+  }
+  .clients__filters-input-container:first-child{
+    grid-area: A;
+  }
 }
 @media (width<=600px) {
   .clients__card-vendor--integration {
     width: auto;
     height: 24px;
     position: relative;
+  }
+  .clients__filters-left{
+    display:grid;
+    grid-template-areas:'A A A' 
+                        'B C D'
+                        'E F G';
+  
   }
   .clients__card-right-right.d-col-10 {
     justify-content: center !important;
