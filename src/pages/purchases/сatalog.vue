@@ -917,17 +917,25 @@ export default {
                       life: 3000,
                     })
                   }
-                  if (this.$route.name == 'purchasesCatalogRequirement') {
-                    this.$emit('toggleOrder')
-                  }
-                  if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-                    this.$emit('toggleOrderOffer')
-                  }
-                  this.loading = false
-                  if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-                    this.getBasketOffer()
+                  if (
+                    this.$route.name == 'purchasesCatalogRequirement' ||
+                    this.$route.name == 'purchasesOfferCatalogRequirement'
+                  ) {
+                    const refreshBasket =
+                      this.$route.name == 'purchasesOfferCatalogRequirement'
+                        ? this.getBasketOffer()
+                        : this.getBasket()
+                    refreshBasket.then(() => {
+                      if (this.$route.name == 'purchasesCatalogRequirement') {
+                        this.$emit('toggleOrder')
+                      }
+                      if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+                        this.$emit('toggleOrderOffer')
+                      }
+                      this.loading = false
+                    })
                   } else {
-                    this.getBasket()
+                    this.loading = false
                   }
                 } else {
                   this.$toast.add({
