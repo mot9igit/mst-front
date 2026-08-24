@@ -981,14 +981,18 @@ export default {
     async basketCheck() {
       this.checkBasket = {}
       if (this.$route.name == 'purchasesCatalogRequirement') {
-        this.checkBasket = this.basket?.data[this.basketWarehouse]
-          ? this.basket?.data[this.basketWarehouse].data
-          : {}
+        this.checkBasket =
+          Object.keys(this.basket?.data ?? {}).length && this.basket?.data?.[this.basketWarehouse]
+            ? this.basket.data[this.basketWarehouse].data
+            : {}
       } else {
-        this.checkBasket = this.basketOffer?.data[this.basketOfferWarehouse]
-          ? this.basketOffer?.data[this.basketOfferWarehouse].data
-          : {}
+        this.checkBasket =
+          Object.keys(this.basketOffer?.data ?? {}).length &&
+          this.basketOffer?.data?.[this.basketOfferWarehouse]
+            ? this.basketOffer.data[this.basketOfferWarehouse].data
+            : {}
       }
+
       return this.checkBasket
     },
     setAddMode(mode) {
