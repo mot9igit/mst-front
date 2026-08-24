@@ -276,7 +276,13 @@
               </div>
             </template>
           </DatePicker>
-          <div class="d-divider d-divider--vertical d-button-divider"  v-if="this.$route.matched[5].name == 'WholesaleClientsOffer' && item.class == 'filter_divider'"></div>
+          <div
+            class="d-divider d-divider--vertical d-button-divider"
+            v-if="
+              this.$route.matched[5].name == 'WholesaleClientsOffer' &&
+              item.class == 'filter_divider'
+            "
+          ></div>
         </div>
         <button
           class="catalog_filters_upload_button"
@@ -448,6 +454,9 @@
       </div>
     </div>
   </customModal>
+  <customModal v-model="modalCheck">
+    <checkBasketWindow :bask="this.checkBasket" @setMode="setAddMode" @close="modalCheck = false" />
+  </customModal>
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
@@ -460,6 +469,7 @@ import allSalesWindow from './ui/allSalesWindow.vue'
 import Toast from 'primevue/toast'
 import { Checkbox } from 'primevue'
 import DatePicker from 'primevue/datepicker'
+import checkBasketWindow from './ui/checkBasketWindow.vue'
 
 export default {
   name: 'purchasesCatalog',
@@ -475,6 +485,7 @@ export default {
     Toast,
     Checkbox,
     DatePicker,
+    checkBasketWindow,
   },
   props: {
     id: {
@@ -510,14 +521,14 @@ export default {
           placeholder: 'Отсутствуют',
           value: false,
           type: 'checkbox',
-          class: 'filter_divider'
+          class: 'filter_divider',
         },
         sales: {
           name: 'Только с продажами',
           placeholder: 'Только с продажами',
           value: false,
           type: 'switch',
-          class: 'filter_divider'
+          class: 'filter_divider',
         },
         outOfStock: {
           name: 'Out of stock',
@@ -530,7 +541,7 @@ export default {
           placeholder: 'Учитывать товары в заказе',
           value: true,
           type: 'switch',
-          class: 'filter_divider'
+          class: 'filter_divider',
         },
         dates: {
           name: 'Продажи за период',
@@ -598,6 +609,9 @@ export default {
       sessionCountWarningItems: [],
       errors: '',
       date_now: '',
+      checkBasket: {},
+      dataItems: {},
+      modalCheck: false,
     }
   },
   methods: {
@@ -613,6 +627,8 @@ export default {
       unsetAllOfferOptProducts: 'offer/unsetAllOfferOptProducts',
       saveReqXLS: 'requirements/saveReqXLS',
       setSessionCount: 'catalog/setSessionCount',
+      basketClear: 'basket/basketClear',
+      basketOfferClear: 'offer/basketOfferClear',
     }),
     debounce(func, delay) {
       let timeout
@@ -821,7 +837,7 @@ export default {
       this.addItems = {}
       this.addItemsConflicts = {}
       this.noconflicts = {}
-      let data = {}
+      this.dataItems = {}
       this.loading = true
       if (
         this.$route.name == 'purchasesCatalogRequirement' ||
@@ -885,7 +901,7 @@ export default {
                   }
                   let col = this.noconflicts[r_id].count
 
-                  data[r_id] = {
+                  this.dataItems[r_id] = {
                     org_id: item.org_id,
                     store_id: item.store_id,
                     id_remain: r_id,
@@ -897,59 +913,103 @@ export default {
                 }
               }
             }
-
-            this.basketProductAddAll({ items: data, cart_store: this.basketOfferWarehouse }).then(
-              (res) => {
-                if (res.data.data) {
-                  this.errors = res.data.data
-                  if (this.errors == '') {
-                    this.$toast.add({
-                      severity: 'success',
-                      summary: 'Выполнено!',
-                      detail: 'Товары добавлены в корзину',
-                      life: 3000,
-                    })
-                  } else {
-                    this.$toast.add({
-                      severity: 'secondary',
-                      summary: 'Товары добавлены в корзину!',
-                      detail: this.errors,
-                      life: 3000,
-                    })
-                  }
-                  if (
-                    this.$route.name == 'purchasesCatalogRequirement' ||
-                    this.$route.name == 'purchasesOfferCatalogRequirement'
-                  ) {
-                    const refreshBasket =
-                      this.$route.name == 'purchasesOfferCatalogRequirement'
-                        ? this.getBasketOffer()
-                        : this.getBasket()
-                    refreshBasket.then(() => {
-                      if (this.$route.name == 'purchasesCatalogRequirement') {
-                        this.$emit('toggleOrder')
-                      }
-                      if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-                        this.$emit('toggleOrderOffer')
-                      }
-                      this.loading = false
-                    })
-                  } else {
-                    this.loading = false
-                  }
-                } else {
-                  this.$toast.add({
-                    severity: 'error',
-                    summary: 'Ошибка',
-                    detail: 'Не удалось положить товары в корзину',
-                    life: 3000,
-                  })
-                  this.loading = false
-                }
-              },
-            )
+            this.basketCheck().then(() => {
+              if (Object.keys(this.checkBasket).length > 0) {
+                this.loading = false
+                this.modalCheck = true
+              } else {
+                this.addAllToBasket()
+              }
+            })
           }
         })
+      }
+    },
+    addAllToBasket() {
+      this.basketProductAddAll({
+        items: this.dataItems,
+        cart_store: this.basketOfferWarehouse,
+      }).then((res) => {
+        if (res.data.data) {
+          this.errors = res.data.data
+          if (this.errors == '') {
+            this.$toast.add({
+              severity: 'success',
+              summary: 'Выполнено!',
+              detail: 'Товары добавлены в корзину',
+              life: 3000,
+            })
+          } else {
+            this.$toast.add({
+              severity: 'secondary',
+              summary: 'Товары добавлены в корзину!',
+              detail: this.errors,
+              life: 3000,
+            })
+          }
+          if (
+            this.$route.name == 'purchasesCatalogRequirement' ||
+            this.$route.name == 'purchasesOfferCatalogRequirement'
+          ) {
+            const refreshBasket =
+              this.$route.name == 'purchasesOfferCatalogRequirement'
+                ? this.getBasketOffer()
+                : this.getBasket()
+            refreshBasket.then(() => {
+              if (this.$route.name == 'purchasesCatalogRequirement') {
+                this.$emit('toggleOrder')
+              }
+              if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+                this.$emit('toggleOrderOffer')
+              }
+              this.loading = false
+            })
+          } else {
+            this.loading = false
+          }
+        } else {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось положить товары в корзину',
+            life: 3000,
+          })
+          this.loading = false
+        }
+      })
+    },
+    async basketCheck() {
+      this.checkBasket = {}
+      if (this.$route.name == 'purchasesCatalogRequirement') {
+        this.checkBasket = this.basket?.data[this.basketWarehouse]
+          ? this.basket?.data[this.basketWarehouse].data
+          : {}
+      } else {
+        this.checkBasket = this.basketOffer?.data[this.basketOfferWarehouse]
+          ? this.basketOffer?.data[this.basketOfferWarehouse].data
+          : {}
+      }
+      return this.checkBasket
+    },
+    setAddMode(mode) {
+      this.loading = true
+      this.modalCheck = false
+      if (mode) {
+        if (this.$route.name == 'purchasesCatalogRequirement') {
+          this.basketClear({ org_id: 0, store_id: 0 }).then(() => {
+            this.addAllToBasket()
+          })
+        } else {
+          this.basketOfferClear({
+            org_id: 0,
+            store_id: 0,
+            cart_store: this.basketOfferWarehouse,
+          }).then(() => {
+            this.addAllToBasket()
+          })
+        }
+      } else {
+        this.addAllToBasket()
       }
     },
     afterAddBasket() {
@@ -1379,7 +1439,6 @@ export default {
   background: transparent;
   margin: 2px;
   aspect-ratio: 1;
-  
 }
 .catalog-top_filters-item .p-checkbox-checked .p-checkbox-box {
   background: #f92c0d;
@@ -1401,7 +1460,6 @@ export default {
 .catalog-filter-switch-lable:before {
   right: 0;
 }
-
 
 .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext {
   color: #fff;
@@ -1527,7 +1585,7 @@ export default {
 .no-available-requirement--a:hover {
   color: #f92c0d;
 }
-.catalog-top_filters-item .d-divider{
+.catalog-top_filters-item .d-divider {
   margin-left: 24px;
 }
 @media (width <= 1536px) {
@@ -1553,7 +1611,6 @@ export default {
     width: 18px;
     height: 18px;
     border-radius: 18px;
-    
   }
   .catalog-top_filters-item .catalog-top_filters-label {
     font-weight: 500;
@@ -1587,7 +1644,6 @@ export default {
     width: 12px;
     height: 12px;
     border-radius: 12px;
- 
   }
   .catalog-top_filters-item .catalog-top_filters-label {
     font-weight: 500;
@@ -1618,7 +1674,6 @@ export default {
     width: 8px;
     height: 8px;
     border-radius: 12px;
-    
   }
   .catalog-top_filters-item .catalog-top_filters-label {
     font-weight: 500;
@@ -1631,7 +1686,7 @@ export default {
     --d-switch-height: 16px;
     --d-switch-thumb-width: 12px;
   }
- 
+
   .catalog-filters-dates .p-datepicker-input-icon-container::before {
     display: none;
   }
@@ -1679,12 +1734,11 @@ export default {
     width: 12px;
     height: 12px;
     border-radius: 12px;
-
   }
   .catalog-top_filters-item .catalog-top_filters-label {
     font-weight: 500;
     font-size: 10px;
-    line-height: 12px; 
+    line-height: 12px;
   }
 }
 @media (width <= 700px) {
@@ -1710,7 +1764,6 @@ export default {
     width: 12px;
     height: 12px;
     border-radius: 12px;
-
   }
   .catalog-top_filters-item .catalog-top_filters-label {
     font-weight: 500;
@@ -1804,7 +1857,6 @@ export default {
     width: 20px;
     height: 20px;
     border-radius: 20px;
-
   }
   .catalog-top_filters-item .catalog-top_filters-label {
     font-weight: 500;
