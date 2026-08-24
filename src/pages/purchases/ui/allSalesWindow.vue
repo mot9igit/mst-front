@@ -398,6 +398,9 @@
       @select="addBasketAfterComplect"
     />
   </customModal>
+  <customModal v-model="modalCheck">
+    <checkBasketWindow :bask="this.checkBasket" @setMode="setAddMode" @close="modalCheck = false" />
+  </customModal>
 </template>
 
 <script>
@@ -407,6 +410,7 @@ import Counter from '@/shared/ui/CounterNoAdd.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import simpleSalesWindow from './simpleSalesWindow.vue'
+import checkBasketWindow from './checkBasketWindow.vue'
 
 export default {
   name: 'allSalesWindow',
@@ -429,10 +433,13 @@ export default {
       modalAfterComplect: false,
       saveData: {},
       active_index: {},
+      checkBasket: {},
+      dataItems: {},
+      modalCheck: false,
     }
   },
   emits: ['windowClose', 'updateCatalog', 'updateBasket', 'toggleOrder', 'toggleOrderOffer'],
-  components: { Counter, Loader, customModal, simpleSalesWindow },
+  components: { Counter, Loader, customModal, simpleSalesWindow, checkBasketWindow },
   props: {
     offers: {
       type: Object,
@@ -467,7 +474,10 @@ export default {
   },
   computed: {
     ...mapGetters({
+      basketWarehouse: 'basket/basketWarehouse',
       basketOfferWarehouse: 'offer/basketOfferWarehouse',
+      basket: 'basket/basket',
+      basketOffer: 'offer/basketOffer',
     }),
   },
   methods: {
@@ -476,6 +486,10 @@ export default {
       basketOfferProductAdd: 'offer/basketOfferProductAdd',
       basketProductAddAll: 'basket/basketProductAddAll',
       setSessionCount: 'catalog/setSessionCount',
+      basketClear: 'basket/basketClear',
+      basketOfferClear: 'offer/basketOfferClear',
+      getBasket: 'basket/getBasket',
+      getBasketOffer: 'offer/getBasketOffer',
     }),
     async setValues() {
       if (Object.keys(this.offers).length) {
@@ -677,7 +691,7 @@ export default {
       //   }
       // }
 
-      let data = {}
+      this.dataItems = {}
       if (Object.keys(this.offers).length) {
         for (var r_id in this.offers) {
           let conf = {}
@@ -696,7 +710,7 @@ export default {
           // }else{
           let col = this.counts[r_id].count
           //}
-          data[r_id] = {
+          this.dataItems[r_id] = {
             org_id: item.org_id,
             store_id: item.store_id,
             id_remain: r_id,
@@ -737,7 +751,7 @@ export default {
             // }else{
             let col = this.noconflicts[r_id].count
             //}
-            data[r_id] = {
+            this.dataItems[r_id] = {
               org_id: item.org_id,
               store_id: item.store_id,
               id_remain: r_id,
@@ -763,51 +777,61 @@ export default {
       //   this.modalAfterComplect = true
       // }
       //this.$emit('windowClose')
-      console.log(data)
-      this.basketProductAddAll({ items: data, cart_store: this.basketOfferWarehouse }).then(
-        (res) => {
-          if (res.data) {
-            this.errors = res.data.data
-            if (this.errors == '') {
-              this.$toast.add({
-                severity: 'success',
-                summary: 'Выполнено!',
-                detail: 'Товары добавлены в корзину',
-                life: 3000,
-              })
-            } else {
-              this.$toast.add({
-                severity: 'secondary',
-                summary: 'Товары добавлены в корзину!',
-                detail: this.errors,
-                life: 3000,
-              })
-            }
-            // if (this.$route.name == 'purchasesCatalogRequirement') {
-            //   this.$emit('toggleOrder')
-            // }
-            // if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-            //   this.$emit('toggleOrderOffer')
-            // }
-
-            // this.loading = false
-            // this.updateCatalog()
-            // this.updateBasket()
-            this.afterAddBasket()
-          } else {
+      this.basketCheck().then(() => {
+        if (Object.keys(this.checkBasket).length > 0) {
+          this.loading = false
+          this.modalCheck = true
+        } else {
+          this.addAllToBasket()
+        }
+      })
+    },
+    addAllToBasket() {
+      this.basketProductAddAll({
+        items: this.dataItems,
+        cart_store: this.basketOfferWarehouse,
+      }).then((res) => {
+        if (res.data) {
+          this.errors = res.data.data
+          if (this.errors == '') {
             this.$toast.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: 'Не удалось положить товары в корзину',
+              severity: 'success',
+              summary: 'Выполнено!',
+              detail: 'Товары добавлены в корзину',
               life: 3000,
             })
-            this.loading = false
-            this.updateCatalog()
-            this.updateBasket()
-            this.$emit('windowClose')
+          } else {
+            this.$toast.add({
+              severity: 'secondary',
+              summary: 'Товары добавлены в корзину!',
+              detail: this.errors,
+              life: 3000,
+            })
           }
-        },
-      )
+          // if (this.$route.name == 'purchasesCatalogRequirement') {
+          //   this.$emit('toggleOrder')
+          // }
+          // if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+          //   this.$emit('toggleOrderOffer')
+          // }
+
+          // this.loading = false
+          // this.updateCatalog()
+          // this.updateBasket()
+          this.afterAddBasket()
+        } else {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось положить товары в корзину',
+            life: 3000,
+          })
+          this.loading = false
+          this.updateCatalog()
+          this.updateBasket()
+          this.$emit('windowClose')
+        }
+      })
     },
     addBasketAfterComplect(data) {
       this.loading = true
@@ -847,6 +871,40 @@ export default {
         this.$emit('toggleOrderOffer')
       }
       this.$emit('windowClose')
+    },
+    async basketCheck() {
+      this.checkBasket = {}
+      if (this.$route.name == 'purchasesCatalogRequirement') {
+        this.checkBasket = this.basket?.data[this.basketWarehouse]
+          ? this.basket?.data[this.basketWarehouse].data
+          : {}
+      } else {
+        this.checkBasket = this.basketOffer?.data[this.basketOfferWarehouse]
+          ? this.basketOffer?.data[this.basketOfferWarehouse].data
+          : {}
+      }
+      return this.checkBasket
+    },
+    setAddMode(mode) {
+      this.loading = true
+      this.modalCheck = false
+      if (mode) {
+        if (this.$route.name == 'purchasesCatalogRequirement') {
+          this.basketClear({ org_id: 0, store_id: 0 }).then(() => {
+            this.addAllToBasket()
+          })
+        } else {
+          this.basketOfferClear({
+            org_id: 0,
+            store_id: 0,
+            cart_store: this.basketOfferWarehouse,
+          }).then(() => {
+            this.addAllToBasket()
+          })
+        }
+      } else {
+        this.addAllToBasket()
+      }
     },
     async addBasketOne(data) {
       for (var r_id in data) {
