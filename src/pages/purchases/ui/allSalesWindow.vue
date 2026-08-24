@@ -873,15 +873,28 @@ export default {
       this.$emit('windowClose')
     },
     async basketCheck() {
+      const hasProducts = (source) =>
+        Object.values(source ?? {}).some((item) =>
+          Object.values(item?.data ?? {}).some(
+            (store) => Object.keys(store?.data ?? {}).length > 0,
+          ),
+        )
+
       this.checkBasket = {}
       if (this.$route.name == 'purchasesCatalogRequirement') {
-        this.checkBasket = this.basket?.data?.[this.basketWarehouse]
-          ? this.basket.data[this.basketWarehouse].data
-          : {}
+        const node = this.basket?.data?.[this.basketWarehouse]
+        const source = node?.data
+        this.checkBasket =
+          source && Number(node?.cart_data?.sku_count ?? 1) > 0 && hasProducts(source)
+            ? source
+            : {}
       } else {
-        this.checkBasket = this.basketOffer?.data?.[this.basketOfferWarehouse]
-          ? this.basketOffer.data[this.basketOfferWarehouse].data
-          : {}
+        const node = this.basketOffer?.data?.[this.basketOfferWarehouse]
+        const source = node?.data
+        this.checkBasket =
+          source && Number(node?.cart_data?.sku_count ?? 1) > 0 && hasProducts(source)
+            ? source
+            : {}
       }
       return this.checkBasket
     },

@@ -979,17 +979,27 @@ export default {
       })
     },
     async basketCheck() {
+      const hasProducts = (source) =>
+        Object.values(source ?? {}).some((item) =>
+          Object.values(item?.data ?? {}).some(
+            (store) => Object.keys(store?.data ?? {}).length > 0,
+          ),
+        )
+
       this.checkBasket = {}
       if (this.$route.name == 'purchasesCatalogRequirement') {
+        const node = this.basket?.data?.[this.basketWarehouse]
+        const source = node?.data
         this.checkBasket =
-          Object.keys(this.basket?.data ?? {}).length && this.basket?.data?.[this.basketWarehouse]
-            ? this.basket.data[this.basketWarehouse].data
+          source && Number(node?.cart_data?.sku_count ?? 1) > 0 && hasProducts(source)
+            ? source
             : {}
       } else {
+        const node = this.basketOffer?.data?.[this.basketOfferWarehouse]
+        const source = node?.data
         this.checkBasket =
-          Object.keys(this.basketOffer?.data ?? {}).length &&
-          this.basketOffer?.data?.[this.basketOfferWarehouse]
-            ? this.basketOffer.data[this.basketOfferWarehouse].data
+          source && Number(node?.cart_data?.sku_count ?? 1) > 0 && hasProducts(source)
+            ? source
             : {}
       }
 
