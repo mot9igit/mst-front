@@ -125,10 +125,13 @@ export default {
     },
     async getOptProductsReqAll({ commit }, cart_store) {
       const data = {
-        id: router.currentRoute._value.params.id,
-        id_org_from:
+        id:
           router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
             ? router.currentRoute._value.params.id_org_from
+            : router.currentRoute._value.params.id,
+        id_org_from:
+          router?.currentRoute?._value.matched[5]?.name == 'WholesaleClientsOffer'
+            ? router.currentRoute._value.params.id
             : null,
         req: router.currentRoute._value.params.requirement_id,
         action: 'get/products/req/all',
