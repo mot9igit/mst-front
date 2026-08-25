@@ -844,8 +844,8 @@ export default {
     height: 18px;
   }
 }
-@media (width<=1280px){
-  .clients__header .dart-row{
+@media (width<=1280px) {
+  .clients__header .dart-row {
     margin-top: 0 !important;
   }
   .clients__filters-create {
@@ -857,10 +857,10 @@ export default {
     font-size: 12px;
     width: 12px;
   }
-  .clients__filters-input-container .d-radio__wrapper{
+  .clients__filters-input-container .d-radio__wrapper {
     gap: 8px;
   }
-  .catalog-filter-switch-lable{
+  .catalog-filter-switch-lable {
     font-size: 12px;
     line-height: 14px;
   }
@@ -868,20 +868,18 @@ export default {
     align-items: center;
   }
 }
-@media (width<=1140px){
-  .catalog-filter-switch-lable{
+@media (width<=1140px) {
+  .catalog-filter-switch-lable {
     font-size: 10px;
     line-height: 12px;
   }
   .catalog-filters-dates {
-      padding-left: 16px;
-      max-height: 32px;
+    padding-left: 16px;
+    max-height: 32px;
   }
   .clients__filters-input {
-       
-        width: 200px;
-      
-    }
+    width: 200px;
+  }
 }
 @media (width<=1024px) {
   .clients__card-vendor-wrapper {
@@ -896,7 +894,7 @@ export default {
     position: relative;
   }
   .clients__card-action-container {
-    display: none;
+    //display: none;
   }
   .clients__filters-create {
     font-size: 10px;
@@ -931,7 +929,7 @@ export default {
   .clients__filters-input-container .d-radio__wrapper {
     gap: 6px;
   }
-  .clients__filters-left{
+  .clients__filters-left {
     gap: 10px;
   }
   .catalog-filters-dates .p-datepicker-input-icon-container .p-icon {
@@ -942,7 +940,8 @@ export default {
     padding-left: 8px;
     max-height: 24px;
   }
-  .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext::placeholder, .catalog-filters-dates .p-inputtext::placeholder{
+  .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext::placeholder,
+  .catalog-filters-dates .p-inputtext::placeholder {
     font-size: 10px;
   }
   .catalog-filters-dates .p-inputtext {
@@ -951,18 +950,18 @@ export default {
   }
 }
 @media (width<=991px) {
-    .clients__header .dart-row .d-col-lg-12 {
-        width: 50% !important;
-    }
+  .clients__header .dart-row .d-col-lg-12 {
+    width: 50% !important;
+  }
 }
 @media (width<=860px) {
-  .clients__filters-left{
-    display:grid;
-    grid-template-areas:'A A A A A A' 
-                        'B C D E F G';
-  
+  .clients__filters-left {
+    display: grid;
+    grid-template-areas:
+      'A A A A A A'
+      'B C D E F G';
   }
-  .clients__filters-input-container:first-child{
+  .clients__filters-input-container:first-child {
     grid-area: A;
   }
 }
@@ -972,18 +971,31 @@ export default {
     height: 24px;
     position: relative;
   }
-  .clients__filters-left{
-    display:grid;
-    grid-template-areas:'A A A' 
-                        'B C D'
-                        'E F G';
-  
+  .clients__filters-left {
+    display: grid;
+    grid-template-areas:
+      'A A A'
+      'B C D'
+      'E F G';
   }
   .clients__card-right-right.d-col-10 {
     justify-content: center !important;
   }
   .clients__card-right-right.d-col-10 .d-col-18 .clients__card-offer {
     margin: 0 auto;
+  }
+  .clients__card-action-container {
+    display: flex;
+    position: absolute;
+    top: 16px;
+    right: 44px;
+  }
+  .clients__card-right-right.d-col-10,
+  .clients__card-right.d-col-10 {
+    position: static;
+  }
+  .clients__card.dart-row {
+    position: relative;
   }
 }
 </style>
