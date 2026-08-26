@@ -173,6 +173,11 @@
             ><br />
             <p>{{ this.order?.buyer_w_address ? this.order?.buyer_w_address : '' }}</p>
           </div>
+          <span
+            v-if="this.order?.buyer_owner && this.order?.buyer_owner != 0"
+            class="cell_value-badge"
+            >{{ this.order?.buyer_owner }}</span
+          >
         </div>
 
         <div class="order-card__orderinfo-grid">
@@ -1100,5 +1105,8 @@ export default {
       }
     }
   }
+}
+.optorder__content .cell_value-badge {
+  margin: 8px 0 0 0;
 }
 </style>

@@ -23,7 +23,7 @@ export default {
     seller_statuses: {},
   },
   actions: {
-    async getOrders({ commit }, { filter, sort, page, perpage }) {
+    async getOrders({ commit }, { filter, sort, page, perpage, filtersdata }) {
       const data = {
         action: 'get/orders/seller',
         id: router.currentRoute._value.params.id,
@@ -32,6 +32,7 @@ export default {
         page: page,
         sort: sort,
         perpage: perpage,
+        filtersdata: filtersdata,
       }
       const response = await api.wholesale.getOrders(data)
       if (response) {

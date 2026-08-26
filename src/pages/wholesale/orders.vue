@@ -59,6 +59,13 @@ export default {
       loading: true,
       page: 1,
       filters: {
+        initiator_user: {
+          name: 'Менеджер',
+          placeholder: 'Все',
+          label: 'Менеджер',
+          type: 'tree',
+          value: '',
+        },
         name: {
           name: 'Поиск',
           placeholder: 'Поиск',
@@ -183,6 +190,7 @@ export default {
       getOrders: 'wholesale/getOrders',
       unsetOrders: 'wholesale/unsetOrders',
       downloadOrders: 'wholesale/downloadOrders',
+      getFilterManagers: 'addition/getManagers',
     }),
     filter(data) {
       console.log(data)
@@ -234,13 +242,45 @@ export default {
     }).then(() => {
       this.loading = false
     })
+    this.getFilterManagers().then(() => {
+      this.filters.initiator_user.values = this.filter_managers
+    })
   },
   computed: {
     ...mapGetters({
       orders: 'wholesale/orders',
+      filter_managers: 'addition/managers',
     }),
   },
-  watch: {},
+  watch: {
+    filter_managers: function (newVal) {
+      this.filters.initiator_user.values = newVal
+    },
+  },
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.wholesaleorders__content .dart-row {
+  align-items: flex-end !important;
+  .p-inputtext,
+  .vue3-treeselect__control {
+    border-radius: 20px;
+  }
+}
+.wholesaleorders__content .vue3-treeselect__placeholder,
+.wholesaleorders__content .vue3-treeselect__single-value {
+  bottom: 0;
+  left: 0;
+  line-height: 35px;
+  overflow: hidden;
+  padding-left: 7px;
+  padding-right: 5px;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  text-overflow: ellipsis;
+  top: 0px;
+  user-select: none;
+  white-space: nowrap;
+}
+</style>
