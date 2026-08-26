@@ -379,7 +379,7 @@ aside button {
   }
   @media (width > 600px) {
     .header__wrapper {
-      display: block;
+  display: inline-block;
     }
   }
 }
@@ -1611,6 +1611,19 @@ aside button {
   display: none;
 }
 
+.cell_value-badge {
+  display: block;
+  font-weight: 500;
+  color: #757575;
+  font-size: 14px;
+  line-height: 18px;
+  margin: 8px auto 0;
+  padding: 3px 8px;
+  border-radius: 24px;
+  background-color: #75757533;
+  width: max-content;
+}
+
 //--фиксированная ширина для колонок
 .orders_table .d-table__col:first-child {
   width: 5%;
@@ -1781,6 +1794,10 @@ aside button {
   }
   .cell_order-status span {
     font-size: 10px !important;
+  }
+  .cell_value-badge {
+    font-size: 10px;
+    line-height: 14px;
   }
   .shipments .d-top-order-container-buttons button {
     height: 32px;
@@ -2041,6 +2058,10 @@ aside button {
   .shipments button span {
     font-size: 10px;
   }
+  .cell_value-badge {
+    font-size: 9px;
+    line-height: 11px;
+  }
 }
 
 @media (width <=700px) {
@@ -2088,6 +2109,10 @@ aside button {
     top: calc(50% - 6.4px);
     right: 16px;
     font-size: 12px;
+  }
+  .cell_value-badge {
+    font-size: 12px;
+    line-height: 16px;
   }
   .d-table-min {
     width: calc(100% + 16px);

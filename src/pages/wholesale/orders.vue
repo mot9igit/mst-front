@@ -1,5 +1,6 @@
 <template>
   <section class="shipments wholesaleorders__content myorders__content orders_table" id="shipments">
+    <Toast />
     <div class="d-top">
       <Breadcrumbs />
     </div>
@@ -16,6 +17,7 @@
       @filter="filter"
       @sort="filter"
       @paginate="paginate"
+      @download="downloadOrd"
     />
     <MinTable
       :items_data="orders.orders"
@@ -37,10 +39,11 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
 import MinTable from '@/shared/ui/tableMin/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
+import Toast from 'primevue/toast'
 
 export default {
   name: 'wholesaleOrders',
-  components: { Breadcrumbs, BaseTable, Loader, MinTable },
+  components: { Breadcrumbs, BaseTable, Loader, MinTable, Toast },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -61,7 +64,11 @@ export default {
           placeholder: 'Поиск',
           type: 'text',
         },
+        button: {
+          type: 'download',
+        },
       },
+      request_filter: {},
       table_data: {
         id: {
           label: '№',
@@ -107,7 +114,7 @@ export default {
             order_id: 'id',
           },
           class: 'cell_centeralign',
-          items: ['buyer_name', 'buyer_inn', 'buyer_address'],
+          items: ['buyer_name', 'buyer_inn', 'buyer_address', 'buyer_owner'],
         },
 
         // buyer_store: {
@@ -175,6 +182,7 @@ export default {
     ...mapActions({
       getOrders: 'wholesale/getOrders',
       unsetOrders: 'wholesale/unsetOrders',
+      downloadOrders: 'wholesale/downloadOrders',
     }),
     filter(data) {
       console.log(data)
@@ -183,6 +191,7 @@ export default {
       this.page = 1
       this.getOrders(data).then(() => {
         this.loading = false
+        this.request_filter = data
       })
     },
     paginate(data) {
@@ -191,6 +200,30 @@ export default {
       this.page = data.page
       this.getOrders(data).then(() => {
         this.loading = false
+      })
+    },
+    downloadOrd() {
+      this.downloadOrders({
+        filter: this.request_filter,
+        mode: 'seller',
+      }).then((response) => {
+        if (response.data.data.filename) {
+          this.loading = false
+          let loc = response.data.data.filename
+          var downloadLink = document.createElement('a')
+          downloadLink.href = loc
+          downloadLink.setAttribute('download', loc)
+          downloadLink.setAttribute('target', '_blank')
+          downloadLink.click()
+        } else {
+          this.loading = false
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось скачать отчет!',
+            life: 3000,
+          })
+        }
       })
     },
   },

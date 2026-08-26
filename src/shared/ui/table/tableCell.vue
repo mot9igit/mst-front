@@ -181,9 +181,16 @@
           <span v-if="value[item] && item.includes('inn')"
             >ИНН: {{ value[item] ? value[item] : '-' }}</span
           >
-          <span v-if="value[item] && !item.includes('inn')" class="cell_value-inn">{{
-            value[item]
-          }}</span>
+          <span
+            v-if="value[item] && !item.includes('inn') && !item.includes('owner')"
+            class="cell_value-inn"
+            >{{ value[item] }}</span
+          >
+          <span
+            v-if="value[item] && item.includes('owner') && value[item] != 0"
+            class="cell_value-badge"
+            >{{ value[item] }}</span
+          >
         </div>
       </router-link>
     </div>
