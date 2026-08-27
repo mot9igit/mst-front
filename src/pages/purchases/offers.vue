@@ -180,6 +180,9 @@ export default {
       this.loading = true
       this.unsetOffers()
       this.page = data.page
+      if (data.filtersdata.status) {
+        data.filterstatus = data.filtersdata.status
+      }
       this.getOffers(data).then(() => {
         this.loading = false
       })

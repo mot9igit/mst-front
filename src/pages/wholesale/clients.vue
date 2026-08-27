@@ -38,132 +38,153 @@
 
     <div class="clients__filters">
       <div class="clients__filters-left">
-        <div class="clients__filters-input-container" v-for="(ffilter, i) in filters" :key="i">
-          <div class="d-input d-input--light clients__filters-input" v-if="ffilter.type == 'text'">
-            <input
-              type="text"
-              :id="ffilter.name"
-              :placeholder="ffilter.placeholder"
-              :name="i"
-              class="d-input__field clients__filters-input-field"
-              v-model="filterText"
-              @input="setFilter('filter')"
-            />
-
-            <div class="d-input__actions clients__filters-input-actions">
-              <button class="d-icon-wrapper clients__filters-input-button">
-                <i class="d-icon-search-big"></i>
-              </button>
-            </div>
-          </div>
-          <div
-            class="d-input d-input--light clients__filters-input clients__filters-input-multiselect"
-            v-if="ffilter.type == 'multiselect'"
-          >
-            <div class="dart-form-group">
-              <MultiSelect
-                v-model="filterValues[i]"
-                :options="ffilter.values"
-                :optionLabel="ffilter.optionLabel ? ffilter.optionLabel : 'name'"
-                :optionValue="ffilter.optionValue ? ffilter.optionValue : 'id'"
-                :placeholder="ffilter.placeholder"
-                filter
-                :maxSelectedLabels="ffilter.values.length"
-                class="d-input__field clients__filters-multiselect-field"
-                @change="setFilter"
-              />
-            </div>
-
-            <div class="d-input__actions clients__filters-input-actions">
-              <button class="d-icon-wrapper clients__filters-input-button">
-                <i class="d-icon-search-big"></i>
-              </button>
-              <div
-                class="d-divider d-divider--vertical d-input__actions-divider clients__filters-input-actions-divider"
-              ></div>
-              <!--<button class="d-icon-wrapper clients__filters-input-button">
-                <i class="d-icon-angle-rounded-bottom-bold"></i>
-              </button>-->
-            </div>
-          </div>
-          <div
-            class="d-radio__wrapper clients__filters-radio-wrapper"
-            v-if="ffilter.type == 'checkbox'"
-          >
-            <label for="vendorCreated" class="p-checkbox p-component">
-              <Checkbox
-                :inputId="'input' + i"
-                :name="i"
-                value="1"
-                v-model="filterValues[i]"
-                @change="setFilter"
-                class="p-radio-input clients__filters-radio-input"
-              />
-            </label>
-            <label
-              for="vendorCreated"
-              class="d-radio__label clients__filters-radio-label"
-              v-if="ffilter.type == 'checkbox'"
-            >
-              {{ ffilter.name }}
-            </label>
-          </div>
-          <div
-            class="d-radio__wrapper clients__filters-radio-wrapper"
-            v-if="ffilter.type == 'switch'"
-          >
-            <div class="d-switch catalog-filter-switch" @click="setFilterSwitch(i)">
+          <div class="clients__filters-input-container" v-for="(ffilter, i) in filtersInputs" :key="i">
+            <div class="d-input d-input--light clients__filters-input" v-if="ffilter.type == 'text'">
               <input
-                type="checkbox"
-                binary="true"
-                class="d-switch__input"
-                v-model="filterValues[i]"
-                :id="'catalog-' + i"
+                type="text"
+                :id="ffilter.name"
+                :placeholder="ffilter.placeholder"
+                :name="i"
+                class="d-input__field clients__filters-input-field"
+                v-model="filterText"
+                @input="setFilter('filter')"
               />
-              <div class="d-switch__circle"></div>
-            </div>
-            <label
-              :for="'catalog-' + i"
-              class="catalog-top_filters-label"
-              :class="{
-                'catalog-top_filters-label--active': filterValues[i],
-                'catalog-filter-switch-lable': ffilter.type == 'switch',
-              }"
-              >{{ ffilter.placeholder }}
-            </label>
-          </div>
-          <DatePicker
-            v-if="ffilter.type == 'datepicker'"
-            v-model="filterValues[i]"
-            @hide="setFilter"
-            dateFormat="dd.mm.yy"
-            :placeholder="ffilter.placeholder"
-            :manualInput="false"
-            :maxDate="date_now"
-            showIcon
-            showClear
-            iconDisplay="input"
-            selectionMode="range"
-            class="catalog-filters-dates"
-          >
-            <template #footer>
-              <div class="catalog-filters-dates-overlay-footer">
-                <button
-                  class="d-button d-button-primary d-button-primary-small d-button-clear-dates"
-                  @click.prevent="filterValues[i] = null"
-                >
-                  Сбросить
-                </button>
-                <button
-                  class="d-button d-button-primary d-button-primary-small"
-                  @click.prevent="setFilter"
-                >
-                  Готово
+
+              <div class="d-input__actions clients__filters-input-actions">
+                <button class="d-icon-wrapper clients__filters-input-button">
+                  <i class="d-icon-search-big"></i>
                 </button>
               </div>
-            </template>
-          </DatePicker>
-        </div>
+            </div>
+            <div class="dart-form-group clients__filters-tree-group" v-if="ffilter.type == 'tree'">
+              <label :for="'tree_' + i" v-if="ffilter.label" class="treeselect-filter-label">{{
+                ffilter.label
+              }}</label>
+              <TreeSelect
+                v-model="filterValues[i]"
+                :multiple="true"
+                :options="ffilter.values"
+                :placeholder="ffilter.placeholder"
+                valueFormat="id"
+                :limit="1"
+                :limitText="(count) => `и еще ${count}`"
+                :id="'tree_' + i"
+                @select="setFilter"
+                @deselect="setFilter"
+              />
+            </div>
+          </div>
+      </div>
+      <div class="clients__filters-left">
+          <div class="clients__filters-input-container" v-for="(ffilter, i) in filtersToggles" :key="i">
+            <div
+              class="d-input d-input--light clients__filters-input clients__filters-input-multiselect"
+              v-if="ffilter.type == 'multiselect'"
+            >
+              <div class="dart-form-group">
+                <MultiSelect
+                  v-model="filterValues[i]"
+                  :options="ffilter.values"
+                  :optionLabel="ffilter.optionLabel ? ffilter.optionLabel : 'name'"
+                  :optionValue="ffilter.optionValue ? ffilter.optionValue : 'id'"
+                  :placeholder="ffilter.placeholder"
+                  filter
+                  :maxSelectedLabels="ffilter.values.length"
+                  class="d-input__field clients__filters-multiselect-field"
+                  @change="setFilter"
+                />
+              </div>
+
+              <div class="d-input__actions clients__filters-input-actions">
+                <button class="d-icon-wrapper clients__filters-input-button">
+                  <i class="d-icon-search-big"></i>
+                </button>
+                <div
+                  class="d-divider d-divider--vertical d-input__actions-divider clients__filters-input-actions-divider"
+                ></div>
+                <!--<button class="d-icon-wrapper clients__filters-input-button">
+                  <i class="d-icon-angle-rounded-bottom-bold"></i>
+                </button>-->
+              </div>
+            </div>
+            <div
+              class="d-radio__wrapper clients__filters-radio-wrapper"
+              v-if="ffilter.type == 'checkbox'"
+            >
+              <label for="vendorCreated" class="p-checkbox p-component">
+                <Checkbox
+                  :inputId="'input' + i"
+                  :name="i"
+                  value="1"
+                  v-model="filterValues[i]"
+                  @change="setFilter"
+                  class="p-radio-input clients__filters-radio-input"
+                />
+              </label>
+              <label
+                for="vendorCreated"
+                class="d-radio__label clients__filters-radio-label"
+                v-if="ffilter.type == 'checkbox'"
+              >
+                {{ ffilter.name }}
+              </label>
+            </div>
+            <div
+              class="d-radio__wrapper clients__filters-radio-wrapper"
+              v-if="ffilter.type == 'switch'"
+            >
+              <div class="d-switch catalog-filter-switch" @click="setFilterSwitch(i)">
+                <input
+                  type="checkbox"
+                  binary="true"
+                  class="d-switch__input"
+                  v-model="filterValues[i]"
+                  :id="'catalog-' + i"
+                />
+                <div class="d-switch__circle"></div>
+              </div>
+              <label
+                :for="'catalog-' + i"
+                class="catalog-top_filters-label"
+                :class="{
+                  'catalog-top_filters-label--active': filterValues[i],
+                  'catalog-filter-switch-lable': ffilter.type == 'switch',
+                }"
+                >{{ ffilter.placeholder }}
+              </label>
+            </div>
+            <DatePicker
+              v-if="ffilter.type == 'datepicker'"
+              v-model="filterValues[i]"
+              @hide="setFilter"
+              dateFormat="dd.mm.yy"
+              :placeholder="ffilter.placeholder"
+              :manualInput="false"
+              :maxDate="date_now"
+              showIcon
+              showClear
+              iconDisplay="input"
+              selectionMode="range"
+              class="catalog-filters-dates"
+            >
+              <template #footer>
+                <div class="catalog-filters-dates-overlay-footer">
+                  <button
+                    class="d-button d-button-primary d-button-primary-small d-button-clear-dates"
+                    @click.prevent="filterValues[i] = null"
+                  >
+                    Сбросить
+                  </button>
+                  <button
+                    class="d-button d-button-primary d-button-primary-small"
+                    @click.prevent="setFilter"
+                  >
+                    Готово
+                  </button>
+                </div>
+              </template>
+            </DatePicker>
+          </div>
       </div>
     </div>
     <Loader v-if="loading" />
@@ -443,6 +464,8 @@ import { MultiSelect } from 'primevue'
 import customModal from '@/shared/ui/Modal.vue'
 import Toast from 'primevue/toast'
 import DatePicker from 'primevue/datepicker'
+import TreeSelect from '@zanmato/vue3-treeselect'
+import '@zanmato/vue3-treeselect/dist/vue3-treeselect.min.css'
 
 export default {
   name: 'WholesaleClients',
@@ -455,6 +478,7 @@ export default {
     MultiSelect,
     customModal,
     Toast,
+    TreeSelect,
   },
   props: {
     pagination_items_per_page: {
@@ -477,13 +501,19 @@ export default {
       countPages: 0,
       localItems: [],
       filters: {
+        manager: {
+          name: 'Сотрудник',
+          placeholder: 'Сотрудник',
+          type: 'tree',
+          value: '',
+        },
         name: {
           name: 'Название организации или инн',
           placeholder: 'Название организации или инн',
           type: 'text',
         },
         /*
-        manager: {
+        initiator_user: {
           name: 'Менеджер',
           placeholder: 'Выберите менеджера',
           type: 'multiselect',
@@ -538,6 +568,7 @@ export default {
       deleteOrgProfile: 'wholesale/deleteOrgProfile',
       createOfferExtended: 'offer/createOfferExtended',
       activateVirtualStore: 'org/activateVirtualStore',
+      getFilterManagers: 'addition/getManagers',
     }),
     setFilterSwitch(index) {
       console.log(index)
@@ -572,11 +603,13 @@ export default {
           })
         }
       } else {
-        this.filter({
-          filter: this.filterText,
-          filtersdata: toRaw(this.filterValues),
-          page: 1,
-          perpage: this.pagination_items_per_page,
+        this.$nextTick(() => {
+          this.filter({
+            filter: this.filterText,
+            filtersdata: toRaw(this.filterValues),
+            page: 1,
+            perpage: this.pagination_items_per_page,
+          })
         })
       }
     },
@@ -707,13 +740,37 @@ export default {
     this.getStores({
       id: this.$route.params.id,
     })
+    this.getFilterManagers().then(() => {
+      this.filters.manager.values = this.filter_managers
+    })
   },
   computed: {
     ...mapGetters({
       dilers: 'wholesale/dilers',
       managers: 'wholesale/managers',
       stores: 'wholesale/stores',
+      filter_managers: 'addition/managers',
     }),
+    filtersInputs() {
+      const res = {}
+      for (const key in this.filters) {
+        const type = this.filters[key].type
+        if (type === 'text' || type === 'tree') {
+          res[key] = this.filters[key]
+        }
+      }
+      return res
+    },
+    filtersToggles() {
+      const res = {}
+      for (const key in this.filters) {
+        const type = this.filters[key].type
+        if (type === 'switch' || type === 'checkbox' || type === 'datepicker' || type === 'multiselect') {
+          res[key] = this.filters[key]
+        }
+      }
+      return res
+    },
   },
   watch: {
     //managers: function (newVal, oldVal) {
@@ -729,6 +786,9 @@ export default {
       if (newVal === false) {
         this.modalDeleteObj = {}
       }
+    },
+    filter_managers: function (newVal) {
+      this.filters.manager.values = newVal
     },
   },
 }
@@ -824,6 +884,101 @@ export default {
   width: 100%;
   box-shadow: none;
 }
+.clients__filters {
+  flex-direction: column;
+  gap: 24px;
+}
+.clients__filters > .clients__filters-left:first-child {
+  display: flex;
+  flex-direction: row;
+  flex: 0 0 auto;
+  width: auto;
+  align-self: flex-end;
+  justify-content: flex-end;
+}
+.clients__filters > .clients__filters-left:first-child .clients__filters-input-container {
+  flex: 0 0 auto;
+  width: auto;
+}
+.clients__filters-tree-group {
+  display: flex;
+  flex-direction: column;
+  .vue3-treeselect .vue3-treeselect__control {
+    display: flex !important;
+    align-items: center !important;
+    position: relative !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    height: 40px !important;
+    max-height: 40px !important;
+    min-height: 40px !important;
+    font-size: 14px !important;
+    line-height: normal !important;
+    padding: 0 9px !important;
+    width: 300px !important;
+  }
+  .vue3-treeselect .vue3-treeselect__value-container,
+  .vue3-treeselect .vue3-treeselect__input-container {
+    display: flex !important;
+    align-items: center !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+  .vue3-treeselect .vue3-treeselect__control-arrow-container {
+    flex: 0 0 auto !important;
+  }
+  .vue3-treeselect .vue3-treeselect__multi-value {
+    display: inline-flex !important;
+    align-items: center !important;
+    flex: 0 0 auto !important;
+    vertical-align: middle !important;
+    margin: 0 !important;
+  }
+  .vue3-treeselect .vue3-treeselect__multi-value-item-container {
+    padding: 0 4px 0 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    vertical-align: middle !important;
+  }
+  .vue3-treeselect .vue3-treeselect__multi-value-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    align-self: center !important;
+    flex: 0 0 auto !important;
+    height: 22px !important;
+    max-height: 22px !important;
+    padding: 0 6px !important;
+    font-size: 12px !important;
+    line-height: 20px !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+  .vue3-treeselect .vue3-treeselect__input {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  .vue3-treeselect__placeholder,
+  .vue3-treeselect__single-value {
+    align-items: center;
+    bottom: 0;
+    display: flex;
+    font-size: 14px !important;
+    left: 0;
+    overflow: hidden;
+    padding-left: 9px !important;
+    padding-right: 9px !important;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    text-overflow: ellipsis;
+    top: 0;
+    user-select: none;
+    white-space: nowrap;
+  }
+}
 @media (width>1280px) {
   .clients__card-vendor--integration {
     width: 100%;
@@ -880,6 +1035,9 @@ export default {
   .clients__filters-input {
     width: 200px;
   }
+  .clients__filters-tree-group .vue3-treeselect .vue3-treeselect__control {
+    width: 200px !important;
+  }
 }
 @media (width<=1024px) {
   .clients__card-vendor-wrapper {
@@ -916,6 +1074,33 @@ export default {
     font-weight: 400;
     width: 200px;
     height: 24px;
+  }
+  .clients__filters-tree-group .vue3-treeselect .vue3-treeselect__control {
+    height: 24px !important;
+    min-height: 24px !important;
+    font-size: 10px !important;
+    line-height: 22px !important;
+    width: 200px !important;
+    padding: 0 9px !important;
+  }
+  .clients__filters-tree-group .vue3-treeselect__placeholder,
+  .clients__filters-tree-group .vue3-treeselect__single-value {
+    font-size: 10px !important;
+    padding-left: 9px !important;
+    padding-right: 9px !important;
+  }
+  .clients__filters-tree-group .vue3-treeselect .vue3-treeselect__multi-value-item {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    height: 20px !important;
+    max-height: 20px !important;
+    font-size: 10px !important;
+    line-height: 18px !important;
+    padding: 0 6px !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
   .clients__filters-radio-wrapper .d-switch {
     --d-switch-width: 25px;
@@ -956,16 +1141,24 @@ export default {
 }
 @media (width<=860px) {
   .clients__filters-left {
-    display: grid;
-    grid-template-areas:
-      'A A A A A A'
-      'B C D E F G';
-  }
-  .clients__filters-input-container:first-child {
-    grid-area: A;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 }
 @media (width<=600px) {
+  .clients__filters > .clients__filters-left:first-child {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .clients__filters > .clients__filters-left:first-child .clients__filters-input-container {
+    width: 100%;
+  }
+  .clients__filters > .clients__filters-left:first-child .clients__filters-input {
+    width: 100% !important;
+  }
+  .clients__filters > .clients__filters-left:first-child .clients__filters-tree-group .vue3-treeselect .vue3-treeselect__control {
+    width: 100% !important;
+  }
   .clients__card-vendor--integration {
     width: auto;
     height: 24px;
@@ -997,5 +1190,10 @@ export default {
   .clients__card.dart-row {
     position: relative;
   }
+}
+.clients__filters-input-container .d-input,
+.clients__filters-input-container .d-input__field {
+  border-radius: 20px !important;
+  overflow: hidden !important;
 }
 </style>

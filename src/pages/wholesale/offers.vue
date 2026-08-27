@@ -59,6 +59,12 @@ export default {
       loading: true,
       page: 1,
       filters: {
+        initiator_user: {
+          name: 'Сотрудник',
+          placeholder: 'Сотрудник',
+          type: 'tree',
+          value: '',
+        },
         name: {
           name: 'Поиск',
           placeholder: 'Искать в предложениях',
@@ -179,6 +185,7 @@ export default {
       unsetOffers: 'wholesale/unsetOffers',
       deleteOffer: 'wholesale/deleteOffer',
       getOffersStatuses: 'purchases/getOffersStatuses',
+      getFilterManagers: 'addition/getManagers',
     }),
     filter(data) {
       console.log(data)
@@ -196,6 +203,9 @@ export default {
       this.loading = true
       this.unsetOffers()
       this.page = data.page
+      if (data.filtersdata.status) {
+        data.filterstatus = data.filtersdata.status
+      }
       this.getOffers(data).then(() => {
         this.loading = false
       })
@@ -259,32 +269,63 @@ export default {
       this.getOffersStatuses()
       this.loading = false
     })
+    this.getFilterManagers().then(() => {
+      this.filters.initiator_user.values = this.filter_managers
+    })
   },
   computed: {
     ...mapGetters({
       offers: 'wholesale/offers',
       offerStatuses: 'purchases/offerStatuses',
+      filter_managers: 'addition/managers',
     }),
   },
   watch: {
     offerStatuses: function (newVal) {
       this.filters.status.values = newVal
     },
+    filter_managers: function (newVal) {
+      this.filters.initiator_user.values = newVal
+    },
   },
 }
 </script>
 
 <style lang="scss">
+.wholesaleoffers__content .dart-row {
+  align-items: flex-end !important;
+  .dart-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .p-inputtext,
+  .vue3-treeselect__control {
+    border-radius: 20px;
+  }
+}
 .wholesaleoffers__content .vue3-treeselect__placeholder,
-.vue3-treeselect__single-value {
+.wholesaleoffers__content .vue3-treeselect__single-value {
+  align-items: center;
+  bottom: 0;
+  display: flex;
   font-size: 16px;
-  line-height: 32px;
+  left: 0;
+  overflow: hidden;
+  padding-left: 7px;
+  padding-right: 5px;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  text-overflow: ellipsis;
+  top: 0;
+  user-select: none;
+  white-space: nowrap;
 }
 @media (width <= 1580px) {
   .wholesaleoffers__content .vue3-treeselect__placeholder,
-  .vue3-treeselect__single-value {
+  .wholesaleoffers__content .vue3-treeselect__single-value {
     font-size: 16px;
-    line-height: 32px;
   }
 }
 @media (width <= 1280px) {
@@ -293,9 +334,8 @@ export default {
     height: 30px;
   }
   .wholesaleoffers__content .vue3-treeselect__placeholder,
-  .vue3-treeselect__single-value {
+  .wholesaleoffers__content .vue3-treeselect__single-value {
     font-size: 12px;
-    line-height: 28px;
   }
 }
 @media (width <= 1024px) {
@@ -308,9 +348,8 @@ export default {
     font-size: 8px;
   }
   .wholesaleoffers__content .vue3-treeselect__placeholder,
-  .vue3-treeselect__single-value {
+  .wholesaleoffers__content .vue3-treeselect__single-value {
     font-size: 9px;
-    line-height: 22px;
   }
 }
 </style>

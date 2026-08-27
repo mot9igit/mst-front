@@ -60,9 +60,9 @@ export default {
       page: 1,
       filters: {
         initiator_user: {
-          name: 'Менеджер',
+          name: 'Сотрудник',
           placeholder: 'Все',
-          label: 'Менеджер',
+          label: 'Сотрудник',
           type: 'tree',
           value: '',
         },
@@ -262,6 +262,11 @@ export default {
 <style lang="scss">
 .wholesaleorders__content .dart-row {
   align-items: flex-end !important;
+  .dart-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
   .p-inputtext,
   .vue3-treeselect__control {
     border-radius: 20px;

@@ -752,10 +752,7 @@
     }
 
     &__filters {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      justify-items: flex-end;
+      
 
       &-left,
       &-input-container {

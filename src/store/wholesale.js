@@ -146,12 +146,12 @@ export default {
 
       return response
     },
-    async getOffers({ commit }, { filter, sort, page, perpage, filterstatus }) {
+    async getOffers({ commit }, { filter, sort, page, perpage, filtersdata }) {
       const data = {
         action: 'get/offers/clients',
         id: router.currentRoute._value.params.id,
         filter: filter,
-        filterstatus: filterstatus,
+        filtersdata: filtersdata,
         page: page,
         sort: sort,
         perpage: perpage,
