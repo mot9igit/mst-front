@@ -110,6 +110,39 @@
             @update:modelValue="setFilter"
           />
         </div>
+        <div class="dart-form-group catalog-dates-filter-group" v-if="ffilter.type == 'datepicker'">
+          <DatePicker
+            v-model="filtersdata[i]"
+            :ref="(el) => setDatepickerRef(i, el)"
+            @hide="setFilter"
+            dateFormat="dd.mm.yy"
+            :placeholder="ffilter.placeholder"
+            :manualInput="false"
+            :maxDate="date_now"
+            showIcon
+            showClear
+            iconDisplay="input"
+            selectionMode="range"
+            class="catalog-filters-dates"
+          >
+            <template #footer>
+              <div class="catalog-filters-dates-overlay-footer">
+                <button
+                  class="d-button d-button-primary d-button-primary-small d-button-clear-dates"
+                  @click.prevent="filtersdata[i] = null"
+                >
+                  Сбросить
+                </button>
+                <button
+                  class="d-button d-button-primary d-button-primary-small"
+                  @click.prevent="applyDateFilter(i)"
+                >
+                  Готово
+                </button>
+              </div>
+            </template>
+          </DatePicker>
+        </div>
         <div class="dart-form-group" v-if="ffilter.type == 'tree'">
           <!-- <TreeSelect
             v-model="filtersdata[i]"
@@ -304,6 +337,7 @@ import vTableRow from './tableRow.vue'
 // import vTableFilter from './v-table-filter'
 import Paginate from 'vuejs-paginate-next'
 import Calendar from 'primevue/calendar'
+import DatePicker from 'primevue/datepicker'
 import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
 // import the component
@@ -343,6 +377,7 @@ export default {
     Paginate,
     TreeSelect,
     Calendar,
+    DatePicker,
     AutoComplete,
     SelectInput,
     InputNumber,
@@ -421,6 +456,8 @@ export default {
       calendar: {
         maxDate: null,
       },
+      date_now: new Date(),
+      datepickerInstances: {},
       filteredVendor: null,
       all_check: false,
       isOver: false,
@@ -629,6 +666,22 @@ export default {
           200,
         )
       })
+    },
+    applyDateFilter(i) {
+      const datepicker = this.datepickerInstances[i]
+      if (datepicker) {
+        if (typeof datepicker.overlayVisible !== 'undefined') {
+          datepicker.overlayVisible = false
+        } else if (typeof datepicker.hide === 'function') {
+          datepicker.hide()
+        }
+      }
+      this.setFilter()
+    },
+    setDatepickerRef(i, el) {
+      if (el) {
+        this.datepickerInstances[i] = el
+      }
     },
     sorting(key) {
       if (Object.prototype.hasOwnProperty.call(this.sort, key)) {
@@ -1238,5 +1291,80 @@ tbody {
   min-width: auto !important;
   max-width: auto !important;
   flex: 0 0 auto !important;
+}
+.catalog-dates-filter-group .catalog-filters-dates {
+  position: relative;
+  padding-left: 24px;
+}
+.catalog-dates-filter-group .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext {
+  color: #fff;
+  background: #282828 !important;
+}
+.catalog-dates-filter-group .catalog-filters-dates:not(.p-inputwrapper-focus) .p-inputtext {
+  color: #282828 !important;
+  background: #ededed !important;
+}
+.catalog-dates-filter-group .catalog-filters-dates .p-inputtext {
+  font-size: 14px;
+  line-height: 18px;
+  padding-block: 11px;
+  padding-inline: 16px 22px;
+  border: none;
+  border-radius: 53px;
+  box-shadow: none;
+  cursor: pointer;
+}
+.catalog-dates-filter-group .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext::placeholder {
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #fff;
+}
+.catalog-dates-filter-group .catalog-filters-dates .p-inputtext::placeholder {
+  font-size: 14px;
+  line-height: 18px;
+  color: #282828;
+  font-weight: 500;
+}
+.catalog-dates-filter-group .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-datepicker-input-icon-container {
+  color: #fff;
+}
+.catalog-dates-filter-group .catalog-filters-dates .p-datepicker-input-icon-container {
+  color: #282828;
+  padding-left: 14px;
+  padding-right: 4px;
+  display: flex;
+  align-items: center;
+  height: 16px;
+}
+.catalog-dates-filter-group .catalog-filters-dates .p-datepicker-input-icon-container .p-icon {
+  width: 12px;
+  height: 14px;
+}
+.catalog-dates-filter-group .catalog-filters-dates .p-datepicker-input-icon-container::before,
+.catalog-dates-filter-group .catalog-filters-dates:before {
+  content: '';
+  width: 1px;
+  height: 16px;
+  background-color: #757575;
+  display: block;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+  left: 0;
+}
+.p-datepicker-day-selected-range {
+  color: #fff !important;
+}
+.catalog-filters-dates-overlay-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 8px 0;
+}
+.catalog-filters-dates-overlay-footer button {
+  width: 100%;
+  box-shadow: none;
 }
 </style>

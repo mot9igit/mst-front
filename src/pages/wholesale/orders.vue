@@ -71,6 +71,12 @@ export default {
           placeholder: 'Поиск',
           type: 'text',
         },
+        dates: {
+          name: 'Заказы за период',
+          placeholder: 'Заказы за период',
+          value: null,
+          type: 'datepicker',
+        },
         button: {
           type: 'download',
         },
@@ -197,18 +203,34 @@ export default {
       this.loading = true
       this.unsetOrders()
       this.page = 1
-      this.getOrders(data).then(() => {
+      const requestData = this.normalizeFilters(data)
+      this.getOrders(requestData).then(() => {
         this.loading = false
-        this.request_filter = data
+        this.request_filter = requestData
       })
     },
     paginate(data) {
       this.loading = true
       this.unsetOrders()
       this.page = data.page
-      this.getOrders(data).then(() => {
+      this.getOrders(this.normalizeFilters(data)).then(() => {
         this.loading = false
       })
+    },
+    normalizeFilters(data) {
+      if (!data || !data.filtersdata || !data.filtersdata.dates) {
+        return data
+      }
+      const normalized = {
+        ...data,
+        filtersdata: {
+          ...data.filtersdata,
+          dates: data.filtersdata.dates.map((d) =>
+            d ? new Date(d.getTime() - d.getTimezoneOffset() * 60000) : d,
+          ),
+        },
+      }
+      return normalized
     },
     downloadOrd() {
       this.downloadOrders({
@@ -287,5 +309,8 @@ export default {
   top: 0px;
   user-select: none;
   white-space: nowrap;
+}
+.wholesaleorders__content .dart-row .d-col-xl-6.d-col-md-4 {
+  width: 22%;
 }
 </style>
