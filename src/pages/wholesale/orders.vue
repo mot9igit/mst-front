@@ -310,7 +310,88 @@ export default {
   user-select: none;
   white-space: nowrap;
 }
-.wholesaleorders__content .dart-row .d-col-xl-6.d-col-md-4 {
+.wholesaleorders__content .dart-row .d-col-xl-6.d-col-md-4:not(.d-col-w-auto) {
   width: 22%;
+}
+.wholesaleorders__content .catalog-dates-filter-group .catalog-filters-dates {
+  position: relative;
+  padding-left: 16px;
+}
+.wholesaleorders__content .dart-row .vue3-treeselect__control,
+.wholesaleorders__content .catalog-dates-filter-group .catalog-filters-dates .p-inputtext {
+  height: 40px;
+  min-height: 40px;
+}
+.wholesaleorders__content .download-button {
+  height: 40px;
+  width: 40px;
+}
+@media (width <= 1280px) {
+  .wholesaleorders__content .dart-row .dart-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .wholesaleorders__content .dart-row .d-col-xl-6.d-col-md-4:not(.d-col-w-auto) {
+    width: 22% !important;
+  }
+  .wholesaleorders__content .dart-row .d-col-xl-6.d-col-md-4.d-col-w-auto {
+    width: auto !important;
+    flex: 0 0 auto;
+  }
+  .wholesaleorders__content .treeselect-filter-label {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .wholesaleorders__content .dart-row .vue3-treeselect__control,
+  .wholesaleorders__content .catalog-dates-filter-group .catalog-filters-dates .p-inputtext {
+    height: 32px;
+    min-height: 32px;
+    font-size: 12px;
+  }
+  .wholesaleorders__content .vue3-treeselect__placeholder,
+  .wholesaleorders__content .vue3-treeselect__single-value {
+    font-size: 12px;
+  }
+  .wholesaleorders__content .catalog-dates-filter-group .catalog-filters-dates .p-inputtext::placeholder {
+    font-size: 12px;
+  }
+  .wholesaleorders__content .download-button {
+    height: 32px;
+    width: 32px;
+    i {
+      font-size: 14px;
+    }
+  }
+}
+@media (width > 600px) and (width <= 1024px) {
+  .wholesaleorders__content .dart-row .vue3-treeselect__control,
+  .wholesaleorders__content .catalog-dates-filter-group .catalog-filters-dates .p-inputtext {
+    height: 24px;
+    min-height: 24px;
+  }
+  .wholesaleorders__content .download-button {
+    height: 24px;
+    width: 24px;
+  }
+}
+@media (width <= 1024px) {
+  .wholesaleorders__content .dart-row .vue3-treeselect__control,
+  .wholesaleorders__content .catalog-dates-filter-group .catalog-filters-dates .p-inputtext {
+    font-size: 9px;
+  }
+  .wholesaleorders__content .vue3-treeselect__placeholder,
+  .wholesaleorders__content .vue3-treeselect__single-value {
+    font-size: 9px;
+  }
+  .wholesaleorders__content .catalog-dates-filter-group .catalog-filters-dates .p-inputtext::placeholder {
+    font-size: 9px;
+  }
+}
+@media (width <= 770px) {
+  .wholesaleorders__content .dart-row.dart-mb-1 {
+    display: none;
+  }
 }
 </style>
