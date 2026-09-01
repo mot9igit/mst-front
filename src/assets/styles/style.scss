@@ -379,7 +379,7 @@ aside button {
   }
   @media (width > 600px) {
     .header__wrapper {
-  display: inline-block;
+      display: inline-block;
     }
   }
 }
@@ -1663,9 +1663,9 @@ aside button {
 }
 
 .orders_table .d-table__col:last-child {
-  width: 22%;
-  min-width: 22%;
-  max-width: 22%;
+  width: 17%;
+  min-width: 17%;
+  max-width: 17%;
 }
 
 //

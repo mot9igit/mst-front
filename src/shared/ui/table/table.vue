@@ -11,7 +11,12 @@
       <slot name="button"></slot>
     </div>
     <div class="dart-row dart-align-items-center dart-mb-1" v-if="show_filter">
-      <div class="d-col-xl-6 d-col-md-4" :class="{ 'd-col-w-auto': ffilter.type == 'download' }" v-for="(ffilter, i) in filters" :key="i">
+      <div
+        class="d-col-xl-6 d-col-md-4"
+        :class="{ 'd-col-w-auto': ffilter.type == 'download' }"
+        v-for="(ffilter, i) in filters"
+        :key="i"
+      >
         <div class="form_input_group input_pl input-parent required" v-if="ffilter.type == 'text'">
           <FloatLabel>
             <InputText
@@ -226,6 +231,21 @@
             <label :for="'input' + i" class="ml-2 mb-0">
               {{ ffilter.placeholder }}
             </label>
+          </div>
+        </div>
+        <div class="dart-form-group" v-if="ffilter.type == 'switch'">
+          <div class="dart-form-group-switch">
+            <div class="d-switch catalog-filter-switch" @click.prevent="toggleSwitch(i)">
+              <input
+                type="checkbox"
+                binary="true"
+                class="d-switch__input"
+                :checked="!!filtersdata[i]"
+                :id="'catalog-' + i"
+              />
+              <div class="d-switch__circle"></div>
+            </div>
+            <label :for="'catalog-' + i" class="ml-2 mb-0">{{ ffilter.placeholder }} </label>
           </div>
         </div>
         <div class="dart-form-group" v-if="ffilter.type == 'download'">
@@ -511,6 +531,10 @@ export default {
     },
     toDownload() {
       this.$emit('download')
+    },
+    toggleSwitch(i) {
+      this.filtersdata[i] = !this.filtersdata[i]
+      this.setFilter()
     },
     toggleAllChecked(checked) {
       // console.log(this.items_data)
@@ -1062,6 +1086,10 @@ tbody {
   .d-table-sort-active i {
     font-size: 9.5px;
   }
+  .ml-2.mb-0 {
+    font-size: 12px;
+    line-height: 14px;
+  }
 }
 @media (width <= 1024px) {
   .d-table-sort {
@@ -1083,6 +1111,10 @@ tbody {
   }
   .d-table-sort-active i {
     font-size: 7.5px;
+  }
+  .ml-2.mb-0 {
+    font-size: 9px;
+    line-height: 11px;
   }
 }
 .d-round-multyselect.p-multiselect {
@@ -1314,7 +1346,9 @@ tbody {
   box-shadow: none;
   cursor: pointer;
 }
-.catalog-dates-filter-group .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-inputtext::placeholder {
+.catalog-dates-filter-group
+  .catalog-filters-dates.p-inputwrapper-focus.p-focus
+  .p-inputtext::placeholder {
   font-size: 14px;
   line-height: 18px;
   font-weight: 500;
@@ -1326,7 +1360,9 @@ tbody {
   color: #282828;
   font-weight: 500;
 }
-.catalog-dates-filter-group .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-datepicker-input-icon-container {
+.catalog-dates-filter-group
+  .catalog-filters-dates.p-inputwrapper-focus.p-focus
+  .p-datepicker-input-icon-container {
   color: #fff;
 }
 .catalog-dates-filter-group .catalog-filters-dates .p-datepicker-input-icon-container {
@@ -1366,5 +1402,10 @@ tbody {
 .catalog-filters-dates-overlay-footer button {
   width: 100%;
   box-shadow: none;
+}
+.dart-form-group-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 </style>

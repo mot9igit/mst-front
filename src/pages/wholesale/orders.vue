@@ -61,8 +61,8 @@ export default {
       filters: {
         initiator_user: {
           name: 'Сотрудник',
-          placeholder: 'Все',
-          label: 'Сотрудник',
+          placeholder: 'Сотрудник',
+          label: '',
           type: 'tree',
           value: '',
         },
@@ -116,7 +116,7 @@ export default {
             order_id: 'id',
           },
           class: 'cell_centeralign',
-          items: ['seller_name', 'seller_inn', 'seller_address'],
+          items: ['seller_name', 'seller_inn', 'seller_address', 'owner_label'],
         },
         buyer_name: {
           label: 'Покупатель',
@@ -198,6 +198,20 @@ export default {
       downloadOrders: 'wholesale/downloadOrders',
       getFilterManagers: 'addition/getManagers',
     }),
+    addDillersFilter() {
+      if (this.orgActive?.type == 3 && !this.filters.dillers_orders) {
+        this.filters = {
+          dillers_orders: {
+            name: 'Показать заказы к дилерам',
+            placeholder: 'Показать заказы к дилерам',
+            label: 'Показать заказы к дилерам',
+            type: 'switch',
+            value: false,
+          },
+          ...this.filters,
+        }
+      }
+    },
     filter(data) {
       console.log(data)
       this.loading = true
@@ -258,6 +272,7 @@ export default {
     },
   },
   mounted() {
+    this.addDillersFilter()
     this.getOrders({
       page: this.page,
       perpage: this.pagination_items_per_page,
@@ -272,11 +287,15 @@ export default {
     ...mapGetters({
       orders: 'wholesale/orders',
       filter_managers: 'addition/managers',
+      orgActive: 'org/orgActive',
     }),
   },
   watch: {
     filter_managers: function (newVal) {
       this.filters.initiator_user.values = newVal
+    },
+    orgActive: function () {
+      this.addDillersFilter()
     },
   },
 }
@@ -311,7 +330,7 @@ export default {
   white-space: nowrap;
 }
 .wholesaleorders__content .dart-row .d-col-xl-6.d-col-md-4:not(.d-col-w-auto) {
-  width: 22%;
+  width: 17%;
 }
 .wholesaleorders__content .catalog-dates-filter-group .catalog-filters-dates {
   position: relative;
@@ -333,7 +352,7 @@ export default {
     gap: 6px;
   }
   .wholesaleorders__content .dart-row .d-col-xl-6.d-col-md-4:not(.d-col-w-auto) {
-    width: 22% !important;
+    width: 17% !important;
   }
   .wholesaleorders__content .dart-row .d-col-xl-6.d-col-md-4.d-col-w-auto {
     width: auto !important;
@@ -354,7 +373,10 @@ export default {
   .wholesaleorders__content .vue3-treeselect__single-value {
     font-size: 12px;
   }
-  .wholesaleorders__content .catalog-dates-filter-group .catalog-filters-dates .p-inputtext::placeholder {
+  .wholesaleorders__content
+    .catalog-dates-filter-group
+    .catalog-filters-dates
+    .p-inputtext::placeholder {
     font-size: 12px;
   }
   .wholesaleorders__content .download-button {
@@ -385,7 +407,10 @@ export default {
   .wholesaleorders__content .vue3-treeselect__single-value {
     font-size: 9px;
   }
-  .wholesaleorders__content .catalog-dates-filter-group .catalog-filters-dates .p-inputtext::placeholder {
+  .wholesaleorders__content
+    .catalog-dates-filter-group
+    .catalog-filters-dates
+    .p-inputtext::placeholder {
     font-size: 9px;
   }
 }

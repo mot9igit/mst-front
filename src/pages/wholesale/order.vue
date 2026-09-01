@@ -29,10 +29,11 @@
           <button
             class="order-card__action order-card__action-edit"
             v-if="
-              status.api_key == 'new' ||
-              status.api_key == 'seller_started' ||
-              status.api_key == 'seller_accepted' ||
-              status.api_key == 'buyer_accepted'
+              !order?.is_diller &&
+              (status.api_key == 'new' ||
+                status.api_key == 'seller_started' ||
+                status.api_key == 'seller_accepted' ||
+                status.api_key == 'buyer_accepted')
             "
             @click.prevent="optOrderEdit()"
           >
@@ -46,7 +47,7 @@
             optionLabel="data"
             placeholder="Изменить статус"
             class="w-full md:w-56 order_change_status"
-            v-if="order.portal_integration == '1'"
+            v-if="!order?.is_diller && order.portal_integration == '1'"
           >
             <template #value="slotProps">
               <span v-if="!slotProps.value">
@@ -72,10 +73,11 @@
           <button
             class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__cancel"
             v-if="
-              status.api_key == 'new' ||
-              status.api_key == 'seller_started' ||
-              status.api_key == 'seller_accepted' ||
-              status.api_key == 'buyer_accepted'
+              !order?.is_diller &&
+              (status.api_key == 'new' ||
+                status.api_key == 'seller_started' ||
+                status.api_key == 'seller_accepted' ||
+                status.api_key == 'buyer_accepted')
             "
             @click.prevent="modalCancel = true"
           >
@@ -85,7 +87,7 @@
           <button
             class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__action order-card__action order-card__docs"
             @click.prevent="modalDocs = true"
-            v-if="docs.length"
+            v-if="!order?.is_diller && docs.length"
           >
             <i class="item-list-item-icon d-icon-doc"></i>
             <span class="catalog__head-item-text"
@@ -95,7 +97,7 @@
           <button
             class="d-button d-button--sm-shadow d-button-quaternary d-button-quaternary-small order-card__action order-card__docs-upload"
             @click.prevent="modalDocsUpload = true"
-            v-if="order.portal_integration == '1'"
+            v-if="!order?.is_diller && order.portal_integration == '1'"
             title="Загрузить документы"
           >
             <i class="d-icon d-icon-download"></i>
@@ -160,6 +162,11 @@
             ><br />
             <p>{{ this.order?.seller_w_address ? this.order?.seller_w_address : '' }}</p>
           </div>
+          <span
+            v-if="this.order?.owner_label && this.order?.owner_label != 0"
+            class="cell_value-badge"
+            >{{ this.order?.owner_label }}</span
+          >
         </div>
 
         <div class="order-card__orderinfo-grid">
