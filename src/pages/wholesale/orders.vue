@@ -332,6 +332,17 @@ export default {
 .wholesaleorders__content .dart-row .d-col-xl-6.d-col-md-4:not(.d-col-w-auto) {
   width: 17%;
 }
+.wholesaleorders__content .vue3-treeselect__multi-value-label {
+  padding-right: 5px;
+  user-select: none;
+  white-space: nowrap;
+  max-width: 53px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wholesaleorders__content .vue3-treeselect__placeholder.vue3-treeselect-helper-hide {
+  display: none !important;
+}
 .wholesaleorders__content .catalog-dates-filter-group .catalog-filters-dates {
   position: relative;
   padding-left: 16px;
@@ -372,6 +383,23 @@ export default {
   .wholesaleorders__content .vue3-treeselect__placeholder,
   .wholesaleorders__content .vue3-treeselect__single-value {
     font-size: 12px;
+  }
+  .wholesaleorders__content .vue3-treeselect__multi-value-label {
+    padding-right: 5px;
+    user-select: none;
+    white-space: nowrap;
+    max-width: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .wholesaleorders__content .vue3-treeselect__limit-tip-text {
+    color: #bdbdbd;
+    cursor: default;
+    display: block;
+    font-size: 9px;
+    font-weight: 600;
+    margin: 2px 0;
+    padding: 1px 0;
   }
   .wholesaleorders__content
     .catalog-dates-filter-group
