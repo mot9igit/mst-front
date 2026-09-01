@@ -829,7 +829,7 @@ export default {
   font-size: 14px;
   line-height: 18px;
   color: #282828;
-  font-weight: 500;
+  font-weight: 400;
 }
 .catalog-filters-dates.p-inputwrapper-focus.p-focus .p-datepicker-input-icon-container {
   color: #fff;
@@ -897,86 +897,17 @@ export default {
   justify-content: flex-end;
 }
 .clients__filters > .clients__filters-left:first-child .clients__filters-input-container {
-  flex: 0 0 auto;
-  width: auto;
+  width: 400px;
+  max-width: 400px;
 }
 .clients__filters-tree-group {
   display: flex;
   flex-direction: column;
-  .vue3-treeselect .vue3-treeselect__control {
-    display: flex !important;
-    align-items: center !important;
-    position: relative !important;
-    border-radius: 20px !important;
-    overflow: hidden !important;
-    height: 40px !important;
-    max-height: 40px !important;
-    min-height: 40px !important;
-    font-size: 14px !important;
-    line-height: normal !important;
-    padding: 0 9px !important;
-    width: 300px !important;
-  }
-  .vue3-treeselect .vue3-treeselect__value-container,
-  .vue3-treeselect .vue3-treeselect__input-container {
-    display: flex !important;
-    align-items: center !important;
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
-  }
-  .vue3-treeselect .vue3-treeselect__control-arrow-container {
-    flex: 0 0 auto !important;
-  }
-  .vue3-treeselect .vue3-treeselect__multi-value {
-    display: inline-flex !important;
-    align-items: center !important;
-    flex: 0 0 auto !important;
-    vertical-align: middle !important;
-    margin: 0 !important;
-  }
-  .vue3-treeselect .vue3-treeselect__multi-value-item-container {
-    padding: 0 4px 0 0 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    vertical-align: middle !important;
-  }
-  .vue3-treeselect .vue3-treeselect__multi-value-item {
-    display: inline-flex !important;
-    align-items: center !important;
-    align-self: center !important;
-    flex: 0 0 auto !important;
-    height: 22px !important;
-    max-height: 22px !important;
-    padding: 0 6px !important;
-    font-size: 12px !important;
-    line-height: 20px !important;
-    max-width: 100% !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-  }
-  .vue3-treeselect .vue3-treeselect__input {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
-    width: 100% !important;
-  }
-  .vue3-treeselect__placeholder,
-  .vue3-treeselect__single-value {
-    align-items: center;
-    bottom: 0;
-    display: flex;
-    font-size: 14px !important;
-    left: 0;
-    overflow: hidden;
-    padding-left: 9px !important;
-    padding-right: 9px !important;
-    pointer-events: none;
-    position: absolute;
-    right: 0;
-    text-overflow: ellipsis;
-    top: 0;
-    user-select: none;
-    white-space: nowrap;
+  .vue3-treeselect {
+    border-radius: 20px;
+    .vue3-treeselect__control {
+      border-radius: 20px;
+    }
   }
 }
 @media (width>1280px) {
@@ -985,6 +916,16 @@ export default {
     height: 20px;
     margin: 0 auto;
     position: relative;
+  }
+  .clients__filters-tree-group .dart-form-group .vue3-treeselect .vue3-treeselect__control {
+    height: 37px;
+  }
+  .clients__filters-tree-group .vue3-treeselect__placeholder {
+    font-size: 14px;
+    font-weight: 400;
+    color: #757575;
+    line-height: 37px;
+    padding-left: 12px;
   }
 }
 @media (width<=1280px) and (width>1024px) {
@@ -1022,6 +963,54 @@ export default {
   .clients__filters-left {
     align-items: center;
   }
+  .clients__filters > .clients__filters-left:first-child .clients__filters-input-container {
+    width: 264px;
+  }
+  .dart-form-group .vue3-treeselect__multi-value-item {
+    background: #ededed;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    color: #757575;
+    cursor: default;
+    display: inline-table;
+    font-size: 10px;
+    padding: 2px 0;
+    vertical-align: top;
+  }
+  .vue3-treeselect__multi-value-label {
+    padding-right: 5px;
+    -webkit-user-select: none;
+    user-select: none;
+    white-space: nowrap;
+    max-width: 116px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .vue3-treeselect__limit-tip-text {
+    color: #bdbdbd;
+    cursor: default;
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    margin: 2px 0;
+    padding: 1px 0;
+  }
+  .dart-form-group .vue3-treeselect .vue3-treeselect__control {
+    background: #fff;
+    border: 1px solid rgba(117, 117, 117, 0.4588235294);
+    border-radius: 20px;
+    display: table;
+    height: 32px;
+  }
+  .vue3-treeselect__placeholder {
+    font-size: 9px;
+  }
+  .vue3-treeselect__placeholder,
+  .vue3-treeselect__single-value {
+    bottom: 0;
+    left: 0;
+    line-height: 30px;
+  }
 }
 @media (width<=1140px) {
   .catalog-filter-switch-lable {
@@ -1031,12 +1020,6 @@ export default {
   .catalog-filters-dates {
     padding-left: 16px;
     max-height: 32px;
-  }
-  .clients__filters-input {
-    width: 200px;
-  }
-  .clients__filters-tree-group .vue3-treeselect .vue3-treeselect__control {
-    width: 200px !important;
   }
 }
 @media (width<=1024px) {
@@ -1072,35 +1055,16 @@ export default {
     --d-input-padding: 8px 9px;
     font-size: 10px;
     font-weight: 400;
-    width: 200px;
     height: 24px;
   }
-  .clients__filters-tree-group .vue3-treeselect .vue3-treeselect__control {
-    height: 24px !important;
-    min-height: 24px !important;
-    font-size: 10px !important;
-    line-height: 22px !important;
-    width: 200px !important;
-    padding: 0 9px !important;
+  .dart-form-group .vue3-treeselect .vue3-treeselect__control {
+    height: 24px;
   }
-  .clients__filters-tree-group .vue3-treeselect__placeholder,
-  .clients__filters-tree-group .vue3-treeselect__single-value {
-    font-size: 10px !important;
-    padding-left: 9px !important;
-    padding-right: 9px !important;
-  }
-  .clients__filters-tree-group .vue3-treeselect .vue3-treeselect__multi-value-item {
-    display: inline-block !important;
-    vertical-align: middle !important;
-    height: 20px !important;
-    max-height: 20px !important;
-    font-size: 10px !important;
-    line-height: 18px !important;
-    padding: 0 6px !important;
-    max-width: 100% !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
+  .vue3-treeselect__placeholder,
+  .vue3-treeselect__single-value {
+    bottom: 0;
+    left: 0;
+    line-height: 24px;
   }
   .clients__filters-radio-wrapper .d-switch {
     --d-switch-width: 25px;
@@ -1156,9 +1120,6 @@ export default {
   .clients__filters > .clients__filters-left:first-child .clients__filters-input {
     width: 100% !important;
   }
-  .clients__filters > .clients__filters-left:first-child .clients__filters-tree-group .vue3-treeselect .vue3-treeselect__control {
-    width: 100% !important;
-  }
   .clients__card-vendor--integration {
     width: auto;
     height: 24px;
@@ -1195,5 +1156,8 @@ export default {
 .clients__filters-input-container .d-input__field {
   border-radius: 20px !important;
   overflow: hidden !important;
+}
+.clients__filters-input .d-input__field::placeholder {
+  font-weight: 400;
 }
 </style>
