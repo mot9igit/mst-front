@@ -464,7 +464,7 @@ import { MultiSelect } from 'primevue'
 import customModal from '@/shared/ui/Modal.vue'
 import Toast from 'primevue/toast'
 import DatePicker from 'primevue/datepicker'
-import TreeSelect from '@zanmato/vue3-treeselect'
+import TreeSelect from '@/shared/ui/TreeSelectFilter.vue'
 import '@zanmato/vue3-treeselect/dist/vue3-treeselect.min.css'
 
 export default {

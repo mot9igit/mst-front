@@ -218,7 +218,7 @@ import Calendar from 'primevue/calendar'
 import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
 // import the component
-import TreeSelect from '@zanmato/vue3-treeselect'
+import TreeSelect from '@/shared/ui/TreeSelectFilter.vue'
 // import the styles
 import '@zanmato/vue3-treeselect/dist/vue3-treeselect.min.css'
 import SelectInput from 'primevue/select'
