@@ -36,6 +36,7 @@ export default {
     complex: {},
     realization: {},
     realization_process: {},
+    dilerClients: {},
   },
   actions: {
     async getOrg({ commit }) {
@@ -520,12 +521,28 @@ export default {
       }
       return response
     },
-
+    async getDilerClients({ commit }, { diler_id, filter, filtersdata }) {
+      const data = {
+        action: 'get/diler/clients',
+        id: router.currentRoute._value.params.id,
+        diler_id: diler_id,
+        filter: filter,
+        filtersdata: filtersdata,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_DILER_CLIENTS', response.data)
+      }
+      return response
+    },
     unsetOrgStores({ commit }) {
       commit('UNSET_ORG_STORES')
     },
     unsetOrgShipments({ commit }) {
       commit('UNSET_ORG_SHIPMENTS')
+    },
+    unsetDilerClients({ commit }) {
+      commit('UNSET_DILER_CLIENTS')
     },
   },
   mutations: {
@@ -595,6 +612,12 @@ export default {
     SET_PUBLIC_VENDORS: (state, data) => {
       state.publicVendors = data.data
     },
+    SET_DILER_CLIENTS: (state, data) => {
+      state.dilerClients = data.data
+    },
+    UNSET_DILER_CLIENTS: (state) => {
+      state.dilerClients = {}
+    },
   },
   getters: {
     orgActive(state) {
@@ -656,6 +679,9 @@ export default {
     },
     publicVendors(state) {
       return state.publicVendors
+    },
+    dilerClients(state) {
+      return state.dilerClients
     },
   },
 }
