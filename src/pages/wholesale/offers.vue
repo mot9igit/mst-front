@@ -322,6 +322,9 @@ export default {
   user-select: none;
   white-space: nowrap;
 }
+.wholesaleoffers__content .vue3-treeselect__placeholder.vue3-treeselect-helper-hide {
+  display: none !important;
+}
 @media (width <= 1580px) {
   .wholesaleoffers__content .vue3-treeselect__placeholder,
   .wholesaleoffers__content .vue3-treeselect__single-value {
