@@ -535,6 +535,17 @@ export default {
       }
       return response
     },
+    async isVendor(store, {from_org_id, diler_id}){
+      const data = {
+        action: 'set/vendor',
+        id: router.currentRoute._value.params.id,
+        from_org_id: from_org_id,
+        diler_id: diler_id,
+      }
+      const response = await api.org.getOrg(data)
+
+      return response
+    },
     unsetOrgStores({ commit }) {
       commit('UNSET_ORG_STORES')
     },

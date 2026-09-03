@@ -493,7 +493,7 @@
         </div>
       </customModal>
       <customModal v-model="this.modalDilerClients" class="modal_diler_clients">
-        <dilerClients :diler="modalData" />
+        <dilerClients :diler="modalData" @goToOffer="createOffer" @editVirtual="editClient"/>
       </customModal>
     </teleport>
   </section>
@@ -985,7 +985,7 @@ export default {
   }
 }
 .modal_diler_clients .modal-content {
-  min-width: 1392px;
+  min-width: 85%;
 }
 @media (width<1580px) {
   .clients__card-offer--clients {

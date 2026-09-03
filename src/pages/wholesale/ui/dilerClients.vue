@@ -92,13 +92,104 @@
     </div>
   </div>
   <Loader v-if="loading" />
-  hello!
+  <div class="clients-modal__content clients__card-container" v-else>
+    <div class="clients__card" v-for="(item, i) in dilerClients.items" :key="i">
+      <div class="clients__card-info">
+            <div class="clients__card-info-image-container">
+              <img :src="item.image" alt="" class="clients__card-info-image" />
+            </div>
+            <div class="clients__card-info-content">
+              <p class="clients__card-info-title">{{ item.name }}</p>
+              <div class="clients__card-info-address">
+                <i class="d-icon-location clients__card-info-address-icon"></i>
+                <span>{{
+                  item.req?.fact_address != '' ? item.req?.fact_address : 'адрес не указан'
+                }}</span>
+              </div>
+              <div class="clients__card-info--flex">
+                <div class="clients__card-info-title clients__card-info-title-type">
+                  {{ item.org_type }}
+                </div>
+              </div>
+            </div>
+      </div>
+      <div
+        class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
+      ></div>
+      <div class="clients__card-info">
+        <p class="clients__card-inn-label">ИНН:</p>
+        <p class="clients__card-inn-value">
+          {{ item.req?.inn != '' ? item.req?.inn : 'не указан' }}
+        </p>
+      </div>
+      <div
+       
+        class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
+      ></div>
+      <div class="clients__card-info clients-modal__content--column">
+        <a :href="'tel:' + item.phone.replace(/[^+\d]/g, '')" class="clients__card-contact">
+          <i class="d-icon-telephone clients__card-contact-icon"></i>
+          <span>{{ item.phone }}</span>
+        </a>
+        <a :href="'mailto:' + item.email" class="clients__card-contact">
+          <i class="d-icon-mail2 clients__card-contact-icon"></i>
+          <span>{{ item.email }}</span>
+        </a>
+      </div>
+      <div
+        class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
+      ></div>
+      <div class="clients__card-info">
+        <div
+          class="clients__card-vendor"
+          v-if="item.owner_id > 0"
+        >
+          Создан поставщиком
+        </div>
+        <img
+          src="/icons/org_api_integration.svg"
+          class="clients__card-vendor--integration"
+          title="Интегрирован"
+          v-if="item.api_integration == 1"
+        />
+      </div>
+      <div
+        class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
+      ></div>
+      <div class="clients__card-info">
+        <button
+                @click.prevent="createOffer(item)"
+                class="d-button d-button-primary d-button--sm-shadow clients__card-offer"
+                v-if="item.owner_id == 0 || (item.owner_id != 0 && item.store_id)"
+              >
+                <i class="d-icon-plus-flat clients__card-offer-icon"></i>
+                Предложение
+              </button>
+      </div>
+      <div
+        :class="{'opacity--divider' : item.owner_id == 0}"
+        class="d-divider d-divider--vertical d-divider--big vendor-change__selected-item-data-divider"
+      ></div>
+      <div class="clients__card-info">
+        <button
+                class="clients__card-action"
+                @click.prevent="this.$emit('editVirtual', item)"
+                v-if="item.owner_id > 0"
+              >
+                <i class="d-icon-pen2"></i>
+              </button>
+      </div>
+    </div>
+
+  </div>
+
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import { toRaw } from 'vue'
 import DatePicker from 'primevue/datepicker'
+
 
 export default {
   name: 'dilerClientsWindow',
@@ -148,6 +239,7 @@ export default {
           type: 'datepicker',
         },
       },
+      
       filterValues: {},
     }
   },
@@ -159,7 +251,7 @@ export default {
       },
     },
   },
-  emits: ['closeWindow', 'goToOffer'],
+  emits: ['editVirtual', 'goToOffer'],
   components: { Loader, DatePicker },
   mounted() {
     this.getDilerClients({
@@ -177,6 +269,7 @@ export default {
     ...mapActions({
       getDilerClients: 'org/getDilerClients',
       unsetDilerClients: 'org/unsetDilerClients',
+      isVendor: 'org/isVendor'
     }),
     setFilterSwitch(index) {
       console.log(index)
@@ -222,11 +315,41 @@ export default {
       this.unsetDilerClients()
       this.page = 1
       this.getDilerClients({
+        diler_id: this.diler.id,
         filter: this.filterText,
         filtersdata: toRaw(this.filterValues),
       }).then(() => {
         this.loading = false
       })
+    },
+    createOffer(data) {
+      console.log(data)
+      this.isVendor({
+        from_org_id: data.id,
+        diler_id: this.diler.id
+      }).then((res) => {
+        if(res.data.data.success){
+          if(res.data.data.data.length){
+            this.$toast.add({
+                severity: 'success',
+                summary: 'Клиент успешно добавлен!',
+                detail: res.data.data.message,
+                life: 3000,
+            })
+          }
+          this.$emit('goToOffer', data)
+        }else{
+          this.$toast.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: res.data.data.message,
+              life: 3000,
+            })
+        }
+        
+        
+      })
+      
     },
   },
   watch: {},
@@ -247,11 +370,47 @@ export default {
       align-items: center;
       gap: 15px;
     }
+    .clients-modal__filters-input-container .d-input{
+      border-radius: 20px;
+    }
+    .d-divider{
+      margin: 0;
+    }
     .catalog-filters-dates {
       padding-left: 0;
     }
     .catalog-filters-dates:before {
       display: none;
+    }
+  }
+  &__content{
+    margin-top: 54px;
+    .clients__card{
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 24% 1px 12% 1px 20% 1px 12% 1px 13% 1px 40px;
+      &-info-address span {
+          max-width: 200px;
+      }
+      &-info-content {
+          padding-right: 0px;
+      }
+    }
+    .clients__card-vendor {
+        margin-left: 0px;
+    }
+    .d-divider{
+      margin:0;
+    }
+    .opacity--divider{
+      opacity: 0;
+    }
+    &--column{
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: start;
+      justify-content: center;
     }
   }
 }
