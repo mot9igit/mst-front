@@ -987,6 +987,9 @@ export default {
 .modal_diler_clients .modal-content {
   min-width: 85%;
 }
+.clients__filters-input-container .dart-form-group{
+  margin-bottom: 0;
+}
 @media (width<1580px) {
   .clients__card-offer--clients {
     gap: 8px;
