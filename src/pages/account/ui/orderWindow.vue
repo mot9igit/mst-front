@@ -327,7 +327,7 @@
                           >
                           <span class="cart__item-sales-item-value" v-if="sale.delay_type == 2"
                             >Под реализацию
-                            {{ sale.delay > 0 ? '- ' + sale.delay + 'дн' : '' }}</span
+                            {{ sale.delay > 0 ? '- ' + sale.delay + ' дн' : '' }}</span
                           >
                           <span class="cart__item-sales-item-value" v-if="sale.delay_type < 2"
                             >{{
@@ -459,7 +459,7 @@
                         {{
                           warehouse?.cart_data?.date_delivery
                             ? warehouse?.cart_data?.days_delivery +
-                              'дн. (' +
+                              ' дн. (' +
                               warehouse?.cart_data?.date_delivery +
                               ')'
                             : warehouse?.cart_data?.days_delivery
