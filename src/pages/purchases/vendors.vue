@@ -399,6 +399,7 @@ export default {
     },
     addNewVendor() {
       this.modalAdd = false
+      this.unsetOpts()
       this.getOpts({
         page: this.page,
         perpage: this.pagination_items_per_page,
@@ -441,6 +442,7 @@ export default {
       this.setNewOrgProfileVendor({
         vendor_id: id,
       }).then((res) => {
+        this.unsetOpts()
         if (res.data.success) {
           this.$toast.add({
             severity: 'success',
@@ -450,10 +452,12 @@ export default {
           })
           this.page = 1
           this.pagePublic = 1
+
           this.getOpts({
             page: this.page,
             perpage: this.pagination_items_per_page,
           }).then(() => {
+            this.updateVendors()
             this.getPublicVendors({
               page: this.pagePublic,
               perpage: this.pagination_items_per_page_public,
