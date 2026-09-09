@@ -626,7 +626,12 @@
                 <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
               </div>
               <div v-if="item.delay_type == 2 && item.delay > 0">
-                <i class="d-icon-box-flat product-card__buy-icon"></i>Под реал. {{ item.delay }}дн.
+                <i class="d-icon-box-flat product-card__buy-icon"></i>Под реал.
+                {{ Number(item.delay) }} дн.
+              </div>
+              <div v-if="item.delay_type == 1 && item.delay > 0">
+                <i class="d-icon-box-flat product-card__buy-icon"></i>Отсрочка платежа -
+                {{ Number(item.delay) }} дн.
               </div>
               <div v-if="item.condition_min_sum > 0">
                 <span class="product-card__icon-summ product-card__buy-icon">₽</span>
