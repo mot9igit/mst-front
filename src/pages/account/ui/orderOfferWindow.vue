@@ -409,30 +409,46 @@
                   <div class="order__item-content-bottom-left">
                     <div
                       class="order__item-prop"
-                      v-if="org?.cart_data?.delay_type == 1 && org?.cart_data?.delay == 0"
+                      v-if="
+                        warehouse?.cart_data?.delay_type == 1 && warehouse?.cart_data?.delay == 0
+                      "
                     >
                       <p class="order__item-prop-label">Предоплата</p>
                     </div>
                     <div class="order__item-prop" v-else>
                       <p class="order__item-prop-label">
                         {{
-                          org?.cart_data?.delay_type == 1
+                          warehouse?.cart_data?.delay_type == 1
                             ? 'Отсрочка:&nbsp;'
                             : 'Под реализацию:&nbsp;'
                         }}
                       </p>
-                      <p class="order__item-prop-value">{{ org?.cart_data?.delay }} дней</p>
+                      <p class="order__item-prop-value">{{ warehouse?.cart_data?.delay }} дней</p>
                     </div>
                     <div class="d-divider d-divider--vertical order__item-prop-divider"></div>
                     <div class="order__item-prop">
                       <p class="order__item-prop-label">Оплата доставки:&nbsp;</p>
                       <p class="order__item-prop-value">
                         {{
-                          org?.cart_data?.payer == 1
+                          warehouse?.cart_data?.payer == 1
                             ? 'Поставщик'
-                            : org?.cart_data?.payer == 0
+                            : warehouse?.cart_data?.payer == 0
                               ? 'Покупатель'
                               : 'По согласованию'
+                        }}
+                      </p>
+                    </div>
+                    <div class="d-divider d-divider--vertical order__item-prop-divider"></div>
+                    <div class="order__item-prop">
+                      <p class="order__item-prop-label">Доставка:&nbsp;</p>
+                      <p class="order__item-prop-value">
+                        {{
+                          warehouse?.cart_data?.date_delivery
+                            ? warehouse?.cart_data?.days_delivery +
+                              'дн. (' +
+                              warehouse?.cart_data?.date_delivery +
+                              ')'
+                            : warehouse?.cart_data?.days_delivery
                         }}
                       </p>
                     </div>
