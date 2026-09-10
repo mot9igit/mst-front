@@ -21,6 +21,7 @@ export default {
     offers: {},
     offer: {},
     seller_statuses: {},
+    shippings: {},
   },
   actions: {
     async getOrders({ commit }, { filter, sort, page, perpage, filtersdata }) {
@@ -265,6 +266,20 @@ export default {
       const response = await api.wholesale.downloadOrders(data)
       return response
     },
+    async getShippings({ commit }) {
+      const data = {
+        action: 'set',
+        id: router.currentRoute._value.params.id,
+      }
+      const response = await api.wholesale.getShippings(data)
+      if (response) {
+        commit('SET_SHIPPINGS', response.data)
+      }
+      return response
+    },
+    unsetShippings({ commit }) {
+      commit('UNSET_SHIPPINGS')
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },
@@ -354,6 +369,9 @@ export default {
     SET_SELLER_STATUSES: (state, data) => {
       state.seller_statuses = data.data
     },
+    SET_SHIPPINGS: (state, data) => {
+      state.shippings = data.data
+    },
   },
   getters: {
     orders(state) {
@@ -388,6 +406,9 @@ export default {
     },
     seller_statuses(state) {
       return state.seller_statuses
+    },
+    shippings(state) {
+      return state.shippings
     },
   },
 }
