@@ -981,7 +981,7 @@ const router = createRouter({
                           },
                         },
                         {
-                          path: ':order_id',
+                          path: 'order/:order_id',
                           name: 'WholesaleOrderInitiator',
                           props: true,
                           label: 'Просмотр заказа',
