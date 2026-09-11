@@ -1,5 +1,5 @@
 <template>
-  <section class="shipments shipments-main" id="shipments">
+  <section class="shippings" id="shippings">
     <!-- Верхушка страницы -->
     <div class="d-top">
       <breadcrumbs />
@@ -7,29 +7,51 @@
     </div>
 
     <!-- Шапка страницы -->
-    <div class="shipments__header">
-      <h1 class="shipments__header-title">
-        <div class="shipments__header-title-wrapper">
-          <i class="d-icon-angle-rounded-left shipments__header-title-icon"></i>
-          <span>Мои отгрузки</span>
-        </div>
-        <div class="d-divider d-divider--vertical shipments__header-title-divider"></div>
-        <span>Отгрузки (1)</span>
-      </h1>
+
+    <h1 class="shippings__header">
+      <span>Мои отгрузки</span>
+      <div class="d-divider d-divider--vertical shippings__header-title-divider"></div>
+      <span>Отгрузки ({{ shippings.total_way }})</span>
+    </h1>
+
+    <div class="shippings__header-button">
+      <button
+        class="d-button d-button-primary d-button-primary-small box-shadow-none shippings__header-button--create"
+        @click.prevent=""
+      >
+        <i class="d-icon-plus-flat clients__card-offer-icon"></i>
+        <span>Добавить отгрузку</span>
+      </button>
     </div>
     <Loader v-if="loading" />
-    <BaseTable
-      :items_data="shippings.shipment"
-      :total="shippings.total"
-      :pagination_items_per_page="this.pagination_items_per_page"
-      :pagination_offset="this.pagination_offset"
-      :page="this.page"
-      :table_data="this.table_data"
-      :filters="this.filters"
-      @filter="filter"
-      @sort="filter"
-      @paginate="paginate"
-    />
+    <div class="shippings__content" v-else>
+      <BaseTable
+        :items_data="shippings.shipment"
+        :total="shippings.total"
+        :pagination_items_per_page="this.pagination_items_per_page"
+        :pagination_offset="this.pagination_offset"
+        :page="this.page"
+        :table_data="this.table_data"
+        :filters="this.filters"
+        @filter="filter"
+        @sort="filter"
+        @paginate="paginate"
+        @viewElem="showShipping"
+        @editElem="editShipping"
+        @deleteElem="delShipping"
+      />
+    </div>
+    <teleport to="body">
+      <customModal v-model="this.modalShipping" class="shippings__modal">
+        <modalShipmentForm
+          :ship="modalShippingData"
+          :mode="mode"
+          @editShip="editShip"
+          @editMode="mode = 1"
+          @deleteShip="delShipping"
+        />
+      </customModal>
+    </teleport>
   </section>
 </template>
 <script>
@@ -38,10 +60,12 @@ import { mapActions, mapGetters } from 'vuex'
 import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import Toast from 'primevue/toast'
+import customModal from '@/shared/ui/Modal.vue'
+import modalShipmentForm from './ui/modalShipmentForm.vue'
 
 export default {
   name: 'WholesaleShipments',
-  components: { breadcrumbs, Loader, BaseTable, Toast },
+  components: { breadcrumbs, Loader, BaseTable, Toast, customModal, modalShipmentForm },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -56,23 +80,22 @@ export default {
     return {
       loading: true,
       page: 1,
+      modalShipping: false,
+      modalShippingData: {},
+      mode: 0,
       filters: {
-        name: {
-          name: 'Поиск',
-          placeholder: 'Поиск по складу или маршруту',
-          type: 'text',
-        },
         dates: {
           name: 'Дата',
           placeholder: 'Выберите диапазон дат',
           value: null,
           type: 'datepicker',
         },
-        // button: {
-        //   type: 'download',
-        // },
+        name: {
+          name: 'Поиск',
+          placeholder: 'Поиск по складу или маршруту',
+          type: 'text',
+        },
       },
-      request_filter: {},
       table_data: {
         id: {
           label: 'Номер отгруки',
@@ -110,13 +133,13 @@ export default {
           type: 'actions',
           sort: false,
           available: {
+            view: {
+              icon: 'pi pi-eye',
+              label: 'Посмотреть',
+            },
             edit: {
               icon: 'pi pi-pencil',
               label: 'Редактировать',
-            },
-            approve: {
-              icon: 'pi pi-power-off',
-              label: 'Включить',
             },
             delete: {
               icon: 'pi pi-trash',
@@ -141,7 +164,91 @@ export default {
     ...mapActions({
       getShippings: 'wholesale/getShippings',
     }),
+    showShipping(data) {
+      this.mode = 0
+      this.modalShipping = true
+      this.modalShippingData = data
+    },
+    editShipping(data) {
+      this.mode = 1
+      this.modalShipping = true
+      this.modalShippingData = data
+    },
+    editShip(data) {
+      console.log(data)
+    },
+    delShipping(data) {
+      console.log(data)
+    },
   },
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.shippings {
+  display: flex;
+  flex-direction: column;
+  gap: 49px;
+  &__header {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    span {
+      font-weight: 600;
+      font-size: 32px;
+      line-height: 42px;
+      letter-spacing: -0.01em;
+    }
+    .d-divider {
+      height: 24px;
+    }
+    &-button {
+      width: 100%;
+      display: flex;
+      justify-content: end;
+      &--create {
+        height: 40px;
+        max-height: 40px;
+        min-height: 40px;
+        z-index: 10;
+        font-size: 16px;
+        i {
+          font-size: 15px;
+        }
+      }
+    }
+  }
+  &__content {
+    margin-top: -89px;
+    .dart-mb-1 {
+      margin-bottom: 49px;
+      .p-datepicker {
+        display: flex;
+        max-width: 100%;
+      }
+      .catalog-dates-filter-group .catalog-filters-dates {
+        padding: 0;
+      }
+      .catalog-dates-filter-group .catalog-filters-dates:before {
+        display: none;
+      }
+      .p-inputtext {
+        width: 100%;
+        min-width: 100%;
+        border-radius: 20px;
+      }
+      .p-floatlabel label {
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 18px;
+        color: #757575;
+      }
+      .p-floatlabel:has(input:focus) label {
+        color: #f92c0d;
+      }
+    }
+    .cell--status {
+      color: #282828;
+    }
+  }
+}
+</style>
