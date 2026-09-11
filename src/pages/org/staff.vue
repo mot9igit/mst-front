@@ -183,6 +183,12 @@ export default {
           placeholder: 'Искать в заказах',
           type: 'text',
         },
+        dates: {
+          name: 'Заказы за период',
+          placeholder: 'Заказы за период',
+          value: null,
+          type: 'datepicker',
+        },
         button: {
           type: 'download',
         },
@@ -196,7 +202,7 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
-
+          new_tab: true,
           class: 'cell_centeralign',
         },
         date: {
@@ -207,6 +213,7 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
+          new_tab: true,
           sort: true,
           sort_desc: 'Дата заказа от новых к старым',
           sort_asc: 'Дата заказа от старых к новым',
@@ -220,6 +227,7 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
+          new_tab: true,
           class: 'cell_centeralign',
           items: ['seller_name', 'seller_inn', 'seller_address'],
         },
@@ -231,6 +239,7 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
+          new_tab: true,
           class: 'cell_centeralign',
           items: ['buyer_name', 'buyer_inn', 'buyer_address'],
         },
@@ -254,6 +263,7 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
+          new_tab: true,
 
           class: 'cell_centeralign',
         },
@@ -275,6 +285,7 @@ export default {
             id: this.$route.params.id,
             order_id: 'id',
           },
+          new_tab: true,
 
           class: 'cell_centeralign nowrap',
         },

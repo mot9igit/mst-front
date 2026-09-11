@@ -79,6 +79,8 @@
     >
       <router-link
         :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
+        :target="cell_data.new_tab ? '_blank' : null"
+        :rel="cell_data.new_tab ? 'noopener noreferrer' : null"
       >
         {{ value[cell_key] }}
         <div v-if="cell_data.description" class="cell_description">
@@ -115,6 +117,8 @@
     >
       <router-link
         :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
+        :target="cell_data.new_tab ? '_blank' : null"
+        :rel="cell_data.new_tab ? 'noopener noreferrer' : null"
       >
         <div class="d-table2__info">
           <div class="d-table2__info-header">
@@ -176,6 +180,8 @@
     >
       <router-link
         :to="{ name: cell_data.link_to, params: linkParams, props: cell_data.link_props }"
+        :target="cell_data.new_tab ? '_blank' : null"
+        :rel="cell_data.new_tab ? 'noopener noreferrer' : null"
       >
         <div v-for="item in cell_data.items" :key="item" class="multyitem_cell">
           <span v-if="value[item] && item.includes('inn')"

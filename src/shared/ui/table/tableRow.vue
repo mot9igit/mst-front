@@ -190,7 +190,6 @@ export default {
     clickRow() {
       for (var name in this.keys) {
         if (this.keys[name].type == 'link_all') {
-          console.log(this.keys[name].link_params)
           let params = {}
           for (const key in this.keys[name].link_params) {
             if (
@@ -203,11 +202,20 @@ export default {
               params[key] = this.row_data[this.keys[name].link_params[key]]
             }
           }
-          this.$router.push({
-            name: this.keys[name].link_to,
-            params: params,
-            props: this.keys[name].link_props,
-          })
+          if (this.keys[name].new_tab) {
+            const route = this.$router.resolve({
+              name: this.keys[name].link_to,
+              params: params,
+              props: this.keys[name].link_props,
+            })
+            window.open(route.href, '_blank')
+          } else {
+            this.$router.push({
+              name: this.keys[name].link_to,
+              params: params,
+              props: this.keys[name].link_props,
+            })
+          }
         }
       }
     },

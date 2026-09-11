@@ -2,6 +2,8 @@
   {{ console.log() }}
   <router-link
     class="d-table-min__row"
+    :target="keys.id.new_tab ? '_blank' : null"
+    :rel="keys.id.new_tab ? 'noopener noreferrer' : null"
     :to="
       this.$route.name == 'wholesaleOrders' ||
       this.$route.name == 'purchasesOrders' ||
