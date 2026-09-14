@@ -641,9 +641,16 @@ export default {
     // 		checked: checked || this.selectedItems.includes(item.id)
     // 	}));
     // },
-
+    fixDate(d) {
+      if (d.getHours() === 0 && d.getMinutes() === 0 && d.getSeconds() === 0 && d.getMilliseconds() === 0) {
+        const shifted = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+        if (shifted.getTime() !== d.getTime()) {
+          return shifted
+        }
+      }
+      return d
+    },
     setFilter(type = '0') {
-      //console.log(type)
       if (type === 'filter') {
         if (this.filter.length >= 3 || this.filter.length === 0) {
           setTimeout(() => {
@@ -862,8 +869,22 @@ export default {
       deep: true,
       immediate: true, // Сразу выполнить при создании компонента
     },
-    filtersdata: function (newVal) {
-      console.log(newVal)
+    filtersdata: {
+      handler(newVal) {
+        for (var d in newVal) {
+          const val = newVal[d]
+          if (val instanceof Date) {
+            const fixed = this.fixDate(val)
+            if (fixed !== val) newVal[d] = fixed
+          } else if (Array.isArray(val) && val.length === 2 && val[0] instanceof Date && val[1] instanceof Date) {
+            const f0 = this.fixDate(val[0])
+            const f1 = this.fixDate(val[1])
+            if (f0 !== val[0]) val[0] = f0
+            if (f1 !== val[1]) val[1] = f1
+          }
+        }
+      },
+      deep: true,
     },
     // allChecked(val) {
     // 	if (!Array.isArray(this.localItems)) return;

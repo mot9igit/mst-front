@@ -474,6 +474,7 @@ export default {
     tabException: function (newVal) {
       localStorage.setItem('staff.tabs', newVal)
     },
+    
   },
 }
 </script>
