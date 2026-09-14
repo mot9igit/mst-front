@@ -876,11 +876,13 @@ export default {
           if (val instanceof Date) {
             const fixed = this.fixDate(val)
             if (fixed !== val) newVal[d] = fixed
-          } else if (Array.isArray(val) && val.length === 2 && val[0] instanceof Date && val[1] instanceof Date) {
-            const f0 = this.fixDate(val[0])
-            const f1 = this.fixDate(val[1])
-            if (f0 !== val[0]) val[0] = f0
-            if (f1 !== val[1]) val[1] = f1
+          } else if (Array.isArray(val)) {
+            for (var j = 0; j < val.length; j++) {
+              if (val[j] instanceof Date) {
+                const fixed = this.fixDate(val[j])
+                if (fixed !== val[j]) val[j] = fixed
+              }
+            }
           }
         }
       },
