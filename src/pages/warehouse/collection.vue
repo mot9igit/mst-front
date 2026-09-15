@@ -1132,49 +1132,52 @@ export default {
       })
     },
   },
-  mounted() {
-    this.getOrgStores({ name: 'self' }).then(() => {
-      this.getCatalogs()
-      this.clearCollectionData().then(() => {
-        if (this.$route.params.collection_id) {
-          this.getCollection({
-            collection_id: this.$route.params.collection_id,
-          }).then(() => {
-            this.updateStore()
-            this.updateBuild()
-            this.loading = false
-          })
-        } else {
+  async mounted() {
+    await Promise.all([
+      this.getOrgStores({ name: 'self' }),
+      this.getCatalogs(),
+      this.getTags({}),
+      this.getOurVendors({}),
+      this.getOutCatalogs({}),
+    ])
+    this.clearCollectionData().then(() => {
+      if (this.$route.params.collection_id) {
+        this.getCollection({
+          collection_id: this.$route.params.collection_id,
+        }).then(() => {
+          this.updateStore()
+          this.updateBuild()
           this.loading = false
-        }
-      })
+        })
+      } else {
+        this.loading = false
+      }
+    })
+    this.buildCollection({
+      typeData: 1,
+      store_id: 'all',
+      terms: this.collectionData.terms,
+      page: this.page,
+      perpage: this.pagination_items_per_page,
+      filter: this.filter,
+      type: this.collectionData.type,
+      typeExclude: this.collectionData.typeExclude,
+      file: this.collectionData.file,
+      fileExclude: this.collectionData.fileExclude,
+    }).then(() => {
       this.buildCollection({
-        typeData: 1,
+        typeData: 2,
         store_id: 'all',
         terms: this.collectionData.terms,
-        page: this.page,
+        page: this.pageExclude,
         perpage: this.pagination_items_per_page,
-        filter: this.filter,
+        filter: this.filterExclude,
         type: this.collectionData.type,
         typeExclude: this.collectionData.typeExclude,
         file: this.collectionData.file,
         fileExclude: this.collectionData.fileExclude,
       }).then(() => {
-        // Исключения
-        this.buildCollection({
-          typeData: 2,
-          store_id: 'all',
-          terms: this.collectionData.terms,
-          page: this.pageExclude,
-          perpage: this.pagination_items_per_page,
-          filter: this.filterExclude,
-          type: this.collectionData.type,
-          typeExclude: this.collectionData.typeExclude,
-          file: this.collectionData.file,
-          fileExclude: this.collectionData.fileExclude,
-        }).then(() => {
-          this.productLoading = false
-        })
+        this.productLoading = false
       })
     })
   },
