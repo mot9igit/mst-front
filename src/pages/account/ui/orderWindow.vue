@@ -914,6 +914,7 @@ export default {
       accept: 0,
       actionSale: 0,
       order_to_basket: false,
+      submitting: false,
       edits: [],
       offers: [],
       buy_button_text: 'Оформить все заказы',
@@ -1075,10 +1076,12 @@ export default {
     },
     async orderSubmit(orgId, warehouse_id) {
       this.loading = true
+      this.submitting = true
       this.getBasket().then((response) => {
         // console.log(response.data?.data?.data)
         if (response.data?.data?.data?.cart_data?.not_available && !this.order_to_basket) {
           this.loading = false
+          this.submitting = false
           this.showChangedCount = true
           this.showChangedId = orgId
           this.showChangedIdStore = warehouse_id
@@ -1143,9 +1146,13 @@ export default {
             }
             this.getBasket().then(() => {
               this.loading = false
+              this.submitting = false
               this.showChangedId = ''
               this.showChangedIdStore = ''
             })
+          }).catch(() => {
+            this.loading = false
+            this.submitting = false
           })
         }
       })
@@ -1267,7 +1274,9 @@ export default {
       if (Object.keys(newVal).length) {
         this.edits = []
         this.offers = []
-        this.loading = false
+        if (!this.submitting) {
+          this.loading = false
+        }
         let col_all = 0
         let col_ord = 0
         for (var org in newVal.data) {
@@ -1286,7 +1295,9 @@ export default {
           this.buy_button_text = 'Изменить заказ'
         } else [(this.buy_button_text = 'Оформить все заказы')]
       } else {
-        this.loading = false
+        if (!this.submitting) {
+          this.loading = false
+        }
         if (!this.order) {
           this.$emit('close')
         }

@@ -984,7 +984,9 @@ export default {
 
       this.offerSubmit({ cart_store: this.basketOfferWarehouse }).then((res) => {
         if (res.data.success) {
-          this.loading = false
+          this.getBasketOffer().then(() => {
+            this.loading = false
+          })
           //       // this.$route.push({
           //       //   // на предложения
           //       // });
@@ -997,10 +999,10 @@ export default {
           // this.id_clear_org = this.$route.params.id_org_from
           // this.id_clear_store = this.basketOfferWarehouse
           // this.clearCart({ org_id: this.id_clear_org, store_id: this.id_clear_store })
-          this.getBasketOffer()
           this.$emit('offerSubmit')
           this.$emit('close')
         } else {
+          this.loading = false
           this.$toast.add({
             severity: 'error',
             summary: 'Ошибка',
@@ -1022,7 +1024,9 @@ export default {
       }
       this.createOrder(data).then((res) => {
         if (res.data.success) {
-          this.loading = false
+          this.getBasketOffer().then(() => {
+            this.loading = false
+          })
 
           this.$toast.add({
             severity: 'success',
@@ -1031,7 +1035,6 @@ export default {
             life: 3000,
           })
 
-          this.getBasketOffer()
           this.$emit('offerSubmit')
           this.$emit('close')
           if (this.edit) {
@@ -1044,6 +1047,7 @@ export default {
             })
           }
         } else {
+          this.loading = false
           this.$toast.add({
             severity: 'error',
             summary: 'Ошибка',

@@ -859,18 +859,24 @@ export default {
       //     life: 3000,
       //   })
       // }
-      this.loading = false
 
       this.$emit('updateCatalog')
-      this.$emit('updateBasket')
 
-      if (this.$route.name == 'purchasesCatalogRequirement') {
-        this.$emit('toggleOrder')
-      }
-      if (this.$route.name == 'purchasesOfferCatalogRequirement') {
-        this.$emit('toggleOrderOffer')
-      }
-      this.$emit('windowClose')
+      const refreshBasket =
+        this.$route.name == 'purchasesOfferCatalogRequirement'
+          ? this.getBasketOffer()
+          : this.getBasket()
+
+      refreshBasket.then(() => {
+        this.loading = false
+        if (this.$route.name == 'purchasesCatalogRequirement') {
+          this.$emit('toggleOrder')
+        }
+        if (this.$route.name == 'purchasesOfferCatalogRequirement') {
+          this.$emit('toggleOrderOffer')
+        }
+        this.$emit('windowClose')
+      })
     },
     async basketCheck() {
       const hasProducts = (source) =>
