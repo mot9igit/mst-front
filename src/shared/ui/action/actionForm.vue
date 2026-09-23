@@ -4001,7 +4001,7 @@ export default {
       console.log(items)
       this.modals.priceType = type
       this.productsSelected = items
-      this.modals.price_step = 0
+      this.modals.priceStep = 0
       if (type == 'group') {
         Object.entries(this.type_pricing).forEach((entry) => {
           const [key, value] = entry
@@ -4066,60 +4066,67 @@ export default {
       if (items.length == 1 && type != 'group') {
         // Если источник = Файл, устанавливаем фиксированную цену
         if (items[0].save_data.source == 2) {
-          this.modals.priceType = '1'
+          this.modals.typePrice = '1'
           this.modals.priceStep = 1
-          Object.entries(this.typePricing).forEach((value) => {
+          Object.entries(this.type_pricing).forEach((value) => {
             if (value.key == 3) {
               this.productsSelectedData.type_pricing = value
             }
           })
-          Object.entries(this.typeFormula).forEach((value) => {
+          Object.entries(this.type_formula).forEach((value) => {
             if (value.key == 0) {
               this.productsSelectedData.type_formula = value
             }
           })
-          this.productsSelectedData.sale_value = Number(items[0].save_data.new_price)
+          const newPrice = Number(items[0].save_data.new_price)
+          this.productsSelectedData.sale_value = Number.isFinite(newPrice)
+            ? newPrice
+            : parseFloat(
+                String(items[0].save_data.new_price ?? items[0].price ?? 0).replace(/\s+/g, ''),
+              ) || 0
         }
         // Если уже есть установленные значения скидки - проставляем их в окно
         if (
-          items[0].save_data?.properties?.type_formula?.key == '0' &&
-          items[0].save_data?.properties?.type_pricing?.key == '0' &&
+          items[0].save_data?.properties?.type_price?.guid &&
           items[0].save_data?.properties?.type_price?.guid != '0'
         ) {
           this.modals.priceType = 'items'
           this.modals.priceStep = 1
           this.modals.typePrice = 2
-          this.productsSelectedData.type_price = items[0].save_data.properties.type_price
+          this.productsSelectedData.type_price = items[0].save_data?.properties?.type_price
           for (let i = 0; i < this.productsPrices.length; i++) {
-            if (this.productsPrices[i].guid == this.productsSelectedData.type_price.guid) {
+            if (this.productsPrices[i].guid == this.productsSelectedData.type_price?.guid) {
               this.productsSelectedData.type_price = this.productsPrices[i]
             }
           }
         }
         if (
-          items[0].save_data.properties.type_formula.key != '0' ||
-          items[0].save_data.properties.type_pricing.key != '0'
+          (items[0].save_data?.properties?.type_formula?.key &&
+            items[0].save_data?.properties?.type_formula?.key != '0') ||
+          (items[0].save_data?.properties?.type_pricing?.key &&
+            items[0].save_data?.properties?.type_pricing?.key != '0')
         ) {
           this.modals.priceType = 'items'
           this.modals.priceStep = 1
           this.modals.typePrice = 1
-          this.productsSelectedData.type_pricing = items[0].save_data.properties.type_pricing
+          this.productsSelectedData.type_pricing = items[0].save_data?.properties?.type_pricing
 
           for (let i = 0; i < this.type_pricing.length; i++) {
-            if (this.type_pricing[i].key == this.productsSelectedData.type_pricing.key) {
+            if (this.type_pricing[i].key == this.productsSelectedData.type_pricing?.key) {
               this.productsSelectedData.type_pricing = this.type_pricing[i]
             }
           }
-          this.productsSelectedData.type_price = items[0].save_data.properties.type_price
+          this.productsSelectedData.type_price = items[0].save_data?.properties?.type_price
           for (let i = 0; i < this.productsPrices.length; i++) {
-            if (this.productsPrices[i].guid == this.productsSelectedData.type_price.guid) {
+            if (this.productsPrices[i].guid == this.productsSelectedData.type_price?.guid) {
               this.productsSelectedData.type_price = this.productsPrices[i]
             }
           }
-          this.productsSelectedData.type_formula = items[0].save_data.properties.type_formula
+          this.productsSelectedData.type_formula = items[0].save_data?.properties?.type_formula
           for (let i = 0; i < this.type_formula.length; i++) {
             if (
-              Number(this.type_formula[i].key) == Number(this.productsSelectedData.type_formula.key)
+              Number(this.type_formula[i].key) ==
+              Number(this.productsSelectedData.type_formula?.key)
             ) {
               this.productsSelectedData.type_formula = this.type_formula[i]
             }

@@ -125,6 +125,13 @@ const router = createRouter({
                   label: 'Создание Организации',
                   component: () => import('../pages/org/add.vue'),
                 },
+                {
+                  path: 'motivation-program/:source/:program_id',
+                  name: 'profileMotivationProgram',
+                  props: true,
+                  label: 'Программа мотивации',
+                  component: () => import('../pages/profile/motivationProgram.vue'),
+                },
               ],
             },
 

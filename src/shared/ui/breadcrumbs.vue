@@ -187,11 +187,19 @@ export default {
                 break
               }
               case ':id':
-              case ':requirement_id': {
-                this.crumbs.push({
-                  name: this.getRouteName(currentRoute, route),
-                  path: pathRoutesWithId.slice(0, index + 1).join('/'),
-                })
+              case ':requirement_id':
+              case ':program_id': {
+                if (currentRoute.path.includes('motivation-program')) {
+                  this.crumbs.push({
+                    name: 'Программа мотивации',
+                    path: pathRoutesWithId.join('/'),
+                  })
+                } else {
+                  this.crumbs.push({
+                    name: this.getRouteName(currentRoute, route),
+                    path: pathRoutesWithId.slice(0, index + 1).join('/'),
+                  })
+                }
                 break
               }
               default:
