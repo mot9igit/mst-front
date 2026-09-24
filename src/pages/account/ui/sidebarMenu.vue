@@ -163,14 +163,24 @@ export default {
               },
               {
                 name: 'Оптовые цены',
-                icon: 'd-icon-cart',
+                icon: 'd-icon-percent-rounded',
                 to: { name: 'wholesalePrices', params: { id: this.$route.params.id } },
               },
+              ...(this.activeOrganization.motivation == 1
+                ? [
+                    {
+                      name: 'Программы мотивации',
+                      icon: 'd-icon-wallet',
+                      to: { name: 'wholesaleMotivation', params: { id: this.$route.params.id } },
+                    },
+                  ]
+                : []),
               {
                 name: 'Клиенты',
                 icon: 'd-icon-people',
                 to: { name: 'wholesaleClients', params: { id: this.$route.params.id } },
               },
+              
               // ...(this.activeOrganization.interseller
               //   ? [
               //       {

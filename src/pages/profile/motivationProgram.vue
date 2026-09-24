@@ -3,6 +3,7 @@
     <div class="d-top">
       <breadcrumbs />
     </div>
+    <Loader v-if="loading" />
 
     <div
       class="promos__banners-item promos__banners-item--primary promos__banners-item--big promo__banner program__banner"
@@ -113,26 +114,21 @@
       :show_filter="false"
     />
 
-    <div class="program__empty" v-if="!program">Программа не найдена</div>
+    <div class="program__empty" v-if="!loading && !program">Программа не найдена</div>
   </section>
 </template>
 <script>
+import { mapGetters, mapActions } from 'vuex'
 import breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
-import {
-  motivationCatalogItems,
-  motivationConnectedItems,
-  trackProducts,
-  interskolProducts,
-} from '@/shared/api/motivationPrograms'
+import Loader from '@/shared/ui/Loader.vue'
 
 export default {
   name: 'profileMotivationProgram',
-  components: { breadcrumbs, BaseTable },
+  components: { breadcrumbs, BaseTable, Loader },
   data() {
     return {
-      motivationCatalogItems,
-      motivationConnectedItems,
+      loading: true,
       programDates: {
         from: '1 октября 2026 г.',
         to: '31 декабря 2026 г.',
@@ -152,6 +148,10 @@ export default {
           label: 'РРЦ',
           type: 'text',
         },
+        count: {
+          label: 'Количество',
+          type: 'text',
+        },
         reward: {
           label: 'Вознаграждение',
           type: 'text',
@@ -159,22 +159,26 @@ export default {
       },
     }
   },
+  created() {
+    if (this.getUser) {
+      this.loading = false
+      return
+    }
+    this.getSessionUser().then(() => {
+      this.loading = false
+    })
+  },
   computed: {
+    ...mapGetters({
+      getUser: 'user/getUser',
+    }),
     program() {
-      const { source, program_id } = this.$route.params
-      const id = Number(program_id)
-      const preferred =
-        source === 'connected' ? this.motivationConnectedItems : this.motivationCatalogItems
-      const other = source === 'connected' ? this.motivationCatalogItems : this.motivationConnectedItems
-      return (
-        preferred.find((item) => item.id === id) ||
-        other.find((item) => item.id === id)
-      )
+      const id = Number(this.$route.params.program_id)
+      return (this.getUser?.items?.motivationCatalogItems || []).find((item) => item.id === id)
     },
     programProducts() {
       if (!this.program) return []
-      const source =
-        this.program.name.toLowerCase() === 'трек' ? trackProducts : interskolProducts
+      const source = this.program.products || []
       const percent = this.program.percent || 0
       return source.map((item) => ({
         id: item.id,
@@ -182,9 +186,15 @@ export default {
         name: item.name,
         article: item.article,
         price_rrc: new Intl.NumberFormat('ru-RU').format(item.price),
+        count: item.count,
         reward: new Intl.NumberFormat('ru-RU').format(Math.round((item.price * percent) / 100)),
       }))
     },
+  },
+  methods: {
+    ...mapActions({
+      getSessionUser: 'user/getSessionUser',
+    }),
   },
 }
 </script>

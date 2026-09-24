@@ -21,6 +21,7 @@ export default {
     offers: {},
     offer: {},
     seller_statuses: {},
+    motivations: [],
     shippings: {},
   },
   actions: {
@@ -277,6 +278,17 @@ export default {
       }
       return response
     },
+    async getMotivations({ commit }, payload = {}) {
+      const data = {
+        action: 'get/fake/motivations',
+        id: payload.id ?? router.currentRoute._value.params.id,
+      }
+      const response = await api.wholesale.getMotivations(data)
+      if (response) {
+        commit('SET_MOTIVATIONS', response.data)
+      }
+      return response
+    },
     unsetShippings({ commit }) {
       commit('UNSET_SHIPPINGS')
     },
@@ -369,6 +381,9 @@ export default {
     SET_SELLER_STATUSES: (state, data) => {
       state.seller_statuses = data.data
     },
+    SET_MOTIVATIONS: (state, data) => {
+      state.motivations = data.data.motivationCatalogItems
+    },
     SET_SHIPPINGS: (state, data) => {
       state.shippings = data.data
     },
@@ -406,6 +421,9 @@ export default {
     },
     seller_statuses(state) {
       return state.seller_statuses
+    },
+    motivations(state) {
+      return state.motivations
     },
     shippings(state) {
       return state.shippings

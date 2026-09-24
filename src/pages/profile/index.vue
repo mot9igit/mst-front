@@ -185,7 +185,7 @@
                     </div>
                     <label class="profile-catalog__offer">
                       <Checkbox
-                        v-model="item.checked"
+                        v-model="item.offerAgreed"
                         :binary="true"
                         :inputId="'profile-offer-' + item.id"
                         :name="'profile-offer-' + item.id"
@@ -201,9 +201,12 @@
                   </div>
                 </div>
               </div>
+              <div class="profile-catalog__empty" v-if="!availableAll.length">
+                Программы не найдены
+              </div>
               <div
                 class="clients__content-button"
-                v-if="availablePrograms.length < motivationCatalogItems.length"
+                v-if="availablePrograms.length < availableAll.length"
               >
                 <button
                   class="clients__content-button-show_more_org-button"
@@ -211,7 +214,7 @@
                 >
                   <span class="clients__content-button-show_more_org-button-label">Еще</span>
                   <span class="clients__content-button-show_more_org-button-badge">{{
-                    motivationCatalogItems.length - availablePrograms.length
+                    availableAll.length - availablePrograms.length
                   }}</span>
                   <i class="d-icon-arrow-right clients__content-button-show_more_org-button-icon"></i>
                 </button>
@@ -278,6 +281,9 @@
                     </div>
                   </div>
                 </div>
+              </div>
+              <div class="profile-catalog__empty" v-if="!connectedPrograms.length">
+                Программы не найдены
               </div>
             </div>
           </div>
@@ -560,7 +566,6 @@ import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import BaseTable from '@/shared/ui/table/table.vue'
 import Dropdown from 'primevue/dropdown'
-import { motivationCatalogItems, motivationConnectedItems } from '@/shared/api/motivationPrograms'
 
 
 export default {
@@ -622,30 +627,13 @@ export default {
       loading: false,
       tabException: 0,
       availableVisible: 3,
-      motivationCatalogItems,
-      motivationConnectedItems,
-      motivationBalance: '12 580',
       motivationBalanceMin: '1 000',
-      motivationBalanceBrands: [
-        {
-          name: 'Интерскол',
-          sum: '5 000',
-          image: '/images/temp/logo_interskol.jpg',
-        },
-        {
-          name: 'Трек',
-          sum: '7 580',
-          image: '/images/temp/logo_track.jpg',
-        },
-      ],
-      motivationTransactions: [
+      motivationTransactionsBase: [
         {
           id: 20,
           date: '23.09.2026',
           brand: 'Трек',
           sum: '480 ₽',
-          products:
-            '<div>Арт.: ТР-2401, "Тормозные колодки «Чемпион»" - 1 шт.</div>',
           status_name: 'Отклонен',
           status_color: 'FF4400',
           status_key: 'rejected',
@@ -655,8 +643,6 @@ export default {
           date: '22.09.2026',
           brand: 'Интерскол',
           sum: '820 ₽',
-          products:
-            '<div>Арт.: 1.247.01, "Дрель-шуруповерт аккумуляторная ДА-18/4" - 1 шт.</div>',
           status_name: 'На проверке',
           status_color: 'C4CAE5',
           status_key: 'checking',
@@ -666,8 +652,6 @@ export default {
           date: '22.09.2026',
           brand: 'Трек',
           sum: '730 ₽',
-          products:
-            '<div>Арт.: ТР-1330, "Стойки стабилизатора «Классика»" - 1 шт.</div>',
           status_name: 'На проверке',
           status_color: 'C4CAE5',
           status_key: 'checking',
@@ -677,8 +661,6 @@ export default {
           date: '21.09.2026',
           brand: 'Трек',
           sum: '1 800 ₽',
-          products:
-            '<div>Арт.: ТР-3002, "Тормозные колодки TRS передние" - 1 шт.</div><div>Арт.: ТР-3003, "Тормозные колодки TRS задние" - 1 шт.</div><div>Арт.: ТР-3004, "Датчик износа колодок" - 1 шт.</div>',
           status_name: 'Зачислен',
           status_color: 'CDF0A9',
           status_key: 'ready',
@@ -688,8 +670,6 @@ export default {
           date: '19.09.2026',
           brand: 'Трек',
           sum: '1 880 ₽',
-          products:
-            '<div>Арт.: ТР-1102, "Шаровая опора «Чемпион»" - 2 шт.</div><div>Арт.: ТР-1120, "Рулевой наконечник «Чемпион»" - 1 шт.</div><div>Арт.: ТР-1105, "Гайка шаровой опоры" - 2 шт.</div>',
           status_name: 'Зачислен',
           status_color: 'CDF0A9',
           status_key: 'ready',
@@ -699,8 +679,6 @@ export default {
           date: '18.09.2026',
           brand: 'Интерскол',
           sum: '1 980 ₽',
-          products:
-            '<div>Арт.: 1.249.06, "Перфоратор П-45/1300Э" - 1 шт.</div><div>Арт.: 1.183.12, "Бур SDS-Max 18×520 мм" - 1 шт.</div><div>Арт.: 1.183.30, "Долото SDS-Max 20×250 мм" - 1 шт.</div>',
           status_name: 'Зачислен',
           status_color: 'CDF0A9',
           status_key: 'ready',
@@ -710,8 +688,6 @@ export default {
           date: '17.09.2026',
           brand: 'Трек',
           sum: '1 900 ₽',
-          products:
-            '<div>Арт.: ТР-2210, "Ремкомплект рулевой рейки «Чемпион»" - 1 шт.</div><div>Арт.: ТР-2212, "Сальник рулевой рейки" - 1 шт.</div><div>Арт.: ТР-2215, "Пыльник рулевой рейки" - 1 шт.</div>',
           status_name: 'Зачислен',
           status_color: 'CDF0A9',
           status_key: 'ready',
@@ -721,8 +697,6 @@ export default {
           date: '15.09.2026',
           brand: 'Интерскол',
           sum: '1 040 ₽',
-          products:
-            '<div>Арт.: 1.390.01, "Газонокосилка МКМ-2000" - 1 шт.</div><div>Арт.: 1.390.10, "Нож газонокосилки" - 1 шт.</div><div>Арт.: 1.390.20, "Колесо газонокосилки" - 2 шт.</div>',
           status_name: 'Зачислен',
           status_color: 'CDF0A9',
           status_key: 'ready',
@@ -732,8 +706,6 @@ export default {
           date: '12.09.2026',
           brand: 'Трек',
           sum: '2 000 ₽',
-          products:
-            '<div>Арт.: ТР-1801, "Штанга задней подвески «Чемпион»" - 1 шт.</div><div>Арт.: ТР-1803, "Сайлентблок штанги" - 2 шт.</div><div>Арт.: ТР-1805, "Болт штанги" - 2 шт.</div><div>Арт.: ТР-1806, "Гайка М12" - 4 шт.</div>',
           status_name: 'Зачислен',
           status_color: 'CDF0A9',
           status_key: 'ready',
@@ -743,8 +715,6 @@ export default {
           date: '11.09.2026',
           brand: 'Интерскол',
           sum: '1 160 ₽',
-          products:
-            '<div>Арт.: 1.251.02, "Пила цепная ПЦ-16/2000" - 1 шт.</div><div>Арт.: 1.251.30, "Пильная цепь 3/8″" - 1 шт.</div><div>Арт.: 1.251.40, "Масло для смазки цепи" - 1 шт.</div>',
           status_name: 'Зачислен',
           status_color: 'CDF0A9',
           status_key: 'ready',
@@ -754,8 +724,6 @@ export default {
           date: '08.09.2026',
           brand: 'Интерскол',
           sum: '820 ₽',
-          products:
-            '<div>Арт.: 1.260.01, "Лобзик МЭ-85/1200Э" - 1 шт.</div>',
           status_name: 'Зачислен',
           status_color: 'CDF0A9',
           status_key: 'ready',
@@ -765,8 +733,6 @@ export default {
           date: '04.09.2026',
           brand: 'Трек',
           sum: '640 ₽',
-          products:
-            '<div>Арт.: ТР-1501, "Сайлентблоки переднего рычага (комплект)" - 1 шт.</div>',
           status_name: 'Выплачен',
           status_color: 'BBFF00',
           status_key: 'paid',
@@ -776,8 +742,6 @@ export default {
           date: '01.09.2026',
           brand: 'Интерскол',
           sum: '1 380 ₽',
-          products:
-            '<div>Арт.: 1.173.01, "УШМ-125/1100Э (болгарка)" - 1 шт.</div><div>Арт.: 1.173.11, "Отрезной круг 125×1,2 мм" - 2 шт.</div><div>Арт.: 1.173.20, "Защитный кожух УШМ" - 1 шт.</div>',
           status_name: 'Выплачен',
           status_color: 'BBFF00',
           status_key: 'paid',
@@ -787,8 +751,6 @@ export default {
           date: '26.08.2026',
           brand: 'Трек',
           sum: '890 ₽',
-          products:
-            '<div>Арт.: ТР-1200, "Рулевые наконечники (комплект)" - 2 шт.</div>',
           status_name: 'Выплачен',
           status_color: 'BBFF00',
           status_key: 'paid',
@@ -798,8 +760,6 @@ export default {
           date: '21.08.2026',
           brand: 'Интерскол',
           sum: '1 250 ₽',
-          products:
-            '<div>Арт.: 1.249.01, "Перфоратор П-26/800ЭВР" - 1 шт.</div><div>Арт.: 1.182.10, "Бур SDS-Plus 10×100 мм" - 1 шт.</div><div>Арт.: 1.249.50, "Смазка для перфоратора" - 1 шт.</div>',
           status_name: 'Выплачен',
           status_color: 'BBFF00',
           status_key: 'paid',
@@ -809,8 +769,6 @@ export default {
           date: '18.08.2026',
           brand: 'Трек',
           sum: '480 ₽',
-          products:
-            '<div>Арт.: ТР-2401, "Тормозные колодки «Чемпион»" - 1 шт.</div>',
           status_name: 'Выплачен',
           status_color: 'BBFF00',
           status_key: 'paid',
@@ -820,8 +778,6 @@ export default {
           date: '13.08.2026',
           brand: 'Интерскол',
           sum: '550 ₽',
-          products:
-            '<div>Арт.: 1.245.06, "Дрель-шуруповерт ДА-12ЭР" - 1 шт.</div>',
           status_name: 'Выплачен',
           status_color: 'BBFF00',
           status_key: 'paid',
@@ -831,8 +787,6 @@ export default {
           date: '10.08.2026',
           brand: 'Трек',
           sum: '1 500 ₽',
-          products:
-            '<div>Арт.: ТР-1800, "Штанга задней подвески" - 1 шт.</div><div>Арт.: ТР-1803, "Сайлентблок штанги" - 2 шт.</div><div>Арт.: ТР-1805, "Болт штанги" - 2 шт.</div>',
           status_name: 'Выплачен',
           status_color: 'BBFF00',
           status_key: 'paid',
@@ -842,8 +796,6 @@ export default {
           date: '06.08.2026',
           brand: 'Интерскол',
           sum: '450 ₽',
-          products:
-            '<div>Арт.: 1.251.01, "Пила цепная ПЦ-14/1800" - 1 шт.</div>',
           status_name: 'Выплачен',
           status_color: 'BBFF00',
           status_key: 'paid',
@@ -853,8 +805,6 @@ export default {
           date: '03.08.2026',
           brand: 'Трек',
           sum: '350 ₽',
-          products:
-            '<div>Арт.: ТР-1330, "Стойки стабилизатора (комплект)" - 1 шт.</div>',
           status_name: 'Выплачен',
           status_color: 'BBFF00',
           status_key: 'paid',
@@ -960,6 +910,48 @@ export default {
     showMoreAvailable() {
       this.availableVisible += 3
     },
+    parseSum(sum) {
+      return Number(String(sum).replace(/[^\d]/g, '')) || 0
+    },
+    readCache(key) {
+      try {
+        return JSON.parse(localStorage.getItem(key))
+      } catch {
+        return null
+      }
+    },
+    writeCache(key, value) {
+      try {
+        localStorage.setItem(key, JSON.stringify(value))
+      } catch {
+        // localStorage может быть недоступен
+      }
+    },
+    randomTransaction(brand) {
+      const items = this.motivationCatalogItems
+        .filter((item) => item.name === brand)
+        .reduce(
+          (acc, item) =>
+            acc.concat(
+              (item.products || []).map((product) => ({
+                ...product,
+                percent: item.percent || 0,
+              })),
+            ),
+          [],
+        )
+      if (!items.length) return { products: '', sum: '' }
+      const count = 1 + Math.floor(Math.random() * Math.min(3, items.length))
+      const picked = items.slice().sort(() => Math.random() - 0.5).slice(0, count)
+      const products = picked
+        .map((product) => `<div>${product.article}, "${product.name}" - 1 шт.</div>`)
+        .join('')
+      const sum = picked.reduce(
+        (acc, product) => acc + Math.round((product.price * product.percent) / 100),
+        0,
+      )
+      return { products, sum: new Intl.NumberFormat('ru-RU').format(sum) + ' ₽' }
+    },
     openProgram(item, source) {
       const route = this.$router.resolve({
         name: 'profileMotivationProgram',
@@ -968,26 +960,17 @@ export default {
       window.open(route.href, '_blank')
     },
     connectProgram(item) {
-      if (!item.checked) {
+      if (!item.offerAgreed) {
         item.connectError = 'Подтвердите согласие с условиями публичной оферты'
         return
       }
       item.connectError = ''
-      const idx = this.motivationCatalogItems.indexOf(item)
-      if (idx === -1) return
-      this.motivationCatalogItems.splice(idx, 1)
-      item.checked = false
-      this.motivationConnectedItems.push(item)
+      item.checked = 1
+      item.offerAgreed = false
     },
     disconnectProgram(item) {
-      const idx = this.motivationConnectedItems.indexOf(item)
-      if (idx === -1) return
-      this.motivationConnectedItems.splice(idx, 1)
-      item.checked = false
-      this.motivationCatalogItems.push(item)
-      if (this.motivationCatalogItems.length > this.availableVisible) {
-        this.availableVisible = this.motivationCatalogItems.length
-      }
+      item.checked = 0
+      item.offerAgreed = false
     },
     openWithdrawModal() {
       this.withdrawSum = ''
@@ -1195,11 +1178,70 @@ export default {
     motivationUser() {
       return this.getUser?.motivation === true
     },
+    motivationCatalogItems() {
+      return this.getUser?.items?.motivationCatalogItems || []
+    },
+    availableAll() {
+      return this.motivationCatalogItems.filter((item) => item.checked == 0)
+    },
     availablePrograms() {
-      return this.motivationCatalogItems.slice(0, this.availableVisible)
+      return this.availableAll.slice(0, this.availableVisible)
     },
     connectedPrograms() {
-      return this.motivationConnectedItems
+      return this.motivationCatalogItems.filter((item) => item.checked == 1)
+    },
+    motivationTransactions() {
+      const fingerprint = JSON.stringify(
+        this.motivationCatalogItems.map((item) => ({
+          name: item.name,
+          percent: item.percent,
+          products: (item.products || []).map((product) => [
+            product.article,
+            product.name,
+            product.price,
+          ]),
+        })),
+      )
+      const cacheKey = 'profile.motivation.transactions'
+      const cached = this.readCache(cacheKey)
+      if (cached && cached.fingerprint === fingerprint) {
+        return cached.items
+      }
+      const items = this.motivationTransactionsBase.map((record) => {
+        const { products, sum } = this.randomTransaction(record.brand)
+        return {
+          ...record,
+          products,
+          sum: sum || record.sum,
+        }
+      })
+      this.writeCache(cacheKey, { fingerprint, items })
+      return items
+    },
+    motivationBalance() {
+      const total = this.motivationTransactions
+        .filter((transaction) => transaction.status_key === 'ready')
+        .reduce((acc, transaction) => acc + this.parseSum(transaction.sum), 0)
+      return new Intl.NumberFormat('ru-RU').format(total)
+    },
+    motivationBalanceBrands() {
+      const brands = this.motivationCatalogItems.reduce((acc, item) => {
+        const name = item.name
+        if (!name) return acc
+        if (!acc[name]) acc[name] = { name, image: item.image, sum: 0 }
+        if (item.image) acc[name].image = item.image
+        return acc
+      }, {})
+      this.motivationTransactions.forEach((transaction) => {
+        const brand = brands[transaction.brand]
+        if (brand && (transaction.status_key === 'ready' || transaction.status_key === 'paid')) {
+          brand.sum += this.parseSum(transaction.sum)
+        }
+      })
+      return Object.values(brands).map((brand) => ({
+        ...brand,
+        sum: new Intl.NumberFormat('ru-RU').format(brand.sum),
+      }))
     },
     profilePhone() {
       const phone = this.getUser?.profile?.phone
@@ -1266,6 +1308,14 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 40px;
+  }
+
+  &__empty {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    color: #757575;
+    padding: 12px 0;
   }
 
   &__header {

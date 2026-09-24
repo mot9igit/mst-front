@@ -809,6 +809,11 @@ export default {
 .cell--status.cell--status-seller_packed {
   color: #282828;
 }
+.cell--status.cell--status-checking,
+.cell--status.cell--status-ready,
+.cell--status.cell--status-paid {
+  color: #282828;
+}
 .store--name {
   font-weight: 600;
   font-size: 14px;

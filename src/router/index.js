@@ -617,6 +617,59 @@ const router = createRouter({
                         },
                       },
                     },
+                    {
+                      path: 'motivation',
+                      meta: {
+                        breadcrumb: {
+                          label: 'Программы мотивации',
+                        },
+                      },
+                      children: [
+                        {
+                          path: '',
+                          name: 'wholesaleMotivation',
+                          props: true,
+                          label: 'Программы мотивации',
+                          component: () => import('../pages/wholesale/motivation.vue'),
+                        },
+                        {
+                          path: 'create',
+                          name: 'wholesaleMotivationCreate',
+                          props: true,
+                          label: 'Создание программы мотивации',
+                          component: () => import('../pages/wholesale/motivationProgram.vue'),
+                          meta: {
+                            breadcrumb: {
+                              label: 'Создание программы',
+                            },
+                          },
+                        },
+                        {
+                          path: ':program_id',
+                          name: 'wholesaleMotivationProgram',
+                          props: true,
+                          label: 'Редактирование программы мотивации',
+                          component: () => import('../pages/wholesale/motivationProgram.vue'),
+                          meta: {
+                            breadcrumb: {
+                              label: 'Редактирование программы',
+                            },
+                          },
+                        },
+                        {
+                          path: ':program_id/statistics',
+                          name: 'wholesaleMotivationStatistics',
+                          props: true,
+                          label: 'Статистика программы мотивации',
+                          component: () => import('../pages/wholesale/motivationStatistics.vue'),
+                          meta: {
+                            breadcrumb: {
+                              label: 'Статистика программы',
+                            },
+                          },
+                        },
+                      ],
+                    },
                   ],
                 },
                 {

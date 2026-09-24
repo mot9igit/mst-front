@@ -9,6 +9,9 @@ export const motivationCatalogItems = [
       '<p>Кэшбек 30% от стоимости автозапчастей: тормозная система, подвеска, рулевое управление и сопутствующие товары.</p>',
     banner: '/images/temp/track_banner1.jpg',
     image: '/images/temp/logo_track.jpg',
+    date_from: '01.01.2026',
+    date_to: '31.12.2026',
+    active: 1,
     checked: false,
   },
   {
@@ -33,6 +36,9 @@ export const motivationCatalogItems = [
       '<p>Автозапчасти для ремонта подвески ВАЗ. Кэшбек 5%: сайлентблоки, штанги задней подвески, стойки стабилизатора и шаровые опоры.</p>',
     banner: '/images/temp/track_banner2.jpg',
     image: '/images/temp/logo_track.jpg',
+    date_from: '01.02.2026',
+    date_to: '31.11.2026',
+    active: 1,
     checked: false,
   },
   {
@@ -57,6 +63,9 @@ export const motivationCatalogItems = [
       '<p>Выгодные условия на собственные запчасти для немецких автомобилей. Запчасти производства ТРЕК в наличии.</p>',
     banner: '/images/temp/trek_banner4.jpg',
     image: '/images/temp/logo_track.jpg',
+    date_from: '01.03.2026',
+    date_to: '30.12.2026',
+    active: 1,
     checked: false,
   },
 ]
@@ -83,6 +92,9 @@ export const motivationConnectedItems = [
       '<p>Дарим 2% от оборота продаж своим продавцам. Начисление бонусов по каждому чеку.</p>',
     banner: '/images/temp/track_banner3.png',
     image: '/images/temp/logo_track.jpg',
+    date_from: '01.04.2026',
+    date_to: '31.12.2026',
+    active: 1,
   },
 ]
 
