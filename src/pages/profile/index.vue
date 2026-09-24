@@ -1314,9 +1314,7 @@ export default {
   }
 
   &__block:nth-of-type(2) {
-    .profile-catalog__title {
-      margin-top: 32px;
-    }
+    margin-top: 32px;
   }
 
   &__title {
