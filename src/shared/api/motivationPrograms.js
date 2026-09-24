@@ -63,7 +63,7 @@ export const motivationCatalogItems = [
 
 export const motivationConnectedItems = [
   {
-    id: 1,
+    id: 6,
     name: 'Интерскол',
     label: '3% Лето',
     percent: 3,
@@ -74,7 +74,7 @@ export const motivationConnectedItems = [
     image: '/images/temp/logo_interskol.jpg',
   },
   {
-    id: 2,
+    id: 7,
     name: 'Трек',
     label: '2% весь ассортимент ТРЕК',
     percent: 2,

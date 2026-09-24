@@ -162,9 +162,14 @@ export default {
   computed: {
     program() {
       const { source, program_id } = this.$route.params
-      const list =
+      const id = Number(program_id)
+      const preferred =
         source === 'connected' ? this.motivationConnectedItems : this.motivationCatalogItems
-      return list.find((item) => item.id === Number(program_id))
+      const other = source === 'connected' ? this.motivationCatalogItems : this.motivationConnectedItems
+      return (
+        preferred.find((item) => item.id === id) ||
+        other.find((item) => item.id === id)
+      )
     },
     programProducts() {
       if (!this.program) return []
