@@ -839,12 +839,18 @@ prods: {
   }
 
   &__banner {
-    max-height: 360px;
+    height: auto;
+    max-height: none;
     overflow: hidden;
 
     .promos__banners-item-image {
-      max-height: 360px;
-      object-fit: cover;
+      width: 100%;
+      height: auto;
+      max-height: none;
+    }
+
+    @media (width <= 1280px) {
+      min-height: 180px;
     }
   }
 
