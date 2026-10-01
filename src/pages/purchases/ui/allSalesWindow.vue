@@ -292,7 +292,16 @@
               <div v-if="sale.payer == 2">
                 <i class="d-icon-truck product-card__buy-icon"></i>Доставка по согласованию
               </div>
-
+              <div>
+                <i class="d-icon-truck product-card__buy-icon"></i>
+                {{
+                  item.delivery_type_opt == 0
+                    ? 'Самовывоз'
+                    : item.delivery_type_opt == 1
+                      ? 'Доставка ТК'
+                      : 'Доставка МС'
+                }}
+              </div>
               <div v-if="sale.payer == 1">
                 <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
               </div>
@@ -891,16 +900,12 @@ export default {
         const node = this.basket?.data?.[this.basketWarehouse]
         const source = node?.data
         this.checkBasket =
-          source && Number(node?.cart_data?.sku_count ?? 1) > 0 && hasProducts(source)
-            ? source
-            : {}
+          source && Number(node?.cart_data?.sku_count ?? 1) > 0 && hasProducts(source) ? source : {}
       } else {
         const node = this.basketOffer?.data?.[this.basketOfferWarehouse]
         const source = node?.data
         this.checkBasket =
-          source && Number(node?.cart_data?.sku_count ?? 1) > 0 && hasProducts(source)
-            ? source
-            : {}
+          source && Number(node?.cart_data?.sku_count ?? 1) > 0 && hasProducts(source) ? source : {}
       }
       return this.checkBasket
     },

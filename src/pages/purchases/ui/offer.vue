@@ -312,6 +312,15 @@
               <div class="product-card-actions__modal-actions-content-item" v-if="item.percent > 0">
                 {{ item.percent }}% Скидка
               </div>
+              <div>
+                {{
+                  item.delivery_type_opt == 0
+                    ? 'Самовывоз'
+                    : item.delivery_type_opt == 1
+                      ? 'Доставка ТК'
+                      : 'Доставка МС'
+                }}
+              </div>
               <div
                 class="product-card-actions__modal-actions-content-item"
                 v-if="item.delivery_type == 2"
@@ -395,6 +404,15 @@
               </div>
               <div class="product-card-actions__modal-actions-content-item" v-if="item.percent > 0">
                 {{ item.percent }}% Скидка
+              </div>
+              <div>
+                {{
+                  item.delivery_type_opt == 0
+                    ? 'Самовывоз'
+                    : item.delivery_type_opt == 1
+                      ? 'Доставка ТК'
+                      : 'Доставка МС'
+                }}
               </div>
               <div
                 class="product-card-actions__modal-actions-content-item"

@@ -216,6 +216,22 @@
                     <p class="product-card__stat-description">{{ Math.round(delayDays) }} дней</p>
                   </div>
                 </div>
+                <!-- Элемент доп. информации -->
+                <div class="product-card__stat">
+                  <i class="d-icon-cube product-card__stat-icon"></i>
+                  <div class="product-card__stat-content">
+                    <p class="product-card__stat-name">Тип доставки</p>
+                    <p class="product-card__stat-description">
+                      {{
+                        activeConflict.delivery_type_opt == 1
+                          ? 'Транспортная компания'
+                          : activeConflict.delivery_type_opt == 0
+                            ? 'Самовывоз'
+                            : 'Доставка МС'
+                      }}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
             <!-- Купить -->
@@ -622,6 +638,16 @@
               <div v-if="item.payer == 2">
                 <i class="d-icon-truck product-card__buy-icon"></i>По согласованию
               </div>
+              <div>
+                <i class="d-icon-truck product-card__buy-icon"></i>
+                {{
+                  item.delivery_type_opt == 0
+                    ? 'Самовывоз'
+                    : item.delivery_type_opt == 1
+                      ? 'Доставка ТК'
+                      : 'Доставка МС'
+                }}
+              </div>
               <div v-if="item.payer == 1">
                 <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
               </div>
@@ -715,6 +741,7 @@ export default {
       activeConflict: {
         delay: 0,
         delay_type: 1,
+        delivery_type_opt: 1,
         min_count: 1,
         multiplicity: 1,
         payer: 0,

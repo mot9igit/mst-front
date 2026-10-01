@@ -321,6 +321,13 @@
                                 : 'Предоплата'
                             }}
                           </span>
+                          <span class="cart__item-sales-item-value">{{
+                            sale.delivery_type_opt == 0
+                              ? 'Самовывоз'
+                              : sale.delivery_type_opt == 1
+                                ? 'Доставка ТК'
+                                : 'Доставка МС'
+                          }}</span>
                           <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2"
                             >Бесплатная доставка</span
                           >

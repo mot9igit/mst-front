@@ -154,6 +154,16 @@
             ><span v-if="item.pricing_type == 1">Наценка</span><span v-else>Скидка</span
             >{{ item.percent }}%
           </div>
+          <div>
+            <i class="d-icon-truck product-card__buy-icon"></i>
+            {{
+              item.delivery_type_opt == 0
+                ? 'Самовывоз'
+                : item.delivery_type_opt == 1
+                  ? 'Доставка ТК'
+                  : 'Доставка МС'
+            }}
+          </div>
           <div v-if="item.delivery_type == 2">
             <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
           </div>

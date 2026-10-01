@@ -272,6 +272,20 @@
                   class="promotions__card-values promotions__card-values--md-horizontal promotions__card-promo-conds-content"
                 >
                   <div class="promotions__card-value-container d-md-full" v-if="type == 1">
+                    <span class="promotions__card-label">Тип доставки:</span>
+                    <p
+                      class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
+                    >
+                      {{
+                        this.form.typeDeliveryOpt == 0
+                          ? 'Самовывоз'
+                          : this.form.typeDeliveryOpt == 1
+                            ? 'Транспортная компания'
+                            : 'Доставка МС'
+                      }}
+                    </p>
+                  </div>
+                  <div class="promotions__card-value-container d-md-full" v-if="type == 1">
                     <span class="promotions__card-label">Оплата доставки:</span>
                     <p
                       class="promotions__card-value promotions__card-value--bold promotions__card-delivery-conds-value"
@@ -1693,6 +1707,65 @@
                 <!-- 5 ЭТАП - Условия доставки -->
                 <div class="contents" id="deliveryConditions" v-if="masterStep == 5">
                   <p class="promo-master__title">Условия доставки</p>
+                  <div
+                    class="d-field-container d-field-container--vertical promo-master__settings promo-master__settings--sm-margin"
+                    v-if="type == 1"
+                  >
+                    <p class="promo-master__subtitle">Тип доставки:</p>
+                    <div class="d-radio__container d-radio__container--small">
+                      <div class="d-radio__wrapper promo-master__radio-wrapper">
+                        <label for="who-pay-delivery-11" class="d-radio">
+                          <input
+                            type="radio"
+                            name="who-pay-delivery-11"
+                            id="who-pay-delivery-11"
+                            class="d-radio__input"
+                            value="1"
+                            v-model="this.form.typeDeliveryOpt"
+                          />
+                        </label>
+                        <label
+                          for="who-pay-delivery-11"
+                          class="d-radio__label promo-master__radio-label"
+                          >Транспортная компания
+                        </label>
+                      </div>
+                      <div class="d-radio__wrapper promo-master__radio-wrapper">
+                        <label for="who-pay-delivery-21" class="d-radio">
+                          <input
+                            type="radio"
+                            name="who-pay-delivery"
+                            id="who-pay-delivery-21"
+                            class="d-radio__input"
+                            value="0"
+                            v-model="this.form.typeDeliveryOpt"
+                          />
+                        </label>
+                        <label
+                          for="who-pay-delivery-21"
+                          class="d-radio__label promo-master__radio-label"
+                          >Самовывоз
+                        </label>
+                      </div>
+                      <div class="d-radio__wrapper promo-master__radio-wrapper">
+                        <label for="who-pay-delivery-31" class="d-radio">
+                          <input
+                            type="radio"
+                            name="who-pay-delivery"
+                            id="who-pay-delivery-31"
+                            class="d-radio__input"
+                            value="2"
+                            v-model="this.form.typeDeliveryOpt"
+                          />
+                        </label>
+                        <label
+                          for="who-pay-delivery-31"
+                          class="d-radio__label promo-master__radio-label"
+                          >Доставка МС
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                   <div
                     class="d-field-container d-field-container--vertical promo-master__settings promo-master__settings--sm-margin"
                     v-if="type == 1"
@@ -3458,6 +3531,7 @@ export default {
         product_groups: {},
         compabilityMode: 0,
         paymentDelivery: 0,
+        typeDeliveryOpt: 1,
         paymentTime: 0,
         typePay: '1',
         typePayPercent: 15,
@@ -4815,6 +4889,7 @@ export default {
         this.form.typePay = String(newVal.pay_type)
         this.form.typePayPercent = newVal.pay_type_percent ? String(newVal.pay_type_percent) : 0
         this.form.typeDelivery = String(newVal.delivery_type)
+        this.form.typeDeliveryOpt = Number(newVal.delivery_type_opt)
         this.form.typeDeliveryPercent = Number(newVal.delivery_type_percent)
         this.form.delay = newVal.delay_graph
         this.form.typeDelay = String(newVal.delay_type)

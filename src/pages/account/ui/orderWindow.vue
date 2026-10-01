@@ -336,6 +336,13 @@
                                 : 'Предоплата'
                             }}
                           </span>
+                          <span class="cart__item-sales-item-value">{{
+                            sale.delivery_type_opt == 0
+                              ? 'Самовывоз'
+                              : sale.delivery_type_opt == 1
+                                ? 'Доставка ТК'
+                                : 'Доставка МС'
+                          }}</span>
                           <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2"
                             >Бесплатная доставка</span
                           >
@@ -1088,72 +1095,74 @@ export default {
         } else {
           // orderSubmitApi
 
-          this.orderSubmitApi({ orgId: orgId, warehouse_id: warehouse_id }).then((response) => {
-            let arr = []
-            let res = response.data?.data
-            let products = res.products
-            let nums = res.nums
-            for (var i in res.orders) {
-              if (res.orders[i].fog) {
-                this.modalOrderInfo = true
+          this.orderSubmitApi({ orgId: orgId, warehouse_id: warehouse_id })
+            .then((response) => {
+              let arr = []
+              let res = response.data?.data
+              let products = res.products
+              let nums = res.nums
+              for (var i in res.orders) {
+                if (res.orders[i].fog) {
+                  this.modalOrderInfo = true
+                }
               }
-            }
 
-            this.list_orders = res.orders
-            console.log(res)
-            for (var key in products) {
-              const product = products[key]
-              arr.push({
-                id: product.id_remain,
-                name: product.name,
-                price: product.price,
-                quantity: product.count,
-              })
-            }
-            this.order_to_basket = false
-            window.dataLayer = window.dataLayer || []
+              this.list_orders = res.orders
+              console.log(res)
+              for (var key in products) {
+                const product = products[key]
+                arr.push({
+                  id: product.id_remain,
+                  name: product.name,
+                  price: product.price,
+                  quantity: product.count,
+                })
+              }
+              this.order_to_basket = false
+              window.dataLayer = window.dataLayer || []
 
-            window.dataLayer.push({
-              ecommerce: {
-                currencyCode: 'RUB',
-                purchase: {
-                  actionField: {
-                    id: 'TRX987',
+              window.dataLayer.push({
+                ecommerce: {
+                  currencyCode: 'RUB',
+                  purchase: {
+                    actionField: {
+                      id: 'TRX987',
+                    },
+                    products: arr,
                   },
-                  products: arr,
                 },
-              },
+              })
+              this.$emit('orderSubmit', nums.join(', '))
+              this.order = nums.join(', ')
+              console.log(this.order)
+              if (
+                this.edits?.length &&
+                (this.$route.name == 'purchasesOrder' || this.$route.name == 'wholesaleOrder')
+              ) {
+                for (var id in this.edits) {
+                  if (this.$route.params.order_id == this.edits[id]) {
+                    this.$emit('orderEdit')
+                  }
+                }
+              }
+              if (this.offers?.length && this.$route.name == 'purchasesOffer') {
+                for (var i in this.offers) {
+                  if (this.$route.params.offer_id == this.offers[i]) {
+                    this.$emit('orderEdit')
+                  }
+                }
+              }
+              this.getBasket().then(() => {
+                this.loading = false
+                this.submitting = false
+                this.showChangedId = ''
+                this.showChangedIdStore = ''
+              })
             })
-            this.$emit('orderSubmit', nums.join(', '))
-            this.order = nums.join(', ')
-            console.log(this.order)
-            if (
-              this.edits?.length &&
-              (this.$route.name == 'purchasesOrder' || this.$route.name == 'wholesaleOrder')
-            ) {
-              for (var id in this.edits) {
-                if (this.$route.params.order_id == this.edits[id]) {
-                  this.$emit('orderEdit')
-                }
-              }
-            }
-            if (this.offers?.length && this.$route.name == 'purchasesOffer') {
-              for (var i in this.offers) {
-                if (this.$route.params.offer_id == this.offers[i]) {
-                  this.$emit('orderEdit')
-                }
-              }
-            }
-            this.getBasket().then(() => {
+            .catch(() => {
               this.loading = false
               this.submitting = false
-              this.showChangedId = ''
-              this.showChangedIdStore = ''
             })
-          }).catch(() => {
-            this.loading = false
-            this.submitting = false
-          })
         }
       })
     },

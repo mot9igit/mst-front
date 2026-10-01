@@ -180,16 +180,16 @@ export default {
                 icon: 'd-icon-people',
                 to: { name: 'wholesaleClients', params: { id: this.$route.params.id } },
               },
-              
-              // ...(this.activeOrganization.interseller
-              //   ? [
-              //       {
-              //         name: 'Интерселлер',
-              //         icon: 'd-icon-truck',
-              //         to: { name: 'wholesaleShipments', params: { id: this.$route.params.id } },
-              //       },
-              //     ]
-              //   : []),
+
+              ...(this.activeOrganization.interseller
+                ? [
+                    {
+                      name: 'Интерселлер',
+                      icon: 'd-icon-truck',
+                      to: { name: 'wholesaleShipments', params: { id: this.$route.params.id } },
+                    },
+                  ]
+                : []),
             ],
           })
         }

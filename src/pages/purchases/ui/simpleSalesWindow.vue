@@ -307,9 +307,20 @@
                 <i class="d-icon-percent-rounded product-card__buy-icon"></i>Скидка
                 {{ sale.percent_num }}%
               </div>
-              <div v-if="item.payer == 2">
+              <div>
+                <i class="d-icon-truck product-card__buy-icon"></i>
+                {{
+                  sale.delivery_type_opt == 0
+                    ? 'Самовывоз'
+                    : sale.delivery_type_opt == 1
+                      ? 'Доставка ТК'
+                      : 'Доставка МС'
+                }}
+              </div>
+              <div v-if="sale.payer == 2">
                 <i class="d-icon-truck product-card__buy-icon"></i>По согласованию
               </div>
+
               <div v-if="sale.payer == 1">
                 <i class="d-icon-truck product-card__buy-icon"></i>Бесплатная доставка
               </div>
@@ -340,7 +351,8 @@
                 <i class="d-icon-shuffle product-card__buy-icon"></i>Интеграция с МС
               </div>
               <div v-if="item.condition_orders > 0">
-                <i class="d-icon-cart product-card__buy-icon"></i>На {{ item.condition_orders }} заказов
+                <i class="d-icon-cart product-card__buy-icon"></i>На
+                {{ item.condition_orders }} заказов
               </div>
             </div>
           </div>
