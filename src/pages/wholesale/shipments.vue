@@ -11,13 +11,13 @@
     <h1 class="shippings__header">
       <span>Мои отгрузки</span>
       <div class="d-divider d-divider--vertical shippings__header-title-divider"></div>
-      <span>Отгрузки ({{ shippings.total_way }})</span>
+      <span>Отгрузки ({{ shippings.total_way ?? 0 }})</span>
     </h1>
 
     <div class="shippings__header-button">
       <button
         class="d-button d-button-primary d-button-primary-small box-shadow-none shippings__header-button--create"
-        @click.prevent=""
+        @click.prevent="createShipping"
       >
         <i class="d-icon-plus-flat clients__card-offer-icon"></i>
         <span>Добавить отгрузку</span>
@@ -43,12 +43,13 @@
     </div>
     <teleport to="body">
       <customModal v-model="this.modalShipping" class="shippings__modal">
-        <modalShipmentForm
+        <ShipmentWindow
           :ship="modalShippingData"
           :mode="mode"
-          @editShip="editShip"
           @editMode="mode = 1"
           @deleteShip="delShipping"
+          @cancel="modalShipping = false"
+          @submit="editShip"
         />
       </customModal>
     </teleport>
@@ -61,11 +62,11 @@ import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import Toast from 'primevue/toast'
 import customModal from '@/shared/ui/Modal.vue'
-import modalShipmentForm from './ui/modalShipmentForm.vue'
+import ShipmentWindow from './ui/shipmentWindow.vue'
 
 export default {
   name: 'WholesaleShipments',
-  components: { breadcrumbs, Loader, BaseTable, Toast, customModal, modalShipmentForm },
+  components: { breadcrumbs, Loader, BaseTable, Toast, customModal, ShipmentWindow },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -132,6 +133,7 @@ export default {
           label: '',
           type: 'actions',
           sort: false,
+          class: 'cell_centeralign',
           available: {
             view: {
               icon: 'pi pi-eye',
@@ -163,6 +165,7 @@ export default {
   methods: {
     ...mapActions({
       getShippings: 'wholesale/getShippings',
+      saveShipping: 'wholesale/saveShipping',
     }),
     showShipping(data) {
       this.mode = 0
@@ -174,8 +177,44 @@ export default {
       this.modalShipping = true
       this.modalShippingData = data
     },
+    createShipping() {
+      this.mode = 2
+      this.modalShipping = true
+      this.modalShippingData = {}
+    },
     editShip(data) {
-      console.log(data)
+      const dateTime = data?.dateTime
+      const date = dateTime
+        ? new Date(dateTime.getTime() - dateTime.getTimezoneOffset() * 60000)
+        : null
+
+      const form = {
+        date: date,
+        location: data?.location ?? null,
+      }
+
+      const shipment_id = this.mode === 1 ? this.modalShippingData?.id : null
+
+      this.saveShipping({ shipment_id, form })
+        .then(() => {
+          this.modalShipping = false
+          this.modalShippingData = {}
+          this.getShippings()
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Успешно',
+            detail: 'Отгрузка сохранена',
+            life: 3000,
+          })
+        })
+        .catch(() => {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось сохранить отгрузку',
+            life: 3000,
+          })
+        })
     },
     delShipping(data) {
       console.log(data)

@@ -181,7 +181,7 @@ export default {
                 to: { name: 'wholesaleClients', params: { id: this.$route.params.id } },
               },
 
-              ...(this.activeOrganization.interseller
+              ...(this.activeOrganization.interseller == 1
                 ? [
                     {
                       name: 'Интерселлер',

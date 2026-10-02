@@ -17,7 +17,7 @@
         v-for="(ffilter, i) in filters"
         :key="i"
       >
-        <div class="form_input_group input_pl input-parent required" v-if="ffilter.type == 'text'">
+        <div class="form_input_group input_pl input-parent required d-search" v-if="ffilter.type == 'text'" style="position: relative;">
           <FloatLabel>
             <InputText
               :id="i"
@@ -27,6 +27,7 @@
             />
             <label for="username">{{ ffilter.placeholder }}</label>
           </FloatLabel>
+          <i class="d-icon-search-big d-search__icon" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); margin: 0;"></i>
         </div>
         <div class="dart-form-group" v-if="ffilter.type == 'select'">
           <!-- <label>{{ ffilter.name }}</label> -->

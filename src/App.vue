@@ -15,6 +15,9 @@ export default {
 .p-treeselect-label {
   max-width: 100%;
 }
+.p-treeselect-label.p-placeholder {
+  color: #282828;
+}
 #app {
   width: 100%;
 }

@@ -47,7 +47,7 @@ export default {
   overflow: hidden;
   flex-direction: column;
   width: 100%;
-  max-width: 700px;
+  max-width: 880px;
   max-height: 90%;
   margin: 0 1rem;
   padding: 28px 32px 32px;
@@ -70,7 +70,7 @@ export default {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 700px;
+  max-width: 880px;
   max-height: 90%;
   margin: 0 1rem;
   padding: 1rem;

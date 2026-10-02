@@ -278,6 +278,18 @@ export default {
       }
       return response
     },
+    async saveShipping(store, { shipment_id, form }) {
+      const data = {
+        action: 'save',
+        id: router.currentRoute._value.params.id,
+        form: form,
+      }
+      if (shipment_id) {
+        data.shipment_id = shipment_id
+      }
+      const response = await api.wholesale.saveShipping(data)
+      return response
+    },
     async getMotivations({ commit }, payload = {}) {
       const data = {
         action: 'get/fake/motivations',
