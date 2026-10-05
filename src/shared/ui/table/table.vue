@@ -17,7 +17,11 @@
         v-for="(ffilter, i) in filters"
         :key="i"
       >
-        <div class="form_input_group input_pl input-parent required d-search" v-if="ffilter.type == 'text'" style="position: relative;">
+        <div
+          class="form_input_group input_pl input-parent required d-search"
+          v-if="ffilter.type == 'text'"
+          style="position: relative"
+        >
           <FloatLabel>
             <InputText
               :id="i"
@@ -27,7 +31,6 @@
             />
             <label for="username">{{ ffilter.placeholder }}</label>
           </FloatLabel>
-          <i class="d-icon-search-big d-search__icon" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); margin: 0;"></i>
         </div>
         <div class="dart-form-group" v-if="ffilter.type == 'select'">
           <!-- <label>{{ ffilter.name }}</label> -->
@@ -124,7 +127,7 @@
             dateFormat="dd.mm.yy"
             :placeholder="ffilter.placeholder"
             :manualInput="false"
-            :maxDate="date_now"
+            :maxDate="ffilter.maxDate === undefined ? date_now : ffilter.maxDate"
             showIcon
             showClear
             iconDisplay="input"
@@ -643,7 +646,12 @@ export default {
     // 	}));
     // },
     fixDate(d) {
-      if (d.getHours() === 0 && d.getMinutes() === 0 && d.getSeconds() === 0 && d.getMilliseconds() === 0) {
+      if (
+        d.getHours() === 0 &&
+        d.getMinutes() === 0 &&
+        d.getSeconds() === 0 &&
+        d.getMilliseconds() === 0
+      ) {
         const shifted = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
         if (shifted.getTime() !== d.getTime()) {
           return shifted

@@ -10,7 +10,9 @@
           <div class="product-card__seller product-card__seller-table">
             <p class="product-card__seller-name">
               <span class="product-card__seller-org">{{ offer.org.name }} </span>
-              <span class="product-card__seller-store"> г. {{ offer.store_city }}</span>
+              <span class="product-card__seller-store">
+                {{ offer.delivery_day ? 'г.' + offer.store_city : offer.delivery }}</span
+              >
             </p>
           </div>
           <div class="product-card__seller" @click="this.seller_info = true">
@@ -233,7 +235,7 @@
                     <p class="product-card__stat-description">
                       {{
                         activeConflict.delivery_type_opt == 1
-                          ? 'Транспортная компания'
+                          ? 'ТK'
                           : activeConflict.delivery_type_opt == 0
                             ? 'Самовывоз'
                             : 'Доставка МС'

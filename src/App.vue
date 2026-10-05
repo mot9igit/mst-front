@@ -1,10 +1,14 @@
 <template>
+  <ConfirmDialog />
   <router-view></router-view>
 </template>
 
 <script>
+import ConfirmDialog from 'primevue/confirmdialog'
+
 export default {
   name: 'MST',
+  components: { ConfirmDialog },
   created() {
     document.title = 'МС: Управление Продажами и Закупками'
   },

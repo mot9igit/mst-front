@@ -224,7 +224,7 @@
                     <p class="product-card__stat-description">
                       {{
                         activeConflict.delivery_type_opt == 1
-                          ? 'Транспортная компания'
+                          ? 'ТK'
                           : activeConflict.delivery_type_opt == 0
                             ? 'Самовывоз'
                             : 'Доставка МС'

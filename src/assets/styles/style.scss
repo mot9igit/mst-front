@@ -851,7 +851,7 @@ aside button {
 
 .order-card__orderinfo-line1 {
   display: grid;
-  grid-template-columns: 139fr 149fr 400fr 400fr 150fr 150fr 134fr;
+  grid-template-columns: 137fr 158fr 319fr 319fr 150fr 150fr 150fr 147fr;
   grid-template-rows: 100%;
   grid-row-gap: 24px;
   align-items: start;
@@ -927,7 +927,8 @@ aside button {
   .order-card__orderinfo-line1 .order-card__orderinfo-grid:first-child {
     padding-left: 0px !important;
   }
-  .order-card__orderinfo-line1 .order-card__orderinfo-grid:nth-child(-n) {
+  .order-card__orderinfo-line1 .order-card__orderinfo-grid:nth-child(-n),
+  .order-card__orderinfo-line1 .order-card__orderinfo-grid:nth-last-child(1) {
     display: none;
   }
   .order-card__orderinfo-line1.order-card__orderinfo {
@@ -941,9 +942,12 @@ aside button {
   }
   .order-card__orderinfo-line2.order-card__orderinfo {
     display: grid;
-    grid-template-columns: 178fr 189fr 905fr;
+    grid-template-columns: 170fr 178fr 189fr 705fr;
     grid-template-rows: auto;
     grid-row-gap: 0px;
+  }
+  .order-card__orderinfo-line1 .order-card__orderinfo-grid:nth-child(8) {
+    display: none;
   }
   .order-card__orderinfo-line1 .order-card__orderinfo-grid:nth-child(6) {
     display: none;
@@ -955,6 +959,9 @@ aside button {
     display: inline-grid;
     border-left: none;
     padding-left: 0 !important;
+  }
+  .order-card__orderinfo-line2 .order-card__orderinfo-grid:nth-child(4) {
+    display: inline-grid;
   }
   .order-card__orderinfo-line2 .order-card__orderinfo-grid:nth-child(3) {
     display: inline-grid;
@@ -1044,7 +1051,7 @@ aside button {
   }
   .order-card__orderinfo-line2.order-card__orderinfo {
     display: grid;
-    grid-template-columns: 162fr 180fr 666fr;
+    grid-template-columns: 162fr 162fr 180fr 666fr;
     grid-template-rows: auto;
     grid-row-gap: 0px;
   }
@@ -1052,6 +1059,9 @@ aside button {
     display: none;
   }
   .order-card__orderinfo-line1 .order-card__orderinfo-grid:nth-child(7) {
+    display: none;
+  }
+  .order-card__orderinfo-line1 .order-card__orderinfo-grid:nth-child(8) {
     display: none;
   }
   .order-card__orderinfo-line2 .order-card__orderinfo-grid:nth-child(2) {
@@ -1168,7 +1178,7 @@ aside button {
   }
   .order-card__orderinfo-line2.order-card__orderinfo {
     display: grid;
-    grid-template-columns: 190fr 305fr 515fr;
+    grid-template-columns: 190fr 190fr 305fr 515fr;
     grid-template-rows: auto auto;
     grid-row-gap: 24px;
   }
@@ -4148,11 +4158,14 @@ aside button {
   flex-grow: 1;
   min-width: 425px;
   max-width: 425px;
+  .product-card__stat {
+    width: min-content;
+  }
   .product-card__stat:first-child {
     position: relative;
     padding-right: 8px;
     .product-card__stat-content {
-      white-space: nowrap;
+      white-space: normal;
     }
     .product-card__stat-description,
     .product-card__stat-icon {
@@ -4163,12 +4176,10 @@ aside button {
       font-size: 14px;
       line-height: 18px;
       font-weight: 400;
+      text-align: center;
     }
   }
   .product-card__stat:last-child {
-    .product-card__stat-icon {
-      display: none;
-    }
     .product-card__stat-name {
       color: #282828;
       font-size: 14px;
@@ -4176,7 +4187,24 @@ aside button {
       font-weight: 400;
     }
     .product-card__stat-content {
-      white-space: nowrap;
+      white-space: normal;
+    }
+    .product-card__stat-name {
+      display: none;
+    }
+    .product-card__stat-description {
+      text-align: center;
+    }
+  }
+  .product-card__stat:nth-child(3) {
+    position: relative;
+    padding-right: 8px;
+
+    .product-card__stat-content {
+      white-space: normal;
+    }
+    .product-card__stat-name {
+      text-align: center;
     }
   }
   .product-card__stat:nth-child(2) {
@@ -4184,10 +4212,13 @@ aside button {
     padding-right: 8px;
 
     .product-card__stat-content {
-      white-space: nowrap;
+      white-space: normal;
     }
     .product-card__stat-name {
       display: none;
+    }
+    .product-card__stat-description {
+      text-align: center;
     }
   }
   .product-card__stat-description {

@@ -458,5 +458,6 @@ export default {
   font-weight: 600;
   border-radius: 41px;
   display: inline-block;
+  color: #282828;
 }
 </style>

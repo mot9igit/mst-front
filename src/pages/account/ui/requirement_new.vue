@@ -1,7 +1,5 @@
 <template>
   <div class="reqirements">
-    <ConfirmDialog />
-    <Toast />
     <teleport to="body">
       <customModal v-model="modals.requirements" @cancel="cancel" class="need-modal">
         <template v-slot:title>Потребности</template>
@@ -229,8 +227,6 @@ import DropZone from 'dropzone-vue'
 import customModal from '@/shared/ui/Modal.vue'
 import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
-import ConfirmDialog from 'primevue/confirmdialog'
-import Toast from 'primevue/toast'
 import SelectInput from 'primevue/select'
 import Checkbox from 'primevue/checkbox'
 import { mapActions, mapGetters } from 'vuex'
@@ -241,8 +237,6 @@ export default {
     Loader,
     customModal,
     BaseTable,
-    ConfirmDialog,
-    Toast,
     DropZone,
     SelectInput,
     Checkbox,

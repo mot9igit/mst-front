@@ -267,10 +267,15 @@ export default {
       const response = await api.wholesale.downloadOrders(data)
       return response
     },
-    async getShippings({ commit }) {
+    async getShippings({ commit }, { filter, sort, page, perpage, filtersdata } = {}) {
       const data = {
         action: 'set',
         id: router.currentRoute._value.params.id,
+        filter: filter,
+        sort: sort,
+        page: page,
+        perpage: perpage,
+        filtersdata: filtersdata,
       }
       const response = await api.wholesale.getShippings(data)
       if (response) {
@@ -286,6 +291,15 @@ export default {
       }
       if (shipment_id) {
         data.shipment_id = shipment_id
+      }
+      const response = await api.wholesale.saveShipping(data)
+      return response
+    },
+    async deleteShipping(store, { shipping_id }) {
+      const data = {
+        action: 'delete',
+        id: router.currentRoute._value.params.id,
+        shipping_id: shipping_id,
       }
       const response = await api.wholesale.saveShipping(data)
       return response
@@ -398,6 +412,12 @@ export default {
     },
     SET_SHIPPINGS: (state, data) => {
       state.shippings = data.data
+    },
+    UNSET_SHIPPINGS: (state) => {
+      state.shippings = {
+        shipment: [],
+        total: -1,
+      }
     },
   },
   getters: {

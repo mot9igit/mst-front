@@ -3,7 +3,6 @@
     <!-- Верхушка страницы -->
     <div class="d-top">
       <breadcrumbs />
-      <Toast />
     </div>
 
     <!-- Шапка страницы -->
@@ -23,8 +22,8 @@
         <span>Добавить отгрузку</span>
       </button>
     </div>
-    <Loader v-if="loading" />
-    <div class="shippings__content" v-else>
+    <Loader v-if="loading || actionLoading" />
+    <div class="shippings__content">
       <BaseTable
         :items_data="shippings.shipment"
         :total="shippings.total"
@@ -60,13 +59,12 @@ import breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import { mapActions, mapGetters } from 'vuex'
 import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
-import Toast from 'primevue/toast'
 import customModal from '@/shared/ui/Modal.vue'
 import ShipmentWindow from './ui/shipmentWindow.vue'
 
 export default {
   name: 'WholesaleShipments',
-  components: { breadcrumbs, Loader, BaseTable, Toast, customModal, ShipmentWindow },
+  components: { breadcrumbs, Loader, BaseTable, customModal, ShipmentWindow },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -80,7 +78,9 @@ export default {
   data() {
     return {
       loading: true,
+      actionLoading: false,
       page: 1,
+      request_filter: null,
       modalShipping: false,
       modalShippingData: {},
       mode: 0,
@@ -90,6 +90,7 @@ export default {
           placeholder: 'Выберите диапазон дат',
           value: null,
           type: 'datepicker',
+          maxDate: null,
         },
         name: {
           name: 'Поиск',
@@ -158,15 +159,58 @@ export default {
     }),
   },
   mounted() {
-    this.getShippings().then(() => {
+    this.getShippings({
+      page: this.page,
+      perpage: this.pagination_items_per_page,
+    }).then(() => {
       this.loading = false
+      this.request_filter = {
+        page: this.page,
+        perpage: this.pagination_items_per_page,
+      }
     })
   },
   methods: {
     ...mapActions({
       getShippings: 'wholesale/getShippings',
+      unsetShippings: 'wholesale/unsetShippings',
       saveShipping: 'wholesale/saveShipping',
+      deleteShipping: 'wholesale/deleteShipping',
     }),
+    filter(data) {
+      this.loading = true
+      this.unsetShippings()
+      this.page = 1
+      const requestData = this.normalizeFilters(data)
+      this.getShippings(requestData).then(() => {
+        this.loading = false
+        this.request_filter = requestData
+      })
+    },
+    paginate(data) {
+      this.loading = true
+      this.unsetShippings()
+      this.page = data.page
+      const requestData = this.normalizeFilters(data)
+      this.getShippings(requestData).then(() => {
+        this.loading = false
+        this.request_filter = requestData
+      })
+    },
+    normalizeFilters(data) {
+      if (!data || !data.filtersdata || !data.filtersdata.dates) {
+        return data
+      }
+      return {
+        ...data,
+        filtersdata: {
+          ...data.filtersdata,
+          dates: data.filtersdata.dates.map((d) =>
+            d ? new Date(d.getTime() - d.getTimezoneOffset() * 60000) : d,
+          ),
+        },
+      }
+    },
     showShipping(data) {
       this.mode = 0
       this.modalShipping = true
@@ -182,7 +226,7 @@ export default {
       this.modalShipping = true
       this.modalShippingData = {}
     },
-    editShip(data) {
+    async editShip(data) {
       const dateTime = data?.dateTime
       const date = dateTime
         ? new Date(dateTime.getTime() - dateTime.getTimezoneOffset() * 60000)
@@ -195,29 +239,87 @@ export default {
 
       const shipment_id = this.mode === 1 ? this.modalShippingData?.id : null
 
-      this.saveShipping({ shipment_id, form })
-        .then(() => {
+      this.actionLoading = true
+      try {
+        const response = await this.saveShipping({ shipment_id, form })
+        if (response && response !== 'technical error') {
           this.modalShipping = false
           this.modalShippingData = {}
-          this.getShippings()
+          await this.getShippings(this.request_filter)
           this.$toast.add({
             severity: 'success',
             summary: 'Успешно',
             detail: 'Отгрузка сохранена',
             life: 3000,
           })
-        })
-        .catch(() => {
+        } else {
           this.$toast.add({
             severity: 'error',
             summary: 'Ошибка',
             detail: 'Не удалось сохранить отгрузку',
             life: 3000,
           })
+        }
+      } catch (e) {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не удалось сохранить отгрузку',
+          life: 3000,
         })
+      } finally {
+        this.actionLoading = false
+      }
     },
-    delShipping(data) {
-      console.log(data)
+    async delShipping(data) {
+      const shipping_id = data?.id
+      if (!shipping_id) {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не удалось определить ID отгрузки',
+          life: 3000,
+        })
+        return
+      }
+      this.$confirm.require({
+        message: 'Вы действительно хотите удалить отгрузку №' + shipping_id + '?',
+        header: 'Удаление отгрузки',
+        icon: 'pi pi-exclamation-triangle',
+        accept: async () => {
+          this.actionLoading = true
+          try {
+            const response = await this.deleteShipping({ shipping_id })
+            if (response && response !== 'technical error') {
+              this.modalShipping = false
+              this.modalShippingData = {}
+              await this.getShippings(this.request_filter)
+              this.$toast.add({
+                severity: 'success',
+                summary: 'Успешно',
+                detail: 'Отгрузка удалена',
+                life: 3000,
+              })
+            } else {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: 'Не удалось удалить отгрузку',
+                life: 3000,
+              })
+            }
+          } catch (e) {
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: 'Не удалось удалить отгрузку',
+              life: 3000,
+            })
+          } finally {
+            this.actionLoading = false
+          }
+        },
+      })
     },
   },
 }

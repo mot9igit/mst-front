@@ -456,6 +456,13 @@
                               warehouse?.cart_data?.date_delivery +
                               ')'
                             : warehouse?.cart_data?.days_delivery
+                        }},
+                        {{
+                          warehouse?.cart_data?.delivery_type_opt == 0
+                            ? 'Самовывоз'
+                            : warehouse?.cart_data?.delivery_type_opt == 2
+                              ? 'Доставка МС'
+                              : 'ТК'
                         }}
                       </p>
                     </div>

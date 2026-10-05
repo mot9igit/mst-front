@@ -110,7 +110,18 @@
             }}
           </div>
         </div>
-
+        <div class="order-card__orderinfo-grid">
+          <div class="order-card__orderinfo-grid-lable">Тип доставки</div>
+          <div class="order-card__orderinfo-grid-text">
+            {{
+              this.order?.delivery_type_opt == '0'
+                ? 'Самовывоз'
+                : this.order?.delivery_type_opt == '2'
+                  ? 'Доставка МС'
+                  : 'Транспортной компанией'
+            }}
+          </div>
+        </div>
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Оплата доставки</div>
           <div class="order-card__orderinfo-grid-text">
@@ -144,7 +155,18 @@
             }}
           </div>
         </div>
-
+        <div class="order-card__orderinfo-grid">
+          <div class="order-card__orderinfo-grid-lable">Тип доставки</div>
+          <div class="order-card__orderinfo-grid-text">
+            {{
+              this.order?.delivery_type_opt == '0'
+                ? 'Самовывоз'
+                : this.order?.delivery_type_opt == '2'
+                  ? 'Доставка МС'
+                  : 'Транспортной компанией'
+            }}
+          </div>
+        </div>
         <div class="order-card__orderinfo-grid">
           <div class="order-card__orderinfo-grid-lable">Оплата доставки</div>
           <div class="order-card__orderinfo-grid-text">{{ this.order?.payer }}</div>
