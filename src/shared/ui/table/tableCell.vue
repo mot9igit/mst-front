@@ -360,6 +360,18 @@
         @update:modelValue="editValue(numbers[cell_key], cell_key)"
       />
     </div>
+    <div class="cell_value" v-if="cell_data.type == 'stores'" :class="cell_data.class">
+      <div class="stores-cell">
+        <template v-for="(store, index) in storesList" :key="index">
+          <div v-if="index > 0" class="stores-cell__divider"></div>
+          <div class="stores-cell__row">
+            <span class="stores-cell__name">{{ storeName(store) }}</span
+            ><span v-if="storeAddress(store)">, {{ storeAddress(store) }}</span>
+          </div>
+        </template>
+        <span v-if="!storesList.length" class="stores-cell__empty">-</span>
+      </div>
+    </div>
   </td>
 </template>
 
@@ -469,8 +481,24 @@ export default {
       }
       return linkparams
     },
+    storesList() {
+      const table = this.value?.table
+      if (!table) return []
+      if (Array.isArray(table)) return table.filter((store) => !!store)
+      if (typeof table === 'object') return Object.values(table).filter((store) => !!store)
+      return []
+    },
   },
   methods: {
+    storeName(store) {
+      if (!store) return ''
+      if (typeof store === 'string') return store
+      return store.org_name || store.name_short || store.name || ''
+    },
+    storeAddress(store) {
+      if (!store || typeof store === 'string') return ''
+      return store.address || store.address_short || ''
+    },
     toggleSelection(id) {
       console.log(id)
       if (this.selectedItems.includes(id)) {
@@ -833,5 +861,27 @@ export default {
   flex-direction: column;
   align-items: start;
   width: 472px;
+}
+.stores-cell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.stores-cell__row {
+  font-size: 14px;
+  line-height: 18px;
+  color: #282828;
+}
+.stores-cell__name {
+  font-weight: 600;
+}
+.stores-cell__divider {
+  height: 1px;
+  width: 100%;
+  background: #75757575;
+  margin: 8px 0;
+}
+.stores-cell__empty {
+  color: #757575;
 }
 </style>

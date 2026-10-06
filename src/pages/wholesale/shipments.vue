@@ -104,11 +104,10 @@ export default {
           type: 'text',
           class: 'cell_centeralign',
         },
-        store: {
+        stores: {
           label: 'Склад',
-          type: 'text',
+          type: 'stores',
           class: 'cell_centeralign',
-          //items: ['seller_name', 'seller_inn', 'seller_address', 'owner_label'],
         },
         date: {
           label: 'Дата',
@@ -389,6 +388,21 @@ export default {
     }
     .cell--status {
       color: #282828;
+    }
+    .form_input_group.d-search {
+      &::after {
+        content: '\e003';
+        font-family: 'Iconly' !important;
+        position: absolute;
+        font-size: 16.8px;
+        top: calc(50% - 8.4px);
+        right: 20px;
+        color: #757575;
+        pointer-events: none;
+      }
+      .p-inputtext {
+        padding-right: 44px;
+      }
     }
   }
 }
