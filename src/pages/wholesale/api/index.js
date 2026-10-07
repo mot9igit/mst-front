@@ -202,25 +202,45 @@ export default function (instance) {
         })
       return data
     },
-  saveShipping(payload) {
-    const data = instance
-      .post('front_getshipping/', payload)
-      .then(function (res) {
-        return res
-      })
-      .catch(function (err) {
-        // TODO: подключить компонент обработки ошибок
-        if (err.response) {
-          if (err.response.status == 403) {
-            localStorage.removeItem('user')
-            router.push({ name: 'home' })
+    saveShipping(payload) {
+      const data = instance
+        .post('front_getshipping/', payload)
+        .then(function (res) {
+          return res
+        })
+        .catch(function (err) {
+          // TODO: подключить компонент обработки ошибок
+          if (err.response) {
+            if (err.response.status == 403) {
+              localStorage.removeItem('user')
+              router.push({ name: 'home' })
+            }
+            throw err
+          } else {
+            throw new Error('technical error')
           }
-          throw err
-        } else {
-          throw new Error('technical error')
-        }
-      })
-    return data
-  },
-}
+        })
+      return data
+    },
+    changeOrderDate(payload) {
+      const data = instance
+        .post('front_getshipping/', payload)
+        .then(function (res) {
+          return res
+        })
+        .catch(function (err) {
+          // TODO: подключить компонент обработки ошибок
+          if (err.response) {
+            if (err.response.status == 403) {
+              localStorage.removeItem('user')
+              router.push({ name: 'home' })
+            }
+            throw err
+          } else {
+            throw new Error('technical error')
+          }
+        })
+      return data
+    },
+  }
 }

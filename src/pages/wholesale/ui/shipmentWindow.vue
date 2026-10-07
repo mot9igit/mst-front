@@ -52,89 +52,6 @@
       </div>
     </div>
 
-    <!-- Блок 2: Склады отгрузки и заказы -->
-    <div
-      v-if="mode === 0"
-      ref="storesBlock"
-      class="shipment-window__block shipment-window__block--stores"
-    >
-      <div class="shipment-window__stores-title">Маршрут</div>
-
-      <div v-if="!parents.length" class="shipment-window__value">Нет данных</div>
-
-      <DataTable
-        v-else
-        ref="parentTable"
-        :value="parents"
-        data-key="id"
-        :show-headers="false"
-        class="shipment-window__table shipment-window__table--parent"
-        @row-reorder="onParentReorder"
-      >
-        <Column>
-          <template #body="{ data }">
-            <div class="shipment-window__drag" data-pc-section="reorderablerowhandle">
-              <div class="shipment-window__store-badge">Отправитель</div>
-              <div class="shipment-window__store-name">{{ data.name_short || data.name }}</div>
-              <div class="shipment-window__store-address">Дата отгрузки: {{ ship?.date }}</div>
-              <div class="shipment-window__store-address">
-                {{ data.address_short || data.address || '-' }}
-              </div>
-            </div>
-
-            <DataTable
-              :value="data.stores"
-              data-key="id"
-              :show-headers="false"
-              class="shipment-window__table shipment-window__table--child"
-              @row-reorder="onChildReorder($event, data)"
-            >
-              <template #empty>
-                <span class="shipment-window__store-address">Склады-получатели не указаны</span>
-              </template>
-              <Column>
-                <template #body="{ data: store }">
-                  <div class="shipment-window__drag" data-pc-section="reorderablerowhandle">
-                    <div
-                      class="shipment-window__store-badge shipment-window__store-badge--recipient"
-                    >
-                      Получатель
-                    </div>
-                    <div class="shipment-window__store-name">
-                      {{ store.name_short || store.name }}
-                    </div>
-                    <div class="shipment-window__store-address">
-                      Дата отгрузки: {{ ship?.date }}
-                    </div>
-                    <div class="shipment-window__store-address">
-                      {{}} {{ store.address_short || store.address || '-' }}
-                    </div>
-                  </div>
-
-                  <template v-if="store.orders?.length">
-                    <div class="shipment-window__orders-title">Заказы</div>
-                    <div class="shipment-window__orders">
-                      <div
-                        v-for="order in store.orders"
-                        :key="order.id"
-                        class="shipment-window__order"
-                      >
-                        <span class="shipment-window__order-id">№{{ order.id }}</span>
-                        <span class="shipment-window__order-status">{{ order.status ?? '—' }}</span>
-                      </div>
-                    </div>
-                  </template>
-                  <span v-else class="shipment-window__store-address">Заказов нет</span>
-                </template>
-              </Column>
-            </DataTable>
-          </template>
-        </Column>
-      </DataTable>
-
-      <div ref="line" class="shipment-window__line"></div>
-    </div>
-
     <!-- Редактирование/Создание -->
     <div v-if="mode !== 0" class="shipment-window__block shipment-window__block--edit">
       <div class="shipment-window__form">
@@ -194,6 +111,106 @@
       </div>
     </div>
 
+    <!-- Блок 2: Склады отгрузки и заказы -->
+    <div
+      v-if="mode !== 2"
+      ref="storesBlock"
+      class="shipment-window__block shipment-window__block--stores"
+    >
+      <div class="shipment-window__stores-title">Маршрут</div>
+
+      <div v-if="!parents.length" class="shipment-window__value">Нет данных</div>
+
+      <DataTable
+        v-else
+        ref="parentTable"
+        :value="parents"
+        data-key="id"
+        :show-headers="false"
+        class="shipment-window__table shipment-window__table--parent"
+        :reorderable-rows="mode !== 0"
+        @row-reorder="onParentReorder"
+      >
+        <Column>
+          <template #body="{ data }">
+            <div class="shipment-window__drag" data-pc-section="reorderablerowhandle">
+              <div class="shipment-window__store-badge">Отправитель</div>
+              <div class="shipment-window__store-name">{{ data.name_short || data.name }}</div>
+              <div class="shipment-window__store-address">Дата отгрузки: {{ ship?.date }}</div>
+              <div class="shipment-window__store-address">
+                {{ data.address_short || data.address || '-' }}
+              </div>
+            </div>
+
+            <DataTable
+              :value="data.stores"
+              data-key="id"
+              :show-headers="false"
+              class="shipment-window__table shipment-window__table--child"
+              :reorderable-rows="mode !== 0"
+              @row-reorder="onChildReorder($event, data)"
+            >
+              <template #empty>
+                <span class="shipment-window__store-address">Склады-получатели не указаны</span>
+              </template>
+              <Column>
+                <template #body="{ data: store }">
+                  <div class="shipment-window__drag" data-pc-section="reorderablerowhandle">
+                    <div
+                      class="shipment-window__store-badge shipment-window__store-badge--recipient"
+                    >
+                      Получатель
+                    </div>
+                    <div class="shipment-window__store-name">
+                      {{ store.name_short || store.name }}
+                    </div>
+                    <div class="shipment-window__store-address">
+                      Дата отгрузки: {{ ship?.date }}
+                    </div>
+                    <div class="shipment-window__store-address">
+                      {{}} {{ store.address_short || store.address || '-' }}
+                    </div>
+                  </div>
+
+                  <template v-if="store.orders?.length">
+                    <div class="shipment-window__orders-title">Заказы</div>
+                    <div class="shipment-window__orders">
+                      <div
+                        v-for="order in store.orders"
+                        :key="order.id"
+                        class="shipment-window__order"
+                        :style="orderStatusBorder(order)"
+                      >
+                        <span class="shipment-window__order-id">№{{ order.id }}</span>
+                        <span
+                          v-if="order.order_status"
+                          class="shipment-window__order-status"
+                          :style="orderStatusStyle(order)"
+                        >
+                          {{ order.order_status.name ?? '—' }}
+                        </span>
+                        <span v-else class="shipment-window__order-status">
+                          {{ order.status ?? '—' }}
+                        </span>
+                        <i
+                          v-if="mode !== 0"
+                          class="d-icon-refresh shipment-window__order-change"
+                          @click.stop="handleChangeOrderDate(order)"
+                        ></i>
+                      </div>
+                    </div>
+                  </template>
+                  <span v-else class="shipment-window__store-address">Заказов нет</span>
+                </template>
+              </Column>
+            </DataTable>
+          </template>
+        </Column>
+      </DataTable>
+
+      <div ref="line" class="shipment-window__line"></div>
+    </div>
+
     <!-- Кнопки -->
     <div class="collection__modal-buttons">
       <button
@@ -233,7 +250,7 @@ export default {
     Column,
     TreeSelect,
   },
-  emits: ['editMode', 'deleteShip', 'cancel', 'submit'],
+  emits: ['editMode', 'deleteShip', 'cancel', 'submit', 'changeOrderDate'],
   props: {
     ship: {
       type: Object,
@@ -319,9 +336,11 @@ export default {
   },
   watch: {
     ship: {
-      handler() {
-        this.initForm()
+      handler(val, old) {
         this.initTable()
+        if ((val?.id ?? null) !== (old?.id ?? null)) {
+          this.initForm()
+        }
       },
       deep: true,
     },
@@ -369,15 +388,38 @@ export default {
       if (!root) return
       const roots = [root, ...root.querySelectorAll('.shipment-window__table--child')]
       roots.forEach((el) => {
-        if (this.dragGuards.has(el)) return
-        el.addEventListener('mousedown', (event) => {
-          const tr = event.target.closest('tr')
-          if (tr && el.contains(tr)) tr.draggable = true
-        })
-        if (el !== root) {
-          el.addEventListener('dragstart', (event) => event.stopPropagation())
+        if (!this.dragGuards.has(el)) {
+          el.addEventListener('mousedown', (event) => {
+            if (this.mode === 0) {
+              const tr = event.target.closest('tr')
+              if (tr && el.contains(tr)) tr.draggable = false
+              return
+            }
+            const tr = event.target.closest('tr')
+            if (tr && el.contains(tr)) tr.draggable = true
+          })
+          if (el !== root) {
+            el.addEventListener('dragstart', (event) => {
+              event.stopPropagation()
+              this.childDragging = true
+              const row = event.target?.closest ? event.target.closest('tr') : null
+              if (row) row.draggable = false
+              const parentTr = el.closest('tr')
+              if (parentTr) parentTr.draggable = false
+            })
+            el.addEventListener('dragend', () => {
+              this.childDragging = false
+              root.querySelectorAll('tr').forEach((tr) => {
+                tr.draggable = this.mode !== 0
+              })
+            })
+          }
+          this.dragGuards.add(el)
         }
-        this.dragGuards.add(el)
+        if (this.childDragging) return
+        el.querySelectorAll('tr').forEach((tr) => {
+          tr.draggable = this.mode !== 0
+        })
       })
     },
     updateLine() {
@@ -422,6 +464,28 @@ export default {
       const cost = Number(value)
       return Number.isFinite(cost) ? cost.toFixed(2) + ' ₽' : '—'
     },
+    hexColor(value) {
+      if (!value) return ''
+      const color = String(value).trim()
+      return color.startsWith('#') ? color : '#' + color
+    },
+    orderStatusStyle(order) {
+      const status = order?.order_status
+      if (!status) return {}
+      const style = {}
+      const background = this.hexColor(status.color)
+      const text = this.hexColor(status.color_text)
+      if (background) {
+        style.backgroundColor = background
+        style.borderColor = background
+      }
+      if (text) style.color = text
+      return style
+    },
+    orderStatusBorder(order) {
+      const border = this.hexColor(order?.order_status?.color)
+      return border ? { borderColor: border } : {}
+    },
     initForm() {
       if (this.mode === 0) return
       // Для редактирования/создания
@@ -460,10 +524,29 @@ export default {
       this.resetForm()
       this.$emit('cancel')
     },
+    buildTableOrder() {
+      const top = (this.parents || []).map((p) => Number(p.id)).filter((id) => !Number.isNaN(id))
+
+      const inner = {}
+      ;(this.parents || []).forEach((p) => {
+        const pid = p.id
+        const stores = p.stores || []
+        const list = stores.map((s) => Number(s.id)).filter((id) => !Number.isNaN(id))
+        inner[pid] = list
+      })
+      return { top, inner }
+    },
+    handleChangeOrderDate(order) {
+      this.$emit('changeOrderDate', order)
+    },
     handleSubmit() {
+      if (this.mode === 0) {
+        this.$emit('cancel')
+        return
+      }
       this.v$.$touch()
       if (this.v$.$error) return
-      this.$emit('submit', { ...this.form })
+      this.$emit('submit', { ...this.form, table_order: this.buildTableOrder() })
     },
     resetForm() {
       this.form.dateTime = null
@@ -594,11 +677,19 @@ export default {
       }
     }
 
+    .p-datatable-tbody > tr {
+      background: none;
+      background-color: transparent;
+    }
+
     .p-datatable-tbody > tr > td {
       vertical-align: top;
       padding: 12px;
       overflow: visible;
       white-space: normal;
+      border: none;
+      background: none;
+      background-color: transparent;
     }
 
     &--parent {
@@ -607,14 +698,6 @@ export default {
 
     &--child {
       margin: 12px -12px -12px;
-      .p-datatable-tbody > tr {
-        background: none;
-        background-color: transparent;
-      }
-      .p-datatable-tbody > tr > td {
-        background: none;
-        background-color: transparent;
-      }
     }
   }
 
@@ -691,7 +774,7 @@ export default {
     color: #282828;
     border: 1px solid #75757575;
     border-radius: 30px;
-    padding: 8px 12px;
+    padding: 7px 12px;
   }
 
   &__order-id {
@@ -704,8 +787,19 @@ export default {
     border: 1px solid #282828;
     border-radius: 20px;
     text-align: center;
+    font-weight: 500;
+    min-height: 24px;
     font-size: 12px;
     line-height: 15px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__order-change {
+    cursor: pointer;
+    font-size: 17px;
+    color: #282828;
+    -webkit-text-stroke: 0.4px currentColor;
   }
 
   &__field {

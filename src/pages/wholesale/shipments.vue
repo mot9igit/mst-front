@@ -42,6 +42,7 @@
     </div>
     <teleport to="body">
       <customModal v-model="this.modalShipping" class="shippings__modal">
+        <Loader v-if="actionLoading" />
         <ShipmentWindow
           :ship="modalShippingData"
           :mode="mode"
@@ -49,6 +50,20 @@
           @deleteShip="delShipping"
           @cancel="modalShipping = false"
           @submit="editShip"
+          @changeOrderDate="onChangeOrderDate"
+        />
+      </customModal>
+      <customModal
+        v-model="this.modalOrderDate"
+        class="shippings__modal shippings__order-date-modal"
+      >
+        <Loader v-if="actionLoading" />
+        <ChangeOrderDateWindow
+          :order="orderDateOrder"
+          :dates="orderDateDates"
+          :current-date="modalShippingData?.date"
+          @cancel="modalOrderDate = false"
+          @submit="submitOrderDate"
         />
       </customModal>
     </teleport>
@@ -61,10 +76,32 @@ import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import ShipmentWindow from './ui/shipmentWindow.vue'
+import ChangeOrderDateWindow from './ui/changeOrderDateWindow.vue'
+
+function parseShipmentDate(value) {
+  if (!value) return null
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? null : value
+  }
+  const s = String(value).trim()
+  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/)
+  if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]))
+  m = s.match(/^(\d{2})\.(\d{2})\.(\d{4})/)
+  if (m) return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]))
+  const d = new Date(s)
+  return Number.isNaN(d.getTime()) ? null : d
+}
 
 export default {
   name: 'WholesaleShipments',
-  components: { breadcrumbs, Loader, BaseTable, customModal, ShipmentWindow },
+  components: {
+    breadcrumbs,
+    Loader,
+    BaseTable,
+    customModal,
+    ShipmentWindow,
+    ChangeOrderDateWindow,
+  },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -83,6 +120,8 @@ export default {
       request_filter: null,
       modalShipping: false,
       modalShippingData: {},
+      modalOrderDate: false,
+      orderDateOrder: {},
       mode: 0,
       filters: {
         dates: {
@@ -156,6 +195,33 @@ export default {
     ...mapGetters({
       shippings: 'wholesale/shippings',
     }),
+    orderDateDates() {
+      const rows = this.shippings?.shipment || []
+      const current = this.modalShippingData || {}
+      const city = current.city_id
+      const seen = new Set()
+      const result = []
+      rows.forEach((row) => {
+        if (!row) return
+        if (
+          row.id !== current.id &&
+          city !== null &&
+          city !== undefined &&
+          row.city_id !== null &&
+          row.city_id !== undefined &&
+          String(row.city_id) !== String(city)
+        ) {
+          return
+        }
+        const d = parseShipmentDate(row.date)
+        if (!d) return
+        const key = d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate()
+        if (seen.has(key)) return
+        seen.add(key)
+        result.push(d)
+      })
+      return result.sort((a, b) => a - b)
+    },
   },
   mounted() {
     this.getShippings({
@@ -175,6 +241,7 @@ export default {
       unsetShippings: 'wholesale/unsetShippings',
       saveShipping: 'wholesale/saveShipping',
       deleteShipping: 'wholesale/deleteShipping',
+      changeOrderDate: 'wholesale/changeOrderDate',
     }),
     filter(data) {
       this.loading = true
@@ -231,16 +298,20 @@ export default {
         ? new Date(dateTime.getTime() - dateTime.getTimezoneOffset() * 60000)
         : null
 
-      const form = {
-        date: date,
-        location: data?.location ?? null,
-      }
+       const form = {
+         date: date,
+         location: data?.location ?? null,
+       }
 
-      const shipment_id = this.mode === 1 ? this.modalShippingData?.id : null
+       if (data?.table_order) {
+         form.table_order = data.table_order
+       }
 
-      this.actionLoading = true
-      try {
-        const response = await this.saveShipping({ shipment_id, form })
+       const shipment_id = this.mode === 1 ? this.modalShippingData?.id : null
+
+       this.actionLoading = true
+       try {
+         const response = await this.saveShipping({ shipment_id, form })
         if (response && response !== 'technical error') {
           this.modalShipping = false
           this.modalShippingData = {}
@@ -264,6 +335,118 @@ export default {
           severity: 'error',
           summary: 'Ошибка',
           detail: 'Не удалось сохранить отгрузку',
+          life: 3000,
+        })
+      } finally {
+        this.actionLoading = false
+      }
+    },
+    onChangeOrderDate(order) {
+      this.orderDateOrder = order || {}
+      this.modalOrderDate = true
+    },
+    async submitOrderDate(date) {
+      const order_id = this.orderDateOrder?.id
+      const from_shipment_id = this.modalShippingData?.id
+      if (!order_id || !from_shipment_id) {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не удалось определить заказ или отгрузку',
+          life: 3000,
+        })
+        return
+      }
+      const rows = this.shippings?.shipment || []
+      const current = this.modalShippingData
+      const sameDay = (value) => {
+        const d = parseShipmentDate(value)
+        return (
+          !!d &&
+          d.getFullYear() === date.getFullYear() &&
+          d.getMonth() === date.getMonth() &&
+          d.getDate() === date.getDate()
+        )
+      }
+      const isSameCity = (row) => {
+        if (
+          current.city_id !== null &&
+          current.city_id !== undefined &&
+          row.city_id !== null &&
+          row.city_id !== undefined &&
+          String(row.city_id) !== String(current.city_id)
+        ) {
+          return false
+        }
+        return true
+      }
+      const target =
+        rows.find(
+          (row) =>
+            row &&
+            row.id !== from_shipment_id &&
+            isSameCity(row) &&
+            sameDay(row.date),
+        ) ||
+        rows.find(
+          (row) =>
+            row && row.id === from_shipment_id && sameDay(row.date),
+        ) || null
+      const dateString =
+        date.getFullYear() +
+        '-' +
+        String(date.getMonth() + 1).padStart(2, '0') +
+        '-' +
+        String(date.getDate()).padStart(2, '0')
+
+      if (target && String(target.id) === String(from_shipment_id)) {
+        this.modalOrderDate = false
+        this.$toast.add({
+          severity: 'info',
+          summary: 'Информация',
+          detail:
+            'Дата отправления заказа №' + order_id + ' уже указана',
+          life: 3000,
+        })
+        return
+      }
+
+      this.actionLoading = true
+      try {
+        const response = await this.changeOrderDate({
+          order_id,
+          from_shipment_id,
+          to_shipment_id: target ? target.id : null,
+          date: dateString,
+        })
+        if (response && response !== 'technical error') {
+          this.modalOrderDate = false
+          await this.getShippings(this.request_filter)
+          const updated = (this.shippings?.shipment || []).find(
+            (row) => row && row.id === from_shipment_id,
+          )
+          if (updated) {
+            this.modalShippingData = updated
+          }
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Успешно',
+            detail: 'Дата отправления заказа №' + order_id + ' изменена',
+            life: 3000,
+          })
+        } else {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось изменить дату отправления заказа',
+            life: 3000,
+          })
+        }
+      } catch {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не удалось изменить дату отправления заказа',
           life: 3000,
         })
       } finally {
@@ -324,6 +507,9 @@ export default {
 }
 </script>
 <style lang="scss">
+.shippings__order-date-modal .modal-content {
+  max-width: 500px;
+}
 .shippings {
   display: flex;
   flex-direction: column;

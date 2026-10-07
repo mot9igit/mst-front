@@ -33,9 +33,9 @@ function makeEvent(type) {
   return event
 }
 
-function mountWindow() {
+function mountWindow(mode = 1) {
   return mount(ShipmentWindow, {
-    props: { ship, mode: 0 },
+    props: { ship, mode },
     global: {
       plugins: [PrimeVue],
       mocks: {
@@ -161,6 +161,18 @@ describe('shipmentWindow drag', () => {
 
     td.element.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
     expect(td.element.closest('tr').draggable).toBe(true)
+  })
+
+  it('в режиме просмотра mousedown не делает строку перетаскиваемой', async () => {
+    const wrapper = mountWindow(0)
+    await wrapper.vm.$nextTick()
+
+    const name = wrapper.find(
+      '.shipment-window__table--child .shipment-window__drag .shipment-window__store-name',
+    )
+    expect(name.exists()).toBe(true)
+    name.element.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
+    expect(name.element.closest('tr').draggable).toBe(false)
   })
 
   it('mousedown на карточке заказа делает строку получателя перетаскиваемой', async () => {
