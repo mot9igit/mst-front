@@ -14,6 +14,7 @@ import requirements from './requirements'
 import warehouse from './warehouse'
 import notifications from './notifications'
 import offer from './offer'
+import logistic from './logistic'
 
 
 export default new Vuex.Store({
@@ -31,6 +32,7 @@ export default new Vuex.Store({
     requirements,
     warehouse,
     notifications,
-    offer
+    offer,
+    logistic
   },
 })

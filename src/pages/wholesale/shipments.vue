@@ -92,6 +92,16 @@ function parseShipmentDate(value) {
   return Number.isNaN(d.getTime()) ? null : d
 }
 
+function formatShipmentDate(value) {
+  const d = value instanceof Date ? value : new Date(value)
+  if (!value || Number.isNaN(d.getTime())) return null
+  const pad = (n) => String(n).padStart(2, '0')
+  return (
+    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` +
+    ` ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+  )
+}
+
 export default {
   name: 'WholesaleShipments',
   components: {
@@ -294,13 +304,12 @@ export default {
     },
     async editShip(data) {
       const dateTime = data?.dateTime
-      const date = dateTime
-        ? new Date(dateTime.getTime() - dateTime.getTimezoneOffset() * 60000)
-        : null
+      const date = dateTime ? formatShipmentDate(dateTime) : null
 
        const form = {
          date: date,
          location: data?.location ?? null,
+         stop_redistribution: !!data?.stop_redistribution,
        }
 
        if (data?.table_order) {
@@ -511,6 +520,7 @@ export default {
   max-width: 500px;
 }
 .shippings {
+  padding-block: 40px;
   display: flex;
   flex-direction: column;
   gap: 49px;

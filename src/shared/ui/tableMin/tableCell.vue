@@ -1,7 +1,9 @@
 <template>
   <!-- <div class="d-table-min__col-id" v-if="cell_key == 'id'" :id="value[cell_key]">{{ cell_data.label }} {{ value[cell_key] }} </div>
   <div class="d-table-min__col-status" v-else-if="cell_data.type == 'status'"><span :style="
-          'color: #fff;background-color: #' +
+          'color: ' +
+          (value.color_text || value.status_color_text || '#fff') +
+          ';background-color: #' +
           value.status_color
         ">{{ value['status_name'] }}</span>
   </div> -->
@@ -106,7 +108,8 @@ export default {
             this.cell_data.link_params[key] !== 'id' &&
             this.cell_data.link_params[key] !== 'store_id' &&
             this.cell_data.link_params[key] !== 'vendor_id' &&
-            this.cell_data.link_params[key] !== 'pagetitle'
+            this.cell_data.link_params[key] !== 'pagetitle' &&
+            this.cell_data.link_params[key] !== 'order_num'
           ) {
             linkparams[key] = this.cell_data.link_params[key]
           } else {

@@ -288,9 +288,7 @@ export default {
         action: 'save',
         id: router.currentRoute._value.params.id,
         form: form,
-      }
-      if (shipment_id) {
-        data.shipment_id = shipment_id
+        shipment_id: shipment_id ?? null,
       }
       const response = await api.wholesale.saveShipping(data)
       return response

@@ -23,7 +23,7 @@
     <div class="d-table-min__header">
       <div class="d-table-min__col-id">№ {{ row_data.id }}</div>
       <div class="d-table-min__col-status">
-        <span :style="'color: #fff;background-color: #' + row_data.status_color">{{
+        <span :style="'color: ' + (row_data.color_text || row_data.status_color_text || '#fff') + ';background-color: #' + row_data.status_color">{{
           row_data.status_name
         }}</span>
       </div>
@@ -118,7 +118,8 @@ export default {
           if (
             this.link_row.link_params[key] !== 'id' &&
             this.link_row.link_params[key] !== 'store_id' &&
-            this.link_row.link_params[key] !== 'vendor_id'
+            this.link_row.link_params[key] !== 'vendor_id' &&
+            this.link_row.link_params[key] !== 'order_num'
           ) {
             linkparams[key] = this.link_row.link_params[key]
           } else {

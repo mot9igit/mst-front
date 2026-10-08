@@ -13,6 +13,7 @@ import requirementsModule from '@/pages/account/api/requirements'
 import warehouseModule from '@/pages/warehouse/api/index'
 import notificationsModule from '@/pages/account/api/notifications'
 import offerModule from '@/pages/wholesale/api/offer'
+import logisticsModule from '@/pages/logistics/api'
 
 export default {
   auth: authModule(instance),
@@ -29,4 +30,5 @@ export default {
   warehouse: warehouseModule(instance),
   notifications: notificationsModule(instance),
   offer: offerModule(instance),
+  logistics: logisticsModule(instance),
 }

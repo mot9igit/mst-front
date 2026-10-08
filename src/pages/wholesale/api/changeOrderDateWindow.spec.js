@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import PrimeVue from 'primevue/config'
-import ChangeOrderDateWindow from './changeOrderDateWindow.vue'
+import ChangeOrderDateWindow from '../ui/changeOrderDateWindow.vue'
 
 function mountWindow(props = {}) {
   return mount(ChangeOrderDateWindow, {

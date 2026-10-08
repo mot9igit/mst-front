@@ -183,11 +183,6 @@ export default {
 
               ...(this.activeOrganization.interseller == 1
                 ? [
-                    {
-                      name: 'Интерселлер',
-                      icon: 'd-icon-truck',
-                      to: { name: 'wholesaleShipments', params: { id: this.$route.params.id } },
-                    },
                   ]
                 : []),
             ],
@@ -224,6 +219,28 @@ export default {
               icon: 'd-icon-shuffle',
               to: { name: 'retailCompareProducts', params: { id: this.$route.params.id } },
             },
+          ],
+        })
+        punkts.push({
+          name: 'Логистика',
+          icon: 'd-icon-truck',
+          collapse: this.collapsed('logistics'),
+          to: { name: 'logisticsDelivery', params: { id: this.$route.params.id } },
+          children: [
+            {
+              name: 'Доставка МС',
+              icon: 'd-icon-truck',
+              to: { name: 'logisticsDelivery', params: { id: this.$route.params.id } },
+            },
+            ...(this.activeOrganization.interseller == 1
+              ? [
+                  {
+                    name: 'Интерселлер',
+                    icon: 'd-icon-truck',
+                    to: { name: 'wholesaleShipments', params: { id: this.$route.params.id } },
+                  },
+                ]
+              : []),
           ],
         })
         punkts.push({

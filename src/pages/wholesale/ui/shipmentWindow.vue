@@ -7,7 +7,7 @@
         <span v-else-if="mode === 1">Редактирование отгрузки №{{ ship?.id || '' }}</span>
         <span v-else>Создание отгрузки</span>
       </h2>
-      <div class="shippings__modal-header-actions" v-if="mode === 0">
+      <div class="shippings__modal-header-actions" v-if="mode === 0 && (ship?.status === 1 || ship?.status === 2)">
         <i class="d-icon-pen2" @click="handleEdit" style="cursor: pointer"></i>
         <div class="d-divider d-divider--big d-divider--vertical"></div>
         <i class="d-icon-trash" @click="handleDelete" style="cursor: pointer"></i>
@@ -46,6 +46,16 @@
               :class="{ 'shipment-window__value--empty': !storesValue }"
             >
               {{ storesValue || '-' }}
+            </div>
+          </div>
+        </div>
+        <div class="shipment-window__column">
+          <div class="shipment-window__field">
+            <div class="shipment-window__checkbox">
+              <Checkbox v-model="stopRedistribution" :binary="true" disabled />
+              <span class="shipment-window__checkbox-text"
+                >Отключить перераспределение заказов</span
+              >
             </div>
           </div>
         </div>
@@ -108,6 +118,14 @@
             >
           </div>
         </div>
+        <div class="shipment-window__field">
+          <div class="shipment-window__checkbox">
+            <Checkbox v-model="form.stop_redistribution" :binary="true" />
+            <span class="shipment-window__checkbox-text"
+              >Отключить перераспределение заказов</span
+            >
+          </div>
+        </div>
       </div>
     </div>
 
@@ -134,7 +152,12 @@
         <Column>
           <template #body="{ data }">
             <div class="shipment-window__drag" data-pc-section="reorderablerowhandle">
-              <div class="shipment-window__store-badge">Отправитель</div>
+              <div
+                class="shipment-window__store-badge"
+                :class="{ 'shipment-window__store-badge--recipient': isRecipient(data) }"
+              >
+                {{ pointLabel(data) }}
+              </div>
               <div class="shipment-window__store-name">{{ data.name_short || data.name }}</div>
               <div class="shipment-window__store-address">Дата отгрузки: {{ ship?.date }}</div>
               <div class="shipment-window__store-address">
@@ -142,68 +165,35 @@
               </div>
             </div>
 
-            <DataTable
-              :value="data.stores"
-              data-key="id"
-              :show-headers="false"
-              class="shipment-window__table shipment-window__table--child"
-              :reorderable-rows="mode !== 0"
-              @row-reorder="onChildReorder($event, data)"
-            >
-              <template #empty>
-                <span class="shipment-window__store-address">Склады-получатели не указаны</span>
-              </template>
-              <Column>
-                <template #body="{ data: store }">
-                  <div class="shipment-window__drag" data-pc-section="reorderablerowhandle">
-                    <div
-                      class="shipment-window__store-badge shipment-window__store-badge--recipient"
-                    >
-                      Получатель
-                    </div>
-                    <div class="shipment-window__store-name">
-                      {{ store.name_short || store.name }}
-                    </div>
-                    <div class="shipment-window__store-address">
-                      Дата отгрузки: {{ ship?.date }}
-                    </div>
-                    <div class="shipment-window__store-address">
-                      {{}} {{ store.address_short || store.address || '-' }}
-                    </div>
-                  </div>
-
-                  <template v-if="store.orders?.length">
-                    <div class="shipment-window__orders-title">Заказы</div>
-                    <div class="shipment-window__orders">
-                      <div
-                        v-for="order in store.orders"
-                        :key="order.id"
-                        class="shipment-window__order"
-                        :style="orderStatusBorder(order)"
-                      >
-                        <span class="shipment-window__order-id">№{{ order.id }}</span>
-                        <span
-                          v-if="order.order_status"
-                          class="shipment-window__order-status"
-                          :style="orderStatusStyle(order)"
-                        >
-                          {{ order.order_status.name ?? '—' }}
-                        </span>
-                        <span v-else class="shipment-window__order-status">
-                          {{ order.status ?? '—' }}
-                        </span>
-                        <i
-                          v-if="mode !== 0"
-                          class="d-icon-refresh shipment-window__order-change"
-                          @click.stop="handleChangeOrderDate(order)"
-                        ></i>
-                      </div>
-                    </div>
-                  </template>
-                  <span v-else class="shipment-window__store-address">Заказов нет</span>
-                </template>
-              </Column>
-            </DataTable>
+            <template v-if="data.orders?.length">
+              <div class="shipment-window__orders-title">Заказы</div>
+              <div class="shipment-window__orders">
+                <div
+                  v-for="order in data.orders"
+                  :key="order.id"
+                  class="shipment-window__order"
+                  :style="orderStatusBorder(order)"
+                >
+                  <span class="shipment-window__order-id">№{{ order.id }}</span>
+                  <span
+                    v-if="order.order_status"
+                    class="shipment-window__order-status"
+                    :style="orderStatusStyle(order)"
+                  >
+                    {{ order.order_status.name ?? '—' }}
+                  </span>
+                  <span v-else class="shipment-window__order-status">
+                    {{ order.status ?? '—' }}
+                  </span>
+                  <i
+                    v-if="mode !== 0 && order?.order_status?.api_key === 'buyer_accepted'"
+                    class="d-icon-refresh shipment-window__order-change"
+                    @click.stop="handleChangeOrderDate(order)"
+                  ></i>
+                </div>
+              </div>
+            </template>
+            <span v-else class="shipment-window__store-address">Заказов нет</span>
           </template>
         </Column>
       </DataTable>
@@ -239,6 +229,7 @@ import { required } from '@vuelidate/validators'
 import DatePicker from 'primevue/datepicker'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
+import Checkbox from 'primevue/checkbox'
 import TreeSelect from '@/shared/ui/TreeSelectFilter.vue'
 import '@zanmato/vue3-treeselect/dist/vue3-treeselect.min.css'
 
@@ -248,6 +239,7 @@ export default {
     DatePicker,
     DataTable,
     Column,
+    Checkbox,
     TreeSelect,
   },
   emits: ['editMode', 'deleteShip', 'cancel', 'submit', 'changeOrderDate'],
@@ -266,6 +258,7 @@ export default {
       form: {
         dateTime: null,
         location: null,
+        stop_redistribution: false,
       },
       locationTree: [],
       parents: [],
@@ -308,6 +301,9 @@ export default {
         )
       }
       return this.storeName(stores)
+    },
+    stopRedistribution() {
+      return !!this.ship?.stop_redistribution
     },
   },
   setup() {
@@ -367,21 +363,26 @@ export default {
     },
     initTable() {
       const table = this.ship?.table
-      if (!table || typeof table !== 'object') {
-        this.parents = []
-        return
-      }
-      this.parents = Object.values(table).map((parent) => ({
-        ...parent,
-        stores:
-          parent?.stores && typeof parent.stores === 'object' ? Object.values(parent.stores) : [],
-      }))
+      this.parents = Array.isArray(table)
+        ? table.map((point) => ({ ...point, orders: Array.isArray(point?.orders) ? point.orders : [] }))
+        : []
     },
     onParentReorder(event) {
       this.parents = event.value
     },
-    onChildReorder(event, parent) {
-      parent.stores = event.value
+    isRecipient(point) {
+      if (!point) return false
+      if (point.role) return point.role === 'receiver'
+      const label = String(point.role_label || point.label || '').toLowerCase()
+      return /получател|recipient/.test(label)
+    },
+    pointRole(point) {
+      if (point?.role === 'sender' || point?.role === 'receiver') return point.role
+      return this.isRecipient(point) ? 'receiver' : 'sender'
+    },
+    pointLabel(point) {
+      if (point?.role_label || point?.label) return point.role_label || point.label
+      return this.isRecipient(point) ? 'Получатель' : 'Отправитель'
     },
     bindDragGuards() {
       const root = this.$refs.parentTable?.$el
@@ -490,8 +491,29 @@ export default {
       if (this.mode === 0) return
       // Для редактирования/создания
       const dateTime = this.ship?.date_from || this.ship?.date_time || this.ship?.date
-      this.form.dateTime = dateTime ? new Date(dateTime) : null
+      this.form.dateTime = dateTime ? this.parseShipmentDateTime(dateTime) : null
       this.form.location = this.ship?.city_id || null
+      this.form.stop_redistribution = !!this.ship?.stop_redistribution
+    },
+    parseShipmentDateTime(value) {
+      if (!value) return null
+      if (value instanceof Date) {
+        return Number.isNaN(value.getTime()) ? null : value
+      }
+      const s = String(value).trim()
+      const m = s.match(/^(\d{4})-(\d{2})-(\d{2})(?:[T\s](\d{1,2}):(\d{2})(?::(\d{2}))?)?/)
+      if (!m) {
+        const d = new Date(s)
+        return Number.isNaN(d.getTime()) ? null : d
+      }
+      return new Date(
+        Number(m[1]),
+        Number(m[2]) - 1,
+        Number(m[3]),
+        Number(m[4] || 0),
+        Number(m[5] || 0),
+        Number(m[6] || 0),
+      )
     },
     loadLocations() {
       this.getRegions({ exclude: [], filter: '' }).then(() => {
@@ -525,19 +547,14 @@ export default {
       this.$emit('cancel')
     },
     buildTableOrder() {
-      const top = (this.parents || []).map((p) => Number(p.id)).filter((id) => !Number.isNaN(id))
-
-      const inner = {}
-      ;(this.parents || []).forEach((p) => {
-        const pid = p.id
-        const stores = p.stores || []
-        const list = stores.map((s) => Number(s.id)).filter((id) => !Number.isNaN(id))
-        inner[pid] = list
-      })
-      return { top, inner }
+      return (this.parents || [])
+        .filter((p) => p?.id !== undefined && p?.id !== null && p?.id !== '')
+        .map((p) => `${this.pointRole(p)}_${p.id}`)
     },
     handleChangeOrderDate(order) {
-      this.$emit('changeOrderDate', order)
+      if (this.mode !== 0 && order?.order_status?.api_key === 'buyer_accepted') {
+        this.$emit('changeOrderDate', order)
+      }
     },
     handleSubmit() {
       if (this.mode === 0) {
@@ -551,6 +568,7 @@ export default {
     resetForm() {
       this.form.dateTime = null
       this.form.location = null
+      this.form.stop_redistribution = false
       this.v$.$reset()
     },
   },
@@ -828,6 +846,66 @@ export default {
   &__status-wrapper {
     display: flex;
     align-items: center;
+  }
+
+  &__checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .p-checkbox {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .p-checkbox-input {
+      width: 24px;
+      height: 24px;
+      border-radius: 24px;
+      opacity: 1;
+      border: 1px solid #757575;
+      transition: all 0.2s ease;
+
+      &:hover,
+      &:checked {
+        border-color: #f92c0d;
+      }
+    }
+
+    .p-checkbox .p-checkbox-box {
+      width: 20px;
+      height: 20px;
+      border-radius: 20px;
+      border: none;
+      background: transparent;
+      margin: 2px;
+      aspect-ratio: 1;
+    }
+
+    .p-checkbox-checked .p-checkbox-box {
+      background: #f92c0d;
+
+      svg {
+        display: none;
+      }
+    }
+
+    .p-checkbox.p-disabled {
+      opacity: 1;
+
+      .p-checkbox-input {
+        pointer-events: none;
+      }
+    }
+  }
+
+  &__checkbox-text {
+    font-size: 14px;
+    line-height: 18px;
+    color: #282828;
   }
 
   .catalog-dates-filter-group .catalog-filters-dates {

@@ -301,7 +301,7 @@
     >
       <div
         class="cell--status"
-        :style="'background-color: #' + value.status_color"
+        :style="'background-color: #' + value.status_color + '; color: ' + (value.color_text || value.status_color_text || '#282828')"
         :class="value['status_key'] ? 'cell--status-' + value['status_key'] : ''"
       >
         {{ value['status_name'] }}
@@ -471,7 +471,8 @@ export default {
             this.cell_data.link_params[key] !== 'id' &&
             this.cell_data.link_params[key] !== 'store_id' &&
             this.cell_data.link_params[key] !== 'vendor_id' &&
-            this.cell_data.link_params[key] !== 'pagetitle'
+            this.cell_data.link_params[key] !== 'pagetitle' &&
+            this.cell_data.link_params[key] !== 'order_num'
           ) {
             linkparams[key] = this.cell_data.link_params[key]
           } else {

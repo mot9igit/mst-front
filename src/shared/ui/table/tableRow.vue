@@ -176,7 +176,8 @@ export default {
           if (
             this.link_row.link_params[key] !== 'id' &&
             this.link_row.link_params[key] !== 'store_id' &&
-            this.link_row.link_params[key] !== 'vendor_id'
+            this.link_row.link_params[key] !== 'vendor_id' &&
+            this.link_row.link_params[key] !== 'order_num'
           ) {
             linkparams[key] = this.link_row.link_params[key]
           } else {
@@ -195,7 +196,8 @@ export default {
             if (
               this.keys[name].link_params[key] !== 'id' &&
               this.keys[name].link_params[key] !== 'store_id' &&
-              this.keys[name].link_params[key] !== 'vendor_id'
+              this.keys[name].link_params[key] !== 'vendor_id' &&
+              this.keys[name].link_params[key] !== 'order_num'
             ) {
               params[key] = this.keys[name].link_params[key]
             } else {

@@ -832,6 +832,54 @@ const router = createRouter({
                   ],
                 },
                 {
+                  path: 'logistics',
+                  name: 'logistics',
+                  meta: {
+                    breadcrumb: {
+                      label: 'Логистика',
+                    },
+                  },
+                  children: [
+                    {
+                      path: '',
+                      props: true,
+                      name: 'logisticsIndex',
+                      redirect: { name: 'logisticsDelivery' },
+                      label: 'Логистика',
+                      component: () => import('../pages/logistics/index.vue'),
+                    },
+                    {
+                      path: 'delivery',
+                      meta: {
+                        breadcrumb: {
+                          label: 'Доставка МС',
+                        },
+                      },
+                      children: [
+                        {
+                          path: '',
+                          name: 'logisticsDelivery',
+                          props: true,
+                          label: 'Доставка МС',
+                          component: () => import('../pages/logistics/index.vue'),
+                        },
+                        {
+                          path: ':order_id',
+                          name: 'logisticsOrder',
+                          props: true,
+                          label: 'Заказ логистики',
+                          component: () => import('../pages/logistics/order.vue'),
+                          meta: {
+                            breadcrumb: {
+                              label: 'Заказ логистики',
+                            },
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
                   path: 'warehouse',
                   name: 'warehouse',
                   meta: {
