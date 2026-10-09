@@ -7,10 +7,16 @@
         <span v-else-if="mode === 1">Редактирование отгрузки №{{ ship?.id || '' }}</span>
         <span v-else>Создание отгрузки</span>
       </h2>
-      <div class="shippings__modal-header-actions" v-if="mode === 0 && (ship?.status === 1 || ship?.status === 2)">
-        <i class="d-icon-pen2" @click="handleEdit" style="cursor: pointer"></i>
-        <div class="d-divider d-divider--big d-divider--vertical"></div>
-        <i class="d-icon-trash" @click="handleDelete" style="cursor: pointer"></i>
+      <div
+        class="shippings__modal-header-actions"
+        v-if="mode === 0 && (canEditShipment || canDeleteShipment)"
+      >
+        <i v-if="canEditShipment" class="d-icon-pen2" @click="handleEdit" style="cursor: pointer"></i>
+        <div
+          v-if="canEditShipment && canDeleteShipment"
+          class="d-divider d-divider--big d-divider--vertical"
+        ></div>
+        <i v-if="canDeleteShipment" class="d-icon-trash" @click="handleDelete" style="cursor: pointer"></i>
       </div>
     </div>
 
@@ -41,24 +47,31 @@
         <div class="shipment-window__column">
           <div class="shipment-window__field">
             <label class="shipment-window__label">Склад отгрузки</label>
-            <div
-              class="shipment-window__value"
-              :class="{ 'shipment-window__value--empty': !storesValue }"
-            >
-              {{ storesValue || '-' }}
+            <div class="stores-cell">
+              <div v-for="(store, index) in stores" :key="index" class="stores-cell__row">
+                <span class="stores-cell__name">{{ storeName(store) }}</span
+                ><span v-if="storeAddress(store)">, {{ storeAddress(store) }}</span>
+              </div>
+              <span v-if="!stores.length" class="stores-cell__empty">-</span>
             </div>
           </div>
         </div>
-        <div class="shipment-window__column">
-          <div class="shipment-window__field">
-            <div class="shipment-window__checkbox">
-              <Checkbox v-model="stopRedistribution" :binary="true" disabled />
-              <span class="shipment-window__checkbox-text"
-                >Отключить перераспределение заказов</span
-              >
-            </div>
-          </div>
+      </div>
+      <div class="shipment-window__checkbox-row">
+        <div class="shipment-window__checkbox">
+          <Checkbox v-model="stopRedistribution" :binary="true" disabled />
+          <span class="shipment-window__checkbox-text"
+            >Отключить перераспределение заказов</span
+          >
         </div>
+        <button
+          type="button"
+          class="d-button d-button-secondary d-button--no-shadow shipment-window__codes-button"
+          @click="handleOpenCodes"
+        >
+          <i class="d-icon-mail shipment-window__codes-icon"></i>
+          <span>Коды заказов</span>
+        </button>
       </div>
     </div>
 
@@ -118,13 +131,23 @@
             >
           </div>
         </div>
-        <div class="shipment-window__field">
+        <div class="shipment-window__field shipment-window__field--row2">
           <div class="shipment-window__checkbox">
             <Checkbox v-model="form.stop_redistribution" :binary="true" />
             <span class="shipment-window__checkbox-text"
               >Отключить перераспределение заказов</span
             >
           </div>
+        </div>
+        <div class="shipment-window__field shipment-window__field--row2">
+          <button
+            type="button"
+            class="d-button d-button-secondary d-button--no-shadow shipment-window__codes-button"
+            @click="handleOpenCodes"
+          >
+            <i class="d-icon-mail shipment-window__codes-icon"></i>
+            <span>Коды заказов</span>
+          </button>
         </div>
       </div>
     </div>
@@ -186,7 +209,7 @@
                     {{ order.status ?? '—' }}
                   </span>
                   <i
-                    v-if="mode !== 0 && order?.order_status?.api_key === 'buyer_accepted'"
+                    v-if="canMoveOrder(order)"
                     class="d-icon-refresh shipment-window__order-change"
                     @click.stop="handleChangeOrderDate(order)"
                   ></i>
@@ -219,6 +242,13 @@
         Ок
       </button>
     </div>
+
+    <CodeOrdersWindow
+      :visible="showCodesModal"
+      :emails="form.emails"
+      @update:visible="showCodesModal = $event"
+      @submit="handleSendCodes"
+    />
   </div>
 </template>
 
@@ -231,6 +261,7 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Checkbox from 'primevue/checkbox'
 import TreeSelect from '@/shared/ui/TreeSelectFilter.vue'
+import CodeOrdersWindow from './codeOrdersWindow.vue'
 import '@zanmato/vue3-treeselect/dist/vue3-treeselect.min.css'
 
 export default {
@@ -241,6 +272,7 @@ export default {
     Column,
     Checkbox,
     TreeSelect,
+    CodeOrdersWindow,
   },
   emits: ['editMode', 'deleteShip', 'cancel', 'submit', 'changeOrderDate'],
   props: {
@@ -259,15 +291,23 @@ export default {
         dateTime: null,
         location: null,
         stop_redistribution: false,
+        emails: [],
       },
       locationTree: [],
       parents: [],
+      showCodesModal: false,
     }
   },
   computed: {
     ...mapGetters({
       regions: 'addition/regions',
     }),
+    canEditShipment() {
+      return [1, 2].includes(Number(this.ship?.status))
+    },
+    canDeleteShipment() {
+      return Number(this.ship?.status) !== 3
+    },
     statusStyle() {
       if (this.ship?.status_color) {
         return 'background-color: #' + this.ship.status_color
@@ -280,27 +320,15 @@ export default {
       }
       return ''
     },
-    storesValue() {
-      const stores = this.ship?.stores
-      if (stores === null || stores === undefined || stores === '') {
-        return this.ship?.store || ''
-      }
-      if (Array.isArray(stores)) {
-        return stores
-          .map((s) => this.storeName(s))
-          .filter(Boolean)
-          .join(', ')
-      }
-      if (typeof stores === 'object') {
-        return (
-          this.storeName(stores) ||
-          Object.values(stores)
-            .map((s) => this.storeName(s))
-            .filter(Boolean)
-            .join(', ')
-        )
-      }
-      return this.storeName(stores)
+    stores() {
+      const table = this.ship?.table
+      if (!table) return []
+      const points = Array.isArray(table)
+        ? table
+        : typeof table === 'object'
+          ? Object.values(table)
+          : []
+      return points.filter((store) => this.isSender(store))
     },
     stopRedistribution() {
       return !!this.ship?.stop_redistribution
@@ -349,17 +377,48 @@ export default {
   methods: {
     ...mapActions({
       getRegions: 'addition/getRegions',
+      sendShipmentCodes: 'wholesale/sendShipmentCodes',
     }),
     storeName(store) {
-      if (store === null || store === undefined) return ''
-      if (typeof store === 'string' || typeof store === 'number') return String(store)
-      if (typeof store === 'object') {
-        const keys = ['selfname', 'name_short', 'name', 'store_name', 'title', 'label', 'store']
-        for (const key of keys) {
-          if (store[key]) return String(store[key])
-        }
+      if (!store) return ''
+      if (typeof store === 'string') return store
+      return store.org_name || store.name_short || store.name || ''
+    },
+    isSender(point) {
+      if (!point || typeof point !== 'object') return false
+      if (point.role) return point.role === 'sender'
+      const label = String(point.role_label || point.label || '').toLowerCase()
+      return /отправител|sender/.test(label)
+    },
+    storeAddress(store) {
+      if (!store || typeof store === 'string') return ''
+      return store.address || store.address_short || ''
+    },
+    handleOpenCodes() {
+      this.form.emails = Array.isArray(this.ship?.emails) ? this.ship.emails.slice() : []
+      this.showCodesModal = true
+    },
+    async handleSendCodes(payload) {
+      const emails = Array.isArray(payload) ? payload : payload?.emails
+      const generate = Array.isArray(payload) ? false : !!payload?.generate
+      const shipment_id = this.ship?.id ?? null
+      this.form.emails = Array.isArray(emails) ? emails.slice() : []
+      try {
+        await this.sendShipmentCodes({ shipment_id, emails, generate })
+        this.$toast.add({
+          severity: 'success',
+          summary: 'Коды заказов',
+          detail: 'Запрос на отправку кодов сформирован',
+          life: 3000,
+        })
+      } catch {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Не удалось отправить коды заказов',
+          life: 3000,
+        })
       }
-      return ''
     },
     initTable() {
       const table = this.ship?.table
@@ -494,6 +553,7 @@ export default {
       this.form.dateTime = dateTime ? this.parseShipmentDateTime(dateTime) : null
       this.form.location = this.ship?.city_id || null
       this.form.stop_redistribution = !!this.ship?.stop_redistribution
+      this.form.emails = Array.isArray(this.ship?.emails) ? this.ship.emails.slice() : []
     },
     parseShipmentDateTime(value) {
       if (!value) return null
@@ -551,8 +611,11 @@ export default {
         .filter((p) => p?.id !== undefined && p?.id !== null && p?.id !== '')
         .map((p) => `${this.pointRole(p)}_${p.id}`)
     },
+    canMoveOrder(order) {
+      return this.mode !== 0 && order?.order_status?.api_key === 'buyer_accepted'
+    },
     handleChangeOrderDate(order) {
-      if (this.mode !== 0 && order?.order_status?.api_key === 'buyer_accepted') {
+      if (this.canMoveOrder(order)) {
         this.$emit('changeOrderDate', order)
       }
     },
@@ -569,6 +632,7 @@ export default {
       this.form.dateTime = null
       this.form.location = null
       this.form.stop_redistribution = false
+      this.form.emails = []
       this.v$.$reset()
     },
   },
@@ -588,6 +652,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding-right: 24px;
 
   &__modal-header {
     display: flex;
@@ -640,8 +705,7 @@ export default {
         gap: 32px;
         align-items: flex-start;
         justify-content: flex-start;
-        padding-bottom: 45px;
-        margin-bottom: 16px;
+        margin-bottom: 24px;
       }
 
       .shipment-window__column {
@@ -654,8 +718,8 @@ export default {
 
     &--edit {
       .shipment-window__form {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 24px;
       }
     }
@@ -665,6 +729,7 @@ export default {
       display: flex;
       flex-direction: column;
       gap: 12px;
+      margin-top: 24px;
     }
   }
 
@@ -824,6 +889,11 @@ export default {
     display: flex;
     flex-direction: column;
     gap: 8px;
+
+    &--row2 {
+      justify-content: center;
+      align-items: flex-start;
+    }
   }
 
   &__label {
@@ -896,9 +966,22 @@ export default {
     .p-checkbox.p-disabled {
       opacity: 1;
 
+      .p-checkbox-box {
+        background: transparent;
+      }
+
       .p-checkbox-input {
         pointer-events: none;
+        border-color: #757575;
       }
+    }
+
+    .p-checkbox.p-disabled.p-checkbox-checked .p-checkbox-box {
+      background: #f92c0d;
+    }
+
+    .p-checkbox.p-disabled.p-checkbox-checked .p-checkbox-input {
+      border-color: #f92c0d;
     }
   }
 
@@ -906,6 +989,50 @@ export default {
     font-size: 14px;
     line-height: 18px;
     color: #282828;
+  }
+
+  &__checkbox-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  &__codes-button {
+    width: auto;
+    min-height: 40px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  &__field--row2 &__codes-button {
+    align-self: flex-end;
+  }
+
+  &__codes-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .stores-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .stores-cell__row {
+    font-size: 14px;
+    line-height: 18px;
+    color: #282828;
+  }
+
+  .stores-cell__name {
+    font-weight: 600;
+  }
+
+  .stores-cell__empty {
+    color: #757575;
   }
 
   .catalog-dates-filter-group .catalog-filters-dates {

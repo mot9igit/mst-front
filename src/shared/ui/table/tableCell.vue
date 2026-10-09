@@ -301,7 +301,7 @@
     >
       <div
         class="cell--status"
-        :style="'background-color: #' + value.status_color + '; color: ' + (value.color_text || value.status_color_text || '#282828')"
+        :style="statusStyle"
         :class="value['status_key'] ? 'cell--status-' + value['status_key'] : ''"
       >
         {{ value['status_name'] }}
@@ -318,7 +318,7 @@
           :title="row.label"
           :label="row.label"
           :icon="row.icon"
-          v-for="(row, index) in blank.available"
+          v-for="(row, index) in actionsAvailable"
           :key="index"
           severity="secondary"
           text
@@ -341,7 +341,7 @@
           :title="row.label"
           :label="row.label"
           :icon="row.icon"
-          v-for="(row, index) in blank.available"
+          v-for="(row, index) in actionsAvailable"
           :key="index"
           severity="secondary"
           text
@@ -432,7 +432,6 @@ export default {
   },
   data() {
     return {
-      blank: {},
       numbers: {},
       chart_options: {
         responsive: true,
@@ -485,9 +484,38 @@ export default {
     storesList() {
       const table = this.value?.table
       if (!table) return []
-      if (Array.isArray(table)) return table.filter((store) => !!store)
-      if (typeof table === 'object') return Object.values(table).filter((store) => !!store)
-      return []
+      const points = Array.isArray(table)
+        ? table
+        : typeof table === 'object'
+          ? Object.values(table)
+          : []
+      return points.filter((store) => this.isSender(store))
+    },
+    actionsAvailable() {
+      const available = this.cell_data?.available || {}
+      const result = {}
+      for (const key in available) {
+        const item = available[key]
+        if (item?.link) {
+          const current = Number(this.value?.[item.link])
+          if (item.link_values && !item.link_values.includes(current)) continue
+          if (item.link_exclude && item.link_exclude.includes(current)) continue
+        }
+        result[key] = item
+      }
+      return result
+    },
+    statusStyle() {
+      const value = this.value || {}
+      const style = {}
+      if (value.status_color) {
+        style.backgroundColor = '#' + value.status_color
+      }
+      const textColor = value.color_text || value.status_color_text
+      if (textColor) {
+        style.color = textColor
+      }
+      return style
     },
   },
   methods: {
@@ -495,6 +523,12 @@ export default {
       if (!store) return ''
       if (typeof store === 'string') return store
       return store.org_name || store.name_short || store.name || ''
+    },
+    isSender(point) {
+      if (!point || typeof point !== 'object') return false
+      if (point.role) return point.role === 'sender'
+      const label = String(point.role_label || point.label || '').toLowerCase()
+      return /отправител|sender/.test(label)
     },
     storeAddress(store) {
       if (!store || typeof store === 'string') return ''
@@ -589,23 +623,6 @@ export default {
     Chart,
   },
   mounted() {
-    this.blank = this.cell_data
-    if (this.blank.type === 'actions') {
-      for (const key in this.blank.available) {
-        if (
-          Object.prototype.hasOwnProperty.call(this.blank.available[key], 'link') &&
-          Object.prototype.hasOwnProperty.call(this.blank.available[key], 'link_values')
-        ) {
-          if (this.blank.available[key].link && this.blank.available[key].link_values) {
-            const link = this.blank.available[key].link
-            const values = this.blank.available[key].link_values
-            if (!values.includes(Number(this.value[link]))) {
-              delete this.blank.available[key]
-            }
-          }
-        }
-      }
-    }
     if (this.cell_data.type === 'number') {
       this.numbers[this.cell_key] = this.value[this.cell_key]
     }

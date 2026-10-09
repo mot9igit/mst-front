@@ -314,6 +314,17 @@ export default {
       const response = await api.wholesale.changeOrderDate(data)
       return response
     },
+    async sendShipmentCodes(store, { shipment_id, emails, generate }) {
+      const data = {
+        action: 'send/order_codes',
+        id: router.currentRoute._value.params.id,
+        shipment_id: shipment_id ?? null,
+        emails: emails,
+        generate: !!generate,
+      }
+      const response = await api.wholesale.sendShipmentCodes(data)
+      return response
+    },
     async getMotivations({ commit }, payload = {}) {
       const data = {
         action: 'get/fake/motivations',

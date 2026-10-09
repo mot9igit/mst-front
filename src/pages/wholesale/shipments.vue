@@ -191,10 +191,14 @@ export default {
             edit: {
               icon: 'pi pi-pencil',
               label: 'Редактировать',
+              link: 'status',
+              link_values: [1, 2],
             },
             delete: {
               icon: 'pi pi-trash',
               label: 'Удалить',
+              link: 'status',
+              link_exclude: [3],
             },
           },
         },
@@ -213,6 +217,7 @@ export default {
       const result = []
       rows.forEach((row) => {
         if (!row) return
+        if (Number(row.status) !== 1 && Number(row.status) !== 2) return
         if (
           row.id !== current.id &&
           city !== null &&
@@ -293,6 +298,7 @@ export default {
       this.modalShippingData = data
     },
     editShipping(data) {
+      if (![1, 2].includes(Number(data?.status))) return
       this.mode = 1
       this.modalShipping = true
       this.modalShippingData = data
@@ -355,6 +361,7 @@ export default {
       this.modalOrderDate = true
     },
     async submitOrderDate(date) {
+      if (this.orderDateOrder?.order_status?.api_key !== 'buyer_accepted') return
       const order_id = this.orderDateOrder?.id
       const from_shipment_id = this.modalShippingData?.id
       if (!order_id || !from_shipment_id) {
@@ -463,6 +470,7 @@ export default {
       }
     },
     async delShipping(data) {
+      if (Number(data?.status) === 3) return
       const shipping_id = data?.id
       if (!shipping_id) {
         this.$toast.add({
