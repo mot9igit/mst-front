@@ -10,7 +10,7 @@
     <h1 class="shippings__header">
       <span>Мои отгрузки</span>
       <div class="d-divider d-divider--vertical shippings__header-title-divider"></div>
-      <span>Отгрузки ({{ shippings.total_way ?? 0 }})</span>
+      <span>Отгрузки ({{ shippings.total ?? 0 }})</span>
     </h1>
 
     <div class="shippings__header-button">
@@ -312,21 +312,21 @@ export default {
       const dateTime = data?.dateTime
       const date = dateTime ? formatShipmentDate(dateTime) : null
 
-       const form = {
-         date: date,
-         location: data?.location ?? null,
-         stop_redistribution: !!data?.stop_redistribution,
-       }
+      const form = {
+        date: date,
+        location: data?.location ?? null,
+        stop_redistribution: !!data?.stop_redistribution,
+      }
 
-       if (data?.table_order) {
-         form.table_order = data.table_order
-       }
+      if (data?.table_order) {
+        form.table_order = data.table_order
+      }
 
-       const shipment_id = this.mode === 1 ? this.modalShippingData?.id : null
+      const shipment_id = this.mode === 1 ? this.modalShippingData?.id : null
 
-       this.actionLoading = true
-       try {
-         const response = await this.saveShipping({ shipment_id, form })
+      this.actionLoading = true
+      try {
+        const response = await this.saveShipping({ shipment_id, form })
         if (response && response !== 'technical error') {
           this.modalShipping = false
           this.modalShippingData = {}
@@ -398,16 +398,10 @@ export default {
       }
       const target =
         rows.find(
-          (row) =>
-            row &&
-            row.id !== from_shipment_id &&
-            isSameCity(row) &&
-            sameDay(row.date),
+          (row) => row && row.id !== from_shipment_id && isSameCity(row) && sameDay(row.date),
         ) ||
-        rows.find(
-          (row) =>
-            row && row.id === from_shipment_id && sameDay(row.date),
-        ) || null
+        rows.find((row) => row && row.id === from_shipment_id && sameDay(row.date)) ||
+        null
       const dateString =
         date.getFullYear() +
         '-' +
@@ -420,8 +414,7 @@ export default {
         this.$toast.add({
           severity: 'info',
           summary: 'Информация',
-          detail:
-            'Дата отправления заказа №' + order_id + ' уже указана',
+          detail: 'Дата отправления заказа №' + order_id + ' уже указана',
           life: 3000,
         })
         return

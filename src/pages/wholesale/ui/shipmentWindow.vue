@@ -139,7 +139,7 @@
             >
           </div>
         </div>
-        <div class="shipment-window__field shipment-window__field--row2">
+        <div v-if="mode === 1" class="shipment-window__field shipment-window__field--row2">
           <button
             type="button"
             class="d-button d-button-secondary d-button--no-shadow shipment-window__codes-button"
