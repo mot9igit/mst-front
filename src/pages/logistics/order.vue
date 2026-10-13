@@ -90,7 +90,7 @@
           </div>
         </div>
 
-        <div class="order-card__orderinfo-grid d-col-md-2">
+        <div class="order-card__orderinfo-grid d-col-md-2" v-if="!isShipment">
           <div class="order-card__orderinfo-grid-lable">Срок доставки</div>
           <div class="order-card__orderinfo-grid-text">
             {{ this.order?.delivery_date != '' ? this.order?.delivery_date : '-' }}
