@@ -2,7 +2,7 @@
   <div class="std-auth__input-container" :class="{ 'has-error': $v.address.value.$error }">
     <Autocomplete
       v-model="address.value"
-      placeholder="Адрес доставки"
+      :placeholder="placeholder"
       name="address"
       class="dart-form-control std-auth__input"
       type="address"
@@ -47,6 +47,15 @@ export default {
     type: {
       type: String,
       default: '1', // 1 - своя, 2 - виртуальная
+    },
+    index: {
+      type: Number,
+      default: 0,
+    },
+  },
+  computed: {
+    placeholder() {
+      return this.index === 0 ? 'Адрес основного склада' : 'Адрес дополнительного склада'
     },
   },
   data() {

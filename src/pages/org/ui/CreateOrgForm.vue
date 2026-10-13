@@ -192,7 +192,7 @@
               @click="() => this.form.company.warehouses.push({ value: '' })"
             >
               <i v-if="this.loading" class="pi pi-spin pi-spinner" style="font-size: 14px"></i>
-              <span>Добавить адрес</span>
+              <span>Добавить склад</span>
               <i class="pi pi-plus"></i>
             </button>
           </div>
