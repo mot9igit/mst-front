@@ -232,19 +232,13 @@ export default {
       return this.order?.is_shipment === true
     },
     showActionButton() {
-      const key = this.status?.api_key
-      if (this.isShipment) {
-        return key === 'buyer_accepted'
-      }
-      return key === 'seller_packed'
+      return this.status?.api_key === 'buyer_accepted'
     },
     actionButton() {
-      return this.isShipment ? 'Выдать товар' : 'Принять товар'
+      return 'Выдать товар'
     },
     actionHint() {
-      return this.isShipment
-        ? 'Нажмите на кнопку для передачи товара курьеру'
-        : 'Нажмите кнопку для подтверждения получения заказа'
+      return 'Нажмите на кнопку для передачи товара курьеру'
     },
     deliveryType() {
       const type = String(this.order?.delivery_type_opt ?? '')

@@ -26,6 +26,17 @@
       </div>
       <div class="d-top-order-container-right">
         <div class="d-top-order-container-buttons">
+          <template v-if="order.in_ship">
+            <div class="logisticorder__action-text">
+              <p>Нажмите кнопку для подтверждения получения заказа</p>
+            </div>
+            <button
+              class="d-button d-button--sm-shadow d-button-primary d-button-primary-small logisticorder__action"
+              @click.prevent="modalKey = true"
+            >
+              <span class="catalog__head-item-text">Принять товар</span>
+            </button>
+          </template>
           <button
             class="order-card__action order-card__action-edit"
             @click.prevent="editOrder()"
@@ -315,6 +326,59 @@
           </div>
         </customModal>
       </Teleport>
+      <customModal v-model="modalKey" class="logisticorder__modal-key">
+        <div class="logisticorder__modal-key-wrapper">
+          <h2>Секретный ключ</h2>
+          <Loader v-if="loadingCode" />
+          <template v-if="!codeAccepted">
+            <form class="clients-form__modal" @submit.prevent="submitCode()">
+              <InputOtp
+                class="clients-form__modal-numbers"
+                :length="6"
+                v-model="code"
+                integerOnly
+              />
+              <div class="logisticorder__modal-error" v-if="errorMsg">{{ errorMsg }}</div>
+              <div class="clients-form__modal-buttons">
+                <button
+                  type="button"
+                  href="#"
+                  class="d-button d-button-primary d-button--sm-shadow clients__filters-create clients__filters-cansel"
+                  @click.prevent="closeKeyModal()"
+                >
+                  Отмена
+                </button>
+                <button
+                  type="submit"
+                  href="#"
+                  class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
+                  :disabled="code.length != 6"
+                >
+                  Отправить
+                </button>
+              </div>
+            </form>
+          </template>
+          <template v-else>
+            <div class="logisticorder__modal-success">
+              <div class="logisticorder__modal-success-icon">
+                <i class="pi pi-check"></i>
+              </div>
+              <div class="logisticorder__modal-success-text">Код принят</div>
+            </div>
+            <div class="clients-form__modal-buttons">
+              <button
+                type="button"
+                href="#"
+                class="d-button d-button-primary d-button--sm-shadow clients__filters-create"
+                @click.prevent="closeKeyModal()"
+              >
+                Ок
+              </button>
+            </div>
+          </template>
+        </div>
+      </customModal>
     </Teleport>
     <teleport to="body">
       <editOrderWindow
@@ -334,6 +398,7 @@ import MinProductTable from '@/shared/ui/tableMinProduct/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Toast from 'primevue/toast'
+import InputOtp from 'primevue/inputotp'
 import editOrderWindow from './ui/editOrderWindow.vue'
 import saleWindow from './ui/activeSalesWindow.vue'
 
@@ -348,16 +413,23 @@ export default {
     editOrderWindow,
     MinProductTable,
     saleWindow,
+    InputOtp,
   },
   data() {
     return {
       loading: true,
+      loadingCode: false,
       page: 1,
       page_docs: 1,
       order: [],
       modalDocs: false,
       modalCancel: false,
       modalEdit: false,
+      modalKey: false,
+      code: '',
+      codeAccepted: false,
+      errorMsg: '',
+      wasAccepted: false,
       table_data: {
         image: {
           label: 'Фото',
@@ -464,6 +536,7 @@ export default {
       setOrderEditToCart: 'purchases/setOrderEditToCart',
       getBasket: 'basket/getBasket',
       downloadOrder: 'wholesale/downloadOrder',
+      acceptCode: 'logistic/acceptCode',
     }),
     changeStatus() {
       this.loading = true
@@ -476,6 +549,39 @@ export default {
           order_id: this.$route.params.order_id,
         }).then(() => (this.loading = false))
       })
+    },
+    async submitCode() {
+      if (this.code.length != 6) return
+      this.loadingCode = true
+      const res = await this.acceptCode({
+        order_id: this.$route.params.order_id,
+        code: this.code,
+      })
+      this.loadingCode = false
+      const inner = res?.data?.data
+      if (inner?.success === true) {
+        this.codeAccepted = true
+        this.code = ''
+        this.errorMsg = ''
+        this.wasAccepted = true
+      } else {
+        this.code = ''
+        this.errorMsg = inner?.message || res?.data?.message || 'Ошибка'
+      }
+    },
+    closeKeyModal() {
+      this.modalKey = false
+      this.code = ''
+      this.errorMsg = ''
+      this.codeAccepted = false
+      if (this.wasAccepted) {
+        this.getOptOrder({
+          page: this.page,
+          perpage: this.pagination_items_per_page,
+          order_id: this.$route.params.order_id,
+        })
+        this.wasAccepted = false
+      }
     },
     showReq() {
       this.loading = true
@@ -691,6 +797,110 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+}
+
+.logisticorder__action-text {
+  p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 21px;
+    color: #757575;
+    max-width: 292px;
+    text-align: right;
+  }
+}
+
+.logisticorder__modal-key {
+  :deep(.modal__content) {
+    width: 500px;
+    max-width: 100%;
+  }
+
+  .logisticorder__modal-key-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  h2 {
+    font-size: 20px;
+    line-height: 26px;
+    font-weight: 600;
+    color: #282828;
+    text-align: center;
+    margin-bottom: 34px;
+  }
+
+  .clients-form__modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 34px;
+    width: 100%;
+  }
+
+  .p-inputotp {
+    gap: 24px;
+  }
+
+  .p-inputotp-input {
+    width: 50px;
+    height: 60px;
+  }
+
+  .clients-form__modal-buttons {
+    display: flex;
+    gap: 16px;
+  }
+
+  .clients__filters-cansel {
+    background-color: #fff;
+    border: 1px solid #282828;
+    color: #282828;
+  }
+
+  .clients__filters-cansel:hover {
+    background-color: #282828;
+    border: 1px solid #282828;
+    color: #ededed;
+  }
+
+  .logisticorder__modal-error {
+    color: #d00;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+  }
+
+  .logisticorder__modal-success {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .logisticorder__modal-success-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #cdf0a9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .pi-check {
+      color: #63c400;
+      font-size: 13px;
+    }
+  }
+
+  .logisticorder__modal-success-text {
+    color: #63c400;
+    font-size: 20px;
+    line-height: 26px;
   }
 }
 </style>

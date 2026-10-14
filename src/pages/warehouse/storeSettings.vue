@@ -51,7 +51,14 @@
       </div>
       <div class="warehouse-settings-cont-item">
         <div class="order-card__orderinfo-grid-lable">Тип склада</div>
-        <div class="order-card__orderinfo-grid-text">{{ storeSettings.store_type }}</div>
+        <div class="warehouse-settings-cont-item-flex">
+          <div class="order-card__orderinfo-grid-text">{{ storeSettings.store_type }}</div>
+          <i
+            v-if="canEditStoreType"
+            class="d-icon-pen2 warehouse-settings-cont-item-button"
+            @click.prevent="openTypeModal()"
+          ></i>
+        </div>
       </div>
       <div class="warehouse-settings-cont-item">
         <div class="order-card__orderinfo-grid-lable">Видимость</div>
@@ -549,6 +556,83 @@
         </button>
       </div>
     </customModal>
+    <customModal v-model="this.modals.type" class="select-window">
+      <template v-slot:title>Тип склада</template>
+      <div
+        class="d-radio__container d-radio__container-vertical d-radio__container--big d-radio__container--1200-vertical d-radio__container--1200-tiny-small"
+      >
+        <div class="d-radio__wrapper promo-master__radio-wrapper">
+          <label for="storeType0" class="d-radio">
+            <input
+              type="radio"
+              name="storeType"
+              id="storeType0"
+              class="d-radio__input"
+              value="Основной"
+              v-model="storeType"
+            />
+          </label>
+          <div class="d-radio__label-container">
+            <label for="storeType0" class="d-radio__label promo-master__radio-label"
+              >Основной</label
+            >
+          </div>
+        </div>
+        <div class="d-radio__wrapper promo-master__radio-wrapper">
+          <label for="storeType1" class="d-radio">
+            <input
+              type="radio"
+              name="storeType"
+              id="storeType1"
+              class="d-radio__input"
+              value="Дополнительный"
+              v-model="storeType"
+            />
+          </label>
+          <div class="d-radio__label-container">
+            <label for="storeType1" class="d-radio__label promo-master__radio-label"
+              >Дополнительный</label
+            >
+          </div>
+        </div>
+      </div>
+      <div class="d-modal2__actions warehouse-analysis__add-actions">
+        <button
+          class="d-button d-button-secondary d-button-secondary-small box-shadow-none d-modal2__action-button warehouse-analysis__add-actions-button warehouse-analysis__add-actions-button--cancel"
+          @click.prevent="modals.type = false"
+        >
+          <span>Отмена</span>
+        </button>
+        <button
+          class="d-button d-button-primary d-button-primary-small box-shadow-none d-modal2__action-button warehouse-analysis__add-actions-button warehouse-analysis__add-actions-button--ok"
+          @click.prevent="confirmStoreType()"
+        >
+          <span>Ок</span>
+        </button>
+      </div>
+    </customModal>
+    <customModal v-model="this.modals.main" class="select-window">
+      <template v-slot:title>Изменить основной склад</template>
+      <div class="warehouse-settings__main-confirm">
+        У вас указан как основной склад №{{ storeSettings.main?.id }}
+        {{ storeSettings.main?.name }}. Изменить основной склад на №{{ storeSettings.id }}
+        {{ storeSettings.name }}?
+      </div>
+      <div class="d-modal2__actions warehouse-analysis__add-actions">
+        <button
+          class="d-button d-button-secondary d-button-secondary-small box-shadow-none d-modal2__action-button warehouse-analysis__add-actions-button warehouse-analysis__add-actions-button--cancel"
+          @click.prevent="modals.main = false"
+        >
+          <span>Отмена</span>
+        </button>
+        <button
+          class="d-button d-button-primary d-button-primary-small box-shadow-none d-modal2__action-button warehouse-analysis__add-actions-button warehouse-analysis__add-actions-button--ok"
+          @click.prevent="setMain()"
+        >
+          <span>ОК</span>
+        </button>
+      </div>
+    </customModal>
   </section>
 </template>
 <script>
@@ -594,6 +678,8 @@ export default {
         region: false,
         organization: false,
         name: false,
+        type: false,
+        main: false,
       },
       // Поиск
       search: {
@@ -608,6 +694,7 @@ export default {
       },
       name: '',
       error: false,
+      storeType: '',
     }
   },
   mounted() {
@@ -638,6 +725,9 @@ export default {
       regions: 'addition/regions',
       organizations: 'addition/organizations',
     }),
+    canEditStoreType() {
+      return this.storeSettings.store_type === 'Дополнительный'
+    },
   },
   methods: {
     ...mapActions({
@@ -646,6 +736,7 @@ export default {
       getOrganizations: 'addition/getOrganizations',
       setStoreVisible: 'org/setStoreVisible',
       setStoreName: 'org/setStoreName',
+      setStoreMain: 'org/setStoreMain',
     }),
     unActivateOrganization() {
       if (this.form.participantsType == 3) {
@@ -946,6 +1037,42 @@ export default {
         })
       }
     },
+    openTypeModal() {
+      this.storeType = this.storeSettings.store_type
+      this.modals.type = true
+    },
+    confirmStoreType() {
+      this.modals.type = false
+      if (this.storeType === 'Основной') {
+        this.modals.main = true
+      }
+    },
+    setMain() {
+      this.loading = true
+      this.setStoreMain({
+        store_id: this.storeSettings.id,
+      }).then((res) => {
+        if (res.data.data.success) {
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Тип склада!',
+            detail: 'Основной склад изменен успешно',
+            life: 3000,
+          })
+          this.modals.main = false
+          this.getStoreSettings()
+          this.loading = false
+        } else {
+          this.loading = false
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Тип склада!',
+            detail: 'Произошла ошибка',
+            life: 3000,
+          })
+        }
+      })
+    },
   },
   watch: {
     storeSettings: function (newVal) {
@@ -1144,6 +1271,12 @@ export default {
 .warehouse-settings-button {
   font-size: 14px;
   font-weight: 500;
+}
+.warehouse-settings__main-confirm {
+  font-size: 16px;
+  line-height: 22px;
+  color: #282828;
+  margin-bottom: 24px;
 }
 .warehouse-settings-form {
   width: 100%;

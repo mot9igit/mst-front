@@ -181,10 +181,7 @@ export default {
                 to: { name: 'wholesaleClients', params: { id: this.$route.params.id } },
               },
 
-              ...(this.activeOrganization.interseller == 1
-                ? [
-                  ]
-                : []),
+              ...(this.activeOrganization.interseller == 1 ? [] : []),
             ],
           })
         }
@@ -221,28 +218,30 @@ export default {
             },
           ],
         })
-        punkts.push({
-          name: 'Логистика',
-          icon: 'd-icon-truck',
-          collapse: this.collapsed('logistics'),
-          to: { name: 'logisticsDelivery', params: { id: this.$route.params.id } },
-          children: [
-            {
-              name: 'Доставка МС',
-              icon: 'd-icon-truck',
-              to: { name: 'logisticsDelivery', params: { id: this.$route.params.id } },
-            },
-            ...(this.activeOrganization.interseller == 1
-              ? [
-                  {
-                    name: 'Интерселлер',
-                    icon: 'd-icon-truck',
-                    to: { name: 'wholesaleShipments', params: { id: this.$route.params.id } },
-                  },
-                ]
-              : []),
-          ],
-        })
+        if (this.activeOrganization.vendor == 1 || this.activeOrganization.warehouse == 1) {
+          punkts.push({
+            name: 'Логистика',
+            icon: 'd-icon-truck',
+            collapse: this.collapsed('logistics'),
+            to: { name: 'logisticsDelivery', params: { id: this.$route.params.id } },
+            children: [
+              {
+                name: 'Доставка МС',
+                icon: 'd-icon-truck',
+                to: { name: 'logisticsDelivery', params: { id: this.$route.params.id } },
+              },
+              ...(this.activeOrganization.interseller == 1
+                ? [
+                    {
+                      name: 'Настройка отгрузок',
+                      icon: 'd-icon-truck',
+                      to: { name: 'wholesaleShipments', params: { id: this.$route.params.id } },
+                    },
+                  ]
+                : []),
+            ],
+          })
+        }
         punkts.push({
           name: 'Мой склад',
           icon: 'd-icon-boxes-2',
