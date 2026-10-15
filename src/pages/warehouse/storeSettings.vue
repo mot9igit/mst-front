@@ -51,7 +51,9 @@
       </div>
       <div class="warehouse-settings-cont-item">
         <div class="order-card__orderinfo-grid-lable">Тип склада</div>
-        <div class="warehouse-settings-cont-item-flex">
+        <div
+          class="warehouse-settings-cont-item-flex warehouse-settings-cont-item-flex--store-type"
+        >
           <div class="order-card__orderinfo-grid-text">{{ storeSettings.store_type }}</div>
           <i
             v-if="canEditStoreType"
@@ -558,50 +560,70 @@
     </customModal>
     <customModal v-model="this.modals.type" class="select-window">
       <template v-slot:title>Тип склада</template>
-      <div
-        class="d-radio__container d-radio__container-vertical d-radio__container--big d-radio__container--1200-vertical d-radio__container--1200-tiny-small"
-      >
-        <div class="d-radio__wrapper promo-master__radio-wrapper">
-          <label for="storeType0" class="d-radio">
-            <input
-              type="radio"
-              name="storeType"
-              id="storeType0"
-              class="d-radio__input"
-              value="Основной"
-              v-model="storeType"
-            />
-          </label>
-          <div class="d-radio__label-container">
-            <label for="storeType0" class="d-radio__label promo-master__radio-label"
-              >Основной</label
-            >
+      <div v-if="typeStep === 1">
+        <div class="warehouse-settings__main-confirm">
+          Изменить тип склада №{{ storeSettings.id }} {{ storeSettings.name }}
+        </div>
+        <div
+          class="d-radio__container d-radio__container-vertical d-radio__container--big d-radio__container--1200-vertical d-radio__container--1200-tiny-small"
+        >
+          <div class="d-radio__wrapper promo-master__radio-wrapper">
+            <label for="storeType0" class="d-radio">
+              <input
+                type="radio"
+                name="storeType"
+                id="storeType0"
+                class="d-radio__input"
+                value="Основной"
+                v-model="storeType"
+              />
+            </label>
+            <div class="d-radio__label-container">
+              <label for="storeType0" class="d-radio__label promo-master__radio-label"
+                >Основной</label
+              >
+            </div>
+          </div>
+          <div class="d-radio__wrapper promo-master__radio-wrapper">
+            <label for="storeType1" class="d-radio">
+              <input
+                type="radio"
+                name="storeType"
+                id="storeType1"
+                class="d-radio__input"
+                value="Дополнительный"
+                v-model="storeType"
+              />
+            </label>
+            <div class="d-radio__label-container">
+              <label for="storeType1" class="d-radio__label promo-master__radio-label"
+                >Дополнительный</label
+              >
+            </div>
           </div>
         </div>
-        <div class="d-radio__wrapper promo-master__radio-wrapper">
-          <label for="storeType1" class="d-radio">
-            <input
-              type="radio"
-              name="storeType"
-              id="storeType1"
-              class="d-radio__input"
-              value="Дополнительный"
-              v-model="storeType"
-            />
-          </label>
-          <div class="d-radio__label-container">
-            <label for="storeType1" class="d-radio__label promo-master__radio-label"
-              >Дополнительный</label
-            >
-          </div>
+      </div>
+      <div v-else>
+        <div class="warehouse-settings__main-confirm">
+          Выберите новый основной склад вашей организации:
+        </div>
+        <div class="warehouse-settings__main-select">
+          <Dropdown
+            v-model="selectedMainStore"
+            :options="storeSettings.additional || []"
+            option-label="name"
+            option-value="id"
+            placeholder="Выберите склад"
+            class="warehouse-settings__main-dropdown"
+          />
         </div>
       </div>
       <div class="d-modal2__actions warehouse-analysis__add-actions">
         <button
           class="d-button d-button-secondary d-button-secondary-small box-shadow-none d-modal2__action-button warehouse-analysis__add-actions-button warehouse-analysis__add-actions-button--cancel"
-          @click.prevent="modals.type = false"
+          @click.prevent="typeStep === 2 ? (typeStep = 1) : (modals.type = false)"
         >
-          <span>Отмена</span>
+          <span>{{ typeStep === 2 ? 'Назад' : 'Отмена' }}</span>
         </button>
         <button
           class="d-button d-button-primary d-button-primary-small box-shadow-none d-modal2__action-button warehouse-analysis__add-actions-button warehouse-analysis__add-actions-button--ok"
@@ -641,10 +663,11 @@ import Breadcrumbs from '@/shared/ui/breadcrumbs.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Toast from 'primevue/toast'
+import Dropdown from 'primevue/dropdown'
 
 export default {
   name: 'warehouseStoreSettings',
-  components: { Breadcrumbs, Loader, Toast, customModal },
+  components: { Breadcrumbs, Loader, Toast, customModal, Dropdown },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -695,6 +718,8 @@ export default {
       name: '',
       error: false,
       storeType: '',
+      typeStep: 1,
+      selectedMainStore: null,
     }
   },
   mounted() {
@@ -726,7 +751,7 @@ export default {
       organizations: 'addition/organizations',
     }),
     canEditStoreType() {
-      return this.storeSettings.store_type === 'Дополнительный'
+      return ['Основной', 'Дополнительный'].includes(this.storeSettings.store_type)
     },
   },
   methods: {
@@ -1039,18 +1064,40 @@ export default {
     },
     openTypeModal() {
       this.storeType = this.storeSettings.store_type
+      this.selectedMainStore = null
+      this.typeStep = 1
       this.modals.type = true
     },
     confirmStoreType() {
-      this.modals.type = false
-      if (this.storeType === 'Основной') {
+      if (this.typeStep === 1) {
+        if (this.storeType === this.storeSettings.store_type) {
+          this.modals.type = false
+          return
+        }
+        if (this.storeSettings.store_type === 'Основной') {
+          this.typeStep = 2
+          return
+        }
+        this.modals.type = false
         this.modals.main = true
+        return
       }
+      if (this.selectedMainStore == null) {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Тип склада!',
+          detail: 'Выберите склад',
+          life: 3000,
+        })
+        return
+      }
+      this.modals.type = false
+      this.setMain(this.selectedMainStore)
     },
-    setMain() {
+    setMain(store_id = this.storeSettings.id) {
       this.loading = true
       this.setStoreMain({
-        store_id: this.storeSettings.id,
+        store_id: store_id,
       }).then((res) => {
         if (res.data.data.success) {
           this.$toast.add({
@@ -1250,10 +1297,14 @@ export default {
   align-items: center;
   justify-content: space-between;
 }
+.warehouse-settings-cont-item-flex--store-type {
+  gap: 16px;
+}
 .warehouse-settings-cont-item-button {
   width: 32px;
   min-width: 32px;
   height: 32px;
+  margin-top: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1277,6 +1328,14 @@ export default {
   line-height: 22px;
   color: #282828;
   margin-bottom: 24px;
+}
+.warehouse-settings__main-select .warehouse-settings__main-dropdown {
+  width: 100%;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.warehouse-settings__main-select .warehouse-settings__main-dropdown .p-dropdown-label {
+  padding-left: 20px;
 }
 .warehouse-settings-form {
   width: 100%;
@@ -1368,6 +1427,14 @@ body .warehouse-settings-form .d-radio__container-vertical {
 .select-window {
   .modal-content {
     min-height: 400px;
+    max-width: 500px;
+    .modal__content {
+      display: flex;
+      flex-direction: column;
+    }
+    .warehouse-analysis__add-actions {
+      margin-top: auto;
+    }
     .regions {
       padding: 0 15px;
     }
