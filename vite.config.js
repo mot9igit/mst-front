@@ -13,6 +13,7 @@ export default defineConfig({
     },
   },
   server: {
+    port: 1788,
     proxy: {
       '/rest': {
         target: 'https://a.dev.mst.tools/',

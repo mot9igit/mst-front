@@ -218,7 +218,11 @@ export default {
             },
           ],
         })
-        if (this.activeOrganization.vendor == 1 || this.activeOrganization.warehouse == 1) {
+        if (
+          this.activeOrganization.vendor == 1 ||
+          this.activeOrganization.warehouse == 1 ||
+          this.activeOrganization.interseller == 1
+        ) {
           punkts.push({
             name: 'Логистика',
             icon: 'd-icon-truck',

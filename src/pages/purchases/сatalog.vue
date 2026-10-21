@@ -145,6 +145,36 @@
       </h1>
       <div class="products__top-title--notitle" v-else></div>
       <div class="catalog-top_button-container">
+        <div
+          class="card_trigger"
+          v-if="
+            orgActive?.count_stores > 1 && this.$route.matched[5].name == 'WholesaleClientsOffer'
+          "
+        >
+          <div class="d-switch catalog-filter-switch" @click="this.all_stores = !this.all_stores">
+            <input
+              type="checkbox"
+              binary="true"
+              class="d-switch__input"
+              v-model="this.all_stores"
+              id="catalog-all_stores"
+            />
+            <div class="d-switch__circle"></div>
+          </div>
+
+          <label
+            for="catalog-all_stores"
+            class="catalog-top_filters-label"
+            :class="{
+              'catalog-top_filters-label--active': this.all_stores,
+              'catalog-filter-switch-lable': true,
+            }"
+            >Объединить все склады
+          </label>
+          <InfoTooltip
+            text="Настройка объединит данные по остаткам и продажам клиента со всех складов"
+          />
+        </div>
         <div class="card_trigger">
           <div class="d-switch catalog-filter-switch" @click="this.show_offers = !this.show_offers">
             <input
@@ -470,6 +500,7 @@ import Toast from 'primevue/toast'
 import { Checkbox } from 'primevue'
 import DatePicker from 'primevue/datepicker'
 import checkBasketWindow from './ui/checkBasketWindow.vue'
+import InfoTooltip from '@/shared/ui/InfoTooltip.vue'
 
 export default {
   name: 'purchasesCatalog',
@@ -486,6 +517,7 @@ export default {
     Checkbox,
     DatePicker,
     checkBasketWindow,
+    InfoTooltip,
   },
   props: {
     id: {
@@ -550,6 +582,7 @@ export default {
           type: 'datepicker',
         },
       },
+      all_stores: false,
       show_order: false,
       show_filters: false,
       show_offers: true,
@@ -709,6 +742,7 @@ export default {
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         data.search = this.$route.query.search
         data.active_store = this.basketOfferWarehouse
+        data.filters = { ...(this.filters || {}), all_stores: this.all_stores }
       }
       return data
     },
@@ -741,7 +775,8 @@ export default {
 
       try {
         if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-          await this.getOfferOptProducts(data)
+          const payload = { ...data, filters: { ...(data.filters || this.filters), all_stores: this.all_stores } }
+          await this.getOfferOptProducts(payload)
           this.opt_products = this.optOfferProducts
         } else {
           await this.getOptProducts(data)
@@ -991,16 +1026,12 @@ export default {
         const node = this.basket?.data?.[this.basketWarehouse]
         const source = node?.data
         this.checkBasket =
-          source && Number(node?.cart_data?.sku_count ?? 1) > 0 && hasProducts(source)
-            ? source
-            : {}
+          source && Number(node?.cart_data?.sku_count ?? 1) > 0 && hasProducts(source) ? source : {}
       } else {
         const node = this.basketOffer?.data?.[this.basketOfferWarehouse]
         const source = node?.data
         this.checkBasket =
-          source && Number(node?.cart_data?.sku_count ?? 1) > 0 && hasProducts(source)
-            ? source
-            : {}
+          source && Number(node?.cart_data?.sku_count ?? 1) > 0 && hasProducts(source) ? source : {}
       }
 
       return this.checkBasket
@@ -1248,6 +1279,11 @@ export default {
     basketOfferWarehouse: function () {
       this.debouncedUpdatePage(0)
     },
+    all_stores: function () {
+      if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
+        this.loadProducts(this.buildProductsPayload())
+      }
+    },
     orgActive: function () {
       this.debouncedUpdatePage(0)
     },
@@ -1397,6 +1433,12 @@ export default {
       top: 50%;
       transform: translate(0, -50%);
       right: 0;
+    }
+    label {
+      white-space: nowrap;
+    }
+    .d-icon__show-info {
+      color: rgb(117 117 117 / 40%);
     }
   }
 }
