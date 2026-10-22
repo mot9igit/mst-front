@@ -354,7 +354,7 @@ export default {
       const response = api.offer.getOffers(data)
       return response
     },
-    async getAllOfferOptProducts({ commit }, { filters, search, active_store }) {
+    async getAllOfferOptProducts({ commit }, { filters, search, active_store, all_stores }) {
       let cat = 0
       if (
         router.currentRoute._value.params.warehouse_id &&
@@ -387,6 +387,7 @@ export default {
         req: req,
         action: 'get/all/offer/products',
         active_store: active_store,
+        all_stores: all_stores,
       }
       const response = await api.catalog.getOptProducts(data)
       if (response) {

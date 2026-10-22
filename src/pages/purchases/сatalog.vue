@@ -147,9 +147,7 @@
       <div class="catalog-top_button-container">
         <div
           class="card_trigger"
-          v-if="
-            orgActive?.count_stores > 1 && this.$route.matched[5].name == 'WholesaleClientsOffer'
-          "
+          v-if="fromOrgStores?.total > 1 && this.$route.matched[5].name == 'WholesaleClientsOffer'"
         >
           <div class="d-switch catalog-filter-switch" @click="this.all_stores = !this.all_stores">
             <input
@@ -677,6 +675,7 @@ export default {
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         data.search = this.$route.query.search
         data.active_store = this.basketOfferWarehouse
+        data.all_stores = this.all_stores
         this.loading = true
         this.getAllOfferOptProducts(data).then((res) => {
           if (res.data.success) {
@@ -684,6 +683,7 @@ export default {
               products: this.optAllOfferProducts,
               active_store: this.basketOfferWarehouse,
               dates: this.filters.dates.value,
+              all_stores: this.all_stores,
             }
             this.getSalesReport(prop).then((response) => {
               if (response.data.data.filename) {
@@ -775,7 +775,10 @@ export default {
 
       try {
         if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
-          const payload = { ...data, filters: { ...(data.filters || this.filters), all_stores: this.all_stores } }
+          const payload = {
+            ...data,
+            filters: { ...(data.filters || this.filters), all_stores: this.all_stores },
+          }
           await this.getOfferOptProducts(payload)
           this.opt_products = this.optOfferProducts
         } else {
@@ -1228,6 +1231,7 @@ export default {
       basketOfferWarehouse: 'offer/basketOfferWarehouse',
       basket: 'basket/basket',
       basketOffer: 'offer/basketOffer',
+      fromOrgStores: 'offer/fromOrgStores',
     }),
     pagesCount() {
       let pages = 1

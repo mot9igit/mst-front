@@ -148,7 +148,7 @@ export default {
       return response
     },
 
-    async getSalesReport(store, { products, dates, active_store }) {
+    async getSalesReport(store, { products, dates, active_store, all_stores }) {
       const data = {
         id: router.currentRoute._value.params.id,
         id_org_from:
@@ -159,6 +159,7 @@ export default {
         products: products,
         active_store: active_store,
         dates: dates,
+        all_stores: all_stores,
       }
       const response = await api.catalog.getOptProducts(data)
       return response
