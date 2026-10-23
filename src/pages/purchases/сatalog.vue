@@ -668,7 +668,7 @@ export default {
         timeout = setTimeout(() => func(...args), delay)
       }
     },
-    createReport() {
+    async createReport() {
       const data = {
         filters: this.filters,
       }
@@ -677,36 +677,34 @@ export default {
         data.active_store = this.basketOfferWarehouse
         data.all_stores = this.all_stores
         this.loading = true
-        this.getAllOfferOptProducts(data).then((res) => {
-          if (res.data.success) {
-            let prop = {
-              products: this.optAllOfferProducts,
-              active_store: this.basketOfferWarehouse,
-              dates: this.filters.dates.value,
-              all_stores: this.all_stores,
-            }
-            this.getSalesReport(prop).then((response) => {
-              if (response.data.data.filename) {
-                this.loading = false
-                let loc = response.data.data.filename
-                var downloadLink = document.createElement('a')
-                downloadLink.href = loc
-                downloadLink.setAttribute('download', loc)
-                downloadLink.setAttribute('target', '_blank')
-                //console.log(downloadLink)
-                downloadLink.click()
-              } else {
-                this.loading = false
-                this.$toast.add({
-                  severity: 'error',
-                  summary: 'Ошибка',
-                  detail: 'Не удалось скачать отчет по продажам!',
-                  life: 3000,
-                })
-              }
+        try {
+          const res = await this.getAllOfferOptProducts(data)
+          if (!res?.data?.success) {
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: 'Не удалось скачать отчет по продажам!',
+              life: 3000,
             })
+            return
+          }
+          const prop = {
+            products: this.optAllOfferProducts,
+            active_store: this.basketOfferWarehouse,
+            dates: this.filters.dates.value,
+            all_stores: this.all_stores,
+          }
+          const response = await this.getSalesReport(prop)
+          const filename = response?.data?.data?.filename
+          if (filename) {
+            const downloadLink = document.createElement('a')
+            downloadLink.href = filename
+            downloadLink.setAttribute('download', filename)
+            downloadLink.setAttribute('target', '_blank')
+            document.body.appendChild(downloadLink)
+            downloadLink.click()
+            document.body.removeChild(downloadLink)
           } else {
-            this.loading = false
             this.$toast.add({
               severity: 'error',
               summary: 'Ошибка',
@@ -714,8 +712,17 @@ export default {
               life: 3000,
             })
           }
+        } catch {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Не удалось скачать отчет по продажам!',
+            life: 3000,
+          })
+        } finally {
           this.unsetAllOfferOptProducts()
-        })
+          this.loading = false
+        }
       }
     },
     buildProductsPayload({ page = this.page, basket } = {}) {
