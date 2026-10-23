@@ -76,13 +76,17 @@
         <!-- Элемент статистики -->
         <div class="products__stat">
           <span class="products__stat-value">{{ product.our_delivered_available }}</span>
-          <p class="products__stat-label">В пути на склад клиента</p>
+          <p class="products__stat-label">
+            В пути на {{ all_stores ? 'склады' : 'склад' }} клиента
+          </p>
         </div>
         <div class="d-divider d-divider--vertical d-divider--big products__stat-divider"></div>
         <!-- Элемент статистики -->
         <div class="products__stat">
-          <span class="products__stat-value">{{ product.our_available }}</span> 
-          <p class="products__stat-label">Остаток на складе клиента</p>
+          <span class="products__stat-value">{{ product.our_available }}</span>
+          <p class="products__stat-label">
+            Остаток на {{ all_stores ? 'складах' : 'складе' }} клиента
+          </p>
         </div>
         <div class="d-divider d-divider--vertical d-divider--big products__stat-divider"></div>
         <!-- Элемент статистики -->
@@ -157,6 +161,10 @@ export default {
     active_design: {
       type: Number,
       default: 0,
+    },
+    all_stores: {
+      type: Boolean,
+      default: false,
     },
   },
 

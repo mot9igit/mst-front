@@ -422,6 +422,7 @@
       :showOffers="show_offers"
       :showDates="filters.dates.value"
       :active_design="active_design"
+      :all_stores="all_stores"
       @updateBasket="updateBasket()"
       @updateCatalog="updateCatalog()"
       @counter="counter"
