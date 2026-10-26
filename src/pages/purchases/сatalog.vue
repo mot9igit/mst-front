@@ -820,15 +820,12 @@ export default {
       for (var i in this.filters) {
         if (i == 'all') {
           this.filters[i].value = true
-        } else if (i != 'deliveries') {
+        } else if (i != 'deliveries' && i != 'sales' && i != 'outOfStock' && i != 'dates') {
           if (this.filters[i].value) {
             this.filters[i].value = false
           }
         }
       }
-      this.filters.dates.value = null
-
-      this.filters.sales.value = false
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         cart = this.basketOffer
       } else {
@@ -859,6 +856,7 @@ export default {
         if (newValue === false) {
           this.$nextTick(() => {
             this.filters[index].value = true
+            this.saveCatalogState()
           })
           return
         }
@@ -877,6 +875,7 @@ export default {
         this.filters[index].value = !this.filters[index].value
       }
       this.page = 1
+      this.saveCatalogState()
       this.loadProducts(this.buildProductsPayload())
     },
     addAll() {
@@ -1151,20 +1150,75 @@ export default {
       setTimeout(() => {
         this.active_design = a
         localStorage.setItem('global.catalog_design', this.active_design)
+        this.saveCatalogState()
         if (withLoading && this.productsLoadingCount === 0) {
           this.loading = false
         }
       }, 100)
     },
+    saveCatalogState() {
+      try {
+        const state = {
+          filters: this.filters,
+          all_stores: this.all_stores,
+          show_offers: this.show_offers,
+          active_design: this.active_design,
+        }
+        localStorage.setItem('purchases.catalog.state', JSON.stringify(state))
+      } catch (e) {}
+    },
+    loadCatalogState() {
+      try {
+        const saved = localStorage.getItem('purchases.catalog.state')
+        if (!saved) return
+        const state = JSON.parse(saved)
+        if (state.filters) {
+          for (let key in state.filters) {
+            if (this.filters[key] !== undefined && state.filters[key]) {
+              this.filters[key] = {
+                ...this.filters[key],
+                ...state.filters[key],
+              }
+            }
+          }
+          if (state.filters.dates && state.filters.dates.value) {
+            const datesVal = state.filters.dates.value
+            if (Array.isArray(datesVal)) {
+              this.filters.dates.value = datesVal.map((d) => (d ? new Date(d) : null))
+            } else if (datesVal) {
+              this.filters.dates.value = new Date(datesVal)
+            }
+          }
+        }
+        if (typeof state.all_stores === 'boolean') {
+          this.all_stores = state.all_stores
+        }
+        if (typeof state.show_offers === 'boolean') {
+          this.show_offers = state.show_offers
+        }
+        if (state.active_design !== undefined && state.active_design !== null) {
+          this.active_design = state.active_design
+        }
+      } catch (e) {}
+    },
   },
   mounted() {
+    this.loadCatalogState()
     let dis = localStorage.getItem('global.catalog_design')
-    if (dis) {
-      this.active_design = dis
+    if ((dis !== null && dis !== undefined) && (this.active_design === undefined || this.active_design === null)) {
+      this.active_design = Number(dis)
     }
     this.date_now = new Date()
-    this.filters.all.value = true
-    this.filters.deliveries.value = true
+    if (this.filters.all && typeof this.filters.all.value !== 'boolean') {
+      this.filters.all.value = true
+    } else if (this.filters.all && this.filters.all.value === undefined) {
+      this.filters.all.value = true
+    }
+    if (!localStorage.getItem('purchases.catalog.state')) {
+      if (this.filters.deliveries) {
+        this.filters.deliveries.value = true
+      }
+    }
     if (
       this.$route.name == 'purchasesCatalogRequirement' ||
       this.$route.name == 'purchasesOfferCatalogRequirement'
@@ -1292,9 +1346,13 @@ export default {
       this.debouncedUpdatePage(0)
     },
     all_stores: function () {
+      this.saveCatalogState()
       if (this.$route.matched[5] && this.$route.matched[5].name == 'WholesaleClientsOffer') {
         this.loadProducts(this.buildProductsPayload())
       }
+    },
+    show_offers: function () {
+      this.saveCatalogState()
     },
     orgActive: function () {
       this.debouncedUpdatePage(0)
@@ -1305,11 +1363,73 @@ export default {
       }
     },
 
-    $route() {
+    $route(to, from) {
       //this.addItems = {}
+      try {
+        if (from && to && from.fullPath !== to.fullPath) {
+          const fromKey = from.matched && from.matched[5] ? from.matched[5].name : from.name
+          const toKey = to.matched && to.matched[5] ? to.matched[5].name : to.name
+          if (fromKey !== toKey || from.name !== to.name) {
+            this.filters = {
+              all: {
+                name: 'Все товары',
+                placeholder: 'Все товары',
+                value: true,
+                type: 'checkbox',
+              },
+              available: {
+                name: 'В наличии',
+                placeholder: 'В наличии',
+                value: false,
+                type: 'checkbox',
+              },
+              no_available: {
+                name: 'Отсутствуют',
+                placeholder: 'Отсутствуют',
+                value: false,
+                type: 'checkbox',
+                class: 'filter_divider',
+              },
+              sales: {
+                name: 'Только с продажами',
+                placeholder: 'Только с продажами',
+                value: false,
+                type: 'switch',
+                class: 'filter_divider',
+              },
+              outOfStock: {
+                name: 'Out of stock',
+                placeholder: 'Out of stock',
+                value: false,
+                type: 'switch',
+              },
+              deliveries: {
+                name: 'Учитывать товары в заказе',
+                placeholder: 'Учитывать товары в заказе',
+                value: true,
+                type: 'switch',
+                class: 'filter_divider',
+              },
+              dates: {
+                name: 'Продажи за период',
+                placeholder: 'Продажи за период',
+                value: null,
+                type: 'datepicker',
+              },
+            }
+            this.filters.all.value = true
+            this.filters.deliveries.value = true
+            this.filters.sales.value = false
+            this.filters.outOfStock.value = false
+            this.filters.dates.value = null
+            this.all_stores = false
+            localStorage.removeItem('purchases.catalog.state')
+          }
+        }
+      } catch (e) {}
       this.updatePage(0)
       let switches = document.getElementsByClassName('catalog-top_filters-right-item')
-      if (switches[0].classList.contains('catalog-top_filters-right-item--active')) {
+      if (switches && switches[0] && switches[0].classList.contains('catalog-top_filters-right-item--active')) {
         this.setDesign(0, false)
       } else {
         this.setDesign(1, false)
@@ -1330,11 +1450,25 @@ export default {
       this.show_offers = newVal
     },
     'filters.dates.value': function (newVal) {
-      for (var d in newVal) {
-        if (newVal[d]) {
-          newVal[d] = new Date(newVal[d].getTime() - newVal[d].getTimezoneOffset() * 60000)
+      if (Array.isArray(newVal)) {
+        for (var d in newVal) {
+          if (newVal[d]) {
+            newVal[d] = new Date(newVal[d].getTime() - newVal[d].getTimezoneOffset() * 60000)
+          }
         }
       }
+      this.$nextTick(() => {
+        this.saveCatalogState()
+      })
+    },
+    'filters.sales.value': function () {
+      this.saveCatalogState()
+    },
+    'filters.outOfStock.value': function () {
+      this.saveCatalogState()
+    },
+    'filters.deliveries.value': function () {
+      this.saveCatalogState()
     },
   },
 }
