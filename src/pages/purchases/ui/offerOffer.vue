@@ -227,7 +227,9 @@
                           ? 'ТK'
                           : activeConflict.delivery_type_opt == 0
                             ? 'Самовывоз'
-                            : 'Доставка МС'
+                            : activeConflict.delivery_type_opt == 2
+                              ? 'МС Экспресс'
+                              : 'МС Логистик'
                       }}
                     </p>
                   </div>
@@ -645,7 +647,9 @@
                     ? 'Самовывоз'
                     : item.delivery_type_opt == 1
                       ? 'Доставка ТК'
-                      : 'Доставка МС'
+                      : item.delivery_type_opt == 2
+                        ? 'МС Экспресс'
+                        : 'МС Логистик'
                 }}
               </div>
               <div v-if="item.payer == 1">

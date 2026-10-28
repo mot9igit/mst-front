@@ -531,6 +531,7 @@ export default {
       }
       return response
     },
+
     async getDilerClients({ commit }, { diler_id, filter, filtersdata }) {
       const data = {
         action: 'get/diler/clients',
@@ -545,7 +546,7 @@ export default {
       }
       return response
     },
-    async isVendor(store, {from_org_id, diler_id}){
+    async isVendor(store, { from_org_id, diler_id }) {
       const data = {
         action: 'set/vendor',
         id: router.currentRoute._value.params.id,

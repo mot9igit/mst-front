@@ -326,7 +326,9 @@
                               ? 'Самовывоз'
                               : sale.delivery_type_opt == 1
                                 ? 'Доставка ТК'
-                                : 'Доставка МС'
+                                : sale.delivery_type_opt == 2
+                                  ? 'МС Экспресс'
+                                  : 'МС Логистик'
                           }}</span>
                           <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2"
                             >Бесплатная доставка</span
@@ -445,8 +447,14 @@
                         }}
                       </p>
                     </div>
-                    <div class="d-divider d-divider--vertical order__item-prop-divider"></div>
-                    <div class="order__item-prop">
+                    <div
+                      class="d-divider d-divider--vertical order__item-prop-divider"
+                      v-if="!warehouse?.cart_data?.delivery_type_conflict"
+                    ></div>
+                    <div
+                      class="order__item-prop"
+                      v-if="!warehouse?.cart_data?.delivery_type_conflict"
+                    >
                       <p class="order__item-prop-label">Доставка:&nbsp;</p>
                       <p class="order__item-prop-value">
                         {{
@@ -460,9 +468,11 @@
                         {{
                           warehouse?.cart_data?.delivery_type_opt == 0
                             ? 'Самовывоз'
-                            : warehouse?.cart_data?.delivery_type_opt == 2
-                              ? 'Доставка МС'
-                              : 'ТК'
+                            : warehouse?.cart_data?.delivery_type_opt == 1
+                              ? 'Доставка ТК'
+                              : warehouse?.cart_data?.delivery_type_opt == 2
+                                ? 'МС Экспресс'
+                                : 'МС Логистик'
                         }}
                       </p>
                     </div>

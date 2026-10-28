@@ -230,7 +230,7 @@ export default {
             to: { name: 'logisticsDelivery', params: { id: this.$route.params.id } },
             children: [
               {
-                name: 'Доставка МС',
+                name: 'МС Экспресс',
                 icon: 'd-icon-truck',
                 to: { name: 'logisticsDelivery', params: { id: this.$route.params.id } },
               },

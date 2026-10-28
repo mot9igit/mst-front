@@ -9,6 +9,7 @@ export default {
       total: -1,
     },
     order: {},
+    nearStores: {},
   },
   actions: {
     async getOrders({ commit }, { filter, sort, page, perpage, filtersdata } = {}) {
@@ -45,6 +46,28 @@ export default {
         action: 'order/accept_code',
         order_id: order_id,
         code: code,
+      }
+      const response = await api.logistics.acceptCode(data)
+      return response
+    },
+    async getNearStores({ commit }) {
+      const data = {
+        action: 'get/near/stores',
+        id: router.currentRoute._value.params.id,
+        store_id: router.currentRoute._value.params.store_id,
+      }
+      const response = await api.logistics.getOrders(data)
+      if (response) {
+        commit('SET_NEAR_STORES', response.data)
+      }
+      return response
+    },
+    async saveHub(store, { hub_id }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action: 'save/hub',
+        hub_id: hub_id,
+        store_id: router.currentRoute._value.params.store_id,
       }
       const response = await api.logistics.acceptCode(data)
       return response
@@ -93,6 +116,9 @@ export default {
     UNSET_ORDER: (state) => {
       state.order = {}
     },
+    SET_NEAR_STORES: (state, data) => {
+      state.nearStores = data.data
+    },
   },
   getters: {
     orders(state) {
@@ -100,6 +126,9 @@ export default {
     },
     order(state) {
       return state.order
+    },
+    nearStores(state) {
+      return state.nearStores
     },
   },
 }

@@ -13,9 +13,11 @@
           </div>
           <div
             class="d-badge2 d-badge2--fit order-card__status"
-      :style="'background-color: ' + status.color + '; color: ' + (status.color_text || '#282828')"
-      :class="status.api_key ? 'status-' + status.api_key : ''"
-      v-if="Object.keys(status).length != 0"
+            :style="
+              'background-color: ' + status.color + '; color: ' + (status.color_text || '#282828')
+            "
+            :class="status.api_key ? 'status-' + status.api_key : ''"
+            v-if="Object.keys(status).length != 0"
           >
             {{ status.name }}
           </div>
@@ -242,7 +244,13 @@ export default {
     },
     deliveryType() {
       const type = String(this.order?.delivery_type_opt ?? '')
-      return type == '0' ? 'Самовывоз' : type == '2' ? 'Доставка МС' : 'Транспортной компанией'
+      return type == '0'
+        ? 'Самовывоз'
+        : type == '1'
+          ? 'Доставка ТК'
+          : type == '2'
+            ? 'МС Экспресс'
+            : 'МС Логистик'
     },
     table_data() {
       const base = {

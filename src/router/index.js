@@ -852,7 +852,7 @@ const router = createRouter({
                       path: 'delivery',
                       meta: {
                         breadcrumb: {
-                          label: 'Доставка МС',
+                          label: 'МС Экспресс',
                         },
                       },
                       children: [
@@ -860,7 +860,7 @@ const router = createRouter({
                           path: '',
                           name: 'logisticsDelivery',
                           props: true,
-                          label: 'Доставка МС',
+                          label: 'МС Экспресс',
                           component: () => import('../pages/logistics/index.vue'),
                         },
                         {

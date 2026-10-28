@@ -314,7 +314,9 @@
                     ? 'Самовывоз'
                     : sale.delivery_type_opt == 1
                       ? 'Доставка ТК'
-                      : 'Доставка МС'
+                      : sale.delivery_type_opt == 2
+                        ? 'МС Экспресс'
+                        : 'МС Логистик'
                 }}
               </div>
               <div v-if="sale.payer == 2">

@@ -10,18 +10,6 @@
       <div class="lk-staff-edit__header-left">
         <h1>Настройка склада</h1>
       </div>
-
-      <div class="lk-staff-edit__header-right">
-        <div class="lk-staff-edit__header-buttom">
-          <button
-            class="d-button d-button-primary d-button--no-shadow lk-staff__header-button"
-            @click.prevent="saveSettings()"
-          >
-            <i class="d-icon-plus-flat lk-staff__header-button-icon"></i>
-            Сохранить
-          </button>
-        </div>
-      </div>
     </div>
     <div class="warehouse-analysis__header-storeinfo">
       <div class="warehouse-analysis__header-storeinfo-info">
@@ -36,7 +24,26 @@
           <i class="d-icon-location"></i><span>{{ storeSettings.address }}</span>
         </div>
       </div>
+      <div>
+        <router-link
+          target="_blank"
+          :to="{
+            name: 'warehouseReviewStore',
+            params: {
+              id: this.$route.params.id,
+              store_id: this.$route.params.store_id,
+            },
+          }"
+        >
+          <button
+            class="d-button d-button-primary d-button-primary-small d-button--sm-shadow warehouse-settings-button"
+          >
+            Посмотреть товары
+          </button>
+        </router-link>
+      </div>
     </div>
+
     <div class="warehouse-settings-cont">
       <div class="warehouse-settings-cont-item">
         <div class="order-card__orderinfo-grid-lable">Интеграция</div>
@@ -89,28 +96,62 @@
           ></i>
         </div>
       </div>
-      <div class="warehouse-settings-cont-item">
-        <router-link
-          target="_blank"
-          :to="{
-            name: 'warehouseReviewStore',
-            params: {
-              id: this.$route.params.id,
-              store_id: this.$route.params.store_id,
-            },
-          }"
+      <div
+        class="warehouse-settings-cont-item"
+        v-if="
+          Number(storeSettings?.opt_marketplace) == 1 &&
+          (Number(orgActive?.logistic_express) == 1 || Number(orgActive?.logistic_post) == 1) &&
+          ['Основной', 'Дополнительный'].includes(storeSettings?.store_type)
+        "
+      >
+        <div
+          class="order-card__orderinfo-grid-lable"
+          style="display: flex; align-items: center; gap: 6px"
         >
-          <button
-            class="d-button d-button-primary d-button-primary-small d-button--sm-shadow warehouse-settings-button"
-          >
-            Посмотреть товары
-          </button>
-        </router-link>
+          Оператор склада
+          <InfoTooltip
+            text="Выберите склад оператора, который будет фактически выдавать ваши заказы в ТК."
+          />
+        </div>
+        <div class="warehouse-settings-cont-item-flex">
+          <div class="order-card__orderinfo-grid-text">
+            {{
+              storeSettings?.operator_store_name ||
+              (operatorStore &&
+                (operatorStoresList.find((s) => s.value == operatorStore || s.id == operatorStore)
+                  ?.label ||
+                  operatorStoresList.find((s) => s.value == operatorStore || s.id == operatorStore)
+                    ?.name)) ||
+              'Самостоятельная отгрузка'
+            }}
+          </div>
+          <i
+            class="d-icon-pen2 warehouse-settings-cont-item-button"
+            @click.prevent="openOperatorModal()"
+          ></i>
+        </div>
       </div>
     </div>
     <div v-if="view_form" class="warehouse-settings-form">
       <div class="contents" id="promoAudience">
-        <h2 class="warehouse-settings-form-title">Видимость</h2>
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 16px;
+          "
+        >
+          <h2 class="warehouse-settings-form-title" style="margin: 0">Видимость</h2>
+          <button
+            class="d-button d-button-primary d-button--no-shadow lk-staff__header-button"
+            @click.prevent="saveSettings()"
+          >
+            <i class="d-icon-plus-flat lk-staff__header-button-icon"></i>
+            Сохранить
+          </button>
+        </div>
         <p class="promo-master__title promo-master__title--ms-margin">Аудитория</p>
         <div
           class="d-radio__container d-radio__container-vertical d-radio__container--big d-radio__container--1200-vertical d-radio__container--1200-tiny-small"
@@ -655,6 +696,40 @@
         </button>
       </div>
     </customModal>
+    <customModal v-model="this.modals.operator" class="select-window">
+      <template v-slot:title>Выберите склад оператора</template>
+      <div class="modal__content">
+        <p style="font-size: 13px; color: #757575; margin: 0">
+          Выберите склад оператора, который будет фактически выдавать ваши заказы в ТК.
+        </p>
+        <Dropdown
+          v-model="operatorStore"
+          :options="operatorStoresList"
+          :optionLabel="(option) => option.label || option.name || option.title"
+          :optionValue="(option) => option.value || option.id || option.code"
+          placeholder="Выберите склад оператора"
+          class="w-full md:w-14rem warehouse-settings__main-dropdown"
+          style="margin-top: 12px; border-radius: 999px"
+        />
+        <div
+          class="warehouse-analysis__add-actions"
+          style="display: flex; justify-content: center; gap: 8px"
+        >
+          <button
+            class="d-button d-button-secondary d-button-secondary-small box-shadow-none d-modal2__action-button warehouse-analysis__add-actions-button"
+            @click.prevent="modals.operator = false"
+          >
+            <span>Отмена</span>
+          </button>
+          <button
+            class="d-button d-button-primary d-button-primary-small box-shadow-none d-modal2__action-button warehouse-analysis__add-actions-button warehouse-analysis__add-actions-button--ok"
+            @click.prevent="saveOperatorStore()"
+          >
+            <span>Сохранить</span>
+          </button>
+        </div>
+      </div>
+    </customModal>
   </section>
 </template>
 <script>
@@ -664,10 +739,11 @@ import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Toast from 'primevue/toast'
 import Dropdown from 'primevue/dropdown'
+import InfoTooltip from '@/shared/ui/InfoTooltip.vue'
 
 export default {
   name: 'warehouseStoreSettings',
-  components: { Breadcrumbs, Loader, Toast, customModal, Dropdown },
+  components: { Breadcrumbs, Loader, Toast, customModal, Dropdown, InfoTooltip },
   props: {
     pagination_items_per_page: {
       type: Number,
@@ -703,7 +779,9 @@ export default {
         name: false,
         type: false,
         main: false,
+        operator: false,
       },
+      operatorStore: null,
       // Поиск
       search: {
         region: '',
@@ -724,6 +802,14 @@ export default {
   },
   mounted() {
     this.getStoreSettings().then(() => {
+      if (
+        Number(this.storeSettings?.opt_marketplace) == 1 &&
+        (Number(this.orgActive?.logistic_express) == 1 ||
+          Number(this.orgActive?.logistic_post) == 1) &&
+        ['Основной', 'Дополнительный'].includes(this.storeSettings?.store_type)
+      ) {
+        this.getNearStores()
+      }
       // Берем географию
       this.getRegions({ exclude: [], filter: '' }).then(() => {
         this.regions_all = this.regions.map(function (el) {
@@ -749,7 +835,17 @@ export default {
       storeSettings: 'org/storeSettings',
       regions: 'addition/regions',
       organizations: 'addition/organizations',
+      orgActive: 'org/orgActive',
+      nearStores: 'logistic/nearStores',
     }),
+    operatorStoresList() {
+      const list = this.nearStores
+      if (Array.isArray(list)) return list
+      if (list && Array.isArray(list.data)) return list.data
+      if (list?.items && Array.isArray(list.items)) return list.items
+      if (list?.stores && Array.isArray(list.stores)) return list.stores
+      return []
+    },
     canEditStoreType() {
       return ['Основной', 'Дополнительный'].includes(this.storeSettings.store_type)
     },
@@ -762,6 +858,7 @@ export default {
       setStoreVisible: 'org/setStoreVisible',
       setStoreName: 'org/setStoreName',
       setStoreMain: 'org/setStoreMain',
+      getNearStores: 'logistic/getNearStores',
     }),
     unActivateOrganization() {
       if (this.form.participantsType == 3) {
@@ -1094,6 +1191,58 @@ export default {
       this.modals.type = false
       this.setMain(this.selectedMainStore)
     },
+    openOperatorModal() {
+      this.operatorStore =
+        this.storeSettings?.operator_store_id || this.storeSettings?.operator_store || null
+      this.getNearStores().finally(() => {
+        this.modals.operator = true
+      })
+    },
+    saveOperatorStore() {
+      const payload = {
+        action: 'set/logistic/store',
+        id: this.$route.params.id,
+        store_id: this.$route.params.store_id,
+        hub_id: this.operatorStore,
+      }
+      import('@/shared/api/api').then((m) => {
+        const api = m.default
+        api.org
+          .getOrg(payload)
+          .then((res) => {
+            const success =
+              res?.data?.success === true ||
+              res?.data?.data?.success === true ||
+              res?.data?.status === 'ok'
+            if (success) {
+              this.$toast.add({
+                severity: 'success',
+                summary: 'Успешно',
+                detail: 'Склад оператора сохранен',
+                life: 3000,
+              })
+              this.getStoreSettings()
+            } else {
+              this.$toast.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: 'Не удалось сохранить склад оператора',
+                life: 3000,
+              })
+            }
+            this.modals.operator = false
+          })
+          .catch(() => {
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: 'Не удалось сохранить склад оператора',
+              life: 3000,
+            })
+            this.modals.operator = false
+          })
+      })
+    },
     setMain(store_id = this.storeSettings.id) {
       this.loading = true
       this.setStoreMain({
@@ -1273,15 +1422,13 @@ export default {
 }
 .warehouse-settings-cont-item:not(:first-child),
 .warehouse-settings-cont-item:not(:last-child) {
-  padding: 0 40px;
+  padding: 0 24px;
 }
 .warehouse-settings-cont-item:first-child {
-  padding: 0 40px 0 0;
+  padding: 0 24px 0 0;
 }
 .warehouse-settings-cont-item:last-child {
-  padding: 0 0 0 40px;
-  display: flex;
-  align-items: center;
+  padding: 0 0 0 24px;
 }
 .warehouse-settings-cont-item:not(:last-child):after {
   content: '';
@@ -1329,13 +1476,21 @@ export default {
   color: #282828;
   margin-bottom: 24px;
 }
-.warehouse-settings__main-select .warehouse-settings__main-dropdown {
+.warehouse-settings__main-select .warehouse-settings__main-dropdown,
+.warehouse-settings__main-dropdown,
+body .p-dropdown.warehouse-settings__main-dropdown {
   width: 100%;
-  border-radius: 999px;
+  border-radius: 999px !important;
   overflow: hidden;
 }
-.warehouse-settings__main-select .warehouse-settings__main-dropdown .p-dropdown-label {
+.warehouse-settings__main-select .warehouse-settings__main-dropdown .p-dropdown-label,
+.warehouse-settings__main-dropdown .p-dropdown-label,
+body .p-dropdown.warehouse-settings__main-dropdown .p-dropdown-label {
   padding-left: 20px;
+}
+.warehouse-settings__main-dropdown .p-dropdown-trigger,
+body .p-dropdown.warehouse-settings__main-dropdown .p-dropdown-trigger {
+  border-radius: 0 999px 999px 0;
 }
 .warehouse-settings-form {
   width: 100%;

@@ -176,9 +176,11 @@
             {{
               this.order?.delivery_type_opt == '0'
                 ? 'Самовывоз'
-                : this.order?.delivery_type_opt == '2'
-                  ? 'Доставка МС'
-                  : 'Транспортной компанией'
+                : this.order?.delivery_type_opt == '1'
+                  ? 'Доставка ТК'
+                  : this.order?.delivery_type_opt == '2'
+                    ? 'МС Экспресс'
+                    : 'МС Логистик'
             }}
           </div>
         </div>
@@ -220,9 +222,11 @@
             {{
               this.order?.delivery_type_opt == '0'
                 ? 'Самовывоз'
-                : this.order?.delivery_type_opt == '2'
-                  ? 'Доставка МС'
-                  : 'Транспортной компанией'
+                : this.order?.delivery_type_opt == '1'
+                  ? 'Доставка ТК'
+                  : this.order?.delivery_type_opt == '2'
+                    ? 'МС Экспресс'
+                    : 'МС Логистик'
             }}
           </div>
         </div>

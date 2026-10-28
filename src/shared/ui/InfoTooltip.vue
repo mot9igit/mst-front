@@ -30,12 +30,14 @@ const isVisible = ref(false)
 
 .d-icon__show-info {
   cursor: help;
+  color: rgba(117, 117, 117, 0.4);
 }
 
 .info-tooltip__bubble {
   position: absolute;
-  top: calc(100% + 16px);
-  left: -16px;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
   width: max-content;
   max-width: 317px;
   padding: 9px 12px;
@@ -46,7 +48,7 @@ const isVisible = ref(false)
   line-height: 18px;
   white-space: normal;
   word-wrap: break-word;
-  z-index: 1000;
+  z-index: 10000;
   filter: drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.14));
 }
 
@@ -54,7 +56,8 @@ const isVisible = ref(false)
   content: '';
   position: absolute;
   top: -6px;
-  left: 16px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 0;
   height: 0;
   border-left: 6px solid transparent;
