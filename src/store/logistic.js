@@ -72,6 +72,33 @@ export default {
       const response = await api.logistics.acceptCode(data)
       return response
     },
+    async createShippingCity(store, { form }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action: 'create/shipping/city',
+        form: form,
+      }
+      const response = await api.logistics.saveShippingCity(data)
+      return response
+    },
+    async setCityActive(store, { city_id }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action: 'set/city/active',
+        city_id: city_id,
+      }
+      const response = await api.logistics.saveShippingCity(data)
+      return response
+    },
+    async deleteLogisticCity(store, { city_id }) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action: 'delete/logistic/city',
+        city_id: city_id,
+      }
+      const response = await api.logistics.saveShippingCity(data)
+      return response
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },

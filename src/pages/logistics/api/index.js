@@ -40,5 +40,24 @@ export default function (instance) {
         })
       return data
     },
+    saveShippingCity(payload) {
+      const data = instance
+        .post('front_getshipping/', payload)
+        .then(function (res) {
+          return res
+        })
+        .catch(function (err) {
+          if (err.response) {
+            if (err.response.status == 403) {
+              localStorage.removeItem('user')
+              router.push({ name: 'home' })
+            }
+            throw err
+          } else {
+            throw new Error('technical error')
+          }
+        })
+      return data
+    },
   }
 }

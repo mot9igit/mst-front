@@ -116,7 +116,14 @@
         <div class="warehouse-settings-cont-item-flex">
           <div class="order-card__orderinfo-grid-text">
             {{
-              storeSettings?.operator_store_name ||
+              (storeSettings?.logistic_hub &&
+                (operatorStoresList.find(
+                  (s) => s.value == storeSettings.logistic_hub || s.id == storeSettings.logistic_hub
+                )?.label ||
+                  operatorStoresList.find(
+                    (s) =>
+                      s.value == storeSettings.logistic_hub || s.id == storeSettings.logistic_hub
+                  )?.name)) ||
               (operatorStore &&
                 (operatorStoresList.find((s) => s.value == operatorStore || s.id == operatorStore)
                   ?.label ||
@@ -859,6 +866,7 @@ export default {
       setStoreName: 'org/setStoreName',
       setStoreMain: 'org/setStoreMain',
       getNearStores: 'logistic/getNearStores',
+      saveLogisticHub: 'logistic/saveHub',
     }),
     unActivateOrganization() {
       if (this.form.participantsType == 3) {
@@ -1192,55 +1200,20 @@ export default {
       this.setMain(this.selectedMainStore)
     },
     openOperatorModal() {
-      this.operatorStore =
-        this.storeSettings?.operator_store_id || this.storeSettings?.operator_store || null
+      const hubId = this.storeSettings?.logistic_hub || null
       this.getNearStores().finally(() => {
+        const option = this.operatorStoresList.find(
+          (s) => s.value == hubId || s.id == hubId || s.code == hubId
+        )
+        this.operatorStore = option
+          ? option.value ?? option.id ?? option.code
+          : hubId
         this.modals.operator = true
       })
     },
     saveOperatorStore() {
-      const payload = {
-        action: 'set/logistic/store',
-        id: this.$route.params.id,
-        store_id: this.$route.params.store_id,
-        hub_id: this.operatorStore,
-      }
-      import('@/shared/api/api').then((m) => {
-        const api = m.default
-        api.org
-          .getOrg(payload)
-          .then((res) => {
-            const success =
-              res?.data?.success === true ||
-              res?.data?.data?.success === true ||
-              res?.data?.status === 'ok'
-            if (success) {
-              this.$toast.add({
-                severity: 'success',
-                summary: 'Успешно',
-                detail: 'Склад оператора сохранен',
-                life: 3000,
-              })
-              this.getStoreSettings()
-            } else {
-              this.$toast.add({
-                severity: 'error',
-                summary: 'Ошибка',
-                detail: 'Не удалось сохранить склад оператора',
-                life: 3000,
-              })
-            }
-            this.modals.operator = false
-          })
-          .catch(() => {
-            this.$toast.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: 'Не удалось сохранить склад оператора',
-              life: 3000,
-            })
-            this.modals.operator = false
-          })
+      this.saveLogisticHub({ hub_id: this.operatorStore }).then(() => {
+        this.modals.operator = false
       })
     },
     setMain(store_id = this.storeSettings.id) {
@@ -1283,6 +1256,7 @@ export default {
         if (newVal.selfname) {
           this.name = newVal.selfname
         }
+        this.operatorStore = newVal.logistic_hub || null
       }
     },
     regions: function (newVal) {

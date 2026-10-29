@@ -234,7 +234,7 @@ export default {
       return this.order?.is_shipment === true
     },
     showActionButton() {
-      return this.status?.api_key === 'buyer_accepted'
+      return this.status?.api_key === 'pack_ready'
     },
     actionButton() {
       return 'Выдать товар'

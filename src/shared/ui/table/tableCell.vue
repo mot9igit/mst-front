@@ -852,7 +852,8 @@ export default {
 .cell--status.cell--status-seller_started,
 .cell--status.cell--status-seller_accepted,
 .cell--status.cell--status-buyer_accepted,
-.cell--status.cell--status-seller_packed {
+.cell--status.cell--status-seller_packed,
+.cell--status.cell--status-pack_ready {
   color: #282828;
 }
 .cell--status.cell--status-checking,

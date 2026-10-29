@@ -9928,6 +9928,7 @@ body {
 .order-card__status.status-seller_started,
 .order-card__status.status-seller_accepted,
 .order-card__status.status-buyer_accepted,
+.order-card__status.status-pack_ready,
 .order-card__status.status-seller_packed {
   color: #282828;
 }
@@ -10050,7 +10051,8 @@ body {
 .cell--status.cell--status-seller_started,
 .cell--status.cell--status-seller_accepted,
 .cell--status.cell--status-buyer_accepted,
-.cell--status.cell--status-seller_packed {
+.cell--status.cell--status-seller_packed,
+.cell--status.cell--status-pack_ready {
   color: #282828;
 }
 .select-window-newname {

@@ -1,45 +1,95 @@
 <template>
   <section class="shippings" id="shippings">
+    <Toast />
     <!-- Верхушка страницы -->
     <div class="d-top">
       <breadcrumbs />
     </div>
 
-    <!-- Шапка страницы -->
+    <Tabs v-model="activeTab" class="shippings__tabs">
+      <TabList class="d-tab2__container shippings__tabs-list">
+        <div class="d-tab2" :class="{ 'd-tab2--active': activeTab == 0 }" :value="0">
+          <button class="collection__tabs-link" @click.prevent="activeTab = 0">
+            <span>Города МС Экспресс</span>
+          </button>
+        </div>
+        <div class="d-tab2" :class="{ 'd-tab2--active': activeTab == 1 }" :value="1">
+          <button class="collection__tabs-link" @click.prevent="activeTab = 1">
+            <span>МС Экспресс</span>
+          </button>
+        </div>
+        <div class="d-tab2" :class="{ 'd-tab2--active': activeTab == 2 }" :value="2">
+          <button class="collection__tabs-link" @click.prevent="activeTab = 2">
+            <span>МС Логистик</span>
+          </button>
+        </div>
+      </TabList>
 
-    <h1 class="shippings__header">
-      <span>Мои отгрузки</span>
-      <div class="d-divider d-divider--vertical shippings__header-title-divider"></div>
-      <span>Отгрузки ({{ shippings.total ?? 0 }})</span>
-    </h1>
-
-    <div class="shippings__header-button">
-      <button
-        class="d-button d-button-primary d-button-primary-small box-shadow-none shippings__header-button--create"
-        @click.prevent="createShipping"
-      >
-        <i class="d-icon-plus-flat clients__card-offer-icon"></i>
-        <span>Добавить отгрузку</span>
-      </button>
-    </div>
-    <Loader v-if="loading || actionLoading" />
-    <div class="shippings__content">
-      <BaseTable
-        :items_data="shippings.shipment"
-        :total="shippings.total"
-        :pagination_items_per_page="this.pagination_items_per_page"
-        :pagination_offset="this.pagination_offset"
-        :page="this.page"
-        :table_data="this.table_data"
-        :filters="this.filters"
-        @filter="filter"
-        @sort="filter"
-        @paginate="paginate"
-        @viewElem="showShipping"
-        @editElem="editShipping"
-        @deleteElem="delShipping"
-      />
-    </div>
+      <TabPanels>
+        <TabPanel v-if="activeTab == 0">
+          <h1 class="shippings__header">
+            <span>Города МС Экспресс</span>
+          </h1>
+          <div class="shippings__header-button">
+            <button
+              class="d-button d-button-primary d-button-primary-small box-shadow-none shippings__header-button--create"
+              @click.prevent="createCity"
+            >
+              <i class="d-icon-plus-flat clients__card-offer-icon"></i>
+              <span>Добавить город</span>
+            </button>
+          </div>
+          <Loader v-if="loading" />
+          <div class="shippings__content">
+            <BaseTable
+              :items_data="shippings.ship_cities || []"
+              :total="shippings.ship_cities?.length || 0"
+              :pagination_items_per_page="pagination_items_per_page"
+              :page="1"
+              :show_filter="false"
+              :table_data="cities_table_data"
+              @viewElem="showCity"
+              @editElem="editCity"
+              @deleteElem="deleteCity"
+              @approveElem="activateCity"
+            />
+          </div>
+        </TabPanel>
+        <TabPanel v-if="activeTab == 1">
+          <h1 class="shippings__header">
+            <span>Отгрузки МС Экспресс</span>
+          </h1>
+          <div class="shippings__header-button">
+            <button
+              class="d-button d-button-primary d-button-primary-small box-shadow-none shippings__header-button--create"
+              @click.prevent="createShipping"
+            >
+              <i class="d-icon-plus-flat clients__card-offer-icon"></i>
+              <span>Добавить отгрузку</span>
+            </button>
+          </div>
+          <Loader v-if="loading || actionLoading" />
+          <div class="shippings__content">
+            <BaseTable
+              :items_data="shippings.shipment"
+              :total="shippings.total"
+              :pagination_items_per_page="this.pagination_items_per_page"
+              :pagination_offset="this.pagination_offset"
+              :page="this.page"
+              :table_data="this.table_data"
+              :filters="this.filters"
+              @filter="filter"
+              @sort="filter"
+              @paginate="paginate"
+              @viewElem="showShipping"
+              @editElem="editShipping"
+              @deleteElem="delShipping"
+            />
+          </div>
+        </TabPanel>
+        <TabPanel v-if="activeTab == 2"></TabPanel>
+      </TabPanels>
+    </Tabs>
     <teleport to="body">
       <customModal v-model="this.modalShipping" class="shippings__modal">
         <Loader v-if="actionLoading" />
@@ -66,6 +116,16 @@
           @submit="submitOrderDate"
         />
       </customModal>
+      <customModal v-model="modalCity" class="shippings__modal">
+        <CityWindow
+          :city="cityData"
+          :mode="cityMode"
+          @editMode="cityMode = 1"
+          @deleteCity="deleteCity"
+          @cancel="modalCity = false"
+          @submit="submitCity"
+        />
+      </customModal>
     </teleport>
   </section>
 </template>
@@ -75,8 +135,14 @@ import { mapActions, mapGetters } from 'vuex'
 import BaseTable from '@/shared/ui/table/table.vue'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
+import Toast from 'primevue/toast'
 import ShipmentWindow from './ui/shipmentWindow.vue'
 import ChangeOrderDateWindow from './ui/changeOrderDateWindow.vue'
+import CityWindow from './ui/cityWindow.vue'
+import Tabs from 'primevue/tabs'
+import TabList from 'primevue/tablist'
+import TabPanels from 'primevue/tabpanels'
+import TabPanel from 'primevue/tabpanel'
 
 function parseShipmentDate(value) {
   if (!value) return null
@@ -109,8 +175,14 @@ export default {
     Loader,
     BaseTable,
     customModal,
+    Toast,
     ShipmentWindow,
     ChangeOrderDateWindow,
+    CityWindow,
+    Tabs,
+    TabList,
+    TabPanels,
+    TabPanel,
   },
   props: {
     pagination_items_per_page: {
@@ -126,6 +198,7 @@ export default {
     return {
       loading: true,
       actionLoading: false,
+      activeTab: 1,
       page: 1,
       request_filter: null,
       modalShipping: false,
@@ -133,6 +206,57 @@ export default {
       modalOrderDate: false,
       orderDateOrder: {},
       mode: 0,
+      modalCity: false,
+      cityData: {},
+      cityMode: 0,
+      cities_table_data: {
+        id: {
+          label: '№',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        city_name: {
+          label: 'Город',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        period: {
+          label: 'Период',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        week_days_str: {
+          label: 'Дни недели',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        active: {
+          label: 'Активен',
+          type: 'boolean_active',
+          class: 'cell_centeralign',
+        },
+        actions: {
+          label: 'Действия',
+          type: 'actions',
+          sort: false,
+          class: 'cell_centeralign',
+          available: {
+            approve: {
+              icon: 'pi pi-power-off',
+              label: 'Активировать / Деактивировать',
+            },
+
+            edit: {
+              icon: 'pi pi-pencil',
+              label: 'Редактировать',
+            },
+            delete: {
+              icon: 'pi pi-trash',
+              label: 'Удалить',
+            },
+          },
+        },
+      },
       filters: {
         dates: {
           name: 'Дата',
@@ -257,6 +381,8 @@ export default {
       saveShipping: 'wholesale/saveShipping',
       deleteShipping: 'wholesale/deleteShipping',
       changeOrderDate: 'wholesale/changeOrderDate',
+      setCityActive: 'logistic/setCityActive',
+      deleteLogisticCity: 'logistic/deleteLogisticCity',
     }),
     filter(data) {
       this.loading = true
@@ -308,6 +434,74 @@ export default {
       this.modalShipping = true
       this.modalShippingData = {}
     },
+    openCityModal(city, mode) {
+      this.cityMode = mode
+      this.cityData = city ? { ...city } : {}
+      this.modalCity = true
+    },
+    showCity(city) {
+      this.openCityModal(city, 0)
+    },
+    editCity(city) {
+      this.openCityModal(city, 1)
+    },
+    createCity() {
+      this.openCityModal(null, 2)
+    },
+    submitCity(form) {
+      if (this.cityMode === 2) {
+        this.modalCity = false
+        this.loading = true
+        const requestData = this.request_filter || {
+          page: this.page,
+          perpage: this.pagination_items_per_page,
+        }
+        this.getShippings(requestData).finally(() => {
+          this.loading = false
+        })
+        return
+      }
+      const list = this.shippings?.ship_cities || []
+      const index = list.findIndex((city) => String(city.id) === String(form.id))
+      if (index !== -1) {
+        list.splice(index, 1, { ...list[index], ...form })
+      }
+      this.modalCity = false
+    },
+
+    activateCity(city) {
+      this.loading = true
+      this.setCityActive({ city_id: city.id }).then(() => {
+        const requestData = this.request_filter || {
+          page: this.page,
+          perpage: this.pagination_items_per_page,
+        }
+        this.getShippings(requestData).finally(() => {
+          this.loading = false
+        })
+      })
+    },
+
+    deleteCity(city) {
+      this.$confirm.require({
+        message: 'Вы действительно хотите удалить город ' + (city?.city_name || '') + '?',
+        header: 'Удаление города',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+          this.loading = true
+          this.deleteLogisticCity({ city_id: city.id }).then(() => {
+            const requestData = this.request_filter || {
+              page: this.page,
+              perpage: this.pagination_items_per_page,
+            }
+            this.getShippings(requestData).finally(() => {
+              this.loading = false
+            })
+          })
+          this.modalCity = false
+        },
+      })
+    },
     async editShip(data) {
       const dateTime = data?.dateTime
       const date = dateTime ? formatShipmentDate(dateTime) : null
@@ -345,7 +539,7 @@ export default {
             life: 3000,
           })
         }
-      } catch (e) {
+      } catch {
         this.$toast.add({
           severity: 'error',
           summary: 'Ошибка',
@@ -500,7 +694,7 @@ export default {
                 life: 3000,
               })
             }
-          } catch (e) {
+          } catch {
             this.$toast.add({
               severity: 'error',
               summary: 'Ошибка',
@@ -525,6 +719,27 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 49px;
+  &__tabs {
+    width: 100%;
+    .p-tabpanels {
+      padding: 0;
+      margin-top: 32px;
+      background-color: transparent;
+    }
+    &-list {
+      width: max-content;
+      .p-tablist-tab-list {
+        background-color: transparent;
+        border: none;
+        gap: 8px;
+      }
+      .collection__tabs-link {
+        padding: 0;
+        font: inherit;
+        color: inherit;
+      }
+    }
+  }
   &__header {
     display: flex;
     gap: 16px;
@@ -555,7 +770,7 @@ export default {
     }
   }
   &__content {
-    margin-top: -89px;
+    margin-top: 24px;
     .dart-mb-1 {
       margin-bottom: 49px;
       .p-datepicker {
