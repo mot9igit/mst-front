@@ -20,7 +20,7 @@
         </div>
         <div class="d-tab2" :class="{ 'd-tab2--active': activeTab == 2 }" :value="2">
           <button class="collection__tabs-link" @click.prevent="activeTab = 2">
-            <span>МС Логистик</span>
+            <span>МС Логистика Х5</span>
           </button>
         </div>
       </TabList>

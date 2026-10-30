@@ -163,7 +163,7 @@
                   ? 'Доставка ТК'
                   : item.delivery_type_opt == 2
                     ? 'МС Экспресс'
-                    : 'МС Логистик'
+                    : 'МС Логистика Х5'
             }}
           </div>
           <div v-if="item.delivery_type == 2">

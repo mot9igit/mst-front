@@ -283,8 +283,8 @@
                             ? 'Транспортная компания'
                             : this.form.typeDeliveryOpt == 2
                               ? 'МС Экспресс'
-                              : sale.delivery_type_opt == 3
-                                ? 'МС Логистик'
+                              : this.form.typeDeliveryOpt == 3
+                                ? 'МС Логистика Х5'
                                 : ''
                       }}
                     </p>
@@ -1790,7 +1790,7 @@
                         <label
                           for="type-delivery-opt-4"
                           class="d-radio__label promo-master__radio-label"
-                          >Доставка МС Логистик (межгород)
+                          >Доставка МС Логистика Х5 (межгород)
                         </label>
                       </div>
                     </div>

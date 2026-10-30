@@ -283,9 +283,13 @@ export default {
       const city = this.city || {}
       const sourceWeekdays = city.weekdays ?? city.days ?? city.repeat_days
       const allWeekdays = WEEKDAYS.map((day) => day.value)
+      const cityId = city.slShipCities_city
       this.form = {
         id: city.id ?? null,
-        city_id: 'city_' + city.slShipCities_city,
+        city_id:
+          cityId === null || cityId === undefined || cityId === ''
+            ? null
+            : 'city_' + cityId,
         city_name: city.city_name ?? city.name ?? '',
         date_from: parseCityDate(city.slShipCities_date_from),
         date_to: parseCityDate(city.slShipCities_date_to),

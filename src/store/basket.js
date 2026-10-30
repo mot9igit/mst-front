@@ -140,12 +140,13 @@ export default {
       }
       return response
     },
-    async orderSubmit(store, { orgId, warehouse_id }) {
+    async orderSubmit(store, { orgId, warehouse_id, manager_id }) {
       const data = {
         action: 'order/opt/submit',
         id: router.currentRoute._value.params.id,
         org_id: orgId,
         warehouse_id: warehouse_id,
+        manager_id: manager_id,
       }
       const response = await api.basket.orderSubmit(data)
       return response

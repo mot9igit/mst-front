@@ -342,13 +342,14 @@ export default {
       const response = api.offer.getOffers(data)
       return response
     },
-    async createOrder(store, { store_id, edit_id }) {
+    async createOrder(store, { store_id, edit_id, manager_id }) {
       const data = {
         action: 'create/offer/order',
         id_org_from: router.currentRoute._value.params.id_org_from,
         store_id: store_id,
         edit_id: edit_id,
         initiator_id: router.currentRoute._value.params.id,
+        manager_id: manager_id,
         extended_name: 'offer',
       }
       const response = api.offer.getOffers(data)

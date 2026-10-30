@@ -942,6 +942,7 @@ export default {
       edits: [],
       offers: [],
       buy_button_text: 'Оформить все заказы',
+      logistic: {},
     }
   },
   computed: {
@@ -1112,74 +1113,79 @@ export default {
         } else {
           // orderSubmitApi
 
-          this.orderSubmitApi({ orgId: orgId, warehouse_id: warehouse_id })
-            .then((response) => {
-              let arr = []
-              let res = response.data?.data
-              let products = res.products
-              let nums = res.nums
-              for (var i in res.orders) {
-                if (res.orders[i].fog) {
-                  this.modalOrderInfo = true
+          // смотрим доставку МС Логистик
+          if (!Object.keys(this.logistic)) {
+            this.orderSubmitApi({ orgId: orgId, warehouse_id: warehouse_id })
+              .then((response) => {
+                let arr = []
+                let res = response.data?.data
+                let products = res.products
+                let nums = res.nums
+                for (var i in res.orders) {
+                  if (res.orders[i].fog) {
+                    this.modalOrderInfo = true
+                  }
                 }
-              }
 
-              this.list_orders = res.orders
-              console.log(res)
-              for (var key in products) {
-                const product = products[key]
-                arr.push({
-                  id: product.id_remain,
-                  name: product.name,
-                  price: product.price,
-                  quantity: product.count,
-                })
-              }
-              this.order_to_basket = false
-              window.dataLayer = window.dataLayer || []
+                this.list_orders = res.orders
+                console.log(res)
+                for (var key in products) {
+                  const product = products[key]
+                  arr.push({
+                    id: product.id_remain,
+                    name: product.name,
+                    price: product.price,
+                    quantity: product.count,
+                  })
+                }
+                this.order_to_basket = false
+                window.dataLayer = window.dataLayer || []
 
-              window.dataLayer.push({
-                ecommerce: {
-                  currencyCode: 'RUB',
-                  purchase: {
-                    actionField: {
-                      id: 'TRX987',
+                window.dataLayer.push({
+                  ecommerce: {
+                    currencyCode: 'RUB',
+                    purchase: {
+                      actionField: {
+                        id: 'TRX987',
+                      },
+                      products: arr,
                     },
-                    products: arr,
                   },
-                },
+                })
+                this.$emit('orderSubmit', nums.join(', '))
+                this.order = nums.join(', ')
+                console.log(this.order)
+                if (
+                  this.edits?.length &&
+                  (this.$route.name == 'purchasesOrder' || this.$route.name == 'wholesaleOrder')
+                ) {
+                  for (var id in this.edits) {
+                    if (this.$route.params.order_id == this.edits[id]) {
+                      this.$emit('orderEdit')
+                    }
+                  }
+                }
+                if (this.offers?.length && this.$route.name == 'purchasesOffer') {
+                  for (var i in this.offers) {
+                    if (this.$route.params.offer_id == this.offers[i]) {
+                      this.$emit('orderEdit')
+                    }
+                  }
+                }
+                this.getBasket().then(() => {
+                  this.loading = false
+                  this.submitting = false
+                  this.showChangedId = ''
+                  this.showChangedIdStore = ''
+                })
               })
-              this.$emit('orderSubmit', nums.join(', '))
-              this.order = nums.join(', ')
-              console.log(this.order)
-              if (
-                this.edits?.length &&
-                (this.$route.name == 'purchasesOrder' || this.$route.name == 'wholesaleOrder')
-              ) {
-                for (var id in this.edits) {
-                  if (this.$route.params.order_id == this.edits[id]) {
-                    this.$emit('orderEdit')
-                  }
-                }
-              }
-              if (this.offers?.length && this.$route.name == 'purchasesOffer') {
-                for (var i in this.offers) {
-                  if (this.$route.params.offer_id == this.offers[i]) {
-                    this.$emit('orderEdit')
-                  }
-                }
-              }
-              this.getBasket().then(() => {
+              .catch(() => {
                 this.loading = false
                 this.submitting = false
-                this.showChangedId = ''
-                this.showChangedIdStore = ''
               })
-            })
-            .catch(() => {
-              this.loading = false
-              this.submitting = false
-            })
+          } else {
+            // обработка логистических заказов
+          }
         }
       })
     },
@@ -1315,6 +1321,18 @@ export default {
               this.offers.push(newVal.data[org].data[store].id)
             }
             col_all++
+            for (var prod in newVal.data[org].data[store].data) {
+              if (newVal.data[org].data[store].data[prod].delivery_type_opt == 3) {
+                if (!this.logistic[org]) {
+                  this.logistic[org] = {}
+                }
+                if (!this.logistic[org][store]) {
+                  this.logistic[org][store] = {}
+                }
+                this.logistic[org][store][prod] = newVal.data[org].data[store].data[prod]
+                console.log('1')
+              }
+            }
           }
         }
         if (col_all == col_ord) {
@@ -1331,6 +1349,7 @@ export default {
       }
     },
     basket(newVal) {
+      this.logistic = {}
       if (Object.keys(newVal).length > 1) {
         if (
           Object.prototype.hasOwnProperty.call(newVal.data, this.basketWarehouse) &&
