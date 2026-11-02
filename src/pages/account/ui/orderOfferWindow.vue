@@ -8,7 +8,7 @@
         data-sheet="order"
       >
         <Loader v-if="this.loading"></Loader>
-        <div class="d-sheet__content order" v-if="!order">
+        <div class="d-sheet__content order" v-if="!order && !deliveryStep">
           <!-- Шапка -->
           <div class="order__header">
             <h3 class="order__header-title">
@@ -570,7 +570,7 @@
                           this.showChangedId = 'all'
                           this.action = 'offer'
                         } else {
-                          offerCreate('all')
+                          offerCreate()
                         }
                       }
                     "
@@ -587,7 +587,7 @@
                           this.showChangedId = 'all'
                           this.action = 'order'
                         } else {
-                          orderCreate('all')
+                          orderCreate()
                         }
                       }
                     "
@@ -622,7 +622,7 @@
                           this.showChangedId = 'all'
                           this.action = 'offer'
                         } else {
-                          offerCreate('all')
+                          offerCreate()
                         }
                       }
                     "
@@ -639,7 +639,7 @@
                           this.showChangedId = 'all'
                           this.action = 'order'
                         } else {
-                          orderCreate('all')
+                          orderCreate()
                         }
                       }
                     "
@@ -653,6 +653,139 @@
                   </button>
                   -->
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-sheet__content order" v-else-if="!order && deliveryStep">
+          <div class="order__header">
+            <h3 class="order__header-title">Оформление доставки</h3>
+            <button class="order__header-close" @click.prevent="close()">
+              <i class="d-icon-times-flat"></i>
+            </button>
+          </div>
+
+          <div class="order__delivery">
+            <div class="order__delivery-manager">
+              <label class="order__delivery-manager-label" for="delivery_manager">
+                Выберите менеджера, ответственного за получение груза
+              </label>
+              <TreeSelectFilter
+                id="delivery_manager"
+                v-model="deliveryManager"
+                :options="deliveryManagerOptions"
+                :multiple="false"
+                valueFormat="id"
+                :clearable="false"
+                :append-to-body="true"
+                placeholder="Выберите менеджера"
+                class="order__delivery-manager-select"
+              />
+            </div>
+
+            <div class="order__delivery-pickup">
+              <p class="order__delivery-pickup-title">Точка выдачи</p>
+              <label class="order__delivery-pickup-item">
+                <input
+                  class="order__delivery-pickup-checkbox"
+                  type="checkbox"
+                  checked
+                  disabled
+                />
+                <span class="order__delivery-pickup-label">Ближайший 5POST</span>
+              </label>
+            </div>
+
+            <div class="order__delivery-products">
+              <h4 class="order__delivery-products-title">Доставляемые товары</h4>
+              <div
+                class="order__delivery-card"
+                v-for="logisticOrder in deliveryOrders"
+                :key="logisticOrder.org_id + '_' + logisticOrder.warehouse_id"
+              >
+                <div class="order__delivery-card-header">
+                  <div class="order__delivery-card-org">
+                    <img
+                      v-if="logisticOrder.org_image"
+                      :src="logisticOrder.org_image"
+                      :alt="logisticOrder.org_name"
+                      class="order__delivery-card-org-image"
+                    />
+                    <p class="order__delivery-card-org-name">{{ logisticOrder.org_name }}</p>
+                  </div>
+                  <div class="d-divider d-divider--vertical order__delivery-card-divider"></div>
+                  <p class="order__delivery-card-warehouse">
+                    Склад {{ logisticOrder.warehouse_name }} #{{ logisticOrder.warehouse_id }}
+                    <template v-if="logisticOrder.warehouse_address">
+                      — {{ logisticOrder.warehouse_address }}
+                    </template>
+                  </p>
+                </div>
+                <div class="order__delivery-card-products">
+                  <div
+                    class="order__delivery-product"
+                    v-for="product in logisticOrder.products"
+                    :key="product.key || product.remain_id || product.id"
+                  >
+                    <div class="order__delivery-product-image-container">
+                      <img
+                        :src="product.image"
+                        :alt="product.name"
+                        class="order__delivery-product-image"
+                      />
+                    </div>
+                    <div class="order__delivery-product-info">
+                      <p class="order__delivery-product-name">{{ product.name }}</p>
+                      <p class="order__delivery-product-article">Арт: {{ product.article }}</p>
+                    </div>
+                    <div class="order__delivery-product-total">
+                      <p class="order__delivery-product-count">
+                        {{ Number(product.count || 0).toLocaleString('ru') }} шт.
+                      </p>
+                      <p class="order__delivery-product-sum">
+                        {{ Number(product.cost || 0).toLocaleString('ru') }} ₽
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="order__footer order__delivery-footer">
+            <div class="d-divider d-divider--full order__footer-divider"></div>
+            <div class="order__footer-content order__delivery-footer-content">
+              <div class="order__footer-right">
+                <div class="order__footer-actions order__delivery-footer-actions">
+                  <button
+                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__delivery-back order__delivery-back--outline noclose_click"
+                    @click.prevent.stop="cancelDelivery()"
+                  >
+                    Назад
+                  </button>
+                  <button
+                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy noclose_click"
+                    @click.prevent.stop="submitDelivery()"
+                  >
+                    Оформить доставку
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="order__footer-bottom">
+              <div class="order__footer-actions order__delivery-footer-actions">
+                <button
+                  class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__delivery-back order__delivery-back--outline noclose_click"
+                  @click.prevent.stop="cancelDelivery()"
+                >
+                  Назад
+                </button>
+                <button
+                  class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy noclose_click"
+                  @click.prevent.stop="submitDelivery()"
+                >
+                  Оформить доставку
+                </button>
               </div>
             </div>
           </div>
@@ -801,13 +934,15 @@ import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
+import TreeSelectFilter from '@/shared/ui/TreeSelectFilter.vue'
 import Toast from 'primevue/toast'
 import Editor from 'primevue/editor'
+import { collectMsLogisticOrders } from '@/pages/account/api/logisticOrders'
 
 export default {
   name: 'orderOfferWindow',
   emits: ['close', 'catalogUpdate', 'offerSubmit', 'disableVendorsSelected', 'refreshVendors'],
-  components: { Loader, customModal, Counter, Toast, Editor },
+  components: { Loader, customModal, Counter, TreeSelectFilter, Toast, Editor },
   props: {
     active: {
       type: Boolean,
@@ -842,6 +977,10 @@ export default {
       modalCommentDelete: false,
       action: '',
       edit: null,
+      deliveryStep: false,
+      deliveryManager: null,
+      pendingSubmit: null,
+      logistic: [],
     }
   },
   computed: {
@@ -849,7 +988,14 @@ export default {
       basketOffer: 'offer/basketOffer',
       basketOfferWarehouse: 'offer/basketOfferWarehouse',
       orgName: 'org/orgName',
+      client_managers: 'addition/clientManagers',
     }),
+    deliveryManagerOptions() {
+      return Array.isArray(this.client_managers) ? this.client_managers : []
+    },
+    deliveryOrders() {
+      return this.logistic
+    },
   },
   methods: {
     ...mapActions({
@@ -857,10 +1003,11 @@ export default {
       basketOfferClear: 'offer/basketOfferClear',
       basketOfferProductRemove: 'offer/basketOfferProductRemove',
       basketOfferProductUpdate: 'offer/basketOfferProductUpdate',
-      offerSubmit: 'offer/offerSubmit',
+      offerSubmitApi: 'offer/offerSubmit',
       setOfferBasketComment: 'offer/setOfferBasketComment',
       getOrgName: 'org/getOrgName',
-      createOrder: 'offer/createOrder',
+      createOrderApi: 'offer/createOrder',
+      getClientManagers: 'addition/getClientManagers',
     }),
     salesActive(key) {
       if (key in this.sales_active) {
@@ -998,7 +1145,7 @@ export default {
         this.$emit('catalogUpdate')
       })
     },
-    offerCreate() {
+    offerCreate(managerId = null) {
       //  if(this.form.end_date == null) {
       //    this.error = true
       //    this.$toast.add({ severity: 'error', summary: "Ошибка", detail: "Укажите дату окончания предложения", life: 3000 });
@@ -1006,7 +1153,10 @@ export default {
       //  }else{
       this.loading = true
 
-      this.offerSubmit({ cart_store: this.basketOfferWarehouse }).then((res) => {
+      this.offerSubmitApi({
+        cart_store: this.basketOfferWarehouse,
+        manager_id: managerId,
+      }).then((res) => {
         if (res.data.success) {
           this.getBasketOffer().then(() => {
             this.loading = false
@@ -1023,6 +1173,8 @@ export default {
           // this.id_clear_org = this.$route.params.id_org_from
           // this.id_clear_store = this.basketOfferWarehouse
           // this.clearCart({ org_id: this.id_clear_org, store_id: this.id_clear_store })
+          this.deliveryStep = false
+          this.pendingSubmit = null
           this.$emit('offerSubmit')
           this.$emit('close')
         } else {
@@ -1038,15 +1190,24 @@ export default {
       })
       //  }
     },
-    async orderCreate() {
+    async orderCreate(managerId = null) {
+      if (managerId === null && this.deliveryOrders.length) {
+        this.pendingSubmit = 'order'
+        this.deliveryManager = null
+        this.deliveryStep = true
+        this.getDeliveryManagers()
+        return
+      }
+
       this.loading = true
       let data = {
         store_id: this.basketOfferWarehouse,
+        manager_id: managerId,
       }
       if (this.edit) {
         data.edit_id = this.edit
       }
-      this.createOrder(data).then((res) => {
+      this.createOrderApi(data).then((res) => {
         if (res.data.success) {
           this.getBasketOffer().then(() => {
             this.loading = false
@@ -1059,6 +1220,8 @@ export default {
             life: 3000,
           })
 
+          this.deliveryStep = false
+          this.pendingSubmit = null
           this.$emit('offerSubmit')
           this.$emit('close')
           if (this.edit) {
@@ -1081,6 +1244,35 @@ export default {
           return
         }
       })
+    },
+    getDeliveryManagers() {
+      this.getClientManagers({ org_id: this.$route.params.id_org_from })
+    },
+    cancelDelivery() {
+      this.deliveryStep = false
+      this.deliveryManager = null
+      this.pendingSubmit = null
+    },
+    submitDelivery() {
+      if (
+        this.deliveryManager === null ||
+        this.deliveryManager === undefined ||
+        this.deliveryManager === ''
+      ) {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Выберите менеджера, ответственного за получение груза',
+          life: 3000,
+        })
+        return
+      }
+
+      if (this.pendingSubmit === 'offer') {
+        this.offerCreate(this.deliveryManager)
+      } else {
+        this.orderCreate(this.deliveryManager)
+      }
     },
     saveComment() {
       if (this.modalCommentText != '' && this.modalCommentText != '<p></p>') {
@@ -1199,6 +1391,11 @@ export default {
   },
   watch: {
     basketStore(newVal) {
+      if (Object.keys(newVal).length) {
+        this.logistic = collectMsLogisticOrders(newVal)
+      } else {
+        this.logistic = []
+      }
       // if (Object.keys(newVal).length) {
       //   for (var org in newVal.data) {
       //     for (var store in newVal.data[org]) {

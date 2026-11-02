@@ -10,6 +10,7 @@ export default {
     },
     order: {},
     nearStores: {},
+    postOrders: {},
   },
   actions: {
     async getOrders({ commit }, { filter, sort, page, perpage, filtersdata } = {}) {
@@ -25,6 +26,22 @@ export default {
       const response = await api.logistics.getOrders(data)
       if (response) {
         commit('SET_ORDERS', response.data.data)
+      }
+      return response
+    },
+    async getPostOrders({ commit }, { filter, sort, page, perpage, filtersdata } = {}) {
+      const data = {
+        id: router.currentRoute._value.params.id,
+        action: 'get/post/orders',
+        filter: filter,
+        sort: sort,
+        page: page,
+        perpage: perpage,
+        filtersdata: filtersdata,
+      }
+      const response = await api.logistics.getOrders(data)
+      if (response) {
+        commit('SET_POST_ORDERS', response.data.data)
       }
       return response
     },
@@ -99,6 +116,9 @@ export default {
       const response = await api.logistics.saveShippingCity(data)
       return response
     },
+    unsetPostOrders({ commit }) {
+      commit('UNSET_POST_ORDERS')
+    },
     unsetOrders({ commit }) {
       commit('UNSET_ORDERS')
     },
@@ -118,6 +138,12 @@ export default {
           color_text: item.status?.color_text,
         }))
       }
+    },
+    SET_POST_ORDERS: (state, data) => {
+      state.postOrders = data.data
+    },
+    UNSET_POST_ORDERS: (state) => {
+      state.postOrders = {}
     },
     UNSET_ORDERS: (state) => {
       state.orders = {
@@ -150,6 +176,9 @@ export default {
   getters: {
     orders(state) {
       return state.orders
+    },
+    postOrders(state) {
+      return state.postOrders
     },
     order(state) {
       return state.order

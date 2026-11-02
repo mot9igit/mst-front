@@ -294,13 +294,16 @@ export default {
       }
       return response
     },
-    async offerSubmit(store, { cart_store }) {
+    async offerSubmit(store, { cart_store, manager_id }) {
       const data = {
         action: 'create/offer',
         id: router.currentRoute._value.params.id,
         id_org_from: router.currentRoute._value.params.id_org_from,
         cart_store: cart_store,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      }
+      if (manager_id !== null && manager_id !== undefined && manager_id !== '') {
+        data.manager_id = manager_id
       }
       const response = await api.offer.offerSubmit(data)
       return response

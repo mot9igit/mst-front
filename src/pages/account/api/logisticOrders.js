@@ -8,6 +8,11 @@ export function isMsLogisticAction(action) {
   return isEnabledAction(action) && Number(action?.delivery_type_opt) === MS_LOGISTIC_DELIVERY_TYPE
 }
 
+export function isMsLogisticProduct(product) {
+  if (Number(product?.delivery_type_opt) === MS_LOGISTIC_DELIVERY_TYPE) return true
+  return Array.isArray(product?.action) && product.action.some(isMsLogisticAction)
+}
+
 function warehouseName(warehouse) {
   const data = warehouse?.warehouse_data || {}
   return data.selfname || data.name_short || data.name || ''
@@ -25,14 +30,13 @@ export function collectMsLogisticOrders(basketStore) {
   Object.entries(orgs).forEach(([orgId, org]) => {
     const warehouses = org?.data || {}
     Object.entries(warehouses).forEach(([warehouseId, warehouse]) => {
-      const products = (warehouse?.data || []).filter((product) =>
-        (product?.action || []).some(isMsLogisticAction),
-      )
+      const products = Object.values(warehouse?.data || {}).filter(isMsLogisticProduct)
       if (!products.length) return
 
       orders.push({
         org_id: orgId,
         org_name: org?.org_data?.name || '',
+        org_image: org?.org_data?.image || '',
         warehouse_id: warehouseId,
         warehouse_name: warehouseName(warehouse),
         warehouse_address: warehouseAddress(warehouse),

@@ -182,6 +182,32 @@
                     ? 'МС Экспресс'
                     : 'МС Логистика Х5'
             }}
+            <template v-if="this.order?.delivery_type_opt == '3'">
+              <div class="order-card__delivery-details">
+                <div class="order-card__orderinfo-grid-text-down">
+                  <b class="order-card__orderinfo-grid-lable">Пункт выдачи</b>
+                  <p>Ближайший 5POST</p>
+                </div>
+                <div class="order-card__orderinfo-grid-text-down">
+                  <b class="order-card__orderinfo-grid-lable">Отв. за доставку</b>
+                  <p>
+                    <router-link
+                      v-if="this.order?.logistic_manager_id"
+                      :to="{
+                        name: 'profileStuffEdit',
+                        params: {
+                          id: this.$route.params.id,
+                          manager_id: this.order.logistic_manager_id,
+                        },
+                      }"
+                    >
+                      {{ this.order?.logistic_manager }}
+                    </router-link>
+                    <template v-else>{{ this.order?.logistic_manager }}</template>
+                  </p>
+                </div>
+              </div>
+            </template>
           </div>
         </div>
 
@@ -228,6 +254,32 @@
                     ? 'МС Экспресс'
                     : 'МС Логистика Х5'
             }}
+            <template v-if="this.order?.delivery_type_opt == '3'">
+              <div class="order-card__delivery-details">
+                <div class="order-card__orderinfo-grid-text-down">
+                  <b class="order-card__orderinfo-grid-lable">Пункт выдачи</b>
+                  <p>Ближайший 5POST</p>
+                </div>
+                <div class="order-card__orderinfo-grid-text-down">
+                  <b class="order-card__orderinfo-grid-lable">Отв. за доставку</b>
+                  <p>
+                    <router-link
+                      v-if="this.order?.logistic_manager_id"
+                      :to="{
+                        name: 'profileStuffEdit',
+                        params: {
+                          id: this.$route.params.id,
+                          manager_id: this.order.logistic_manager_id,
+                        },
+                      }"
+                    >
+                      {{ this.order?.logistic_manager }}
+                    </router-link>
+                    <template v-else>{{ this.order?.logistic_manager }}</template>
+                  </p>
+                </div>
+              </div>
+            </template>
           </div>
         </div>
         <div class="order-card__orderinfo-grid">

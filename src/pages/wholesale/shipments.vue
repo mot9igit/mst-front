@@ -200,6 +200,7 @@ export default {
       actionLoading: false,
       activeTab: 1,
       page: 1,
+      page_o: 1,
       request_filter: null,
       modalShipping: false,
       modalShippingData: {},
@@ -327,11 +328,68 @@ export default {
           },
         },
       },
+      table_post_data: {
+        id: {
+          label: 'Номер заказа',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        seller_address: {
+          label: 'Склад отправителя',
+          type: 'stores',
+          class: 'cell_centeralign',
+        },
+        buyer_address: {
+          label: 'Склад ',
+          type: 'stores',
+          class: 'cell_centeralign',
+        },
+        date: {
+          label: 'Дата доставки',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        way: {
+          label: 'Маршрут',
+          type: 'text',
+          class: 'cell_centeralign',
+        },
+        status: {
+          label: 'Статус',
+          type: 'status',
+          class: 'cell_centeralign cell_order-status',
+        },
+        actions: {
+          label: '',
+          type: 'actions',
+          sort: false,
+          class: 'cell_centeralign',
+          available: {
+            view: {
+              icon: 'pi pi-eye',
+              label: 'Посмотреть',
+            },
+            edit: {
+              icon: 'pi pi-pencil',
+              label: 'Редактировать',
+              link: 'status',
+              link_values: [1, 2],
+            },
+            delete: {
+              icon: 'pi pi-trash',
+              label: 'Удалить',
+              link: 'status',
+              link_exclude: [3],
+            },
+          },
+        },
+      },
     }
   },
   computed: {
     ...mapGetters({
       shippings: 'wholesale/shippings',
+      orders: 'logistic/postOrders',
     }),
     orderDateDates() {
       const rows = this.shippings?.shipment || []
@@ -367,11 +425,16 @@ export default {
       page: this.page,
       perpage: this.pagination_items_per_page,
     }).then(() => {
-      this.loading = false
-      this.request_filter = {
-        page: this.page,
+      this.getPostOrders({
+        page: this.page_o,
         perpage: this.pagination_items_per_page,
-      }
+      }).then(() => {
+        this.loading = false
+        this.request_filter = {
+          page: this.page,
+          perpage: this.pagination_items_per_page,
+        }
+      })
     })
   },
   methods: {
@@ -383,6 +446,7 @@ export default {
       changeOrderDate: 'wholesale/changeOrderDate',
       setCityActive: 'logistic/setCityActive',
       deleteLogisticCity: 'logistic/deleteLogisticCity',
+      getPostOrders: 'logistic/getPostOrders',
     }),
     filter(data) {
       this.loading = true

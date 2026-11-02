@@ -772,6 +772,17 @@ aside button {
   margin-top: 4px;
 }
 
+.order-card__delivery-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.order-card__delivery-details .order-card__orderinfo-grid-text-down {
+  margin-top: 0;
+}
+
 .d-order-container h3 {
   font-style: normal;
   font-weight: 600;

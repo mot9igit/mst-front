@@ -1427,3 +1427,712 @@
     }
   }
 }
+// Оформление доставки МС Логистик
+.order {
+  &__delivery {
+    @include scrollbar;
+
+    & {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: 24px;
+      min-height: 0;
+      overflow-y: auto;
+      padding-bottom: 120px;
+    }
+
+    &-manager {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    &-manager-label,
+    &-pickup-title {
+      color: #757575;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    &-manager-select {
+      width: 50%;
+      max-width: 100%;
+
+      .vue3-treeselect__control {
+        border-radius: 100px;
+        padding-inline: 10px;
+      }
+    }
+
+    &-pickup {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      &-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        cursor: default;
+      }
+
+      &-checkbox {
+        position: relative;
+
+        appearance: none;
+
+        width: 18px;
+        height: 18px;
+        margin: 0;
+
+        border: 1px solid #f92c0d;
+        border-radius: 4px;
+        background-color: #f92c0d;
+
+        pointer-events: none;
+        opacity: 1;
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: 2px;
+          left: 6px;
+
+          width: 4px;
+          height: 9px;
+
+          border: solid #ffffff;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+        }
+      }
+
+      &-label {
+        color: #282828;
+        font-size: 16px;
+        font-weight: 400;
+      }
+    }
+
+    &-products {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      &-title {
+        color: #282828;
+        font-size: 18px;
+        font-weight: 600;
+      }
+    }
+
+    &-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      padding: 16px;
+      border-radius: 8px;
+      background-color: #ededed;
+      box-shadow: 0px 4px 13.4px -5px #00000042;
+
+      &-header {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      &-org {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &-image {
+          object-fit: contain;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+        }
+
+        &-name {
+          color: #282828;
+          font-size: 16px;
+          font-weight: 500;
+        }
+      }
+
+      &-divider {
+        --d-divider-length: 15px;
+      }
+
+      &-warehouse {
+        color: #757575;
+        font-size: 16px;
+        font-weight: 400;
+      }
+
+      &-products {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+
+    &-product {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      &-image-container {
+        flex-shrink: 0;
+        width: 48px;
+        height: 48px;
+        overflow: hidden;
+        border-radius: 6px;
+        background-color: #ffffff;
+      }
+
+      &-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      &-info {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+      }
+
+      &-name {
+        color: #282828;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      &-article {
+        color: #757575;
+        font-size: 12px;
+        font-weight: 400;
+      }
+
+      &-total {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        flex-shrink: 0;
+        gap: 4px;
+        margin-left: auto;
+      }
+
+      &-count {
+        color: #757575;
+        font-size: 12px;
+        font-weight: 400;
+        white-space: nowrap;
+      }
+
+      &-sum {
+        color: #282828;
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  &__delivery-footer {
+    &-content {
+      justify-content: flex-end;
+    }
+
+    &-actions {
+      gap: 8px;
+    }
+  }
+
+  &__delivery-back {
+    height: 32px;
+    min-height: 32px;
+    padding: 4px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    white-space: nowrap;
+
+    &--outline {
+      border: 1px solid #282828;
+      background-color: #ffffff;
+      color: #282828;
+
+      &:hover {
+        border-color: #282828;
+        background-color: #282828;
+        color: #ffffff;
+      }
+
+      &:active {
+        background-color: #282828;
+        color: #ffffff;
+      }
+
+      &:focus-visible {
+        border-color: #282828;
+        background-color: #ffffff;
+        color: #282828;
+      }
+    }
+  }
+
+  @media (width <=1536px) {
+    &__delivery {
+      gap: 16px;
+
+      &-manager-label,
+      &-pickup-title {
+        font-size: 12px;
+      }
+
+      &-pickup-label,
+      &-card-org-name,
+      &-card-warehouse {
+        font-size: 14px;
+      }
+
+      &-products-title {
+        font-size: 16px;
+      }
+    }
+  }
+
+  @media (width <=1280px) {
+    &__delivery-footer {
+      &-actions {
+        .order__footer-actions-buy,
+        .order__delivery-back {
+          height: 24px;
+          min-height: 24px;
+          padding: 4px 16px;
+          font-size: 10px;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  @media (width <=1024px) {
+    &__delivery {
+      gap: 12px;
+
+      &-manager-label,
+      &-pickup-title {
+        font-size: 10px;
+      }
+
+      &-manager-select {
+        .vue3-treeselect__control {
+          height: 30px;
+          padding-inline: 10px;
+          font-size: 12px;
+        }
+
+        .vue3-treeselect__placeholder,
+        .vue3-treeselect__single-value {
+          padding-inline: 4px;
+          font-size: 12px;
+          line-height: 28px;
+        }
+
+        .vue3-treeselect__input {
+          font-size: 12px;
+        }
+      }
+
+      &-pickup-label {
+        font-size: 12px;
+      }
+
+      &-pickup-checkbox {
+        width: 16px;
+        height: 16px;
+
+        &::after {
+          top: 2px;
+          left: 5px;
+          width: 4px;
+          height: 8px;
+        }
+      }
+
+      &-products-title {
+        font-size: 14px;
+      }
+
+      &-card {
+        gap: 12px;
+        padding: 12px;
+
+        &-header {
+          gap: 6px;
+        }
+
+        &-org-image {
+          width: 18px;
+          height: 18px;
+        }
+
+        &-org-name,
+        &-warehouse {
+          font-size: 12px;
+        }
+
+        &-divider {
+          display: none;
+        }
+
+        &-products {
+          gap: 8px;
+        }
+      }
+
+      &-product {
+        gap: 8px;
+
+        &-image-container {
+          width: 36px;
+          height: 36px;
+        }
+
+        &-name,
+        &-sum {
+          font-size: 12px;
+        }
+
+        &-article,
+        &-count {
+          font-size: 10px;
+        }
+      }
+    }
+
+  }
+
+  @media (width <=800px) {
+    &__delivery {
+      gap: 12px;
+      padding-bottom: 0;
+
+      &-manager-select {
+        width: 50%;
+
+        .vue3-treeselect__control {
+          height: 28px;
+          padding-inline: 8px;
+          font-size: 10px;
+        }
+
+        .vue3-treeselect__placeholder,
+        .vue3-treeselect__single-value {
+          padding-inline: 4px;
+          font-size: 10px;
+          line-height: 26px;
+        }
+
+        .vue3-treeselect__input {
+          font-size: 10px;
+        }
+      }
+
+      &-manager-label,
+      &-pickup-title {
+        font-size: 9px;
+      }
+
+      &-pickup-label {
+        font-size: 10px;
+      }
+
+      &-pickup-checkbox {
+        width: 14px;
+        height: 14px;
+        border-radius: 3px;
+
+        &::after {
+          top: 1px;
+          left: 4px;
+          width: 3px;
+          height: 7px;
+          border-width: 0 1.5px 1.5px 0;
+        }
+      }
+
+      &-products {
+        gap: 8px;
+      }
+
+      &-products-title {
+        font-size: 12px;
+      }
+
+      &-card {
+        gap: 8px;
+        padding: 8px;
+        border-radius: 6px;
+
+        &-header {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        &-org {
+          gap: 4px;
+        }
+
+        &-org-image {
+          width: 14px;
+          height: 14px;
+        }
+
+        &-org-name,
+        &-warehouse {
+          font-size: 10px;
+        }
+
+        &-products {
+          gap: 8px;
+        }
+      }
+
+      &-product {
+        align-items: flex-start;
+        gap: 6px;
+
+        &-image-container {
+          width: 28px;
+          height: 28px;
+        }
+
+        &-name,
+        &-sum {
+          font-size: 10px;
+        }
+
+        &-article,
+        &-count {
+          font-size: 9px;
+        }
+      }
+    }
+
+    &__delivery-footer {
+      &-actions {
+        .order__footer-actions-buy,
+        .order__delivery-back {
+          height: 18px;
+          min-height: 18px;
+          padding: 4px 8px;
+          font-size: 9px;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  @media (width <=600px) {
+    &__delivery {
+      gap: 16px;
+      padding-top: 32px;
+      padding-inline: var(--order-padding-x);
+      padding-bottom: 24px;
+
+      &-manager-select {
+        width: 100%;
+
+        .vue3-treeselect__control {
+          height: 32px;
+          padding-inline: 12px;
+          font-size: 12px;
+        }
+
+        .vue3-treeselect__placeholder,
+        .vue3-treeselect__single-value {
+          padding-inline: 4px;
+          font-size: 12px;
+          line-height: 30px;
+        }
+
+        .vue3-treeselect__input {
+          font-size: 12px;
+        }
+      }
+
+      &-manager-label,
+      &-pickup-title {
+        font-size: 12px;
+      }
+
+      &-pickup-label {
+        font-size: 14px;
+      }
+
+      &-pickup-checkbox {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+
+        &::after {
+          top: 2px;
+          left: 6px;
+          width: 4px;
+          height: 9px;
+          border-width: 0 2px 2px 0;
+        }
+      }
+
+      &-products-title {
+        font-size: 14px;
+      }
+
+      &-card {
+        gap: 12px;
+        padding: 12px;
+        border-radius: 8px;
+
+        &-header {
+          align-items: center;
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        &-org {
+          gap: 8px;
+        }
+
+        &-org-image {
+          width: 20px;
+          height: 20px;
+        }
+
+        &-org-name,
+        &-warehouse {
+          font-size: 12px;
+        }
+
+        &-products {
+          gap: 10px;
+        }
+      }
+
+      &-product {
+        align-items: center;
+        gap: 10px;
+
+        &-image-container {
+          width: 40px;
+          height: 40px;
+        }
+
+        &-name,
+        &-sum {
+          font-size: 12px;
+        }
+
+        &-article,
+        &-count {
+          font-size: 10px;
+        }
+      }
+    }
+
+    &__delivery-footer {
+      &-actions {
+        justify-content: space-between;
+        gap: 8px;
+
+        .order__footer-actions-buy,
+        .order__delivery-back {
+          flex: 1;
+          width: auto;
+          max-width: none;
+          max-height: none;
+          height: 38px;
+          min-height: 38px;
+          padding: 4px 8px;
+          font-size: 14px;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+
+  @media (width <=400px) {
+    &__delivery {
+      gap: 12px;
+
+      &-manager-select {
+        .vue3-treeselect__control {
+          height: 30px;
+          font-size: 11px;
+        }
+
+        .vue3-treeselect__placeholder,
+        .vue3-treeselect__single-value {
+          font-size: 11px;
+          line-height: 28px;
+        }
+
+        .vue3-treeselect__input {
+          font-size: 11px;
+        }
+      }
+
+      &-manager-label,
+      &-pickup-title {
+        font-size: 11px;
+      }
+
+      &-pickup-label {
+        font-size: 12px;
+      }
+
+      &-products-title {
+        font-size: 13px;
+      }
+
+      &-card {
+        gap: 10px;
+        padding: 10px;
+      }
+
+      &-product {
+        gap: 8px;
+
+        &-image-container {
+          width: 36px;
+          height: 36px;
+        }
+      }
+    }
+
+    &__delivery-back {
+      font-size: 12px;
+    }
+
+    &__delivery-footer {
+      &-actions {
+        gap: 6px;
+
+        .order__footer-actions-buy,
+        .order__delivery-back {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}

@@ -15,6 +15,7 @@ export default {
     dashboard_data: {},
     pathNew: {},
     managers: {},
+    clientManagers: {},
   },
   actions: {
     async getVendors({ commit }, sendData) {
@@ -144,6 +145,18 @@ export default {
       }
       return response
     },
+    async getClientManagers({ commit }, { org_id }) {
+      const data = {
+        action: 'filter/managers',
+        id: router.currentRoute._value.params.id,
+        org_id: org_id,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_CLIENT_MANAGERS', response.data)
+      }
+      return response
+    },
     async getDashboardData({ commit }, { filter }) {
       const data = {
         action: 'get/dashboard',
@@ -216,6 +229,9 @@ export default {
     SET_MANAGERS: (state, data) => {
       state.managers = data.data
     },
+    SET_CLIENT_MANAGERS: (state, data) => {
+      state.clientManagers = data.data
+    },
     SET_DASHBOARD_DATA: (state, data) => {
       state.dashboard_data = data.data
     },
@@ -253,6 +269,9 @@ export default {
     },
     managers(state) {
       return state.managers
+    },
+    clientManagers(state) {
+      return state.clientManagers
     },
     dashboard_data(state) {
       return state.dashboard_data

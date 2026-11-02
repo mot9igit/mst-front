@@ -214,6 +214,21 @@
                     ? 'МС Экспресс'
                     : 'МС Логистика Х5'
             }}
+            <template v-if="this.order?.delivery_type_opt == '3'">
+              <div class="order-card__delivery-details">
+                <div class="order-card__orderinfo-grid-text-down">
+                  <b class="order-card__orderinfo-grid-lable">Пункт выдачи</b>
+                  <p>Ближайший 5POST</p>
+                </div>
+                <div class="order-card__orderinfo-grid-text-down">
+                  <b class="order-card__orderinfo-grid-lable">Отв. за доставку</b>
+                  <p>
+                    {{ this.order?.logistic_manager }}
+                    <InfoTooltip :text="manager_info" />
+                  </p>
+                </div>
+              </div>
+            </template>
           </div>
         </div>
         <div class="order-card__orderinfo-grid">
@@ -266,6 +281,21 @@
                     ? 'МС Экспресс'
                     : 'МС Логистика Х5'
             }}
+            <template v-if="this.order?.delivery_type_opt == '3'">
+              <div class="order-card__delivery-details">
+                <div class="order-card__orderinfo-grid-text-down">
+                  <b class="order-card__orderinfo-grid-lable">Пункт выдачи</b>
+                  <p>Ближайший 5POST</p>
+                </div>
+                <div class="order-card__orderinfo-grid-text-down">
+                  <b class="order-card__orderinfo-grid-lable">Отв. за доставку</b>
+                  <p>
+                    {{ this.order?.logistic_manager }}
+                    <InfoTooltip :text="manager_info" />
+                  </p>
+                </div>
+              </div>
+            </template>
           </div>
         </div>
         <div class="order-card__orderinfo-grid">
@@ -455,6 +485,7 @@ import customModal from '@/shared/ui/Modal.vue'
 import saleWindow from '@/pages/purchases/ui/activeSalesWindow.vue'
 import SelectInput from 'primevue/select'
 import DropZone from 'dropzone-vue'
+import InfoTooltip from '@/shared/ui/InfoTooltip.vue'
 
 export default {
   name: 'WholesaleOrder',
@@ -467,6 +498,7 @@ export default {
     saleWindow,
     SelectInput,
     DropZone,
+    InfoTooltip,
   },
   data() {
     return {
@@ -546,6 +578,7 @@ export default {
             },
           },
         },
+        manager_info: '',
       },
       form: {
         status: null,
@@ -854,6 +887,16 @@ export default {
       order: 'wholesale/order',
       seller_statuses: 'wholesale/seller_statuses',
     }),
+    manager_info() {
+      let info = ''
+      if (this.order.logistic_manager_id) {
+        let email = this.order.logistic_manager_email ? this.order.logistic_manager_email : '-'
+        info = 'email: ' + email
+        let phone = this.order.logistic_manager_phone ? this.order.logistic_manager_phone : '-'
+        info = info + ', к.т.: ' + phone
+      }
+      return info
+    },
   },
   watch: {
     order: function (newVal) {

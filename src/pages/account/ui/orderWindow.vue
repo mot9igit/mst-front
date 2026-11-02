@@ -9,7 +9,7 @@
         :data-order="order"
       >
         <Loader v-if="this.loading"></Loader>
-        <div class="d-sheet__content order" v-if="!order">
+        <div class="d-sheet__content order" v-if="!order && !deliveryStep">
           <!-- Шапка -->
           <div class="order__header">
             <h3 class="order__header-title">Оформление заказа</h3>
@@ -662,6 +662,139 @@
             </div>
           </div>
         </div>
+        <div class="d-sheet__content order" v-else-if="!order && deliveryStep">
+          <div class="order__header">
+            <h3 class="order__header-title">Оформление доставки</h3>
+            <button class="order__header-close" @click.prevent="close()">
+              <i class="d-icon-times-flat"></i>
+            </button>
+          </div>
+
+          <div class="order__delivery">
+            <div class="order__delivery-manager">
+              <label class="order__delivery-manager-label" for="delivery_manager">
+                Выберите менеджера, ответственного за получение груза
+              </label>
+              <TreeSelectFilter
+                id="delivery_manager"
+                v-model="deliveryManager"
+                :options="deliveryManagerOptions"
+                :multiple="false"
+                valueFormat="id"
+                :clearable="false"
+                :append-to-body="true"
+                placeholder="Выберите менеджера"
+                class="order__delivery-manager-select"
+              />
+            </div>
+
+            <div class="order__delivery-pickup">
+              <p class="order__delivery-pickup-title">Точка выдачи</p>
+              <label class="order__delivery-pickup-item">
+                <input
+                  class="order__delivery-pickup-checkbox"
+                  type="checkbox"
+                  checked
+                  disabled
+                />
+                <span class="order__delivery-pickup-label">Ближайший 5POST</span>
+              </label>
+            </div>
+
+            <div class="order__delivery-products">
+              <h4 class="order__delivery-products-title">Доставляемые товары</h4>
+              <div
+                class="order__delivery-card"
+                v-for="logisticOrder in deliveryOrders"
+                :key="logisticOrder.org_id + '_' + logisticOrder.warehouse_id"
+              >
+                <div class="order__delivery-card-header">
+                  <div class="order__delivery-card-org">
+                    <img
+                      v-if="logisticOrder.org_image"
+                      :src="logisticOrder.org_image"
+                      :alt="logisticOrder.org_name"
+                      class="order__delivery-card-org-image"
+                    />
+                    <p class="order__delivery-card-org-name">{{ logisticOrder.org_name }}</p>
+                  </div>
+                  <div class="d-divider d-divider--vertical order__delivery-card-divider"></div>
+                  <p class="order__delivery-card-warehouse">
+                    Склад {{ logisticOrder.warehouse_name }} #{{ logisticOrder.warehouse_id }}
+                    <template v-if="logisticOrder.warehouse_address">
+                      — {{ logisticOrder.warehouse_address }}
+                    </template>
+                  </p>
+                </div>
+                <div class="order__delivery-card-products">
+                  <div
+                    class="order__delivery-product"
+                    v-for="product in logisticOrder.products"
+                    :key="product.key || product.remain_id || product.id"
+                  >
+                    <div class="order__delivery-product-image-container">
+                      <img
+                        :src="product.image"
+                        :alt="product.name"
+                        class="order__delivery-product-image"
+                      />
+                    </div>
+                    <div class="order__delivery-product-info">
+                      <p class="order__delivery-product-name">{{ product.name }}</p>
+                      <p class="order__delivery-product-article">Арт: {{ product.article }}</p>
+                    </div>
+                    <div class="order__delivery-product-total">
+                      <p class="order__delivery-product-count">
+                        {{ Number(product.count || 0).toLocaleString('ru') }} шт.
+                      </p>
+                      <p class="order__delivery-product-sum">
+                        {{ Number(product.cost || 0).toLocaleString('ru') }} ₽
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="order__footer order__delivery-footer">
+            <div class="d-divider d-divider--full order__footer-divider"></div>
+            <div class="order__footer-content order__delivery-footer-content">
+              <div class="order__footer-right">
+                <div class="order__footer-actions order__delivery-footer-actions">
+                  <button
+                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__delivery-back order__delivery-back--outline noclose_click"
+                    @click.prevent.stop="cancelDelivery()"
+                  >
+                    Назад
+                  </button>
+                  <button
+                    class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy noclose_click"
+                    @click.prevent.stop="submitDelivery()"
+                  >
+                    Оформить доставку
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="order__footer-bottom">
+              <div class="order__footer-actions order__delivery-footer-actions">
+                <button
+                  class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__delivery-back order__delivery-back--outline noclose_click"
+                  @click.prevent.stop="cancelDelivery()"
+                >
+                  Назад
+                </button>
+                <button
+                  class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__footer-actions-buy noclose_click"
+                  @click.prevent.stop="submitDelivery()"
+                >
+                  Оформить доставку
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="order" v-else>
           <div class="order__header">
             <h3 class="order__header-title">Заказ №{{ order }} оформлен!</h3>
@@ -834,7 +967,7 @@
           @click.prevent="
             () => {
               this.order_to_basket = true
-              orderSubmit(this.showChangedId, this.showChangedIdStore)
+              orderSubmit(this.showChangedId, this.showChangedIdStore, this.deliveryManager)
               this.showChangedCount = false
             }
           "
@@ -897,13 +1030,18 @@ import { mapActions, mapGetters } from 'vuex'
 import Loader from '@/shared/ui/Loader.vue'
 import customModal from '@/shared/ui/Modal.vue'
 import Counter from '@/shared/ui/Counter.vue'
+import TreeSelectFilter from '@/shared/ui/TreeSelectFilter.vue'
 import Editor from 'primevue/editor'
 import Toast from 'primevue/toast'
+import {
+  collectMsLogisticOrders,
+  filterLogisticOrders,
+} from '@/pages/account/api/logisticOrders'
 
 export default {
   name: 'orderWindow',
   emits: ['close', 'catalogUpdate', 'orderSubmit', 'orderEdit'],
-  components: { Loader, customModal, Counter, Editor, Toast },
+  components: { Loader, customModal, Counter, TreeSelectFilter, Editor, Toast },
   props: {
     active: {
       type: Boolean,
@@ -942,14 +1080,34 @@ export default {
       edits: [],
       offers: [],
       buy_button_text: 'Оформить все заказы',
-      logistic: {},
+      logistic: [],
+      deliveryStep: false,
+      deliveryManager: null,
+      pendingOrder: {
+        orgId: null,
+        warehouse_id: null,
+      },
     }
   },
   computed: {
     ...mapGetters({
       basket: 'basket/basket',
       basketWarehouse: 'basket/basketWarehouse',
+      filter_managers: 'addition/managers',
     }),
+    deliveryManagerOptions() {
+      return Array.isArray(this.filter_managers) ? this.filter_managers : []
+    },
+    deliveryOrders() {
+      const basket = this.basket?.data?.[this.basketWarehouse] || this.basketStore
+      const orders = collectMsLogisticOrders(basket)
+      if (!this.pendingOrder.orgId) return orders
+      return filterLogisticOrders(
+        orders,
+        this.pendingOrder.orgId,
+        this.pendingOrder.warehouse_id,
+      )
+    },
   },
   methods: {
     ...mapActions({
@@ -959,6 +1117,7 @@ export default {
       basketProductUpdate: 'basket/basketProductUpdate',
       orderSubmitApi: 'basket/orderSubmit',
       setBasketComment: 'basket/setBasketComment',
+      getFilterManagers: 'addition/getManagers',
     }),
     salesActive(key) {
       if (key in this.sales_active) {
@@ -969,6 +1128,9 @@ export default {
     },
     close() {
       this.order = ''
+      this.deliveryStep = false
+      this.deliveryManager = null
+      this.pendingOrder = { orgId: null, warehouse_id: null }
       this.$emit('close')
     },
     clearCart() {
@@ -1099,7 +1261,7 @@ export default {
         this.$emit('catalogUpdate')
       })
     },
-    async orderSubmit(orgId, warehouse_id) {
+    async orderSubmit(orgId, warehouse_id, managerId = null) {
       this.loading = true
       this.submitting = true
       this.getBasket().then((response) => {
@@ -1110,84 +1272,138 @@ export default {
           this.showChangedCount = true
           this.showChangedId = orgId
           this.showChangedIdStore = warehouse_id
-        } else {
-          // orderSubmitApi
+          return
+        }
 
-          // смотрим доставку МС Логистик
-          if (!Object.keys(this.logistic)) {
-            this.orderSubmitApi({ orgId: orgId, warehouse_id: warehouse_id })
-              .then((response) => {
-                let arr = []
-                let res = response.data?.data
-                let products = res.products
-                let nums = res.nums
-                for (var i in res.orders) {
-                  if (res.orders[i].fog) {
-                    this.modalOrderInfo = true
-                  }
-                }
+        if (managerId === null) {
+          const basket = response.data?.data?.data
+          const activeBasket = basket?.data?.[this.basketWarehouse] || this.basketStore
+          const logisticOrders = filterLogisticOrders(
+            collectMsLogisticOrders(activeBasket),
+            orgId,
+            warehouse_id,
+          )
 
-                this.list_orders = res.orders
-                console.log(res)
-                for (var key in products) {
-                  const product = products[key]
-                  arr.push({
-                    id: product.id_remain,
-                    name: product.name,
-                    price: product.price,
-                    quantity: product.count,
-                  })
-                }
-                this.order_to_basket = false
-                window.dataLayer = window.dataLayer || []
-
-                window.dataLayer.push({
-                  ecommerce: {
-                    currencyCode: 'RUB',
-                    purchase: {
-                      actionField: {
-                        id: 'TRX987',
-                      },
-                      products: arr,
-                    },
-                  },
-                })
-                this.$emit('orderSubmit', nums.join(', '))
-                this.order = nums.join(', ')
-                console.log(this.order)
-                if (
-                  this.edits?.length &&
-                  (this.$route.name == 'purchasesOrder' || this.$route.name == 'wholesaleOrder')
-                ) {
-                  for (var id in this.edits) {
-                    if (this.$route.params.order_id == this.edits[id]) {
-                      this.$emit('orderEdit')
-                    }
-                  }
-                }
-                if (this.offers?.length && this.$route.name == 'purchasesOffer') {
-                  for (var i in this.offers) {
-                    if (this.$route.params.offer_id == this.offers[i]) {
-                      this.$emit('orderEdit')
-                    }
-                  }
-                }
-                this.getBasket().then(() => {
-                  this.loading = false
-                  this.submitting = false
-                  this.showChangedId = ''
-                  this.showChangedIdStore = ''
-                })
-              })
-              .catch(() => {
-                this.loading = false
-                this.submitting = false
-              })
-          } else {
-            // обработка логистических заказов
+          if (logisticOrders.length) {
+            this.pendingOrder = { orgId, warehouse_id }
+            this.deliveryManager = null
+            this.deliveryStep = true
+            this.loading = false
+            this.submitting = false
+            this.getDeliveryManagers()
+            return
           }
         }
+
+        this.submitOrderRequest(orgId, warehouse_id, managerId)
       })
+    },
+    submitOrderRequest(orgId, warehouse_id, managerId) {
+      const payload = {
+        orgId: orgId,
+        warehouse_id: warehouse_id,
+      }
+      if (managerId !== null && managerId !== undefined && managerId !== '') {
+        payload.manager_id = managerId
+      }
+
+      this.orderSubmitApi(payload)
+        .then((response) => {
+          let arr = []
+          let res = response.data?.data
+          let products = res.products
+          let nums = res.nums
+          for (var i in res.orders) {
+            if (res.orders[i].fog) {
+              this.modalOrderInfo = true
+            }
+          }
+
+          this.list_orders = res.orders
+          console.log(res)
+          for (var key in products) {
+            const product = products[key]
+            arr.push({
+              id: product.id_remain,
+              name: product.name,
+              price: product.price,
+              quantity: product.count,
+            })
+          }
+          this.order_to_basket = false
+          window.dataLayer = window.dataLayer || []
+
+          window.dataLayer.push({
+            ecommerce: {
+              currencyCode: 'RUB',
+              purchase: {
+                actionField: {
+                  id: 'TRX987',
+                },
+                products: arr,
+              },
+            },
+          })
+          this.$emit('orderSubmit', nums.join(', '))
+          this.order = nums.join(', ')
+          this.deliveryStep = false
+          console.log(this.order)
+          if (
+            this.edits?.length &&
+            (this.$route.name == 'purchasesOrder' || this.$route.name == 'wholesaleOrder')
+          ) {
+            for (var id in this.edits) {
+              if (this.$route.params.order_id == this.edits[id]) {
+                this.$emit('orderEdit')
+              }
+            }
+          }
+          if (this.offers?.length && this.$route.name == 'purchasesOffer') {
+            for (var offerKey in this.offers) {
+              if (this.$route.params.offer_id == this.offers[offerKey]) {
+                this.$emit('orderEdit')
+              }
+            }
+          }
+          this.getBasket().then(() => {
+            this.loading = false
+            this.submitting = false
+            this.showChangedId = ''
+            this.showChangedIdStore = ''
+          })
+        })
+        .catch(() => {
+          this.loading = false
+          this.submitting = false
+        })
+    },
+    getDeliveryManagers() {
+      this.getFilterManagers()
+    },
+    cancelDelivery() {
+      this.deliveryStep = false
+      this.deliveryManager = null
+      this.pendingOrder = { orgId: null, warehouse_id: null }
+      this.order_to_basket = false
+      this.loading = false
+      this.submitting = false
+    },
+    submitDelivery() {
+      if (
+        this.deliveryManager === null ||
+        this.deliveryManager === undefined ||
+        this.deliveryManager === ''
+      ) {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Ошибка',
+          detail: 'Выберите менеджера, ответственного за получение груза',
+          life: 3000,
+        })
+        return
+      }
+
+      this.orderSubmit(this.pendingOrder.orgId, this.pendingOrder.warehouse_id, this.deliveryManager)
     },
     saveComment() {
       if (this.modalCommentText != '' && this.modalCommentText != '<p></p>') {
@@ -1230,7 +1446,7 @@ export default {
     },
     prepareComment(code) {
       let new_string = code.replace(/<(.|\n)*?>/g, '')
-      new_string = new_string.replace(/\&nbsp;/g, ' ')
+      new_string = new_string.replace(/&nbsp;/g, ' ')
       new_string = new_string.replace(/\n/g, ' ')
       if (new_string.length > 120) {
         new_string = new_string.substring(0, 120) + '...'
@@ -1279,6 +1495,7 @@ export default {
         !event.target.closest('.order__sheet') &&
         !event.target.closest('.order-card__modal-comment') &&
         !event.target.closest('.header__cart') &&
+        !event.target.closest('.vue3-treeselect__menu-container') &&
         !event.target.closest('.noclose_click') &&
         this.active === true
       ) {
@@ -1321,20 +1538,9 @@ export default {
               this.offers.push(newVal.data[org].data[store].id)
             }
             col_all++
-            for (var prod in newVal.data[org].data[store].data) {
-              if (newVal.data[org].data[store].data[prod].delivery_type_opt == 3) {
-                if (!this.logistic[org]) {
-                  this.logistic[org] = {}
-                }
-                if (!this.logistic[org][store]) {
-                  this.logistic[org][store] = {}
-                }
-                this.logistic[org][store][prod] = newVal.data[org].data[store].data[prod]
-                console.log('1')
-              }
-            }
           }
         }
+        this.logistic = collectMsLogisticOrders(newVal)
         if (col_all == col_ord) {
           this.buy_button_text = 'Изменить заказ'
         } else [(this.buy_button_text = 'Оформить все заказы')]
@@ -1349,7 +1555,7 @@ export default {
       }
     },
     basket(newVal) {
-      this.logistic = {}
+      this.logistic = []
       if (Object.keys(newVal).length > 1) {
         if (
           Object.prototype.hasOwnProperty.call(newVal.data, this.basketWarehouse) &&
