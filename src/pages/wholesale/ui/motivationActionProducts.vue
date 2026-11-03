@@ -892,6 +892,54 @@ export default {
 }
 </script>
 <style lang="scss">
+.promotions__card-warehouse-header-container {
+  position: relative;
+  z-index: 100;
+  overflow: visible;
+}
+
+.promotions__card-warehouse-search {
+  position: relative;
+  z-index: 101;
+  align-self: center;
+  margin-top: 0;
+  overflow: visible;
+}
+
+.promotions__card-warehouse-search .d-search__field {
+  box-sizing: border-box;
+  height: 36px;
+  margin: 0 !important;
+  padding: 0 100px 0 45px !important;
+  line-height: 36px;
+}
+
+.promotions__card-warehouse-search .d-search__icon {
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+.promotions__card-warehouse-search .d-search__button {
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+.promotions__card-warehouse-search .d-search__suggestions {
+  z-index: 1000;
+}
+
+.products__card,
+.products__card-content {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+}
+
+.promotions__card-products {
+  position: relative;
+  z-index: 1;
+}
+
 .sale_products-filter {
   width: 50%;
   margin-bottom: 40px;

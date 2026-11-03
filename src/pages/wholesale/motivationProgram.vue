@@ -142,7 +142,10 @@
                   <p class="d-description">Программа будет без ограничения срока действия.</p>
                 </div>
               </div>
-              <p v-if="form.start_date && form.end_date && !form.nodeadline" class="motivation-hint">
+              <p
+                v-if="form.start_date && form.end_date && !form.nodeadline"
+                class="motivation-hint"
+              >
                 Период действия: {{ datesDays }} дн.
               </p>
             </div>
@@ -215,22 +218,19 @@
     <teleport to="body">
       <customModal v-model="rewardModal" class="motivation-reward-modal">
         <template v-slot:title>Вознаграждение</template>
-        <p class="motivation-reward-modal__text">
-          Установите процент вознаграждения от РРЦ. В демо-режиме изменение применяется только на
-          странице.
-        </p>
+        <p class="motivation-reward-modal__text">Установите процент вознаграждения от РРЦ</p>
         <div class="motivation-field">
           <label class="promotions__card-label">Процент вознаграждения</label>
-                <InputNumber
-                  v-model="rewardPercent"
-                  :min="0"
-                  :max="100"
-                  :minFractionDigits="0"
-                  :maxFractionDigits="2"
-                  placeholder="Например, 10"
-                  suffix=" %"
-                  class="motivation-reward-modal__input"
-                />
+          <InputNumber
+            v-model="rewardPercent"
+            :min="0"
+            :max="100"
+            :minFractionDigits="0"
+            :maxFractionDigits="2"
+            placeholder="Например, 10"
+            suffix=" %"
+            class="motivation-reward-modal__input"
+          />
         </div>
         <div class="motivation-reward-modal__actions">
           <button
@@ -390,9 +390,7 @@ export default {
       if (!this.motivations.length) {
         await this.getMotivations({ id: this.$route.params.id })
       }
-      const program = this.motivations.find(
-        (item) => String(item.id) === String(this.program_id),
-      )
+      const program = this.motivations.find((item) => String(item.id) === String(this.program_id))
       if (!program) return
       this.form.name = program.label || program.name || ''
       this.form.description = program.description || ''
@@ -472,9 +470,7 @@ export default {
     },
     selectProduct(data) {
       if (!data || data.id === undefined) return
-      const exists = this.allProducts.some(
-        (product) => String(product.id) === String(data.id),
-      )
+      const exists = this.allProducts.some((product) => String(product.id) === String(data.id))
       if (!exists) {
         this.allProducts.push({
           ...data,
@@ -484,9 +480,7 @@ export default {
       }
     },
     deSelectProduct(id) {
-      this.allProducts = this.allProducts.filter(
-        (product) => String(product.id) !== String(id),
-      )
+      this.allProducts = this.allProducts.filter((product) => String(product.id) !== String(id))
       if (this.productsPage > 1 && this.selectedProductsPage.products.length === 0) {
         this.productsPage -= 1
       }
@@ -794,4 +788,5 @@ export default {
   gap: 12px;
   margin-top: 24px;
 }
+
 </style>

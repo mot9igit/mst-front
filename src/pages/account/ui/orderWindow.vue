@@ -1085,7 +1085,7 @@ export default {
     ...mapGetters({
       basket: 'basket/basket',
       basketWarehouse: 'basket/basketWarehouse',
-      filter_managers: 'addition/managers',
+      filter_managers: 'addition/managersAll',
     }),
     deliveryManagerOptions() {
       return Array.isArray(this.filter_managers) ? this.filter_managers : []
@@ -1105,7 +1105,7 @@ export default {
       basketProductUpdate: 'basket/basketProductUpdate',
       orderSubmitApi: 'basket/orderSubmit',
       setBasketComment: 'basket/setBasketComment',
-      getFilterManagers: 'addition/getManagers',
+      getFilterManagers: 'addition/getAllManagers',
     }),
     salesActive(key) {
       if (key in this.sales_active) {

@@ -16,6 +16,7 @@ export default {
     pathNew: {},
     managers: {},
     clientManagers: {},
+    managersAll: {},
   },
   actions: {
     async getVendors({ commit }, sendData) {
@@ -145,9 +146,20 @@ export default {
       }
       return response
     },
+    async getAllManagers({ commit }) {
+      const data = {
+        action: 'filter/all/managers',
+        id: router.currentRoute._value.params.id,
+      }
+      const response = await api.org.getOrg(data)
+      if (response) {
+        commit('SET_ALL_MANAGERS', response.data)
+      }
+      return response
+    },
     async getClientManagers({ commit }, { org_id }) {
       const data = {
-        action: 'filter/managers',
+        action: 'filter/all/managers',
         id: router.currentRoute._value.params.id,
         org_id: org_id,
       }
@@ -229,6 +241,9 @@ export default {
     SET_MANAGERS: (state, data) => {
       state.managers = data.data
     },
+    SET_ALL_MANAGERS: (state, data) => {
+      state.managersAll = data.data
+    },
     SET_CLIENT_MANAGERS: (state, data) => {
       state.clientManagers = data.data
     },
@@ -269,6 +284,9 @@ export default {
     },
     managers(state) {
       return state.managers
+    },
+    managersAll(state) {
+      return state.managersAll
     },
     clientManagers(state) {
       return state.clientManagers
