@@ -87,7 +87,24 @@
             />
           </div>
         </TabPanel>
-        <TabPanel v-if="activeTab == 2"></TabPanel>
+        <TabPanel v-if="activeTab == 2">
+          <h1 class="shippings__header">
+            <span>МС Логистика Х5</span>
+          </h1>
+          <Loader v-if="loading || actionLoading" />
+          <div class="shippings__content">
+            <BaseTable
+              :items_data="orders.orders || []"
+              :total="orders.total ?? 0"
+              :pagination_items_per_page="pagination_items_per_page"
+              :page="page_o"
+              :show_filter="false"
+              :table_data="table_post_data"
+              @paginate="paginatePostOrders"
+              @viewElem="showPostOrder"
+            />
+          </div>
+        </TabPanel>
       </TabPanels>
     </Tabs>
     <teleport to="body">
@@ -126,6 +143,9 @@
           @submit="submitCity"
         />
       </customModal>
+      <customModal v-model="modalPostOrder" class="post-order__modal">
+        <PostOrderWindow :order="postOrderData" @cancel="modalPostOrder = false" />
+      </customModal>
     </teleport>
   </section>
 </template>
@@ -139,6 +159,7 @@ import Toast from 'primevue/toast'
 import ShipmentWindow from './ui/shipmentWindow.vue'
 import ChangeOrderDateWindow from './ui/changeOrderDateWindow.vue'
 import CityWindow from './ui/cityWindow.vue'
+import PostOrderWindow from './ui/postOrderWindow.vue'
 import Tabs from 'primevue/tabs'
 import TabList from 'primevue/tablist'
 import TabPanels from 'primevue/tabpanels'
@@ -179,6 +200,7 @@ export default {
     ShipmentWindow,
     ChangeOrderDateWindow,
     CityWindow,
+    PostOrderWindow,
     Tabs,
     TabList,
     TabPanels,
@@ -195,10 +217,12 @@ export default {
     },
   },
   data() {
+    const savedTabRaw = localStorage.getItem('wholesale.shipments.tab')
+    const savedTab = savedTabRaw === null ? null : Number(savedTabRaw)
     return {
       loading: true,
       actionLoading: false,
-      activeTab: 1,
+      activeTab: [0, 1, 2].includes(savedTab) ? savedTab : 1,
       page: 1,
       page_o: 1,
       request_filter: null,
@@ -210,6 +234,8 @@ export default {
       modalCity: false,
       cityData: {},
       cityMode: 0,
+      modalPostOrder: false,
+      postOrderData: {},
       cities_table_data: {
         id: {
           label: '№',
@@ -336,15 +362,15 @@ export default {
         },
         seller_address: {
           label: 'Склад отправителя',
-          type: 'stores',
+          type: 'text',
           class: 'cell_centeralign',
         },
         buyer_address: {
-          label: 'Склад ',
-          type: 'stores',
+          label: 'Склад покупателя',
+          type: 'text',
           class: 'cell_centeralign',
         },
-        date: {
+        delivery_date: {
           label: 'Дата доставки',
           type: 'text',
           class: 'cell_centeralign',
@@ -374,12 +400,6 @@ export default {
               label: 'Редактировать',
               link: 'status',
               link_values: [1, 2],
-            },
-            delete: {
-              icon: 'pi pi-trash',
-              label: 'Удалить',
-              link: 'status',
-              link_exclude: [3],
             },
           },
         },
@@ -420,6 +440,11 @@ export default {
       return result.sort((a, b) => a - b)
     },
   },
+  watch: {
+    activeTab(value) {
+      localStorage.setItem('wholesale.shipments.tab', value)
+    },
+  },
   mounted() {
     this.getShippings({
       page: this.page,
@@ -447,6 +472,7 @@ export default {
       setCityActive: 'logistic/setCityActive',
       deleteLogisticCity: 'logistic/deleteLogisticCity',
       getPostOrders: 'logistic/getPostOrders',
+      unsetPostOrders: 'logistic/unsetPostOrders',
     }),
     filter(data) {
       this.loading = true
@@ -468,6 +494,18 @@ export default {
         this.request_filter = requestData
       })
     },
+    paginatePostOrders(data) {
+      this.loading = true
+      this.unsetPostOrders()
+      this.page_o = data.page
+      this.getPostOrders({
+        ...data,
+        page: data.page,
+        perpage: this.pagination_items_per_page,
+      }).finally(() => {
+        this.loading = false
+      })
+    },
     normalizeFilters(data) {
       if (!data || !data.filtersdata || !data.filtersdata.dates) {
         return data
@@ -486,6 +524,10 @@ export default {
       this.mode = 0
       this.modalShipping = true
       this.modalShippingData = data
+    },
+    showPostOrder(data) {
+      this.postOrderData = data
+      this.modalPostOrder = true
     },
     editShipping(data) {
       if (![1, 2].includes(Number(data?.status))) return
@@ -778,6 +820,16 @@ export default {
 .shippings__order-date-modal .modal-content {
   max-width: 500px;
 }
+.post-order__modal .modal-content {
+  max-width: 1240px;
+  overflow: visible;
+}
+.post-order__modal .modal__content {
+  overflow: visible;
+}
+.post-order__modal .info-tooltip {
+  z-index: 10001;
+}
 .shippings {
   padding-block: 40px;
   display: flex;
@@ -861,9 +913,6 @@ export default {
       .p-floatlabel:has(input:focus) label {
         color: #f92c0d;
       }
-    }
-    .cell--status {
-      color: #282828;
     }
     .form_input_group.d-search {
       &::after {

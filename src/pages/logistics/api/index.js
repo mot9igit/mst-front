@@ -22,6 +22,17 @@ export default function (instance) {
         })
       return data
     },
+    getPostOrders(payload) {
+      const data = instance
+        .post('front_getshipping/', payload)
+        .then(function (res) {
+          return res
+        })
+        .catch(function () {
+          return 'technical error'
+        })
+      return data
+    },
     acceptCode(payload) {
       const data = instance
         .post('front_getshipping/', payload)

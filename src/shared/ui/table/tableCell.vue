@@ -313,7 +313,7 @@
       v-else-if="cell_data.type == 'actions'"
     >
       <span class="p-buttonset">
-        <Button
+        <PrimeButton
           class="kenostButton std-icon__wrapper"
           :title="row.label"
           :label="row.label"
@@ -326,7 +326,7 @@
         >
           <span v-if="row.show_label">{{ row.label }}</span>
           <i :class="row.icon"></i>
-        </Button>
+        </PrimeButton>
       </span>
     </div>
 
@@ -336,7 +336,7 @@
       v-else-if="cell_data.type == 'actions_order'"
     >
       <span class="p-buttonset">
-        <Button
+        <PrimeButton
           class="kenostButton std-icon__wrapper"
           :title="row.label"
           :label="row.label"
@@ -348,7 +348,7 @@
           @click="actionElem(index)"
         >
           <i :class="row.icon"></i>
-        </Button>
+        </PrimeButton>
       </span>
     </div>
     <div class="cell_value" v-else-if="cell_data.type == 'number'" :class="cell_data.class">
@@ -376,7 +376,7 @@
 </template>
 
 <script>
-import Button from 'primevue/button'
+import PrimeButton from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
 import InputNumber from 'primevue/inputnumber'
 import Chart from 'primevue/chart'
@@ -482,6 +482,17 @@ export default {
       return linkparams
     },
     storesList() {
+      const direct = this.value?.[this.cell_key]
+      if (direct) {
+        if (Array.isArray(direct)) return direct.filter((store) => !!store)
+        if (typeof direct === 'object') {
+          if (direct.org_name || direct.name_short || direct.name || direct.address) {
+            return [direct]
+          }
+          return Object.values(direct).filter((store) => !!store)
+        }
+        return [direct]
+      }
       const table = this.value?.table
       if (!table) return []
       const points = Array.isArray(table)
@@ -489,7 +500,9 @@ export default {
         : typeof table === 'object'
           ? Object.values(table)
           : []
-      return points.filter((store) => this.isSender(store))
+      const key = String(this.cell_key || '').toLowerCase()
+      const isBuyer = key.includes('buyer') || key.includes('recipient') || key.includes('receiver')
+      return points.filter((store) => (isBuyer ? this.isReceiver(store) : this.isSender(store)))
     },
     actionsAvailable() {
       const available = this.cell_data?.available || {}
@@ -595,7 +608,7 @@ export default {
     prepareHtml(code) {
       if (code) {
         let new_string = code.replace(/<(.|\n)*?>/g, '')
-        new_string = new_string.replace(/\&nbsp;/g, ' ')
+        new_string = new_string.replace(/&nbsp;/g, ' ')
         new_string = new_string.replace(/\n/g, '')
         if (new_string.length > 120) {
           new_string = new_string.substring(0, 120) + '...'
@@ -617,7 +630,7 @@ export default {
     },
   },
   components: {
-    Button,
+    PrimeButton,
     InputNumber,
     Checkbox,
     Chart,

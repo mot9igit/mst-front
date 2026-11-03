@@ -328,7 +328,7 @@
                                 ? 'Доставка ТК'
                                 : sale.delivery_type_opt == 2
                                   ? 'МС Экспресс'
-                                  : 'МС Логистик'
+                                  : 'МС Логистика Х5'
                           }}</span>
                           <span class="cart__item-sales-item-value" v-if="sale.delivery_type == 2"
                             >Бесплатная доставка</span
@@ -472,7 +472,7 @@
                               ? 'Доставка ТК'
                               : warehouse?.cart_data?.delivery_type_opt == 2
                                 ? 'МС Экспресс'
-                                : 'МС Логистик'
+                                : 'МС Логистика Х5'
                         }}
                       </p>
                     </div>
@@ -686,12 +686,7 @@
             <div class="order__delivery-pickup">
               <p class="order__delivery-pickup-title">Точка выдачи</p>
               <label class="order__delivery-pickup-item">
-                <input
-                  class="order__delivery-pickup-checkbox"
-                  type="checkbox"
-                  checked
-                  disabled
-                />
+                <input class="order__delivery-pickup-checkbox" type="checkbox" checked disabled />
                 <span class="order__delivery-pickup-label">Ближайший 5POST</span>
               </label>
             </div>

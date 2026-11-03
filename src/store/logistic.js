@@ -1,6 +1,24 @@
 import api from '@/shared/api/api'
 import router from '../router'
 
+function normalizePostOrderStatus(item) {
+  const status =
+    item?.status && typeof item.status === 'object'
+      ? item.status
+      : item?.order_status && typeof item.order_status === 'object'
+        ? item.order_status
+        : null
+  if (!status) return item
+  return {
+    ...item,
+    status_name: item.status_name || status.name || '',
+    status_key: item.status_key || status.api_key || '',
+    status_color:
+      item.status_color || (status.color ? String(status.color).replace('#', '') : ''),
+    color_text: item.color_text || status.color_text || status.status_color_text || '',
+  }
+}
+
 export default {
   namespaced: true,
   state: {
@@ -39,8 +57,8 @@ export default {
         perpage: perpage,
         filtersdata: filtersdata,
       }
-      const response = await api.logistics.getOrders(data)
-      if (response) {
+      const response = await api.logistics.getPostOrders(data)
+      if (response && response !== 'technical error') {
         commit('SET_POST_ORDERS', response.data.data)
       }
       return response
@@ -140,7 +158,18 @@ export default {
       }
     },
     SET_POST_ORDERS: (state, data) => {
-      state.postOrders = data.data
+      const postOrders = data?.data
+      if (!postOrders || typeof postOrders !== 'object') {
+        state.postOrders = postOrders || {}
+        return
+      }
+      if (Array.isArray(postOrders.orders)) {
+        postOrders.orders = postOrders.orders.map(normalizePostOrderStatus)
+      }
+      if (Array.isArray(postOrders.items)) {
+        postOrders.items = postOrders.items.map(normalizePostOrderStatus)
+      }
+      state.postOrders = postOrders
     },
     UNSET_POST_ORDERS: (state) => {
       state.postOrders = {}
