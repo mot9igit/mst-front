@@ -1455,6 +1455,36 @@
       font-weight: 400;
     }
 
+    &-manager-empty {
+      color: #757575;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    &-manager-add {
+      align-self: flex-start;
+    }
+
+    &-no-manager {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+
+      .d-input {
+        border-radius: 100px;
+      }
+
+      &-item {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      @media (width <= 1024px) {
+        grid-template-columns: 1fr;
+      }
+    }
+
     &-manager-select {
       width: 50%;
       max-width: 100%;

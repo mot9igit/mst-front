@@ -667,20 +667,69 @@
 
           <div class="order__delivery">
             <div class="order__delivery-manager">
-              <label class="order__delivery-manager-label" for="delivery_manager">
-                Выберите менеджера, ответственного за получение груза
-              </label>
-              <TreeSelectFilter
-                id="delivery_manager"
-                v-model="deliveryManager"
-                :options="deliveryManagerOptions"
-                :multiple="false"
-                valueFormat="id"
-                :clearable="false"
-                :append-to-body="true"
-                placeholder="Выберите менеджера"
-                class="order__delivery-manager-select"
-              />
+              <template v-if="hasDeliveryManagers">
+                <label class="order__delivery-manager-label" for="delivery_manager">
+                  Выберите менеджера, ответственного за получение груза
+                </label>
+                <TreeSelectFilter
+                  id="delivery_manager"
+                  v-model="deliveryManager"
+                  :options="deliveryManagerOptions"
+                  :multiple="false"
+                  valueFormat="id"
+                  :clearable="false"
+                  :append-to-body="true"
+                  placeholder="Выберите менеджера"
+                  class="order__delivery-manager-select"
+                />
+              </template>
+              <template v-else-if="deliveryManagersLoaded">
+                <p class="order__delivery-manager-empty">
+                  Укажите контакты сотрудника клиента, ответственного за получение груза
+                </p>
+                <div class="order__delivery-no-manager">
+                  <div class="order__delivery-no-manager-item">
+                    <label class="order__delivery-manager-label" for="no_manager_name"> ФИО </label>
+                    <div class="d-input d-input--light">
+                      <input
+                        id="no_manager_name"
+                        v-model="noManager.name"
+                        type="text"
+                        placeholder="Введите ФИО"
+                        class="d-input__field"
+                      />
+                    </div>
+                  </div>
+                  <div class="order__delivery-no-manager-item">
+                    <label class="order__delivery-manager-label" for="no_manager_phone">
+                      Телефон
+                    </label>
+                    <div class="d-input d-input--light">
+                      <input
+                        id="no_manager_phone"
+                        v-model="noManager.phone"
+                        type="text"
+                        placeholder="Введите телефон"
+                        class="d-input__field"
+                      />
+                    </div>
+                  </div>
+                  <div class="order__delivery-no-manager-item">
+                    <label class="order__delivery-manager-label" for="no_manager_email">
+                      Email
+                    </label>
+                    <div class="d-input d-input--light">
+                      <input
+                        id="no_manager_email"
+                        v-model="noManager.email"
+                        type="text"
+                        placeholder="Введите email"
+                        class="d-input__field"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </template>
             </div>
 
             <div class="order__delivery-pickup">
@@ -974,6 +1023,12 @@ export default {
       edit: null,
       deliveryStep: false,
       deliveryManager: null,
+      deliveryManagersLoaded: false,
+      noManager: {
+        name: '',
+        phone: '',
+        email: '',
+      },
       pendingSubmit: null,
       logistic: [],
     }
@@ -987,6 +1042,9 @@ export default {
     }),
     deliveryManagerOptions() {
       return Array.isArray(this.client_managers) ? this.client_managers : []
+    },
+    hasDeliveryManagers() {
+      return this.deliveryManagerOptions.length > 0
     },
     deliveryOrders() {
       return this.logistic
@@ -1140,7 +1198,7 @@ export default {
         this.$emit('catalogUpdate')
       })
     },
-    offerCreate(managerId = null) {
+    offerCreate() {
       //  if(this.form.end_date == null) {
       //    this.error = true
       //    this.$toast.add({ severity: 'error', summary: "Ошибка", detail: "Укажите дату окончания предложения", life: 3000 });
@@ -1150,7 +1208,6 @@ export default {
 
       this.offerSubmitApi({
         cart_store: this.basketOfferWarehouse,
-        manager_id: managerId,
       }).then((res) => {
         if (res.data.success) {
           this.getBasketOffer().then(() => {
@@ -1185,8 +1242,8 @@ export default {
       })
       //  }
     },
-    async orderCreate(managerId = null) {
-      if (managerId === null && this.deliveryOrders.length) {
+    async orderCreate(managerId = null, noManager = null) {
+      if (managerId === null && !noManager && this.deliveryOrders.length) {
         this.pendingSubmit = 'order'
         this.deliveryManager = null
         this.deliveryStep = true
@@ -1198,6 +1255,9 @@ export default {
       let data = {
         store_id: this.basketOfferWarehouse,
         manager_id: managerId,
+      }
+      if (noManager) {
+        data.no_manager = noManager
       }
       if (this.edit) {
         data.edit_id = this.edit
@@ -1241,32 +1301,64 @@ export default {
       })
     },
     getDeliveryManagers() {
-      this.getClientManagers({ org_id: this.$route.params.id_org_from })
+      this.deliveryManagersLoaded = false
+      return this.getClientManagers({ org_id: this.$route.params.id_org_from }).finally(() => {
+        this.deliveryManagersLoaded = true
+      })
     },
     cancelDelivery() {
       this.deliveryStep = false
       this.deliveryManager = null
+      this.noManager = { name: '', phone: '', email: '' }
       this.pendingSubmit = null
     },
-    submitDelivery() {
-      if (
-        this.deliveryManager === null ||
-        this.deliveryManager === undefined ||
-        this.deliveryManager === ''
-      ) {
+    getNoManagerPayload() {
+      return {
+        name: this.noManager.name.trim(),
+        phone: this.noManager.phone.trim(),
+        email: this.noManager.email.trim(),
+      }
+    },
+    validateNoManager() {
+      const noManager = this.getNoManagerPayload()
+      if (!noManager.name || !noManager.phone || !noManager.email) {
         this.$toast.add({
           severity: 'error',
           summary: 'Ошибка',
-          detail: 'Выберите менеджера, ответственного за получение груза',
+          detail: 'Заполните ФИО, телефон и email сотрудника',
           life: 3000,
         })
-        return
+        return false
+      }
+      return true
+    },
+    submitDelivery() {
+      if (!this.deliveryManagersLoaded) return
+
+      let noManager = null
+      if (this.hasDeliveryManagers) {
+        if (
+          this.deliveryManager === null ||
+          this.deliveryManager === undefined ||
+          this.deliveryManager === ''
+        ) {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Ошибка',
+            detail: 'Выберите менеджера, ответственного за получение груза',
+            life: 3000,
+          })
+          return
+        }
+      } else {
+        if (!this.validateNoManager()) return
+        noManager = this.getNoManagerPayload()
       }
 
       if (this.pendingSubmit === 'offer') {
-        this.offerCreate(this.deliveryManager)
+        this.offerCreate()
       } else {
-        this.orderCreate(this.deliveryManager)
+        this.orderCreate(this.deliveryManager, noManager)
       }
     },
     saveComment() {

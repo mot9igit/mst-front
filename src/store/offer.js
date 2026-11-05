@@ -294,16 +294,13 @@ export default {
       }
       return response
     },
-    async offerSubmit(store, { cart_store, manager_id }) {
+    async offerSubmit(store, { cart_store }) {
       const data = {
         action: 'create/offer',
         id: router.currentRoute._value.params.id,
         id_org_from: router.currentRoute._value.params.id_org_from,
         cart_store: cart_store,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      }
-      if (manager_id !== null && manager_id !== undefined && manager_id !== '') {
-        data.manager_id = manager_id
       }
       const response = await api.offer.offerSubmit(data)
       return response
@@ -345,7 +342,7 @@ export default {
       const response = api.offer.getOffers(data)
       return response
     },
-    async createOrder(store, { store_id, edit_id, manager_id }) {
+    async createOrder(store, { store_id, edit_id, manager_id, no_manager }) {
       const data = {
         action: 'create/offer/order',
         id_org_from: router.currentRoute._value.params.id_org_from,
@@ -354,6 +351,9 @@ export default {
         initiator_id: router.currentRoute._value.params.id,
         manager_id: manager_id,
         extended_name: 'offer',
+      }
+      if (no_manager) {
+        data.no_manager = no_manager
       }
       const response = api.offer.getOffers(data)
       return response

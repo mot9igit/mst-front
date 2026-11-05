@@ -672,20 +672,33 @@
 
           <div class="order__delivery">
             <div class="order__delivery-manager">
-              <label class="order__delivery-manager-label" for="delivery_manager">
-                Выберите менеджера, ответственного за получение груза
-              </label>
-              <TreeSelectFilter
-                id="delivery_manager"
-                v-model="deliveryManager"
-                :options="deliveryManagerOptions"
-                :multiple="false"
-                valueFormat="id"
-                :clearable="false"
-                :append-to-body="true"
-                placeholder="Выберите менеджера"
-                class="order__delivery-manager-select"
-              />
+              <template v-if="hasDeliveryManagers">
+                <label class="order__delivery-manager-label" for="delivery_manager">
+                  Выберите менеджера, ответственного за получение груза
+                </label>
+                <TreeSelectFilter
+                  id="delivery_manager"
+                  v-model="deliveryManager"
+                  :options="deliveryManagerOptions"
+                  :multiple="false"
+                  valueFormat="id"
+                  :clearable="false"
+                  :append-to-body="true"
+                  placeholder="Выберите менеджера"
+                  class="order__delivery-manager-select"
+                />
+              </template>
+              <template v-else-if="deliveryManagersLoaded">
+                <p class="order__delivery-manager-empty">У вашей организации нет сотрудников</p>
+                <button
+                  type="button"
+                  class="d-button d-button--sm-shadow d-button-primary d-button-primary-small order__delivery-manager-add noclose_click"
+                  @click.prevent.stop="goToStaffCreate()"
+                >
+                  <i class="d-icon-plus-flat"></i>
+                  Сотрудник
+                </button>
+              </template>
             </div>
 
             <div class="order__delivery-pickup">
@@ -1075,6 +1088,7 @@ export default {
       logistic: [],
       deliveryStep: false,
       deliveryManager: null,
+      deliveryManagersLoaded: false,
       pendingOrder: {
         orgId: null,
         warehouse_id: null,
@@ -1089,6 +1103,9 @@ export default {
     }),
     deliveryManagerOptions() {
       return Array.isArray(this.filter_managers) ? this.filter_managers : []
+    },
+    hasDeliveryManagers() {
+      return this.deliveryManagerOptions.length > 0
     },
     deliveryOrders() {
       const basket = this.basket?.data?.[this.basketWarehouse] || this.basketStore
@@ -1366,7 +1383,19 @@ export default {
         })
     },
     getDeliveryManagers() {
-      this.getFilterManagers()
+      this.deliveryManagersLoaded = false
+      return this.getFilterManagers().finally(() => {
+        this.deliveryManagersLoaded = true
+      })
+    },
+    goToStaffCreate() {
+      this.close()
+      this.$router.push({
+        name: 'profileStuffCreate',
+        params: {
+          id: this.$route.params.id,
+        },
+      })
     },
     cancelDelivery() {
       this.deliveryStep = false
