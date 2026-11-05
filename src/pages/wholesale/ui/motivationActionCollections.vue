@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="promotions__card-warehouse">
+    <div class="promotions__card-warehouse promotions__card-warehouse-header-container">
       <div class="promotions__card-value-container promotions__card-warehouse-header">
         <p class="promotions__card-value promotions__card-value--bold promotions__card-block-title">
           Коллекции
@@ -105,7 +105,7 @@
                       <th class="d-table__head-col d-table__head-col--big">РРЦ</th>
                       <template v-if="rewardMode">
                         <th class="d-table__head-col d-table__head-col--big">
-                          Процент вознаграждения
+                          Вознаграждение
                           <button
                             @click="settings(el.group.id, 'group')"
                             class="d-button d-button-tertiary d-button-tertiary-small product-table-card__discount-button product-table-card__discount-button--table mt-4"
@@ -130,7 +130,9 @@
                             Настроить
                           </button>
                         </th>
-                        <th class="d-table__head-col d-table__head-col--big">Тип ценообразования</th>
+                        <th class="d-table__head-col d-table__head-col--big">
+                          Тип ценообразования
+                        </th>
                         <th class="d-table__head-col d-table__head-col--big">
                           Цена со скидкой за шт.
                         </th>
@@ -175,7 +177,7 @@
                             <p
                               class="promotions__card-text promotions__card-text--bold product-table-card__discount product-table-card__value"
                             >
-                              {{ rewardPercentOf(el) }} %
+                              {{ rewardLabel(el) }}
                             </p>
                           </div>
                         </td>
@@ -686,11 +688,20 @@ export default {
     }
   },
   methods: {
-    rewardPercentOf(collection) {
-      const value = Number(collection?.rewardPercent)
+    rewardTypeOf(collection) {
+      return collection?.rewardType === 'fixed' ? 'fixed' : 'percent'
+    },
+    rewardValueOf(collection) {
+      const value = Number(collection?.rewardValue)
       return Number.isFinite(value) ? value : 0
     },
+    rewardLabel(collection) {
+      return `${this.rewardValueOf(collection)} ${this.rewardTypeOf(collection) === 'fixed' ? '₽' : '%'}`
+    },
     rewardAmount(collection, product) {
+      if (this.rewardTypeOf(collection) === 'fixed') {
+        return this.rewardValueOf(collection).toFixed(2)
+      }
       const price = Number(
         String(product?.price ?? 0)
           .replace(/\s+/g, '')
@@ -698,7 +709,7 @@ export default {
           .replace(/[^\d.-]/g, ''),
       )
       if (!Number.isFinite(price)) return '0.00'
-      return ((price * this.rewardPercentOf(collection)) / 100).toFixed(2)
+      return ((price * this.rewardValueOf(collection)) / 100).toFixed(2)
     },
     deleteProduct(collection, product) {
       this.$emit('deleteCollectionProduct', {
@@ -819,5 +830,64 @@ body {
       transition: all 0.2s ease;
     }
   }
+}
+
+.promotions__card-warehouse-header-container {
+  position: relative;
+  z-index: 100;
+  overflow: visible;
+}
+
+.promotions__card-warehouse-search {
+  position: relative;
+  z-index: 101;
+  align-self: center;
+  margin-top: 0;
+  overflow: visible;
+}
+
+.promotions__card-warehouse-search .d-search__field {
+  box-sizing: border-box;
+  height: 36px;
+  margin: 0 !important;
+  padding: 0 100px 0 45px !important;
+  line-height: 36px;
+}
+
+.promotions__card-warehouse-search .d-search__icon {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  z-index: 2;
+  margin: 0;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.promotions__card-warehouse-search .d-search__button {
+  position: absolute;
+  top: 50%;
+  right: 2px;
+  z-index: 2;
+  height: 32px;
+  min-height: 32px;
+  max-height: 32px;
+  transform: translateY(-50%);
+}
+
+.promotions__card-warehouse-search .d-search__suggestions {
+  z-index: 1000;
+}
+
+.promotions__card:has(.d-search__suggestions),
+.promotions__card:focus-within {
+  position: relative;
+  z-index: 200;
+  overflow: visible;
+}
+
+.promotions__card-products .d-table__head .product-table-card__discount-button--table {
+  width: max-content;
+  margin-inline: auto;
 }
 </style>

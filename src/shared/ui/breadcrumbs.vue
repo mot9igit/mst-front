@@ -33,6 +33,7 @@ export default {
       order: 'retail/order',
       optCatalog: 'catalog/optCatalog',
       optCatalogWarehouse: 'catalog/optCatalogWarehouse',
+      motivations: 'wholesale/motivations',
     }),
     breadcrumbs() {
       const currentRoute = router.currentRoute.value
@@ -189,10 +190,17 @@ export default {
               case ':id':
               case ':requirement_id':
               case ':program_id': {
-                if (currentRoute.path.includes('motivation-program')) {
+                if (
+                  route === ':program_id' &&
+                  (currentRoute.name === 'wholesaleMotivationProgram' ||
+                    currentRoute.name === 'wholesaleMotivationStatistics')
+                ) {
+                  const program = this.motivations.find(
+                    (item) => String(item.id) === String(currentRoute.params.program_id),
+                  )
                   this.crumbs.push({
-                    name: 'Программа мотивации',
-                    path: pathRoutesWithId.join('/'),
+                    name: program?.label || program?.name || 'Программа мотивации',
+                    path: pathRoutesWithId.slice(0, index + 1).join('/'),
                   })
                 } else {
                   this.crumbs.push({
@@ -304,6 +312,9 @@ export default {
       this.updateCrumbs()
     },
     orgActive: function () {
+      this.updateCrumbs()
+    },
+    motivations: function () {
       this.updateCrumbs()
     },
     $route() {

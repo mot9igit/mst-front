@@ -108,38 +108,42 @@
             </div>
             <div class="promotions__card-content">
               <div class="motivation-dates">
-                <DatePicker
-                  v-model="form.start_date"
-                  dateFormat="dd.mm.yy"
-                  placeholder="Дата начала"
-                  :manualInput="false"
-                  showIcon
-                  class="motivation-datepicker"
-                />
-                <DatePicker
-                  v-if="!form.nodeadline"
-                  v-model="form.end_date"
-                  dateFormat="dd.mm.yy"
-                  placeholder="Дата окончания"
-                  :manualInput="false"
-                  :minDate="minEndDate"
-                  showIcon
-                  class="motivation-datepicker"
-                />
-              </div>
-              <div class="d-field-wrapper motivation-switch">
-                <label class="d-switch" for="motivationNoDeadline">
-                  <input
-                    id="motivationNoDeadline"
-                    v-model="form.nodeadline"
-                    type="checkbox"
-                    class="d-switch__input"
+                <div class="motivation-dates__field">
+                  <DatePicker
+                    v-model="form.start_date"
+                    dateFormat="dd.mm.yy"
+                    placeholder="Дата начала"
+                    :manualInput="false"
+                    showIcon
+                    class="motivation-datepicker"
                   />
-                  <div class="d-switch__circle"></div>
-                </label>
-                <div class="d-switch__label-container">
-                  <label for="motivationNoDeadline" class="d-switch__label">Бессрочная</label>
-                  <p class="d-description">Программа будет без ограничения срока действия.</p>
+                </div>
+                <div class="motivation-dates__field">
+                  <DatePicker
+                    v-if="!form.nodeadline"
+                    v-model="form.end_date"
+                    dateFormat="dd.mm.yy"
+                    placeholder="Дата окончания"
+                    :manualInput="false"
+                    :minDate="minEndDate"
+                    showIcon
+                    class="motivation-datepicker"
+                  />
+                  <div class="d-field-wrapper motivation-switch">
+                    <label class="d-switch" for="motivationNoDeadline">
+                      <input
+                        id="motivationNoDeadline"
+                        v-model="form.nodeadline"
+                        type="checkbox"
+                        class="d-switch__input"
+                      />
+                      <div class="d-switch__circle"></div>
+                    </label>
+                    <div class="d-switch__label-container">
+                      <label for="motivationNoDeadline" class="d-switch__label">Бессрочная</label>
+                      <p class="d-description">Программа будет без ограничения срока действия.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
               <p
@@ -218,24 +222,56 @@
     <teleport to="body">
       <customModal v-model="rewardModal" class="motivation-reward-modal">
         <template v-slot:title>Вознаграждение</template>
-        <p class="motivation-reward-modal__text">Установите процент вознаграждения от РРЦ</p>
+        <p class="motivation-reward-modal__text">
+          Установите процент вознаграждения от РРЦ или фиксированную сумму в рублях
+        </p>
+        <div class="d-radio__container d-radio__container--small motivation-reward-modal__types">
+          <div class="d-radio__wrapper">
+            <label class="d-radio" for="rewardTypePercent">
+              <input
+                id="rewardTypePercent"
+                v-model="rewardType"
+                type="radio"
+                name="rewardType"
+                value="percent"
+                class="d-radio__input"
+              />
+            </label>
+            <label class="d-radio__label" for="rewardTypePercent">Процент от РРЦ</label>
+          </div>
+          <div class="d-radio__wrapper">
+            <label class="d-radio" for="rewardTypeFixed">
+              <input
+                id="rewardTypeFixed"
+                v-model="rewardType"
+                type="radio"
+                name="rewardType"
+                value="fixed"
+                class="d-radio__input"
+              />
+            </label>
+            <label class="d-radio__label" for="rewardTypeFixed">Фиксированная сумма, ₽</label>
+          </div>
+        </div>
         <div class="motivation-field">
-          <label class="promotions__card-label">Процент вознаграждения</label>
+          <label class="promotions__card-label">
+            {{ rewardType === 'percent' ? 'Процент вознаграждения' : 'Сумма вознаграждения' }}
+          </label>
           <InputNumber
-            v-model="rewardPercent"
+            v-model="rewardValue"
             :min="0"
-            :max="100"
+            :max="rewardType === 'percent' ? 100 : undefined"
             :minFractionDigits="0"
             :maxFractionDigits="2"
-            placeholder="Например, 10"
-            suffix=" %"
+            :placeholder="rewardType === 'percent' ? 'Например, 10' : 'Например, 500'"
+            :suffix="rewardType === 'percent' ? ' %' : ' ₽'"
             class="motivation-reward-modal__input"
           />
         </div>
         <div class="motivation-reward-modal__actions">
           <button
             type="button"
-            class="d-button d-button-secondary d-button--no-shadow"
+            class="d-button d-button--no-shadow motivation-reward-modal__cancel"
             @click.prevent="rewardModal = false"
           >
             Отменить
@@ -299,7 +335,8 @@ export default {
       availableCollections: [],
       collections: {},
       rewardModal: false,
-      rewardPercent: 0,
+      rewardType: 'percent',
+      rewardValue: 0,
       rewardTarget: null,
       form: {
         name: '',
@@ -367,8 +404,12 @@ export default {
       const diff = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
       return Math.max(diff + 1, 1)
     },
+    draftStorageKey() {
+      return `wholesale-motivation-program:${this.program_id || 'new'}`
+    },
   },
   mounted() {
+    this.loadLocalDraft()
     if (this.program_id) this.loadProgram()
     this.getOrgStoresAll({ page: '', perpage: '', filters: {} }).then(() => {
       this.loadAvailableProducts('')
@@ -386,6 +427,44 @@ export default {
       getOrgStoresAll: 'org/getOrgStoresAll',
       getMotivations: 'wholesale/getMotivations',
     }),
+    loadLocalDraft() {
+      let draft = null
+      try {
+        const raw = localStorage.getItem(this.draftStorageKey)
+        draft = raw ? JSON.parse(raw) : null
+      } catch {
+        draft = null
+      }
+      if (Array.isArray(draft?.products)) {
+        this.allProducts = draft.products.map((product) => ({
+          ...product,
+          rewardType: this.normalizeRewardType(product.rewardType),
+          rewardValue: Number(product.rewardValue) || 0,
+        }))
+      }
+      if (Array.isArray(draft?.collections)) {
+        this.collections = draft.collections.reduce((result, collection) => {
+          const groupId = collection?.group?.id
+          if (groupId === undefined || groupId === null) return result
+          const items = Array.isArray(collection.products)
+            ? collection.products
+            : collection.products?.items || []
+          result[groupId] = {
+            group: collection.group,
+            products: {
+              items,
+              total: collection.products?.total ?? items.length,
+            },
+            page: 1,
+            filter: '',
+            rewardType: this.normalizeRewardType(collection.rewardType),
+            rewardValue: Number(collection.rewardValue) || 0,
+            loading: false,
+          }
+          return result
+        }, {})
+      }
+    },
     async loadProgram() {
       if (!this.motivations.length) {
         await this.getMotivations({ id: this.$route.params.id })
@@ -474,7 +553,8 @@ export default {
       if (!exists) {
         this.allProducts.push({
           ...data,
-          rewardPercent: 0,
+          rewardType: 'percent',
+          rewardValue: 0,
         })
         this.productsPage = 1
       }
@@ -513,7 +593,8 @@ export default {
           products: { items: [], total: 0 },
           page: 1,
           filter: '',
-          rewardPercent: 0,
+          rewardType: 'percent',
+          rewardValue: 0,
           loading: false,
         },
       }
@@ -550,69 +631,95 @@ export default {
     findProduct(id) {
       return this.allProducts.find((product) => String(product.id) === String(id))
     },
-    commonPercent(ids) {
-      if (!ids.length) return null
-      const percents = ids.map((id) => Number(this.findProduct(id)?.rewardPercent) || 0)
-      const allEqual = percents.every((percent) => Number(percent) === Number(percents[0]))
-      return allEqual ? Number(percents[0]) : null
+    normalizeRewardType(value) {
+      return value === 'fixed' ? 'fixed' : 'percent'
+    },
+    rewardOf(item) {
+      return {
+        type: this.normalizeRewardType(item?.rewardType),
+        value: Number(item?.rewardValue) || 0,
+      }
+    },
+    commonReward(items) {
+      if (!items.length) return { type: 'percent', value: null }
+      const rewards = items.map((item) => this.rewardOf(item))
+      const first = rewards[0]
+      const allEqual = rewards.every(
+        (reward) => reward.type === first.type && Number(reward.value) === Number(first.value),
+      )
+      return {
+        type: first.type,
+        value: allEqual ? first.value : null,
+      }
     },
     settings(items, type) {
       if (type === 'group') {
         const groupId = items[0]
         const collection = this.collections[groupId]
+        const reward = this.rewardOf(collection)
         this.openReward({
           type: 'collection',
           groupId,
-          percent: Number(collection?.rewardPercent) || 0,
+          rewardType: reward.type,
+          rewardValue: reward.value,
         })
         return
       }
-      if (type === 'all') {
-        const ids = this.allProducts.map((product) => product.id)
-        this.openReward({
-          type: 'products',
-          ids,
-          percent: this.commonPercent(ids),
-        })
-        return
-      }
-      const ids = (items || []).map((item) => (item && item.id !== undefined ? item.id : item))
+      const ids =
+        type === 'all'
+          ? this.allProducts.map((product) => product.id)
+          : (items || []).map((item) => (item && item.id !== undefined ? item.id : item))
+      const products = ids.map((id) => this.findProduct(id)).filter(Boolean)
+      const reward = this.commonReward(products)
       this.openReward({
         type: 'products',
         ids,
-        percent: this.commonPercent(ids),
+        rewardType: reward.type,
+        rewardValue: reward.value,
       })
     },
     openReward(target) {
       this.rewardTarget = target
-      this.rewardPercent = target.percent ?? null
+      this.rewardType = this.normalizeRewardType(target.rewardType)
+      this.rewardValue = target.rewardValue ?? null
       this.rewardModal = true
     },
     applyReward() {
-      if (this.rewardPercent === null || this.rewardPercent === '') {
+      const isPercent = this.rewardType === 'percent'
+      if (this.rewardValue === null || this.rewardValue === '') {
         this.$toast.add({
           severity: 'error',
-          summary: 'Укажите процент',
-          detail: 'Введите процент вознаграждения от РРЦ',
+          summary: isPercent ? 'Укажите процент' : 'Укажите сумму',
+          detail: isPercent
+            ? 'Введите процент вознаграждения от РРЦ'
+            : 'Введите сумму вознаграждения в рублях',
           life: 3000,
         })
         return
       }
-      const percent = Math.min(Math.max(Number(this.rewardPercent) || 0, 0), 100)
+      let value = Math.max(Number(this.rewardValue) || 0, 0)
+      if (isPercent) value = Math.min(value, 100)
+      const rewardType = isPercent ? 'percent' : 'fixed'
       if (this.rewardTarget?.type === 'collection') {
         const collection = this.collections[this.rewardTarget.groupId]
-        if (collection) collection.rewardPercent = percent
+        if (collection) {
+          collection.rewardType = rewardType
+          collection.rewardValue = value
+        }
       } else if (this.rewardTarget?.type === 'products') {
         this.rewardTarget.ids.forEach((id) => {
           const product = this.findProduct(id)
-          if (product) product.rewardPercent = percent
+          if (product) {
+            product.rewardType = rewardType
+            product.rewardValue = value
+          }
         })
       }
       this.rewardModal = false
       this.$toast.add({
         severity: 'success',
         summary: 'Вознаграждение установлено',
-        detail: `Процент: ${percent}%`,
+        detail: isPercent ? `Процент: ${value}%` : `Сумма: ${value.toFixed(2)} ₽`,
         life: 2500,
       })
     },
@@ -649,13 +756,100 @@ export default {
       this.form.banner = null
       this.form.bannerUrl = ''
     },
-    saveDemo() {
-      this.$toast.add({
-        severity: 'info',
-        summary: 'Демо-режим',
-        detail: 'Данные не сохраняются и не отправляются на сервер',
-        life: 3000,
-      })
+    async getCollectionProductsForSave(collection) {
+      const current = collection.products || { items: [], total: 0 }
+      const loaded = current.items || []
+      let total = Number(current.total) || loaded.length
+      if (!total || loaded.length >= total) return current
+      try {
+        const items = []
+        const itemKeys = new Set()
+        const perPage = Math.max(this.perPage, 100)
+        let page = 1
+
+        while (items.length < total && page <= 100) {
+          const response = await api.action.getGroupProducts({
+            id: this.$route.params.id,
+            action: 'get/products',
+            group_id: collection.group?.id,
+            filter: '',
+            page,
+            perpage: perPage,
+            check: '',
+            stores: this.storeIds,
+          })
+          if (!response || response === 'technical error') break
+
+          const data = response.data?.data || response.data || {}
+          const batch = Array.isArray(data.items) ? data.items : []
+          if (!batch.length) break
+
+          const previousLength = items.length
+          batch.forEach((item) => {
+            const key = `${item.id ?? ''}:${item.article ?? ''}:${item.name ?? ''}`
+            if (!itemKeys.has(key)) {
+              itemKeys.add(key)
+              items.push(item)
+            }
+          })
+
+          total = Number(data.total) || total
+          if (items.length === previousLength) break
+          page += 1
+        }
+
+        if (items.length > loaded.length) {
+          return {
+            items,
+            total,
+          }
+        }
+      } catch {
+        return current
+      }
+      return current
+    },
+    async saveDemo() {
+      const collections = await Promise.all(
+        Object.values(this.collections).map(async (collection) => ({
+          group: collection.group,
+          products: await this.getCollectionProductsForSave(collection),
+          rewardType: this.normalizeRewardType(collection.rewardType),
+          rewardValue: Number(collection.rewardValue) || 0,
+        })),
+      )
+      const payload = {
+        id: this.program_id,
+        name: this.form.name,
+        description: this.form.description,
+        start_date: this.form.start_date,
+        end_date: this.form.end_date,
+        nodeadline: this.form.nodeadline,
+        bannerUrl: this.form.bannerUrl,
+        products: this.allProducts.map((product) => ({
+          ...product,
+          rewardType: this.normalizeRewardType(product.rewardType),
+          rewardValue: Number(product.rewardValue) || 0,
+        })),
+        collections,
+        savedAt: new Date().toISOString(),
+      }
+      try {
+        localStorage.setItem(this.draftStorageKey, JSON.stringify(payload))
+        this.$toast.add({
+          severity: 'success',
+          summary: 'Сохранено',
+          detail: 'Данные сохранены локально',
+          life: 3000,
+        })
+      } catch {
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Ошибка сохранения',
+          detail: 'Не удалось сохранить данные локально',
+          life: 3000,
+        })
+      }
     },
   },
 }
@@ -746,20 +940,33 @@ export default {
 }
 
 .motivation-dates {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
   margin-bottom: 20px;
 }
 
+.motivation-dates__field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
 .motivation-datepicker {
-  flex: 1 1 200px;
+  width: 100%;
 }
 
 .motivation-switch {
   display: flex;
   align-items: flex-start;
   gap: 12px;
+}
+
+@media (width <=600px) {
+  .motivation-dates {
+    grid-template-columns: 1fr;
+  }
 }
 
 .motivation-hint {
@@ -777,16 +984,63 @@ export default {
   width: 100%;
 }
 
+:deep(.motivation-reward-modal__input.p-inputnumber) {
+  max-width: 220px;
+}
+
 .motivation-reward-modal__text {
   margin-bottom: 16px;
   color: #494949;
 }
 
+.motivation-reward-modal__types {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.motivation-reward-modal__types .d-radio__wrapper {
+  width: auto;
+}
+
+@media (width <=600px) {
+  .motivation-reward-modal__types {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
 .motivation-reward-modal__actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 12px;
   margin-top: 24px;
 }
 
+.motivation-reward-modal__actions .d-button {
+  width: max-content;
+}
+
+.motivation-reward-modal__cancel {
+  background-color: #ffffff;
+  border-color: #282828;
+  color: #282828;
+
+  &:hover {
+    background-color: #282828;
+    border-color: #282828;
+    color: #ffffff;
+  }
+
+  &:active {
+    background-color: #282828;
+    border-color: #282828;
+    color: #ffffff;
+  }
+}
+
+:global(.motivation-reward-modal .modal-content) {
+  max-width: 560px;
+}
 </style>

@@ -353,6 +353,8 @@ export default {
     return {
       tabException: 0,
       loading: true,
+      localProducts: [],
+      localCollections: [],
       chartOptions: {
         cutout: '75%',
       },
@@ -597,6 +599,7 @@ prods: {
     }
   },
   created() {
+    this.loadLocalDraft()
     this.getMotivations({ id: this.$route.params.id }).then(() => {
       this.loading = false
     })
@@ -658,8 +661,9 @@ prods: {
     transactions() {
       if (!this.program) return []
       const brand = this.program?.name
+      const source = this.programProductSource
       const fingerprint =
-        JSON.stringify((this.program.products || []).map((product) => [
+        JSON.stringify(source.map((product) => [
           product.article,
           product.name,
           product.price,
@@ -703,22 +707,74 @@ prods: {
     },
     programProducts() {
       if (!this.program) return []
-      const source = this.program.products || []
       const percent = this.program.percent || 0
-      return source.map((item) => ({
-        id: item.id,
-        image: item.image,
-        name: item.name,
-        article: item.article,
-        price_rrc: new Intl.NumberFormat('ru-RU').format(item.price),
-        reward: new Intl.NumberFormat('ru-RU').format(Math.round((item.price * percent) / 100)),
-      }))
+      const products = []
+      const seen = new Set()
+      const addProduct = (item, rewardSource, sourceKey) => {
+        const price = this.toNumber(item.price)
+        if (price <= 0) return
+        const key = `${sourceKey}:${item.id ?? ''}:${item.article ?? ''}:${item.name ?? ''}`
+        if (seen.has(key)) return
+        seen.add(key)
+        products.push({
+          id: item.id,
+          image: item.image || item.store_image,
+          name: item.name,
+          article: item.article,
+          price_rrc: new Intl.NumberFormat('ru-RU').format(price),
+          reward: this.productRewardLabel(rewardSource, percent),
+        })
+      }
+      this.programProductSource.forEach((item) => addProduct(item, item, 'products'))
+      this.localCollections.forEach((collection) => {
+        const source = Array.isArray(collection.products)
+          ? collection.products
+          : collection.products?.items || []
+        const collectionId = collection.group?.id ?? collection.group_id ?? collection.group?.name
+        source.forEach((item) => addProduct(item, collection, `collection:${collectionId}`))
+      })
+      return products
+    },
+    programProductSource() {
+      if (this.localProducts.length) return this.localProducts
+      return this.program?.products || []
     },
   },
   methods: {
     ...mapActions({
       getMotivations: 'wholesale/getMotivations',
     }),
+    loadLocalDraft() {
+      const id = this.program_id || this.$route.params.program_id || 'new'
+      const draft = this.readCache(`wholesale-motivation-program:${id}`)
+      this.localProducts = Array.isArray(draft?.products) ? draft.products : []
+      this.localCollections = Array.isArray(draft?.collections) ? draft.collections : []
+    },
+    productRewardAmount(item, price, fallbackPercent) {
+      const value = this.toNumber(item?.rewardValue)
+      if (item?.rewardType === 'fixed') {
+        return value
+      }
+      const percent =
+        item?.rewardType === 'percent' ? value : this.toNumber(fallbackPercent)
+      return (price * percent) / 100
+    },
+    productRewardLabel(item, fallbackPercent) {
+      const value = this.toNumber(item?.rewardValue)
+      if (item?.rewardType === 'fixed') {
+        return `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 }).format(value)} ₽`
+      }
+      const percent =
+        item?.rewardType === 'percent' ? value : this.toNumber(fallbackPercent)
+      return `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 }).format(percent)} %`
+    },
+    toNumber(value) {
+      const normalized = String(value ?? '')
+        .replace(/\s+/g, '')
+        .replace(',', '.')
+      const number = Number(normalized)
+      return Number.isFinite(number) ? number : 0
+    },
     randomStore(brand) {
       const stores = this.storesByBrand[brand] || this.storesByBrand.default
       return stores[Math.floor(Math.random() * stores.length)]
@@ -764,7 +820,7 @@ prods: {
     },
     randomTransaction() {
       const percent = this.program?.percent || 0
-      const all = this.program?.products || []
+      const all = this.programProductSource
       if (!all.length) return { products: '', sum: '' }
       const count = 1 + Math.floor(Math.random() * Math.min(3, all.length))
       const picked = all.slice().sort(() => Math.random() - 0.5).slice(0, count)
@@ -772,7 +828,9 @@ prods: {
         .map((product) => `<div>${product.article}, "${product.name}" - 1 шт.</div>`)
         .join('')
       const sum = picked.reduce(
-        (acc, product) => acc + Math.round((product.price * percent) / 100),
+        (acc, product) =>
+          acc +
+          Math.round(this.productRewardAmount(product, this.toNumber(product.price), percent)),
         0,
       )
       return { products, sum: new Intl.NumberFormat('ru-RU').format(sum) + ' ₽' }

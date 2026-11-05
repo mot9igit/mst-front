@@ -110,7 +110,7 @@
             <th class="d-table__head-col" style="width: 20%">Товар</th>
             <th class="d-table__head-col">РРЦ</th>
             <template v-if="rewardMode">
-              <th class="d-table__head-col">Процент вознаграждения</th>
+              <th class="d-table__head-col">Вознаграждение</th>
               <th class="d-table__head-col">Размер вознаграждения</th>
             </template>
             <template v-else>
@@ -166,7 +166,7 @@
                   <p
                     class="promotions__card-text promotions__card-text--bold product-table-card__discount product-table-card__value"
                   >
-                    {{ rewardPercentOf(product) }} %
+                    {{ rewardLabel(product) }}
                   </p>
                   <button
                     class="d-button d-button-tertiary d-button-tertiary-small product-table-card__discount-button"
@@ -750,11 +750,20 @@ export default {
     }
   },
   methods: {
-    rewardPercentOf(product) {
-      const value = Number(product?.rewardPercent)
+    rewardTypeOf(product) {
+      return product?.rewardType === 'fixed' ? 'fixed' : 'percent'
+    },
+    rewardValueOf(product) {
+      const value = Number(product?.rewardValue)
       return Number.isFinite(value) ? value : 0
     },
+    rewardLabel(product) {
+      return `${this.rewardValueOf(product)} ${this.rewardTypeOf(product) === 'fixed' ? '₽' : '%'}`
+    },
     rewardAmount(product) {
+      if (this.rewardTypeOf(product) === 'fixed') {
+        return this.rewardValueOf(product).toFixed(2)
+      }
       const price = Number(
         String(product?.price ?? 0)
           .replace(/\s+/g, '')
@@ -762,7 +771,7 @@ export default {
           .replace(/[^\d.-]/g, ''),
       )
       if (!Number.isFinite(price)) return '0.00'
-      return ((price * this.rewardPercentOf(product)) / 100).toFixed(2)
+      return ((price * this.rewardValueOf(product)) / 100).toFixed(2)
     },
     pageClick(pageNum) {
       this.$emit('paginateProductsSelected', {
@@ -915,17 +924,35 @@ export default {
 }
 
 .promotions__card-warehouse-search .d-search__icon {
+  position: absolute;
   top: 50%;
-  transform: translate(0, -50%);
+  left: 16px;
+  z-index: 2;
+  margin: 0;
+  transform: translateY(-50%);
+  pointer-events: none;
 }
 
 .promotions__card-warehouse-search .d-search__button {
+  position: absolute;
   top: 50%;
-  transform: translate(0, -50%);
+  right: 2px;
+  z-index: 2;
+  height: 32px;
+  min-height: 32px;
+  max-height: 32px;
+  transform: translateY(-50%);
 }
 
 .promotions__card-warehouse-search .d-search__suggestions {
   z-index: 1000;
+}
+
+.promotions__card:has(.d-search__suggestions),
+.promotions__card:focus-within {
+  position: relative;
+  z-index: 200;
+  overflow: visible;
 }
 
 .products__card,

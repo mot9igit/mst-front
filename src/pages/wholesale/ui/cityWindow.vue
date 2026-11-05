@@ -176,7 +176,7 @@ import {
   formatCityDate,
   formatCityDateValue,
   formatCityDateTimeValue,
-} from '../cityUtils'
+} from '../api/cityUtils'
 
 export default {
   name: 'CityWindow',
