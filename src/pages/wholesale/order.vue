@@ -224,7 +224,7 @@
                   <b class="order-card__orderinfo-grid-lable">Отв. за доставку</b>
                   <p>
                     {{ this.order?.logistic_manager }}
-                    <InfoTooltip :text="manager_info" />
+                    <InfoTooltip :text="manager_info" copyable />
                   </p>
                 </div>
               </div>
@@ -291,7 +291,7 @@
                   <b class="order-card__orderinfo-grid-lable">Отв. за доставку</b>
                   <p>
                     {{ this.order?.logistic_manager }}
-                    <InfoTooltip :text="manager_info" />
+                    <InfoTooltip :text="manager_info" copyable />
                   </p>
                 </div>
               </div>

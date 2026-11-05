@@ -27,7 +27,7 @@
               <div class="post-order-window__detail-label">{{ detail.label }}</div>
               <div class="post-order-window__detail-value">
                 <span>{{ detail.value || '-' }}</span>
-                <InfoTooltip v-if="detail.tooltip" :text="detail.tooltip" />
+                <InfoTooltip v-if="detail.tooltip" :text="detail.tooltip" copyable />
               </div>
             </div>
           </div>
