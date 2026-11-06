@@ -825,7 +825,8 @@ export default {
   overflow: visible;
 }
 .post-order__modal .modal__content {
-  overflow: visible;
+  overflow-x: visible;
+  overflow-y: auto;
 }
 .post-order__modal .info-tooltip {
   z-index: 10001;
